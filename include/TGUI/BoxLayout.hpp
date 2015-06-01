@@ -90,7 +90,7 @@ namespace tgui
         /// so the widget of the space can be retrieved by get(spaceName) after the space is added.
         /// This allow to modify the space, for making e.g. a separation line with a custom texture.
         ///
-        /// @param spaceName An identifier to access to the space later.
+        /// @param spaceName An identifier to access to the space later
         ///
         /// Usage example:
         /// @code
@@ -101,7 +101,28 @@ namespace tgui
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void addSpace(const sf::String& spaceName = "");
+        void addSpace(const sf::String& spaceName = "");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds a space at the end of the layout.
+        /// Spaces are just hidden and disabled tgui::Button,
+        /// so the widget of the space can be retrieved by get(spaceName) after the space is added.
+        /// This allow to modify the space, for making e.g. a separation line with a custom texture.
+        ///
+        /// @param ratio     The ratio of the space
+        /// @param spaceName An identifier to access to the space later
+        ///
+        /// Usage example:
+        /// @code
+        /// layout->addSpace("some space identifier");                           // Add the space at the end of the layout
+        /// tgui::Button::Ptr spaceButton = layout->get("some space identifier");// Get the space widget
+        /// spaceButton->show();                                                 // Make the space visible
+        /// spaceButton->getRenderer()->setNormalImage("spaceTexture.png");      // And change its texture
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void addSpace(float ratio, const sf::String& spaceName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +144,28 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void insertSpace(unsigned int position, const sf::String& spaceName = "");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Insert a space to the layout. The space is inserted before position.
+        /// Spaces are just hidden and disabled tgui::Button,
+        /// so the widget of the space can be retrieved by get(spaceName) after the space is added.
+        /// This allow to modify the space, for making e.g. a separation line with a custom texture.
+        ///
+        /// @param position  Position of the space in the container
+        /// @param ratio     The ratio of the space
+        /// @param spaceName An identifier to access to the space later
+        ///
+        /// Usage example:
+        /// @code
+        /// layout->insertSpace(2, "some space identifier");                     // Insert a space before the second element
+        /// tgui::Button::Ptr spaceButton = layout->get("some space identifier");// Get the space widget
+        /// spaceButton->show();                                                 // Make the space visible
+        /// spaceButton->getRenderer()->setNormalImage("spaceTexture.png");      // And change its texture
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void insertSpace(unsigned int position, float ratio, const sf::String& spaceName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +231,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the size of a widget to a constant value.
+        /// Setting a fixed size cancel the effect of the ratio.
+        /// If you want to get a variable size again for a widget, set the fixed size to 0.
+        ///
+        /// @param widget Pointer to the widget
+        /// @param size   New fixed size of the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFixedSize(const Widget::Ptr& widget, float size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the size of a widget to a constant value.
+        /// Setting a fixed size cancel the effect of the ratio.
+        /// If you want to get a variable size again for a widget, set the fixed size to 0.
+        ///
+        /// @param position Position in the layout of the widget
+        /// @param size     New fixed size of the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFixedSize(unsigned int position, float ratio);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes all widgets that were added to the container.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,10 +284,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // @internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getIndex(const Widget::Ptr& widget);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         std::vector<tgui::Widget::Ptr> m_layoutWidgets;///< The widgets, stored in the same order as displayed.
         std::vector<float> m_widgetsRatio;             ///< The ratio of each widget.
+        std::vector<float> m_widgetsfixedSizes;        ///< The fixed size for each widget. 0.f means a variable size.
+    
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
