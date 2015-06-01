@@ -52,6 +52,8 @@
 #include <TGUI/Canvas.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Panel.hpp>
+#include <TGUI/HorizontalLayout.hpp>
+#include <TGUI/VerticalLayout.hpp>
 #include <TGUI/ChildWindow.hpp>
 #include <TGUI/MessageBox.hpp>
 #include <TGUI/Grid.hpp>
