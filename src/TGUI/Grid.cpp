@@ -101,7 +101,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::remove(const Widget::Ptr& widget)
+    bool Grid::remove(const Widget::Ptr& widget)
     {
         // Find the widget in the grid
         for (unsigned int row = 0; row < m_gridWidgets.size(); ++row)
@@ -149,7 +149,7 @@ namespace tgui
             }
         }
 
-        Container::remove(widget);
+        return Container::remove(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -125,7 +125,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::remove(const Widget::Ptr& widget)
+    bool Container::remove(const Widget::Ptr& widget)
     {
         // Loop through every widget
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
@@ -147,9 +147,11 @@ namespace tgui
                 // Also emove the name it from the list
                 m_objName.erase(m_objName.begin() + i);
 
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

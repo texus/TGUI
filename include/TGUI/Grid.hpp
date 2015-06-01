@@ -144,16 +144,8 @@ namespace tgui
         ///
         /// @see remove(sf::String)
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(grid, "picName");
-        /// tgui::Picture::Ptr pic2(grid, "picName2");
-        /// grid.remove(pic);
-        /// grid.remove(grid.get("picName2"));
-        /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(const Widget::Ptr& widget) override;
+        virtual bool remove(const Widget::Ptr& widget) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
