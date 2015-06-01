@@ -8,18 +8,6 @@ HorizontalLayout::HorizontalLayout()
 	m_callback.widgetType = "HorizontalLayout";
 }
 
-HorizontalLayout::HorizontalLayout(const HorizontalLayout& layoutToCopy) :
-	BoxLayout{layoutToCopy}
-{
-}
-
-HorizontalLayout& HorizontalLayout::operator=(const HorizontalLayout& right)
-{
-	if (this != &right)
-		BoxLayout::operator=(right);
-	return *this;
-}
-
 HorizontalLayout::Ptr HorizontalLayout::create()
 {
 	return std::make_shared<HorizontalLayout>();

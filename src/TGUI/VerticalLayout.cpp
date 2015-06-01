@@ -8,18 +8,6 @@ VerticalLayout::VerticalLayout()
 	m_callback.widgetType = "VerticalLayout";
 }
 
-VerticalLayout::VerticalLayout(const VerticalLayout& layoutToCopy) :
-	BoxLayout{layoutToCopy}
-{
-}
-
-VerticalLayout& VerticalLayout::operator=(const VerticalLayout& right)
-{
-	if (this != &right)
-		BoxLayout::operator=(right);
-	return *this;
-}
-
 VerticalLayout::Ptr VerticalLayout::create()
 {
 	return std::make_shared<VerticalLayout>();

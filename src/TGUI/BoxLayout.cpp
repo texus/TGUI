@@ -3,31 +3,6 @@
 
 namespace tgui
 {
-	BoxLayout::BoxLayout()
-	{}
-
-	BoxLayout::BoxLayout(const BoxLayout& layoutToCopy) :
-		Container{layoutToCopy}
-	{
-		removeAllWidgets();
-		for (unsigned int i = 0; i < layoutToCopy.m_layoutWidgets.size(); ++i)
-			add(layoutToCopy.m_layoutWidgets[i]->clone());
-	}
-
-	BoxLayout& BoxLayout::operator= (const BoxLayout& right)
-
-	{
-		// Make sure it is not the same widget
-		if (this != &right)
-		{
-			Container::operator=(right);
-			removeAllWidgets();
-			for (unsigned int i = 0; i < right.m_layoutWidgets.size(); ++i)
-				add(right.m_layoutWidgets[i]->clone());
-		}
-		return *this;
-	}
-
 	void BoxLayout::add(const tgui::Widget::Ptr& widget, const sf::String& widgetName)
 	{
 		insert(m_layoutWidgets.size(), widget, widgetName);
