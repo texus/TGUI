@@ -23,25 +23,20 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_BOXLAYOUT_HPP
-#define TGUI_BOXLAYOUT_HPP
+#ifndef TGUI_BOX_LAYOUT_HPP
+#define TGUI_BOX_LAYOUT_HPP
 
-#include <TGUI/Container.hpp>
+#include <TGUI/Panel.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Abstract class for layout container.
     ///
-    /// Signals:
-    ///     - Inherited signals from Container
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API BoxLayout : public Container
+    class TGUI_API BoxLayout : public Panel
     {
     public:
 
@@ -50,79 +45,62 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Default constructor
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BoxLayout();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Insert a widget to the layout.
+        ///
+        /// @param widget      Pointer to the widget you would like to add
+        /// @param index       Index of the widget in the container
+        /// @param widgetName  An identifier to access to the widget later
+        ///
+        /// The widget will have ratio 1.
+        ///
+        /// If the index is too high, the widget will simply be added at the end of the list.
+        ///
+        /// @return False when the index was too high
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool insert(unsigned int index, const tgui::Widget::Ptr& widget, const sf::String& widgetName = "");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a widget at the end of the layout.
         ///
         /// @param widget      Pointer to the widget you would like to add
         /// @param widgetName  An identifier to access to the widget later
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic = tgui::Picture::create();// Create a picture
-        /// layout->add(pic);                                // Add the picture to the layout
-        /// layout->remove(pic);                             // Remove the picture from the container
-        /// @endcode
+        /// The widget will have ratio 1.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void add(const tgui::Widget::Ptr& widget, const sf::String& widgetName = "") override;
+        void add(const tgui::Widget::Ptr& widget, const sf::String& widgetName = "") override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Insert a widget to the layout. The widget is inserted before position.
+        /// @brief Adds a space at the end of the layout and immediately set its ratio.
         ///
-        /// @param widget      Pointer to the widget you would like to add
-        /// @param position    Position of the widget in the container
-        /// @param widgetName  An identifier to access to the widget later
-        ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic = tgui::Picture::create();// Create a picture
-        /// layout->insert(pic, 2);                          // Add the picture after the second element in the layout
-        /// layout->remove(pic);                             // Remove the picture from the container
-        /// @endcode
+        /// @param ratio  Ratio for the space
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void insert(unsigned int position, const tgui::Widget::Ptr& widget, const sf::String& widgetName = "");
+        void addSpace(float ratio = 1);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a space at the end of the layout.
-        /// Spaces are just hidden and disabled tgui::Button,
-        /// so the widget of the space can be retrieved by get(spaceName) after the space is added.
-        /// This allow to modify the space, for making e.g. a separation line with a custom texture.
+        /// @brief Insert a space to the layout and immediately set its ratio.
         ///
-        /// @param spaceName An identifier to access to the space later.
+        /// @param index  Index of the space in the container
+        /// @param ratio  Ratio for the space
         ///
-        /// Usage example:
-        /// @code
-        /// layout->addSpace("some space identifier");                           // Add the space at the end of the layout
-        /// tgui::Button::Ptr spaceButton = layout->get("some space identifier");// Get the space widget
-        /// spaceButton->show();                                                 // Make the space visible
-        /// spaceButton->getRenderer()->setNormalImage("spaceTexture.png");      // And change its texture
-        /// @endcode
+        /// If the index is too high, the space will simply be added at the end of the list.
+        ///
+        /// @return False when the index was too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void addSpace(const sf::String& spaceName = "");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Insert a space to the layout. The space is inserted before position.
-        /// Spaces are just hidden and disabled tgui::Button,
-        /// so the widget of the space can be retrieved by get(spaceName) after the space is added.
-        /// This allow to modify the space, for making e.g. a separation line with a custom texture.
-        ///
-        /// @param position  Position of the space in the container
-        /// @param spaceName An identifier to access to the space later
-        ///
-        /// Usage example:
-        /// @code
-        /// layout->insertSpace(2, "some space identifier");                     // Insert a space before the second element
-        /// tgui::Button::Ptr spaceButton = layout->get("some space identifier");// Get the space widget
-        /// spaceButton->show();                                                 // Make the space visible
-        /// spaceButton->getRenderer()->setNormalImage("spaceTexture.png");      // And change its texture
-        /// @endcode
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void insertSpace(unsigned int position, const sf::String& spaceName = "");
+        bool insertSpace(unsigned int index, float ratio = 1);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,88 +108,77 @@ namespace tgui
         ///
         /// @param widget  Pointer to the widget to remove
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(layout, "picName");
-        /// tgui::Picture::Ptr pic2(layout, "picName2");
-        /// layout.remove(pic);
-        /// layout.remove(layout.get("picName2"));
-        /// @endcode
+        /// @return True when widget is removed, false when widget was not found
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void remove(const tgui::Widget::Ptr& widget);
+        bool remove(const tgui::Widget::Ptr& widget) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes a single widget that was added to the container.
         ///
-        /// @param position  Position in the layout of the widget to remove
+        /// @param index  Index in the layout of the widget to remove
+        ///
+        /// @return False when the index was too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void remove(unsigned int position);
-
+        bool remove(unsigned int index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the widget at the given position in the layout.
+        /// @brief Returns the widget at the given index in the layout.
         ///
-        /// @param position  Position in the layout of the widget
+        /// @param index  Index of the widget in the layout
+        ///
+        /// @return Widget of given index, or nullptr when index was too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr get(unsigned int position);
+        Widget::Ptr get(unsigned int index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Change the ratio of a widget.
-        /// The ratio is the size that will have a widget relatively to others.
-        /// By default, the ratio is equal to 1.
+        ///
+        /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
         /// So setting a ratio to 2 means that the widget will be 2 times larger than others.
         ///
         /// @param widget  Pointer to the widget
         /// @param ratio   New ratio to set to the widget
         ///
+        /// @return True when the ratio was changed, false when the widget was not found
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setRatio(const Widget::Ptr& widget, float ratio);
+        bool setRatio(const Widget::Ptr& widget, float ratio);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Change the ratio of a widget.
-        /// The ratio is the size that will have a widget relatively to others.
-        /// By default, the ratio is equal to 1.
+        /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
         /// So setting a ratio to 2 means that the widget will be 2 times larger than others.
         ///
-        /// @param position  Position in the layout of the widget
-        /// @param ratio     New ratio to set to the widget
+        /// @param index  Index of the widget in the layout
+        /// @param ratio  New ratio to set to the widget
+        ///
+        /// If the index was too high then no change will be made
+        ///
+        /// @return False when the index was too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setRatio(unsigned int position, float ratio);
+        bool setRatio(unsigned int index, float ratio);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes all widgets that were added to the container.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeAllWidgets();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnWidget(float x, float y) override;
+        void removeAllWidgets() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the widget on the render target.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Reposition all the widgets.
-        // This function must be override.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void updatePosition() = 0;
 
@@ -219,8 +186,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::vector<tgui::Widget::Ptr> m_layoutWidgets;///< The widgets, stored in the same order as displayed.
-        std::vector<float> m_widgetsRatio;             ///< The ratio of each widget.
+        std::vector<tgui::Widget::Ptr> m_layoutWidgets; ///< The widgets, stored in the same order as displayed.
+        std::vector<float> m_widgetsRatio;              ///< The ratio of each widget.
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
