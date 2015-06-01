@@ -14,6 +14,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void BoxLayout::setSize(const Layout& size)
+    {
+        Panel::setSize(size);
+        updateWidgetPositions();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool BoxLayout::insert(unsigned int index, const tgui::Widget::Ptr& widget, const sf::String& widgetName)
     {
         Container::add(widget, widgetName);
@@ -23,7 +31,7 @@ namespace tgui
             m_layoutWidgets.emplace_back(widget);
             m_widgetsRatio.emplace_back(1);
             m_widgetsfixedSizes.emplace_back(0);
-            updatePosition();
+            updateWidgetPositions();
             return false;
         }
         else
@@ -31,7 +39,7 @@ namespace tgui
             m_layoutWidgets.insert(m_layoutWidgets.begin() + index, widget);
             m_widgetsRatio.insert(m_widgetsRatio.begin() + index, 1);
             m_widgetsfixedSizes.insert(m_widgetsfixedSizes.begin() + index, 0);
-            updatePosition();
+            updateWidgetPositions();
             return true;
         }
     }
@@ -81,7 +89,7 @@ namespace tgui
             return false;
 
         m_widgetsRatio[index] = ratio;
-        updatePosition();
+        updateWidgetPositions();
         return true;
     }
 
@@ -109,7 +117,7 @@ namespace tgui
         m_layoutWidgets.erase(m_layoutWidgets.begin() + index);
         m_widgetsRatio.erase(m_widgetsRatio.begin() + index);
         m_widgetsfixedSizes.erase(m_widgetsfixedSizes.begin() + index);
-        updatePosition();
+        updateWidgetPositions();
         return true;
     }
 
@@ -134,7 +142,7 @@ namespace tgui
             return false;
 
         m_widgetsfixedSizes[index] = size;
-        updatePosition();
+        updateWidgetPositions();
         return true;
     }
 

@@ -31,7 +31,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void VerticalLayout::updatePosition()
+    void VerticalLayout::updateWidgetPositions()
     {
         float actualPosition = 0;
         const float sumRatio = std::accumulate(m_widgetsRatio.begin(), m_widgetsRatio.end(), 0);
