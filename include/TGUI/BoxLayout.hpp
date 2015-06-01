@@ -204,7 +204,7 @@ namespace tgui
         /// @return False when the index was too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setFixedSize(unsigned int index, float ratio);
+        bool setFixedSize(unsigned int index, float size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,9 +226,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::vector<tgui::Widget::Ptr> m_layoutWidgets; ///< The widgets, stored in the same order as displayed.
-        std::vector<float> m_widgetsRatio;              ///< The ratio of each widget.
-        std::vector<float> m_widgetsFixedSizes;         ///< The fixed size for each widget. 0 means a variable size.
+        // The widgets, stored in the same order as displayed.
+        std::vector<tgui::Widget::Ptr> m_layoutWidgets; 
+
+        // The ratio of each widget.
+        std::vector<float> m_widgetsRatio;              
+
+        // The fixed size for each widget. 0 means a variable size.
+        std::vector<float> m_widgetsFixedSizes;         
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
