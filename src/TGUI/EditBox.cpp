@@ -444,7 +444,7 @@ namespace tgui
         // Find the caret position
         float positionX = x - getPosition().x - getRenderer()->getScaledPadding().left;
 
-        unsigned int caretPosition = findCaretPosition(positionX);
+        std::size_t caretPosition = findCaretPosition(positionX);
 
         // When clicking on the left of the first character, move the caret to the left
         if ((positionX < 0) && (caretPosition > 0))

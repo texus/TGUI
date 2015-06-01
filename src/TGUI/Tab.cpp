@@ -290,7 +290,7 @@ namespace tgui
             m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_textColor);
 
         // Select the tab
-        m_selectedTab = index;
+        m_selectedTab = static_cast<int>(index);
         m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_selectedTextColor);
 
         // Send the callback

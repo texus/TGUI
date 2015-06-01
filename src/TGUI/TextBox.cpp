@@ -648,12 +648,12 @@ namespace tgui
             {
                 if (m_selEnd.y <= m_topLine)
                 {
-                    m_scroll->setValue(m_selEnd.y * m_lineHeight);
+                    m_scroll->setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
                     updatePosition();
                 }
                 else if (m_selEnd.y + 1 >= m_topLine + m_visibleLines)
                 {
-                    m_scroll->setValue(((m_selEnd.y + 1) * m_lineHeight) - m_scroll->getLowValue());
+                    m_scroll->setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight) - m_scroll->getLowValue()));
                     updatePosition();
                 }
             }
@@ -1337,7 +1337,7 @@ namespace tgui
         {
             bool invisibleScrollbar = (m_scroll->getMaximum() <= m_scroll->getLowValue());
 
-            m_scroll->setMaximum(m_lines.size() * m_lineHeight);
+            m_scroll->setMaximum(static_cast<unsigned int>(m_lines.size() * m_lineHeight));
 
             // We may have to recalculate what we just calculated if the scrollbar just appeared or disappeared
             if (m_scroll->getAutoHide())
@@ -1452,9 +1452,9 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             if (m_selEnd.y <= m_topLine)
-                m_scroll->setValue(m_selEnd.y * m_lineHeight);
+                m_scroll->setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
             else if (m_selEnd.y + 1 >= m_topLine + m_visibleLines)
-                m_scroll->setValue(((m_selEnd.y + 1) * m_lineHeight) - m_scroll->getLowValue());
+                m_scroll->setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight) - m_scroll->getLowValue()));
         }
 
         updatePosition();

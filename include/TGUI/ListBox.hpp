@@ -240,7 +240,7 @@ namespace tgui
         /// @see setSelectedItemById
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setSelectedItemByIndex(unsigned int index);
+        bool setSelectedItemByIndex(std::size_t index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,7 +295,7 @@ namespace tgui
         /// @see removeItemById
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeItemByIndex(unsigned int index);
+        bool removeItemByIndex(std::size_t index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,7 +425,7 @@ namespace tgui
         /// If no scrollbar was loaded then there is always a limitation because there will be a limited space for the items.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMaximumItems(unsigned int maximumItems = 0);
+        void setMaximumItems(std::size_t maximumItems = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -435,7 +435,7 @@ namespace tgui
         ///         If the function returns 0 then there is no limit.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getMaximumItems() const
+        std::size_t getMaximumItems() const
         {
             return m_maxItems;
         }
@@ -544,7 +544,7 @@ namespace tgui
         unsigned int m_textSize = 19;
 
         // This will store the maximum number of items in the list box (zero by default, meaning that there is no limit)
-        unsigned int m_maxItems = 0;
+        std::size_t m_maxItems = 0;
 
         // When there are too many items a scrollbar will be shown
         Scrollbar::Ptr m_scroll = Scrollbar::create();

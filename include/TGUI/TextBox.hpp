@@ -232,7 +232,7 @@ namespace tgui
         /// There is no character limit by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getMaximumCharacters() const
+        std::size_t getMaximumCharacters() const
         {
             return m_maxChars;
         }

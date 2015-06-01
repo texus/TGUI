@@ -211,7 +211,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setItemsToDisplay(unsigned int nrOfItemsInList)
+    void ComboBox::setItemsToDisplay(std::size_t nrOfItemsInList)
     {
         m_nrOfItemsToDisplay = nrOfItemsInList;
 
@@ -336,14 +336,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setMaximumItems(unsigned int maximumItems)
+    void ComboBox::setMaximumItems(std::size_t maximumItems)
     {
         m_listBox->setMaximumItems(maximumItems);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getMaximumItems() const
+    std::size_t ComboBox::getMaximumItems() const
     {
         return m_listBox->getMaximumItems();
     }
@@ -397,7 +397,7 @@ namespace tgui
                 // If the selected item is not visible then change the value of the scrollbar
                 if (m_nrOfItemsToDisplay > 0)
                 {
-                    if (static_cast<unsigned int>(m_listBox->m_selectedItem + 1) > m_nrOfItemsToDisplay)
+                    if (static_cast<std::size_t>(m_listBox->m_selectedItem + 1) > m_nrOfItemsToDisplay)
                         m_listBox->m_scroll->setValue(static_cast<unsigned int>((m_listBox->m_selectedItem + 1 - m_nrOfItemsToDisplay) * m_listBox->getItemHeight()));
                     else
                         m_listBox->m_scroll->setValue(0);
@@ -428,14 +428,14 @@ namespace tgui
             if (delta < 0)
             {
                 // select the next item
-                if (static_cast<unsigned int>(m_listBox->m_selectedItem + 1) < m_listBox->m_items.size())
-                    m_listBox->setSelectedItem(static_cast<unsigned int>(m_listBox->m_selectedItem+1));
+                if (static_cast<std::size_t>(m_listBox->m_selectedItem + 1) < m_listBox->m_items.size())
+                    m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->m_selectedItem+1));
             }
             else // You are scrolling up
             {
                 // select the previous item
                 if (m_listBox->m_selectedItem > 0)
-                    m_listBox->setSelectedItem(static_cast<unsigned int>(m_listBox->m_selectedItem-1));
+                    m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->m_selectedItem-1));
             }
         }
     }

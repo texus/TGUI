@@ -170,7 +170,7 @@ namespace tgui
         /// When set to zero then all items are shown (then there will never be a scrollbar).
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setItemsToDisplay(unsigned int nrOfItemsInListToDisplay);
+        void setItemsToDisplay(std::size_t nrOfItemsInListToDisplay);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +184,7 @@ namespace tgui
         /// When set to zero then all items are shown (then there will never be a scrollbar).
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getItemsToDisplay() const
+        std::size_t getItemsToDisplay() const
         {
             return m_nrOfItemsToDisplay;
         }
@@ -374,7 +374,7 @@ namespace tgui
         /// @return Number of items inside the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getItemCount()
+        std::size_t getItemCount()
         {
             return m_listBox->getItemCount();
         }
@@ -398,7 +398,7 @@ namespace tgui
         /// If no scrollbar was loaded then there is always a limitation because there will be a limited space for the items.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMaximumItems(unsigned int maximumItems = 0);
+        void setMaximumItems(std::size_t maximumItems = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -408,7 +408,7 @@ namespace tgui
         ///         If the function returns 0 then there is no limit.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getMaximumItems() const;
+        std::size_t getMaximumItems() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -509,7 +509,7 @@ namespace tgui
 
         // The number of items to display. If there is a scrollbar then you can scroll to see the other.
         // If there is no scrollbar then this will be the maximum amount of items.
-        unsigned int m_nrOfItemsToDisplay = 0;
+        std::size_t m_nrOfItemsToDisplay = 0;
 
         // Internally a list box is used to store all items
         ListBox::Ptr m_listBox = ListBox::create();
