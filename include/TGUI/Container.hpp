@@ -146,13 +146,6 @@ namespace tgui
         /// @param widgetPtr   Pointer to the widget you would like to add
         /// @param widgetName  If you want to access the widget later then you must do this with this name
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container); // Create a picture and add it to the container
-        /// container.remove(pic);             // Remove the picture from the container
-        /// container.add(pic);                // Add the picture to the container again
-        /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void add(const Widget::Ptr& widgetPtr, const sf::String& widgetName = "");
 
@@ -166,12 +159,6 @@ namespace tgui
         /// @return Pointer to the earlier created widget
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed.
-        ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2 = container.get("picName");
-        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr get(const sf::String& widgetName, bool recursive = false) const;
@@ -188,12 +175,6 @@ namespace tgui
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed.
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2 = container.get<tgui::Picture>("picName");
-        /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class T>
         typename T::Ptr get(const sf::String& widgetName, bool recursive = false) const
@@ -206,14 +187,6 @@ namespace tgui
         /// @brief Removes a single widget that was added to the container.
         ///
         /// @param widget  Pointer to the widget to remove
-        ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2(container, "picName2");
-        /// container.remove(pic);
-        /// container.remove(container.get("picName2"));
-        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void remove(const Widget::Ptr& widget);
