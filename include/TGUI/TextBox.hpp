@@ -220,7 +220,7 @@ namespace tgui
         /// This character limit is disabled by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMaximumCharacters(unsigned int maxChars = 0);
+        void setMaximumCharacters(std::size_t maxChars = 0);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -338,13 +338,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function will search after which character the caret should be placed. It will not change the caret position.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2u findCaretPosition(sf::Vector2f position);
+        sf::Vector2<std::size_t> findCaretPosition(sf::Vector2f position);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Converts the two dimensional caret positions into a one dimensional position in the text.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::pair<unsigned int, unsigned int> findTextCaretPosition();
+        std::pair<std::size_t, std::size_t> findTextCaretPosition();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -413,15 +413,15 @@ namespace tgui
         std::vector<sf::String> m_lines = std::vector<sf::String>{""}; // Did not compile in VS2013 with just braces
 
         // The maximum characters (0 by default, which means no limit)
-        unsigned int m_maxChars = 0;
+        std::size_t m_maxChars = 0;
 
         // What is known about the visible lines?
-        unsigned int m_topLine = 1;
-        unsigned int m_visibleLines = 1;
+        std::size_t m_topLine = 1;
+        std::size_t m_visibleLines = 1;
 
         // Information about the selection
-        sf::Vector2u m_selStart;
-        sf::Vector2u m_selEnd;
+        sf::Vector2<std::size_t> m_selStart;
+        sf::Vector2<std::size_t> m_selEnd;
 
         // Information about the caret
         sf::Vector2f m_caretPosition;

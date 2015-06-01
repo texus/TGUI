@@ -203,7 +203,7 @@ namespace tgui
         if (m_passwordChar != '\0')
         {
             // Loop every character and change it
-            for (unsigned int i = 0; i < m_text.getSize(); ++i)
+            for (std::size_t i = 0; i < m_text.getSize(); ++i)
                 m_displayedText[i] = m_passwordChar;
         }
 
@@ -343,7 +343,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setCaretPosition(unsigned int charactersBeforeCaret)
+    void EditBox::setCaretPosition(std::size_t charactersBeforeCaret)
     {
         // The caret position has to stay inside the string
         if (charactersBeforeCaret > m_text.getSize())
@@ -404,7 +404,7 @@ namespace tgui
             if ((m_text[0] == '+') || (m_text[0] == '-'))
                 newText += m_text[0];
 
-            for (unsigned int i = 0; i < m_text.getSize(); ++i)
+            for (std::size_t i = 0; i < m_text.getSize(); ++i)
             {
                 if (!commaFound)
                 {
@@ -774,7 +774,7 @@ namespace tgui
                     {
                         deleteSelectedCharacters();
 
-                        unsigned int oldCaretPos = m_selEnd;
+                        std::size_t oldCaretPos = m_selEnd;
 
                         if (m_text.getSize() > m_selEnd)
                             setText(m_text.toWideString().substr(0, m_selEnd) + TGUI_Clipboard.get() + m_text.toWideString().substr(m_selEnd, m_text.getSize() - m_selEnd));
@@ -924,14 +924,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int EditBox::findCaretPosition(float posX)
+    std::size_t EditBox::findCaretPosition(float posX)
     {
         // This code will crash when the editbox is empty. We need to avoid this.
         if (m_displayedText.isEmpty())
             return 0;
 
         // Find out what the first visible character is
-        unsigned int firstVisibleChar;
+        std::size_t firstVisibleChar;
         if (m_textCropPosition)
         {
             // Start searching near the caret to quickly find the character even in a very long string
@@ -948,7 +948,7 @@ namespace tgui
         float textWidthWithoutLastChar;
         float fullTextWidth;
         float halfOfLastCharWidth;
-        unsigned int lastVisibleChar;
+        std::size_t lastVisibleChar;
         float width = getVisibleEditBoxWidth();
 
         // Find out how many pixels the text is moved
@@ -989,7 +989,7 @@ namespace tgui
         fullTextWidth = m_textFull.findCharacterPos(firstVisibleChar).x;
 
         // for all the other characters, check where you have clicked.
-        for (unsigned int i = firstVisibleChar; i < lastVisibleChar; ++i)
+        for (std::size_t i = firstVisibleChar; i < lastVisibleChar; ++i)
         {
             // Add the next character to the temporary string
             tempString += m_displayedText[i];

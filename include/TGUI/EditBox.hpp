@@ -333,7 +333,7 @@ namespace tgui
         /// Normally you will not need this function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCaretPosition(unsigned int charactersBeforeCaret);
+        void setCaretPosition(std::size_t charactersBeforeCaret);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -412,7 +412,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function will search after which character the caret should be placed. It will not change the caret position.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int findCaretPosition(float posX);
+        std::size_t findCaretPosition(float posX);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,9 +477,9 @@ namespace tgui
         Alignment::Alignments m_textAlignment = Alignment::Left;
 
         // The selection
-        unsigned int  m_selChars = 0;
-        unsigned int  m_selStart = 0;
-        unsigned int  m_selEnd = 0;
+        std::size_t   m_selChars = 0;
+        std::size_t   m_selStart = 0;
+        std::size_t   m_selEnd = 0;
 
         // The password character
         char          m_passwordChar = '\0';

@@ -42,10 +42,10 @@ namespace tgui
 
         float currentRatio = 0;
         float currentOffset = 0;
-        const float sumFixedSize = std::accumulate(m_widgetsFixedSizes.begin(), m_widgetsFixedSizes.end(), 0);
+        const float sumFixedSize = std::accumulate(m_widgetsFixedSizes.begin(), m_widgetsFixedSizes.end(), 0.f);
         for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
         {
-            m_layoutWidgets[i]->setPosition((m_size.x - sumFixedSize) * currentRatio + currentOffset, 0);
+            m_layoutWidgets[i]->setPosition((m_size.x - sumFixedSize) * currentRatio + currentOffset, 0.f);
             if (m_widgetsFixedSizes[i])
             {
                 m_layoutWidgets[i]->setSize(m_widgetsFixedSizes[i], m_size.y);

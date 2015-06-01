@@ -147,7 +147,7 @@ namespace tgui
                     if (--(dataIt->users) == 0)
                     {
                         // Remove the texture from the list, or even the whole image if it isn't used anywhere else
-                        int usage = std::count_if(imageIt->second.data.begin(), imageIt->second.data.end(), [dataIt](TextureData& data){ return data.image == dataIt->image; });
+                        auto usage = std::count_if(imageIt->second.data.begin(), imageIt->second.data.end(), [dataIt](TextureData& data){ return data.image == dataIt->image; });
                         if (usage == 1)
                             m_imageMap.erase(imageIt);
                         else

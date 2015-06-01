@@ -183,9 +183,9 @@ namespace tgui
         m_listBox->setItemHeight(static_cast<unsigned int>(height));
 
         if (m_nrOfItemsToDisplay > 0)
-            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * (std::min(m_nrOfItemsToDisplay, std::max(m_listBox->getItemCount(), 1u)))) + listBoxPadding.top + listBoxPadding.bottom});
+            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * (std::min<std::size_t>(m_nrOfItemsToDisplay, std::max<std::size_t>(m_listBox->getItemCount(), 1)))) + listBoxPadding.top + listBoxPadding.bottom});
         else
-            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * std::max(m_listBox->getItemCount(), 1u)) + listBoxPadding.top + listBoxPadding.bottom});
+            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + listBoxPadding.top + listBoxPadding.bottom});
 
         if (getRenderer()->m_textureArrowUpNormal.getData() && getRenderer()->m_textureArrowDownNormal.getData())
         {
@@ -273,7 +273,7 @@ namespace tgui
         if ((m_nrOfItemsToDisplay == 0) || (m_listBox->getItemCount() < m_nrOfItemsToDisplay))
         {
             Padding padding = m_listBox->getRenderer()->getScaledPadding();
-            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->getItemHeight() * std::max(m_listBox->getItemCount(), 1u)) + padding.top + padding.bottom});
+            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + padding.top + padding.bottom});
         }
 
         return ret;
@@ -291,7 +291,7 @@ namespace tgui
         if ((m_nrOfItemsToDisplay == 0) || (m_listBox->getItemCount() < m_nrOfItemsToDisplay))
         {
             Padding padding = m_listBox->getRenderer()->getScaledPadding();
-            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->getItemHeight() * std::max(m_listBox->getItemCount(), 1u)) + padding.top + padding.bottom});
+            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + padding.top + padding.bottom});
         }
 
         return ret;

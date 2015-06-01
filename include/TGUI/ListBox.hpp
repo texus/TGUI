@@ -376,7 +376,7 @@ namespace tgui
         /// @return Number of items inside the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getItemCount()
+        std::size_t getItemCount()
         {
             return m_items.size();
         }

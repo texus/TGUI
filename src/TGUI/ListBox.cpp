@@ -234,7 +234,7 @@ namespace tgui
             }
             else // There is a scrollbar so tell it that another item was added
             {
-                m_scroll->setMaximum((m_items.size() + 1) * m_itemHeight);
+                m_scroll->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
             }
 
             // Create the new item
@@ -370,7 +370,7 @@ namespace tgui
         // If there is a scrollbar then tell it that an item was removed
         if (m_scroll != nullptr)
         {
-            m_scroll->setMaximum(m_items.size() * m_itemHeight);
+            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
             updatePosition();
         }
 
@@ -520,7 +520,7 @@ namespace tgui
         else // There is a scrollbar
         {
             // Set the maximum of the scrollbar
-            m_scroll->setMaximum(m_items.size() * m_itemHeight);
+            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         }
 
         updatePosition();
@@ -543,7 +543,7 @@ namespace tgui
             // If there is a scrollbar then tell it that the number of items was changed
             if (m_scroll != nullptr)
             {
-                m_scroll->setMaximum(m_items.size() * m_itemHeight);
+                m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
                 updatePosition();
             }
         }
@@ -944,8 +944,8 @@ namespace tgui
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Find out which items are visible
-        unsigned int firstItem = 0;
-        unsigned int lastItem = m_items.size();
+        std::size_t firstItem = 0;
+        std::size_t lastItem = m_items.size();
         if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
         {
             firstItem = m_scroll->getValue() / m_itemHeight;
@@ -983,7 +983,7 @@ namespace tgui
         }
 
         // Draw the items
-        for (unsigned int i = firstItem; i < lastItem; ++i)
+        for (std::size_t i = firstItem; i < lastItem; ++i)
             target.draw(m_items[i], states);
 
         // Reset the old clipping area
@@ -1126,7 +1126,7 @@ namespace tgui
 
         m_listBox->m_scroll->setSize({m_listBox->m_scroll->getSize().x, m_listBox->getSize().y});
         m_listBox->m_scroll->setLowValue(static_cast<unsigned int>(m_listBox->getSize().y));
-        m_listBox->m_scroll->setMaximum(m_listBox->m_items.size() * m_listBox->m_itemHeight);
+        m_listBox->m_scroll->setMaximum(static_cast<unsigned int>(m_listBox->m_items.size() * m_listBox->m_itemHeight));
         m_listBox->m_scroll->setPosition(m_listBox->getPosition().x + m_listBox->getSize().x - m_listBox->m_scroll->getSize().x, m_listBox->getPosition().y);
 
         m_listBox->updatePosition();

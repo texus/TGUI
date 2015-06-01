@@ -22,23 +22,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BoxLayout::insert(unsigned int index, const tgui::Widget::Ptr& widget, const sf::String& widgetName)
+    bool BoxLayout::insert(std::size_t index, const tgui::Widget::Ptr& widget, const sf::String& widgetName)
     {
         Container::add(widget, widgetName);
 
         if (index > m_layoutWidgets.size())
         {
             m_layoutWidgets.emplace_back(widget);
-            m_widgetsRatio.emplace_back(1);
-            m_widgetsFixedSizes.emplace_back(0);
+            m_widgetsRatio.emplace_back(1.f);
+            m_widgetsFixedSizes.emplace_back(0.f);
             updateWidgetPositions();
             return false;
         }
         else
         {
             m_layoutWidgets.insert(m_layoutWidgets.begin() + index, widget);
-            m_widgetsRatio.insert(m_widgetsRatio.begin() + index, 1);
-            m_widgetsFixedSizes.insert(m_widgetsFixedSizes.begin() + index, 0);
+            m_widgetsRatio.insert(m_widgetsRatio.begin() + index, 1.f);
+            m_widgetsFixedSizes.insert(m_widgetsFixedSizes.begin() + index, 0.f);
             updateWidgetPositions();
             return true;
         }
@@ -61,7 +61,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BoxLayout::insertSpace(unsigned int index, float ratio)
+    bool BoxLayout::insertSpace(std::size_t index, float ratio)
     {
         bool success = insert(index, tgui::ClickableWidget::create(), "");
         setRatio(index, ratio);
@@ -83,7 +83,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BoxLayout::setRatio(unsigned int index, float ratio)
+    bool BoxLayout::setRatio(std::size_t index, float ratio)
     {
         if (index >= m_layoutWidgets.size())
             return false;
@@ -108,7 +108,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BoxLayout::remove(unsigned int index)
+    bool BoxLayout::remove(std::size_t index)
     {
         if (index >= m_layoutWidgets.size())
             return false;
@@ -136,7 +136,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BoxLayout::setFixedSize(unsigned int index, float size)
+    bool BoxLayout::setFixedSize(std::size_t index, float size)
     {
         if (index >= m_layoutWidgets.size())
             return false;
@@ -158,7 +158,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr BoxLayout::get(unsigned int index)
+    Widget::Ptr BoxLayout::get(std::size_t index)
     {
         if (index < m_layoutWidgets.size())
             return m_layoutWidgets[index];

@@ -439,7 +439,7 @@ namespace tgui
         std::vector<sf::String>  m_objName;
 
         // The id of the focused widget
-        unsigned int m_focusedWidget = 0;
+        std::size_t m_focusedWidget = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
