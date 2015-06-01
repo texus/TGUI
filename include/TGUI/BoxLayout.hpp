@@ -168,6 +168,36 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the size of a widget to a constant value.
+        ///
+        /// Setting a fixed size cancel the effect of the ratio.
+        /// If you want to get a variable size again for a widget, set the fixed size to 0.
+        ///
+        /// @param widget Pointer to the widget
+        /// @param size   New fixed size of the widget
+        ///
+        /// @return False when the widget was not found
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setFixedSize(const Widget::Ptr& widget, float size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set the size of a widget to a constant value.
+        ///
+        /// Setting a fixed size cancel the effect of the ratio.
+        /// If you want to get a variable size again for a widget, set the fixed size to 0.
+        ///
+        /// @param index  Index of the widget in the layout
+        /// @param size   New fixed size of the widget
+        ///
+        /// @return False when the index was too high
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setFixedSize(unsigned int index, float ratio);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes all widgets that were added to the container.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +218,7 @@ namespace tgui
 
         std::vector<tgui::Widget::Ptr> m_layoutWidgets; ///< The widgets, stored in the same order as displayed.
         std::vector<float> m_widgetsRatio;              ///< The ratio of each widget.
+        std::vector<float> m_widgetsfixedSizes;         ///< The fixed size for each widget. 0 means a variable size.
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
