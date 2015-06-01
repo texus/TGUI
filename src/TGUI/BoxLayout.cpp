@@ -30,7 +30,7 @@ namespace tgui
         {
             m_layoutWidgets.emplace_back(widget);
             m_widgetsRatio.emplace_back(1);
-            m_widgetsfixedSizes.emplace_back(0);
+            m_widgetsFixedSizes.emplace_back(0);
             updateWidgetPositions();
             return false;
         }
@@ -38,7 +38,7 @@ namespace tgui
         {
             m_layoutWidgets.insert(m_layoutWidgets.begin() + index, widget);
             m_widgetsRatio.insert(m_widgetsRatio.begin() + index, 1);
-            m_widgetsfixedSizes.insert(m_widgetsfixedSizes.begin() + index, 0);
+            m_widgetsFixedSizes.insert(m_widgetsFixedSizes.begin() + index, 0);
             updateWidgetPositions();
             return true;
         }
@@ -116,7 +116,7 @@ namespace tgui
         Container::remove(m_layoutWidgets[index]);
         m_layoutWidgets.erase(m_layoutWidgets.begin() + index);
         m_widgetsRatio.erase(m_widgetsRatio.begin() + index);
-        m_widgetsfixedSizes.erase(m_widgetsfixedSizes.begin() + index);
+        m_widgetsFixedSizes.erase(m_widgetsFixedSizes.begin() + index);
         updateWidgetPositions();
         return true;
     }
@@ -141,7 +141,7 @@ namespace tgui
         if (index >= m_layoutWidgets.size())
             return false;
 
-        m_widgetsfixedSizes[index] = size;
+        m_widgetsFixedSizes[index] = size;
         updateWidgetPositions();
         return true;
     }
@@ -153,7 +153,7 @@ namespace tgui
         Container::removeAllWidgets();
         m_layoutWidgets.clear();
         m_widgetsRatio.clear();
-        m_widgetsfixedSizes.clear();
+        m_widgetsFixedSizes.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

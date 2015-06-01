@@ -33,15 +33,28 @@ namespace tgui
 
     void HorizontalLayout::updateWidgetPositions()
     {
-        float actualPosition = 0;
-        const float sumRatio = std::accumulate(m_widgetsRatio.begin(), m_widgetsRatio.end(), 0);
+        float sumRatio = 0;
+        for (unsigned int i = 0; i < m_widgetsRatio.size(); ++i)
+        {
+            if (m_widgetsFixedSizes[i] == 0)
+                sumRatio += m_widgetsRatio[i];
+        }
+
+        float currentRatio = 0;
+        float currentOffset = 0;
+        const float sumFixedSize = std::accumulate(m_widgetsFixedSizes.begin(), m_widgetsFixedSizes.end(), 0);
         for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
         {
-            if (m_layoutWidgets[i])
+            m_layoutWidgets[i]->setPosition((m_size.x - sumFixedSize) * currentRatio + currentOffset, 0);
+            if (m_widgetsFixedSizes[i])
             {
-                m_layoutWidgets[i]->setSize(m_size.x * m_widgetsRatio[i] / sumRatio, m_size.y);
-                m_layoutWidgets[i]->setPosition(m_size.x * actualPosition, 0);
-                actualPosition += m_widgetsRatio[i] / sumRatio;
+                m_layoutWidgets[i]->setSize(m_widgetsFixedSizes[i], m_size.y);
+                currentOffset += m_widgetsFixedSizes[i];
+            }
+            else
+            {
+                m_layoutWidgets[i]->setSize((m_size.x - sumFixedSize) * m_widgetsRatio[i] / sumRatio, m_size.y);
+                currentRatio += m_widgetsRatio[i] / sumRatio;
             }
         }
     }
