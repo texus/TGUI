@@ -70,31 +70,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BoxLayout::setRatio(const Widget::Ptr& widget, float ratio)
-    {
-        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
-        {
-            if (m_layoutWidgets[i] == widget)
-                return setRatio(i, ratio);
-        }
-
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool BoxLayout::setRatio(std::size_t index, float ratio)
-    {
-        if (index >= m_layoutWidgets.size())
-            return false;
-
-        m_widgetsRatio[index] = ratio;
-        updateWidgetPositions();
-        return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool BoxLayout::remove(const tgui::Widget::Ptr& widget)
     {
         for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
@@ -117,6 +92,41 @@ namespace tgui
         m_layoutWidgets.erase(m_layoutWidgets.begin() + index);
         m_widgetsRatio.erase(m_widgetsRatio.begin() + index);
         m_widgetsFixedSizes.erase(m_widgetsFixedSizes.begin() + index);
+        updateWidgetPositions();
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget::Ptr BoxLayout::get(std::size_t index)
+    {
+        if (index < m_layoutWidgets.size())
+            return m_layoutWidgets[index];
+        else
+            return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool BoxLayout::setRatio(const Widget::Ptr& widget, float ratio)
+    {
+        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
+        {
+            if (m_layoutWidgets[i] == widget)
+                return setRatio(i, ratio);
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool BoxLayout::setRatio(std::size_t index, float ratio)
+    {
+        if (index >= m_layoutWidgets.size())
+            return false;
+
+        m_widgetsRatio[index] = ratio;
         updateWidgetPositions();
         return true;
     }
@@ -158,12 +168,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr BoxLayout::get(std::size_t index)
+    void BoxLayout::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (index < m_layoutWidgets.size())
-            return m_layoutWidgets[index];
-        else
-            return nullptr;
+        // Set the position
+        states.transform.translate(getPosition());
+
+        // Draw the background
+        if (m_backgroundColor != sf::Color::Transparent)
+        {
+            sf::RectangleShape background(getSize());
+            background.setFillColor(m_backgroundColor);
+            target.draw(background, states);
+        }
+
+        // Draw the widgets
+        drawWidgetContainer(&target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
