@@ -202,12 +202,12 @@ namespace tgui
             if (m_verticalScroll)
             {
                 m_thumb.width = getSize().x * 1.6f;
-                m_thumb.height = m_thumb.width / 2.0f;
+                m_thumb.height = m_thumb.width / 3.0f;
             }
             else
             {
                 m_thumb.height = getSize().y * 1.6f;
-                m_thumb.width = m_thumb.height / 2.0f;
+                m_thumb.width = m_thumb.height / 3.0f;
             }
         }
 
@@ -541,8 +541,8 @@ namespace tgui
         }
         else // There are no textures
         {
-            sf::RectangleShape track{m_slider->getSize()};
-            track.setPosition(m_slider->getPosition());
+            sf::RectangleShape track{{m_slider->getSize().x, m_slider->getSize().y/4.f}};
+            track.setPosition(m_slider->getPosition().x, m_slider->getPosition().y + m_slider->getSize().y*3.f/8.f);
 
             if (m_slider->m_mouseHover)
                 track.setFillColor(m_trackColorHover);

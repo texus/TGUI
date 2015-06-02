@@ -188,7 +188,7 @@ namespace tgui
             // Draw the background (borders) if needed
             if (m_padding != Padding{0, 0, 0, 0})
             {
-                sf::RectangleShape background(m_radioButton->getSize());
+                sf::RectangleShape background({m_radioButton->getSize().y, m_radioButton->getSize().y});
                 background.setPosition(m_radioButton->getPosition());
 
                 if (m_radioButton->m_mouseHover)
@@ -199,7 +199,7 @@ namespace tgui
                 target.draw(background, states);
             }
 
-            sf::Vector2f foregroundSize = {m_radioButton->getSize().x - m_padding.left - m_padding.right,
+            sf::Vector2f foregroundSize = {m_radioButton->getSize().y - m_padding.left - m_padding.right,
                                            m_radioButton->getSize().y - m_padding.top - m_padding.bottom};
 
             // Draw the foreground
@@ -219,7 +219,7 @@ namespace tgui
             if (m_radioButton->m_checked)
             {
                 sf::Vector2f position = m_radioButton->getPosition();
-                sf::Vector2f size = m_radioButton->getSize();
+                sf::Vector2f size = {m_radioButton->getSize().y, m_radioButton->getSize().y};
 
                 // Calculate the scale factor of the view
                 const sf::View& view = target.getView();
