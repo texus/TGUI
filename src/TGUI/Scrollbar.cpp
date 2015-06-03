@@ -821,6 +821,8 @@ namespace tgui
         // Check if the mouse button went down on top of the track (or thumb)
         if ((m_MouseDown) && (m_MouseDownOnArrow == false))
         {
+            m_lastMousePos = sf::Vector2f(x, y);
+
             // Don't continue if the calculations can't be made
             if ((m_Maximum <= m_LowValue) && (m_AutoHide == false))
                 return;
@@ -1110,7 +1112,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::FloatRect Scrollbar::getThumbRect()
+    sf::FloatRect Scrollbar::getThumbRect() const
     {
         sf::FloatRect thumbRect(0, 0, m_ThumbSize.x, m_ThumbSize.y);
 
@@ -1257,16 +1259,24 @@ namespace tgui
                 else
                     scaleY = (((static_cast<float>(m_LowValue) / m_Maximum)) * realTrackHeight) / m_ThumbSize.y;
 
+                // Calculate the thumb translation
+                float thumbTranslation;
+                float thumbPos = m_lastMousePos.y - m_MouseDownOnThumbPos.y - getPosition().y;
+                if (m_MouseDown && m_MouseDownOnThumb && (thumbPos - (m_TextureArrowUpNormal.getSize().y * scaling.x) > 0) && (thumbPos + getThumbRect().height + (m_TextureArrowUpNormal.getSize().y * scaling.x) < getSize().y))
+                    thumbTranslation = thumbPos / scaling.x;
+                else
+                    thumbTranslation = m_TextureArrowUpNormal.getSize().y + (m_Value * (realTrackHeight / m_Maximum)) / scaling.x;
+
                 // Set the correct transformations for the thumb
                 if (m_VerticalImage)
                 {
-                    states.transform.translate(0, m_TextureArrowUpNormal.getSize().y + (m_Value * (realTrackHeight / m_Maximum)) / scaling.x);
+                    states.transform.translate(0, thumbTranslation);
                     states.transform.scale(1, scaleY);
                 }
                 else // The original image lies horizontal as well
                 {
                     states.transform.rotate(90, m_TextureThumbNormal.getSize().y * 0.5f, m_TextureThumbNormal.getSize().y * 0.5f);
-                    states.transform.translate(m_TextureArrowUpNormal.getSize().y + (m_Value * (realTrackHeight / m_Maximum)) / scaling.x, 0);
+                    states.transform.translate(thumbTranslation, 0);
                     states.transform.scale(scaleY, 1);
                 }
 
@@ -1353,16 +1363,24 @@ namespace tgui
                 else
                     scaleX = (((static_cast<float>(m_LowValue) / m_Maximum)) * realTrackWidth) / m_ThumbSize.x;
 
+                // Calculate the thumb translation
+                float thumbTranslation;
+                float thumbPos = m_lastMousePos.x - m_MouseDownOnThumbPos.x - getPosition().x;
+                if (m_MouseDown && m_MouseDownOnThumb && (thumbPos - (m_TextureArrowUpNormal.getSize().y * scaling.y) > 0) && (thumbPos + getThumbRect().width + (m_TextureArrowUpNormal.getSize().y * scaling.y) < getSize().x))
+                    thumbTranslation = thumbPos / scaling.y;
+                else
+                    thumbTranslation = m_TextureArrowUpNormal.getSize().y + (m_Value * (realTrackWidth / m_Maximum)) / scaling.y;
+
                 // Set the correct transformations for the thumb
                 if (m_VerticalImage)
                 {
-                    states.transform.translate(0, m_TextureArrowUpNormal.getSize().y + (m_Value * (realTrackWidth / m_Maximum)) / scaling.y);
+                    states.transform.translate(0, thumbTranslation);
                     states.transform.scale(1, scaleX);
                 }
                 else // The original image lies horizontal as well
                 {
                     states.transform.rotate(90, m_TextureThumbNormal.getSize().y * 0.5f, m_TextureThumbNormal.getSize().y * 0.5f);
-                    states.transform.translate(m_TextureArrowUpNormal.getSize().y + (m_Value * (realTrackWidth / m_Maximum)) / scaling.y, 0);
+                    states.transform.translate(thumbTranslation, 0);
                     states.transform.scale(scaleX, 1);
                 }
 

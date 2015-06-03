@@ -327,6 +327,7 @@ namespace tgui
         // When the mouse went down, did it go down on top of the thumb? If so, where?
         bool m_MouseDownOnThumb;
         sf::Vector2f m_MouseDownOnThumbPos;
+        sf::Vector2f m_lastMousePos;
 
         unsigned int m_Minimum;
         unsigned int m_Maximum;

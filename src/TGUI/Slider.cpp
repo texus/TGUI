@@ -795,6 +795,8 @@ namespace tgui
         // Check if the mouse button is down
         if (m_MouseDown)
         {
+            m_lastMousePos = sf::Vector2f(x, y);
+
             // Check in which direction the slider goes
             if (m_VerticalScroll)
             {
@@ -1060,15 +1062,23 @@ namespace tgui
         // The thumb will be on a different position when we are scrolling vertically or not
         if (m_VerticalScroll)
         {
-            // Set the translation and scale for the thumb
-            states.transform.translate((m_Size.x - m_ThumbSize.x) * 0.5f,
-                                       ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.y) - (m_ThumbSize.y * 0.5f));
+            // Set the translation for the thumb
+            float thumbPos = m_lastMousePos.y - m_MouseDownOnThumbPos.y - getPosition().y;
+            states.transform.translate((m_Size.x - m_ThumbSize.x) * 0.5f, 0);
+            if (m_MouseDown && m_MouseDownOnThumb && (thumbPos + (m_ThumbSize.y * 0.5f) > 0) && (thumbPos + (m_ThumbSize.y * 0.5f) < getSize().y))
+                states.transform.translate(0, thumbPos);
+            else
+                states.transform.translate(0, ((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.y) - (m_ThumbSize.y * 0.5f));
         }
         else // the slider lies horizontal
         {
-            // Set the translation and scale for the thumb
-            states.transform.translate(((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.x) - (m_ThumbSize.x * 0.5f),
-                                        (m_Size.y - m_ThumbSize.y) * 0.5f);
+            // Set the translation for the thumb
+            float thumbPos = m_lastMousePos.x - m_MouseDownOnThumbPos.x - getPosition().x;
+            states.transform.translate(0, (m_Size.y - m_ThumbSize.y) * 0.5f);
+            if (m_MouseDown && m_MouseDownOnThumb && (thumbPos + (m_ThumbSize.x * 0.5f) > 0) && (thumbPos + (m_ThumbSize.x * 0.5f) < getSize().x))
+                states.transform.translate(thumbPos, 0);
+            else
+                states.transform.translate(((static_cast<float>(m_Value - m_Minimum) / (m_Maximum - m_Minimum)) * m_Size.x) - (m_ThumbSize.x * 0.5f), 0);
         }
 
         // It is possible that the image is not drawn in the same direction than the loaded image
