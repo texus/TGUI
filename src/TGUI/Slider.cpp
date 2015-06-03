@@ -358,6 +358,13 @@ namespace tgui
                     setValue(static_cast<int>((((y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y - getPosition().y) / getSize().y) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
                 else
                     setValue(m_minimum);
+
+                // Set the thumb position for smooth scrolling
+                float thumbTop = y - m_mouseDownOnThumbPos.y;
+                if ((thumbTop + (m_thumb.height / 2.0f) > getPosition().y) && (thumbTop + (m_thumb.height / 2.0f) < getPosition().y + getSize().y))
+                    m_thumb.top = thumbTop;
+                else
+                    m_thumb.top = getPosition().y - (m_thumb.height / 2.0f) + (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum));
             }
             else // the slider lies horizontal
             {
@@ -374,6 +381,13 @@ namespace tgui
                     setValue(static_cast<int>((((x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x - getPosition().x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
                 else
                     setValue(m_minimum);
+
+                // Set the thumb position for smooth scrolling
+                float thumbLeft = x - m_mouseDownOnThumbPos.x;
+                if ((thumbLeft + (m_thumb.width / 2.0f) > getPosition().x) && (thumbLeft + (m_thumb.width / 2.0f) < getPosition().x + getSize().x))
+                    m_thumb.left = thumbLeft;
+                else
+                    m_thumb.left = getPosition().x - (m_thumb.width / 2.0f) + (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum));
             }
         }
     }
