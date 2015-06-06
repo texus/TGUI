@@ -170,6 +170,7 @@ namespace tgui
     Widget::Ptr Container::copy(const Widget::Ptr& oldWidget, const sf::String& newWidgetName)
     {
         Widget::Ptr newWidget = oldWidget.clone();
+        newWidget->initialize(this);
         m_Widgets.push_back(newWidget);
         m_ObjName.push_back(newWidgetName);
         return newWidget;
