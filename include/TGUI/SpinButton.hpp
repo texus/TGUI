@@ -276,7 +276,7 @@ namespace tgui
         enum SpinButtonCallbacks
         {
             ValueChanged = ClickableWidgetCallbacksCount * 1,               ///< Value has changed
-            AllSpinButtonCallbacks = ClickableWidgetCallbacksCount * 2 - 1, ///< All triggers defined in TextBox and its base classes
+            AllSpinButtonCallbacks = ClickableWidgetCallbacksCount * 2 - 1, ///< All triggers defined in SpinButton and its base classes
             SpinButtonCallbacksCount = ClickableWidgetCallbacksCount * 2
         };
 
