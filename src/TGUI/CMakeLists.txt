@@ -94,7 +94,7 @@ if(SFML_OS_MACOSX AND TGUI_SHARED_LIBS)
                            POST_BUILD
                            COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/Headers
                            COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include/TGUI $<TARGET_FILE_DIR:${PROJECT_NAME}>/Headers
-                           COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_DIR:${PROJECT_NAME}>/Headers $<TARGET_FILE_DIR:${PROJECT_NAME}>/../../Headers)
+                           COMMAND ${CMAKE_COMMAND} -E create_symlink Versions/${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}/Headers $<TARGET_FILE_DIR:${PROJECT_NAME}>/../../Headers)
 
         # The framework has to be with a capital letter (because it includes the header files which must be found in a "TGUI" directory)
         set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME TGUI)
