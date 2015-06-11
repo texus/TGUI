@@ -239,7 +239,7 @@ namespace tgui
 
     void SpinButton::leftMousePressed(float x, float y)
     {
-        m_mouseDown = true;
+        ClickableWidget::leftMousePressed(x, y);
 
         // Check if the mouse is on top of the upper/right arrow
         if (m_verticalScroll)
@@ -262,11 +262,11 @@ namespace tgui
 
     void SpinButton::leftMouseReleased(float x, float y)
     {
+        ClickableWidget::leftMouseReleased(x, y);
+
         // Check if the mouse went down on the spin button
         if (m_mouseDown)
         {
-            m_mouseDown = false;
-
             // Check if the arrow went down on the top/right arrow
             if (m_mouseDownOnTopArrow)
             {
