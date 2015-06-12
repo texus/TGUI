@@ -314,6 +314,9 @@ void FormBuilder::resize(unsigned int width, unsigned int height)
                                          - activeForm->window->getBorders().left - activeForm->window->getBorders().right) / 2.0f + widgetsWindow->getPosition().x + activeForm->window->getBorders().left,
                                         (panel->getSize().y - activeForm->window->getSize().y - activeForm->window->getBorders().top
                                          - activeForm->window->getBorders().bottom - activeForm->window->getTitleBarHeight()) / 2.0f);
+
+        tgui::ComboBox::Ptr widgetSelector = propertiesWindow->get("WidgetSelector");
+        widgetSelector->setItemsToDisplay((propertiesWindow->getSize().y * 17 / 20) / TGUI_MAXIMUM(10, widgetSelector->getSize().y));
     }
 
     window.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(width), static_cast<float>(height))));
