@@ -208,7 +208,7 @@ void FormBuilder::handleEvents()
     sf::Event event;
     while (window.pollEvent(event))
     {
-        gui.handleEvent(event);
+        gui.handleEvent(event, false);
 
         if (event.type == sf::Event::Closed)
         {
@@ -242,7 +242,7 @@ void FormBuilder::handleEvents()
 void FormBuilder::draw()
 {
     window.clear(sf::Color(200, 200, 200));
-    gui.draw();
+    gui.draw(false);
     window.display();
 }
 
