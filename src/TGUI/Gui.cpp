@@ -22,9 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Get access to activate function from m_Window. Needed to solve clipping bug
-#define private public
-
 #include <SFML/OpenGL.hpp>
 
 #include <TGUI/SharedWidgetPtr.inl>
@@ -164,7 +161,11 @@ namespace tgui
 
     void Gui::draw(bool resetView)
     {
-        m_Window->activate(true);
+        // Make sure the right opengl context is set when clipping
+        if (dynamic_cast<sf::RenderWindow*>(m_Window))
+            dynamic_cast<sf::RenderWindow*>(m_Window)->setActive(true);
+        else if (dynamic_cast<sf::RenderTexture*>(m_Window))
+            dynamic_cast<sf::RenderTexture*>(m_Window)->setActive(true);
 
         sf::View oldView = m_Window->getView();
 
