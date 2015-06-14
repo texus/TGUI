@@ -22,9 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Get access to activate function from m_window. Needed to solve clipping bug
-#define private public
-
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Tooltip.hpp>
 #include <TGUI/Gui.hpp>
@@ -194,7 +191,11 @@ namespace tgui
     {
         assert(m_window != nullptr);
 
-        m_window->activate(true);
+        // Make sure the right opengl context is set when clipping
+        if (dynamic_cast<sf::RenderWindow*>(m_window))
+            dynamic_cast<sf::RenderWindow*>(m_window)->setActive(true);
+        else if (dynamic_cast<sf::RenderTexture*>(m_window))
+            dynamic_cast<sf::RenderTexture*>(m_window)->setActive(true);
 
         // Update the time
         if (m_container->m_focused)
