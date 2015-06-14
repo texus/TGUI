@@ -22,6 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Get access to activate function from m_window. Needed to solve clipping bug
+#define private public
 
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Tooltip.hpp>
@@ -191,6 +193,8 @@ namespace tgui
     void Gui::draw()
     {
         assert(m_window != nullptr);
+
+        m_window->activate(true);
 
         // Update the time
         if (m_container->m_focused)
