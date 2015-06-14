@@ -22,6 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Get access to activate function from m_Window. Needed to solve clipping bug
+#define private public
 
 #include <SFML/OpenGL.hpp>
 
@@ -162,6 +164,8 @@ namespace tgui
 
     void Gui::draw(bool resetView)
     {
+        m_Window->activate(true);
+
         sf::View oldView = m_Window->getView();
 
         // Reset the view when requested
