@@ -10,7 +10,7 @@
 #   find_package(SFML COMPONENTS graphics window system) // find the graphics, window and system modules
 #
 # You can enforce a specific version, either MAJOR.MINOR or only MAJOR.
-# If nothing is specified, the version won't be checked (ie. any version will be accepted).
+# If nothing is specified, the version won't be checked (i.e. any version will be accepted).
 # example:
 #   find_package(SFML COMPONENTS ...)     // no specific version required
 #   find_package(SFML 2 COMPONENTS ...)   // any 2.x version
@@ -60,12 +60,6 @@ if(SFML_STATIC_LIBRARIES)
     add_definitions(-DSFML_STATIC)
 endif()
 
-# deduce the libraries suffix from the options
-set(FIND_SFML_LIB_SUFFIX "")
-if(SFML_STATIC_LIBRARIES)
-    set(FIND_SFML_LIB_SUFFIX "${FIND_SFML_LIB_SUFFIX}-s")
-endif()
-
 # define the list of search paths for headers and libraries
 set(FIND_SFML_PATHS
     ${SFML_ROOT}
@@ -88,22 +82,23 @@ find_path(SFML_INCLUDE_DIR SFML/Config.hpp
 set(SFML_VERSION_OK TRUE)
 if(SFML_FIND_VERSION AND SFML_INCLUDE_DIR)
     # extract the major and minor version numbers from SFML/Config.hpp
-    # we have to handle framework a little bit differently :
+    # we have to handle framework a little bit differently:
     if("${SFML_INCLUDE_DIR}" MATCHES "SFML.framework")
         set(SFML_CONFIG_HPP_INPUT "${SFML_INCLUDE_DIR}/Headers/Config.hpp")
     else()
         set(SFML_CONFIG_HPP_INPUT "${SFML_INCLUDE_DIR}/SFML/Config.hpp")
     endif()
     FILE(READ "${SFML_CONFIG_HPP_INPUT}" SFML_CONFIG_HPP_CONTENTS)
-    STRING(REGEX MATCH ".*#define SFML_VERSION_MAJOR ([0-9]+).*#define SFML_VERSION_MINOR ([0-9]+).*" SFML_CONFIG_HPP_CONTENTS "${SFML_CONFIG_HPP_CONTENTS}")
+    STRING(REGEX MATCH ".*#define SFML_VERSION_MAJOR ([0-9]+).*#define SFML_VERSION_MINOR ([0-9]+).*#define SFML_VERSION_PATCH ([0-9]+).*" SFML_CONFIG_HPP_CONTENTS "${SFML_CONFIG_HPP_CONTENTS}")
     STRING(REGEX REPLACE ".*#define SFML_VERSION_MAJOR ([0-9]+).*" "\\1" SFML_VERSION_MAJOR "${SFML_CONFIG_HPP_CONTENTS}")
     STRING(REGEX REPLACE ".*#define SFML_VERSION_MINOR ([0-9]+).*" "\\1" SFML_VERSION_MINOR "${SFML_CONFIG_HPP_CONTENTS}")
-    math(EXPR SFML_REQUESTED_VERSION "${SFML_FIND_VERSION_MAJOR} * 10 + ${SFML_FIND_VERSION_MINOR}")
+    STRING(REGEX REPLACE ".*#define SFML_VERSION_PATCH ([0-9]+).*" "\\1" SFML_VERSION_PATCH "${SFML_CONFIG_HPP_CONTENTS}")
+    math(EXPR SFML_REQUESTED_VERSION "${SFML_FIND_VERSION_MAJOR} * 10000 + ${SFML_FIND_VERSION_MINOR} * 100 + ${SFML_FIND_VERSION_PATCH}")
 
     # if we could extract them, compare with the requested version number
     if (SFML_VERSION_MAJOR)
         # transform version numbers to an integer
-        math(EXPR SFML_VERSION "${SFML_VERSION_MAJOR} * 10 + ${SFML_VERSION_MINOR}")
+        math(EXPR SFML_VERSION "${SFML_VERSION_MAJOR} * 10000 + ${SFML_VERSION_MINOR} * 100 + ${SFML_VERSION_PATCH}")
 
         # compare them
         if(SFML_VERSION LESS SFML_REQUESTED_VERSION)
@@ -111,10 +106,11 @@ if(SFML_FIND_VERSION AND SFML_INCLUDE_DIR)
         endif()
     else()
         # SFML version is < 2.0
-        if (SFML_REQUESTED_VERSION GREATER 19)
+        if (SFML_REQUESTED_VERSION GREATER 10900)
             set(SFML_VERSION_OK FALSE)
             set(SFML_VERSION_MAJOR 1)
             set(SFML_VERSION_MINOR x)
+            set(SFML_VERSION_PATCH x)
         endif()
     endif()
 endif()
@@ -124,29 +120,68 @@ set(SFML_FOUND TRUE) # will be set to false if one of the required modules is no
 foreach(FIND_SFML_COMPONENT ${SFML_FIND_COMPONENTS})
     string(TOLOWER ${FIND_SFML_COMPONENT} FIND_SFML_COMPONENT_LOWER)
     string(TOUPPER ${FIND_SFML_COMPONENT} FIND_SFML_COMPONENT_UPPER)
-    set(FIND_SFML_COMPONENT_NAME sfml-${FIND_SFML_COMPONENT_LOWER}${FIND_SFML_LIB_SUFFIX})
+    set(FIND_SFML_COMPONENT_NAME sfml-${FIND_SFML_COMPONENT_LOWER})
 
     # no suffix for sfml-main, it is always a static library
     if(FIND_SFML_COMPONENT_LOWER STREQUAL "main")
-        set(FIND_SFML_COMPONENT_NAME sfml-${FIND_SFML_COMPONENT_LOWER})
+        # release library
+        find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_RELEASE
+                     NAMES ${FIND_SFML_COMPONENT_NAME}
+                     PATH_SUFFIXES lib64 lib
+                     PATHS ${FIND_SFML_PATHS})
+
+        # debug library
+        find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG
+                     NAMES ${FIND_SFML_COMPONENT_NAME}-d
+                     PATH_SUFFIXES lib64 lib
+                     PATHS ${FIND_SFML_PATHS})
+    else()
+        # static release library
+        find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_RELEASE
+                     NAMES ${FIND_SFML_COMPONENT_NAME}-s
+                     PATH_SUFFIXES lib64 lib
+                     PATHS ${FIND_SFML_PATHS})
+
+        # static debug library
+        find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_DEBUG
+                     NAMES ${FIND_SFML_COMPONENT_NAME}-s-d
+                     PATH_SUFFIXES lib64 lib
+                     PATHS ${FIND_SFML_PATHS})
+
+        # dynamic release library
+        find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_RELEASE
+                     NAMES ${FIND_SFML_COMPONENT_NAME}
+                     PATH_SUFFIXES lib64 lib
+                     PATHS ${FIND_SFML_PATHS})
+
+        # dynamic debug library
+        find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_DEBUG
+                     NAMES ${FIND_SFML_COMPONENT_NAME}-d
+                     PATH_SUFFIXES lib64 lib
+                     PATHS ${FIND_SFML_PATHS})
+
+        # choose the entries that fit the requested link type
+        if(SFML_STATIC_LIBRARIES)
+            if(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_RELEASE)
+                set(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_RELEASE ${SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_RELEASE})
+            endif()
+            if(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_DEBUG)
+                set(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG ${SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_DEBUG})
+            endif()
+        else()
+            if(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_RELEASE)
+                set(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_RELEASE ${SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_RELEASE})
+            endif()
+            if(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_DEBUG)
+                set(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG ${SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_DEBUG})
+            endif()
+        endif()
     endif()
-
-    # debug library
-    find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG
-                 NAMES ${FIND_SFML_COMPONENT_NAME}-d
-                 PATH_SUFFIXES lib64 lib
-                 PATHS ${FIND_SFML_PATHS})
-
-    # release library
-    find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_RELEASE
-                 NAMES ${FIND_SFML_COMPONENT_NAME}
-                 PATH_SUFFIXES lib64 lib
-                 PATHS ${FIND_SFML_PATHS})
 
     if (SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG OR SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_RELEASE)
         # library found
         set(SFML_${FIND_SFML_COMPONENT_UPPER}_FOUND TRUE)
-        
+
         # if both are found, set SFML_XXX_LIBRARY to contain both
         if (SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG AND SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_RELEASE)
             set(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY debug     ${SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG}
@@ -175,7 +210,11 @@ foreach(FIND_SFML_COMPONENT ${SFML_FIND_COMPONENTS})
     # mark as advanced
     MARK_AS_ADVANCED(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY
                      SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_RELEASE
-                     SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG)
+                     SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG
+                     SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_RELEASE
+                     SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_DEBUG
+                     SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_RELEASE
+                     SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_DEBUG)
 
     # add to the global list of libraries
     set(SFML_LIBRARIES ${SFML_LIBRARIES} "${SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY}")
@@ -201,7 +240,8 @@ if(SFML_STATIC_LIBRARIES)
 
     # macro that searches for a 3rd-party library
     macro(find_sfml_dependency output friendlyname)
-        find_library(${output} NAMES ${ARGN} PATHS ${FIND_SFML_PATHS} PATH_SUFFIXES lib)
+        # No lookup in environment variables (PATH on Windows), as they may contain wrong library versions
+        find_library(${output} NAMES ${ARGN} PATHS ${FIND_SFML_PATHS} PATH_SUFFIXES lib NO_SYSTEM_ENVIRONMENT_PATH)
         if(${${output}} STREQUAL "${output}-NOTFOUND")
             unset(output)
             set(FIND_SFML_DEPENDENCIES_NOTFOUND "${FIND_SFML_DEPENDENCIES_NOTFOUND} ${friendlyname}")
@@ -217,7 +257,7 @@ if(SFML_STATIC_LIBRARIES)
             set(SFML_SYSTEM_DEPENDENCIES "pthread")
         endif()
         if(FIND_SFML_OS_LINUX)
-            set(SFML_SYSTEM_DEPENDENCIES "rt")
+            set(SFML_SYSTEM_DEPENDENCIES ${SFML_SYSTEM_DEPENDENCIES} "rt")
         endif()
         if(FIND_SFML_OS_WINDOWS)
             set(SFML_SYSTEM_DEPENDENCIES "winmm")
@@ -241,19 +281,25 @@ if(SFML_STATIC_LIBRARIES)
     if(NOT ${FIND_SFML_WINDOW_COMPONENT} EQUAL -1)
 
         # find libraries
-        if(FIND_SFML_OS_LINUX)
+        if(FIND_SFML_OS_LINUX OR FIND_SFML_OS_FREEBSD)
             find_sfml_dependency(X11_LIBRARY "X11" X11)
-            find_sfml_dependency(XRANDR_LIBRARY "Xrandr" Xrandr)
+            find_sfml_dependency(LIBXCB_LIBRARIES "XCB" xcb libxcb)
+            find_sfml_dependency(X11_XCB_LIBRARY "X11-xcb" X11-xcb libX11-xcb)
+            find_sfml_dependency(XCB_RANDR_LIBRARY "xcb-randr" xcb-randr libxcb-randr)
+            find_sfml_dependency(XCB_IMAGE_LIBRARY "xcb-image" xcb-image libxcb-image)
+        endif()
+
+        if(FIND_SFML_OS_LINUX)
+            find_sfml_dependency(UDEV_LIBRARIES "UDev" udev libudev)
         endif()
 
         # update the list
         if(FIND_SFML_OS_WINDOWS)
             set(SFML_WINDOW_DEPENDENCIES ${SFML_WINDOW_DEPENDENCIES} "opengl32" "winmm" "gdi32")
-        elseif(FIND_SFML_OS_LINUX OR FIND_SFML_OS_FREEBSD)
-            set(SFML_WINDOW_DEPENDENCIES ${SFML_WINDOW_DEPENDENCIES} "GL" ${X11_LIBRARY} ${XRANDR_LIBRARY})
-            if(FIND_SFML_OS_FREEBSD)
-                set(SFML_WINDOW_DEPENDENCIES ${SFML_WINDOW_DEPENDENCIES} "usbhid")
-            endif()
+        elseif(FIND_SFML_OS_LINUX)
+            set(SFML_WINDOW_DEPENDENCIES ${SFML_WINDOW_DEPENDENCIES} "GL" ${X11_LIBRARY} ${LIBXCB_LIBRARIES} ${X11_XCB_LIBRARY} ${XCB_RANDR_LIBRARY} ${XCB_IMAGE_LIBRARY} ${UDEV_LIBRARIES})
+        elseif(FIND_SFML_OS_FREEBSD)
+            set(SFML_WINDOW_DEPENDENCIES ${SFML_WINDOW_DEPENDENCIES} "GL" ${X11_LIBRARY} ${LIBXCB_LIBRARIES} ${X11_XCB_LIBRARY} ${XCB_RANDR_LIBRARY} ${XCB_IMAGE_LIBRARY} "usbhid")
         elseif(FIND_SFML_OS_MACOSX)
             set(SFML_WINDOW_DEPENDENCIES ${SFML_WINDOW_DEPENDENCIES} "-framework OpenGL -framework Foundation -framework AppKit -framework IOKit -framework Carbon")
         endif()
@@ -263,14 +309,13 @@ if(SFML_STATIC_LIBRARIES)
     # sfml-graphics
     list(FIND SFML_FIND_COMPONENTS "graphics" FIND_SFML_GRAPHICS_COMPONENT)
     if(NOT ${FIND_SFML_GRAPHICS_COMPONENT} EQUAL -1)
-    
+
         # find libraries
         find_sfml_dependency(FREETYPE_LIBRARY "FreeType" freetype)
-        find_sfml_dependency(GLEW_LIBRARY "GLEW" glew GLEW glew32 glew32s glew64 glew64s)
         find_sfml_dependency(JPEG_LIBRARY "libjpeg" jpeg)
 
         # update the list
-        set(SFML_GRAPHICS_DEPENDENCIES ${FREETYPE_LIBRARY} ${GLEW_LIBRARY} ${JPEG_LIBRARY})
+        set(SFML_GRAPHICS_DEPENDENCIES ${FREETYPE_LIBRARY} ${JPEG_LIBRARY})
         set(SFML_DEPENDENCIES ${SFML_GRAPHICS_DEPENDENCIES} ${SFML_DEPENDENCIES})
     endif()
 
@@ -280,11 +325,15 @@ if(SFML_STATIC_LIBRARIES)
 
         # find libraries
         find_sfml_dependency(OPENAL_LIBRARY "OpenAL" openal openal32)
-        find_sfml_dependency(SNDFILE_LIBRARY "libsndfile" sndfile)
+        find_sfml_dependency(OGG_LIBRARY "Ogg" ogg)
+        find_sfml_dependency(VORBIS_LIBRARY "Vorbis" vorbis)
+        find_sfml_dependency(VORBISFILE_LIBRARY "VorbisFile" vorbisfile)
+        find_sfml_dependency(VORBISENC_LIBRARY "VorbisEnc" vorbisenc)
+        find_sfml_dependency(FLAC_LIBRARY "FLAC" flac)
 
         # update the list
-        set(SFML_AUDIO_DEPENDENCIES ${OPENAL_LIBRARY} ${SNDFILE_LIBRARY})
-        set(SFML_DEPENDENCIES ${SFML_AUDIO_DEPENDENCIES} ${SFML_DEPENDENCIES})
+        set(SFML_AUDIO_DEPENDENCIES ${OPENAL_LIBRARY} ${FLAC_LIBRARY} ${VORBISENC_LIBRARY} ${VORBISFILE_LIBRARY} ${VORBIS_LIBRARY} ${OGG_LIBRARY})
+        set(SFML_DEPENDENCIES ${SFML_DEPENDENCIES} ${SFML_AUDIO_DEPENDENCIES})
     endif()
 
 endif()
@@ -292,7 +341,7 @@ endif()
 # handle errors
 if(NOT SFML_VERSION_OK)
     # SFML version not ok
-    set(FIND_SFML_ERROR "SFML found but version too low (requested: ${SFML_FIND_VERSION}, found: ${SFML_VERSION_MAJOR}.${SFML_VERSION_MINOR})")
+    set(FIND_SFML_ERROR "SFML found but version too low (requested: ${SFML_FIND_VERSION}, found: ${SFML_VERSION_MAJOR}.${SFML_VERSION_MINOR}.${SFML_VERSION_PATCH})")
     set(SFML_FOUND FALSE)
 elseif(SFML_STATIC_LIBRARIES AND FIND_SFML_DEPENDENCIES_NOTFOUND)
     set(FIND_SFML_ERROR "SFML found but some of its dependencies are missing (${FIND_SFML_DEPENDENCIES_NOTFOUND})")
@@ -312,6 +361,6 @@ if (NOT SFML_FOUND)
 endif()
 
 # handle success
-if(SFML_FOUND)
-    message(STATUS "Found SFML ${SFML_VERSION_MAJOR}.${SFML_VERSION_MINOR} in ${SFML_INCLUDE_DIR}")
+if(SFML_FOUND AND NOT SFML_FIND_QUIETLY)
+    message(STATUS "Found SFML ${SFML_VERSION_MAJOR}.${SFML_VERSION_MINOR}.${SFML_VERSION_PATCH} in ${SFML_INCLUDE_DIR}")
 endif()
