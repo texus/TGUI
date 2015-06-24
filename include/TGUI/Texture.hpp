@@ -177,7 +177,7 @@ namespace tgui
         ///
         /// By default, the sprite's color is opaque white.
         ///
-        /// \param color New color of the sprite
+        /// @param color New color of the sprite
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setColor(const sf::Color& color);
