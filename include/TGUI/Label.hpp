@@ -67,11 +67,12 @@ namespace tgui
         /// \brief Loads the widget.
         ///
         /// \param configFileFilename  Filename of the config file.
+        /// \param sectionName         Name of the section in the file to load
         ///
         /// The config file must contain a Label section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool load(const std::string& configFileFilename);
+        bool load(const std::string& configFileFilename, const std::string& sectionName = "Label");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

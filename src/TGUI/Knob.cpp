@@ -110,7 +110,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Knob::load(const std::string& configFileFilename)
+    bool Knob::load(const std::string& configFileFilename, const std::string& sectionName)
     {
         m_loadedConfigFile = getResourcePath() + configFileFilename;
 
@@ -132,7 +132,7 @@ namespace tgui
         // Read the properties and their values (as strings)
         std::vector<std::string> properties;
         std::vector<std::string> values;
-        if (!configFile.read("Knob", properties, values))
+        if (!configFile.read(sectionName, properties, values))
         {
             TGUI_OUTPUT("TGUI error: Failed to parse " + m_loadedConfigFile + ".");
             return false;

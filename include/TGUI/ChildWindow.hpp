@@ -105,11 +105,12 @@ namespace tgui
         /// \brief Loads the widget.
         ///
         /// \param configFileFilename  Filename of the config file.
+        /// \param sectionName         Name of the section in the file to load
         ///
         /// The config file must contain a ChildWindow section with the needed information.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool load(const std::string& configFileFilename);
+        virtual bool load(const std::string& configFileFilename, const std::string& sectionName = "ChildWindow");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
