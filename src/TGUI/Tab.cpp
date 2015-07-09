@@ -379,6 +379,9 @@ namespace tgui
         if (m_textSize != size)
         {
             m_textSize = size;
+            for (auto& label : m_tabTexts)
+                label.setTextSize(getTextSize());
+
             recalculateTabsWidth();
         }
     }
