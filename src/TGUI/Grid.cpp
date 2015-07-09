@@ -517,7 +517,10 @@ namespace tgui
             for (unsigned int col = 0; col < m_gridWidgets[row].size(); ++col)
             {
                 if (m_gridWidgets[row][col].get() != nullptr)
-                    target.draw(*m_gridWidgets[row][col], states);
+                {
+                    if (m_gridWidgets[row][col]->isVisible())
+                        target.draw(*m_gridWidgets[row][col], states);
+                }
             }
         }
     }
