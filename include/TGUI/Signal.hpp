@@ -235,8 +235,8 @@ namespace tgui
         std::map<unsigned int, std::function<void()>> m_functions;
         std::map<unsigned int, std::function<void(const Callback&)>> m_functionsEx;
 
-        std::vector<const void*> m_data;
         std::vector<std::vector<std::string>> m_allowedTypes;
+        static std::vector<const void*> m_data;
 
         friend class SignalWidgetBase; // Only needed for m_functionsEx
     };
