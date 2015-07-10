@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['widget',['Widget',['../classtgui_1_1Widget.html#a662b5e56609f23b2bbff81cbaa5787e2',1,'tgui::Widget']]]
+  ['verticallayout',['VerticalLayout',['../classtgui_1_1VerticalLayout.html#a28aa6040b3473856be9ab3d8e3ea664f',1,'tgui::VerticalLayout']]]
 ];
