@@ -61,7 +61,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another layout
         ///
-        /// @param grid  The other layout
+        /// @param layout  The other layout
         ///
         /// @return The new layout
         ///
