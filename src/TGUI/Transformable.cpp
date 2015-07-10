@@ -139,11 +139,11 @@ namespace tgui
         }
         else
         {
-            sf::Vector2f oldSize = getSize();
+            sf::Vector2f oldSize = m_size.getValue();
 
             m_size.recalculateValue();
 
-            if (oldSize != getSize())
+            if (oldSize != m_size.getValue())
                 setSize(m_size);
         }
     }
