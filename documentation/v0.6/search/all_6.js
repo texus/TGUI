@@ -2,6 +2,7 @@ var searchData=
 [
   ['get',['get',['../classtgui_1_1Clipboard.html#a77e25ef91b6b300126d31986537c2fb8',1,'tgui::Clipboard::get()'],['../classtgui_1_1Container.html#add49acaa17b77237c837f90a20c2f589',1,'tgui::Container::get(const sf::String &amp;widgetName, bool recursive=false) const '],['../classtgui_1_1Container.html#ac065b68ee708d09c086662305da23b68',1,'tgui::Container::get(const sf::String &amp;widgetName, bool recursive=false) const '],['../classtgui_1_1Gui.html#a81bc7a04400ef54b1610604de7032fbc',1,'tgui::Gui::get(const sf::String &amp;widgetName, bool recursive=false) const '],['../classtgui_1_1Gui.html#a09adca672824a85fc8d8e39daae23438',1,'tgui::Gui::get(const sf::String &amp;widgetName, bool recursive=false) const ']]],
   ['getabsoluteposition',['getAbsolutePosition',['../classtgui_1_1Widget.html#a59112dbb748fa92647ef86b823c227f1',1,'tgui::Widget']]],
+  ['getalignment',['getAlignment',['../classtgui_1_1EditBox.html#a34d1f57061a09a7ba66effa195c0cfbe',1,'tgui::EditBox']]],
   ['getarrowscrollamount',['getArrowScrollAmount',['../classtgui_1_1Scrollbar.html#ac2917a17f373538998c1a224ba65ab88',1,'tgui::Scrollbar']]],
   ['getautohide',['getAutoHide',['../classtgui_1_1Scrollbar.html#aff095c0f3bb83c45cfa8b6254d971da4',1,'tgui::Scrollbar']]],
   ['getautosize',['getAutoSize',['../classtgui_1_1Label.html#abd2f1cec1d15f03d2176ab4a5b713502',1,'tgui::Label']]],

@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.8</span>
+   &#160;<span id="projectnumber">v0.6.9</span>
    </div>
   </td>
  </tr>
@@ -148,9 +148,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a59ab2b74137cb638c9735bfd0eeb96f7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1SpinButton.html">SpinButton</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SpinButton.html#a59ab2b74137cb638c9735bfd0eeb96f7">operator=</a> (const <a class="el" href="classtgui_1_1SpinButton.html">SpinButton</a> &amp;right)</td></tr>
 <tr class="memdesc:a59ab2b74137cb638c9735bfd0eeb96f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator.  <a href="#a59ab2b74137cb638c9735bfd0eeb96f7">More...</a><br/></td></tr>
 <tr class="separator:a59ab2b74137cb638c9735bfd0eeb96f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaea8a1bf4c48da4ee08f9b49880159d5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SpinButton.html#aaea8a1bf4c48da4ee08f9b49880159d5">load</a> (const std::string &amp;configFileFilename)</td></tr>
-<tr class="memdesc:aaea8a1bf4c48da4ee08f9b49880159d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#aaea8a1bf4c48da4ee08f9b49880159d5">More...</a><br/></td></tr>
-<tr class="separator:aaea8a1bf4c48da4ee08f9b49880159d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1096e6e1658cf3e09b8e7306a05ad6c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SpinButton.html#aa1096e6e1658cf3e09b8e7306a05ad6c">load</a> (const std::string &amp;configFileFilename, const std::string &amp;sectionName=&quot;SpinButton&quot;)</td></tr>
+<tr class="memdesc:aa1096e6e1658cf3e09b8e7306a05ad6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#aa1096e6e1658cf3e09b8e7306a05ad6c">More...</a><br/></td></tr>
+<tr class="separator:aa1096e6e1658cf3e09b8e7306a05ad6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a94e6365c68dd9e1cad9f95a76aa53f"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SpinButton.html#a1a94e6365c68dd9e1cad9f95a76aa53f">getLoadedConfigFile</a> () const </td></tr>
 <tr class="memdesc:a1a94e6365c68dd9e1cad9f95a76aa53f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the filename of the config file that was used to load the widget.  <a href="#a1a94e6365c68dd9e1cad9f95a76aa53f">More...</a><br/></td></tr>
 <tr class="separator:a1a94e6365c68dd9e1cad9f95a76aa53f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -343,7 +343,7 @@ Public Member Functions</h2></td></tr>
 <p>Value has changed. </p>
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="a4c325f88f920ff33d95252df080e9ff4a2be9ab13fcf2bfe41b9a0354cf27789f"></a>AllSpinButtonCallbacks</em>&#160;</td><td class="fielddoc">
-<p>All triggers defined in <a class="el" href="classtgui_1_1TextBox.html">TextBox</a> and its base classes. </p>
+<p>All triggers defined in <a class="el" href="classtgui_1_1SpinButton.html">SpinButton</a> and its base classes. </p>
 </td></tr>
 </table>
 
@@ -510,7 +510,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aaea8a1bf4c48da4ee08f9b49880159d5"></a>
+<a class="anchor" id="aa1096e6e1658cf3e09b8e7306a05ad6c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -518,8 +518,18 @@ Public Member Functions</h2></td></tr>
           <td class="memname">bool tgui::SpinButton::load </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>configFileFilename</em></td><td>)</td>
+          <td class="paramname"><em>configFileFilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>sectionName</em> = <code>&quot;SpinButton&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -527,7 +537,8 @@ Public Member Functions</h2></td></tr>
 <p>Loads the widget. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file.</td></tr>
+    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file. </td></tr>
+    <tr><td class="paramname">sectionName</td><td>Name of the section in the file to load</td></tr>
   </table>
   </dd>
 </dl>
@@ -745,7 +756,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 10 2015 00:49:46 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 11 2015 14:31:17 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.8</span>
+   &#160;<span id="projectnumber">v0.6.9</span>
    </div>
   </td>
  </tr>
@@ -151,9 +151,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4c393a410d5742bd3d732b989f36616c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Checkbox.html#a4c393a410d5742bd3d732b989f36616c">Checkbox</a> ()</td></tr>
 <tr class="memdesc:a4c393a410d5742bd3d732b989f36616c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a4c393a410d5742bd3d732b989f36616c">More...</a><br/></td></tr>
 <tr class="separator:a4c393a410d5742bd3d732b989f36616c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ce11a3fcb1a0a0e4b58a131ea452425"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Checkbox.html#a4ce11a3fcb1a0a0e4b58a131ea452425">load</a> (const std::string &amp;configFileFilename)</td></tr>
-<tr class="memdesc:a4ce11a3fcb1a0a0e4b58a131ea452425"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#a4ce11a3fcb1a0a0e4b58a131ea452425">More...</a><br/></td></tr>
-<tr class="separator:a4ce11a3fcb1a0a0e4b58a131ea452425"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d322fecc3f6196413fea81e4035ccb8"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Checkbox.html#a5d322fecc3f6196413fea81e4035ccb8">load</a> (const std::string &amp;configFileFilename, const std::string &amp;sectionName=&quot;Checkbox&quot;)</td></tr>
+<tr class="memdesc:a5d322fecc3f6196413fea81e4035ccb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#a5d322fecc3f6196413fea81e4035ccb8">More...</a><br/></td></tr>
+<tr class="separator:a5d322fecc3f6196413fea81e4035ccb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e413de41a9e15f32f20fb6ac8e6c22e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Checkbox.html#a5e413de41a9e15f32f20fb6ac8e6c22e">check</a> ()</td></tr>
 <tr class="memdesc:a5e413de41a9e15f32f20fb6ac8e6c22e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks the checkbox.  <a href="#a5e413de41a9e15f32f20fb6ac8e6c22e">More...</a><br/></td></tr>
 <tr class="separator:a5e413de41a9e15f32f20fb6ac8e6c22e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -420,7 +420,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a4ce11a3fcb1a0a0e4b58a131ea452425"></a>
+<a class="anchor" id="a5d322fecc3f6196413fea81e4035ccb8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -431,8 +431,18 @@ Public Member Functions</h2></td></tr>
           <td class="memname">virtual bool tgui::Checkbox::load </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>configFileFilename</em></td><td>)</td>
+          <td class="paramname"><em>configFileFilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>sectionName</em> = <code>&quot;Checkbox&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -445,13 +455,14 @@ Public Member Functions</h2></td></tr>
 <p>Loads the widget. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file.</td></tr>
+    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file. </td></tr>
+    <tr><td class="paramname">sectionName</td><td>Name of the section in the file to load</td></tr>
   </table>
   </dd>
 </dl>
 <p>The config file must contain a <a class="el" href="classtgui_1_1Checkbox.html">Checkbox</a> section with the needed information. </p>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1RadioButton.html#abfc0746881994f5ecb5b3dc06746a846">tgui::RadioButton</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1RadioButton.html#aad659c1dd4de93ce2cbbbf22a698fa5a">tgui::RadioButton</a>.</p>
 
 </div>
 </div>
@@ -488,7 +499,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 10 2015 00:49:45 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 11 2015 14:31:17 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

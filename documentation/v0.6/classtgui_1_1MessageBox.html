@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.8</span>
+   &#160;<span id="projectnumber">v0.6.9</span>
    </div>
   </td>
  </tr>
@@ -156,9 +156,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aed1128ec3cc9f05bc8fb593efce45abb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1MessageBox.html">MessageBox</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MessageBox.html#aed1128ec3cc9f05bc8fb593efce45abb">operator=</a> (const <a class="el" href="classtgui_1_1MessageBox.html">MessageBox</a> &amp;right)</td></tr>
 <tr class="memdesc:aed1128ec3cc9f05bc8fb593efce45abb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator.  <a href="#aed1128ec3cc9f05bc8fb593efce45abb">More...</a><br/></td></tr>
 <tr class="separator:aed1128ec3cc9f05bc8fb593efce45abb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa60a9a3bb4739915fa9e68d688c9f4b7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MessageBox.html#aa60a9a3bb4739915fa9e68d688c9f4b7">load</a> (const std::string &amp;configFileFilename)</td></tr>
-<tr class="memdesc:aa60a9a3bb4739915fa9e68d688c9f4b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#aa60a9a3bb4739915fa9e68d688c9f4b7">More...</a><br/></td></tr>
-<tr class="separator:aa60a9a3bb4739915fa9e68d688c9f4b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afac9e06d542d4e245bf6e4c394e1eef8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MessageBox.html#afac9e06d542d4e245bf6e4c394e1eef8">load</a> (const std::string &amp;configFileFilename, const std::string &amp;sectionName=&quot;MessageBox&quot;)</td></tr>
+<tr class="memdesc:afac9e06d542d4e245bf6e4c394e1eef8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#afac9e06d542d4e245bf6e4c394e1eef8">More...</a><br/></td></tr>
+<tr class="separator:afac9e06d542d4e245bf6e4c394e1eef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7071b725d4d8ea029eec6e318bd7aac3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MessageBox.html#a7071b725d4d8ea029eec6e318bd7aac3">setText</a> (const sf::String &amp;text)</td></tr>
 <tr class="memdesc:a7071b725d4d8ea029eec6e318bd7aac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the text of the message box.  <a href="#a7071b725d4d8ea029eec6e318bd7aac3">More...</a><br/></td></tr>
 <tr class="separator:a7071b725d4d8ea029eec6e318bd7aac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -700,7 +700,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aa60a9a3bb4739915fa9e68d688c9f4b7"></a>
+<a class="anchor" id="afac9e06d542d4e245bf6e4c394e1eef8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -711,8 +711,18 @@ Public Member Functions</h2></td></tr>
           <td class="memname">bool tgui::MessageBox::load </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>configFileFilename</em></td><td>)</td>
+          <td class="paramname"><em>configFileFilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>sectionName</em> = <code>&quot;MessageBox&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -725,13 +735,14 @@ Public Member Functions</h2></td></tr>
 <p>Loads the widget. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file.</td></tr>
+    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file. </td></tr>
+    <tr><td class="paramname">sectionName</td><td>Name of the section in the file to load</td></tr>
   </table>
   </dd>
 </dl>
 <p>The config file must contain a <a class="el" href="classtgui_1_1MessageBox.html">MessageBox</a> section with the needed information. </p>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1ChildWindow.html#a67140a9682be53f8fdabafabfc126a52">tgui::ChildWindow</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1ChildWindow.html#af38ed2c436cd4756b7ce08f00a906235">tgui::ChildWindow</a>.</p>
 
 </div>
 </div>
@@ -866,7 +877,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 10 2015 00:49:45 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 11 2015 14:31:17 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

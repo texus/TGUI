@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.8</span>
+   &#160;<span id="projectnumber">v0.6.9</span>
    </div>
   </td>
  </tr>
@@ -139,9 +139,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9032d32a3d4566dfe4d33877ded54b3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Knob.html">Knob</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Knob.html#a9032d32a3d4566dfe4d33877ded54b3c">operator=</a> (const <a class="el" href="classtgui_1_1Knob.html">Knob</a> &amp;right)</td></tr>
 <tr class="memdesc:a9032d32a3d4566dfe4d33877ded54b3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator.  <a href="#a9032d32a3d4566dfe4d33877ded54b3c">More...</a><br/></td></tr>
 <tr class="separator:a9032d32a3d4566dfe4d33877ded54b3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05bf7952a3f714e25820b717f87c5ffd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Knob.html#a05bf7952a3f714e25820b717f87c5ffd">load</a> (const std::string &amp;configFileFilename)</td></tr>
-<tr class="memdesc:a05bf7952a3f714e25820b717f87c5ffd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#a05bf7952a3f714e25820b717f87c5ffd">More...</a><br/></td></tr>
-<tr class="separator:a05bf7952a3f714e25820b717f87c5ffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe106d75a9e8dcf5814a9f4fd412f99a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Knob.html#afe106d75a9e8dcf5814a9f4fd412f99a">load</a> (const std::string &amp;configFileFilename, const std::string &amp;sectionName=&quot;Knob&quot;)</td></tr>
+<tr class="memdesc:afe106d75a9e8dcf5814a9f4fd412f99a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#afe106d75a9e8dcf5814a9f4fd412f99a">More...</a><br/></td></tr>
+<tr class="separator:afe106d75a9e8dcf5814a9f4fd412f99a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a63a31cde6d6820ce735b322272552c"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Knob.html#a5a63a31cde6d6820ce735b322272552c">getLoadedConfigFile</a> () const </td></tr>
 <tr class="memdesc:a5a63a31cde6d6820ce735b322272552c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the filename of the config file that was used to load the widget.  <a href="#a5a63a31cde6d6820ce735b322272552c">More...</a><br/></td></tr>
 <tr class="separator:a5a63a31cde6d6820ce735b322272552c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -524,7 +524,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a05bf7952a3f714e25820b717f87c5ffd"></a>
+<a class="anchor" id="afe106d75a9e8dcf5814a9f4fd412f99a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -532,8 +532,18 @@ Public Member Functions</h2></td></tr>
           <td class="memname">bool tgui::Knob::load </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>configFileFilename</em></td><td>)</td>
+          <td class="paramname"><em>configFileFilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>sectionName</em> = <code>&quot;Knob&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -541,7 +551,8 @@ Public Member Functions</h2></td></tr>
 <p>Loads the widget. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file.</td></tr>
+    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file. </td></tr>
+    <tr><td class="paramname">sectionName</td><td>Name of the section in the file to load</td></tr>
   </table>
   </dd>
 </dl>
@@ -885,7 +896,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 10 2015 00:49:45 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 11 2015 14:31:17 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.8</span>
+   &#160;<span id="projectnumber">v0.6.9</span>
    </div>
   </td>
  </tr>
@@ -146,139 +146,139 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <a class="code" href="classtgui_1_1Button.html">Button</a>* clone();</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordtype">bool</span> load(<span class="keyword">const</span> std::string&amp; configFileFilename);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keywordtype">bool</span> load(<span class="keyword">const</span> std::string&amp; configFileFilename, <span class="keyword">const</span> std::string&amp; sectionName = <span class="stringliteral">&quot;Button&quot;</span>);</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keyword">const</span> std::string&amp; getLoadedConfigFile() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keyword">const</span> std::string&amp; getLoadedConfigFile() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setPosition(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keyword">using</span> <a class="code" href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">Transformable::setPosition</a>;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setPosition(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keyword">using</span> <a class="code" href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">Transformable::setPosition</a>;</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setSize(<span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setSize(<span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height);</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordtype">void</span> setText(<span class="keyword">const</span> sf::String&amp; text);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keywordtype">void</span> setText(<span class="keyword">const</span> sf::String&amp; text);</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        sf::String getText() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        sf::String getText() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordtype">void</span> setTextFont(<span class="keyword">const</span> sf::Font&amp; font);</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keywordtype">void</span> setTextFont(<span class="keyword">const</span> sf::Font&amp; font);</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keyword">const</span> sf::Font* getTextFont() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keyword">const</span> sf::Font* getTextFont() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <span class="keywordtype">void</span> setTextColor(<span class="keyword">const</span> sf::Color&amp; color);</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keywordtype">void</span> setTextColor(<span class="keyword">const</span> sf::Color&amp; color);</div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        <span class="keyword">const</span> sf::Color&amp; getTextColor() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        <span class="keyword">const</span> sf::Color&amp; getTextColor() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        <span class="keywordtype">void</span> setTextSize(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> size);</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <span class="keywordtype">void</span> setTextSize(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> size);</div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> getTextSize() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> getTextSize() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setTransparency(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> transparency);</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setTransparency(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> transparency);</div>
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> keyPressed(<span class="keyword">const</span> sf::Event::KeyEvent&amp; event);</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> widgetFocused();</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> keyPressed(<span class="keyword">const</span> sf::Event::KeyEvent&amp; event);</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> widgetFocused();</div>
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        <span class="comment">// This function is a (slow) way to set properties on the widget, no matter what type it is.</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> setProperty(std::string property, <span class="keyword">const</span> std::string&amp; value);</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="comment">// This function is a (slow) way to get properties of the widget, no matter what type it is.</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> getProperty(std::string property, std::string&amp; value) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        <span class="comment">// This function is a (slow) way to set properties on the widget, no matter what type it is.</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> setProperty(std::string property, <span class="keyword">const</span> std::string&amp; value);</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <span class="comment">// This function is a (slow) way to get properties of the widget, no matter what type it is.</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        <span class="comment">// When the requested property doesn&#39;t exist in the widget then the functions will return false.</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> getProperty(std::string property, std::string&amp; value) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <span class="comment">// Returns a list of all properties that can be used in setProperty and getProperty.</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        <span class="comment">// The second value in the pair is the type of the property (e.g. int, uint, string, ...).</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> std::list&lt; std::pair&lt;std::string, std::string&gt; &gt; getPropertyList() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        <span class="comment">// Returns a list of all properties that can be used in setProperty and getProperty.</span></div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        <span class="comment">// The second value in the pair is the type of the property (e.g. int, uint, string, ...).</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> std::list&lt; std::pair&lt;std::string, std::string&gt; &gt; getPropertyList() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;      <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        <span class="comment">// This function is called when the widget is added to a container.</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> initialize(<a class="code" href="classtgui_1_1Container.html">Container</a> *<span class="keyword">const</span> container);</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;      <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        <span class="comment">// This function is called when the widget is added to a container.</span></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> initialize(<a class="code" href="classtgui_1_1Container.html">Container</a> *<span class="keyword">const</span> container);</div>
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        <span class="comment">// Draws the widget on the render target.</span></div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw(sf::RenderTarget&amp; target, sf::RenderStates states) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        <span class="comment">// Draws the widget on the render target.</span></div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw(sf::RenderTarget&amp; target, sf::RenderStates states) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;      <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;</div>
-<div class="line"><a name="l00283"></a><span class="lineno"><a class="line" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37">  283</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37">ButtonCallbacks</a></div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        {</div>
-<div class="line"><a name="l00285"></a><span class="lineno"><a class="line" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37a0a9da4f078cc8fb86c1b41d935f635d1">  285</a></span>&#160;            SpaceKeyPressed      = ClickableWidgetCallbacksCount * 1,     </div>
-<div class="line"><a name="l00286"></a><span class="lineno"><a class="line" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37a337575e89885e56eb9557804e9c6e5b9">  286</a></span>&#160;            ReturnKeyPressed     = ClickableWidgetCallbacksCount * 2,     </div>
-<div class="line"><a name="l00287"></a><span class="lineno"><a class="line" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37aa3c0ee7ab8358239a11e03981ce673d5">  287</a></span>&#160;            AllButtonCallbacks   = ClickableWidgetCallbacksCount * 4 - 1, </div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;            ButtonCallbacksCount = ClickableWidgetCallbacksCount * 4</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;        };</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;      <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;</div>
+<div class="line"><a name="l00284"></a><span class="lineno"><a class="line" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37">  284</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37">ButtonCallbacks</a></div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        {</div>
+<div class="line"><a name="l00286"></a><span class="lineno"><a class="line" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37a0a9da4f078cc8fb86c1b41d935f635d1">  286</a></span>&#160;            SpaceKeyPressed      = ClickableWidgetCallbacksCount * 1,     </div>
+<div class="line"><a name="l00287"></a><span class="lineno"><a class="line" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37a337575e89885e56eb9557804e9c6e5b9">  287</a></span>&#160;            ReturnKeyPressed     = ClickableWidgetCallbacksCount * 2,     </div>
+<div class="line"><a name="l00288"></a><span class="lineno"><a class="line" href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37aa3c0ee7ab8358239a11e03981ce673d5">  288</a></span>&#160;            AllButtonCallbacks   = ClickableWidgetCallbacksCount * 4 - 1, </div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            ButtonCallbacksCount = ClickableWidgetCallbacksCount * 4</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;        };</div>
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;      <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        std::string m_LoadedConfigFile;</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureNormal_L;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureHover_L;</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureDown_L;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureFocused_L;</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureNormal_M;</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureHover_M;</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureDown_M;</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureFocused_M;</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureNormal_R;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureHover_R;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureDown_R;</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureFocused_R;</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        <span class="comment">// If this is true then the L, M and R images will be used.</span></div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        <span class="comment">// If it is false then the button is just one big image that will be stored in the M image.</span></div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        <span class="keywordtype">bool</span> m_SplitImage;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <span class="comment">// Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?</span></div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="keywordtype">bool</span> m_SeparateHoverImage;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <span class="comment">// The SFML text</span></div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        sf::Text m_Text;</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        <span class="comment">// This will store the size of the text ( 0 to auto size )</span></div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_TextSize;</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;      <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        std::string m_LoadedConfigFile;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureNormal_L;</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureHover_L;</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureDown_L;</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureFocused_L;</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureNormal_M;</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureHover_M;</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureDown_M;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureFocused_M;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureNormal_R;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureHover_R;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureDown_R;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        <a class="code" href="structtgui_1_1Texture.html">Texture</a> m_TextureFocused_R;</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        <span class="comment">// If this is true then the L, M and R images will be used.</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        <span class="comment">// If it is false then the button is just one big image that will be stored in the M image.</span></div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        <span class="keywordtype">bool</span> m_SplitImage;</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="comment">// Is there a separate hover image, or is it a semi-transparent image that is drawn on top of the others?</span></div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="keywordtype">bool</span> m_SeparateHoverImage;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <span class="comment">// The SFML text</span></div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        sf::Text m_Text;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        <span class="comment">// This will store the size of the text ( 0 to auto size )</span></div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_TextSize;</div>
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classtgui_1_1ChildWindow.html">ChildWindow</a>;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    };</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;}</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;<span class="preprocessor">#endif // TGUI_BUTTON_HPP</span></div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classtgui_1_1ChildWindow.html">ChildWindow</a>;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    };</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;}</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;<span class="preprocessor">#endif // TGUI_BUTTON_HPP</span></div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classtgui_1_1Transformable_html_a4847f802d66cdf386d09595fecfa3131"><div class="ttname"><a href="classtgui_1_1Transformable.html#a4847f802d66cdf386d09595fecfa3131">tgui::Transformable::setPosition</a></div><div class="ttdeci">virtual void setPosition(float x, float y)</div><div class="ttdoc">Set the position of the widget. </div></div>
 <div class="ttc" id="classtgui_1_1ChildWindow_html"><div class="ttname"><a href="classtgui_1_1ChildWindow.html">tgui::ChildWindow</a></div><div class="ttdoc">Movable Panel with title bar. </div><div class="ttdef"><b>Definition:</b> ChildWindow.hpp:41</div></div>
 <div class="ttc" id="structtgui_1_1Texture_html"><div class="ttname"><a href="structtgui_1_1Texture.html">tgui::Texture</a></div><div class="ttdef"><b>Definition:</b> TextureManager.hpp:52</div></div>
 <div class="ttc" id="classtgui_1_1ClickableWidget_html"><div class="ttname"><a href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></div><div class="ttdef"><b>Definition:</b> ClickableWidget.hpp:38</div></div>
 <div class="ttc" id="classtgui_1_1Container_html"><div class="ttname"><a href="classtgui_1_1Container.html">tgui::Container</a></div><div class="ttdoc">Parent class for widgets that store multiple widgets. </div><div class="ttdef"><b>Definition:</b> Container.hpp:43</div></div>
 <div class="ttc" id="classtgui_1_1Button_html"><div class="ttname"><a href="classtgui_1_1Button.html">tgui::Button</a></div><div class="ttdef"><b>Definition:</b> Button.hpp:40</div></div>
-<div class="ttc" id="classtgui_1_1Button_html_ab30df57bb99a62232041c15c9f925d37"><div class="ttname"><a href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37">tgui::Button::ButtonCallbacks</a></div><div class="ttdeci">ButtonCallbacks</div><div class="ttdoc">Defines specific triggers to Button. </div><div class="ttdef"><b>Definition:</b> Button.hpp:283</div></div>
+<div class="ttc" id="classtgui_1_1Button_html_ab30df57bb99a62232041c15c9f925d37"><div class="ttname"><a href="classtgui_1_1Button.html#ab30df57bb99a62232041c15c9f925d37">tgui::Button::ButtonCallbacks</a></div><div class="ttdeci">ButtonCallbacks</div><div class="ttdoc">Defines specific triggers to Button. </div><div class="ttdef"><b>Definition:</b> Button.hpp:284</div></div>
 <div class="ttc" id="classtgui_1_1SharedWidgetPtr_html"><div class="ttname"><a href="classtgui_1_1SharedWidgetPtr.html">tgui::SharedWidgetPtr</a></div><div class="ttdef"><b>Definition:</b> SharedWidgetPtr.hpp:44</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 10 2015 00:49:45 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 11 2015 14:31:16 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

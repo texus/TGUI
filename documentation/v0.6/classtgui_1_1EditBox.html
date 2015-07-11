@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.6.8</span>
+   &#160;<span id="projectnumber">v0.6.9</span>
    </div>
   </td>
  </tr>
@@ -157,9 +157,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5d90382c2521e5acb15ac842a9f5354a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1EditBox.html">EditBox</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a5d90382c2521e5acb15ac842a9f5354a">operator=</a> (const <a class="el" href="classtgui_1_1EditBox.html">EditBox</a> &amp;right)</td></tr>
 <tr class="memdesc:a5d90382c2521e5acb15ac842a9f5354a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator.  <a href="#a5d90382c2521e5acb15ac842a9f5354a">More...</a><br/></td></tr>
 <tr class="separator:a5d90382c2521e5acb15ac842a9f5354a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f5e245889f6b8b28862b6449085c063"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a4f5e245889f6b8b28862b6449085c063">load</a> (const std::string &amp;configFileFilename)</td></tr>
-<tr class="memdesc:a4f5e245889f6b8b28862b6449085c063"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#a4f5e245889f6b8b28862b6449085c063">More...</a><br/></td></tr>
-<tr class="separator:a4f5e245889f6b8b28862b6449085c063"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe61f38790fede63720c0e03de2855dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#afe61f38790fede63720c0e03de2855dc">load</a> (const std::string &amp;configFileFilename, const std::string &amp;sectionName=&quot;EditBox&quot;)</td></tr>
+<tr class="memdesc:afe61f38790fede63720c0e03de2855dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget.  <a href="#afe61f38790fede63720c0e03de2855dc">More...</a><br/></td></tr>
+<tr class="separator:afe61f38790fede63720c0e03de2855dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e14edc147cb366bfe5def1cf60e11af"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a8e14edc147cb366bfe5def1cf60e11af">getLoadedConfigFile</a> () const </td></tr>
 <tr class="memdesc:a8e14edc147cb366bfe5def1cf60e11af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the filename of the config file that was used to load the widget.  <a href="#a8e14edc147cb366bfe5def1cf60e11af">More...</a><br/></td></tr>
 <tr class="separator:a8e14edc147cb366bfe5def1cf60e11af"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -199,6 +199,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2fba97a088cbc882a9287d39c81af361"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a2fba97a088cbc882a9287d39c81af361">getMaximumCharacters</a> () const </td></tr>
 <tr class="memdesc:a2fba97a088cbc882a9287d39c81af361"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the character limit.  <a href="#a2fba97a088cbc882a9287d39c81af361">More...</a><br/></td></tr>
 <tr class="separator:a2fba97a088cbc882a9287d39c81af361"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39a47f9d0352b79149567e21e43e5c18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a39a47f9d0352b79149567e21e43e5c18">setAlignment</a> (<a class="el" href="structtgui_1_1EditBox_1_1Alignment.html#a6b50cb28df0c96e0fbee8396a416c9de">Alignment::Alignments</a> alignment)</td></tr>
+<tr class="memdesc:a39a47f9d0352b79149567e21e43e5c18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the text alignment.  <a href="#a39a47f9d0352b79149567e21e43e5c18">More...</a><br/></td></tr>
+<tr class="separator:a39a47f9d0352b79149567e21e43e5c18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34d1f57061a09a7ba66effa195c0cfbe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtgui_1_1EditBox_1_1Alignment.html#a6b50cb28df0c96e0fbee8396a416c9de">Alignment::Alignments</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a34d1f57061a09a7ba66effa195c0cfbe">getAlignment</a> ()</td></tr>
+<tr class="memdesc:a34d1f57061a09a7ba66effa195c0cfbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current text alignment.  <a href="#a34d1f57061a09a7ba66effa195c0cfbe">More...</a><br/></td></tr>
+<tr class="separator:a34d1f57061a09a7ba66effa195c0cfbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a688ab4b4c0dfcabdf559d2a3bd5f1d04"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a688ab4b4c0dfcabdf559d2a3bd5f1d04">setBorders</a> (unsigned int leftBorder=0, unsigned int topBorder=0, unsigned int rightBorder=0, unsigned int bottomBorder=0)</td></tr>
 <tr class="memdesc:a688ab4b4c0dfcabdf559d2a3bd5f1d04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the border width and border height of the edit box.  <a href="#a688ab4b4c0dfcabdf559d2a3bd5f1d04">More...</a><br/></td></tr>
 <tr class="separator:a688ab4b4c0dfcabdf559d2a3bd5f1d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -241,9 +247,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad3151af6687bca5689ef6c444038388c"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#ad3151af6687bca5689ef6c444038388c">getSelectionPointWidth</a> () const </td></tr>
 <tr class="memdesc:ad3151af6687bca5689ef6c444038388c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the width of the selection point.  <a href="#ad3151af6687bca5689ef6c444038388c">More...</a><br/></td></tr>
 <tr class="separator:ad3151af6687bca5689ef6c444038388c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11d6d3b508653b73ea18f9d1812946df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a11d6d3b508653b73ea18f9d1812946df">setNumbersOnly</a> (bool numbersOnly)</td></tr>
-<tr class="memdesc:a11d6d3b508653b73ea18f9d1812946df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes whether the edit box accepts all characters or only numeric input.  <a href="#a11d6d3b508653b73ea18f9d1812946df">More...</a><br/></td></tr>
-<tr class="separator:a11d6d3b508653b73ea18f9d1812946df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5a3ed768039ce35e79131fc1bb7c6b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#ac5a3ed768039ce35e79131fc1bb7c6b3">setNumbersOnly</a> (bool numbersOnly=true)</td></tr>
+<tr class="memdesc:ac5a3ed768039ce35e79131fc1bb7c6b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes whether the edit box accepts all characters or only numeric input.  <a href="#ac5a3ed768039ce35e79131fc1bb7c6b3">More...</a><br/></td></tr>
+<tr class="separator:ac5a3ed768039ce35e79131fc1bb7c6b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bf813b178f989558688d75d945bd332"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a6bf813b178f989558688d75d945bd332">setTransparency</a> (unsigned char transparency)</td></tr>
 <tr class="memdesc:a6bf813b178f989558688d75d945bd332"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the transparency of the widget.  <a href="#a6bf813b178f989558688d75d945bd332">More...</a><br/></td></tr>
 <tr class="separator:a6bf813b178f989558688d75d945bd332"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -539,6 +545,24 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a34d1f57061a09a7ba66effa195c0cfbe"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structtgui_1_1EditBox_1_1Alignment.html#a6b50cb28df0c96e0fbee8396a416c9de">Alignment::Alignments</a> tgui::EditBox::getAlignment </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the current text alignment. </p>
+<dl class="section return"><dt>Returns</dt><dd>Text alignment </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a8e14edc147cb366bfe5def1cf60e11af"></a>
 <div class="memitem">
 <div class="memproto">
@@ -763,7 +787,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a4f5e245889f6b8b28862b6449085c063"></a>
+<a class="anchor" id="afe61f38790fede63720c0e03de2855dc"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -771,8 +795,18 @@ Public Member Functions</h2></td></tr>
           <td class="memname">bool tgui::EditBox::load </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>configFileFilename</em></td><td>)</td>
+          <td class="paramname"><em>configFileFilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>sectionName</em> = <code>&quot;EditBox&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -780,7 +814,8 @@ Public Member Functions</h2></td></tr>
 <p>Loads the widget. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file.</td></tr>
+    <tr><td class="paramname">configFileFilename</td><td>Filename of the config file. </td></tr>
+    <tr><td class="paramname">sectionName</td><td>Name of the section in the file to load</td></tr>
   </table>
   </dd>
 </dl>
@@ -810,6 +845,30 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to itself </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a39a47f9d0352b79149567e21e43e5c18"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::EditBox::setAlignment </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structtgui_1_1EditBox_1_1Alignment.html#a6b50cb28df0c96e0fbee8396a416c9de">Alignment::Alignments</a>&#160;</td>
+          <td class="paramname"><em>alignment</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Change the text alignment. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">alignment</td><td>The new text alignment </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -898,7 +957,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a11d6d3b508653b73ea18f9d1812946df"></a>
+<a class="anchor" id="ac5a3ed768039ce35e79131fc1bb7c6b3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -906,7 +965,7 @@ Public Member Functions</h2></td></tr>
           <td class="memname">void tgui::EditBox::setNumbersOnly </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>numbersOnly</em></td><td>)</td>
+          <td class="paramname"><em>numbersOnly</em> = <code>true</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1308,7 +1367,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 10 2015 00:49:45 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 11 2015 14:31:17 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
