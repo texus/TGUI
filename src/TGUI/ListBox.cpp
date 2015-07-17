@@ -1317,7 +1317,8 @@ namespace tgui
             scissorTop = scissorBottom;
 
         // Create a text widget to draw the items
-        sf::Text text("", *m_TextFont, m_TextSize);
+        sf::Text text("kg", *m_TextFont, m_TextSize);
+        sf::FloatRect bounds = text.getLocalBounds();
 
         // Check if there is a scrollbar and whether it isn't hidden
         if ((m_Scroll != nullptr) && (m_Scroll->getLowValue() < m_Scroll->getMaximum()))
@@ -1343,9 +1344,6 @@ namespace tgui
 
                 // Set the next item
                 text.setString(m_Items[i]);
-
-                // Get the global bounds
-                sf::FloatRect bounds = text.getGlobalBounds();
 
                 // Check if we are drawing the selected item
                 if (m_SelectedItem == static_cast<int>(i))
@@ -1415,9 +1413,6 @@ namespace tgui
                 }
                 else // Set the normal text color
                     text.setColor(m_TextColor);
-
-                // Get the global bounds
-                sf::FloatRect bounds = text.getGlobalBounds();
 
                 // Set the translation for the text
                 states.transform.translate(2, std::floor((i * m_ItemHeight) + ((m_ItemHeight - bounds.height) / 2.0f) - bounds.top));
