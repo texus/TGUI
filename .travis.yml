@@ -11,4 +11,4 @@ install:
   - make && sudo make install
   - cd ..
 
-script: cmake . && make
+script: cmake -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_TESTS=TRUE . && make && ./tests/tests

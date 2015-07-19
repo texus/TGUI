@@ -1,30 +1,5 @@
-
+# TODO Change to file list again (to avoid problems with caching)
 file(GLOB TGUI_SRC "*.cpp" "extra/*.cpp")
-
-# add the sfml and tgui include directories
-include_directories( "${PROJECT_SOURCE_DIR}/include" )
-include_directories( ${SFML_INCLUDE_DIR} )
-
-# OpenGL is required (due to a temporary fix)
-if (NOT TGUI_OPENGL_ES)
-    find_package(OpenGL REQUIRED)
-    include_directories(${OPENGL_INCLUDE_DIR})
-    set(TGUI_EXT_LIBS ${OPENGL_gl_LIBRARY} ${SFML_LIBRARIES})
-else()
-    if (SFML_OS_LINUX)
-        find_package(EGL REQUIRED)
-        find_package(GLES REQUIRED)
-        add_definitions(-DSFML_OPENGL_ES)
-        include_directories(${EGL_INCLUDE_DIR} ${GLES_INCLUDE_DIR})
-    elseif(SFML_OS_ANDROID)
-        set(TGUI_EXT_LIBS ${SFML_LIBRARIES} "-lEGL -lGLESv1_CM")
-    endif()
-endif()
-
-# We need to link to an extra library on android (to use the asset manager)
-if(SFML_OS_ANDROID)
-    set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
-endif()
 
 # Determine library suffixes depending on static/shared configuration
 if(TGUI_SHARED_LIBS)
@@ -51,7 +26,6 @@ if(TGUI_SHARED_LIBS)
     endif()
 
 else()
-    add_definitions(-DSFML_STATIC)
     add_library(${PROJECT_NAME} STATIC ${TGUI_SRC})
     set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX -s-d)
     set_target_properties(${PROJECT_NAME} PROPERTIES RELEASE_POSTFIX -s)
