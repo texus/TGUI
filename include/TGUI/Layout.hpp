@@ -26,243 +26,437 @@
 #ifndef TGUI_LAYOUT_HPP
 #define TGUI_LAYOUT_HPP
 
+#include <SFML/System/Vector2.hpp>
+#include <TGUI/Config.hpp>
 #include <functional>
 #include <memory>
 #include <vector>
-#include <list>
+#include <set>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    class LayoutGroup;
-    class Layout;
-    class Widget;
     class Gui;
+    class Widget;
+    class Layout;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    enum class LayoutChangeTrigger
-    {
-        Position,
-        Size
-    };
-
+    /// @internal
+    /// Shared information between layouts
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    class TGUI_API LayoutCallbackManager final
-    {
-    public:
-        void bindCallback(const std::shared_ptr<Widget>& widget, LayoutChangeTrigger trigger, const Layout* layout, const std::function<void()>& function);
-        void unbindCallback(const std::shared_ptr<Widget>& widget, LayoutChangeTrigger trigger, const Layout* layout);
-
-    private:
-        void positionChanged(std::shared_ptr<Widget> widget);
-        void sizeChanged(std::shared_ptr<Widget> widget);
-
-    private:
-        std::map<Widget*, std::map<LayoutChangeTrigger, std::map<const Layout*, std::function<void()>>>> m_callbacks;
-    };
-
-    extern TGUI_API LayoutCallbackManager TGUI_LayoutCallbackManager;
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    class TGUI_API LayoutBind final
+    class TGUI_API LayoutImpl : public std::enable_shared_from_this<LayoutImpl>
     {
     public:
 
-        enum class Param
+        /// Does the layout contain a value or an operation between other layouts?
+        enum class Operation
         {
-            None,
-            X,
-            Y
-        };
-
-        LayoutBind(const std::shared_ptr<Widget>& widget, Param param, float fraction, LayoutChangeTrigger trigger);
-
-        float getValue() const;
-
-        void setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const;
-
-        void unbindCallback(const Layout* layout);
-
-    protected:
-        std::shared_ptr<Widget> m_widget;
-        float m_fraction;
-
-        LayoutChangeTrigger m_trigger;
-        Param m_param;
-
-        static LayoutCallbackManager m_layoutCallbackManager;
-    };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    class TGUI_API Layout1d final
-    {
-    public:
-
-        enum class Operator
-        {
-            Add,
-            Subtract,
-            Multiply,
-            Divide
-        };
-
-        Layout1d(float value = 0) : m_value{value}, m_constant{value} {}
-
-        explicit Layout1d(const LayoutBind& binding);
-
-        Layout1d(const Layout1d& layout);
-        Layout1d& operator=(const Layout1d& right);
-
-        float getValue() const
-        {
-            return m_value;
-        }
-
-        void setGroup(LayoutGroup&& group);
-
-        void recalculateValue();
-
-        friend TGUI_API Layout1d operator+(const Layout1d& left, const Layout1d& right);
-        friend TGUI_API Layout1d operator-(const Layout1d& left, const Layout1d& right);
-        friend TGUI_API Layout1d operator*(const Layout1d& left, const Layout1d& right);
-        friend TGUI_API Layout1d operator/(const Layout1d& left, const Layout1d& right);
-
-        friend TGUI_API Layout operator*(const Layout& left, const Layout1d& right);
-        friend TGUI_API Layout operator/(const Layout& left, const Layout1d& right);
-
-    private:
-        void setCallbackFunction(const std::function<void()>& callback, const Layout* layout) const;
-        void unbindCallback(const Layout* layout);
-
-    private:
-        std::list<LayoutBind> m_bindings;
-        std::list<Operator> m_operators;
-        float m_value = 0;
-        float m_constant = 0;
-
-        std::vector<LayoutGroup> m_groups;
-
-        friend class Layout;
-    };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    class TGUI_API LayoutGroup final
-    {
-    public:
-
-        enum class Selector
-        {
+            Value,
+            String,
+            Plus,
+            Minus,
+            Multiplies,
+            Divides,
+            Modulus,
+            LessThan,
+            LessOrEqual,
+            GreaterThan,
+            GreaterOrEqual,
+            Equal,
+            NotEqual,
             Minimum,
-            Maximum
+            Maximum,
+            Conditional
         };
 
-        LayoutGroup(Layout1d& first, const Layout1d& second, Selector selector);
 
-        LayoutGroup(const LayoutGroup&) = delete;
-        LayoutGroup& operator=(const LayoutGroup&) = delete;
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
 
-        LayoutGroup(LayoutGroup&& group);
-        LayoutGroup& operator=(LayoutGroup&&);
+        /// @brief Destructor
+        ~LayoutImpl();
 
-        LayoutGroup clone(Layout1d& layout) const;
+        /// @brief Recalculate the value
+        void recalculate();
 
-        void determineActiveLayout();
 
-        Layout1d& getActiveLayout() const
-        {
-            return *m_active;
-        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
 
-        Layout1d& getNonActiveLayout() const
-        {
-            return *m_nonActive;
-        }
+        // Calculate the value of a layout defined by a string
+        float parseLayoutString(std::string expression);
+
+        // Parse references to widgets from the layout strings
+        float parseWidgetName(const std::string& expression, Widget* widget, const std::string& alreadyParsedPart = "");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+        float value = 0; ///< Cached value of the layout
+        std::set<Layout*> attachedLayouts; ///< Layout objects that use this shared object
+        std::set<LayoutImpl*> parents; ///< Other layouts that make use of this layout in their expression
+
+        Operation operation = Operation::Value; ///< Does the layout contain a value or an operation between other layouts?
+        std::vector<std::shared_ptr<LayoutImpl>> operands; ///< Operands used in the operation that this object performs
+
+        // These members are only used when operation == Operation::String
+        std::string stringExpression; ///< String expression in this layout
+        Widget* parentWidget = nullptr; ///< Widget connected to this layout
 
     private:
-        Layout1d* m_first;
-        Layout1d m_second;
-
-        Layout1d* m_active = nullptr;
-        Layout1d* m_nonActive = nullptr;
-
-        Selector m_selector;
+        std::set<std::string> boundCallbacks;
     };
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Layout final
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Class to store the left, top, width or height of a widget
+    ///
+    /// You don't have to create an instance of this class, numbers are implicitly cast to this class.
+    ///
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API Layout
     {
     public:
 
-        Layout(const sf::Vector2f& value = {0,0}) : x(value.x), y(value.y) {}
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Default constructor to implicitly construct from numeric constant.
+        ///
+        /// @param contant  Value of the layout
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Layout(float constant = 0);
 
-        Layout(const Layout1d& valueX, const Layout1d& valueY) : x(valueX), y(valueY) {}
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Construct the layout based on a string which will be parsed to determine the value of the layout
+        ///
+        /// @param expression  String to parse
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Layout(const std::string& expression);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Copy constructor
+        ///
+        /// @param copy  Instance to copy
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Layout(const Layout& copy);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Destructor
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ~Layout();
 
-        sf::Vector2f getValue() const
-        {
-            return {x.getValue(), y.getValue()};
-        }
 
-        void recalculateValue();
-        void setCallbackFunction(const std::function<void()>& callback) const;
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Overload of assignment operator
+        ///
+        /// @param right  Instance to assign
+        ///
+        /// @return Reference to itself
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Layout& operator=(const Layout& right);
 
-        friend TGUI_API Layout operator+(const Layout& left, const Layout& right);
-        friend TGUI_API Layout operator-(const Layout& left, const Layout& right);
 
-        friend TGUI_API Layout operator*(const Layout& left, const Layout1d& right);
-        friend TGUI_API Layout operator/(const Layout& left, const Layout1d& right);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Return the cached value of the layout
+        ///
+        /// @return Value of the layout
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getValue() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Connect a callback function to call when the layout is updated
+        ///
+        /// @param callbackFunction  Function to call when layout value changes
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void connectUpdateCallback(const std::function<void()>& callbackFunction);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Tells the layout that its value has been changed and that the callback function must be called
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void update() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Access the layout implementation that is shared between layout objects
+        ///
+        /// @return Shared layout data
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::shared_ptr<LayoutImpl> getImpl() const;
+
+
+        /// @brief Unary plus operator for the Layout class
+        Layout operator+();
+
+        /// @brief Unary minus operator for the Layout class
+        Layout operator-();
+
+        /// @brief += operator for the Layout class
+        Layout operator+=(Layout right);
+
+        /// @brief -= operator for the Layout class
+        Layout operator-=(Layout right);
+
+        /// @brief *= operator for the Layout class
+        Layout operator*=(Layout right);
+
+        /// @brief /= operator for the Layout class
+        Layout operator/=(Layout right);
+
+        /// @brief %= operator for the Layout class (floating point modulo)
+        Layout operator%=(Layout right);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+        std::shared_ptr<LayoutImpl> m_impl = std::make_shared<LayoutImpl>();
+        std::function<void()> m_callbackFunction;
+        bool m_assigning = false;
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Class to store the position or size of a widget
+    ///
+    /// You don't have to create an instance of this class, sf::Vector2f is implicitly converted to this class.
+    ///
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API Layout2d
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Default constructor to implicitly construct from an sf::Vector2f.
+        ///
+        /// @param contant  Value of the layout
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Layout2d(sf::Vector2f constant = {0, 0});
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor to create the Layout2d from two Layout classes
+        ///
+        /// @param layoutX  x component
+        /// @param layoutY  y component
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Layout2d(Layout layoutX, Layout layoutY);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Construct the layout based on a string which will be parsed to determine the value of the layout
+        ///
+        /// @param expression  String to parse
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Layout2d(const std::string& expression);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Return the cached value of the layout
+        ///
+        /// @return Value of the layout
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::Vector2f getValue() const;
+
+
+        /// @brief Unary plus operator for the Layout class
+        Layout2d operator+();
+
+        /// @brief Unary minus operator for the Layout class
+        Layout2d operator-();
+
+        /// @brief += operator for the Layout2d class
+        Layout2d operator+=(Layout2d right);
+
+        /// @brief -= operator for the Layout2d class
+        Layout2d operator-=(Layout2d right);
+
+        /// @brief *= operator for the Layout2d class
+        Layout2d operator*=(Layout right);
+
+        /// @brief /= operator for the Layout2d class
+        Layout2d operator/=(Layout right);
+
+        /// @brief %= operator for the Layout2d class (floating point modulo)
+        Layout2d operator%=(Layout right);
 
     public:
-        Layout1d x;
-        Layout1d y;
+        Layout x; ///< Layout to store the x component
+        Layout y; ///< Layout to store the y component
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API Layout1d operator+(const Layout1d& left, const Layout1d& right);
-    TGUI_API Layout1d operator-(const Layout1d& left, const Layout1d& right);
-    TGUI_API Layout1d operator*(const Layout1d& left, const Layout1d& right);
-    TGUI_API Layout1d operator/(const Layout1d& left, const Layout1d& right);
+    /// @brief < operator for the Layout class
+    TGUI_API Layout operator<(Layout left, Layout right);
 
-    TGUI_API Layout operator+(const Layout& left, const Layout& right);
-    TGUI_API Layout operator-(const Layout& left, const Layout& right);
+    /// @brief <= operator for the Layout class
+    TGUI_API Layout operator<=(Layout left, Layout right);
 
-    TGUI_API Layout operator*(const Layout& left, const Layout1d& right);
-    TGUI_API Layout operator/(const Layout& left, const Layout1d& right);
+    /// @brief > operator for the Layout class
+    TGUI_API Layout operator>(Layout left, Layout right);
 
-    TGUI_API Layout1d bindLeft(const std::shared_ptr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindTop(const std::shared_ptr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindRight(const std::shared_ptr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindBottom(const std::shared_ptr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindWidth(const std::shared_ptr<Widget>& widget, float fraction = 1);
-    TGUI_API Layout1d bindHeight(const std::shared_ptr<Widget>& widget, float fraction = 1);
+    /// @brief >= operator for the Layout class
+    TGUI_API Layout operator>=(Layout left, Layout right);
 
-    TGUI_API Layout1d bindLeft(const Gui& gui, float fraction = 1);
-    TGUI_API Layout1d bindTop(const Gui& gui, float fraction = 1);
-    TGUI_API Layout1d bindRight(const Gui& gui, float fraction = 1);
-    TGUI_API Layout1d bindBottom(const Gui& gui, float fraction = 1);
-    TGUI_API Layout1d bindWidth(const Gui& gui, float fraction = 1);
-    TGUI_API Layout1d bindHeight(const Gui& gui, float fraction = 1);
+    /// @brief == operator for the Layout class
+    TGUI_API Layout operator==(Layout left, Layout right);
 
-    TGUI_API Layout bindPosition(const std::shared_ptr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
-    TGUI_API Layout bindSize(const std::shared_ptr<Widget>& widget, const sf::Vector2f& fraction = {1,1});
+    /// @brief != operator for the Layout class
+    TGUI_API Layout operator!=(Layout left, Layout right);
 
-    TGUI_API Layout bindPosition(const Gui& gui, const sf::Vector2f& fraction = {1,1});
-    TGUI_API Layout bindSize(const Gui& gui, const sf::Vector2f& fraction = {1,1});
+    /// @brief + operator for the Layout class
+    TGUI_API Layout operator+(Layout left, Layout right);
 
-    TGUI_API Layout1d bindMinimum(const Layout1d& first, const Layout1d& second);
-    TGUI_API Layout1d bindMaximum(const Layout1d& first, const Layout1d& second);
+    /// @brief - operator for the Layout class
+    TGUI_API Layout operator-(Layout left, Layout right);
 
-    // Alternative for bindMinimum(maximum, bindMaximum(minimum, value))
-    TGUI_API Layout1d bindLimits(const Layout1d& minimum, const Layout1d& maximum, const Layout1d& value);
+    /// @brief * operator for the Layout class
+    TGUI_API Layout operator*(Layout left, Layout right);
+
+    /// @brief / operator for the Layout class
+    TGUI_API Layout operator/(Layout left, Layout right);
+
+    /// @brief % operator for the Layout class
+    TGUI_API Layout operator%(Layout left, Layout right);
+
+    /// @brief == operator for the Layout2d class
+    /// @warning This function will return Layout in the future
+    TGUI_API Layout2d operator==(Layout2d left, Layout2d right);
+
+    /// @brief != operator for the Layout2d class
+    /// @warning This function will return Layout in the future
+    TGUI_API Layout2d operator!=(Layout2d left, Layout2d right);
+
+    /// @brief + operator for the Layout2d class
+    TGUI_API Layout2d operator+(Layout2d left, Layout2d right);
+
+    /// @brief - operator for the Layout2d class
+    TGUI_API Layout2d operator-(Layout2d left, Layout2d right);
+
+    /// @brief * operator for the Layout2d class
+    TGUI_API Layout2d operator*(Layout2d left, Layout right);
+
+    /// @brief / operator for the Layout2d class
+    TGUI_API Layout2d operator/(Layout2d left, Layout right);
+
+    /// @brief % operator for the Layout2d class
+    TGUI_API Layout2d operator%(Layout2d left, Layout right);
+
+    /// @brief * operator for the Layout2d class
+    TGUI_API Layout2d operator*(Layout left, Layout2d right);
+
+    /// @brief Bind to the x position of the widget
+    TGUI_API Layout bindLeft(std::shared_ptr<Widget> widget);
+
+    /// @brief Bind to the y position of the widget
+    TGUI_API Layout bindTop(std::shared_ptr<Widget> widget);
+
+    /// @brief Bind to the width of the widget
+    TGUI_API Layout bindWidth(std::shared_ptr<Widget> widget);
+
+    /// @brief Bind to the height of the widget
+    TGUI_API Layout bindHeight(std::shared_ptr<Widget> widget);
+
+    /// @brief Bind to the right position of the widget
+    TGUI_API Layout bindRight(std::shared_ptr<Widget> widget);
+
+    /// @brief Bind to the bottom of the widget
+    TGUI_API Layout bindBottom(std::shared_ptr<Widget> widget);
+
+    /// @brief Bind to the position of the widget
+    TGUI_API Layout2d bindPosition(std::shared_ptr<Widget> widget);
+
+    /// @brief Bind to the size of the widget
+    TGUI_API Layout2d bindSize(std::shared_ptr<Widget> widget);
+
+    /// @brief Bind to the x position of the gui view
+    TGUI_API Layout bindLeft(Gui& gui);
+
+    /// @brief Bind to the y position of the gui view
+    TGUI_API Layout bindTop(Gui& gui);
+
+    /// @brief Bind to the width of the gui view
+    TGUI_API Layout bindWidth(Gui& gui);
+
+    /// @brief Bind to the height of the gui view
+    TGUI_API Layout bindHeight(Gui& gui);
+
+    /// @brief Bind to the right position of the gui view
+    TGUI_API Layout bindRight(Gui& gui);
+
+    /// @brief Bind to the bottom position of the gui view
+    TGUI_API Layout bindBottom(Gui& gui);
+
+    /// @brief Bind to the position of the gui view
+    TGUI_API Layout2d bindPosition(Gui& gui);
+
+    /// @brief Bind to the size of the gui view
+    TGUI_API Layout2d bindSize(Gui& gui);
+
+    /// @brief Bind to the minimum of two values
+    TGUI_API Layout bindMin(Layout value1, Layout value2);
+
+    /// @brief Bind to the maximum of two values
+    TGUI_API Layout bindMax(Layout value1, Layout value2);
+
+    /// @brief Bind to a value that remains between the minimum and maximum
+    TGUI_API Layout bindRange(Layout minimum, Layout maximum, Layout value);
+
+    /// @brief Bind conditionally to one of the two layouts
+    TGUI_API Layout bindIf(Layout condition, Layout trueExpr, Layout falseExpr);
+
+    /// @brief Bind conditionally to one of the two layouts
+    TGUI_API Layout2d bindIf(Layout condition, Layout2d trueExpr, Layout2d falseExpr);
+
+    /// @brief Bind a string for a layout (you can also just create the layout directly with the string)
+    TGUI_API Layout bindStr(const std::string& expression);
+
+    /// @brief Bind a string for a layout (you can also just create the layout directly with the string)
+    TGUI_API Layout bindStr(const char* expression);
+
+    /// @brief Bind a string for a layout (you can also just create the layout directly with the string)
+    TGUI_API Layout2d bindStr2d(const std::string& expression);
+
+    /// @brief Bind a string for a layout (you can also just create the layout directly with the string)
+    TGUI_API Layout2d bindStr2d(const char* expression);
+
+    // Put TGUI_IMPORT_LAYOUT_BIND_FUNCTIONS somewhere in your code to no longer have to put "tgui::" in front of the bind functions
+    // without having to import everything from tgui in your namespace or writing all these using statements yourself.
+    #define TGUI_IMPORT_LAYOUT_BIND_FUNCTIONS \
+        using tgui::bindLeft; \
+        using tgui::bindTop; \
+        using tgui::bindWidth; \
+        using tgui::bindHeight; \
+        using tgui::bindRight; \
+        using tgui::bindBottom; \
+        using tgui::bindPosition; \
+        using tgui::bindSize; \
+        using tgui::bindMin; \
+        using tgui::bindMax; \
+        using tgui::bindRange; \
+        using tgui::bindIf; \
+        using tgui::bindStr; \
+        using tgui::bindStr2d;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

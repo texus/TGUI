@@ -99,15 +99,21 @@ namespace tgui
 
     void Gui::setView(const sf::View& view)
     {
-        m_view = view;
-        m_container->m_size = view.getSize();
-        m_container->m_position = view.getCenter() - (view.getSize() / 2.0f);
+        if ((m_view.getCenter() != view.getCenter()) || (m_view.getSize() != view.getSize()))
+        {
+            m_view = view;
 
-        m_container->m_callback.position = m_container->getPosition();
-        m_container->sendSignal("PositionChanged", m_container->getPosition());
+            m_container->m_size = view.getSize();
+            m_container->m_position = view.getCenter() - (view.getSize() / 2.0f);
 
-        m_container->m_callback.size = m_container->getSize();
-        m_container->sendSignal("SizeChanged", m_container->getSize());
+            m_container->m_callback.position = m_container->getPosition();
+            m_container->sendSignal("PositionChanged", m_container->getPosition());
+
+            m_container->m_callback.size = m_container->getSize();
+            m_container->sendSignal("SizeChanged", m_container->getSize());
+        }
+        else // Set it anyway in case something changed that we didn't care to check
+            m_view = view;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

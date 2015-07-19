@@ -154,7 +154,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setPosition(const Layout& position)
+    void ChatBox::setPosition(const Layout2d& position)
     {
         sf::Vector2f oldPosition = getPosition();
 
@@ -169,7 +169,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setSize(const Layout& size)
+    void ChatBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

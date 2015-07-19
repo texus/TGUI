@@ -14,7 +14,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayout::setSize(const Layout& size)
+    void BoxLayout::setSize(const Layout2d& size)
     {
         Panel::setSize(size);
         updateWidgetPositions();

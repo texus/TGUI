@@ -107,7 +107,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setPosition(const Layout& position)
+    void Slider::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -134,7 +134,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setSize(const Layout& size)
+    void Slider::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

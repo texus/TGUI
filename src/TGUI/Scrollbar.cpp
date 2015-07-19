@@ -113,7 +113,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setPosition(const Layout& position)
+    void Scrollbar::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -160,7 +160,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setSize(const Layout& size)
+    void Scrollbar::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

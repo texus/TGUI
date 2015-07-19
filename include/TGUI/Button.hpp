@@ -112,7 +112,7 @@ namespace tgui
         /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const Layout& position) override;
+        virtual void setPosition(const Layout2d& position) override;
         using Transformable::setPosition;
 
 
@@ -122,7 +122,7 @@ namespace tgui
         /// @param size  The new size of the button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const Layout& size) override;
+        virtual void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 

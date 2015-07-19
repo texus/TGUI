@@ -65,7 +65,7 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpriteSheet::setPosition(const Layout& position)
+    void SpriteSheet::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -75,7 +75,7 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpriteSheet::setSize(const Layout& size)
+    void SpriteSheet::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

@@ -121,7 +121,7 @@ namespace tgui
         /// some Widgets are removed of the grid and the size was become valid again.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const Layout& size) override;
+        virtual void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 

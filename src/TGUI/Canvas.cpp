@@ -79,7 +79,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setPosition(const Layout& position)
+    void Canvas::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -88,7 +88,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setSize(const Layout& size)
+    void Canvas::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

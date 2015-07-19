@@ -104,7 +104,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setPosition(const Layout& position)
+    void Button::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -120,7 +120,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setSize(const Layout& size)
+    void Button::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

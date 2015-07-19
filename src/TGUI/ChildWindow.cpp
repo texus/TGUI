@@ -70,7 +70,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setPosition(const Layout& position)
+    void ChildWindow::setPosition(const Layout2d& position)
     {
         float x = position.getValue().x;
         float y = position.getValue().y;
@@ -128,7 +128,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setSize(const Layout& size)
+    void ChildWindow::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

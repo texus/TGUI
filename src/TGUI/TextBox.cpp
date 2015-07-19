@@ -180,7 +180,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setPosition(const Layout& position)
+    void TextBox::setPosition(const Layout2d& position)
     {
         // When the position is changed we just have to move the stuff. Otherwise it means we have to recalculate things.
         if (getPosition() != position.getValue())
@@ -355,7 +355,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setSize(const Layout& size)
+    void TextBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

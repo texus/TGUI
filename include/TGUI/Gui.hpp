@@ -270,6 +270,8 @@ namespace tgui
         /// container.add(pic);                // Add the picture to the container again
         /// @endcode
         ///
+        /// @warning The widget name should not contain whitespace.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void add(const Widget::Ptr& widgetPtr, const sf::String& widgetName = "");
 

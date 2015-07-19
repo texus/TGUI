@@ -118,7 +118,7 @@ namespace tgui
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const Layout& position) override;
+        virtual void setPosition(const Layout2d& position) override;
         using Transformable::setPosition;
 
 
@@ -140,7 +140,7 @@ namespace tgui
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const Layout& size) override;
+        virtual void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 

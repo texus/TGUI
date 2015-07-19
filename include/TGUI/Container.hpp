@@ -146,6 +146,8 @@ namespace tgui
         /// @param widgetPtr   Pointer to the widget you would like to add
         /// @param widgetName  If you want to access the widget later then you must do this with this name
         ///
+        /// @warning The widget name should not contain whitespace.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void add(const Widget::Ptr& widgetPtr, const sf::String& widgetName = "");
 
@@ -464,7 +466,7 @@ namespace tgui
         /// The window size cannot be changed by a widget.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const Layout& size) override;
+        virtual void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 

@@ -93,7 +93,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::setPosition(const Layout& position)
+    void MenuBar::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -118,7 +118,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::setSize(const Layout& size)
+    void MenuBar::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

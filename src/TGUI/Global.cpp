@@ -163,7 +163,7 @@ namespace tgui
 
     bool isWhitespace(char character)
     {
-        if (character == ' ' || character == '\t' || character == '\n')
+        if (character == ' ' || character == '\t' || character == '\r' || character == '\n')
             return true;
         else
             return false;
@@ -422,6 +422,15 @@ namespace tgui
         for (std::string::iterator i = str.begin(); i != str.end(); ++i)
             *i = static_cast<char>(std::tolower(*i));
 
+        return str;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::string trim(std::string str)
+    {
+        str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+        str.erase(std::find_if(str.rbegin(), str.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), str.end());
         return str;
     }
 

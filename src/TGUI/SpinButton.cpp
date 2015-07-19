@@ -102,7 +102,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setPosition(const Layout& position)
+    void SpinButton::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -124,7 +124,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setSize(const Layout& size)
+    void SpinButton::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

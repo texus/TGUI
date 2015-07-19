@@ -52,58 +52,52 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::setPosition(const Layout& position)
+    void Transformable::setPosition(const Layout2d& position)
     {
         m_position = position;
-        m_position.setCallbackFunction(std::bind(&Transformable::updatePosition, this, false));
+        m_position.x.connectUpdateCallback(std::bind(&Transformable::updatePosition, this, false));
+        m_position.y.connectUpdateCallback(std::bind(&Transformable::updatePosition, this, false));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::move(const Layout& offset)
+    void Transformable::move(const Layout2d& offset)
     {
         setPosition(m_position + offset);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::move(const Layout1d& x, const Layout1d& y)
+    void Transformable::move(const Layout& x, const Layout& y)
     {
         setPosition({m_position.x + x, m_position.y + y});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::setSize(const Layout& size)
+    void Transformable::setSize(const Layout2d& size)
     {
         m_size = size;
-        m_size.recalculateValue();
-
         if (m_size.getValue().x < 0)
-        {
             m_size.x = m_size.x * -1;
-            m_size.recalculateValue();
-        }
 
         if (m_size.getValue().y < 0)
-        {
             m_size.y = m_size.y * -1;
-            m_size.recalculateValue();
-        }
 
-        m_size.setCallbackFunction(std::bind(&Transformable::updateSize, this, false));
+        m_size.x.connectUpdateCallback(std::bind(&Transformable::updateSize, this, false));
+        m_size.y.connectUpdateCallback(std::bind(&Transformable::updateSize, this, false));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::scale(const Layout& factors)
+    void Transformable::scale(const Layout2d& factors)
     {
         setSize({m_size.x * factors.x, m_size.y * factors.y});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Transformable::scale(const Layout1d& x, const Layout1d& y)
+    void Transformable::scale(const Layout& x, const Layout& y)
     {
         setSize({m_size.x * x, m_size.y * y});
     }
@@ -113,19 +107,14 @@ namespace tgui
     void Transformable::updatePosition(bool forceUpdate)
     {
         if (forceUpdate)
-        {
-            m_position.recalculateValue();
             setPosition(m_position);
-        }
         else
         {
-            sf::Vector2f oldPosition = getPosition();
-
-            m_position.recalculateValue();
-
-            if (oldPosition != getPosition())
+            if (m_prevPosition != m_position.getValue())
                 setPosition(m_position);
         }
+
+        m_prevPosition = m_position.getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,19 +122,14 @@ namespace tgui
     void Transformable::updateSize(bool forceUpdate)
     {
         if (forceUpdate)
-        {
-            m_size.recalculateValue();
             setSize(m_size);
-        }
         else
         {
-            sf::Vector2f oldSize = m_size.getValue();
-
-            m_size.recalculateValue();
-
-            if (oldSize != m_size.getValue())
+            if (m_prevSize != m_size.getValue())
                 setSize(m_size);
         }
+
+        m_prevSize = m_size.getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -57,7 +57,7 @@ namespace tgui
         /// @param size  The new size of the layout
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const Layout& size) override;
+        virtual void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 

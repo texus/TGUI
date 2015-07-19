@@ -103,7 +103,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::setPosition(const Layout& position)
+    void RadioButton::setPosition(const Layout2d& position)
     {
         ClickableWidget::setPosition(position);
 
@@ -120,7 +120,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::setSize(const Layout& size)
+    void RadioButton::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

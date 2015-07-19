@@ -122,7 +122,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setPosition(const Layout& position)
+    void EditBox::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -135,7 +135,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setSize(const Layout& size)
+    void EditBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

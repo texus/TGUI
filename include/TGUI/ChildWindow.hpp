@@ -130,7 +130,7 @@ namespace tgui
         /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setPosition(const Layout& position) override;
+        void setPosition(const Layout2d& position) override;
         using Transformable::setPosition;
 
 
@@ -142,7 +142,7 @@ namespace tgui
         /// This is the size of the child window, without the title bar nor the borders.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(const Layout& size) override;
+        void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 

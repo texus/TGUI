@@ -53,7 +53,7 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::setPosition(const Layout& position)
+    void AnimatedPicture::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -63,7 +63,7 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::setSize(const Layout& size)
+    void AnimatedPicture::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

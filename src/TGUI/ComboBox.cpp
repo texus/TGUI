@@ -144,7 +144,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setPosition(const Layout& position)
+    void ComboBox::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -170,7 +170,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setSize(const Layout& size)
+    void ComboBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
