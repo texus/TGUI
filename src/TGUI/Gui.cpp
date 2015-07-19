@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Clipboard.hpp>
-#include <TGUI/Tooltip.hpp>
+#include <TGUI/Widgets/Tooltip.hpp>
 #include <TGUI/Gui.hpp>
 
 #include <SFML/OpenGL.hpp>
@@ -277,7 +277,7 @@ namespace tgui
 
     void Gui::focusWidget(Widget::Ptr& widget)
     {
-        m_container->focusWidget(&*widget);
+        m_container->focusWidget(widget.get());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,14 +312,28 @@ namespace tgui
 
     void Gui::moveWidgetToFront(Widget::Ptr& widget)
     {
-        m_container->moveWidgetToFront(&*widget);
+        m_container->moveWidgetToFront(widget.get());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::moveWidgetToBack(Widget::Ptr& widget)
     {
-        m_container->moveWidgetToBack(&*widget);
+        m_container->moveWidgetToBack(widget.get());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::loadWidgetsFromFile(const std::string& filename)
+    {
+        m_container->loadWidgetsFromFile(filename);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::saveWidgetsToFile(const std::string& filename)
+    {
+        m_container->saveWidgetsToFile(filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

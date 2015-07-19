@@ -54,24 +54,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    namespace
-    {
-        bool removeWhitespace(const std::string& line, std::string::const_iterator& c)
-        {
-            while (c != line.end())
-            {
-                if ((*c == ' ') || (*c == '\t') || (*c == '\r'))
-                    ++c;
-                else
-                    return true;
-            }
-
-            return false;
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     ThemeFileParser::ThemeFileParser(const std::string& filename, const std::string& section) :
         m_filename(filename),
         m_section (section)

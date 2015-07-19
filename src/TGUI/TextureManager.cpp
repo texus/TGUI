@@ -31,127 +31,104 @@
 
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<ImageLoader> TextureManager::m_imageLoader = std::make_shared<ImageLoader>();
+    std::map<std::string, std::list<TextureDataHolder>> TextureManager::m_imageMap;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextureManager::getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middleRect, bool repeated)
+    bool TextureManager::getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect)
     {
         // Look if we already had this image
         auto imageIt = m_imageMap.find(filename);
         if (imageIt != m_imageMap.end())
         {
             // Loop all our textures to find the one containing the image
-            for (std::list<TextureData>::iterator it = imageIt->second.data.begin(); it != imageIt->second.data.end(); ++it)
+            for (auto dataIt = imageIt->second.begin(); dataIt != imageIt->second.end(); ++dataIt)
             {
                 // Only reuse the texture when the exact same part of the image is used
-                if (it->rect == partRect)
+                if (dataIt->data->rect == partRect)
                 {
                     // The texture is now used at multiple places
-                    ++(it->users);
+                    ++(dataIt->users);
 
-                    // Set the texture in the sprite
-                    if (middleRect != sf::IntRect{})
-                        texture.setTexture(*it, middleRect);
-                    else
-                        texture.setTexture(*it, {0, 0, static_cast<int>(it->texture.getSize().x), static_cast<int>(it->texture.getSize().y)});
-
-                    return;
+                    *texture.getData() = *dataIt->data;
+                    return true;
                 }
             }
         }
         else // The image doesn't exist yet
         {
-            auto it = m_imageMap.insert({filename, ImageMapData()});
+            auto it = m_imageMap.insert({filename, {}});
             imageIt = it.first;
         }
 
         // Add new data to the list
-        TextureData data;
-        data.rect = partRect;
-        data.image = &imageIt->second.image;
+        TextureDataHolder data;
+        data.filename = filename;
+        data.users = 1;
+        data.data = texture.getData();
+        data.data->rect = partRect;
+        imageIt->second.push_back(std::move(data));
+
+        // Let the texture alert the texture manager when it is being copied or destroyed
+        texture.setCopyCallback(&TextureManager::copyTexture);
+        texture.setDestructCallback(&TextureManager::removeTexture);
 
         // Load the image
-        if (m_imageLoader->load(filename, *data.image))
+        texture.getData()->image = texture.getImageLoader()(filename);
+        if (texture.getData()->image != nullptr)
         {
             // Create a texture from the image
-            bool success;
             if (partRect == sf::IntRect{})
-                success = data.texture.loadFromImage(*data.image);
+                return texture.getData()->texture.loadFromImage(*texture.getData()->image);
             else
-                success = data.texture.loadFromImage(*data.image, partRect);
-
-            if (success)
-            {
-                if (repeated)
-                    data.texture.setRepeated(repeated);
-
-                // Set the other members of the data
-                data.filename = filename;
-                data.users = 1;
-
-                // Set the texture in the sprite
-                imageIt->second.data.push_back(std::move(data));
-
-                if (middleRect != sf::IntRect{})
-                    texture.setTexture(imageIt->second.data.back(), middleRect);
-                else
-                    texture.setTexture(imageIt->second.data.back(), {0, 0, static_cast<int>(data.texture.getSize().x), static_cast<int>(data.texture.getSize().y)});
-
-                return;
-            }
+                return texture.getData()->texture.loadFromImage(*texture.getData()->image, partRect);
         }
 
         // The image could not be loaded
         m_imageMap.erase(imageIt);
-        throw Exception{"Failed to load image " + filename + "."};
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextureManager::copyTexture(const Texture& textureToCopy)
+    void TextureManager::copyTexture(const TextureData* textureDataToCopy)
     {
         // Loop all our textures to check if we already have this one
-        for (auto imageIt = m_imageMap.begin(); imageIt != m_imageMap.end(); ++imageIt)
+        for (auto& dataHolder : m_imageMap)
         {
-            for (auto dataIt = imageIt->second.data.begin(); dataIt != imageIt->second.data.end(); ++dataIt)
+            for (auto& data : dataHolder.second)
             {
                 // Check if the pointer points to our texture
-                if (&(*dataIt) == textureToCopy.getData())
+                if (data.data == textureDataToCopy)
                 {
                     // The texture is now used at multiple places
-                    ++(dataIt->users);
+                    ++data.users;
                     return;
                 }
             }
         }
 
-        throw Exception{"Trying to copy a texture that was not loaded by the TextureManager."};
+        throw Exception{"Trying to copy texture data that was not loaded by the TextureManager."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextureManager::removeTexture(const Texture& textureToRemove)
+    void TextureManager::removeTexture(const TextureData* textureDataToRemove)
     {
         // Loop all our textures to check which one it is
         for (auto imageIt = m_imageMap.begin(); imageIt != m_imageMap.end(); ++imageIt)
         {
-            for (auto dataIt = imageIt->second.data.begin(); dataIt != imageIt->second.data.end(); ++dataIt)
+            for (auto dataIt = imageIt->second.begin(); dataIt != imageIt->second.end(); ++dataIt)
             {
                 // Check if the pointer points to our texture
-                if (&(*dataIt) == textureToRemove.getData())
+                if (dataIt->data == textureDataToRemove)
                 {
                     // If this was the only place where the texture is used then delete it
                     if (--(dataIt->users) == 0)
                     {
-                        // Remove the texture from the list, or even the whole image if it isn't used anywhere else
-                        int usage = std::count_if(imageIt->second.data.begin(), imageIt->second.data.end(), [dataIt](TextureData& data){ return data.image == dataIt->image; });
-                        if (usage == 1)
+                        imageIt->second.erase(dataIt);
+                        if (imageIt->second.empty())
                             m_imageMap.erase(imageIt);
-                        else
-                            imageIt->second.data.erase(dataIt);
                     }
 
                     return;
@@ -160,21 +137,6 @@ namespace tgui
         }
 
         throw Exception{"Trying to remove a texture that was not loaded by the TextureManager."};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextureManager::setImageLoader(std::shared_ptr<ImageLoader> imageLoader)
-    {
-        if (imageLoader != nullptr)
-            m_imageLoader = imageLoader;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool ImageLoader::load(const std::string& filename, sf::Image& image)
-    {
-        return image.loadFromFile(filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -28,9 +28,14 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <TGUI/Config.hpp>
+
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Rect.hpp>
+
+#include <memory>
+#include <string>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,13 +43,20 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    struct TextureData
+    // Used by the Texture class
+    struct TGUI_API TextureData
     {
-        TextureData() : image(nullptr) {}
-
-        sf::Image*    image;
+        std::shared_ptr<sf::Image> image;
         sf::Texture   texture;
         sf::IntRect   rect;
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Wrapper around TextureData to be used in TextureManager
+    struct TGUI_API TextureDataHolder
+    {
+        TextureData*  data = nullptr;
         std::string   filename;
         unsigned int  users;
     };

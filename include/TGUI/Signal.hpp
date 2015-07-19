@@ -54,6 +54,12 @@ namespace tgui
     template <typename T>
     std::string convertTypeToString();
 
+    template <> inline std::string convertTypeToString<int>() { return "int"; }
+    template <> inline std::string convertTypeToString<sf::Vector2f>() { return "sf::Vector2f"; }
+    template <> inline std::string convertTypeToString<sf::String>() { return "sf::String"; }
+    template <> inline std::string convertTypeToString<std::vector<sf::String>>() { return "std::vector<sf::String>"; }
+    template <> inline std::string convertTypeToString<std::shared_ptr<ChildWindow>>() { return "std::shared_ptr<ChildWindow>"; }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /// @internal

@@ -31,10 +31,9 @@
 #include <TGUI/TextureData.hpp>
 #include <TGUI/TextureManager.hpp>
 
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/Vertex.hpp>
+#include <TGUI/Global.hpp>
 
+#include <functional>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,6 +44,10 @@ namespace tgui
     class TGUI_API Texture : public sf::Transformable, public sf::Drawable
     {
     public:
+
+        using ImageLoaderFunc = std::function<std::shared_ptr<sf::Image>(const sf::String&)>;
+        using TextureLoaderFunc = std::function<bool(Texture&, const sf::String&, const sf::IntRect&)>;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The way the image should be scaled
@@ -68,7 +71,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture() {}
 
-
+/*
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor that created the texture.
         ///
@@ -84,7 +87,7 @@ namespace tgui
                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
                 bool repeated = false);
-
+*/
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Copy constructor
@@ -115,16 +118,43 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the texture.
         ///
-        /// @param filename   Filename of the image to load.
+        /// @param id         Id for the the image to load (for the default loader, the id is the filename).
         /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void load(const std::string& filename,
-                  const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                  const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+        void load(const sf::String& id,
+                  const sf::IntRect& partRect = {},
+                  const sf::IntRect& middleRect = {},
                   bool repeated = false);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the texture
+        ///
+        /// @param data       New texture data
+        /// @param middleRect Choose the middle part of the image part to determine scaling (e.g. 9-slice scaling)
+        ///
+        /// This function is not intended to be used directly, except from custom loaders.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTexture(std::shared_ptr<TextureData> data, const sf::IntRect& middleRect = {});
+
+
+/// TODO: Description
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string getId() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the constant texture data.
+        ///
+        /// @return Read-only data of the texture
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const TextureData* getData() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,7 +163,7 @@ namespace tgui
         /// @return Data of the texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TextureData* getData() const;
+        TextureData* getData();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +195,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::Vector2f getImageSize() const
         {
-            return (m_data) ? sf::Vector2f{m_data->texture.getSize()} : sf::Vector2f{0,0};
+            return sf::Vector2f{m_data->texture.getSize()};
         }
 
 
@@ -210,6 +240,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the middle rect of the texture which is used for 9-slice scaling
+        ///
+        /// @return Middle rect of the texture
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::IntRect getMiddleRect() const
+        {
+            return m_middleRect;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Enable or disable the smooth filter.
         ///
         /// When the filter is activated, the texture appears smoother so that pixels are less noticeable.
@@ -234,8 +276,30 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isSmooth() const
         {
-            return (m_data) ? m_data->texture.isSmooth() : false;
+            return m_data->texture.isSmooth();
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets a callback function for when this texture is copied
+        ///
+        /// @param func  Function that will be called when this texture is copied
+        ///
+        /// This function can be useful when implementing a resource manager.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setCopyCallback(const std::function<void(const TextureData*)>& func);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets a callback function for when this texture is destroyed
+        ///
+        /// @param func  Function that will be called when this texture is destroyed
+        ///
+        /// This function can be useful when implementing a resource manager.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDestructCallback(const std::function<void(const TextureData*)>& func);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,16 +325,49 @@ namespace tgui
             return m_scalingType;
         }
 
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Check if the texture has been correctly loaded
+        ///
+        /// @return True if texture was initialized
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isLoaded() const
+        {
+            return m_loaded;
+        }
+
+/// TODO: Describe parameters of these functions
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets a different image loader
+        ///
+        /// The image loader will be called inside the texture loader to create the sf::Image.
+        ///
+        /// The default loader will simply load the image from a file.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static void setImageLoader(const ImageLoaderFunc& func);
 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets a different texture loader
+        ///
+        /// The texture loader will initialize this Texture object.
+        ///
+        /// The default loader will use an internal texture manager to prevent the same thing from being loaded twice.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static void setTextureLoader(const TextureLoaderFunc& func);
+
+
+        /// TODO: Documentation
+        static const ImageLoaderFunc& getImageLoader();
+        static const TextureLoaderFunc& getTextureLoader();
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Changes the texture
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTexture(TextureData& data, const sf::IntRect& middleRect);
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Update the vertices of the internal vertex array
@@ -287,7 +384,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private:
-        TextureData* m_data = nullptr;
+        std::shared_ptr<TextureData> m_data = std::make_shared<TextureData>();
         std::vector<sf::Vertex> m_vertices;
 
         sf::Vector2f  m_size;
@@ -296,11 +393,14 @@ namespace tgui
 
         ScalingType   m_scalingType = ScalingType::Normal;
 
+        bool m_loaded = false;
         float m_rotation = 0;
+        std::string m_id;
 
-        static TextureManager m_textureManager;
-
-        friend class TextureManager;
+        std::function<void(const TextureData*)> m_copyCallback;
+        std::function<void(const TextureData*)> m_destructCallback;
+        static TextureLoaderFunc m_textureLoader;
+        static ImageLoaderFunc m_imageLoader;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

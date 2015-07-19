@@ -34,38 +34,50 @@
 
 namespace tgui
 {
-    TextureManager Texture::m_textureManager;
+    Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
+    Texture::ImageLoaderFunc Texture::m_imageLoader = [](const sf::String& filename) -> std::shared_ptr<sf::Image>
+        {
+            auto image = std::make_shared<sf::Image>();
+            if (image->loadFromFile(filename))
+                return image;
+            else
+                return nullptr;
+        };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
     Texture::Texture(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
     {
         load(filename, partRect, middlePart, repeated);
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(const Texture& copy) :
-        sf::Transformable{copy},
-        sf::Drawable     {copy},
-        m_data           {copy.m_data},
-        m_vertices       (copy.m_vertices), // Did not compile in VS2013 when using braces
-        m_size           {copy.m_size},
-        m_middleRect     {copy.m_middleRect},
-        m_textureRect    {copy.m_textureRect},
-        m_scalingType    {copy.m_scalingType},
-        m_rotation       {copy.m_rotation}
+        sf::Transformable {copy},
+        sf::Drawable      {copy},
+        m_data            (copy.m_data),
+        m_vertices        (copy.m_vertices), // Did not compile in VS2013 when using braces
+        m_size            {copy.m_size},
+        m_middleRect      {copy.m_middleRect},
+        m_textureRect     {copy.m_textureRect},
+        m_scalingType     {copy.m_scalingType},
+        m_loaded          {copy.m_loaded},
+        m_rotation        {copy.m_rotation},
+        m_id              {copy.m_id},
+        m_copyCallback    {copy.m_copyCallback},
+        m_destructCallback{copy.m_destructCallback}
     {
-        if (m_data != nullptr)
-            m_textureManager.copyTexture(copy);
+        if (m_loaded && (m_copyCallback != nullptr))
+            m_copyCallback(getData());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::~Texture()
     {
-        if (getData() != nullptr)
-            m_textureManager.removeTexture(*this);
+        if (m_loaded && (m_destructCallback != nullptr))
+            m_destructCallback(getData());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +96,9 @@ namespace tgui
             std::swap(m_middleRect,  temp.m_middleRect);
             std::swap(m_textureRect, temp.m_textureRect);
             std::swap(m_scalingType, temp.m_scalingType);
+            std::swap(m_loaded,      temp.m_loaded);
             std::swap(m_rotation,    temp.m_rotation);
+            std::swap(m_id,          temp.m_id);
         }
 
         return *this;
@@ -92,16 +106,51 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::load(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void Texture::load(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middleRect, bool repeated)
     {
-        m_textureManager.getTexture(*this, filename, partRect, middlePart, repeated);
+        m_loaded = false;
+        if (!m_textureLoader(*this, id, partRect))
+            throw Exception{"Failed to load " + id};
+
+        m_id = id;
+        m_data->texture.setRepeated(repeated);
+        setTexture(m_data, middleRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextureData* Texture::getData() const
+    void Texture::setTexture(std::shared_ptr<TextureData> data, const sf::IntRect& middleRect)
     {
-        return m_data;
+        m_data = data;
+        m_loaded = true;
+
+        if (middleRect == sf::IntRect{})
+            m_middleRect = {0, 0, static_cast<int>(m_data->texture.getSize().x), static_cast<int>(m_data->texture.getSize().y)};
+        else
+            m_middleRect = middleRect;
+
+        setSize(sf::Vector2f{m_data->texture.getSize()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::string Texture::getId() const
+    {
+        return m_id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const TextureData* Texture::getData() const
+    {
+        return m_data.get();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TextureData* Texture::getData()
+    {
+        return m_data.get();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +159,7 @@ namespace tgui
     {
         assert(size.x >= 0 && size.y >= 0);
 
-        if (m_data != nullptr)
+        if (m_loaded)
         {
             m_size = size;
 
@@ -132,14 +181,31 @@ namespace tgui
 
     void Texture::setSmooth(bool smooth)
     {
-        if (m_data)
+        if (m_loaded)
             m_data->texture.setSmooth(smooth);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::setCopyCallback(const std::function<void(const TextureData*)>& func)
+    {
+        m_copyCallback = func;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::setDestructCallback(const std::function<void(const TextureData*)>& func)
+    {
+        m_destructCallback = func;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Texture::isTransparentPixel(float x, float y) const
     {
+        if (m_data->image == nullptr)
+            return false;
+
         x -= getPosition().x;
         y -= getPosition().y;
 
@@ -169,12 +235,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setTexture(TextureData& data, const sf::IntRect& middleRect)
+    void Texture::setImageLoader(const ImageLoaderFunc& func)
     {
-        m_data = &data;
-        m_middleRect = middleRect;
+        assert(func != nullptr);
+        m_imageLoader = func;
+    }
 
-        setSize(sf::Vector2f{m_data->texture.getSize()});
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::setTextureLoader(const TextureLoaderFunc& func)
+    {
+        assert(func != nullptr);
+        m_textureLoader = func;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const Texture::ImageLoaderFunc& Texture::getImageLoader()
+    {
+        return m_imageLoader;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const Texture::TextureLoaderFunc& Texture::getTextureLoader()
+    {
+        return m_textureLoader;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -328,7 +414,7 @@ namespace tgui
         states.transform.translate(getOrigin());
         states.transform *= getTransform();
 
-        if (m_data != nullptr)
+        if (m_loaded)
         {
             if (m_textureRect == sf::FloatRect(0, 0, 0, 0))
             {
@@ -380,7 +466,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

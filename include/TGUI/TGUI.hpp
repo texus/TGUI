@@ -27,40 +27,43 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widget.hpp>
-#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/Clipboard.hpp>
-#include <TGUI/Label.hpp>
-#include <TGUI/Picture.hpp>
-#include <TGUI/Button.hpp>
-#include <TGUI/Checkbox.hpp>
-#include <TGUI/RadioButton.hpp>
-#include <TGUI/EditBox.hpp>
-#include <TGUI/Slider.hpp>
-#include <TGUI/Scrollbar.hpp>
-#include <TGUI/ListBox.hpp>
-#include <TGUI/ProgressBar.hpp>
-#include <TGUI/ComboBox.hpp>
-#include <TGUI/TextBox.hpp>
-#include <TGUI/SpinButton.hpp>
-#include <TGUI/Tab.hpp>
-#include <TGUI/MenuBar.hpp>
-#include <TGUI/ChatBox.hpp>
-#include <TGUI/Knob.hpp>
-#include <TGUI/Tooltip.hpp>
-
-#include <TGUI/Canvas.hpp>
-#include <TGUI/Container.hpp>
-#include <TGUI/Panel.hpp>
-#include <TGUI/ChildWindow.hpp>
-#include <TGUI/MessageBox.hpp>
-#include <TGUI/Grid.hpp>
+#include <TGUI/Widget.hpp>
 #include <TGUI/Gui.hpp>
 
-#include <TGUI/extra/Slider2d.hpp>
-#include <TGUI/extra/SpriteSheet.hpp>
-#include <TGUI/extra/AnimatedPicture.hpp>
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Loading/WidgetLoader.hpp>
+#include <TGUI/Loading/WidgetSaver.hpp>
 
+#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/Canvas.hpp>
+#include <TGUI/Widgets/ChatBox.hpp>
+#include <TGUI/Widgets/Checkbox.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>
+#include <TGUI/Widgets/Container.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Grid.hpp>
+#include <TGUI/Widgets/Knob.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/MenuBar.hpp>
+#include <TGUI/Widgets/MessageBox.hpp>
+#include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>
+#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Widgets/Slider.hpp>
+#include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Tab.hpp>
+#include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/Tooltip.hpp>
+
+#include <TGUI/Widgets/extra/AnimatedPicture.hpp>
+#include <TGUI/Widgets/extra/Slider2d.hpp>
+#include <TGUI/Widgets/extra/SpriteSheet.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
