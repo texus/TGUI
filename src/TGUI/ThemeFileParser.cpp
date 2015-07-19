@@ -104,7 +104,7 @@ namespace tgui
                     if (!removeWhitespace(line, c))
                         throw Exception{"Failed to parse line " + tgui::to_string(lineNumber) + " in section " + section + " in file " + filename + "."};
 
-                    int pos = c - line.begin();
+                    auto pos = c - line.begin();
                     std::string value = line.substr(pos, line.length() - pos);
 
                     m_cache[m_filename][toLower(sectionName)].push_back(std::make_pair(property, value));

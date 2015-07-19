@@ -118,7 +118,7 @@ namespace tgui
         /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const Layout& position) override;
+        virtual void setPosition(const Layout2d& position) override;
         using Transformable::setPosition;
 
 
@@ -128,7 +128,7 @@ namespace tgui
         /// @param size  The new size of the edit box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(const Layout& size) override;
+        void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 
@@ -311,7 +311,7 @@ namespace tgui
         /// Normally you will not need this function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCaretPosition(unsigned int charactersBeforeCaret);
+        void setCaretPosition(std::size_t charactersBeforeCaret);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,7 +331,7 @@ namespace tgui
         /// By default the edit box accepts all text characters.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setNumbersOnly(bool numbersOnly);
+        void setNumbersOnly(bool numbersOnly = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -394,7 +394,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function will search after which character the caret should be placed. It will not change the caret position.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int findCaretPosition(float posX);
+        std::size_t findCaretPosition(float posX);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -459,9 +459,9 @@ namespace tgui
         Alignment::Alignments m_textAlignment = Alignment::Left;
 
         // The selection
-        unsigned int  m_selChars = 0;
-        unsigned int  m_selStart = 0;
-        unsigned int  m_selEnd = 0;
+        std::size_t   m_selChars = 0;
+        std::size_t   m_selStart = 0;
+        std::size_t   m_selEnd = 0;
 
         // The password character
         char          m_passwordChar = '\0';

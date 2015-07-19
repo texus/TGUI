@@ -29,6 +29,8 @@
 
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Widget.hpp>
+#include <TGUI/HorizontalLayout.hpp>
+#include <TGUI/VerticalLayout.hpp>
 #include <TGUI/Gui.hpp>
 
 #include <TGUI/Loading/Theme.hpp>

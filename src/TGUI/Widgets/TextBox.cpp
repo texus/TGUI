@@ -180,7 +180,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setPosition(const Layout& position)
+    void TextBox::setPosition(const Layout2d& position)
     {
         // When the position is changed we just have to move the stuff. Otherwise it means we have to recalculate things.
         if (getPosition() != position.getValue())
@@ -286,7 +286,7 @@ namespace tgui
                     if (m_selectionRects.back().width == 0)
                         m_selectionRects.back().width = 2;
 
-                    for (unsigned int i = selectionStart.y + 1; i < selectionEnd.y; ++i)
+                    for (std::size_t i = selectionStart.y + 1; i < selectionEnd.y; ++i)
                     {
                         m_selectionRects.push_back({m_textSelection2.getPosition().x, getPosition().y + padding.top + (i * m_lineHeight), 0, static_cast<float>(m_lineHeight)});
 
@@ -329,7 +329,7 @@ namespace tgui
                 m_caretPosition = {m_caretPosition.x, m_caretPosition.y - m_scroll->getValue()};
             }
 
-            m_visibleLines = std::min<decltype(m_lines.size())>(static_cast<decltype(m_lines.size())>((getSize().y - padding.top - padding.bottom) / m_lineHeight), m_lines.size());
+            m_visibleLines = std::min(static_cast<std::size_t>((getSize().y - padding.top - padding.bottom) / m_lineHeight), m_lines.size());
 
             // Store which area is visible
             if (m_scroll != nullptr)
@@ -343,7 +343,7 @@ namespace tgui
             else // There is no scrollbar
             {
                 m_topLine = 0;
-                m_visibleLines = std::min<decltype(m_lines.size())>(static_cast<decltype(m_lines.size())>((getSize().y - padding.top - padding.bottom) / m_lineHeight), m_lines.size());
+                m_visibleLines = std::min(static_cast<std::size_t>((getSize().y - padding.top - padding.bottom) / m_lineHeight), m_lines.size());
             }
         }
         else // There is no font, so there can't be calculations
@@ -355,7 +355,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setSize(const Layout& size)
+    void TextBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
@@ -430,7 +430,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setMaximumCharacters(unsigned int maxChars)
+    void TextBox::setMaximumCharacters(std::size_t maxChars)
     {
         // Set the new character limit ( 0 to disable the limit )
         m_maxChars = maxChars;
@@ -527,7 +527,7 @@ namespace tgui
 
                 // Select the whole text
                 m_selStart = {0, 0};
-                m_selEnd = sf::Vector2u(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
+                m_selEnd = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
             }
             else // No double clicking
             {
@@ -636,7 +636,7 @@ namespace tgui
         // If the mouse is held down then you are selecting text
         if (m_mouseDown && (!m_scroll || !m_scroll->m_mouseDown))
         {
-            sf::Vector2u caretPosition = findCaretPosition({x, y});
+            sf::Vector2<std::size_t> caretPosition = findCaretPosition({x, y});
             if (caretPosition != m_selEnd)
             {
                 m_selEnd = caretPosition;
@@ -648,12 +648,12 @@ namespace tgui
             {
                 if (m_selEnd.y <= m_topLine)
                 {
-                    m_scroll->setValue(m_selEnd.y * m_lineHeight);
+                    m_scroll->setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
                     updatePosition();
                 }
                 else if (m_selEnd.y + 1 >= m_topLine + m_visibleLines)
                 {
-                    m_scroll->setValue(((m_selEnd.y + 1) * m_lineHeight) - m_scroll->getLowValue());
+                    m_scroll->setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight) - m_scroll->getLowValue()));
                     updatePosition();
                 }
             }
@@ -704,7 +704,7 @@ namespace tgui
                 if (m_selEnd.y < m_lines.size()-1)
                     m_selEnd = findCaretPosition({m_caretPosition.x, m_caretPosition.y + m_lineHeight});
                 else
-                    m_selEnd = sf::Vector2u(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
+                    m_selEnd = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
 
                 m_selStart = m_selEnd;
                 updateSelectionTexts();
@@ -787,7 +787,7 @@ namespace tgui
 
             case sf::Keyboard::End:
             {
-                m_selStart = sf::Vector2u(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
+                m_selStart = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
                 m_selEnd = m_selStart;
                 updateSelectionTexts();
                 break;
@@ -879,7 +879,7 @@ namespace tgui
                 if (event.control)
                 {
                     m_selStart = {0, 0};
-                    m_selEnd = sf::Vector2u(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
+                    m_selEnd = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
                     updateSelectionTexts();
                 }
 
@@ -955,7 +955,7 @@ namespace tgui
         {
             deleteSelectedCharacters();
 
-            unsigned int caretPosition = findTextCaretPosition().first;
+            std::size_t caretPosition = findTextCaretPosition().first;
 
             m_text.insert(caretPosition, key);
             m_lines[m_selEnd.y].insert(m_selEnd.x, key);
@@ -975,8 +975,8 @@ namespace tgui
         {
             // Store the data so that it can be reverted
             sf::String oldText = m_text;
-            sf::Vector2u oldSelStart = m_selStart;
-            sf::Vector2u oldSelEnd = m_selEnd;
+            auto oldSelStart = m_selStart;
+            auto oldSelEnd = m_selEnd;
 
             // Try to insert the character
             insert();
@@ -1062,7 +1062,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2u TextBox::findCaretPosition(sf::Vector2f position)
+    sf::Vector2<std::size_t> TextBox::findCaretPosition(sf::Vector2f position)
     {
         Padding padding = getRenderer()->getScaledPadding();
 
@@ -1071,38 +1071,38 @@ namespace tgui
 
         // Don't continue when line height is 0 or when there is no font yet
         if ((m_lineHeight == 0) || (m_font == nullptr))
-            return sf::Vector2u(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
+            return sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
 
         // Find on which line the mouse is
-        unsigned int lineNumber;
+        std::size_t lineNumber;
         if (m_scroll)
         {
             if (position.y + m_scroll->getValue() < 0)
                 return {0, 0};
 
-            lineNumber = static_cast<unsigned int>(std::floor((position.y + m_scroll->getValue()) / m_lineHeight));
+            lineNumber = static_cast<std::size_t>(std::floor((position.y + m_scroll->getValue()) / m_lineHeight));
         }
         else
         {
             if (position.y < 0)
                 return {0, 0};
 
-            lineNumber = static_cast<unsigned int>(std::floor(position.y / m_lineHeight));
+            lineNumber = static_cast<std::size_t>(std::floor(position.y / m_lineHeight));
         }
 
         // Check if you clicked behind everything
         if (lineNumber + 1 > m_lines.size())
-            return sf::Vector2u(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
+            return sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
 
         // Find between which character the mouse is standing
         float width = 0;
         sf::Uint32 prevChar = 0;
-        for (unsigned int i = 0; i < m_lines[lineNumber].getSize(); ++i)
+        for (std::size_t i = 0; i < m_lines[lineNumber].getSize(); ++i)
         {
             float charWidth;
             sf::Uint32 curChar = m_lines[lineNumber][i];
             if (curChar == '\n')
-                return sf::Vector2u(m_lines[lineNumber].getSize() - 1, lineNumber);
+                return sf::Vector2<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber);
             else if (curChar == '\t')
                 charWidth = static_cast<float>(m_font->getGlyph(' ', getTextSize(), false).advance) * 4;
             else
@@ -1123,18 +1123,18 @@ namespace tgui
         }
 
         // You clicked behind the last character
-        return sf::Vector2u(m_lines[lineNumber].getSize(), lineNumber);
+        return sf::Vector2<std::size_t>(m_lines[lineNumber].getSize(), lineNumber);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::pair<unsigned int, unsigned int> TextBox::findTextCaretPosition()
+    std::pair<std::size_t, std::size_t> TextBox::findTextCaretPosition()
     {
         // This function is used to count the amount of characters spread over several lines
-        auto count = [this](unsigned int low, unsigned int high)
+        auto count = [this](std::size_t low, std::size_t high)
         {
-            unsigned int counter = 0;
-            for (unsigned int i = low; i < high; ++i)
+            std::size_t counter = 0;
+            for (std::size_t i = low; i < high; ++i)
             {
                 counter += m_lines[i].getSize();
 /*
@@ -1150,7 +1150,7 @@ namespace tgui
             return counter;
         };
 
-        std::pair<unsigned int, unsigned int> textCaretPosition{0, 0};
+        std::pair<std::size_t, std::size_t> textCaretPosition{0, 0};
 
         // Find the location in the text where the selection starts
         textCaretPosition.first = count(0, m_selStart.y) + m_selStart.x;
@@ -1195,8 +1195,8 @@ namespace tgui
         if ((m_lineHeight == 0) || (m_font == nullptr))
             return;
 
-        sf::Vector2u newSelStart;
-        sf::Vector2u newSelEnd;
+        sf::Vector2<std::size_t> newSelStart;
+        sf::Vector2<std::size_t> newSelEnd;
         bool newSelStartFound = false;
         bool newSelEndFound = false;
         auto textCaretPosition = findTextCaretPosition();
@@ -1209,14 +1209,14 @@ namespace tgui
 
         // Split the text over multiple lines
         m_lines.clear();
-        unsigned int index = 0;
+        std::size_t index = 0;
         while (index < m_text.getSize())
         {
-            unsigned int oldIndex = index;
+            std::size_t oldIndex = index;
 
             float width = 0;
             sf::Uint32 prevChar = 0;
-            for (unsigned int i = index; i < m_text.getSize(); ++i)
+            for (std::size_t i = index; i < m_text.getSize(); ++i)
             {
                 float charWidth;
                 sf::Uint32 curChar = m_text[i];
@@ -1249,11 +1249,11 @@ namespace tgui
             // Implement the word-wrap
             if (m_text[index-1] != '\n')
             {
-                unsigned int indexWithoutWordWrap = index;
+                std::size_t indexWithoutWordWrap = index;
 
                 if ((index < m_text.getSize()) && (!isWhitespace(m_text[index])))
                 {
-                    unsigned int wordWrapCorrection = 0;
+                    std::size_t wordWrapCorrection = 0;
                     while ((index > oldIndex) && (!isWhitespace(m_text[index - 1])))
                     {
                         wordWrapCorrection++;
@@ -1272,14 +1272,14 @@ namespace tgui
 
                 // When standing behind a newline, you should be at the line below this one
                 if ((textCaretPosition.first > 0) && (m_text[textCaretPosition.first-1] == '\n'))
-                    newSelStart = sf::Vector2u(0, m_lines.size() + 1);
+                    newSelStart = sf::Vector2<std::size_t>(0, m_lines.size() + 1);
                 else
                 {
                     // The text caret position is the same when the caret is at the beginning or at the end of a line
                     if ((index == textCaretPosition.first) && (index < m_text.getSize()) && (m_selStart.x == 0))
-                        newSelStart = sf::Vector2u(0, m_lines.size() + 1);
+                        newSelStart = sf::Vector2<std::size_t>(0, m_lines.size() + 1);
                     else
-                        newSelStart = sf::Vector2u(textCaretPosition.first - oldIndex, m_lines.size());
+                        newSelStart = sf::Vector2<std::size_t>(textCaretPosition.first - oldIndex, m_lines.size());
                 }
             }
             if (!newSelEndFound && (index >= textCaretPosition.second))
@@ -1288,14 +1288,14 @@ namespace tgui
 
                 // When standing behind a newline, you should be at the line below this one
                 if ((textCaretPosition.second > 0) && (m_text[textCaretPosition.second-1] == '\n'))
-                    newSelEnd = sf::Vector2u(0, m_lines.size() + 1);
+                    newSelEnd = sf::Vector2<std::size_t>(0, m_lines.size() + 1);
                 else
                 {
                     // The text caret position is the same when the caret is at the beginning or at the end of a line
                     if ((index == textCaretPosition.second) && (index < m_text.getSize()) && (m_selEnd.x == 0))
-                        newSelEnd = sf::Vector2u(0, m_lines.size() + 1);
+                        newSelEnd = sf::Vector2<std::size_t>(0, m_lines.size() + 1);
                     else
-                        newSelEnd = sf::Vector2u(textCaretPosition.second - oldIndex, m_lines.size());
+                        newSelEnd = sf::Vector2<std::size_t>(textCaretPosition.second - oldIndex, m_lines.size());
                 }
             }
 
@@ -1328,7 +1328,7 @@ namespace tgui
         }
         else // The text has changed too much, the selection can't be kept
         {
-            m_selStart = sf::Vector2u(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
+            m_selStart = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
             m_selEnd = m_selStart;
         }
 
@@ -1337,7 +1337,7 @@ namespace tgui
         {
             bool invisibleScrollbar = (m_scroll->getMaximum() <= m_scroll->getLowValue());
 
-            m_scroll->setMaximum(m_lines.size() * m_lineHeight);
+            m_scroll->setMaximum(static_cast<unsigned int>(m_lines.size() * m_lineHeight));
 
             // We may have to recalculate what we just calculated if the scrollbar just appeared or disappeared
             if (m_scroll->getAutoHide())
@@ -1367,7 +1367,7 @@ namespace tgui
         if (m_selStart == m_selEnd)
         {
             sf::String displayedText;
-            for (unsigned int i = 0; i < m_lines.size(); ++i)
+            for (std::size_t i = 0; i < m_lines.size(); ++i)
             {
                 if (((m_lines[i] != "") && (m_lines[i][m_lines[i].getSize()-1] == '\n')) || (i == m_lines.size()-1))
                     displayedText += m_lines[i];
@@ -1393,7 +1393,7 @@ namespace tgui
             if (selectionStart.y > 0)
             {
                 sf::String string;
-                for (unsigned int i = 0; i < selectionStart.y; ++i)
+                for (std::size_t i = 0; i < selectionStart.y; ++i)
                 {
                     if ((m_lines[i] != "") && (m_lines[i][m_lines[i].getSize()-1] == '\n'))
                         string += m_lines[i];
@@ -1418,7 +1418,7 @@ namespace tgui
                 m_textSelection1.setString(m_lines[selectionStart.y].substring(selectionStart.x, m_lines[selectionStart.y].getSize() - selectionStart.x));
 
                 sf::String string;
-                for (unsigned int i = selectionStart.y + 1; i < selectionEnd.y; ++i)
+                for (std::size_t i = selectionStart.y + 1; i < selectionEnd.y; ++i)
                 {
                     if ((m_lines[i] != "") && (m_lines[i][m_lines[i].getSize()-1] == '\n'))
                         string += m_lines[i];
@@ -1436,7 +1436,7 @@ namespace tgui
                 m_textAfterSelection1.setString(m_lines[selectionEnd.y].substring(selectionEnd.x, m_lines[selectionEnd.y].getSize() - selectionEnd.x));
 
                 sf::String string;
-                for (unsigned int i = selectionEnd.y + 1; i < m_lines.size(); ++i)
+                for (std::size_t i = selectionEnd.y + 1; i < m_lines.size(); ++i)
                 {
                     if (((m_lines[i] != "") && (m_lines[i][m_lines[i].getSize()-1] == '\n')) || (i == m_lines.size()-1))
                         string += m_lines[i];
@@ -1452,9 +1452,9 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             if (m_selEnd.y <= m_topLine)
-                m_scroll->setValue(m_selEnd.y * m_lineHeight);
+                m_scroll->setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
             else if (m_selEnd.y + 1 >= m_topLine + m_visibleLines)
-                m_scroll->setValue(((m_selEnd.y + 1) * m_lineHeight) - m_scroll->getLowValue());
+                m_scroll->setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight) - m_scroll->getLowValue()));
         }
 
         updatePosition();

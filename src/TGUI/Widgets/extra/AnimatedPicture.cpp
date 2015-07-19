@@ -53,7 +53,7 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::setPosition(const Layout& position)
+    void AnimatedPicture::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -63,7 +63,7 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::setSize(const Layout& size)
+    void AnimatedPicture::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
@@ -130,10 +130,10 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool AnimatedPicture::setFrame(unsigned int frame)
+    bool AnimatedPicture::setFrame(std::size_t frame)
     {
         // Check if there are no frames
-        if (m_textures.empty() == true)
+        if (m_textures.empty())
         {
             m_currentFrame = -1;
             return false;
@@ -143,18 +143,18 @@ namespace ext
         if (frame >= m_textures.size())
         {
             // Display the last frame
-            m_currentFrame = m_textures.size()-1;
+            m_currentFrame = static_cast<int>(m_textures.size()-1);
             return false;
         }
 
         // The frame number isn't too high
-        m_currentFrame = frame;
+        m_currentFrame = static_cast<int>(frame);
         return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool AnimatedPicture::removeFrame(unsigned int frame)
+    bool AnimatedPicture::removeFrame(std::size_t frame)
     {
         // Make sure the number isn't too high
         if (frame >= m_textures.size())

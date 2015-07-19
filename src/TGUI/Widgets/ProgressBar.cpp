@@ -113,7 +113,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBar::setPosition(const Layout& position)
+    void ProgressBar::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -130,7 +130,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBar::setSize(const Layout& size)
+    void ProgressBar::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

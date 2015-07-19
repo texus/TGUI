@@ -102,7 +102,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::setPosition(const Layout& position)
+    void Knob::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -113,7 +113,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::setSize(const Layout& size)
+    void Knob::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

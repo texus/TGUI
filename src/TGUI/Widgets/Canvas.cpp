@@ -62,11 +62,9 @@ namespace tgui
 
     Canvas::Ptr Canvas::create(const sf::Vector2f& size)
     {
-        auto picture = std::make_shared<Canvas>();
-
-        picture->setSize(size);
-
-        return picture;
+        auto canvas = std::make_shared<Canvas>();
+        canvas->setSize(size);
+        return canvas;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +79,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setPosition(const Layout& position)
+    void Canvas::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -90,7 +88,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setSize(const Layout& size)
+    void Canvas::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

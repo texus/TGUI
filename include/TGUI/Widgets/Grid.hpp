@@ -121,7 +121,7 @@ namespace tgui
         /// some Widgets are removed of the grid and the size was become valid again.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const Layout& size) override;
+        virtual void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 
@@ -144,16 +144,8 @@ namespace tgui
         ///
         /// @see remove(sf::String)
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(grid, "picName");
-        /// tgui::Picture::Ptr pic2(grid, "picName2");
-        /// grid.remove(pic);
-        /// grid.remove(grid.get("picName2"));
-        /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(const Widget::Ptr& widget) override;
+        virtual bool remove(const Widget::Ptr& widget) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

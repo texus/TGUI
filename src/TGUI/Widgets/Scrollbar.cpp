@@ -113,7 +113,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setPosition(const Layout& position)
+    void Scrollbar::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -160,7 +160,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setSize(const Layout& size)
+    void Scrollbar::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
@@ -546,6 +546,13 @@ namespace tgui
                     }
                     else // The mouse was above the scrollbar
                         setValue(0);
+
+                    // Set the thumb position for smooth scrolling
+                    float thumbTop = y - m_mouseDownOnThumbPos.y;
+                    if ((thumbTop - m_arrowUp.height > getPosition().y) && (thumbTop + m_thumb.height + m_arrowDown.height < getPosition().y + getSize().y))
+                        m_thumb.top = thumbTop;
+                    else
+                        m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_lowValue));
                 }
                 else // The click occurred on the track
                 {
@@ -607,6 +614,13 @@ namespace tgui
                     }
                     else // The mouse was above the scrollbar
                         setValue(0);
+
+                    // Set the thumb position for smooth scrolling
+                    float thumbLeft = x - m_mouseDownOnThumbPos.x;
+                    if ((thumbLeft - m_arrowUp.width > getPosition().x) && (thumbLeft + m_thumb.width + m_arrowDown.width < getPosition().x + getSize().x))
+                        m_thumb.left = thumbLeft;
+                    else
+                        m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_lowValue));
                 }
                 else // The click occurred on the track
                 {

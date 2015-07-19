@@ -144,7 +144,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setPosition(const Layout& position)
+    void ComboBox::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -170,7 +170,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setSize(const Layout& size)
+    void ComboBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
@@ -183,9 +183,9 @@ namespace tgui
         m_listBox->setItemHeight(static_cast<unsigned int>(height));
 
         if (m_nrOfItemsToDisplay > 0)
-            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * (std::min(m_nrOfItemsToDisplay, std::max(m_listBox->getItemCount(), 1u)))) + listBoxPadding.top + listBoxPadding.bottom});
+            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * (std::min<std::size_t>(m_nrOfItemsToDisplay, std::max<std::size_t>(m_listBox->getItemCount(), 1)))) + listBoxPadding.top + listBoxPadding.bottom});
         else
-            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * std::max(m_listBox->getItemCount(), 1u)) + listBoxPadding.top + listBoxPadding.bottom});
+            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + listBoxPadding.top + listBoxPadding.bottom});
 
         if (getRenderer()->m_textureArrowUpNormal.getData() && getRenderer()->m_textureArrowDownNormal.getData())
         {
@@ -211,7 +211,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setItemsToDisplay(unsigned int nrOfItemsInList)
+    void ComboBox::setItemsToDisplay(std::size_t nrOfItemsInList)
     {
         m_nrOfItemsToDisplay = nrOfItemsInList;
 
@@ -273,7 +273,7 @@ namespace tgui
         if ((m_nrOfItemsToDisplay == 0) || (m_listBox->getItemCount() < m_nrOfItemsToDisplay))
         {
             Padding padding = m_listBox->getRenderer()->getScaledPadding();
-            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->getItemHeight() * std::max(m_listBox->getItemCount(), 1u)) + padding.top + padding.bottom});
+            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + padding.top + padding.bottom});
         }
 
         return ret;
@@ -291,7 +291,7 @@ namespace tgui
         if ((m_nrOfItemsToDisplay == 0) || (m_listBox->getItemCount() < m_nrOfItemsToDisplay))
         {
             Padding padding = m_listBox->getRenderer()->getScaledPadding();
-            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->getItemHeight() * std::max(m_listBox->getItemCount(), 1u)) + padding.top + padding.bottom});
+            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + padding.top + padding.bottom});
         }
 
         return ret;
@@ -336,14 +336,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setMaximumItems(unsigned int maximumItems)
+    void ComboBox::setMaximumItems(std::size_t maximumItems)
     {
         m_listBox->setMaximumItems(maximumItems);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int ComboBox::getMaximumItems() const
+    std::size_t ComboBox::getMaximumItems() const
     {
         return m_listBox->getMaximumItems();
     }
@@ -397,7 +397,7 @@ namespace tgui
                 // If the selected item is not visible then change the value of the scrollbar
                 if (m_nrOfItemsToDisplay > 0)
                 {
-                    if (static_cast<unsigned int>(m_listBox->m_selectedItem + 1) > m_nrOfItemsToDisplay)
+                    if (static_cast<std::size_t>(m_listBox->m_selectedItem + 1) > m_nrOfItemsToDisplay)
                         m_listBox->m_scroll->setValue(static_cast<unsigned int>((m_listBox->m_selectedItem + 1 - m_nrOfItemsToDisplay) * m_listBox->getItemHeight()));
                     else
                         m_listBox->m_scroll->setValue(0);
@@ -428,14 +428,14 @@ namespace tgui
             if (delta < 0)
             {
                 // select the next item
-                if (static_cast<unsigned int>(m_listBox->m_selectedItem + 1) < m_listBox->m_items.size())
-                    m_listBox->setSelectedItem(static_cast<unsigned int>(m_listBox->m_selectedItem+1));
+                if (static_cast<std::size_t>(m_listBox->m_selectedItem + 1) < m_listBox->m_items.size())
+                    m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->m_selectedItem+1));
             }
             else // You are scrolling up
             {
                 // select the previous item
                 if (m_listBox->m_selectedItem > 0)
-                    m_listBox->setSelectedItem(static_cast<unsigned int>(m_listBox->m_selectedItem-1));
+                    m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->m_selectedItem-1));
             }
         }
     }

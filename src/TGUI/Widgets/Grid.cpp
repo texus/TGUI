@@ -92,7 +92,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::setSize(const Layout& size)
+    void Grid::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
@@ -101,7 +101,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::remove(const Widget::Ptr& widget)
+    bool Grid::remove(const Widget::Ptr& widget)
     {
         // Find the widget in the grid
         for (unsigned int row = 0; row < m_gridWidgets.size(); ++row)
@@ -149,7 +149,7 @@ namespace tgui
             }
         }
 
-        Container::remove(widget);
+        return Container::remove(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,6 +173,10 @@ namespace tgui
     void Grid::addWidget(const Widget::Ptr& widget, unsigned int row, unsigned int col,
                          const Borders& borders, Alignment alignment)
     {
+        // If the widget hasn't already been added then add it now
+        if (std::find(getWidgets().begin(), getWidgets().end(), widget) == getWidgets().end())
+            add(widget);
+
         // Create the row if it did not exist yet
         if (m_gridWidgets.size() < row + 1)
         {
@@ -389,7 +393,7 @@ namespace tgui
 
         // Calculate the size and the available space which will be distributed when widgets will be positionned.
         sf::Vector2f availableSpace;
-        m_realSize = getSize();
+        m_realSize = m_size.getValue();
         sf::Vector2f minSize = getMinSize();
 
         if (getSize().x > minSize.x)
@@ -517,7 +521,10 @@ namespace tgui
             for (unsigned int col = 0; col < m_gridWidgets[row].size(); ++col)
             {
                 if (m_gridWidgets[row][col].get() != nullptr)
-                    target.draw(*m_gridWidgets[row][col], states);
+                {
+                    if (m_gridWidgets[row][col]->isVisible())
+                        target.draw(*m_gridWidgets[row][col], states);
+                }
             }
         }
     }

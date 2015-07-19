@@ -162,7 +162,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setPosition(const Layout& position)
+    void ListBox::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -173,7 +173,7 @@ namespace tgui
         if (m_font != nullptr)
         {
             float textHeight = sf::Text{"kg", *m_font, m_textSize}.getLocalBounds().height;
-            for (unsigned int i = 0; i < m_items.size(); ++i)
+            for (std::size_t i = 0; i < m_items.size(); ++i)
             {
                 m_items[i].setPosition({getPosition().x + (textHeight / 10.0f) + padding.left,
                                         getPosition().y + static_cast<float>(i * m_itemHeight) + ((m_itemHeight - textHeight) / 2.0f) + padding.top});
@@ -189,7 +189,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setSize(const Layout& size)
+    void ListBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
@@ -226,7 +226,7 @@ namespace tgui
             if (m_scroll == nullptr)
             {
                 // Calculate the amount of items that fit in the list box
-                unsigned int maximumItems = static_cast<unsigned int>(getSize().y) / m_itemHeight;
+                std::size_t maximumItems = static_cast<std::size_t>(getSize().y / m_itemHeight);
 
                 // Check if the item still fits in the list box
                 if (m_items.size() == maximumItems)
@@ -234,7 +234,7 @@ namespace tgui
             }
             else // There is a scrollbar so tell it that another item was added
             {
-                m_scroll->setMaximum((m_items.size() + 1) * m_itemHeight);
+                m_scroll->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
             }
 
             // Create the new item
@@ -259,7 +259,7 @@ namespace tgui
 
     bool ListBox::setSelectedItem(const sf::String& itemName)
     {
-        for (unsigned int i = 0; i < m_items.size(); ++i)
+        for (std::size_t i = 0; i < m_items.size(); ++i)
         {
             if (m_items[i].getText() == itemName)
                 return setSelectedItemByIndex(i);
@@ -277,7 +277,7 @@ namespace tgui
 
     bool ListBox::setSelectedItemById(const sf::String& id)
     {
-        for (unsigned int i = 0; i < m_itemIds.size(); ++i)
+        for (std::size_t i = 0; i < m_itemIds.size(); ++i)
         {
             if (m_itemIds[i] == id)
                 return setSelectedItemByIndex(i);
@@ -293,7 +293,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::setSelectedItemByIndex(unsigned int index)
+    bool ListBox::setSelectedItemByIndex(std::size_t index)
     {
         if (index >= m_items.size())
             return false;
@@ -334,7 +334,7 @@ namespace tgui
 
     bool ListBox::removeItem(const sf::String& itemName)
     {
-        for (unsigned int i = 0; i < m_items.size(); ++i)
+        for (std::size_t i = 0; i < m_items.size(); ++i)
         {
             if (m_items[i].getText() == itemName)
                 return removeItemByIndex(i);
@@ -347,7 +347,7 @@ namespace tgui
 
     bool ListBox::removeItemById(const sf::String& id)
     {
-        for (unsigned int i = 0; i < m_itemIds.size(); ++i)
+        for (std::size_t i = 0; i < m_itemIds.size(); ++i)
         {
             if (m_itemIds[i] == id)
                 return removeItemByIndex(i);
@@ -358,7 +358,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::removeItemByIndex(unsigned int index)
+    bool ListBox::removeItemByIndex(std::size_t index)
     {
         if (index >= m_items.size())
             return false;
@@ -370,7 +370,7 @@ namespace tgui
         // If there is a scrollbar then tell it that an item was removed
         if (m_scroll != nullptr)
         {
-            m_scroll->setMaximum(m_items.size() * m_itemHeight);
+            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
             updatePosition();
         }
 
@@ -413,7 +413,7 @@ namespace tgui
 
     sf::String ListBox::getItemById(const sf::String& id) const
     {
-        for (unsigned int i = 0; i < m_itemIds.size(); ++i)
+        for (std::size_t i = 0; i < m_itemIds.size(); ++i)
         {
             if (m_itemIds[i] == id)
                 return m_items[i].getText();
@@ -456,7 +456,7 @@ namespace tgui
 
     bool ListBox::changeItemById(const sf::String& id, const sf::String& newValue)
     {
-        for (unsigned int i = 0; i < m_items.size(); ++i)
+        for (std::size_t i = 0; i < m_items.size(); ++i)
         {
             if (m_itemIds[i] == id)
             {
@@ -475,10 +475,10 @@ namespace tgui
         m_scroll = nullptr;
 
         // When the items no longer fit inside the list box then we need to remove some
-        if ((m_items.size() * m_itemHeight) > static_cast<unsigned int>(getSize().y))
+        if ((m_items.size() * m_itemHeight) > static_cast<std::size_t>(getSize().y))
         {
             // Calculate ho many items fit inside the list box
-            m_maxItems = static_cast<unsigned int>(getSize().y) / m_itemHeight;
+            m_maxItems = static_cast<std::size_t>(getSize().y / m_itemHeight);
 
             // Remove the items that did not fit inside the list box
             m_items.erase(m_items.begin() + m_maxItems, m_items.end());
@@ -507,10 +507,10 @@ namespace tgui
         if (m_scroll == nullptr)
         {
             // When the items no longer fit inside the list box then we need to remove some
-            if ((m_items.size() * m_itemHeight) > static_cast<unsigned int>(getSize().y))
+            if ((m_items.size() * m_itemHeight) > static_cast<std::size_t>(getSize().y))
             {
                 // Calculate ho many items fit inside the list box
-                m_maxItems = static_cast<unsigned int>(getSize().y) / m_itemHeight;
+                m_maxItems = static_cast<std::size_t>(getSize().y / m_itemHeight);
 
                 // Remove the items that did not fit inside the list box
                 m_items.erase(m_items.begin() + m_maxItems, m_items.end());
@@ -520,7 +520,7 @@ namespace tgui
         else // There is a scrollbar
         {
             // Set the maximum of the scrollbar
-            m_scroll->setMaximum(m_items.size() * m_itemHeight);
+            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         }
 
         updatePosition();
@@ -528,7 +528,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setMaximumItems(unsigned int maximumItems)
+    void ListBox::setMaximumItems(std::size_t maximumItems)
     {
         // Set the new limit
         m_maxItems = maximumItems;
@@ -543,7 +543,7 @@ namespace tgui
             // If there is a scrollbar then tell it that the number of items was changed
             if (m_scroll != nullptr)
             {
-                m_scroll->setMaximum(m_items.size() * m_itemHeight);
+                m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
                 updatePosition();
             }
         }
@@ -944,8 +944,8 @@ namespace tgui
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Find out which items are visible
-        unsigned int firstItem = 0;
-        unsigned int lastItem = m_items.size();
+        std::size_t firstItem = 0;
+        std::size_t lastItem = m_items.size();
         if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
         {
             firstItem = m_scroll->getValue() / m_itemHeight;
@@ -983,7 +983,7 @@ namespace tgui
         }
 
         // Draw the items
-        for (unsigned int i = firstItem; i < lastItem; ++i)
+        for (std::size_t i = firstItem; i < lastItem; ++i)
             target.draw(m_items[i], states);
 
         // Reset the old clipping area
@@ -1126,7 +1126,7 @@ namespace tgui
 
         m_listBox->m_scroll->setSize({m_listBox->m_scroll->getSize().x, m_listBox->getSize().y});
         m_listBox->m_scroll->setLowValue(static_cast<unsigned int>(m_listBox->getSize().y));
-        m_listBox->m_scroll->setMaximum(m_listBox->m_items.size() * m_listBox->m_itemHeight);
+        m_listBox->m_scroll->setMaximum(static_cast<unsigned int>(m_listBox->m_items.size() * m_listBox->m_itemHeight));
         m_listBox->m_scroll->setPosition(m_listBox->getPosition().x + m_listBox->getSize().x - m_listBox->m_scroll->getSize().x, m_listBox->getPosition().y);
 
         m_listBox->updatePosition();

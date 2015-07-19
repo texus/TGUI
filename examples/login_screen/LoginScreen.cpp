@@ -15,7 +15,7 @@ void loadWidgets( tgui::Gui& gui )
 
     // Create the background image (picture is of type tgui::Picture::Ptr or std::shared_widget<Picture>)
     auto picture = tgui::Picture::create("../xubuntu_bg_aluminium.jpg");
-    picture->setSize(tgui::bindMaximum(800, windowWidth), tgui::bindMaximum(600, windowHeight));
+    picture->setSize(tgui::bindMax(800, windowWidth), tgui::bindMax(600, windowHeight));
     gui.add(picture);
 
     // Create the username edit box

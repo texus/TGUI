@@ -110,7 +110,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setPosition(const Layout& position)
+    void Tab::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -142,13 +142,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setSize(const Layout&)
+    void Tab::setSize(const Layout2d&)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Tab::add(const sf::String& text, bool selectTab)
+    std::size_t Tab::add(const sf::String& text, bool selectTab)
     {
         // Use the insert function to put the tab in the right place
         insert(m_tabTexts.size(), text, selectTab);
@@ -159,7 +159,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::insert(unsigned int index, const sf::String& text, bool selectTab)
+    void Tab::insert(std::size_t index, const sf::String& text, bool selectTab)
     {
         // If the index is too high then just insert at the end
         if (index > m_tabWidth.size())
@@ -220,7 +220,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Tab::getText(unsigned int index) const
+    sf::String Tab::getText(std::size_t index) const
     {
         if (index >= m_tabTexts.size())
             return "";
@@ -230,7 +230,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tab::changeText(unsigned int index, const sf::String& text)
+    bool Tab::changeText(std::size_t index, const sf::String& text)
     {
         if (index >= m_tabTexts.size())
             return false;
@@ -276,7 +276,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::select(unsigned int index)
+    void Tab::select(std::size_t index)
     {
         // If the index is too big then do nothing
         if (index > m_tabTexts.size() - 1)
@@ -290,7 +290,7 @@ namespace tgui
             m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_textColor);
 
         // Select the tab
-        m_selectedTab = index;
+        m_selectedTab = static_cast<int>(index);
         m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_selectedTextColor);
 
         // Send the callback
@@ -324,7 +324,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::remove(unsigned int index)
+    void Tab::remove(std::size_t index)
     {
         // The index can't be too high
         if (index > m_tabTexts.size() - 1)
@@ -379,6 +379,9 @@ namespace tgui
         if (m_textSize != size)
         {
             m_textSize = size;
+            for (auto& label : m_tabTexts)
+                label.setTextSize(getTextSize());
+
             recalculateTabsWidth();
         }
     }

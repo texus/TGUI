@@ -154,7 +154,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setPosition(const Layout& position)
+    void ChatBox::setPosition(const Layout2d& position)
     {
         sf::Vector2f oldPosition = getPosition();
 
@@ -169,7 +169,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setSize(const Layout& size)
+    void ChatBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
@@ -234,7 +234,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ChatBox::getLine(unsigned int lineIndex)
+    sf::String ChatBox::getLine(std::size_t lineIndex)
     {
         if (lineIndex < m_panel->getWidgets().size())
         {
@@ -246,7 +246,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::removeLine(unsigned int lineIndex)
+    bool ChatBox::removeLine(std::size_t lineIndex)
     {
         if (lineIndex < m_panel->getWidgets().size())
         {
@@ -272,7 +272,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setLineLimit(unsigned int maxLines)
+    void ChatBox::setLineLimit(std::size_t maxLines)
     {
         m_maxLines = maxLines;
 
@@ -594,7 +594,7 @@ namespace tgui
         m_fullTextHeight = 0;
         if (!m_panel->getWidgets().empty())
         {
-            for (unsigned int i = 0; i < m_panel->getWidgets().size(); ++i)
+            for (std::size_t i = 0; i < m_panel->getWidgets().size(); ++i)
             {
                 auto label = std::static_pointer_cast<Label>(m_panel->getWidgets()[i]);
 
@@ -628,7 +628,7 @@ namespace tgui
             if (m_scroll)
                 positionY -= static_cast<float>(m_scroll->getValue());
 
-            for (unsigned int i = 0; i < m_panel->getWidgets().size(); ++i)
+            for (std::size_t i = 0; i < m_panel->getWidgets().size(); ++i)
             {
                 auto label = std::static_pointer_cast<Label>(m_panel->getWidgets()[i]);
 

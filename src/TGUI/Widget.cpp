@@ -120,8 +120,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::setPosition(const Layout& position)
+    void Widget::setPosition(const Layout2d& position)
     {
+        if (position.x.getImpl()->parentWidget != this)
+        {
+            position.x.getImpl()->parentWidget = this;
+            position.x.getImpl()->recalculate();
+        }
+        if (position.y.getImpl()->parentWidget != this)
+        {
+            position.y.getImpl()->parentWidget = this;
+            position.y.getImpl()->recalculate();
+        }
+
         Transformable::setPosition(position);
 
         m_callback.position = getPosition();
@@ -130,8 +141,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::setSize(const Layout& size)
+    void Widget::setSize(const Layout2d& size)
     {
+        if (size.x.getImpl()->parentWidget != this)
+        {
+            size.x.getImpl()->parentWidget = this;
+            size.x.getImpl()->recalculate();
+        }
+        if (size.y.getImpl()->parentWidget != this)
+        {
+            size.y.getImpl()->parentWidget = this;
+            size.y.getImpl()->recalculate();
+        }
+
         Transformable::setSize(size);
 
         m_callback.size = getSize();
@@ -346,6 +368,11 @@ namespace tgui
         assert(parent);
 
         m_parent = parent;
+
+        m_position.x.getImpl()->recalculate();
+        m_position.y.getImpl()->recalculate();
+        m_size.x.getImpl()->recalculate();
+        m_size.y.getImpl()->recalculate();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

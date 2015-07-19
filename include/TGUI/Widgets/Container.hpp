@@ -146,12 +146,7 @@ namespace tgui
         /// @param widgetPtr   Pointer to the widget you would like to add
         /// @param widgetName  If you want to access the widget later then you must do this with this name
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container); // Create a picture and add it to the container
-        /// container.remove(pic);             // Remove the picture from the container
-        /// container.add(pic);                // Add the picture to the container again
-        /// @endcode
+        /// @warning The widget name should not contain whitespace.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void add(const Widget::Ptr& widgetPtr, const sf::String& widgetName = "");
@@ -166,12 +161,6 @@ namespace tgui
         /// @return Pointer to the earlier created widget
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed.
-        ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2 = container.get("picName");
-        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr get(const sf::String& widgetName, bool recursive = false) const;
@@ -188,12 +177,6 @@ namespace tgui
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed.
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2 = container.get<tgui::Picture>("picName");
-        /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class T>
         typename T::Ptr get(const sf::String& widgetName, bool recursive = false) const
@@ -207,16 +190,10 @@ namespace tgui
         ///
         /// @param widget  Pointer to the widget to remove
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2(container, "picName2");
-        /// container.remove(pic);
-        /// container.remove(container.get("picName2"));
-        /// @endcode
+        /// @return True when widget is removed, false when widget was not found
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void remove(const Widget::Ptr& widget);
+        virtual bool remove(const Widget::Ptr& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -472,7 +449,7 @@ namespace tgui
         std::vector<sf::String>  m_objName;
 
         // The id of the focused widget
-        unsigned int m_focusedWidget = 0;
+        std::size_t m_focusedWidget = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
@@ -504,7 +481,7 @@ namespace tgui
         /// The window size cannot be changed by a widget.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const Layout& size) override;
+        virtual void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 

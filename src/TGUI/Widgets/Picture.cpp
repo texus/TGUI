@@ -82,7 +82,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setPosition(const Layout& position)
+    void Picture::setPosition(const Layout2d& position)
     {
         Widget::setPosition(position);
 
@@ -91,7 +91,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setSize(const Layout& size)
+    void Picture::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 

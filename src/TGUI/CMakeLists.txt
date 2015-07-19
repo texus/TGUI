@@ -1,30 +1,5 @@
-
+# TODO Change to file list again (to avoid problems with caching)
 file(GLOB TGUI_SRC "*.cpp" "extra/*.cpp")
-
-# add the sfml and tgui include directories
-include_directories( "${PROJECT_SOURCE_DIR}/include" )
-include_directories( ${SFML_INCLUDE_DIR} )
-
-# OpenGL is required (due to a temporary fix)
-if (NOT TGUI_OPENGL_ES)
-    find_package(OpenGL REQUIRED)
-    include_directories(${OPENGL_INCLUDE_DIR})
-    set(TGUI_EXT_LIBS ${OPENGL_gl_LIBRARY} ${SFML_LIBRARIES})
-else()
-    if (SFML_OS_LINUX)
-        find_package(EGL REQUIRED)
-        find_package(GLES REQUIRED)
-        add_definitions(-DSFML_OPENGL_ES)
-        include_directories(${EGL_INCLUDE_DIR} ${GLES_INCLUDE_DIR})
-    elseif(SFML_OS_ANDROID)
-        set(TGUI_EXT_LIBS ${SFML_LIBRARIES} "-lEGL -lGLESv1_CM")
-    endif()
-endif()
-
-# We need to link to an extra library on android (to use the asset manager)
-if(SFML_OS_ANDROID)
-    set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
-endif()
 
 # Determine library suffixes depending on static/shared configuration
 if(TGUI_SHARED_LIBS)
@@ -51,10 +26,10 @@ if(TGUI_SHARED_LIBS)
     endif()
 
 else()
-    add_definitions(-DSFML_STATIC)
     add_library(${PROJECT_NAME} STATIC ${TGUI_SRC})
     set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX -s-d)
     set_target_properties(${PROJECT_NAME} PROPERTIES RELEASE_POSTFIX -s)
+    set_target_properties(${PROJECT_NAME} PROPERTIES MINSIZEREL_POSTFIX -s)
 endif()
 
 # Enable automatic reference counting on iOS
@@ -93,7 +68,7 @@ if(SFML_OS_MACOSX AND TGUI_SHARED_LIBS)
                            POST_BUILD
                            COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/Headers
                            COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include/TGUI $<TARGET_FILE_DIR:${PROJECT_NAME}>/Headers
-                           COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_DIR:${PROJECT_NAME}>/Headers $<TARGET_FILE_DIR:${PROJECT_NAME}>/../../Headers)
+                           COMMAND ${CMAKE_COMMAND} -E create_symlink Versions/${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}/Headers $<TARGET_FILE_DIR:${PROJECT_NAME}>/../../Headers)
 
         # The framework has to be with a capital letter (because it includes the header files which must be found in a "TGUI" directory)
         set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME TGUI)

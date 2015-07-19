@@ -38,12 +38,12 @@ else()
     endif()
 endif()
 
-# TODO: Add option to build the examples
-#if(SFML_OS_IOS OR SFML_OS_ANDROID)
-#    set(TGUI_BUILD_EXAMPLES FALSE)
-#else()
-#    tgui_set_option(TGUI_BUILD_EXAMPLES FALSE BOOL "TRUE to build the TGUI examples, FALSE to ignore them")
-#endif()
+# Add option to build the examples
+if(SFML_OS_IOS OR SFML_OS_ANDROID)
+    set(TGUI_BUILD_EXAMPLES FALSE)
+else()
+    tgui_set_option(TGUI_BUILD_EXAMPLES FALSE BOOL "TRUE to build the TGUI examples, FALSE to ignore them")
+endif()
 
 # Add an option for choosing the OpenGL implementation
 tgui_set_option(TGUI_OPENGL_ES ${OPENGL_ES} BOOL "TRUE to use an OpenGL ES implementation, FALSE to use a desktop OpenGL implementation")
@@ -234,6 +234,36 @@ endif()
 # Set the path for the libraries
 set( LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 
+# Add the sfml and tgui include directories
+include_directories( "${PROJECT_SOURCE_DIR}/include" )
+include_directories( ${SFML_INCLUDE_DIR} )
+
+# OpenGL is required (due to a temporary fix)
+if (NOT TGUI_OPENGL_ES)
+    find_package(OpenGL REQUIRED)
+    include_directories(${OPENGL_INCLUDE_DIR})
+    set(TGUI_EXT_LIBS ${OPENGL_gl_LIBRARY} ${SFML_LIBRARIES})
+else()
+    if (SFML_OS_LINUX)
+        find_package(EGL REQUIRED)
+        find_package(GLES REQUIRED)
+        add_definitions(-DSFML_OPENGL_ES)
+        include_directories(${EGL_INCLUDE_DIR} ${GLES_INCLUDE_DIR})
+    elseif(SFML_OS_ANDROID)
+        set(TGUI_EXT_LIBS ${SFML_LIBRARIES} "-lEGL -lGLESv1_CM")
+    endif()
+endif()
+
+# We need to link to an extra library on android (to use the asset manager)
+if(SFML_OS_ANDROID)
+    set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
+endif()
+
+# Add SFML_STATIC define when linking statically
+if(NOT TGUI_SHARED_LIBS)
+    add_definitions(-DSFML_STATIC)
+endif()
+
 # Jump to the CMakeLists.txt file in the source folder
 add_subdirectory(src/TGUI)
 
@@ -245,6 +275,16 @@ endif()
 # Build the documentation when requested
 if (TGUI_BUILD_DOC)
     add_subdirectory(doc)
+endif()
+
+# Build the examples if requested
+if (TGUI_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
+# Build the tests if requested
+if (TGUI_BUILD_TESTS)
+    add_subdirectory(tests)
 endif()
 
 # Install include files

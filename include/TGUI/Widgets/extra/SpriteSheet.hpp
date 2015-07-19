@@ -88,7 +88,7 @@ namespace ext
         /// @see move, getPosition
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const Layout& position) override;
+        virtual void setPosition(const Layout2d& position) override;
         using Transformable::setPosition;
 
 
@@ -98,7 +98,7 @@ namespace ext
         /// @param size  The new size of the picture cell.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(const Layout& size) override;
+        void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 
