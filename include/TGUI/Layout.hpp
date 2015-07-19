@@ -227,7 +227,6 @@ namespace tgui
     private:
         std::shared_ptr<LayoutImpl> m_impl = std::make_shared<LayoutImpl>();
         std::function<void()> m_callbackFunction;
-        bool m_assigning = false;
     };
 
 
