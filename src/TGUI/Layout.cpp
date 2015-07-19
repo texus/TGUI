@@ -464,7 +464,7 @@ namespace tgui
         }
 
         // The string no longer contains operators, so return the value that it contains
-        return std::atof(expression.c_str());
+        return static_cast<float>(std::atof(expression.c_str()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
