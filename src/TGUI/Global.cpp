@@ -27,6 +27,7 @@
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Texture.hpp>
 
+#include <functional>
 #include <cctype>
 #include <cmath>
 
