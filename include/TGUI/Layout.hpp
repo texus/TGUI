@@ -42,8 +42,8 @@ namespace tgui
     class Layout;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Shared information between layouts
     /// @internal
-    /// Shared information between layouts
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API LayoutImpl : public std::enable_shared_from_this<LayoutImpl>
     {
@@ -59,6 +59,8 @@ namespace tgui
             Multiplies,
             Divides,
             Modulus,
+            And,
+            Or,
             LessThan,
             LessOrEqual,
             GreaterThan,
@@ -122,7 +124,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor to implicitly construct from numeric constant.
         ///
-        /// @param contant  Value of the layout
+        /// @param constant  Value of the layout
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Layout(float constant = 0);
@@ -243,7 +245,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor to implicitly construct from an sf::Vector2f.
         ///
-        /// @param contant  Value of the layout
+        /// @param constant  Value of the layout
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Layout2d(sf::Vector2f constant = {0, 0});
@@ -305,16 +307,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief < operator for the Layout class
+    /// @brief \< operator for the Layout class
     TGUI_API Layout operator<(Layout left, Layout right);
 
-    /// @brief <= operator for the Layout class
+    /// @brief \<= operator for the Layout class
     TGUI_API Layout operator<=(Layout left, Layout right);
 
-    /// @brief > operator for the Layout class
+    /// @brief \> operator for the Layout class
     TGUI_API Layout operator>(Layout left, Layout right);
 
-    /// @brief >= operator for the Layout class
+    /// @brief \>= operator for the Layout class
     TGUI_API Layout operator>=(Layout left, Layout right);
 
     /// @brief == operator for the Layout class
@@ -338,13 +340,17 @@ namespace tgui
     /// @brief % operator for the Layout class
     TGUI_API Layout operator%(Layout left, Layout right);
 
+    /// @brief && operator for the Layout class
+    TGUI_API Layout operator&&(Layout left, Layout right);
+
+    /// @brief || operator for the Layout class
+    TGUI_API Layout operator||(Layout left, Layout right);
+
     /// @brief == operator for the Layout2d class
-    /// @warning This function will return Layout in the future
-    TGUI_API Layout2d operator==(Layout2d left, Layout2d right);
+    TGUI_API Layout operator==(Layout2d left, Layout2d right);
 
     /// @brief != operator for the Layout2d class
-    /// @warning This function will return Layout in the future
-    TGUI_API Layout2d operator!=(Layout2d left, Layout2d right);
+    TGUI_API Layout operator!=(Layout2d left, Layout2d right);
 
     /// @brief + operator for the Layout2d class
     TGUI_API Layout2d operator+(Layout2d left, Layout2d right);

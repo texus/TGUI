@@ -159,6 +159,12 @@ namespace tgui
         case Operation::Modulus:
             value = std::fmod(operands[0]->value, operands[1]->value);
             break;
+        case Operation::And:
+            value = operands[0]->value && operands[1]->value;
+            break;
+        case Operation::Or:
+            value = operands[0]->value || operands[1]->value;
+            break;
         case Operation::LessThan:
             value = operands[0]->value < operands[1]->value;
             break;
@@ -298,6 +304,12 @@ namespace tgui
         // Recursively solve the if-then-else statements and the use of the ?: operator
         auto ifPos = expression.find("if");
         auto questionMarkPos = expression.find('?');
+
+        while ((ifPos != std::string::npos) && (ifPos > 0) && !std::isspace(expression[ifPos-1]))
+            ifPos = expression.find("if", ifPos + 2);
+        while ((ifPos < expression.size()-2) && !std::isspace(expression[ifPos+2]))
+            ifPos = expression.find("if", ifPos + 2);
+
         if ((ifPos != std::string::npos) || (questionMarkPos != std::string::npos))
         {
             if ((ifPos == std::string::npos) || (questionMarkPos < ifPos))
@@ -317,36 +329,93 @@ namespace tgui
             }
             else // if-then-else instead of ?:
             {
-                auto matchingThenPos = expression.find("then", ifPos + 2);
+                auto thenPos = expression.find("then", ifPos + 2);
                 auto nextifPos = expression.find("if", ifPos + 2);
-                while ((matchingThenPos != std::string::npos) && (nextifPos < matchingThenPos))
-                    matchingThenPos = expression.find("then", matchingThenPos + 4);
 
-                if (matchingThenPos == std::string::npos)
+                while ((nextifPos != std::string::npos) && (nextifPos > 0) && !std::isspace(expression[nextifPos-1]))
+                    nextifPos = expression.find("if", nextifPos + 2);
+                while ((nextifPos < expression.size()-2) && !std::isspace(expression[nextifPos+2]))
+                    nextifPos = expression.find("if", nextifPos + 2);
+
+                while ((thenPos != std::string::npos) && (thenPos > 0) && !std::isspace(expression[thenPos-1]))
+                    thenPos = expression.find("then", thenPos + 4);
+                while ((thenPos < expression.size()-4) && !std::isspace(expression[thenPos+4]))
+                    thenPos = expression.find("then", thenPos + 4);
+
+                while ((thenPos != std::string::npos) && (nextifPos < thenPos))
+                {
+                    thenPos = expression.find("then", thenPos + 4);
+
+                    while ((thenPos != std::string::npos) && (thenPos > 0) && !std::isspace(expression[thenPos-1]))
+                        thenPos = expression.find("then", thenPos + 4);
+                    while ((thenPos < expression.size()-4) && !std::isspace(expression[thenPos+4]))
+                        thenPos = expression.find("then", thenPos + 4);
+                }
+
+                if (thenPos == std::string::npos)
                     return 0; // 'if' without matching 'then'
 
-                auto matchingElsePos = expression.find("else", matchingThenPos + 4);
-                nextifPos = expression.find("if", matchingThenPos + 4);
-                while ((matchingElsePos != std::string::npos) && (nextifPos < matchingElsePos))
-                    matchingElsePos = expression.find("else", matchingElsePos + 4);
+                auto elsePos = expression.find("else", thenPos + 4);
+                nextifPos = expression.find("if", thenPos + 4);
 
-                if (matchingElsePos == std::string::npos)
+                while ((nextifPos != std::string::npos) && (nextifPos > 0) && !std::isspace(expression[nextifPos-1]))
+                    nextifPos = expression.find("if", nextifPos + 2);
+                while ((nextifPos < expression.size()-2) && !std::isspace(expression[nextifPos+2]))
+                    nextifPos = expression.find("if", nextifPos + 2);
+
+                while ((elsePos != std::string::npos) && (elsePos > 0) && !std::isspace(expression[elsePos-1]))
+                    elsePos = expression.find("else", elsePos + 4);
+                while ((elsePos < expression.size()-4) && !std::isspace(expression[elsePos+4]))
+                    elsePos = expression.find("else", elsePos + 4);
+
+                while ((elsePos != std::string::npos) && (nextifPos < elsePos))
+                {
+                    elsePos = expression.find("else", elsePos + 4);
+
+                    while ((elsePos != std::string::npos) && (elsePos > 0) && !std::isspace(expression[elsePos-1]))
+                        elsePos = expression.find("else", elsePos + 4);
+                    while ((elsePos < expression.size()-4) && !std::isspace(expression[elsePos+4]))
+                        elsePos = expression.find("else", elsePos + 4);
+                }
+
+                if (elsePos == std::string::npos)
                     return 0; // 'if' and 'then' found without matching 'else'
 
-                if (parseLayoutString(expression.substr(ifPos + 2, matchingThenPos - ifPos - 2)) != 0)
-                    expression = expression.substr(0, ifPos) + tgui::to_string(parseLayoutString(expression.substr(matchingThenPos + 4, matchingElsePos - matchingThenPos - 4)));
+                if (parseLayoutString(expression.substr(ifPos + 2, thenPos - ifPos - 2)) != 0)
+                    expression = expression.substr(0, ifPos) + tgui::to_string(parseLayoutString(expression.substr(thenPos + 4, elsePos - thenPos - 4)));
                 else
-                    expression = expression.substr(0, ifPos) + tgui::to_string(parseLayoutString(expression.substr(matchingElsePos + 4)));
+                    expression = expression.substr(0, ifPos) + tgui::to_string(parseLayoutString(expression.substr(elsePos + 4)));
             }
         }
 
         // All brackets and conditionals should be remove by now
-        if ((expression.find(')') != std::string::npos)
-         || (expression.find(':') != std::string::npos)
-         || (expression.find("then") != std::string::npos)
-         || (expression.find("else") != std::string::npos))
-        {
+        if ((expression.find(')') != std::string::npos) || (expression.find(':') != std::string::npos))
             return 0;
+
+        auto andPos = expression.rfind("&&");
+        auto orPos = expression.rfind("||");
+        if ((andPos != std::string::npos) || (orPos != std::string::npos))
+        {
+            if ((andPos == 0) || (orPos == 0))
+                return 0;
+
+            if ((andPos == std::string::npos) || (orPos < andPos))
+                return parseLayoutString(expression.substr(0, orPos)) || parseLayoutString(expression.substr(orPos + 2));
+            else
+                return parseLayoutString(expression.substr(0, andPos)) && parseLayoutString(expression.substr(andPos + 2));
+        }
+
+        andPos = expression.rfind("and");
+        orPos = expression.rfind("or");
+        if ((andPos != std::string::npos) || (orPos != std::string::npos))
+        {
+            if ((andPos == 0) || (orPos == 0))
+                return 0;
+
+            if ((andPos == std::string::npos) || (orPos < andPos))
+                return parseLayoutString(expression.substr(0, orPos)) || parseLayoutString(expression.substr(orPos + 2));
+            else
+                return parseLayoutString(expression.substr(0, andPos)) && parseLayoutString(expression.substr(andPos + 3));
         }
 
         auto equalsPos = expression.rfind("==");
@@ -920,16 +989,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout2d operator==(Layout2d left, Layout2d right)
+    Layout operator&&(Layout left, Layout right)
     {
-        return {left.x == right.x, left.y == right.y};
+        return layoutOperator(std::move(left), std::move(right), LayoutImpl::Operation::And);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout2d operator!=(Layout2d left, Layout2d right)
+    Layout operator||(Layout left, Layout right)
     {
-        return {left.x != right.x, left.y != right.y};
+        return layoutOperator(std::move(left), std::move(right), LayoutImpl::Operation::Or);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout operator==(Layout2d left, Layout2d right)
+    {
+        return {(left.x == right.x) && (left.y == right.y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout operator!=(Layout2d left, Layout2d right)
+    {
+        return {(left.x != right.x) || (left.y != right.y)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
