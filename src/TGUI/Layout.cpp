@@ -27,6 +27,7 @@
 #include <TGUI/Gui.hpp>
 
 #include <cassert>
+#include <cctype>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -305,9 +306,9 @@ namespace tgui
         auto ifPos = expression.find("if");
         auto questionMarkPos = expression.find('?');
 
-        while ((ifPos != std::string::npos) && (ifPos > 0) && !std::isspace(expression[ifPos-1]))
+        while ((ifPos != std::string::npos) && (ifPos > 0) && !::isspace(expression[ifPos-1]))
             ifPos = expression.find("if", ifPos + 2);
-        while ((ifPos < expression.size()-2) && !std::isspace(expression[ifPos+2]))
+        while ((ifPos < expression.size()-2) && !::isspace(expression[ifPos+2]))
             ifPos = expression.find("if", ifPos + 2);
 
         if ((ifPos != std::string::npos) || (questionMarkPos != std::string::npos))
@@ -332,23 +333,23 @@ namespace tgui
                 auto thenPos = expression.find("then", ifPos + 2);
                 auto nextifPos = expression.find("if", ifPos + 2);
 
-                while ((nextifPos != std::string::npos) && (nextifPos > 0) && !std::isspace(expression[nextifPos-1]))
+                while ((nextifPos != std::string::npos) && (nextifPos > 0) && !::isspace(expression[nextifPos-1]))
                     nextifPos = expression.find("if", nextifPos + 2);
-                while ((nextifPos < expression.size()-2) && !std::isspace(expression[nextifPos+2]))
+                while ((nextifPos < expression.size()-2) && !::isspace(expression[nextifPos+2]))
                     nextifPos = expression.find("if", nextifPos + 2);
 
-                while ((thenPos != std::string::npos) && (thenPos > 0) && !std::isspace(expression[thenPos-1]))
+                while ((thenPos != std::string::npos) && (thenPos > 0) && !::isspace(expression[thenPos-1]))
                     thenPos = expression.find("then", thenPos + 4);
-                while ((thenPos < expression.size()-4) && !std::isspace(expression[thenPos+4]))
+                while ((thenPos < expression.size()-4) && !::isspace(expression[thenPos+4]))
                     thenPos = expression.find("then", thenPos + 4);
 
                 while ((thenPos != std::string::npos) && (nextifPos < thenPos))
                 {
                     thenPos = expression.find("then", thenPos + 4);
 
-                    while ((thenPos != std::string::npos) && (thenPos > 0) && !std::isspace(expression[thenPos-1]))
+                    while ((thenPos != std::string::npos) && (thenPos > 0) && !::isspace(expression[thenPos-1]))
                         thenPos = expression.find("then", thenPos + 4);
-                    while ((thenPos < expression.size()-4) && !std::isspace(expression[thenPos+4]))
+                    while ((thenPos < expression.size()-4) && !::isspace(expression[thenPos+4]))
                         thenPos = expression.find("then", thenPos + 4);
                 }
 
@@ -358,23 +359,23 @@ namespace tgui
                 auto elsePos = expression.find("else", thenPos + 4);
                 nextifPos = expression.find("if", thenPos + 4);
 
-                while ((nextifPos != std::string::npos) && (nextifPos > 0) && !std::isspace(expression[nextifPos-1]))
+                while ((nextifPos != std::string::npos) && (nextifPos > 0) && !::isspace(expression[nextifPos-1]))
                     nextifPos = expression.find("if", nextifPos + 2);
-                while ((nextifPos < expression.size()-2) && !std::isspace(expression[nextifPos+2]))
+                while ((nextifPos < expression.size()-2) && !::isspace(expression[nextifPos+2]))
                     nextifPos = expression.find("if", nextifPos + 2);
 
-                while ((elsePos != std::string::npos) && (elsePos > 0) && !std::isspace(expression[elsePos-1]))
+                while ((elsePos != std::string::npos) && (elsePos > 0) && !::isspace(expression[elsePos-1]))
                     elsePos = expression.find("else", elsePos + 4);
-                while ((elsePos < expression.size()-4) && !std::isspace(expression[elsePos+4]))
+                while ((elsePos < expression.size()-4) && !::isspace(expression[elsePos+4]))
                     elsePos = expression.find("else", elsePos + 4);
 
                 while ((elsePos != std::string::npos) && (nextifPos < elsePos))
                 {
                     elsePos = expression.find("else", elsePos + 4);
 
-                    while ((elsePos != std::string::npos) && (elsePos > 0) && !std::isspace(expression[elsePos-1]))
+                    while ((elsePos != std::string::npos) && (elsePos > 0) && !::isspace(expression[elsePos-1]))
                         elsePos = expression.find("else", elsePos + 4);
-                    while ((elsePos < expression.size()-4) && !std::isspace(expression[elsePos+4]))
+                    while ((elsePos < expression.size()-4) && !::isspace(expression[elsePos+4]))
                         elsePos = expression.find("else", elsePos + 4);
                 }
 
