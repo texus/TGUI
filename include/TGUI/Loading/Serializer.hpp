@@ -40,23 +40,16 @@ namespace tgui
     class TGUI_API Serializer
     {
     public:
-        using SerializeFunc = std::function<std::string(const ObjectConverter&)>;
+        using SerializeFunc = std::function<std::string(ObjectConverter&&)>;
 
-        static std::string serialize(const ObjectConverter& object);
+        static std::string serialize(ObjectConverter&& object);
 
-        static void setFunction(ObjectConverter::Type type, const SerializeFunc& deserializer);
+        static void setFunction(ObjectConverter::Type type, const SerializeFunc& serializer);
+        static const SerializeFunc& getFunction(ObjectConverter::Type type);
 
     private:
         static std::map<ObjectConverter::Type, SerializeFunc> m_serializers;
     };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /// TODO: Documentation
-    TGUI_API std::string serializeFont(const ObjectConverter& value);
-    TGUI_API std::string serializeColor(const ObjectConverter& value);
-    TGUI_API std::string serializeBorders(const ObjectConverter& value);
-    TGUI_API std::string serializeTexture(const ObjectConverter& value);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

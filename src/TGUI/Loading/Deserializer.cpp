@@ -30,6 +30,8 @@
 
 namespace
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     unsigned char hexToDec(char c)
     {
         if (c >= '0' && c <= '9')
@@ -49,6 +51,8 @@ namespace
         else
             return 0;
     }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool readIntRect(std::string value, sf::IntRect& rect)
     {
@@ -85,6 +89,11 @@ namespace
                             // Get the width value and delete this part of the string
                             rect.width = tgui::stoi(value.substr(0, commaPos));
                             value.erase(0, commaPos+1);
+                            
+                            // There should be no commas in the string
+                            commaPos = value.find(',');
+                            if (commaPos != std::string::npos)
+                                return false;
 
                             // Get the height value
                             rect.height = tgui::stoi(value);
@@ -98,6 +107,8 @@ namespace
 
         return false;
     }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 // Hidden functions
@@ -164,10 +175,10 @@ namespace tgui
             }
 
             // The string can optionally start with "rgb" or "rgba", but this is ignored
-            if (string.substr(0, 3) == "rgb")
-                string.erase(0, 3);
-            else if (string.substr(0, 4) == "rgba")
+            if (string.substr(0, 4) == "rgba")
                 string.erase(0, 4);
+            else if (string.substr(0, 3) == "rgb")
+                string.erase(0, 3);
 
             // Remove the first and last characters when they are brackets
             if ((string[0] == '(') && (string[string.length()-1] == ')'))
@@ -200,6 +211,11 @@ namespace tgui
                         color.b = tgui::stoi(string.substr(0, commaPos));
                         string.erase(0, commaPos+1);
 
+                        // There should be no commas in the string
+                        commaPos = string.find(',');
+                        if (commaPos != std::string::npos)
+                            throw Exception{"Failed to deserialize color '" + value + "'."};
+
                         // Get the alpha value
                         color.a = tgui::stoi(string);
                     }
@@ -221,11 +237,28 @@ namespace tgui
 
     TGUI_API ObjectConverter deserializeString(const std::string& value)
     {
-        /// TODO: When no quotes around it then just return it, otherwise remove quotes and replace stuff like \n in the string
+        // Only deserialize the string when it is surrounded with quotes
+        if (!value.empty() && ((value[0] == '"') && (value[value.length()-1] == '"')))
+        {
+            std::string result = value.substr(1, value.length()-2);
+            
+            std::size_t backslashPos = 0;
+            while ((backslashPos = result.find('\\', backslashPos)) < result.size()-1)
+            {
+                result.erase(backslashPos, 1);
 
-        // Remove the first and last characters when they are quotes
-        if (!value.empty() || ((value[0] == '"') && (value[value.length()-1] == '"')))
-            return {sf::String{value.substr(1, value.length()-2)}};
+                if (result[backslashPos] == 'n')
+                    result[backslashPos] = '\n';
+                else if (result[backslashPos] == 't')
+                    result[backslashPos] = '\t';
+                else if (result[backslashPos] == 'v')
+                    result[backslashPos] = '\v';
+
+                backslashPos++;
+            }
+            
+            return {sf::String{result}};
+        }
         else
             return {sf::String{value}};
     }
@@ -270,6 +303,11 @@ namespace tgui
                         // Get the third value and delete this part of the string
                         borders.right = tgui::stof(string.substr(0, commaPos));
                         string.erase(0, commaPos+1);
+
+                        // There should be no commas in the string
+                        commaPos = string.find(',');
+                        if (commaPos != std::string::npos)
+                            throw Exception{"Failed to deserialize color '" + value + "'."};
 
                         // Get the fourth value
                         borders.bottom = tgui::stof(string);
@@ -414,6 +452,13 @@ namespace tgui
     void Deserializer::setFunction(ObjectConverter::Type type, const DeserializeFunc& deserializer)
     {
         m_deserializers[type] = deserializer;
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const Deserializer::DeserializeFunc& Deserializer::getFunction(ObjectConverter::Type type)
+    {
+        return m_deserializers[type];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

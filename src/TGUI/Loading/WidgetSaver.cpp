@@ -64,7 +64,7 @@ namespace tgui
             node->children.emplace_back(std::make_shared<DataIO::Node>());
             node->children.back()->name = "Renderer";
             for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
-                node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(node->children.back().get(), Serializer::serialize(pair.second));
+                node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(node->children.back().get(), Serializer::serialize(std::move(pair.second)));
         }
 
         return node;

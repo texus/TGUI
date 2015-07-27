@@ -50,7 +50,11 @@ namespace tgui
                     // The texture is now used at multiple places
                     ++(dataIt->users);
 
-                    *texture.getData() = *dataIt->data;
+                    texture.getData() = dataIt->data;
+
+                    // Let the texture alert the texture manager when it is being copied or destroyed
+                    texture.setCopyCallback(&TextureManager::copyTexture);
+                    texture.setDestructCallback(&TextureManager::removeTexture);
                     return true;
                 }
             }
@@ -91,7 +95,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextureManager::copyTexture(const TextureData* textureDataToCopy)
+    void TextureManager::copyTexture(std::shared_ptr<TextureData> textureDataToCopy)
     {
         // Loop all our textures to check if we already have this one
         for (auto& dataHolder : m_imageMap)
@@ -113,7 +117,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextureManager::removeTexture(const TextureData* textureDataToRemove)
+    void TextureManager::removeTexture(std::shared_ptr<TextureData> textureDataToRemove)
     {
         // Loop all our textures to check which one it is
         for (auto imageIt = m_imageMap.begin(); imageIt != m_imageMap.end(); ++imageIt)

@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
@@ -145,14 +146,18 @@ namespace tgui
 
         for (auto& widget : m_widgets)
         {
+            std::string widgetType;
             if (m_filename != "")
             {
-                if (m_widgetTypes.find(widget.second) == m_widgetTypes.end())
-                {
-                    std::string widgetType = toLower(m_themeLoader->load(m_filename, widget.second, m_widgetProperties[widget.second]));
-                }
+                if (m_widgetTypes.find(widget.second) != m_widgetTypes.end())
+                    widgetType = m_widgetTypes[widget.second];
+                else
+                    widgetType = toLower(m_themeLoader->load(m_filename, widget.second, m_widgetProperties[widget.second]));
             }
+            else
+                widgetType = widget.second;
 
+            m_widgetTypes[widget.second] = widgetType;
             widgetReload(widget.first, filename, widget.second);
         }
     }
@@ -206,6 +211,8 @@ namespace tgui
 
         widgetAttached(widget.get());
         widgetReload(widget.get(), m_filename, className);
+
+        m_widgetTypes[className] = widgetType;
         m_widgets[widget.get()] = className;
     }
 
@@ -216,6 +223,34 @@ namespace tgui
         auto it = m_widgets.find(widget);
         if (it != m_widgets.end())
             m_widgets.erase(it);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    void Theme::setProperty(std::string className, const std::string& property, const std::string& value)
+    {
+        className = toLower(className);
+        m_widgetProperties[className][toLower(property)] = value;
+
+        for (auto& pair : m_widgets)
+        {
+            if (pair.second == className)
+                pair.first->getRenderer()->setProperty(property, value);
+        }
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    void Theme::setProperty(std::string className, const std::string& property, ObjectConverter&& value)
+    {
+        className = toLower(className);
+        m_widgetProperties[className][toLower(property)] = Serializer::serialize(std::move(value));
+
+        for (auto& pair : m_widgets)
+        {
+            if (pair.second == className)
+                pair.first->getRenderer()->setProperty(property, std::move(value));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,13 +280,6 @@ namespace tgui
         setResourcePath(oldResourcePath);
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void Theme::setLoader(const std::string& type, const LoaderFuncType& loader)
-    {
-        m_loaders[toLower(type)] = loader;
-    }
-*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

@@ -54,10 +54,19 @@ namespace tgui
     template <typename T>
     std::string convertTypeToString();
 
+    /// @internal
     template <> inline std::string convertTypeToString<int>() { return "int"; }
+    
+    /// @internal
     template <> inline std::string convertTypeToString<sf::Vector2f>() { return "sf::Vector2f"; }
+    
+    /// @internal
     template <> inline std::string convertTypeToString<sf::String>() { return "sf::String"; }
+    
+    /// @internal
     template <> inline std::string convertTypeToString<std::vector<sf::String>>() { return "std::vector<sf::String>"; }
+    
+    /// @internal
     template <> inline std::string convertTypeToString<std::shared_ptr<ChildWindow>>() { return "std::shared_ptr<ChildWindow>"; }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +79,7 @@ namespace tgui
         static std::vector<std::string> getRow() { return {}; }
     };
 
+    /// @internal
     template <typename Type>
     struct extractTypes<Type>
     {
@@ -77,6 +87,7 @@ namespace tgui
         static std::vector<std::string> getRow() { return {convertTypeToString<Type>()}; }
     };
 
+    /// @internal
     template <typename Type, typename... OtherTypes>
     struct extractTypes<Type, OtherTypes...>
     {
@@ -95,12 +106,14 @@ namespace tgui
         }
     };
 
+    /// @internal
     template <typename... T>
     struct extractTypes<TypeSet<T...>>
     {
         static std::vector<std::vector<std::string>> get() { return {extractTypes<T...>::getRow()}; }
     };
 
+    /// @internal
     template <typename... T, typename... U>
     struct extractTypes<TypeSet<T...>, U...>
     {
@@ -118,12 +131,14 @@ namespace tgui
     template <typename Func, typename TypeA, typename TypeB, typename... Args>
     struct isConvertible;
 
+    /// @internal
     template <typename Func, typename... TypesA, typename... TypesB, typename... Args>
     struct isConvertible<Func, TypeSet<TypesA...>, TypeSet<TypesB...>, Args...>
     {
         using type = typename std::conditional<std::is_convertible<Func, std::function<void(Args..., TypesA...)>>::value, TypeSet<TypesA...>, TypeSet<TypesB...>>::type;
     };
 
+    /// @internal
     template <typename Func, typename... Type>
     struct isConvertible<Func, TypeSet<>, TypeSet<Type...>>
     {

@@ -66,7 +66,7 @@ namespace tgui
 
     std::string DefaultThemeLoader::load(const std::string& filename, const std::string& className, std::map<std::string, std::string>& propertyValuePair)
     {
-        /// TODO: Allow comments
+        /// TODO: Allow comments (#, // and /*)
 
         std::string lowercaseClassName = toLower(className);
 
@@ -96,7 +96,7 @@ namespace tgui
 
                 for (auto& pair : child->propertyValuePairs)
                 {
-                    m_propertiesCache[filename][parsedClassName][pair.first] = pair.second->value;
+                    m_propertiesCache[filename][parsedClassName][toLower(pair.first)] = pair.second->value;
                     m_widgetTypeCache[filename][parsedClassName] = widgetType;
                 }
             }

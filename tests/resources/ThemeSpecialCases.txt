@@ -1,0 +1,10 @@
+Button.Button1 { TextColor : rgb(255, 0, 0); }
+
+Button.Name.With.Dots {
+    TextColor : rgb(0, 255, 0);
+    BackgroundColor : rgb(255, 255, 255);
+}
+
+Button {
+    TextColor : rgb(0, 0, 255)
+}

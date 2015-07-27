@@ -1,5 +1,33 @@
-# TODO Change to file list again (to avoid problems with caching)
-file(GLOB TGUI_SRC "*.cpp" "extra/*.cpp")
+# TODO: Make sure all files are listed
+set(TGUI_SRC
+    Clipboard.cpp
+    Container.cpp
+    Global.cpp
+    Gui.cpp
+    Layout.cpp
+    Signal.cpp
+    Texture.cpp
+    TextureManager.cpp
+    ThemeFileParser.cpp
+    Transformable.cpp
+    Widget.cpp
+    Loading/DataIO.cpp
+    Loading/Deserializer.cpp
+    Loading/ObjectConverter.cpp
+    Loading/Serializer.cpp
+    Loading/Theme.cpp
+    Loading/ThemeLoader.cpp
+    Loading/WidgetConverter.cpp
+    Loading/WidgetLoader.cpp
+    Loading/WidgetSaver.cpp
+    Widgets/Button.cpp
+    Widgets/ClickableWidget.cpp
+    Widgets/EditBox.cpp
+    Widgets/Label.cpp
+    Widgets/Panel.cpp
+    Widgets/Picture.cpp
+    Widgets/Tooltip.cpp
+)
 
 # Determine library suffixes depending on static/shared configuration
 if(TGUI_SHARED_LIBS)

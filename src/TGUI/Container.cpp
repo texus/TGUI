@@ -23,7 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Container.hpp>
+#include <TGUI/Widgets/Tooltip.hpp>
+#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Loading/WidgetSaver.hpp>
+#include <TGUI/Loading/WidgetLoader.hpp>
 
 #include <stack>
 #include <cassert>

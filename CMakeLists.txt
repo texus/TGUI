@@ -45,6 +45,13 @@ else()
     tgui_set_option(TGUI_BUILD_EXAMPLES FALSE BOOL "TRUE to build the TGUI examples, FALSE to ignore them")
 endif()
 
+# Add option to build the tests on linux
+if(SFML_OS_IOS OR SFML_OS_ANDROID)
+    set(TGUI_BUILD_TESTS FALSE)
+else()
+    tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests (requires c++14)")
+endif()
+
 # Add an option for choosing the OpenGL implementation
 tgui_set_option(TGUI_OPENGL_ES ${OPENGL_ES} BOOL "TRUE to use an OpenGL ES implementation, FALSE to use a desktop OpenGL implementation")
 
@@ -89,27 +96,18 @@ if (SFML_OS_ANDROID)
 
     set(CMAKE_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS}")
 
-elseif(SFML_COMPILER_GCC)
+elseif(SFML_COMPILER_GCC OR SFML_COMPILER_CLANG)
 
     if (NOT CMAKE_CXX_FLAGS)
-        set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++11" CACHE STRING "C++ compiler flags" FORCE)
-        set(CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic" CACHE STRING "C compiler flags" FORCE)
-    endif()
-
-elseif (SFML_COMPILER_CLANG)
-
-    if (NOT CMAKE_CXX_FLAGS)
-        set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++11" CACHE STRING "C++ compiler flags" FORCE)
+        set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++11" CACHE STRING "C compiler flags" FORCE)
         set(CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic" CACHE STRING "C compiler flags" FORCE)
 
         # On mac, clang needs another parameter
-        if (SFML_OS_MACOSX)
+        if (SFML_COMPILER_CLANG AND SFML_OS_MACOSX)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++" CACHE STRING "C++ compiler flags" FORCE)
         endif()
     endif()
-
 endif()
-
 
 # Define an option for choosing between static and dynamic C runtime (VC++ only)
 if (SFML_OS_WINDOWS)

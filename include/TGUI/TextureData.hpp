@@ -56,7 +56,7 @@ namespace tgui
     // Wrapper around TextureData to be used in TextureManager
     struct TGUI_API TextureDataHolder
     {
-        TextureData*  data = nullptr;
+        std::shared_ptr<TextureData> data;
         std::string   filename;
         unsigned int  users;
     };

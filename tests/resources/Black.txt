@@ -1,0 +1,168 @@
+Button {
+    NormalImage     : "Black.png" Part( 0, 64, 45, 50) Middle(10, 0, 25, 50);
+    HoverImage      : "Black.png" Part(45, 64, 45, 50) Middle(10, 0, 25, 50);
+    DownImage       : "Black.png" Part(90, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextColorNormal : rgb(190, 190, 190);
+    TextColorHover  : rgb(250, 250, 250);
+    TextColorDown   : rgb(250, 250, 250);
+}
+
+Button.Button2 {
+    NormalImage     : "Black.png" Part( 0, 64, 45, 50) Middle(10, 0, 25, 50);
+    HoverImage      : "Black.png" Part(45, 64, 45, 50) Middle(10, 0, 25, 50);
+    DownImage       : "Black.png" Part(90, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextColorNormal : rgb(190, 0, 190);
+    TextColorHover  : rgb(250, 250, 250);
+    TextColorDown   : rgb(250, 250, 250);
+}
+
+ChatBox {
+    BackgroundImage : "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
+    Scrollbar       : "Scrollbar";
+    Padding         : (3, 3, 3, 3);
+}
+
+Checkbox {
+    UncheckedImage      : "Black.png" Part(124, 0, 32, 32);
+    CheckedImage        : "Black.png" Part(156, 0, 32, 32);
+    UncheckedHoverImage : "Black.png" Part(188, 0, 32, 32);
+    CheckedHoverImage   : "Black.png" Part(220, 0, 32, 32);
+    TextColorNormal     : rgb(190, 190, 190);
+    TextColorHover      : rgb(250, 250, 250);
+}
+
+ChildWindow {
+    TitlebarImage   : "Black.png" Part(48, 154, 75, 25) Middle(25, 0, 25, 25);
+    TitleColor      : rgb(190, 190, 190);
+    BackgroundColor : rgb( 80,  80,  80);
+    BorderColor     : rgb(0, 0, 0);
+    Borders         : (1, 1, 1, 1);
+    DistanceToSide  : 5;
+    CloseButton     : "ChildWindowCloseButton";
+}
+
+ChildWindowCloseButton {
+    NormalImage : "Black.png" Part(48, 179, 15, 15);
+    HoverImage  : "Black.png" Part(63, 179, 15, 15);
+    DownImage   : "Black.png" Part(78, 179, 15, 15);
+}
+
+ComboBox {
+    BackgroundImage      : "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
+    ArrowDownNormalImage : "Black.png" Part(60,  0, 32, 32);
+    ArrowDownHoverImage  : "Black.png" Part(60, 32, 32, 32);
+    ArrowUpNormalImage   : "Black.png" Part(92,  0, 32, 32);
+    ArrowUpHoverImage    : "Black.png" Part(92, 32, 32, 32);
+    TextColor            : (190, 190, 190);
+    Padding              : (3, 3, 3, 3);
+    ListBox              : "ListBox";
+}
+
+EditBox {
+    NormalImage : "Black.png" Part(0, 114, 60, 40) Middle(15, 0, 30, 40);
+    HoverImage  : "Black.png" Part(0, 114, 60, 40) Middle(15, 0, 30, 40);
+
+    TextColor                   : rgb(190, 190, 190);
+    SelectedTextColor           : rgb(255, 255, 255);
+    SelectedTextBackgroundColor : rgb( 10, 110, 255);
+    DefaultTextColor            : rgb(120, 120, 120);
+    CaretColor                  : rgb(110, 110, 255);
+    Padding                     : (6, 4, 6, 4);
+}
+
+Label {
+    TextColor : (190, 190, 190);
+}
+
+ListBox {
+    BackgroundImage         : "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
+    TextColorNormal         : rgb(190, 190, 190);
+    TextColorHover          : rgb(250, 250, 250);
+    HoverBackgroundColor    : rgb(255, 255, 255, 20);
+    SelectedBackgroundColor : rgb( 10, 110, 255);
+    SelectedTextColor       : rgb(255, 255, 255);
+    Padding                 : (3, 3, 3, 3);
+    Scrollbar               : "Scrollbar";
+}
+
+ProgressBar {
+    BackImage      : "Black.png" Part(180, 64, 90, 40) Middle(20, 0, 50, 40);
+    FrontImage     : "Black.png" Part(180, 108, 82, 32) Middle(16, 0, 50, 32);
+    TextColorBack  : rgb(190, 190, 190);
+    TextColorFront : rgb(250, 250, 250);
+}
+
+MenuBar {
+    BackgroundImage         : "Black.png" Part(115, 179, 8, 6) Middle(2, 2, 4, 2);
+    ItemBackgroundImage     : "Black.png" Part(115, 181, 8, 4) Middle(2, 0, 4, 2);
+    SelectedItemBackgroundImage : "Black.png" Part(115, 185, 8, 6) Middle(2, 2, 4, 2);
+    TextColor               : rgb(190, 190, 190);
+    SelectedTextColor       : rgb(255, 255, 255);
+    DistanceToSide          : 5;
+}
+
+MessageBox {
+    ChildWindow : "ChildWindow";
+    Button      : "Button";
+    TextColor   : rgb(190, 190, 190);
+}
+
+RadioButton {
+    UncheckedImage      : "Black.png" Part(124, 32, 32, 32);
+    CheckedImage        : "Black.png" Part(156, 32, 32, 32);
+    UncheckedHoverImage : "Black.png" Part(188, 32, 32, 32);
+    CheckedHoverImage   : "Black.png" Part(220, 32, 32, 32);
+    TextColorNormal     : rgb(190, 190, 190);
+    TextColorHover      : rgb(250, 250, 250);
+}
+
+Scrollbar {
+    TrackNormalImage     : "Black.png" Part(123, 154, 20, 20);
+    ThumbNormalImage     : "Black.png" Part(143, 154, 20, 20);
+    ThumbHoverImage      : "Black.png" Part(143, 174, 20, 20);
+    ArrowUpNormalImage   : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
+    ArrowUpHoverImage    : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
+    ArrowDownNormalImage : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
+    ArrowDownHoverImage  : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
+}
+
+Slider {
+    TrackNormalImage : "Black.png" Part(203, 150, 20, 45) Middle(0, 15, 20, 15);
+    TrackHoverImage  : "Black.png" Part(223, 150, 20, 45) Middle(0, 15, 20, 15);
+    ThumbNormalImage : "Black.png" Part(243, 150, 30, 30);
+}
+
+SpinButton {
+    ArrowUpNormalImage   : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
+    ArrowUpHoverImage    : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
+    ArrowDownNormalImage : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
+    ArrowDownHoverImage  : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
+    SpaceBetweenArrows   : 0;
+}
+
+Tab {
+    NormalImage       : "Black.png" Part(0, 0, 60, 32) Middle(16, 0, 28, 32);
+    SelectedImage     : "Black.png" Part(0, 32, 60, 32) Middle(16, 0, 28, 32);
+    TextColor         : rgb(190, 190, 190);
+    SelectedTextColor : rgb(255, 255, 255);
+    BorderColor       : rgb(  0,   0,   0);
+    DistanceToSide    : 8;
+}
+
+TextBox {
+    BackgroundImage             : "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
+    TextColor                   : rgb(190, 190, 190);
+    SelectedTextColor           : rgb(255, 255, 255);
+    SelectedTextBackgroundColor : rgb( 10, 110, 255);
+    CaretColor                  : rgb(110, 110, 255);
+    Padding                     : (3, 3, 3, 3);
+    Scrollbar                   : "Scrollbar";
+}
+
+Tooltip {
+    TextColor       : rgb(190, 190, 190);
+    BackgroundColor : rgb( 80,  80,  80);
+    BorderColor     : rgb(  0,   0,   0);
+    Borders         : (1, 1, 1, 1);
+    Padding         : (2, 2, 2, 2);
+}

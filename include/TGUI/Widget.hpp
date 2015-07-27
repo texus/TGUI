@@ -594,6 +594,7 @@ namespace tgui
         virtual bool setProperty(std::string property, const std::string& value);
         virtual bool setProperty(std::string property, ObjectConverter&& value);
 
+        virtual ObjectConverter getProperty(std::string property) const;
         virtual std::vector<std::pair<std::string, ObjectConverter>> getPropertyValuePairs() const;
 
 

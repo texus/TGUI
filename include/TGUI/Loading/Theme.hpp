@@ -51,10 +51,15 @@ namespace tgui
 
 
         /// TODO: Documentation
+        /// @internal
         virtual void widgetAttached(Widget* widget);
+        
+        /// TODO: Documentation
+        /// @internal
         virtual void widgetDetached(Widget* widget);
 
         /// TODO: Documentation
+        /// @internal
         virtual void initWidget(Widget* widget, std::string primary, std::string secondary) = 0;
 
 
@@ -100,10 +105,16 @@ namespace tgui
     class TGUI_API Theme : public BaseTheme
     {
     public:
+
+        typedef std::shared_ptr<Theme> Ptr; ///< Shared theme pointer
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Construct the theme class, with an optional theme file to load
         ///
         /// @param filename  Filename of the theme file
+        ///
+        /// @warning The theme has to be used as a std::shared_ptr<Theme> since it will be shared with the widget that it loads.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Theme(const std::string& filename = "");
@@ -128,20 +139,15 @@ namespace tgui
 
         void reload(Widget::Ptr widget, std::string className);
 
+        void setProperty(std::string className, const std::string& property, const std::string& value);
+
+        void setProperty(std::string className, const std::string& property, ObjectConverter&& value);
+        
+        /// @internal
         virtual void widgetDetached(Widget* widget) override;
 
+        /// @internal
         virtual void initWidget(Widget* widget, std::string filename, std::string className) override;
-
-        template <typename T>
-        void setProperty(std::string className, const std::string& property, const T& value)
-        {
-            className = toLower(className);
-            for (auto& pair : m_widgets)
-            {
-                if (pair.second == className)
-                    pair.first->getRenderer()->setProperty(property, value);
-            }
-        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,6 +157,8 @@ namespace tgui
         std::map<Widget*, std::string> m_widgets; // Map widget to class name
         std::map<std::string, std::string> m_widgetTypes; // Map class name to type
         std::map<std::string, std::map<std::string, std::string>> m_widgetProperties; // Map class name to property-value pairs
+
+        friend class ThemeTest;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

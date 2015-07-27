@@ -34,7 +34,7 @@ before_script:
 script:
   - cd build_gcc-5.1
   - export CXX="g++-5"
-  - cmake -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_TESTS=TRUE .. && make && ./tests/tests
+  - cmake -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_TESTS=TRUE .. && make && (cd tests/ && ./tests ; cd ..)
   - cd ../build_gcc-4.7
   - export CXX="g++-4.7"
   - cmake .. && make

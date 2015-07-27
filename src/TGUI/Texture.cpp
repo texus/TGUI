@@ -90,15 +90,17 @@ namespace tgui
             sf::Transformable::operator=(right);
             sf::Drawable::operator=(right);
 
-            std::swap(m_data,        temp.m_data);
-            std::swap(m_vertices,    temp.m_vertices);
-            std::swap(m_size,        temp.m_size);
-            std::swap(m_middleRect,  temp.m_middleRect);
-            std::swap(m_textureRect, temp.m_textureRect);
-            std::swap(m_scalingType, temp.m_scalingType);
-            std::swap(m_loaded,      temp.m_loaded);
-            std::swap(m_rotation,    temp.m_rotation);
-            std::swap(m_id,          temp.m_id);
+            std::swap(m_data,             temp.m_data);
+            std::swap(m_vertices,         temp.m_vertices);
+            std::swap(m_size,             temp.m_size);
+            std::swap(m_middleRect,       temp.m_middleRect);
+            std::swap(m_textureRect,      temp.m_textureRect);
+            std::swap(m_scalingType,      temp.m_scalingType);
+            std::swap(m_loaded,           temp.m_loaded);
+            std::swap(m_rotation,         temp.m_rotation);
+            std::swap(m_id,               temp.m_id);
+            std::swap(m_copyCallback,     temp.m_copyCallback);
+            std::swap(m_destructCallback, temp.m_destructCallback);
         }
 
         return *this;
@@ -108,6 +110,9 @@ namespace tgui
 
     void Texture::load(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middleRect, bool repeated)
     {
+        if (m_loaded && (m_destructCallback != nullptr))
+            m_destructCallback(getData());
+
         m_loaded = false;
         if (!m_textureLoader(*this, id, partRect))
             throw Exception{"Failed to load " + id};
@@ -121,6 +126,9 @@ namespace tgui
 
     void Texture::setTexture(std::shared_ptr<TextureData> data, const sf::IntRect& middleRect)
     {
+        if (m_loaded && (m_destructCallback != nullptr))
+            m_destructCallback(getData());
+
         m_data = data;
         m_loaded = true;
 
@@ -141,16 +149,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const TextureData* Texture::getData() const
+    std::shared_ptr<TextureData>& Texture::getData()
     {
-        return m_data.get();
+        return m_data;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TextureData* Texture::getData()
+    std::shared_ptr<const TextureData> Texture::getData() const
     {
-        return m_data.get();
+        return m_data;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,14 +195,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setCopyCallback(const std::function<void(const TextureData*)>& func)
+    void Texture::setCopyCallback(const std::function<void(std::shared_ptr<TextureData>)>& func)
     {
         m_copyCallback = func;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setDestructCallback(const std::function<void(const TextureData*)>& func)
+    void Texture::setDestructCallback(const std::function<void(std::shared_ptr<TextureData>)>& func)
     {
         m_destructCallback = func;
     }

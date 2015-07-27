@@ -393,6 +393,46 @@ namespace tgui
 
         return true;
     }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    ObjectConverter ButtonRenderer::getProperty(std::string property) const
+    {
+        property = toLower(property);
+
+        if (property == "font")
+            return m_button->m_font;
+        else if (property == "borders")
+            return m_borders;
+        else if (property == "textcolor")
+            return m_textColorNormal;
+        else if (property == "textcolornormal")
+            return m_textColorNormal;
+        else if (property == "textcolorhover")
+            return m_textColorHover;
+        else if (property == "textcolordown")
+            return m_textColorDown;
+        else if (property == "backgroundcolor")
+            return m_backgroundColorNormal;
+        else if (property == "backgroundcolornormal")
+            return m_backgroundColorNormal;
+        else if (property == "backgroundcolorhover")
+            return m_backgroundColorHover;
+        else if (property == "backgroundcolordown")
+            return m_backgroundColorDown;
+        else if (property == "bordercolor")
+            return m_borderColor;
+        else if (property == "normalimage")
+            return m_textureNormal;
+        else if (property == "hoverimage")
+            return m_textureHover;
+        else if (property == "downimage")
+            return m_textureDown;
+        else if (property == "focusedimage")
+            return m_textureFocused;
+        else
+            return WidgetRenderer::getProperty(property);
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
