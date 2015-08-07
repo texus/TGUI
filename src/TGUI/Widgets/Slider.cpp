@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Container.hpp>
-#include <TGUI/Slider.hpp>
+#include <TGUI/Widgets/Slider.hpp>
+#include <TGUI/Loading/Theme.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,59 +40,9 @@ namespace tgui
         addSignal<int>("ValueChanged");
 
         m_renderer = std::make_shared<SliderRenderer>(this);
-
-        getRenderer()->setBorders({2, 2, 2, 2});
+        reload();
 
         setSize(200, 16);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Slider::Ptr Slider::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto slider = std::make_shared<Slider>();
-
-        if (themeFileFilename != "")
-        {
-            slider->getRenderer()->setBorders({0, 0, 0, 0});
-
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    slider->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-
-            // Use the size of the images when images were loaded
-            if ((slider->getRenderer()->m_textureTrackNormal.getData() != nullptr) && (slider->getRenderer()->m_textureThumbNormal.getData() != nullptr))
-            {
-                if (slider->getRenderer()->m_textureTrackNormal.getImageSize().x < slider->getRenderer()->m_textureTrackNormal.getImageSize().y)
-                    slider->m_verticalImage = true;
-                else
-                    slider->m_verticalImage = false;
-
-                slider->setSize(slider->getRenderer()->m_textureTrackNormal.getImageSize());
-            }
-        }
-
-        return slider;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +72,7 @@ namespace tgui
             m_thumb.top = getPosition().y + ((getSize().y - m_thumb.height) / 2.0f);
         }
 
-        if (getRenderer()->m_textureTrackNormal.getData() && getRenderer()->m_textureThumbNormal.getData())
+        if (getRenderer()->m_textureTrackNormal.isLoaded() && getRenderer()->m_textureThumbNormal.isLoaded())
         {
             getRenderer()->m_textureTrackNormal.setPosition(getPosition());
             getRenderer()->m_textureTrackHover.setPosition(getPosition());
@@ -143,7 +93,7 @@ namespace tgui
         else
             m_verticalScroll = false;
 
-        if (getRenderer()->m_textureTrackNormal.getData() && getRenderer()->m_textureThumbNormal.getData())
+        if (getRenderer()->m_textureTrackNormal.isLoaded() && getRenderer()->m_textureThumbNormal.isLoaded())
         {
             if (m_verticalImage == m_verticalScroll)
             {
@@ -412,6 +362,45 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Slider::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        if (m_theme && primary != "")
+        {
+            getRenderer()->setBorders({0, 0, 0, 0});
+
+            m_theme->initWidget(this, primary, secondary);
+
+            if (force)
+            {
+                // Use the size of the images when images were loaded
+                if (getRenderer()->m_textureTrackNormal.isLoaded() && getRenderer()->m_textureThumbNormal.isLoaded())
+                {
+                    if (getRenderer()->m_textureTrackNormal.getImageSize().x < getRenderer()->m_textureTrackNormal.getImageSize().y)
+                        m_verticalImage = true;
+                    else
+                        m_verticalImage = false;
+
+                    setSize(getRenderer()->m_textureTrackNormal.getImageSize());
+                }
+            }
+        }
+        else // Load white theme
+        {
+            getRenderer()->setBorders({2, 2, 2, 2});
+            getRenderer()->setTrackColorNormal({245, 245, 245});
+            getRenderer()->setTrackColorHover({255, 255, 255});
+            getRenderer()->setThumbColorNormal({245, 245, 245});
+            getRenderer()->setThumbColorHover({255, 255, 255});
+            getRenderer()->setBorderColor({0, 0, 0});
+            getRenderer()->setTrackTexture({});
+            getRenderer()->setTrackHoverTexture({});
+            getRenderer()->setThumbTexture({});
+            getRenderer()->setThumbHoverTexture({});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Slider::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         getRenderer()->draw(target, states);
@@ -420,74 +409,147 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    void SliderRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "tracknormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureTrackNormal);
-        else if (property == "trackhoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureTrackHover);
-        else if (property == "thumbnormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureThumbNormal);
-        else if (property == "thumbhoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureThumbHover);
-        else if (property == "trackcolor")
-            setTrackColor(extractColorFromString(property, value));
-        else if (property == "trackcolornormal")
-            setTrackColorNormal(extractColorFromString(property, value));
-        else if (property == "trackcolorhover")
-            setTrackColorHover(extractColorFromString(property, value));
-        else if (property == "thumbcolor")
-            setThumbColor(extractColorFromString(property, value));
-        else if (property == "thumbcolornormal")
-            setThumbColorNormal(extractColorFromString(property, value));
-        else if (property == "thumbcolorhover")
-            setThumbColorHover(extractColorFromString(property, value));
-        else if (property == "bordercolor")
-            setBorderColor(extractColorFromString(property, value));
-        else if (property == "borders")
-            setBorders(extractBordersFromString(property, value));
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("TrackColor"))
+            setTrackColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TrackColorNormal"))
+            setTrackColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TrackColorHover"))
+            setTrackColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ThumbColor"))
+            setThumbColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ThumbColorNormal"))
+            setThumbColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ThumbColorHover"))
+            setThumbColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BorderColor"))
+            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TrackImage"))
+            setTrackTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("TrackHoverImage"))
+            setTrackHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ThumbImage"))
+            setThumbTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ThumbHoverImage"))
+            setThumbHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            WidgetRenderer::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setTrackNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void SliderRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
-        if (filename != "")
-            m_textureTrackNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Borders)
+        {
+            if (property == toLower("Borders"))
+                setBorders(value.getBorders());
+            else
+                return WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("TrackColor"))
+                setTrackColor(value.getColor());
+            else if (property == toLower("TrackColorNormal"))
+                setTrackColorNormal(value.getColor());
+            else if (property == toLower("TrackColorHover"))
+                setTrackColorHover(value.getColor());
+            else if (property == toLower("ThumbColor"))
+                setThumbColor(value.getColor());
+            else if (property == toLower("ThumbColorNormal"))
+                setThumbColorNormal(value.getColor());
+            else if (property == toLower("ThumbColorHover"))
+                setThumbColorHover(value.getColor());
+            else if (property == toLower("BorderColor"))
+                setBorderColor(value.getColor());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Texture)
+        {
+            if (property == toLower("TrackImage"))
+                setTrackTexture(value.getTexture());
+            else if (property == toLower("TrackHoverImage"))
+                setTrackHoverTexture(value.getTexture());
+            else if (property == toLower("ThumbImage"))
+                setThumbTexture(value.getTexture());
+            else if (property == toLower("ThumbHoverImage"))
+                setThumbHoverTexture(value.getTexture());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
         else
-            m_textureTrackNormal = {};
+            WidgetRenderer::setProperty(property, std::move(value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setTrackHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    ObjectConverter SliderRenderer::getProperty(std::string property) const
     {
-        if (filename != "")
-            m_textureTrackHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            return m_borders;
+        else if (property == toLower("TrackColor"))
+            return m_trackColorNormal;
+        else if (property == toLower("TrackColorNormal"))
+            return m_trackColorNormal;
+        else if (property == toLower("TrackColorHover"))
+            return m_trackColorHover;
+        else if (property == toLower("ThumbColor"))
+            return m_thumbColorNormal;
+        else if (property == toLower("ThumbColorNormal"))
+            return m_thumbColorNormal;
+        else if (property == toLower("ThumbColorHover"))
+            return m_thumbColorHover;
+        else if (property == toLower("BorderColor"))
+            return m_borderColor;
+        else if (property == toLower("TrackImage"))
+            return m_textureTrackNormal;
+        else if (property == toLower("TrackHoverImage"))
+            return m_textureTrackHover;
+        else if (property == toLower("ThumbImage"))
+            return m_textureThumbNormal;
+        else if (property == toLower("ThumbHoverImage"))
+            return m_textureThumbHover;
         else
-            m_textureTrackHover = {};
+            return WidgetRenderer::getProperty(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setThumbNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    std::map<std::string, ObjectConverter> SliderRenderer::getPropertyValuePairs() const
     {
-        if (filename != "")
-            m_textureThumbNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_textureThumbNormal = {};
-    }
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setThumbHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
-    {
-        if (filename != "")
-            m_textureThumbHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
+        {
+            pairs.emplace("TrackImage", m_textureTrackNormal);
+            pairs.emplace("ThumbImage", m_textureThumbNormal);
+            if (m_textureTrackHover.isLoaded())
+                pairs.emplace("TrackHoverImage", m_textureTrackHover);
+            if (m_textureThumbHover.isLoaded())
+                pairs.emplace("ThumbHoverImage", m_textureThumbHover);
+        }
         else
-            m_textureThumbHover = {};
+        {
+            pairs.emplace("TrackColorNormal", m_trackColorNormal);
+            pairs.emplace("TrackColorHover", m_trackColorHover);
+            pairs.emplace("ThumbColorNormal", m_thumbColorNormal);
+            pairs.emplace("ThumbColorHover", m_thumbColorHover);
+        }
+
+        pairs.emplace("BorderColor", m_borderColor);
+        pairs.emplace("Borders", m_borders);
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -543,12 +605,52 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void SliderRenderer::setTrackTexture(const Texture& texture)
+    {
+        m_textureTrackNormal = texture;
+        m_textureTrackNormal.setPosition(m_slider->getPosition());
+        m_textureTrackNormal.setSize(m_slider->getSize());
+        m_textureTrackNormal.setColor({255, 255, 255, m_slider->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SliderRenderer::setTrackHoverTexture(const Texture& texture)
+    {
+        m_textureTrackHover = texture;
+        m_textureTrackHover.setPosition(m_slider->getPosition());
+        m_textureTrackHover.setSize(m_slider->getSize());
+        m_textureTrackHover.setColor({255, 255, 255, m_slider->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SliderRenderer::setThumbTexture(const Texture& texture)
+    {
+        m_textureThumbNormal = texture;
+        m_textureThumbNormal.setPosition(m_slider->getPosition());
+        m_textureThumbNormal.setSize(m_slider->getSize());
+        m_textureThumbNormal.setColor({255, 255, 255, m_slider->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SliderRenderer::setThumbHoverTexture(const Texture& texture)
+    {
+        m_textureThumbHover = texture;
+        m_textureThumbHover.setPosition(m_slider->getPosition());
+        m_textureThumbHover.setSize(m_slider->getSize());
+        m_textureThumbHover.setColor({255, 255, 255, m_slider->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SliderRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Draw the track
-        if (m_textureTrackNormal.getData() && m_textureThumbNormal.getData())
+        if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
         {
-            if (m_slider->m_mouseHover && m_textureTrackHover.getData())
+            if (m_slider->m_mouseHover && m_textureTrackHover.isLoaded())
                 target.draw(m_textureTrackHover, states);
             else
                 target.draw(m_textureTrackNormal, states);
@@ -598,9 +700,9 @@ namespace tgui
         }
 
         // Draw the thumb
-        if (m_textureTrackNormal.getData() && m_textureThumbNormal.getData())
+        if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
         {
-            if (m_slider->m_mouseHover && m_textureThumbHover.getData())
+            if (m_slider->m_mouseHover && m_textureThumbHover.isLoaded())
                 target.draw(m_textureThumbHover, states);
             else
                 target.draw(m_textureThumbNormal, states);

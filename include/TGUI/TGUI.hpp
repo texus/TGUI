@@ -29,10 +29,13 @@
 
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Widget.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/HorizontalLayout.hpp>
 #include <TGUI/VerticalLayout.hpp>
 #include <TGUI/Gui.hpp>
 
+#include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/WidgetLoader.hpp>
 #include <TGUI/Loading/WidgetSaver.hpp>
@@ -44,7 +47,6 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Widgets/Container.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Grid.hpp>
 #include <TGUI/Widgets/Knob.hpp>
@@ -62,10 +64,6 @@
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
 #include <TGUI/Widgets/Tooltip.hpp>
-
-#include <TGUI/Widgets/extra/AnimatedPicture.hpp>
-#include <TGUI/Widgets/extra/Slider2d.hpp>
-#include <TGUI/Widgets/extra/SpriteSheet.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

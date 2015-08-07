@@ -23,7 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "../catch.hpp"
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
 
 namespace tgui
 {
@@ -39,16 +41,16 @@ namespace tgui
 }
 
 TEST_CASE("[Theme]") {
-    SECTION("creating") {
+    SECTION("constructing") {
         tgui::Theme::Ptr theme;
         REQUIRE(theme == nullptr);
 
-        theme = tgui::Theme::create();
+        theme = std::make_shared<tgui::Theme>();
         REQUIRE(theme != nullptr);
         REQUIRE(tgui::ThemeTest::getFilename(theme) == "");
         REQUIRE(tgui::ThemeTest::getResourcePath(theme) == "");
 
-        theme = tgui::Theme::create("resources/Black.conf");
+        theme = std::make_shared<tgui::Theme>("resources/Black.conf");
         REQUIRE(theme != nullptr);
         REQUIRE(tgui::ThemeTest::getFilename(theme) == "resources/Black.conf");
         REQUIRE(tgui::ThemeTest::getResourcePath(theme) == "resources/");
@@ -59,7 +61,7 @@ TEST_CASE("[Theme]") {
 
     SECTION("load") {
         SECTION("default white theme") {
-            tgui::Theme::Ptr theme = tgui::Theme::create("");
+            tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("");
             REQUIRE(tgui::ThemeTest::getWidgets(theme).empty());
             REQUIRE(tgui::ThemeTest::getWidgetTypes(theme).empty());
             REQUIRE(tgui::ThemeTest::getWidgetProperties(theme).empty());
@@ -78,7 +80,7 @@ TEST_CASE("[Theme]") {
         }
 
         SECTION("black theme") {
-            tgui::Theme::Ptr theme = tgui::Theme::create("resources/Black.txt");
+            tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("resources/Black.txt");
             REQUIRE(tgui::ThemeTest::getWidgets(theme).empty());
             REQUIRE(tgui::ThemeTest::getWidgetTypes(theme).empty());
             REQUIRE(tgui::ThemeTest::getWidgetProperties(theme).empty());
@@ -100,7 +102,7 @@ TEST_CASE("[Theme]") {
         }
         
         SECTION("theme is shared") {
-            tgui::Theme::Ptr theme = tgui::Theme::create();
+            tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>();
             tgui::Button::Ptr button = theme->load("Button");
             tgui::EditBox::Ptr editBox = theme->load("EditBox");
             REQUIRE(button->getTheme() == theme);
@@ -108,7 +110,7 @@ TEST_CASE("[Theme]") {
         }
 
         SECTION("nonexistent file") {
-            tgui::Theme::Ptr theme = tgui::Theme::create("nonexistent_file");
+            tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("nonexistent_file");
             REQUIRE_THROWS_AS(theme->load("button"), tgui::Exception);
             REQUIRE(tgui::ThemeTest::getWidgets(theme).empty());
             REQUIRE(tgui::ThemeTest::getWidgetTypes(theme).empty());
@@ -118,7 +120,7 @@ TEST_CASE("[Theme]") {
         }
 
         SECTION("nonexistent section") {
-            tgui::Theme::Ptr theme = tgui::Theme::create("resources/Black.txt");
+            tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("resources/Black.txt");
             REQUIRE_THROWS_AS(theme->load("nonexistent_section"), tgui::Exception);
             REQUIRE(tgui::ThemeTest::getWidgets(theme).empty());
             REQUIRE(tgui::ThemeTest::getWidgetTypes(theme).empty());
@@ -130,8 +132,8 @@ TEST_CASE("[Theme]") {
 
     SECTION("reload") {
         SECTION("changing filename") {
-            tgui::Theme::Ptr theme1 = tgui::Theme::create("resources/ThemeButton1.txt");
-            tgui::Theme::Ptr theme2 = tgui::Theme::create("resources/ThemeButton2.txt");
+            tgui::Theme::Ptr theme1 = std::make_shared<tgui::Theme>("resources/ThemeButton1.txt");
+            tgui::Theme::Ptr theme2 = std::make_shared<tgui::Theme>("resources/ThemeButton2.txt");
 
             tgui::Button::Ptr button1 = theme1->load("button1");
             REQUIRE(button1->getTheme() == theme1);
@@ -176,7 +178,7 @@ TEST_CASE("[Theme]") {
         }
 
         SECTION("changing class name") {
-            tgui::Theme::Ptr theme = tgui::Theme::create("resources/ThemeMultipleButtons.txt");
+            tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("resources/ThemeMultipleButtons.txt");
             tgui::Button::Ptr button1 = theme->load("button1");
             tgui::Button::Ptr button2 = theme->load("button2");
             tgui::Button::Ptr button3 = theme->load("button3");
@@ -230,7 +232,7 @@ TEST_CASE("[Theme]") {
         }
 
         SECTION("changing single widget") {
-            tgui::Theme::Ptr theme = tgui::Theme::create("resources/ThemeMultipleButtons.txt");
+            tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("resources/ThemeMultipleButtons.txt");
             tgui::Button::Ptr button1 = theme->load("button1");
             tgui::Button::Ptr button1b = theme->load("button1");
             tgui::Button::Ptr button2 = theme->load("button2");
@@ -270,7 +272,7 @@ TEST_CASE("[Theme]") {
     }
 
     SECTION("setProperty") {
-        tgui::Theme::Ptr theme = tgui::Theme::create("resources/ThemeMultipleButtons.txt");
+        tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("resources/ThemeMultipleButtons.txt");
         tgui::Button::Ptr button1 = theme->load("button1");
         tgui::Button::Ptr button2 = theme->load("button2");
         tgui::Button::Ptr button3 = theme->load("button3");
@@ -303,7 +305,7 @@ TEST_CASE("[Theme]") {
     }
     
     SECTION("setConstructFunction") {
-        tgui::Theme::Ptr theme = tgui::Theme::create();
+        tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>();
 
         unsigned int count = 0;
         tgui::Theme::setConstructFunction("Button", [&](){ count++; return std::make_shared<tgui::Button>(); });
@@ -331,10 +333,12 @@ TEST_CASE("[Theme]") {
         auto loader = std::make_shared<CustomThemeLoader>();
         tgui::Theme::setThemeLoader(loader);
 
-        tgui::Theme::Ptr theme = tgui::Theme::create();
+        tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>();
         theme->load("BUTTON");
 
-        theme = tgui::Theme::create("resources/Black.txt");
+        theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         theme->load("EditBox");
+
+        tgui::Theme::setThemeLoader(std::make_shared<tgui::DefaultThemeLoader>());
     }
 }

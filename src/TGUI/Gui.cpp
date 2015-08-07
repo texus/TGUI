@@ -52,7 +52,7 @@ namespace tgui
         m_container->m_window = &window;
         m_container->m_focused = true;
 
-        TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
+        Clipboard::setWindowHandle(window.getSystemHandle());
 
         setView(window.getDefaultView());
     }
@@ -78,7 +78,7 @@ namespace tgui
         m_window = &window;
         m_container->m_window = &window;
 
-        TGUI_Clipboard.setWindowHandle(window.getSystemHandle());
+        Clipboard::setWindowHandle(window.getSystemHandle());
 
         setView(window.getDefaultView());
     }
@@ -184,7 +184,7 @@ namespace tgui
             m_container->m_focused = true;
 
             if (m_accessToWindow)
-                TGUI_Clipboard.setWindowHandle(static_cast<sf::RenderWindow*>(m_window)->getSystemHandle());
+                Clipboard::setWindowHandle(static_cast<sf::RenderWindow*>(m_window)->getSystemHandle());
         }
 
         // Let the event manager handle the event
@@ -345,6 +345,20 @@ namespace tgui
     void Gui::saveWidgetsToFile(const std::string& filename)
     {
         m_container->saveWidgetsToFile(filename);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::loadWidgetsFromStream(std::stringstream& stream)
+    {
+        m_container->loadWidgetsFromStream(stream);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::saveWidgetsToStream(std::stringstream& stream)
+    {
+        m_container->saveWidgetsToStream(stream);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

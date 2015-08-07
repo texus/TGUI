@@ -252,7 +252,7 @@ namespace tgui
 
     std::string DataIO::readLine(std::stringstream& stream)
     {
-        // TODO: When quote is encountered, read everything till the next quote (needed before adding comment support)
+        /// TODO: When quote is encountered, read everything till the next quote (needed before adding comment support)
 
         std::string line;
         bool newLineFound = false;

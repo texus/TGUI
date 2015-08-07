@@ -59,7 +59,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates the picture
+        /// @brief Constructor to creates the picture
         ///
         /// @param filename       The absolute or relative filename of the image that should be loaded
         /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
@@ -68,18 +68,18 @@ namespace tgui
         /// @throw Exception when the image could not be loaded (probably not found)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Picture::Ptr create(const std::string& filename, bool fullyClickable = true);
+        Picture(const std::string& filename, bool fullyClickable = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates the picture from an existing texture
+        /// @brief Constructor to create the picture from an existing texture
         ///
         /// @param texture  The texture to load the picture from
         ///
         /// Note that the texture will be copied, so any changes applied to it afterwards will not affect the picture.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Picture::Ptr create(const sf::Texture& texture);
+        Picture(const sf::Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,10 +146,7 @@ namespace tgui
         /// @see isSmooth
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSmooth(bool smooth)
-        {
-            m_texture.setSmooth(smooth);
-        }
+        void setSmooth(bool smooth = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

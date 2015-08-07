@@ -50,16 +50,32 @@ namespace tgui
         virtual ~BaseTheme() = default;
 
 
-        /// TODO: Documentation
-        /// @internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Virtual function that gets called when a widget is connected to this theme
+        ///
+        /// @param widget  The widget that was attached to this theme
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void widgetAttached(Widget* widget);
-        
-        /// TODO: Documentation
-        /// @internal
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Virtual function that gets called when a widget is disconnected from this theme
+        ///
+        /// @param widget  The widget that was detached from this theme
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void widgetDetached(Widget* widget);
 
-        /// TODO: Documentation
-        /// @internal
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Virtual function called by the widget to finish its initialization
+        ///
+        /// @param widget    The widget that needs to be initialized
+        /// @param primary   Primary parameter of the loader
+        /// @param secondary Secondary parameter of the loader
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initWidget(Widget* widget, std::string primary, std::string secondary) = 0;
 
 
@@ -114,14 +130,10 @@ namespace tgui
         ///
         /// @param filename  Filename of the theme file
         ///
-        /// @warning The theme has to be used as a std::shared_ptr<Theme> since it will be shared with the widget that it loads.
+        /// @warning The theme has to be used as a std::make_shared
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Theme(const std::string& filename = "");
-
-
-        /// TODO: Documentation
-        static std::shared_ptr<Theme> create(const std::string& filename = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,24 +141,120 @@ namespace tgui
         ///
         /// @param className  Name of the class inside the theme file (equals widget type when no class is given)
         ///
+        /// @exception Exception when the requested class name could not be loaded from the file
+        /// @exception Exception when there was no loader for this type of widget
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         WidgetConverter load(std::string className);
 
-        /// TODO: Documentation
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload the theme with a different filename
+        ///
+        /// @param filename  Filename of the new theme file
+        ///
+        /// All widgets that are connected to this theme will be reloaded with the new theme file.
+        /// The class names thus have to match with those from the old theme file!
+        ///
+        /// @exception Exception when one of the widgets failed to reload
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void reload(const std::string& filename);
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload all widgets that were loaded with a certain class name
+        ///
+        /// @param oldClassName  Class name that was used to load the widget
+        /// @param newClassName  Class name to load the widget with
+        ///
+        /// @exception Exception when the requested new class name could not be loaded from the file
+        /// @exception Exception when one of the widgets failed to reload
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void reload(std::string oldClassName, std::string newClassName);
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload a specific widget
+        ///
+        /// @param widget     The widget to reload
+        /// @param className  Class name to load the widget with
+        ///
+        /// @exception Exception when the requested class name could not be loaded from the file
+        /// @exception Exception when the widget failed to reload
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void reload(Widget::Ptr widget, std::string className);
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change a property of the renderer of all widgets that were loaded with a certain class name
+        ///
+        /// @param className The class name of the widgets
+        /// @param property  The property that you would like to change
+        /// @param value     The new serialized value that you like to assign to the property
+        ///
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setProperty(std::string className, const std::string& property, const std::string& value);
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change a property of the renderer of all widgets that were loaded with a certain class name
+        ///
+        /// @param className The class name of the widgets
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setProperty(std::string className, const std::string& property, ObjectConverter&& value);
-        
-        /// @internal
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieve the serialized value of a certain property of widgets that use a certain class name
+        ///
+        /// @param className The class name of the widgets
+        /// @param property  The property that you would like to retrieve
+        ///
+        /// @return The serialized value or an empty string when the property did not exist
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string getProperty(std::string className, std::string property) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get a map with all properties and their values from widgets loaded with a certain class name
+        ///
+        /// @param className The class name of the widgets
+        ///
+        /// @return Serialized property-value pairs
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::map<std::string, std::string> getPropertyValuePairs(std::string className) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Function that gets called when a widget is disconnected from this theme
+        ///
+        /// @param widget  The widget that was detached from this theme
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void widgetDetached(Widget* widget) override;
 
-        /// @internal
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Function called by the widget to finish its initialization
+        ///
+        /// @param widget    The widget that needs to be initialized
+        /// @param filename  Filename that was used to load the widget
+        /// @param className Class name that was used to load the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void initWidget(Widget* widget, std::string filename, std::string className) override;
 
 

@@ -24,7 +24,8 @@
 
 
 #include <TGUI/Container.hpp>
-#include <TGUI/ProgressBar.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>
+#include <TGUI/Loading/Theme.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -42,63 +43,9 @@ namespace tgui
         addSignal<int>("Full");
 
         m_renderer = std::make_shared<ProgressBarRenderer>(this);
-
-        getRenderer()->setBorders({2, 2, 2, 2});
-
-        m_textBack.setTextColor({0, 0, 0});
-        m_textFront.setTextColor({255, 255, 255});
+        reload();
 
         setSize(160, 20);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ProgressBar::Ptr ProgressBar::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto progressBar = std::make_shared<ProgressBar>();
-
-        if (themeFileFilename != "")
-        {
-            progressBar->getRenderer()->setBorders({0, 0, 0, 0});
-
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    progressBar->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-
-            // Use the size of the images when images were loaded
-            if (progressBar->getRenderer()->m_textureBack.getData() != nullptr)
-            {
-                progressBar->setSize(progressBar->getRenderer()->m_textureBack.getImageSize());
-
-                if (progressBar->getSize().y >= 2 * progressBar->getSize().x)
-                    progressBar->setFillDirection(FillDirection::BottomToTop);
-            }
-
-            // Calculate the size of the front image (the size of the part that will be drawn)
-            progressBar->recalculateSize();
-        }
-
-        return progressBar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,7 +81,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        if (getRenderer()->m_textureBack.getData() && getRenderer()->m_textureFront.getData())
+        if (getRenderer()->m_textureBack.isLoaded() && getRenderer()->m_textureFront.isLoaded())
         {
             getRenderer()->m_textureBack.setSize(getSize());
 
@@ -313,7 +260,7 @@ namespace tgui
     void ProgressBar::recalculateSize()
     {
         sf::Vector2f size;
-        if (getRenderer()->m_textureBack.getData() && getRenderer()->m_textureFront.getData())
+        if (getRenderer()->m_textureBack.isLoaded() && getRenderer()->m_textureFront.isLoaded())
             size = getRenderer()->m_textureFront.getSize();
         else
             size = getSize();
@@ -339,7 +286,7 @@ namespace tgui
                 break;
         }
 
-        if (getRenderer()->m_textureBack.getData() && getRenderer()->m_textureFront.getData())
+        if (getRenderer()->m_textureBack.isLoaded() && getRenderer()->m_textureFront.isLoaded())
             getRenderer()->m_textureFront.setTextureRect(m_frontRect);
     }
 
@@ -355,6 +302,44 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ProgressBar::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        if (m_theme && primary != "")
+        {
+            getRenderer()->setBorders({0, 0, 0, 0});
+
+            m_theme->initWidget(this, primary, secondary);
+
+            if (force)
+            {
+                // Use the size of the images when images were loaded
+                if (getRenderer()->m_textureBack.isLoaded())
+                {
+                    setSize(getRenderer()->m_textureBack.getImageSize());
+
+                    if (getSize().y >= 2 * getSize().x)
+                        setFillDirection(FillDirection::BottomToTop);
+                }
+            }
+
+            // Calculate the size of the front image (the size of the part that will be drawn)
+            recalculateSize();
+        }
+        else // Load white theme
+        {
+            getRenderer()->setBorders({2, 2, 2, 2});
+            getRenderer()->setTextColorBack({0, 0, 0});
+            getRenderer()->setTextColorFront({255, 255, 255});
+            getRenderer()->setBackgroundColor({245, 245, 245});
+            getRenderer()->setForegroundColor({0, 110, 255});
+            getRenderer()->setBorderColor({0, 0, 0});
+            getRenderer()->setBackTexture({});
+            getRenderer()->setFrontTexture({});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ProgressBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         getRenderer()->draw(target, states);
@@ -363,30 +348,131 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBarRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    void ProgressBarRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "backimage")
-            extractTextureFromString(property, value, rootPath, m_textureBack);
-        else if (property == "frontimage")
-            extractTextureFromString(property, value, rootPath, m_textureFront);
-        else if (property == "backgroundcolor")
-            setBackgroundColor(extractColorFromString(property, value));
-        else if (property == "foregroundcolor")
-            setForegroundColor(extractColorFromString(property, value));
-        else if (property == "textcolor")
-            setTextColor(extractColorFromString(property, value));
-        else if (property == "textcolorback")
-            setTextColorBack(extractColorFromString(property, value));
-        else if (property == "textcolorfront")
-            setTextColorFront(extractColorFromString(property, value));
-        else if (property == "textsize")
-            m_progressBar->setTextSize(tgui::stoi(value));
-        else if (property == "borders")
-            setBorders(extractBordersFromString(property, value));
-        else if (property == "bordercolor")
-            setBorderColor(extractColorFromString(property, value));
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("BackgroundColor"))
+            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ForegroundColor"))
+            setForegroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TextColor"))
+            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TextColorBack"))
+            setTextColorBack(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TextColorFront"))
+            setTextColorFront(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BorderColor"))
+            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BackImage"))
+            setBackTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("FrontImage"))
+            setFrontTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            WidgetRenderer::setProperty(property, value);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ProgressBarRenderer::setProperty(std::string property, ObjectConverter&& value)
+    {
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Borders)
+        {
+            if (property == toLower("Borders"))
+                setBorders(value.getBorders());
+            else
+                return WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("BackgroundColor"))
+                setBackgroundColor(value.getColor());
+            else if (property == toLower("ForegroundColor"))
+                setForegroundColor(value.getColor());
+            else if (property == toLower("TextColor"))
+                setTextColor(value.getColor());
+            else if (property == toLower("TextColorBack"))
+                setTextColorBack(value.getColor());
+            else if (property == toLower("TextColorFront"))
+                setTextColorFront(value.getColor());
+            else if (property == toLower("BorderColor"))
+                setBorderColor(value.getColor());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Texture)
+        {
+            if (property == toLower("BackImage"))
+                setBackTexture(value.getTexture());
+            else if (property == toLower("FrontImage"))
+                setFrontTexture(value.getTexture());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else
+            WidgetRenderer::setProperty(property, std::move(value));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ObjectConverter ProgressBarRenderer::getProperty(std::string property) const
+    {
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            return m_borders;
+        else if (property == toLower("BackgroundColor"))
+            return m_backgroundColor;
+        else if (property == toLower("ForegroundColor"))
+            return m_foregroundColor;
+        else if (property == toLower("TextColor"))
+            return m_progressBar->m_textBack.getTextColor();
+        else if (property == toLower("TextColorBack"))
+            return m_progressBar->m_textBack.getTextColor();
+        else if (property == toLower("TextColorFront"))
+            return m_progressBar->m_textFront.getTextColor();
+        else if (property == toLower("BorderColor"))
+            return m_borderColor;
+        else if (property == toLower("BackImage"))
+            return m_textureBack;
+        else if (property == toLower("FrontImage"))
+            return m_textureFront;
+        else
+            return WidgetRenderer::getProperty(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<std::string, ObjectConverter> ProgressBarRenderer::getPropertyValuePairs() const
+    {
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
+
+        if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
+        {
+            pairs.emplace("BackImage", m_textureBack);
+            pairs.emplace("FrontImage", m_textureFront);
+        }
+        else
+        {
+            pairs.emplace("BackgroundColor", m_backgroundColor);
+            pairs.emplace("ForegroundColor", m_foregroundColor);
+        }
+
+        if (m_progressBar->m_textBack.getTextColor() == m_progressBar->m_textFront.getTextColor())
+            pairs.emplace("TextColor", m_progressBar->m_textBack.getTextColor());
+        else
+        {
+            pairs.emplace("TextColorBack", m_progressBar->m_textBack.getTextColor());
+            pairs.emplace("TextColorFront", m_progressBar->m_textFront.getTextColor());
+        }
+
+        pairs.emplace("BorderColor", m_borderColor);
+        pairs.emplace("Borders", m_borders);
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -445,22 +531,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBarRenderer::setBackImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void ProgressBarRenderer::setBackTexture(const Texture& texture)
     {
-        if (filename != "")
-            m_textureBack.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_textureBack = {};
+        m_textureBack = texture;
+        m_textureBack.setPosition(m_progressBar->getPosition());
+        m_textureBack.setSize(m_progressBar->getSize());
+        m_textureBack.setColor({255, 255, 255, m_progressBar->getTransparency()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBarRenderer::setFrontImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void ProgressBarRenderer::setFrontTexture(const Texture& texture)
     {
-        if (filename != "")
-            m_textureFront.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_textureFront = {};
+        m_textureFront = texture;
+        m_textureFront.setPosition(m_progressBar->getPosition());
+        m_textureFront.setSize(m_progressBar->getSize());
+        m_textureFront.setColor({255, 255, 255, m_progressBar->getTransparency()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -468,7 +554,7 @@ namespace tgui
     void ProgressBarRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Check if there are textures
-        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+        if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
         {
             target.draw(m_textureBack, states);
             target.draw(m_textureFront, states);
@@ -520,7 +606,7 @@ namespace tgui
                         frontRect.left = m_progressBar->getAbsolutePosition().x;
                         frontRect.top = m_progressBar->getAbsolutePosition().y;
 
-                        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+                        if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
                         {
                             frontRect.left += m_textureFront.getPosition().x - m_progressBar->getPosition().x;
                             frontRect.top += m_textureFront.getPosition().y - m_progressBar->getPosition().y;
@@ -541,7 +627,7 @@ namespace tgui
                         backRect.left = m_progressBar->getAbsolutePosition().x;
                         backRect.top = m_progressBar->getAbsolutePosition().y;
 
-                        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+                        if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
                         {
                             backRect.left += m_textureFront.getPosition().x - m_progressBar->getPosition().x;
                             backRect.top += m_textureFront.getPosition().y - m_progressBar->getPosition().y;
@@ -566,7 +652,7 @@ namespace tgui
                         frontRect.left = m_progressBar->getAbsolutePosition().x;
                         frontRect.top = m_progressBar->getAbsolutePosition().y;
 
-                        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+                        if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
                         {
                             frontRect.left += m_textureFront.getPosition().x - m_progressBar->getPosition().x;
                             frontRect.top += m_textureFront.getPosition().y - m_progressBar->getPosition().y;
@@ -587,7 +673,7 @@ namespace tgui
                         backRect.left = m_progressBar->getAbsolutePosition().x;
                         backRect.top = m_progressBar->getAbsolutePosition().y;
 
-                        if ((m_textureBack.getData() != nullptr) && (m_textureFront.getData() != nullptr))
+                        if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
                         {
                             backRect.left += m_textureFront.getPosition().x - m_progressBar->getPosition().x;
                             backRect.top += m_textureFront.getPosition().y - m_progressBar->getPosition().y;

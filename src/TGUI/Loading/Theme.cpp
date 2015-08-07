@@ -26,8 +26,16 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/Checkbox.hpp>
+#include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Widgets/Slider.hpp>
+#include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Tooltip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,7 +46,16 @@ namespace tgui
     std::map<std::string, std::function<Widget::Ptr()>> BaseTheme::m_constructors =
         {
             {toLower("Button"), std::make_shared<Button>},
-            {toLower("EditBox"), std::make_shared<EditBox>}
+            {toLower("CheckBox"), std::make_shared<Checkbox>},
+            {toLower("EditBox"), std::make_shared<EditBox>},
+            {toLower("Knob"), std::make_shared<Knob>},
+            {toLower("Label"), std::make_shared<Label>},
+            {toLower("ProgressBar"), std::make_shared<ProgressBar>},
+            {toLower("RadioButton"), std::make_shared<RadioButton>},
+            {toLower("Scrollbar"), std::make_shared<Scrollbar>},
+            {toLower("Slider"), std::make_shared<Slider>},
+            {toLower("SpinButton"), std::make_shared<SpinButton>},
+            {toLower("ToolTip"), std::make_shared<Tooltip>}
         };
 
     std::shared_ptr<BaseThemeLoader> BaseTheme::m_themeLoader = std::make_shared<DefaultThemeLoader>();
@@ -86,13 +103,6 @@ namespace tgui
         std::string::size_type slashPos = m_filename.find_last_of("/\\");
         if (slashPos != std::string::npos)
             m_resourcePath = m_filename.substr(0, slashPos+1);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<Theme> Theme::create(const std::string& filename)
-    {
-        return std::make_shared<Theme>(filename);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -224,9 +234,9 @@ namespace tgui
         if (it != m_widgets.end())
             m_widgets.erase(it);
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void Theme::setProperty(std::string className, const std::string& property, const std::string& value)
     {
         className = toLower(className);
@@ -238,9 +248,9 @@ namespace tgui
                 pair.first->getRenderer()->setProperty(property, value);
         }
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     void Theme::setProperty(std::string className, const std::string& property, ObjectConverter&& value)
     {
         className = toLower(className);
@@ -251,6 +261,29 @@ namespace tgui
             if (pair.second == className)
                 pair.first->getRenderer()->setProperty(property, std::move(value));
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::string Theme::getProperty(std::string className, std::string property) const
+    {
+        if (m_widgetProperties.find(className) != m_widgetProperties.end())
+        {
+            if (m_widgetProperties.at(className).find(property) != m_widgetProperties.at(className).end())
+                return m_widgetProperties.at(className).at(property);
+        }
+
+        return "";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<std::string, std::string> Theme::getPropertyValuePairs(std::string className) const
+    {
+        if (m_widgetProperties.find(className) != m_widgetProperties.end())
+            return m_widgetProperties.at(className);
+        else
+            return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

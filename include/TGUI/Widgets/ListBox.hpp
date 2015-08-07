@@ -547,7 +547,7 @@ namespace tgui
         std::size_t m_maxItems = 0;
 
         // When there are too many items a scrollbar will be shown
-        Scrollbar::Ptr m_scroll = Scrollbar::create();
+        Scrollbar::Ptr m_scroll = std::make_shared<Scrollbar>();
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;

@@ -44,48 +44,10 @@ namespace tgui
         m_background.setFillColor({245, 245, 245});
         m_text.setColor({60, 60, 60});
 
-        setBorders(1);
-        setPadding(2);
+        getRenderer()->setBorders(1);
+        getRenderer()->setPadding(2);
 
         setTextSize(16);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Tooltip::Ptr Tooltip::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto tooltip = std::make_shared<Tooltip>();
-
-        if (themeFileFilename != "")
-        {
-            tooltip->setBorders(0);
-            tooltip->setPadding(0);
-/*
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                if (it->first == "textcolor")
-                    tooltip->setTextColor(extractColorFromString(it->first, it->second));
-                else if (it->first == "backgroundcolor")
-                    tooltip->setBackgroundColor(extractColorFromString(it->first, it->second));
-                else if (it->first == "bordercolor")
-                    tooltip->setBorderColor(extractColorFromString(it->first, it->second));
-                else if (it->first == "borders")
-                    tooltip->setBorders(extractBordersFromString(it->first, it->second));
-                else if (it->first == "padding")
-                    tooltip->setPadding(extractBordersFromString(it->first, it->second));
-                else
-                    throw Exception{"Unrecognized property '" + it->first + "' in section '" + section + "' in " + loadedThemeFile + "."};
-            }
-*/
-        }
-
-        return tooltip;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

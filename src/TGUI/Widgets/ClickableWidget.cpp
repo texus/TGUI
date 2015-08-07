@@ -31,20 +31,22 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableWidget::ClickableWidget()
+    ClickableWidget::ClickableWidget(const Layout2d& size)
     {
         m_callback.widgetType = "ClickableWidget";
 
         addSignal<sf::Vector2f>("MousePressed");
         addSignal<sf::Vector2f>("MouseReleased");
         addSignal<sf::Vector2f>("Clicked");
+
+        setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableWidget::Ptr ClickableWidget::create()
+    ClickableWidget::ClickableWidget(const Layout& width, const Layout& height) :
+        ClickableWidget{{width, height}}
     {
-        return std::make_shared<ClickableWidget>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

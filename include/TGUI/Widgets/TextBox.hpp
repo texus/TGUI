@@ -436,7 +436,7 @@ namespace tgui
         std::vector<sf::FloatRect> m_selectionRects;
 
         // The scrollbar
-        Scrollbar::Ptr m_scroll = Scrollbar::create();
+        Scrollbar::Ptr m_scroll = std::make_shared<Scrollbar>();
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick = false;

@@ -25,7 +25,7 @@
 
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Widgets/Tooltip.hpp>
-#include <TGUI/Widgets/Container.hpp>
+#include <TGUI/Container.hpp>
 
 #include <cassert>
 
@@ -242,10 +242,9 @@ namespace tgui
 
     void Widget::setTooltip(Tooltip::Ptr tooltip)
     {
-        if (tooltip == nullptr)
-            tooltip = Tooltip::create();
-
-        sf::String oldTooltipText = getTooltip()->getText();
+        sf::String oldTooltipText;
+        if (m_tooltip)
+            oldTooltipText = getTooltip()->getText();
 
         m_tooltip = tooltip;
 
@@ -258,7 +257,7 @@ namespace tgui
     Tooltip::Ptr Widget::getTooltip()
     {
         if (!m_tooltip)
-            m_tooltip = Tooltip::create();
+            m_tooltip = std::make_shared<Tooltip>();
 
         return m_tooltip;
     }
@@ -410,29 +409,42 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool WidgetRenderer::setProperty(std::string, const std::string&)
+    void WidgetRenderer::setProperty(std::string property, const std::string&)
     {
-        return false;
+        /// TODO: Font in every widget
+        throw Exception{"Could not set property '" + property + "', widget does not has this property."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool WidgetRenderer::setProperty(std::string, ObjectConverter&&)
+    void WidgetRenderer::setProperty(std::string property, ObjectConverter&&)
     {
-        return false;
+        /// TODO: Font in every widget
+        /**
+        if (value.getType() == ObjectConverter::Type::Font)
+        {
+            if (property == "font")
+                setTextFont(value.getFont());
+            else
+                return false;
+        }
+        */
+        throw Exception{"Could not set property '" + property + "', widget does not has this property."};
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ObjectConverter WidgetRenderer::getProperty(std::string) const
     {
+        /// TODO: Font in every widget
         return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::pair<std::string, ObjectConverter>> WidgetRenderer::getPropertyValuePairs() const
+    std::map<std::string, ObjectConverter> WidgetRenderer::getPropertyValuePairs() const
     {
+        /// TODO: Font in every widget
         return {};
     }
 

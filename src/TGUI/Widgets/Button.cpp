@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets/Container.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Loading/Theme.hpp>
 
@@ -42,7 +42,7 @@ namespace tgui
         m_renderer = std::make_shared<ButtonRenderer>(this);
         reload();
 
-        m_text.getRenderer()->setTextColor(getRenderer()->m_textColorNormal);
+        m_text.setTextColor(getRenderer()->m_textColorNormal);
         setSize(120, 30);
     }
 
@@ -177,7 +177,7 @@ namespace tgui
     {
         ClickableWidget::leftMousePressed(x, y);
 
-        m_text.getRenderer()->setTextColor(getRenderer()->m_textColorDown);
+        m_text.setTextColor(getRenderer()->m_textColorDown);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ namespace tgui
 
         ClickableWidget::leftMouseReleased(x, y);
 
-        m_text.getRenderer()->setTextColor(getRenderer()->m_textColorHover);
+        m_text.setTextColor(getRenderer()->m_textColorHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@ namespace tgui
     void Button::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if (getRenderer()->m_textureFocused.getData())
+        if (getRenderer()->m_textureFocused.isLoaded())
             Widget::widgetFocused();
         else
             unfocus();
@@ -232,12 +232,12 @@ namespace tgui
             m_theme->initWidget(this, primary, secondary);
 
             // The widget can only be focused when there is an image available for this phase
-            if (getRenderer()->m_textureFocused.getData() != nullptr)
+            if (getRenderer()->m_textureFocused.isLoaded())
                 m_allowFocus = true;
 
             if (force)
             {
-                if (getRenderer()->m_textureNormal.getData())
+                if (getRenderer()->m_textureNormal.isLoaded())
                     setSize(getRenderer()->m_textureNormal.getImageSize());
             }
         }
@@ -265,9 +265,9 @@ namespace tgui
         Widget::mouseEnteredWidget();
 
         if (m_mouseDown)
-            m_text.getRenderer()->setTextColor(getRenderer()->m_textColorDown);
+            m_text.setTextColor(getRenderer()->m_textColorDown);
         else
-            m_text.getRenderer()->setTextColor(getRenderer()->m_textColorHover);
+            m_text.setTextColor(getRenderer()->m_textColorHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -276,7 +276,7 @@ namespace tgui
     {
         Widget::mouseLeftWidget();
 
-        m_text.getRenderer()->setTextColor(getRenderer()->m_textColorNormal);
+        m_text.setTextColor(getRenderer()->m_textColorNormal);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,142 +293,127 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ButtonRenderer::setProperty(std::string property, const std::string& value)
+    void ButtonRenderer::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
-        if (property == "font")
-            setTextFont(Deserializer::deserialize(ObjectConverter::Type::Font, value).getFont());
-        else if (property == "borders")
+        if (property == toLower("Borders"))
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "textcolor")
+        else if (property == toLower("TextColor"))
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "textcolornormal")
+        else if (property == toLower("TextColorNormal"))
             setTextColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "textcolorhover")
+        else if (property == toLower("TextColorHover"))
             setTextColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "textcolordown")
+        else if (property == toLower("TextColorDown"))
             setTextColorDown(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolor")
+        else if (property == toLower("BackgroundColor"))
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolornormal")
+        else if (property == toLower("BackgroundColorNormal"))
             setBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolorhover")
+        else if (property == toLower("BackgroundColorHover"))
             setBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolordown")
+        else if (property == toLower("BackgroundColorDown"))
             setBackgroundColorDown(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "bordercolor")
+        else if (property == toLower("BorderColor"))
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "normalimage")
+        else if (property == toLower("NormalImage"))
             setNormalTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "hoverimage")
+        else if (property == toLower("HoverImage"))
             setHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "downimage")
+        else if (property == toLower("DownImage"))
             setDownTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "focusedimage")
+        else if (property == toLower("FocusedImage"))
             setFocusTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
         else
-            return WidgetRenderer::setProperty(property, value);
-
-        return true;
+            WidgetRenderer::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ButtonRenderer::setProperty(std::string property, ObjectConverter&& value)
+    void ButtonRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
         property = toLower(property);
 
-        if (value.getType() == ObjectConverter::Type::Font)
+        if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == "font")
-                setTextFont(value.getFont());
-            else
-                return WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Borders)
-        {
-            if (property == "borders")
+            if (property == toLower("Borders"))
                 setBorders(value.getBorders());
             else
                 return WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == "textcolor")
+            if (property == toLower("TextColor"))
                 setTextColor(value.getColor());
-            else if (property == "textcolornormal")
+            else if (property == toLower("TextColorNormal"))
                 setTextColorNormal(value.getColor());
-            else if (property == "textcolorhover")
+            else if (property == toLower("TextColorHover"))
                 setTextColorHover(value.getColor());
-            else if (property == "textcolordown")
+            else if (property == toLower("TextColorDown"))
                 setTextColorDown(value.getColor());
-            else if (property == "backgroundcolor")
+            else if (property == toLower("BackgroundColor"))
                 setBackgroundColor(value.getColor());
-            else if (property == "backgroundcolornormal")
+            else if (property == toLower("BackgroundColorNormal"))
                 setBackgroundColorNormal(value.getColor());
-            else if (property == "backgroundcolorhover")
+            else if (property == toLower("BackgroundColorHover"))
                 setBackgroundColorHover(value.getColor());
-            else if (property == "backgroundcolordown")
+            else if (property == toLower("BackgroundColorDown"))
                 setBackgroundColorDown(value.getColor());
-            else if (property == "bordercolor")
+            else if (property == toLower("BorderColor"))
                 setBorderColor(value.getColor());
             else
-                return WidgetRenderer::setProperty(property, std::move(value));
+                WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == "normalimage")
+            if (property == toLower("NormalImage"))
                 setNormalTexture(value.getTexture());
-            else if (property == "hoverimage")
+            else if (property == toLower("HoverImage"))
                 setHoverTexture(value.getTexture());
-            else if (property == "downimage")
+            else if (property == toLower("DownImage"))
                 setDownTexture(value.getTexture());
-            else if (property == "focusedimage")
+            else if (property == toLower("FocusedImage"))
                 setFocusTexture(value.getTexture());
             else
-                return WidgetRenderer::setProperty(property, std::move(value));
+                WidgetRenderer::setProperty(property, std::move(value));
         }
         else
-            return false;
-
-        return true;
+            WidgetRenderer::setProperty(property, std::move(value));
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     ObjectConverter ButtonRenderer::getProperty(std::string property) const
     {
         property = toLower(property);
 
-        if (property == "font")
-            return m_button->m_font;
-        else if (property == "borders")
+        if (property == toLower("Borders"))
             return m_borders;
-        else if (property == "textcolor")
+        else if (property == toLower("TextColor"))
             return m_textColorNormal;
-        else if (property == "textcolornormal")
+        else if (property == toLower("TextColorNormal"))
             return m_textColorNormal;
-        else if (property == "textcolorhover")
+        else if (property == toLower("TextColorHover"))
             return m_textColorHover;
-        else if (property == "textcolordown")
+        else if (property == toLower("TextColorDown"))
             return m_textColorDown;
-        else if (property == "backgroundcolor")
+        else if (property == toLower("BackgroundColor"))
             return m_backgroundColorNormal;
-        else if (property == "backgroundcolornormal")
+        else if (property == toLower("BackgroundColorNormal"))
             return m_backgroundColorNormal;
-        else if (property == "backgroundcolorhover")
+        else if (property == toLower("BackgroundColorHover"))
             return m_backgroundColorHover;
-        else if (property == "backgroundcolordown")
+        else if (property == toLower("backgroundColorDown"))
             return m_backgroundColorDown;
-        else if (property == "bordercolor")
+        else if (property == toLower("BorderColor"))
             return m_borderColor;
-        else if (property == "normalimage")
+        else if (property == toLower("NormalImage"))
             return m_textureNormal;
-        else if (property == "hoverimage")
+        else if (property == toLower("HoverImage"))
             return m_textureHover;
-        else if (property == "downimage")
+        else if (property == toLower("DownImage"))
             return m_textureDown;
-        else if (property == "focusedimage")
+        else if (property == toLower("FocusedImage"))
             return m_textureFocused;
         else
             return WidgetRenderer::getProperty(property);
@@ -436,30 +421,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::pair<std::string, ObjectConverter>> ButtonRenderer::getPropertyValuePairs() const
+    std::map<std::string, ObjectConverter> ButtonRenderer::getPropertyValuePairs() const
     {
-        std::vector<std::pair<std::string, ObjectConverter>> pairs = WidgetRenderer::getPropertyValuePairs();
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
 
         if (m_textureNormal.isLoaded())
-            pairs.emplace_back("NormalImage", m_textureNormal);
-        if (m_textureHover.isLoaded())
-            pairs.emplace_back("HoverImage", m_textureHover);
-        if (m_textureDown.isLoaded())
-            pairs.emplace_back("DownImage", m_textureDown);
-        if (m_textureFocused.isLoaded())
-            pairs.emplace_back("FocusedImage", m_textureFocused);
+        {
+            pairs.emplace("NormalImage", m_textureNormal);
+            if (m_textureHover.isLoaded())
+                pairs.emplace("HoverImage", m_textureHover);
+            if (m_textureDown.isLoaded())
+                pairs.emplace("DownImage", m_textureDown);
+            if (m_textureFocused.isLoaded())
+                pairs.emplace("FocusedImage", m_textureFocused);
+        }
+        else
+        {
+            pairs.emplace("BackgroundColorNormal", m_backgroundColorNormal);
+            pairs.emplace("BackgroundColorHover", m_backgroundColorHover);
+            pairs.emplace("BackgroundColorDown", m_backgroundColorDown);
+        }
 
-        pairs.emplace_back("TextcolorNormal", m_textColorNormal);
-        pairs.emplace_back("TextcolorHover", m_textColorHover);
-        pairs.emplace_back("TextcolorDown", m_textColorDown);
-        pairs.emplace_back("BackgroundColorNormal", m_backgroundColorNormal);
-        pairs.emplace_back("BackgroundColorHover", m_backgroundColorHover);
-        pairs.emplace_back("BackgroundColorDown", m_backgroundColorDown);
-        pairs.emplace_back("BorderColor", m_borderColor);
-        pairs.emplace_back("Borders", m_borders);
-
-/// TODO: Font?
-///        pairs.emplace_back("font", m_button->m_font);
+        pairs.emplace("TextColorNormal", m_textColorNormal);
+        pairs.emplace("TextColorHover", m_textColorHover);
+        pairs.emplace("TextColorDown", m_textColorDown);
+        pairs.emplace("BorderColor", m_borderColor);
+        pairs.emplace("Borders", m_borders);
 
         return pairs;
     }
@@ -483,7 +470,7 @@ namespace tgui
         m_textColorHover = color;
         m_textColorDown = color;
 
-        m_button->m_text.getRenderer()->setTextColor(color);
+        m_button->m_text.setTextColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -493,7 +480,7 @@ namespace tgui
         m_textColorNormal = color;
 
         if (!m_button->m_mouseHover)
-            m_button->m_text.getRenderer()->setTextColor(color);
+            m_button->m_text.setTextColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -503,7 +490,7 @@ namespace tgui
         m_textColorHover = color;
 
         if (m_button->m_mouseHover && !m_button->m_mouseDown)
-            m_button->m_text.getRenderer()->setTextColor(color);
+            m_button->m_text.setTextColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -513,7 +500,7 @@ namespace tgui
         m_textColorDown = color;
 
         if (m_button->m_mouseHover && m_button->m_mouseDown)
-            m_button->m_text.getRenderer()->setTextColor(color);
+            m_button->m_text.setTextColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -611,6 +598,10 @@ namespace tgui
             }
             else
                 target.draw(m_textureNormal, states);
+
+            // When the edit box is focused then draw an extra image
+            if (m_button->m_focused && m_textureFocused.isLoaded())
+                target.draw(m_textureFocused, states);
         }
         else // There is no background texture
         {

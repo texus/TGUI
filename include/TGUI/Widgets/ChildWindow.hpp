@@ -27,7 +27,7 @@
 #define TGUI_CHILD_WINDOW_HPP
 
 
-#include <TGUI/Widgets/Container.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Label.hpp>
 

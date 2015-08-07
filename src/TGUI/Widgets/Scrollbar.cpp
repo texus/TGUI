@@ -23,7 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Scrollbar.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Loading/Theme.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,66 +40,9 @@ namespace tgui
         addSignal<int>("ValueChanged");
 
         m_renderer = std::make_shared<ScrollbarRenderer>(this);
+        reload();
 
         setSize(16, 160);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Scrollbar::Ptr Scrollbar::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto scrollbar = std::make_shared<Scrollbar>();
-
-        if (themeFileFilename != "")
-        {
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    scrollbar->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-
-            // Make sure the required textures were loaded
-            if (scrollbar->getRenderer()->m_textureTrackNormal.getData() && scrollbar->getRenderer()->m_textureThumbNormal.getData()
-             && scrollbar->getRenderer()->m_textureArrowUpNormal.getData() && scrollbar->getRenderer()->m_textureArrowDownNormal.getData())
-            {
-                sf::Vector2f trackSize = scrollbar->getRenderer()->m_textureTrackNormal.getImageSize();
-                float arrowsHeight = scrollbar->getRenderer()->m_textureArrowUpNormal.getImageSize().y + scrollbar->getRenderer()->m_textureArrowDownNormal.getImageSize().y;
-
-                if (compareFloats(compareFloats(trackSize.x, scrollbar->getRenderer()->m_textureArrowUpNormal.getImageSize().x), scrollbar->getRenderer()->m_textureArrowDownNormal.getImageSize().y))
-                    scrollbar->m_verticalImage = true;
-                else if (compareFloats(compareFloats(trackSize.y, scrollbar->getRenderer()->m_textureArrowUpNormal.getImageSize().x), scrollbar->getRenderer()->m_textureArrowDownNormal.getImageSize().y))
-                    scrollbar->m_verticalImage = false;
-                if (trackSize.x <= trackSize.y)
-                    scrollbar->m_verticalImage = true;
-                else
-                    scrollbar->m_verticalImage = false;
-
-                if (scrollbar->m_verticalImage)
-                    scrollbar->setSize({trackSize.x, trackSize.y + arrowsHeight});
-                else
-                    scrollbar->setSize({trackSize.x + arrowsHeight, trackSize.y});
-            }
-        }
-
-        return scrollbar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,8 +88,8 @@ namespace tgui
         }
 
         // Pass the position to the textures if they exist
-        if (getRenderer()->m_textureTrackNormal.getData() && getRenderer()->m_textureThumbNormal.getData()
-         && getRenderer()->m_textureArrowUpNormal.getData() && getRenderer()->m_textureArrowDownNormal.getData())
+        if (getRenderer()->m_textureTrackNormal.isLoaded() && getRenderer()->m_textureThumbNormal.isLoaded()
+         && getRenderer()->m_textureArrowUpNormal.isLoaded() && getRenderer()->m_textureArrowDownNormal.isLoaded())
         {
             getRenderer()->m_textureArrowUpNormal.setPosition({m_arrowUp.left, m_arrowUp.top});
             getRenderer()->m_textureArrowUpHover.setPosition({m_arrowUp.left, m_arrowUp.top});
@@ -170,8 +114,8 @@ namespace tgui
             m_verticalScroll = false;
 
         bool textured = false;
-        if (getRenderer()->m_textureTrackNormal.getData() && getRenderer()->m_textureThumbNormal.getData()
-         && getRenderer()->m_textureArrowUpNormal.getData() && getRenderer()->m_textureArrowDownNormal.getData())
+        if (getRenderer()->m_textureTrackNormal.isLoaded() && getRenderer()->m_textureThumbNormal.isLoaded()
+         && getRenderer()->m_textureArrowUpNormal.isLoaded() && getRenderer()->m_textureArrowDownNormal.isLoaded())
         {
             textured = true;
         }
@@ -704,6 +648,58 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Scrollbar::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        if (m_theme && primary != "")
+        {
+            m_theme->initWidget(this, primary, secondary);
+
+            if (force)
+            {
+                // Make sure the required textures were loaded
+                if (getRenderer()->m_textureTrackNormal.isLoaded() && getRenderer()->m_textureThumbNormal.isLoaded()
+                 && getRenderer()->m_textureArrowUpNormal.isLoaded() && getRenderer()->m_textureArrowDownNormal.isLoaded())
+                {
+                    sf::Vector2f trackSize = getRenderer()->m_textureTrackNormal.getImageSize();
+                    float arrowsHeight = getRenderer()->m_textureArrowUpNormal.getImageSize().y + getRenderer()->m_textureArrowDownNormal.getImageSize().y;
+
+                    if (compareFloats(compareFloats(trackSize.x, getRenderer()->m_textureArrowUpNormal.getImageSize().x), getRenderer()->m_textureArrowDownNormal.getImageSize().y))
+                        m_verticalImage = true;
+                    else if (compareFloats(compareFloats(trackSize.y, getRenderer()->m_textureArrowUpNormal.getImageSize().x), getRenderer()->m_textureArrowDownNormal.getImageSize().y))
+                        m_verticalImage = false;
+                    if (trackSize.x <= trackSize.y)
+                        m_verticalImage = true;
+                    else
+                        m_verticalImage = false;
+
+                    if (m_verticalImage)
+                        setSize({trackSize.x, trackSize.y + arrowsHeight});
+                    else
+                        setSize({trackSize.x + arrowsHeight, trackSize.y});
+                }
+            }
+        }
+        else // Load white theme
+        {
+            getRenderer()->setTrackColorNormal({245, 245, 245});
+            getRenderer()->setTrackColorHover({255, 255, 255});
+            getRenderer()->setThumbColorNormal({245, 245, 245});
+            getRenderer()->setThumbColorHover({255, 255, 255});
+            getRenderer()->setArrowColorNormal({60, 60, 60});
+            getRenderer()->setArrowColorHover({0, 0, 0});
+            getRenderer()->setTrackTexture({});
+            getRenderer()->setTrackHoverTexture({});
+            getRenderer()->setThumbTexture({});
+            getRenderer()->setThumbHoverTexture({});
+            getRenderer()->setArrowUpTexture({});
+            getRenderer()->setArrowDownTexture({});
+            getRenderer()->setArrowUpHoverTexture({});
+            getRenderer()->setArrowDownHoverTexture({});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Scrollbar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Don't draw the scrollbar when it is not needed
@@ -717,130 +713,198 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollbarRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    void ScrollbarRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "tracknormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureTrackNormal);
-        else if (property == "trackhoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureTrackHover);
-        else if (property == "thumbnormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureThumbNormal);
-        else if (property == "thumbhoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureThumbHover);
-        else if (property == "arrowupnormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowUpNormal);
-        else if (property == "arrowuphoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowUpHover);
-        else if (property == "arrowdownnormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowDownNormal);
-        else if (property == "arrowdownhoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowDownHover);
-        else if (property == "trackcolor")
-            setTrackColor(extractColorFromString(property, value));
-        else if (property == "trackcolornormal")
-            setTrackColorNormal(extractColorFromString(property, value));
-        else if (property == "trackcolorhover")
-            setTrackColorHover(extractColorFromString(property, value));
-        else if (property == "thumbcolor")
-            setThumbColor(extractColorFromString(property, value));
-        else if (property == "thumbcolornormal")
-            setThumbColorNormal(extractColorFromString(property, value));
-        else if (property == "thumbcolorhover")
-            setThumbColorHover(extractColorFromString(property, value));
-        else if (property == "arrowbackgroundcolor")
-            setArrowBackgroundColor(extractColorFromString(property, value));
-        else if (property == "arrowbackgroundcolornormal")
-            setArrowBackgroundColorNormal(extractColorFromString(property, value));
-        else if (property == "arrowbackgroundcolorhover")
-            setArrowBackgroundColorHover(extractColorFromString(property, value));
-        else if (property == "arrowcolor")
-            setArrowColor(extractColorFromString(property, value));
-        else if (property == "arrowcolornormal")
-            setArrowColorNormal(extractColorFromString(property, value));
-        else if (property == "arrowcolorhover")
-            setArrowColorHover(extractColorFromString(property, value));
+        property = toLower(property);
+
+        if (property == toLower("TrackColor"))
+            setTrackColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TrackColorNormal"))
+            setTrackColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TrackColorHover"))
+            setTrackColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ThumbColor"))
+            setThumbColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ThumbColorNormal"))
+            setThumbColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ThumbColorHover"))
+            setThumbColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowBackgroundColor"))
+            setArrowBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowBackgroundColorNormal"))
+            setArrowBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowBackgroundColorHover"))
+            setArrowBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowColor"))
+            setArrowColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowColorNormal"))
+            setArrowColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowColorHover"))
+            setArrowColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TrackImage"))
+            setTrackTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("TrackHoverImage"))
+            setTrackHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ThumbImage"))
+            setThumbTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ThumbHoverImage"))
+            setThumbHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowUpImage"))
+            setArrowUpTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowDownImage"))
+            setArrowDownTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowUpHoverImage"))
+            setArrowUpHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowDownHoverImage"))
+            setArrowDownHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            WidgetRenderer::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollbarRenderer::setTrackNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void ScrollbarRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
-        if (filename != "")
-            m_textureTrackNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("TrackColor"))
+                setTrackColor(value.getColor());
+            else if (property == toLower("TrackColorNormal"))
+                setTrackColorNormal(value.getColor());
+            else if (property == toLower("TrackColorHover"))
+                setTrackColorHover(value.getColor());
+            else if (property == toLower("ThumbColor"))
+                setThumbColor(value.getColor());
+            else if (property == toLower("ThumbColorNormal"))
+                setThumbColorNormal(value.getColor());
+            else if (property == toLower("ThumbColorHover"))
+                setThumbColorHover(value.getColor());
+            else if (property == toLower("ArrowBackgroundColor"))
+                setArrowBackgroundColor(value.getColor());
+            else if (property == toLower("ArrowBackgroundColorNormal"))
+                setArrowBackgroundColorNormal(value.getColor());
+            else if (property == toLower("ArrowBackgroundColorHover"))
+                setArrowBackgroundColorHover(value.getColor());
+            else if (property == toLower("ArrowColor"))
+                setArrowColor(value.getColor());
+            else if (property == toLower("ArrowColorNormal"))
+                setArrowColorNormal(value.getColor());
+            else if (property == toLower("ArrowColorHover"))
+                setArrowColorHover(value.getColor());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Texture)
+        {
+            if (property == toLower("TrackImage"))
+                setTrackTexture(value.getTexture());
+            else if (property == toLower("TrackHoverImage"))
+                setTrackHoverTexture(value.getTexture());
+            else if (property == toLower("ThumbImage"))
+                setThumbTexture(value.getTexture());
+            else if (property == toLower("ThumbHoverImage"))
+                setThumbHoverTexture(value.getTexture());
+            else if (property == toLower("ArrowUpImage"))
+                setArrowUpTexture(value.getTexture());
+            else if (property == toLower("ArrowDownImage"))
+                setArrowDownTexture(value.getTexture());
+            else if (property == toLower("ArrowUpHoverImage"))
+                setArrowUpHoverTexture(value.getTexture());
+            else if (property == toLower("ArrowDownHoverImage"))
+                setArrowDownHoverTexture(value.getTexture());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
         else
-            m_textureTrackNormal = {};
+            WidgetRenderer::setProperty(property, std::move(value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollbarRenderer::setTrackHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    ObjectConverter ScrollbarRenderer::getProperty(std::string property) const
     {
-        if (filename != "")
-            m_textureTrackHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (property == toLower("TrackColor"))
+            return m_trackColorNormal;
+        else if (property == toLower("TrackColorNormal"))
+            return m_trackColorNormal;
+        else if (property == toLower("TrackColorHover"))
+            return m_trackColorHover;
+        else if (property == toLower("ThumbColor"))
+            return m_thumbColorNormal;
+        else if (property == toLower("ThumbColorNormal"))
+            return m_thumbColorNormal;
+        else if (property == toLower("ThumbColorHover"))
+            return m_thumbColorHover;
+        else if (property == toLower("ArrowBackgroundColor"))
+            return m_arrowBackgroundColorNormal;
+        else if (property == toLower("ArrowBackgroundColorNormal"))
+            return m_arrowBackgroundColorNormal;
+        else if (property == toLower("ArrowBackgroundColorHover"))
+            return m_arrowBackgroundColorHover;
+        else if (property == toLower("ArrowColor"))
+            return m_arrowColorNormal;
+        else if (property == toLower("ArrowColorNormal"))
+            return m_arrowColorNormal;
+        else if (property == toLower("ArrowColorHover"))
+            return m_arrowColorHover;
+        else if (property == toLower("TrackImage"))
+            return m_textureTrackNormal;
+        else if (property == toLower("TrackHoverImage"))
+            return m_textureTrackHover;
+        else if (property == toLower("ThumbImage"))
+            return m_textureThumbNormal;
+        else if (property == toLower("ThumbHoverImage"))
+            return m_textureThumbHover;
+        else if (property == toLower("ArrowUpImage"))
+            return m_textureArrowUpNormal;
+        else if (property == toLower("ArrowDownImage"))
+            return m_textureArrowDownNormal;
+        else if (property == toLower("ArrowUpHoverImage"))
+            return m_textureArrowUpHover;
+        else if (property == toLower("ArrowDownHoverImage"))
+            return m_textureArrowDownHover;
         else
-            m_textureTrackHover = {};
+            return WidgetRenderer::getProperty(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollbarRenderer::setThumbNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    std::map<std::string, ObjectConverter> ScrollbarRenderer::getPropertyValuePairs() const
     {
-        if (filename != "")
-            m_textureThumbNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
+
+        if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+        {
+            pairs.emplace("TrackImage", m_textureTrackNormal);
+            pairs.emplace("ThumbImage", m_textureThumbNormal);
+            pairs.emplace("ArrowUpImage", m_textureArrowUpNormal);
+            pairs.emplace("ArrowDownImage", m_textureArrowDownNormal);
+            if (m_textureTrackHover.isLoaded())
+                pairs.emplace("TrackHoverImage", m_textureTrackHover);
+            if (m_textureThumbHover.isLoaded())
+                pairs.emplace("ThumbHoverImage", m_textureThumbHover);
+            if (m_textureArrowUpHover.isLoaded())
+                pairs.emplace("ArrowUpHoverImage", m_textureArrowUpHover);
+            if (m_textureArrowDownHover.isLoaded())
+                pairs.emplace("ArrowDownHoverImage", m_textureArrowDownHover);
+        }
         else
-            m_textureThumbNormal = {};
-    }
+        {
+            pairs.emplace("TrackColorNormal", m_trackColorNormal);
+            pairs.emplace("TrackColorHover", m_trackColorHover);
+            pairs.emplace("ThumbColorNormal", m_thumbColorNormal);
+            pairs.emplace("ThumbColorHover", m_thumbColorHover);
+            pairs.emplace("ArrowBackgroundColorNormal", m_arrowBackgroundColorNormal);
+            pairs.emplace("ArrowBackgroundColorHover", m_arrowBackgroundColorHover);
+            pairs.emplace("ArrowColorNormal", m_arrowColorNormal);
+            pairs.emplace("ArrowColorHover", m_arrowColorHover);
+        }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ScrollbarRenderer::setThumbHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
-    {
-        if (filename != "")
-            m_textureThumbHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_textureThumbHover = {};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ScrollbarRenderer::setArrowUpNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
-    {
-        if (filename != "")
-            m_textureArrowUpNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_textureArrowUpNormal = {};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ScrollbarRenderer::setArrowDownNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
-    {
-        if (filename != "")
-            m_textureArrowDownNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_textureArrowDownNormal = {};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ScrollbarRenderer::setArrowUpHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
-    {
-        if (filename != "")
-            m_textureArrowUpHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_textureArrowUpHover = {};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ScrollbarRenderer::setArrowDownHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
-    {
-        if (filename != "")
-            m_textureArrowDownHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_textureArrowDownHover = {};
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -933,26 +997,106 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ScrollbarRenderer::setTrackTexture(const Texture& texture)
+    {
+        m_textureTrackNormal = texture;
+        m_textureTrackNormal.setPosition(m_scrollbar->getPosition());
+        m_textureTrackNormal.setSize(m_scrollbar->getSize());
+        m_textureTrackNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarRenderer::setTrackHoverTexture(const Texture& texture)
+    {
+        m_textureTrackHover = texture;
+        m_textureTrackHover.setPosition(m_scrollbar->getPosition());
+        m_textureTrackHover.setSize(m_scrollbar->getSize());
+        m_textureTrackHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarRenderer::setThumbTexture(const Texture& texture)
+    {
+        m_textureThumbNormal = texture;
+        m_textureThumbNormal.setPosition(m_scrollbar->getPosition());
+        m_textureThumbNormal.setSize(m_scrollbar->getSize());
+        m_textureThumbNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarRenderer::setThumbHoverTexture(const Texture& texture)
+    {
+        m_textureThumbHover = texture;
+        m_textureThumbHover.setPosition(m_scrollbar->getPosition());
+        m_textureThumbHover.setSize(m_scrollbar->getSize());
+        m_textureThumbHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarRenderer::setArrowUpTexture(const Texture& texture)
+    {
+        m_textureArrowUpNormal = texture;
+        m_textureArrowUpNormal.setPosition(m_scrollbar->getPosition());
+        m_textureArrowUpNormal.setSize(m_scrollbar->getSize());
+        m_textureArrowUpNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarRenderer::setArrowDownTexture(const Texture& texture)
+    {
+        m_textureArrowDownNormal = texture;
+        m_textureArrowDownNormal.setPosition(m_scrollbar->getPosition());
+        m_textureArrowDownNormal.setSize(m_scrollbar->getSize());
+        m_textureArrowDownNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarRenderer::setArrowUpHoverTexture(const Texture& texture)
+    {
+        m_textureArrowUpHover = texture;
+        m_textureArrowUpHover.setPosition(m_scrollbar->getPosition());
+        m_textureArrowUpHover.setSize(m_scrollbar->getSize());
+        m_textureArrowUpHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollbarRenderer::setArrowDownHoverTexture(const Texture& texture)
+    {
+        m_textureArrowDownHover = texture;
+        m_textureArrowDownHover.setPosition(m_scrollbar->getPosition());
+        m_textureArrowDownHover.setSize(m_scrollbar->getSize());
+        m_textureArrowDownHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ScrollbarRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (m_textureTrackNormal.getData() && m_textureThumbNormal.getData() && m_textureArrowUpNormal.getData() && m_textureArrowDownNormal.getData())
+        if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
         {
-            if (m_scrollbar->m_mouseHover && m_textureTrackHover.getData() && (m_scrollbar->m_mouseHoverOverPart == Scrollbar::Part::Track))
+            if (m_scrollbar->m_mouseHover && m_textureTrackHover.isLoaded() && (m_scrollbar->m_mouseHoverOverPart == Scrollbar::Part::Track))
                 target.draw(m_textureTrackHover, states);
             else
                 target.draw(m_textureTrackNormal, states);
 
-            if (m_scrollbar->m_mouseHover && m_textureThumbHover.getData() && (m_scrollbar->m_mouseHoverOverPart == Scrollbar::Part::Thumb))
+            if (m_scrollbar->m_mouseHover && m_textureThumbHover.isLoaded() && (m_scrollbar->m_mouseHoverOverPart == Scrollbar::Part::Thumb))
                 target.draw(m_textureThumbHover, states);
             else
                 target.draw(m_textureThumbNormal, states);
 
-            if (m_scrollbar->m_mouseHover && m_textureArrowUpHover.getData() && (m_scrollbar->m_mouseHoverOverPart == Scrollbar::Part::ArrowUp))
+            if (m_scrollbar->m_mouseHover && m_textureArrowUpHover.isLoaded() && (m_scrollbar->m_mouseHoverOverPart == Scrollbar::Part::ArrowUp))
                 target.draw(m_textureArrowUpHover, states);
             else
                 target.draw(m_textureArrowUpNormal, states);
 
-            if (m_scrollbar->m_mouseHover && m_textureArrowDownHover.getData() && (m_scrollbar->m_mouseHoverOverPart == Scrollbar::Part::ArrowDown))
+            if (m_scrollbar->m_mouseHover && m_textureArrowDownHover.isLoaded() && (m_scrollbar->m_mouseHoverOverPart == Scrollbar::Part::ArrowDown))
                 target.draw(m_textureArrowDownHover, states);
             else
                 target.draw(m_textureArrowDownNormal, states);

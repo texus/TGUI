@@ -282,6 +282,10 @@ endif()
 
 # Build the tests if requested
 if (TGUI_BUILD_TESTS)
+    if (NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        message(FATAL_ERROR "TGUI_BUILD_TESTS should only be enabled when CMAKE_BUILD_TYPE is Debug")
+    endif()
+
     add_subdirectory(tests)
 endif()
 

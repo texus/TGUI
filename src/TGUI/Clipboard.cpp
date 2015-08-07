@@ -37,6 +37,12 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::String Clipboard::m_contents;
+    sf::WindowHandle Clipboard::m_windowHandle = sf::WindowHandle();
+    bool Clipboard::m_isWindowHandleSet = false;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::String Clipboard::get()
     {
     #ifdef SFML_SYSTEM_WINDOWS
@@ -88,7 +94,7 @@ namespace tgui
                         #else
                             strcpy(pchData, m_contents.toAnsiString().c_str());
                         #endif
-						
+
                         SetClipboardData(CF_TEXT, hGlobal);
 
                         GlobalUnlock(hGlobal);

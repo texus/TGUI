@@ -1,10 +1,29 @@
 set(TEST_SOURCES
     main.cpp
+    Borders.cpp
+    Clipboard.cpp
+    FileCompare.cpp
     Layouts.cpp
+    Widget.cpp
     Loading/Serializer.cpp
     Loading/Deserializer.cpp
     Loading/Theme.cpp
     Loading/ThemeLoader.cpp
+    Widgets/Button.cpp
+    Widgets/Canvas.cpp
+    Widgets/Checkbox.cpp
+    Widgets/ClickableWidget.cpp
+    Widgets/EditBox.cpp
+    Widgets/Knob.cpp
+    Widgets/Label.cpp
+    Widgets/Panel.cpp
+    Widgets/Picture.cpp
+    Widgets/ProgressBar.cpp
+    Widgets/RadioButton.cpp
+    Widgets/Scrollbar.cpp
+    Widgets/Slider.cpp
+    Widgets/SpinButton.cpp
+    Widgets/Tooltip.cpp
 )
 
 # The tests require c++14

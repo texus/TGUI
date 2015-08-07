@@ -53,12 +53,39 @@ TEST_CASE("[Deserializer]") {
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, ",,,,"), tgui::Exception);
     }
 
-    SECTION("deserialize borders") {
-        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "10, 20, 30, 40").getBorders() == tgui::Borders(10, 20, 30, 40));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "(50, 60, 70, 80)").getBorders() == tgui::Borders(50, 60, 70, 80));
+    SECTION("deserialize string") {
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\"").getString() == "");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"Just a string.\"").getString() == "Just a string.");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\\\\"").getString() == "\\");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\n\"").getString() == "\n");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\t\"").getString() == "\t");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\v\"").getString() == "\v");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\\"\"").getString() == "\"");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"a\\t\\\"str\\\"?\\nYES!\"").getString() == "a\t\"str\"?\nYES!");
 
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Borders, ""), tgui::Exception);
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Borders, "(0,1)"), tgui::Exception);
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "").getString() == "");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\\").getString() == "\\");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\\n").getString() == "\\n");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "str").getString() == "str");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\m\"").getString() == "m");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\n\"").getString() == "\n");
+    }
+
+    SECTION("deserialize number") {
+        REQUIRE(tgui::Deserializer::deserialize(Type::Number, "0").getNumber() == 0);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Number, "1").getNumber() == 1);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Number, "2.25").getNumber() == 2.25);
+    }
+
+    SECTION("deserialize borders") {
+        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "1, 2, 3, 4").getBorders() == tgui::Borders(1, 2, 3, 4));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "(5, 6, 7, 8)").getBorders() == tgui::Borders(5, 6, 7, 8));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "9, 10").getBorders() == tgui::Borders(9, 10, 9, 10));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "(11, 12)").getBorders() == tgui::Borders(11, 12, 11, 12));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "13").getBorders() == tgui::Borders(13, 13, 13, 13));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "(14)").getBorders() == tgui::Borders(14, 14, 14, 14));
+
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Borders, "(1,2,3)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Borders, ",,,,"), tgui::Exception);
     }
 
@@ -94,25 +121,7 @@ TEST_CASE("[Deserializer]") {
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, ""), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" xyz(0,0,0,0)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0,1)"), tgui::Exception);
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(,,,,)"), tgui::Exception);
-    }
-
-    SECTION("deserialize string") {
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\"").getString() == "");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"Just a string.\"").getString() == "Just a string.");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\\\\"").getString() == "\\");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\n\"").getString() == "\n");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\t\"").getString() == "\t");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\v\"").getString() == "\v");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\\"\"").getString() == "\"");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"a\\t\\\"str\\\"?\\nYES!\"").getString() == "a\t\"str\"?\nYES!");
-
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "").getString() == "");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\\").getString() == "\\");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\\n").getString() == "\\n");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "str").getString() == "str");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\m\"").getString() == "m");
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\n\"").getString() == "\n");
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(0,)"), tgui::Exception);
     }
 
     SECTION("custom deserialize function") {

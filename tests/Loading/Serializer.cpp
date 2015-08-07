@@ -78,6 +78,12 @@ TEST_CASE("[Serializer]") {
         REQUIRE(tgui::Serializer::serialize({"a\t\"string\"?\nYES!"}) == "\"a\\t\\\"string\\\"?\\nYES!\"");
     }
 
+    SECTION("serialize number") {
+        REQUIRE(tgui::Serializer::serialize({0}) == "0");
+        REQUIRE(tgui::Serializer::serialize({1}) == "1");
+        REQUIRE(tgui::Serializer::serialize({2.15}) == "2.15");
+    }
+
     SECTION("custom serialize function") {
         REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "rgb(0, 0, 255)");
         auto oldFunc = tgui::Serializer::getFunction(tgui::ObjectConverter::Type::Color);

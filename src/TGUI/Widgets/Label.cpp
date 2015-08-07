@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets/Container.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Loading/Theme.hpp>
 
@@ -68,8 +68,8 @@ namespace tgui
 
         m_background.setPosition(getPosition());
 
-        m_text.setPosition(std::floor(getPosition().x + m_padding.left - m_text.getLocalBounds().left + 0.5f),
-                           std::floor(getPosition().y + m_padding.top - m_text.getLocalBounds().top + 0.5f));
+        m_text.setPosition(std::floor(getPosition().x + getRenderer()->getPadding().left - m_text.getLocalBounds().left + 0.5f),
+                           std::floor(getPosition().y + getRenderer()->getPadding().top - m_text.getLocalBounds().top + 0.5f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,6 +124,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Label::setTextColor(const sf::Color& color)
+    {
+        m_text.setColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::setTextStyle(sf::Uint32 style)
     {
         m_text.setStyle(style);
@@ -168,19 +175,6 @@ namespace tgui
             return m_maximumTextWidth;
         else
             return getSize().x;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Label::setPadding(const Padding& padding)
-    {
-        if (padding != getPadding())
-        {
-            WidgetPadding::setPadding(padding);
-
-            updatePosition();
-            rearrangeText();
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,8 +255,8 @@ namespace tgui
             float maxWidth = 0;
             if (m_autoSize)
                 maxWidth = m_maximumTextWidth;
-            else if (getSize().x > m_padding.left + m_padding.right)
-                maxWidth = getSize().x - m_padding.left - m_padding.right;
+            else if (getSize().x > getRenderer()->getPadding().left + getRenderer()->getPadding().right)
+                maxWidth = getSize().x - getRenderer()->getPadding().left - getRenderer()->getPadding().right;
 
             m_text.setString("");
             unsigned int index = 0;
@@ -282,13 +276,18 @@ namespace tgui
                         break;
                     }
                     else if (curChar == '\t')
-                        charWidth = static_cast<float>(getFont()->getGlyph(' ', m_text.getCharacterSize(), false).advance) * 4;
+                        charWidth = static_cast<float>(getFont()->getGlyph(' ', m_text.getCharacterSize(), false).textureRect.width) * 4;
                     else
-                        charWidth = static_cast<float>(getFont()->getGlyph(curChar, m_text.getCharacterSize(), false).advance);
+                        charWidth = static_cast<float>(getFont()->getGlyph(curChar, m_text.getCharacterSize(), false).textureRect.width);
 
                     float kerning = static_cast<float>(getFont()->getKerning(prevChar, curChar, m_text.getCharacterSize()));
                     if (width + charWidth + kerning <= maxWidth)
                     {
+                        if (curChar == '\t')
+                            charWidth = static_cast<float>(getFont()->getGlyph(' ', m_text.getCharacterSize(), false).advance) * 4;
+                        else
+                            charWidth = static_cast<float>(getFont()->getGlyph(curChar, m_text.getCharacterSize(), false).advance);
+
                         width += charWidth + kerning;
                         index++;
                     }
@@ -343,7 +342,9 @@ namespace tgui
 
         if (m_autoSize)
         {
-            m_size = {m_text.getLocalBounds().width + m_padding.left + m_padding.right, m_text.getLocalBounds().height + m_padding.top + m_padding.bottom};
+            m_size = {m_text.getLocalBounds().width + getRenderer()->getPadding().left + getRenderer()->getPadding().right,
+                      m_text.getLocalBounds().height + getRenderer()->getPadding().top + getRenderer()->getPadding().bottom};
+
             m_background.setSize(getSize());
         }
     }
@@ -374,10 +375,10 @@ namespace tgui
             float scaleViewY = target.getSize().y / view.getSize().y;
 
             // Get the global position
-            sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + m_padding.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                            ((getAbsolutePosition().y + m_padding.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-            sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - m_padding.right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                (getAbsolutePosition().y + getSize().y - m_padding.bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
+            sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + getRenderer()->getPadding().left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                            ((getAbsolutePosition().y + getRenderer()->getPadding().top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+            sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - getRenderer()->getPadding().right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                (getAbsolutePosition().y + getSize().y - getRenderer()->getPadding().bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
             // Get the old clipping area
             GLint scissor[4];
@@ -409,80 +410,103 @@ namespace tgui
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
         }
 
-        // Draw the borders
-        if (m_borders != Borders{0, 0, 0, 0})
-        {
-            // Draw left border
-            sf::RectangleShape border({m_borders.left, getSize().y + m_borders.top});
-            border.setPosition(getPosition().x - m_borders.left, getPosition().y - m_borders.top);
-            border.setFillColor(getRenderer()->m_borderColor);
-            target.draw(border, states);
-
-            // Draw top border
-            border.setSize({getSize().x + m_borders.right, m_borders.top});
-            border.setPosition(getPosition().x, getPosition().y - m_borders.top);
-            target.draw(border, states);
-
-            // Draw right border
-            border.setSize({m_borders.right, getSize().y + m_borders.bottom});
-            border.setPosition(getPosition().x + getSize().x, getPosition().y);
-            target.draw(border, states);
-
-            // Draw bottom border
-            border.setSize({getSize().x + m_borders.left, m_borders.bottom});
-            border.setPosition(getPosition().x - m_borders.left, getPosition().y + getSize().y);
-            target.draw(border, states);
-        }
+        getRenderer()->draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LabelRenderer::setProperty(std::string property, const std::string& value)
+    void LabelRenderer::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
-        if (property == "textcolor")
+        if (property == toLower("TextColor"))
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolor")
+        else if (property == toLower("BackgroundColor"))
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "bordercolor")
+        else if (property == toLower("BorderColor"))
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "borders")
+        else if (property == toLower("Borders"))
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("Padding"))
+            setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
         else
-            return WidgetRenderer::setProperty(property, value);
-
-        return true;
+            WidgetRenderer::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool LabelRenderer::setProperty(std::string property, ObjectConverter&& value)
+    void LabelRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
         property = toLower(property);
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == "borders")
+            if (property == toLower("Borders"))
                 setBorders(value.getBorders());
+            else if (property == toLower("Padding"))
+                setPadding(value.getBorders());
             else
-                return WidgetRenderer::setProperty(property, std::move(value));
+                WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == "textcolor")
+            if (property == toLower("TextColor"))
                 setTextColor(value.getColor());
-            else if (property == "backgroundcolor")
+            else if (property == toLower("BackgroundColor"))
                 setBackgroundColor(value.getColor());
-            else if (property == "bordercolor")
+            else if (property == toLower("BorderColor"))
                 setBorderColor(value.getColor());
             else
-                return WidgetRenderer::setProperty(property, std::move(value));
+                WidgetRenderer::setProperty(property, std::move(value));
         }
         else
-            return false;
+            WidgetRenderer::setProperty(property, std::move(value));
+    }
 
-        return true;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ObjectConverter LabelRenderer::getProperty(std::string property) const
+    {
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            return m_borders;
+        else if (property == toLower("Padding"))
+            return m_padding;
+        else if (property == toLower("TextColor"))
+            return m_label->m_text.getColor();
+        else if (property == toLower("BackgroundColor"))
+            return m_label->m_background.getFillColor();
+        else if (property == toLower("BorderColor"))
+            return m_borderColor;
+        else
+            return WidgetRenderer::getProperty(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<std::string, ObjectConverter> LabelRenderer::getPropertyValuePairs() const
+    {
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
+        pairs.emplace("TextColor", m_label->m_text.getColor());
+        pairs.emplace("BackgroundColor", m_label->m_background.getFillColor());
+        pairs.emplace("BorderColor", m_borderColor);
+        pairs.emplace("Borders", m_borders);
+        pairs.emplace("Padding", m_padding);
+        return pairs;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LabelRenderer::setPadding(const Padding& padding)
+    {
+        if (padding != getPadding())
+        {
+            WidgetPadding::setPadding(padding);
+
+            m_label->updatePosition();
+            m_label->rearrangeText();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -504,6 +528,39 @@ namespace tgui
     void LabelRenderer::setBorderColor(const sf::Color& color)
     {
         m_borderColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LabelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        // Draw the borders around the button
+        if (m_borders != Borders{0, 0, 0, 0})
+        {
+            sf::Vector2f position = m_label->getPosition();
+            sf::Vector2f size = m_label->getSize();
+
+            // Draw left border
+            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
+            border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
+            border.setFillColor(m_borderColor);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({size.x + m_borders.right, m_borders.top});
+            border.setPosition(position.x, position.y - m_borders.top);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({m_borders.right, size.y + m_borders.bottom});
+            border.setPosition(position.x + size.x, position.y);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({size.x + m_borders.left, m_borders.bottom});
+            border.setPosition(position.x - m_borders.left, position.y + size.y);
+            target.draw(border, states);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

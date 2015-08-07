@@ -66,8 +66,6 @@ namespace tgui
 
     std::string DefaultThemeLoader::load(const std::string& filename, const std::string& className, std::map<std::string, std::string>& propertyValuePair)
     {
-        /// TODO: Allow comments (#, // and /*)
-
         std::string lowercaseClassName = toLower(className);
 
         // The file may be cached

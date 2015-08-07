@@ -23,9 +23,21 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Loading/WidgetLoader.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Loading/WidgetLoader.hpp>
 #include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/Checkbox.hpp>
+#include <TGUI/Widgets/Canvas.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Knob.hpp>
+#include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>
+#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Widgets/Slider.hpp>
+#include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Tooltip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,6 +79,10 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    #define DESERIALIZE_STRING(property) Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[property]->value).getString()
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TGUI_API Widget::Ptr loadWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
     {
         assert(widget != nullptr);
@@ -100,7 +116,7 @@ namespace tgui
             widget->setTransparency(transparency);
         }
 
-        /// TODO: Tooltip, Font, Theme
+        /// TODO: Font (and Theme?)
 
         for (auto& childNode : node->children)
         {
@@ -109,37 +125,11 @@ namespace tgui
                 for (auto& pair : childNode->propertyValuePairs)
                     widget->getRenderer()->setProperty(pair.first, pair.second->value);
             }
+            else if (childNode->name == "Tooltip")
+                widget->setTooltip(std::dynamic_pointer_cast<tgui::Tooltip>(tgui::WidgetLoader::getLoadFunction("Tooltip")(childNode)));
         }
 
-        /**
-        if (widget->getRenderer())
-        {
-            node->children.emplace_back(std::make_shared<DataIO::Node>());
-            node->children.back()->name = "Renderer";
-            for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
-                node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(node->children.back().get(), Serializer::serialize(pair.second));
-        }
-        */
         return widget;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API Widget::Ptr loadButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
-    {
-        Button::Ptr button;
-        if (widget)
-            button = std::static_pointer_cast<Button>(widget);
-        else
-            button = std::make_shared<Button>();
-
-        loadWidget(node, button);
-        if (node->propertyValuePairs["Text"])
-            button->setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Text"]->value).getString());
-        if (node->propertyValuePairs["TextSize"])
-            button->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
-
-        return button;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +141,7 @@ namespace tgui
 
         for (auto& childNode : node->children)
         {
-            if (childNode->name != "Renderer")
+            if ((childNode->name != "Renderer") && (childNode->name != "Tooltip"))
             {
                 auto nameSeparator = childNode->name.find('.');
                 auto widgetType = childNode->name.substr(0, nameSeparator);
@@ -174,6 +164,368 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Button::Ptr button;
+        if (widget)
+            button = std::static_pointer_cast<Button>(widget);
+        else
+            button = std::make_shared<Button>();
+
+        loadWidget(node, button);
+        if (node->propertyValuePairs["Text"])
+            button->setText(DESERIALIZE_STRING("Text"));
+        if (node->propertyValuePairs["TextSize"])
+            button->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+
+        return button;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadCanvas(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        if (widget)
+            return loadWidget(node, widget);
+        else
+            return loadWidget(node, std::make_shared<Canvas>());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadCheckbox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Checkbox::Ptr checkbox;
+        if (widget)
+            checkbox = std::static_pointer_cast<Checkbox>(widget);
+        else
+            checkbox = std::make_shared<Checkbox>();
+
+        loadWidget(node, checkbox);
+        if (node->propertyValuePairs["Text"])
+            checkbox->setText(DESERIALIZE_STRING("Text"));
+        if (node->propertyValuePairs["TextSize"])
+            checkbox->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+        if (node->propertyValuePairs["Checked"])
+        {
+            if (parseBoolean(node->propertyValuePairs["Checked"]->value))
+                checkbox->check();
+        }
+
+        return checkbox;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadClickableWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        if (widget)
+            return loadWidget(node, widget);
+        else
+            return loadWidget(node, std::make_shared<ClickableWidget>());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadEditBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        EditBox::Ptr editBox;
+        if (widget)
+            editBox = std::static_pointer_cast<EditBox>(widget);
+        else
+            editBox = std::make_shared<EditBox>();
+
+        loadWidget(node, editBox);
+
+        if (node->propertyValuePairs["Text"])
+            editBox->setText(DESERIALIZE_STRING("Text"));
+        if (node->propertyValuePairs["DefaultText"])
+            editBox->setDefaultText(DESERIALIZE_STRING("DefaultText"));
+        if (node->propertyValuePairs["TextSize"])
+            editBox->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+        if (node->propertyValuePairs["MaximumCharacters"])
+            editBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["MaximumCharacters"]->value));
+        if (node->propertyValuePairs["TextWidthLimited"])
+            editBox->limitTextWidth(parseBoolean(node->propertyValuePairs["TextWidthLimited"]->value));
+        if (node->propertyValuePairs["CaretWidth"])
+            editBox->setCaretWidth(tgui::stof(node->propertyValuePairs["CaretWidth"]->value));
+        if (node->propertyValuePairs["NumbersOnly"])
+            editBox->setNumbersOnly(parseBoolean(node->propertyValuePairs["NumbersOnly"]->value));
+        if (node->propertyValuePairs["PasswordCharacter"])
+        {
+            std::string pass = DESERIALIZE_STRING("PasswordCharacter");
+            if (!pass.empty())
+                editBox->setPasswordCharacter(pass[0]);
+        }
+        if (node->propertyValuePairs["Alignment"])
+        {
+            if (toLower(node->propertyValuePairs["Alignment"]->value) == "left")
+                editBox->setAlignment(EditBox::Alignment::Left);
+            else if (toLower(node->propertyValuePairs["Alignment"]->value) == "center")
+                editBox->setAlignment(EditBox::Alignment::Center);
+            else if (toLower(node->propertyValuePairs["Alignment"]->value) == "right")
+                editBox->setAlignment(EditBox::Alignment::Right);
+            else
+                throw Exception{"Failed to parse Alignment property. Only the values Left, Center and Right are correct."};
+        }
+
+        return editBox;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadKnob(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Knob::Ptr knob;
+        if (widget)
+            knob = std::static_pointer_cast<Knob>(widget);
+        else
+            knob = std::make_shared<Knob>();
+
+        loadWidget(node, knob);
+        if (node->propertyValuePairs["StartRotation"])
+            knob->setStartRotation(tgui::stoi(node->propertyValuePairs["StartRotation"]->value));
+        if (node->propertyValuePairs["EndRotation"])
+            knob->setEndRotation(tgui::stoi(node->propertyValuePairs["EndRotation"]->value));
+        if (node->propertyValuePairs["Minimum"])
+            knob->setMinimum(tgui::stoi(node->propertyValuePairs["Minimum"]->value));
+        if (node->propertyValuePairs["Maximum"])
+            knob->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
+        if (node->propertyValuePairs["Value"])
+            knob->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
+        if (node->propertyValuePairs["ClockwiseTurning"])
+            knob->setClockwiseTurning(parseBoolean(node->propertyValuePairs["ClockwiseTurning"]->value));
+
+        return knob;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadLabel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Label::Ptr label;
+        if (widget)
+            label = std::static_pointer_cast<Label>(widget);
+        else
+            label = std::make_shared<Label>();
+
+        loadWidget(node, label);
+
+        if (node->propertyValuePairs["TextStyle"])
+        {
+            sf::Uint32 style = sf::Text::Regular;
+            std::vector<std::string> styles = tgui::split(node->propertyValuePairs["TextStyle"]->value, '|');
+            for (auto& elem : styles)
+            {
+                std::string requestedStyle = toLower(trim(elem));
+                if (requestedStyle == "bold")
+                    style |= sf::Text::Bold;
+                else if (requestedStyle == "italic")
+                    style |= sf::Text::Italic;
+                else if (requestedStyle == "underlined")
+                    style |= sf::Text::Underlined;
+                else if (requestedStyle == toLower("StrikeThrough"))
+                    style |= sf::Text::StrikeThrough;
+                else if (requestedStyle != "regular")
+                    throw Exception{"Failed to parse TextStyle property, found unknown style."};
+            }
+
+            label->setTextStyle(style);
+        }
+
+        if (node->propertyValuePairs["Text"])
+            label->setText(DESERIALIZE_STRING("Text"));
+        if (node->propertyValuePairs["TextSize"])
+            label->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+        if (node->propertyValuePairs["MaximumTextWidth"])
+            label->setMaximumTextWidth(tgui::stoi(node->propertyValuePairs["MaximumTextWidth"]->value));
+        if (node->propertyValuePairs["AutoSize"])
+            label->setAutoSize(parseBoolean(node->propertyValuePairs["AutoSize"]->value));
+
+        return label;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadPanel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        if (widget)
+            return loadContainer(node, std::static_pointer_cast<Panel>(widget));
+        else
+            return loadContainer(node, std::make_shared<Panel>());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadPicture(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Picture::Ptr picture;
+        if (widget)
+            picture = std::static_pointer_cast<Picture>(widget);
+        else
+            picture = std::make_shared<Picture>();
+
+        loadWidget(node, picture);
+        if (node->propertyValuePairs["Filename"])
+            picture = std::make_shared<Picture>(DESERIALIZE_STRING("Filename"));
+        if (node->propertyValuePairs["Smooth"])
+            picture->setSmooth(parseBoolean(node->propertyValuePairs["Smooth"]->value));
+
+        return picture;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadProgressBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        ProgressBar::Ptr progressBar;
+        if (widget)
+            progressBar = std::static_pointer_cast<ProgressBar>(widget);
+        else
+            progressBar = std::make_shared<ProgressBar>();
+
+        loadWidget(node, progressBar);
+        if (node->propertyValuePairs["Minimum"])
+            progressBar->setMinimum(tgui::stoi(node->propertyValuePairs["Minimum"]->value));
+        if (node->propertyValuePairs["Maximum"])
+            progressBar->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
+        if (node->propertyValuePairs["Value"])
+            progressBar->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
+        if (node->propertyValuePairs["Text"])
+            progressBar->setText(DESERIALIZE_STRING("Text"));
+        if (node->propertyValuePairs["TextSize"])
+            progressBar->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+
+        if (node->propertyValuePairs["FillDirection"])
+        {
+            std::string requestedStyle = toLower(trim(node->propertyValuePairs["FillDirection"]->value));
+            if (requestedStyle == toLower("LeftToRight"))
+                progressBar->setFillDirection(tgui::ProgressBar::FillDirection::LeftToRight);
+            else if (requestedStyle == toLower("RightToLeft"))
+                progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
+            else if (requestedStyle == toLower("TopToBottom"))
+                progressBar->setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
+            else if (requestedStyle == toLower("TopToBottom"))
+                progressBar->setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
+            else
+                throw Exception{"Failed to parse FillDirection property, found unknown value."};
+        }
+
+        return progressBar;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadRadioButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        RadioButton::Ptr radioButton;
+        if (widget)
+            radioButton = std::static_pointer_cast<RadioButton>(widget);
+        else
+            radioButton = std::make_shared<RadioButton>();
+
+        loadWidget(node, radioButton);
+        if (node->propertyValuePairs["Text"])
+            radioButton->setText(DESERIALIZE_STRING("Text"));
+        if (node->propertyValuePairs["TextSize"])
+            radioButton->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+        if (node->propertyValuePairs["Checked"])
+        {
+            if (parseBoolean(node->propertyValuePairs["Checked"]->value))
+                radioButton->check();
+        }
+
+        return radioButton;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadScrollbar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Scrollbar::Ptr scrollbar;
+        if (widget)
+            scrollbar = std::static_pointer_cast<Scrollbar>(widget);
+        else
+            scrollbar = std::make_shared<Scrollbar>();
+
+        loadWidget(node, scrollbar);
+        if (node->propertyValuePairs["LowValue"])
+            scrollbar->setLowValue(tgui::stoi(node->propertyValuePairs["LowValue"]->value));
+        if (node->propertyValuePairs["Maximum"])
+            scrollbar->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
+        if (node->propertyValuePairs["Value"])
+            scrollbar->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
+        if (node->propertyValuePairs["ArrowScrollAmount"])
+            scrollbar->setArrowScrollAmount(tgui::stoi(node->propertyValuePairs["ArrowScrollAmount"]->value));
+        if (node->propertyValuePairs["AutoHide"])
+            scrollbar->setAutoHide(parseBoolean(node->propertyValuePairs["AutoHide"]->value));
+
+        return scrollbar;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadSlider(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Slider::Ptr slider;
+        if (widget)
+            slider = std::static_pointer_cast<Slider>(widget);
+        else
+            slider = std::make_shared<Slider>();
+
+        loadWidget(node, slider);
+        if (node->propertyValuePairs["Minimum"])
+            slider->setMinimum(tgui::stoi(node->propertyValuePairs["Minimum"]->value));
+        if (node->propertyValuePairs["Maximum"])
+            slider->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
+        if (node->propertyValuePairs["Value"])
+            slider->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
+
+        return slider;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadSpinButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        SpinButton::Ptr spinButton;
+        if (widget)
+            spinButton = std::static_pointer_cast<SpinButton>(widget);
+        else
+            spinButton = std::make_shared<SpinButton>();
+
+        loadWidget(node, spinButton);
+        if (node->propertyValuePairs["Minimum"])
+            spinButton->setMinimum(tgui::stoi(node->propertyValuePairs["Minimum"]->value));
+        if (node->propertyValuePairs["Maximum"])
+            spinButton->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
+        if (node->propertyValuePairs["Value"])
+            spinButton->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
+        if (node->propertyValuePairs["VerticalScroll"])
+            spinButton->setVerticalScroll(parseBoolean(node->propertyValuePairs["VerticalScroll"]->value));
+
+        return spinButton;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadTooltip(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Tooltip::Ptr tooltip;
+        if (widget)
+            tooltip = std::static_pointer_cast<Tooltip>(widget);
+        else
+            tooltip = std::make_shared<Tooltip>();
+
+        loadLabel(node, tooltip);
+        if (node->propertyValuePairs["TimeToDisplay"])
+            tooltip->setTimeToDisplay(sf::seconds(tgui::stof(node->propertyValuePairs["TimeToDisplay"]->value)));
+
+        return tooltip;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,9 +536,23 @@ namespace tgui
 
     std::map<std::string, WidgetLoader::LoadFunction> WidgetLoader::m_loadFunctions =
         {
-            {"widget", std::bind(loadWidget, std::placeholders::_1, nullptr)},
-            {"button", std::bind(loadButton, std::placeholders::_1, nullptr)},
-            {"container", std::bind(loadContainer, std::placeholders::_1, nullptr)}
+            {toLower("Widget"), std::bind(loadWidget, std::placeholders::_1, nullptr)},
+            {toLower("Container"), std::bind(loadContainer, std::placeholders::_1, nullptr)},
+            {toLower("Button"), std::bind(loadButton, std::placeholders::_1, nullptr)},
+            {toLower("Canvas"), std::bind(loadCanvas, std::placeholders::_1, nullptr)},
+            {toLower("CheckBox"), std::bind(loadCheckbox, std::placeholders::_1, nullptr)},
+            {toLower("ClickableWidget"), std::bind(loadClickableWidget, std::placeholders::_1, nullptr)},
+            {toLower("EditBox"), std::bind(loadEditBox, std::placeholders::_1, nullptr)},
+            {toLower("Knob"), std::bind(loadKnob, std::placeholders::_1, nullptr)},
+            {toLower("Label"), std::bind(loadLabel, std::placeholders::_1, nullptr)},
+            {toLower("Panel"), std::bind(loadPanel, std::placeholders::_1, nullptr)},
+            {toLower("Picture"), std::bind(loadPicture, std::placeholders::_1, nullptr)},
+            {toLower("ProgressBar"), std::bind(loadProgressBar, std::placeholders::_1, nullptr)},
+            {toLower("RadioButton"), std::bind(loadRadioButton, std::placeholders::_1, nullptr)},
+            {toLower("Scrollbar"), std::bind(loadScrollbar, std::placeholders::_1, nullptr)},
+            {toLower("Slider"), std::bind(loadSlider, std::placeholders::_1, nullptr)},
+            {toLower("SpinButton"), std::bind(loadSpinButton, std::placeholders::_1, nullptr)},
+            {toLower("ToolTip"), std::bind(loadTooltip, std::placeholders::_1, nullptr)}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +562,7 @@ namespace tgui
         auto rootNode = DataIO::parse(stream);
 
         if (rootNode->propertyValuePairs.size() != 0)
-            throw Exception{"Root property-value pairs not yet supported when loading widgets"};
+            loadWidget(rootNode, parent);
 
         for (auto& node : rootNode->children)
         {

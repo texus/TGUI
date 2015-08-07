@@ -75,22 +75,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the chat box
-        ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ChatBox::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "ChatBox");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another chat box
         ///
         /// @param chatBox  The other chat box
@@ -487,10 +471,10 @@ namespace tgui
         bool m_linesStartFromTop = false;
 
         // The panel containing the labels
-        Panel::Ptr m_panel = Panel::create();
+        Panel::Ptr m_panel = std::make_shared<Panel>();
 
         // The scrollbar
-        Scrollbar::Ptr m_scroll = Scrollbar::create();
+        Scrollbar::Ptr m_scroll = std::make_shared<Scrollbar>();
 
         friend class ChatBoxRenderer;
 
@@ -512,7 +496,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ChatBoxRenderer(ChatBox* chatBox) : m_chatBox{chatBox} {}
 
-
+/*
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
         ///
@@ -528,7 +512,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath());
-
+*/
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Set the border color that will be used inside the chat box.

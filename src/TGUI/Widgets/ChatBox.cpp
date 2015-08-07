@@ -23,10 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Label.hpp>
-#include <TGUI/Panel.hpp>
-#include <TGUI/Scrollbar.hpp>
-#include <TGUI/ChatBox.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Widgets/ChatBox.hpp>
 
 #include <cassert>
 #include <cmath>
@@ -90,7 +90,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
     ChatBox::Ptr ChatBox::create(const std::string& themeFileFilename, const std::string& section)
     {
         auto chatBox = std::make_shared<ChatBox>();
@@ -141,7 +141,7 @@ namespace tgui
 
         return chatBox;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::Ptr ChatBox::copy(ChatBox::ConstPtr chatBox)
@@ -215,8 +215,8 @@ namespace tgui
         if ((m_maxLines > 0) && (m_maxLines < m_panel->getWidgets().size() + 1))
             removeLine(0);
 
-        auto label = Label::create();
-        label->setTextColor(color);
+        auto label = std::make_shared<Label>();
+        label->getRenderer()->setTextColor(color);
         label->setTextSize(textSize);
         label->setText(text);
         m_panel->add(label);
@@ -730,7 +730,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
     void ChatBoxRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
     {
         if (property == "backgroundimage")
@@ -746,7 +746,7 @@ namespace tgui
         else
             throw Exception{"Unrecognized property '" + property + "'."};
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChatBoxRenderer::setBackgroundImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)

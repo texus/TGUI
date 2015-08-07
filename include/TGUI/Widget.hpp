@@ -28,7 +28,6 @@
 
 
 #include <TGUI/Global.hpp>
-#include <TGUI/ThemeFileParser.hpp>
 #include <TGUI/Signal.hpp>
 #include <TGUI/Transformable.hpp>
 #include <TGUI/Texture.hpp>
@@ -505,7 +504,18 @@ namespace tgui
         void attachTheme(std::shared_ptr<BaseTheme> theme);
 
 
-        /// TODO: Documentation
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload the widget
+        ///
+        /// @param primary    Primary parameter for the loader
+        /// @param secondary  Secondary parameter for the loader
+        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
+        ///
+        /// @throw Exception when the connected theme could not create the widget
+        ///
+        /// When primary is an empty string the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false);
 
 
@@ -590,12 +600,50 @@ namespace tgui
         virtual ~WidgetRenderer() {};
 
 
-/// TODO: Documentation
-        virtual bool setProperty(std::string property, const std::string& value);
-        virtual bool setProperty(std::string property, ObjectConverter&& value);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change a property of the renderer
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new serialized value that you like to assign to the property
+        ///
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, const std::string& value);
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change a property of the renderer
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, ObjectConverter&& value);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieve the value of a certain property
+        ///
+        /// @param property  The property that you would like to retrieve
+        ///
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual ObjectConverter getProperty(std::string property) const;
-        virtual std::vector<std::pair<std::string, ObjectConverter>> getPropertyValuePairs() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get a map with all properties and their values
+        ///
+        /// @return Property-value pairs of the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

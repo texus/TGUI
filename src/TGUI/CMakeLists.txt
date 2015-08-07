@@ -8,7 +8,6 @@ set(TGUI_SRC
     Signal.cpp
     Texture.cpp
     TextureManager.cpp
-    ThemeFileParser.cpp
     Transformable.cpp
     Widget.cpp
     Loading/DataIO.cpp
@@ -21,11 +20,20 @@ set(TGUI_SRC
     Loading/WidgetLoader.cpp
     Loading/WidgetSaver.cpp
     Widgets/Button.cpp
+    Widgets/Checkbox.cpp
+    Widgets/Canvas.cpp
     Widgets/ClickableWidget.cpp
     Widgets/EditBox.cpp
+    Widgets/Grid.cpp
+    Widgets/Knob.cpp
     Widgets/Label.cpp
     Widgets/Panel.cpp
     Widgets/Picture.cpp
+    Widgets/ProgressBar.cpp
+    Widgets/RadioButton.cpp
+    Widgets/Scrollbar.cpp
+    Widgets/Slider.cpp
+    Widgets/SpinButton.cpp
     Widgets/Tooltip.cpp
 )
 

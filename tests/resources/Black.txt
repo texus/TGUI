@@ -7,15 +7,6 @@ Button {
     TextColorDown   : rgb(250, 250, 250);
 }
 
-Button.Button2 {
-    NormalImage     : "Black.png" Part( 0, 64, 45, 50) Middle(10, 0, 25, 50);
-    HoverImage      : "Black.png" Part(45, 64, 45, 50) Middle(10, 0, 25, 50);
-    DownImage       : "Black.png" Part(90, 64, 45, 50) Middle(10, 0, 25, 50);
-    TextColorNormal : rgb(190, 0, 190);
-    TextColorHover  : rgb(250, 250, 250);
-    TextColorDown   : rgb(250, 250, 250);
-}
-
 ChatBox {
     BackgroundImage : "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
     Scrollbar       : "Scrollbar";
@@ -117,27 +108,28 @@ RadioButton {
 }
 
 Scrollbar {
-    TrackNormalImage     : "Black.png" Part(123, 154, 20, 20);
-    ThumbNormalImage     : "Black.png" Part(143, 154, 20, 20);
-    ThumbHoverImage      : "Black.png" Part(143, 174, 20, 20);
-    ArrowUpNormalImage   : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
-    ArrowUpHoverImage    : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
-    ArrowDownNormalImage : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
-    ArrowDownHoverImage  : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
+    TrackImage          : "Black.png" Part(123, 154, 20, 20);
+    TrackHoverImage     : "Black.png" Part(123, 174, 20, 20);
+    ThumbImage          : "Black.png" Part(143, 154, 20, 20);
+    ThumbHoverImage     : "Black.png" Part(143, 174, 20, 20);
+    ArrowUpImage        : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
+    ArrowUpHoverImage   : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
+    ArrowDownImage      : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
+    ArrowDownHoverImage : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
 }
 
 Slider {
-    TrackNormalImage : "Black.png" Part(203, 150, 20, 45) Middle(0, 15, 20, 15);
-    TrackHoverImage  : "Black.png" Part(223, 150, 20, 45) Middle(0, 15, 20, 15);
-    ThumbNormalImage : "Black.png" Part(243, 150, 30, 30);
+    TrackImage      : "Black.png" Part(203, 150, 20, 45) Middle(0, 15, 20, 15);
+    TrackHoverImage : "Black.png" Part(223, 150, 20, 45) Middle(0, 15, 20, 15);
+    ThumbImage      : "Black.png" Part(243, 150, 30, 30);
 }
 
 SpinButton {
-    ArrowUpNormalImage   : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
-    ArrowUpHoverImage    : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
-    ArrowDownNormalImage : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
-    ArrowDownHoverImage  : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
-    SpaceBetweenArrows   : 0;
+    ArrowUpImage        : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
+    ArrowUpHoverImage   : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
+    ArrowDownImage      : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
+    ArrowDownHoverImage : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
+    SpaceBetweenArrows  : 0;
 }
 
 Tab {

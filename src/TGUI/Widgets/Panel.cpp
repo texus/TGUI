@@ -33,24 +33,22 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Panel()
+    Panel::Panel(const Layout2d& size)
     {
         m_callback.widgetType = "Panel";
 
         addSignal<sf::Vector2f>("MousePressed");
         addSignal<sf::Vector2f>("MouseReleased");
         addSignal<sf::Vector2f>("Clicked");
+
+        setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Panel::Ptr Panel::create(const sf::Vector2f& size)
+    Panel::Panel(const Layout& width, const Layout& height) :
+        Panel{{width, height}}
     {
-        auto panel = std::make_shared<Panel>();
-
-        panel->setSize(size);
-
-        return panel;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

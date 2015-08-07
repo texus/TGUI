@@ -74,25 +74,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Default constructor
+        /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ProgressBar();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the progress bar
-        ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ProgressBar::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "ProgressBar");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -317,6 +301,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload the widget
+        ///
+        /// @param primary    Primary parameter for the loader
+        /// @param secondary  Secondary parameter for the loader
+        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
+        ///
+        /// @throw Exception when the connected theme could not create the widget
+        ///
+        /// When primary is an empty string the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() override
@@ -373,20 +372,49 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
-        ///
-        /// This function should only be used when you don't know the type of the widget.
-        /// Otherwise you can make a direct function call to make the wanted change.
+        /// @brief Change a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property
-        /// @param rootPath  Path that should be placed in front of any resource filename
+        /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when the property doesn't exist for this widget.
-        /// @throw Exception when the value is invalid for this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath());
+        virtual void setProperty(std::string property, const std::string& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change a property of the renderer
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, ObjectConverter&& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieve the value of a certain property
+        ///
+        /// @param property  The property that you would like to retrieve
+        ///
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ObjectConverter getProperty(std::string property) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get a map with all properties and their values
+        ///
+        /// @return Property-value pairs of the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,39 +503,25 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Change the background image of the progress bar
         ///
-        /// When this image and the front image are set, the background color property will be ignored.
+        /// @param texture  The new background texture
         ///
-        /// Pass an empty string to unset the image, in this case the background color property will be used again.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// When this image and the front image are set, the background and foreground color properties will be ignored.
+        /// Pass an empty string to unset the image, in this case the color properties will be used again.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackImage(const std::string& filename,
-                          const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                          const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                          bool repeated = false);
+        void setBackTexture(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Change the foreground image of the progress bar
         ///
-        /// When this image and the back image are set, the background color property will be ignored.
+        /// @param texture  The new foreground texture
         ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// When this image and the back image are set, the background and foreground color properties will be ignored.
+        /// Pass an empty string to unset the image, in this case the color properties will be used again.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setFrontImage(const std::string& filename,
-                           const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                           const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                           bool repeated = false);
+        void setFrontTexture(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -538,10 +552,10 @@ namespace tgui
         Texture  m_textureBack;
         Texture  m_textureFront;
 
-        sf::Color m_backgroundColor = {245, 245, 245};
-        sf::Color m_foregroundColor = {0, 110, 255};
+        sf::Color m_backgroundColor;
+        sf::Color m_foregroundColor;
 
-        sf::Color m_borderColor = {0, 0, 0};
+        sf::Color m_borderColor;
 
         friend class ProgressBar;
 

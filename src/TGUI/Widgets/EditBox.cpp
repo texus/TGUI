@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets/Container.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Clipboard.hpp>
@@ -346,10 +346,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setCaretWidth(unsigned int width)
+    void EditBox::setCaretWidth(float width)
     {
         m_caret.setPosition(m_caret.getPosition().x + ((m_caret.getSize().x - width) / 2.0f), m_caret.getPosition().y);
-        m_caret.setSize({static_cast<float>(width), getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top});
+        m_caret.setSize({width, getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -726,11 +726,11 @@ namespace tgui
             {
                 if (event.code == sf::Keyboard::C)
                 {
-                    TGUI_Clipboard.set(m_textSelection.getString());
+                    Clipboard::set(m_textSelection.getString());
                 }
                 else if (event.code == sf::Keyboard::V)
                 {
-                    auto clipboardContents = TGUI_Clipboard.get();
+                    auto clipboardContents = Clipboard::get();
 
                     // Only continue pasting if you actually have to do something
                     if ((m_selChars > 0) || (clipboardContents.getSize() > 0))
@@ -740,7 +740,7 @@ namespace tgui
                         std::size_t oldCaretPos = m_selEnd;
 
                         if (m_text.getSize() > m_selEnd)
-                            setText(m_text.toWideString().substr(0, m_selEnd) + TGUI_Clipboard.get() + m_text.toWideString().substr(m_selEnd, m_text.getSize() - m_selEnd));
+                            setText(m_text.toWideString().substr(0, m_selEnd) + Clipboard::get() + m_text.toWideString().substr(m_selEnd, m_text.getSize() - m_selEnd));
                         else
                             setText(m_text + clipboardContents);
 
@@ -752,7 +752,7 @@ namespace tgui
                 }
                 else if (event.code == sf::Keyboard::X)
                 {
-                    TGUI_Clipboard.set(m_textSelection.getString());
+                    Clipboard::set(m_textSelection.getString());
                     deleteSelectedCharacters();
                 }
                 else if (event.code == sf::Keyboard::A)
@@ -890,7 +890,7 @@ namespace tgui
 
             if (force)
             {
-                if (getRenderer()->m_textureNormal.getData() != nullptr)
+                if (getRenderer()->m_textureNormal.isLoaded())
                     setSize(getRenderer()->m_textureNormal.getImageSize());
             }
 
@@ -1222,105 +1222,162 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBoxRenderer::setProperty(std::string property, const std::string& value)
+    void EditBoxRenderer::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
-        if (property == "font")
-            setTextFont(Deserializer::deserialize(ObjectConverter::Type::Font, value).getFont());
-        else if (property == "padding")
+        if (property == toLower("Padding"))
             setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "borders")
+        else if (property == toLower("Borders"))
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "textcolor")
+        else if (property == toLower("TextColor"))
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "selectedtextcolor")
+        else if (property == toLower("SelectedTextColor"))
             setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "selectedtextbackgroundcolor")
+        else if (property == toLower("SelectedTextBackgroundColor"))
             setSelectedTextBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "defaulttextcolor")
+        else if (property == toLower("DefaultTextColor"))
             setDefaultTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "caretcolor")
+        else if (property == toLower("CaretColor"))
             setCaretColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolor")
+        else if (property == toLower("BackgroundColor"))
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolornormal")
+        else if (property == toLower("BackgroundColorNormal"))
             setBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolorhover")
+        else if (property == toLower("BackgroundColorHover"))
             setBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "bordercolor")
+        else if (property == toLower("BorderColor"))
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "normalimage")
+        else if (property == toLower("NormalImage"))
             setNormalTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "hoverimage")
+        else if (property == toLower("HoverImage"))
             setHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "focusedimage")
+        else if (property == toLower("FocusedImage"))
             setFocusTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
         else
-            return WidgetRenderer::setProperty(property, value);
-
-        return true;
+            WidgetRenderer::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBoxRenderer::setProperty(std::string property, ObjectConverter&& value)
+    void EditBoxRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
         property = toLower(property);
 
-        if (value.getType() == ObjectConverter::Type::Font)
+        if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == "font")
-                setTextFont(value.getFont());
-            else
-                return WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Borders)
-        {
-            if (property == "padding")
+            if (property == toLower("Padding"))
                 setPadding(value.getBorders());
-            else if (property == "borders")
-                setPadding(value.getBorders());
+            else if (property == toLower("Borders"))
+                setBorders(value.getBorders());
             else
-                return WidgetRenderer::setProperty(property, std::move(value));
+                WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == "textcolor")
+            if (property == toLower("TextColor"))
                 setTextColor(value.getColor());
-            else if (property == "selectedtextcolor")
+            else if (property == toLower("SelectedTextColor"))
                 setSelectedTextColor(value.getColor());
-            else if (property == "selectedtextbackgroundcolor")
+            else if (property == toLower("SelectedTextBackgroundColor"))
                 setSelectedTextBackgroundColor(value.getColor());
-            else if (property == "defaulttextcolor")
+            else if (property == toLower("DefaultTextColor"))
                 setDefaultTextColor(value.getColor());
-            else if (property == "caretcolor")
+            else if (property == toLower("CaretColor"))
                 setCaretColor(value.getColor());
-            else if (property == "backgroundcolor")
+            else if (property == toLower("BackgroundColor"))
                 setBackgroundColor(value.getColor());
-            else if (property == "backgroundcolornormal")
+            else if (property == toLower("BackgroundColorNormal"))
                 setBackgroundColorNormal(value.getColor());
-            else if (property == "backgroundcolorhover")
+            else if (property == toLower("BackgroundColorHover"))
                 setBackgroundColorHover(value.getColor());
-            else if (property == "bordercolor")
+            else if (property == toLower("BorderColor"))
                 setBorderColor(value.getColor());
             else
-                return WidgetRenderer::setProperty(property, std::move(value));
+                WidgetRenderer::setProperty(property, std::move(value));
         }
-        else if (value.getType() == ObjectConverter::Type::Borders)
+        else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == "normalimage")
+            if (property == toLower("NormalImage"))
                 setNormalTexture(value.getTexture());
-            else if (property == "hoverimage")
+            else if (property == toLower("HoverImage"))
                 setHoverTexture(value.getTexture());
-            else if (property == "focusedimage")
+            else if (property == toLower("FocusedImage"))
                 setFocusTexture(value.getTexture());
             else
-                return WidgetRenderer::setProperty(property, std::move(value));
+                WidgetRenderer::setProperty(property, std::move(value));
         }
         else
-            return false;
+            WidgetRenderer::setProperty(property, std::move(value));
+    }
 
-        return true;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ObjectConverter EditBoxRenderer::getProperty(std::string property) const
+    {
+        property = toLower(property);
+
+        if (property == toLower("Padding"))
+            return m_padding;
+        else if (property == toLower("Borders"))
+            return m_borders;
+        else if (property == toLower("TextColor"))
+            return m_editBox->m_textBeforeSelection.getColor();
+        else if (property == toLower("SelectedTextColor"))
+            return m_editBox->m_textSelection.getColor();
+        else if (property == toLower("SelectedTextBackgroundColor"))
+            return m_editBox->m_selectedTextBackground.getFillColor();
+        else if (property == toLower("DefaultTextColor"))
+            return m_editBox->m_defaultText.getColor();
+        else if (property == toLower("CaretColor"))
+            return m_editBox->m_caret.getFillColor();
+        else if (property == toLower("BackgroundColor"))
+            return m_backgroundColorNormal;
+        else if (property == toLower("BackgroundColorNormal"))
+            return m_backgroundColorNormal;
+        else if (property == toLower("BackgroundColorHover"))
+            return m_backgroundColorHover;
+        else if (property == toLower("BorderColor"))
+            return m_borderColor;
+        else if (property == toLower("NormalImage"))
+            return m_textureNormal;
+        else if (property == toLower("HoverImage"))
+            return m_textureHover;
+        else if (property == toLower("FocusedImage"))
+            return m_textureFocused;
+        else
+            return WidgetRenderer::getProperty(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<std::string, ObjectConverter> EditBoxRenderer::getPropertyValuePairs() const
+    {
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
+
+        if (m_textureNormal.isLoaded())
+        {
+            pairs.emplace("NormalImage", m_textureNormal);
+            if (m_textureHover.isLoaded())
+                pairs.emplace("HoverImage", m_textureHover);
+            if (m_textureFocused.isLoaded())
+                pairs.emplace("FocusedImage", m_textureFocused);
+        }
+        else
+        {
+            pairs.emplace("BackgroundColorNormal", m_backgroundColorNormal);
+            pairs.emplace("BackgroundColorHover", m_backgroundColorHover);
+        }
+
+        pairs.emplace("TextColor", m_editBox->m_textBeforeSelection.getColor());
+        pairs.emplace("SelectedTextColor", m_editBox->m_textSelection.getColor());
+        pairs.emplace("SelectedTextBackgroundColor", m_editBox->m_selectedTextBackground.getFillColor());
+        pairs.emplace("DefaultTextColor", m_editBox->m_defaultText.getColor());
+        pairs.emplace("CaretColor", m_editBox->m_caret.getFillColor());
+        pairs.emplace("BorderColor", m_borderColor);
+        pairs.emplace("Borders", m_borders);
+        pairs.emplace("Padding", m_padding);
+
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1364,6 +1421,20 @@ namespace tgui
         m_editBox->m_textAfterSelection.setColor(textColor);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setSelectedTextColor(const sf::Color& selectedTextColor)
+    {
+        m_editBox->m_textSelection.setColor(selectedTextColor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
+    {
+        m_editBox->m_selectedTextBackground.setFillColor(selectedTextBackgroundColor);
+    }
+
      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBoxRenderer::setDefaultTextColor(const sf::Color& defaultTextColor)
@@ -1391,6 +1462,13 @@ namespace tgui
     void EditBoxRenderer::setBackgroundColorHover(const sf::Color& color)
     {
         m_backgroundColorHover = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBoxRenderer::setCaretColor(const sf::Color& caretColor)
+    {
+        m_editBox->m_caret.setFillColor(caretColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

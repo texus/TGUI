@@ -31,7 +31,7 @@
 namespace
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     unsigned char hexToDec(char c)
     {
         if (c >= '0' && c <= '9')
@@ -51,63 +51,24 @@ namespace
         else
             return 0;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool readIntRect(std::string value, sf::IntRect& rect)
     {
-        // Make sure that the line isn't empty
-        if (value.empty() == false)
+        if (!value.empty() && (value[0] == '(') && (value[value.length()-1] == ')'))
         {
-            // The first and last character have to be brackets
-            if ((value[0] == '(') && (value[value.length()-1] == ')'))
+            std::vector<std::string> tokens = tgui::split(value.substr(1, value.size()-2), ',');
+            if (tokens.size() == 4)
             {
-                // Remove the brackets
-                value.erase(0, 1);
-                value.erase(value.length()-1);
-
-                // Search for the first comma
-                std::string::size_type commaPos = value.find(',');
-                if (commaPos != std::string::npos)
-                {
-                    // Get the left value and delete this part of the string
-                    rect.left = tgui::stoi(value.substr(0, commaPos));
-                    value.erase(0, commaPos+1);
-
-                    // Search for the second comma
-                    commaPos = value.find(',');
-                    if (commaPos != std::string::npos)
-                    {
-                        // Get the top value and delete this part of the string
-                        rect.top = tgui::stoi(value.substr(0, commaPos));
-                        value.erase(0, commaPos+1);
-
-                        // Search for the third comma
-                        commaPos = value.find(',');
-                        if (commaPos != std::string::npos)
-                        {
-                            // Get the width value and delete this part of the string
-                            rect.width = tgui::stoi(value.substr(0, commaPos));
-                            value.erase(0, commaPos+1);
-                            
-                            // There should be no commas in the string
-                            commaPos = value.find(',');
-                            if (commaPos != std::string::npos)
-                                return false;
-
-                            // Get the height value
-                            rect.height = tgui::stoi(value);
-
-                            return true;
-                        }
-                    }
-                }
+                rect = {tgui::stoi(tokens[0]), tgui::stoi(tokens[1]), tgui::stoi(tokens[2]), tgui::stoi(tokens[3])};
+                return true;
             }
         }
 
         return false;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -125,14 +86,13 @@ namespace tgui
 
     TGUI_API ObjectConverter deserializeColor(const std::string& value)
     {
-        std::string string = value;
-        sf::Color color;
+        std::string str = tgui::trim(value);
 
         // Make sure that the line isn't empty
-        if (!string.empty())
+        if (!str.empty())
         {
             // The first way a color can be represented is with a hexadecimal number
-            if (value[0] == '#')
+            if (str[0] == '#')
             {
                 // You can only have hex characters
                 for (unsigned int i = 1; i < value.length(); ++i)
@@ -144,89 +104,51 @@ namespace tgui
                 // Parse the different types of strings (#123, #1234, #112233 and #11223344)
                 if (value.length() == 4)
                 {
-                    color = {static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
-                             static_cast<sf::Uint8>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
-                             static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[3]))};
+                    return sf::Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
+                                     static_cast<sf::Uint8>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
+                                     static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[3]))};
                 }
                 else if (value.length() == 5)
                 {
-                    color = {static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
-                             static_cast<sf::Uint8>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
-                             static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[3])),
-                             static_cast<sf::Uint8>(hexToDec(value[4]) * 16 + hexToDec(value[4]))};
+                    return sf::Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
+                                     static_cast<sf::Uint8>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
+                                     static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[3])),
+                                     static_cast<sf::Uint8>(hexToDec(value[4]) * 16 + hexToDec(value[4]))};
                 }
                 else if (value.length() == 7)
                 {
-                    color = {static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
-                             static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
-                             static_cast<sf::Uint8>(hexToDec(value[5]) * 16 + hexToDec(value[6]))};
+                    return sf::Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
+                                     static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
+                                     static_cast<sf::Uint8>(hexToDec(value[5]) * 16 + hexToDec(value[6]))};
                 }
                 else if (value.length() == 9)
                 {
-                    color = {static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
-                             static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
-                             static_cast<sf::Uint8>(hexToDec(value[5]) * 16 + hexToDec(value[6])),
-                             static_cast<sf::Uint8>(hexToDec(value[7]) * 16 + hexToDec(value[8]))};
+                    return sf::Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
+                                     static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
+                                     static_cast<sf::Uint8>(hexToDec(value[5]) * 16 + hexToDec(value[6])),
+                                     static_cast<sf::Uint8>(hexToDec(value[7]) * 16 + hexToDec(value[8]))};
                 }
                 else
                     throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but has the wrong length."};
-
-                return {color};
             }
 
             // The string can optionally start with "rgb" or "rgba", but this is ignored
-            if (string.substr(0, 4) == "rgba")
-                string.erase(0, 4);
-            else if (string.substr(0, 3) == "rgb")
-                string.erase(0, 3);
+            if (str.substr(0, 4) == "rgba")
+                str.erase(0, 4);
+            else if (str.substr(0, 3) == "rgb")
+                str.erase(0, 3);
 
             // Remove the first and last characters when they are brackets
-            if ((string[0] == '(') && (string[string.length()-1] == ')'))
+            if ((str[0] == '(') && (str[str.length()-1] == ')'))
+                str = str.substr(1, str.length()-2);
+
+            std::vector<std::string> tokens = tgui::split(str, ',');
+            if (tokens.size() == 3 || tokens.size() == 4)
             {
-                string.erase(0, 1);
-                string.erase(string.length()-1);
-            }
-
-            // Search for the first comma
-            std::string::size_type commaPos = string.find(',');
-            if (commaPos != std::string::npos)
-            {
-                // Get the red value and delete this part of the string
-                color.r = tgui::stoi(string.substr(0, commaPos));
-                string.erase(0, commaPos+1);
-
-                // Search for the second comma
-                commaPos = string.find(',');
-                if (commaPos != std::string::npos)
-                {
-                    // Get the green value and delete this part of the string
-                    color.g = tgui::stoi(string.substr(0, commaPos));
-                    string.erase(0, commaPos+1);
-
-                    // Search for the third comma (optional)
-                    commaPos = string.find(',');
-                    if (commaPos != std::string::npos)
-                    {
-                        // Get the blue value and delete this part of the string
-                        color.b = tgui::stoi(string.substr(0, commaPos));
-                        string.erase(0, commaPos+1);
-
-                        // There should be no commas in the string
-                        commaPos = string.find(',');
-                        if (commaPos != std::string::npos)
-                            throw Exception{"Failed to deserialize color '" + value + "'."};
-
-                        // Get the alpha value
-                        color.a = tgui::stoi(string);
-                    }
-                    else // No alpha value was passed
-                    {
-                        // Get the blue value
-                        color.b = tgui::stoi(string.substr(0, commaPos));
-                    }
-
-                    return {color};
-                }
+                return sf::Color{static_cast<sf::Uint8>(tgui::stoi(tokens[0])),
+                                 static_cast<sf::Uint8>(tgui::stoi(tokens[1])),
+                                 static_cast<sf::Uint8>(tgui::stoi(tokens[2])),
+                                 static_cast<sf::Uint8>((tokens.size() == 4) ? tgui::stoi(tokens[3]) : 255)};
             }
         }
 
@@ -241,7 +163,7 @@ namespace tgui
         if (!value.empty() && ((value[0] == '"') && (value[value.length()-1] == '"')))
         {
             std::string result = value.substr(1, value.length()-2);
-            
+
             std::size_t backslashPos = 0;
             while ((backslashPos = result.find('\\', backslashPos)) < result.size()-1)
             {
@@ -253,10 +175,12 @@ namespace tgui
                     result[backslashPos] = '\t';
                 else if (result[backslashPos] == 'v')
                     result[backslashPos] = '\v';
+                else if (result[backslashPos] == '0')
+                    result[backslashPos] = '\0';
 
                 backslashPos++;
             }
-            
+
             return {sf::String{result}};
         }
         else
@@ -265,57 +189,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    TGUI_API ObjectConverter deserializeNumber(const std::string& value)
+    {
+        return {std::stof(value)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TGUI_API ObjectConverter deserializeBorders(const std::string& value)
     {
-        std::string string = value;
-        tgui::Borders borders;
+        std::string str = tgui::trim(value);
 
         // Make sure that the line isn't empty
-        if (string.empty() == false)
+        if (!str.empty())
         {
             // Remove the first and last characters when they are brackets
-            if ((string[0] == '(') && (string[string.length()-1] == ')'))
-            {
-                string.erase(0, 1);
-                string.erase(string.length()-1);
-            }
+            if ((str[0] == '(') && (str[str.length()-1] == ')'))
+                str = str.substr(1, str.length()-2);
 
-            // Search for the first comma
-            std::string::size_type commaPos = string.find(',');
-            if (commaPos != std::string::npos)
-            {
-                // Get the first value and delete this part of the string
-                borders.left = tgui::stof(string.substr(0, commaPos));
-                string.erase(0, commaPos+1);
-
-                // Search for the second comma
-                commaPos = string.find(',');
-                if (commaPos != std::string::npos)
-                {
-                    // Get the second value and delete this part of the string
-                    borders.top = tgui::stof(string.substr(0, commaPos));
-                    string.erase(0, commaPos+1);
-
-                    // Search for the third comma
-                    commaPos = string.find(',');
-                    if (commaPos != std::string::npos)
-                    {
-                        // Get the third value and delete this part of the string
-                        borders.right = tgui::stof(string.substr(0, commaPos));
-                        string.erase(0, commaPos+1);
-
-                        // There should be no commas in the string
-                        commaPos = string.find(',');
-                        if (commaPos != std::string::npos)
-                            throw Exception{"Failed to deserialize color '" + value + "'."};
-
-                        // Get the fourth value
-                        borders.bottom = tgui::stof(string);
-
-                        return {borders};
-                    }
-                }
-            }
+            std::vector<std::string> tokens = tgui::split(str, ',');
+            if (tokens.size() == 1)
+                return tgui::Borders{tgui::stof(tokens[0])};
+            else if (tokens.size() == 2)
+                return tgui::Borders{tgui::stof(tokens[0]), tgui::stof(tokens[1])};
+            else if (tokens.size() == 4)
+                return tgui::Borders{tgui::stof(tokens[0]), tgui::stof(tokens[1]), tgui::stof(tokens[2]), tgui::stof(tokens[3])};
         }
 
         throw Exception{"Failed to deserialize borders '" + value + "'."};
@@ -417,10 +315,7 @@ namespace tgui
             }
         }
 
-        /// TODO: Change to oneliner once Texture constructor allows it
-        tgui::Texture texture;
-        texture.load(getResourcePath() + filename, partRect, middleRect, repeat);
-        return {texture};
+        return tgui::Texture{getResourcePath() + filename, partRect, middleRect, repeat};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -435,6 +330,7 @@ namespace tgui
             {ObjectConverter::Type::Font, deserializeFont},
             {ObjectConverter::Type::Color, deserializeColor},
             {ObjectConverter::Type::String, deserializeString},
+            {ObjectConverter::Type::Number, deserializeNumber},
             {ObjectConverter::Type::Borders, deserializeBorders},
             {ObjectConverter::Type::Texture, deserializeTexture}
         };
@@ -453,7 +349,7 @@ namespace tgui
     {
         m_deserializers[type] = deserializer;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const Deserializer::DeserializeFunc& Deserializer::getFunction(ObjectConverter::Type type)

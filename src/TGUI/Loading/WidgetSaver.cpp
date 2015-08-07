@@ -23,15 +23,28 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Loading/Serializer.hpp>
+#include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Knob.hpp>
+#include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>
+#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Widgets/Slider.hpp>
+#include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Tooltip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Hidden functions
 namespace tgui
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    #define SET_PROPERTY(property, value) node->propertyValuePairs[property] = std::make_shared<DataIO::ValueNode>(node.get(), value)
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveWidget(Widget::Ptr widget)
@@ -47,17 +60,20 @@ namespace tgui
             node->name = widget->getWidgetType() + "." + widgetName;
 
         if (!widget->isVisible())
-            node->propertyValuePairs["Visible"] = std::make_shared<DataIO::ValueNode>(node.get(), "false");
+            SET_PROPERTY("Visible", "false");
         if (!widget->isEnabled())
-            node->propertyValuePairs["Enabled"] = std::make_shared<DataIO::ValueNode>(node.get(), "false");
-        if (widget->getPosition() != sf::Vector2f{0, 0})
-            node->propertyValuePairs["Position"] = std::make_shared<DataIO::ValueNode>(node.get(), "(" + tgui::to_string(widget->getPosition().x) + ", " + tgui::to_string(widget->getPosition().y) + ")");
-        if (widget->getSize() != sf::Vector2f{0, 0})
-            node->propertyValuePairs["Size"] = std::make_shared<DataIO::ValueNode>(node.get(), "(" + tgui::to_string(widget->getSize().x) + ", " + tgui::to_string(widget->getSize().y) + ")");
+            SET_PROPERTY("Enabled", "false");
+        if (widget->getPosition() != sf::Vector2f{})
+            SET_PROPERTY("Position", "(" + tgui::to_string(widget->getPosition().x) + ", " + tgui::to_string(widget->getPosition().y) + ")");
+        if (widget->getSize() != sf::Vector2f{})
+            SET_PROPERTY("Size", "(" + tgui::to_string(widget->getSize().x) + ", " + tgui::to_string(widget->getSize().y) + ")");
         if (widget->getTransparency() != 255)
-            node->propertyValuePairs["Transparency"] = std::make_shared<DataIO::ValueNode>(node.get(), tgui::to_string(widget->getTransparency()));
+            SET_PROPERTY("Transparency", tgui::to_string(widget->getTransparency()));
 
-        /// TODO: Tooltip, Font, Theme
+        /// TODO: Font
+
+        if (!widget->getTooltip()->getText().isEmpty())
+            node->children.emplace_back(tgui::WidgetSaver::getSaveFunction("Tooltip")(tgui::WidgetConverter{widget->getTooltip()}));
 
         if (widget->getRenderer())
         {
@@ -66,18 +82,6 @@ namespace tgui
             for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
                 node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(node->children.back().get(), Serializer::serialize(std::move(pair.second)));
         }
-
-        return node;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API std::shared_ptr<DataIO::Node> saveButton(Button::Ptr button)
-    {
-        auto node = saveWidget(button);
-        if (!button->getText().isEmpty())
-            node->propertyValuePairs["Text"] = std::make_shared<DataIO::ValueNode>(node.get(), "\"" + button->getText() + "\"");
-        node->propertyValuePairs["TextSize"] = std::make_shared<DataIO::ValueNode>(node.get(), tgui::to_string(button->getTextSize()));
 
         return node;
     }
@@ -117,6 +121,213 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveButton(Button::Ptr button)
+    {
+        auto node = saveWidget(button);
+
+        if (!button->getText().isEmpty())
+            SET_PROPERTY("Text", Serializer::serialize(button->getText()));
+
+        SET_PROPERTY("TextSize", tgui::to_string(button->getTextSize()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveEditBox(EditBox::Ptr editBox)
+    {
+        auto node = saveWidget(editBox);
+
+        if (editBox->getAlignment() != EditBox::Alignment::Left)
+        {
+            if (editBox->getAlignment() == EditBox::Alignment::Center)
+                SET_PROPERTY("Alignment", "Center");
+            else
+                SET_PROPERTY("Alignment", "Right");
+        }
+
+        if (!editBox->getText().isEmpty())
+            SET_PROPERTY("Text", Serializer::serialize(editBox->getText()));
+        if (!editBox->getDefaultText().isEmpty())
+            SET_PROPERTY("DefaultText", Serializer::serialize(editBox->getDefaultText()));
+        if (editBox->getPasswordCharacter() != '\0')
+            SET_PROPERTY("PasswordCharacter", Serializer::serialize(sf::String(editBox->getPasswordCharacter())));
+        if (editBox->getMaximumCharacters() != 0)
+            SET_PROPERTY("MaximumCharacters", tgui::to_string(editBox->getMaximumCharacters()));
+        if (editBox->isTextWidthLimited())
+            SET_PROPERTY("TextWidthLimited", "true");
+        if (editBox->isNumbersOnly())
+            SET_PROPERTY("NumbersOnly", "true");
+
+        SET_PROPERTY("CaretWidth", tgui::to_string((int)editBox->getCaretWidth()));
+        SET_PROPERTY("TextSize", tgui::to_string(editBox->getTextSize()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveKnob(Knob::Ptr knob)
+    {
+        auto node = saveWidget(knob);
+
+        if (knob->getClockwiseTurning())
+            SET_PROPERTY("ClockwiseTurning", "true");
+        else
+            SET_PROPERTY("ClockwiseTurning", "false");
+
+        SET_PROPERTY("StartRotation", tgui::to_string(knob->getStartRotation()));
+        SET_PROPERTY("EndRotation", tgui::to_string(knob->getEndRotation()));
+        SET_PROPERTY("Minimum", tgui::to_string(knob->getMinimum()));
+        SET_PROPERTY("Maximum", tgui::to_string(knob->getMaximum()));
+        SET_PROPERTY("Value", tgui::to_string(knob->getValue()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveLabel(Label::Ptr label)
+    {
+        auto node = saveWidget(label);
+
+        if (label->getTextStyle() != sf::Text::Regular)
+        {
+            std::string style;
+            if (label->getTextStyle() & sf::Text::Bold)
+                style += " | Bold";
+            if (label->getTextStyle() & sf::Text::Italic)
+                style += " | Italic";
+            if (label->getTextStyle() & sf::Text::Underlined)
+                style += " | Underlined";
+            if (label->getTextStyle() & sf::Text::StrikeThrough)
+                style += " | StrikeThrough";
+
+            if (!style.empty())
+                SET_PROPERTY("TextStyle", style.substr(3));
+        }
+
+        if (!label->getText().isEmpty())
+            SET_PROPERTY("Text", Serializer::serialize(label->getText()));
+        if (label->getMaximumTextWidth() > 0)
+            SET_PROPERTY("MaximumTextWidth", tgui::to_string(label->getMaximumTextWidth()));
+        if (label->getAutoSize())
+            SET_PROPERTY("AutoSize", "true");
+
+        SET_PROPERTY("TextSize", tgui::to_string(label->getTextSize()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> savePicture(Picture::Ptr picture)
+    {
+        auto node = saveWidget(picture);
+
+        if (!picture->getLoadedFilename().empty())
+            SET_PROPERTY("Filename", Serializer::serialize(sf::String{picture->getLoadedFilename()}));
+        if (picture->isSmooth())
+            SET_PROPERTY("Smooth", "true");
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveProgressBar(ProgressBar::Ptr progressBar)
+    {
+        auto node = saveWidget(progressBar);
+
+        if (!progressBar->getText().isEmpty())
+            SET_PROPERTY("Text", Serializer::serialize(progressBar->getText()));
+
+        if (progressBar->getFillDirection() != tgui::ProgressBar::FillDirection::LeftToRight)
+        {
+            if (progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::RightToLeft)
+                SET_PROPERTY("FillDirection", "RightToLeft");
+            else if (progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::TopToBottom)
+                SET_PROPERTY("FillDirection", "TopToBottom");
+            else if (progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::BottomToTop)
+                SET_PROPERTY("FillDirection", "BottomToTop");
+        }
+
+        SET_PROPERTY("Minimum", tgui::to_string(progressBar->getMinimum()));
+        SET_PROPERTY("Maximum", tgui::to_string(progressBar->getMaximum()));
+        SET_PROPERTY("Value", tgui::to_string(progressBar->getValue()));
+        SET_PROPERTY("TextSize", tgui::to_string(progressBar->getTextSize()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveRadioButton(RadioButton::Ptr radioButton)
+    {
+        auto node = saveWidget(radioButton);
+
+        if (!radioButton->getText().isEmpty())
+            SET_PROPERTY("Text", Serializer::serialize(radioButton->getText()));
+        if (radioButton->isChecked())
+            SET_PROPERTY("Checked", "true");
+
+        SET_PROPERTY("TextSize", tgui::to_string(radioButton->getTextSize()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveScrollbar(Scrollbar::Ptr scrollbar)
+    {
+        auto node = saveWidget(scrollbar);
+
+        if (scrollbar->getAutoHide())
+            SET_PROPERTY("AutoHide", "true");
+        else
+            SET_PROPERTY("AutoHide", "false");
+
+        SET_PROPERTY("LowValue", tgui::to_string(scrollbar->getLowValue()));
+        SET_PROPERTY("Maximum", tgui::to_string(scrollbar->getMaximum()));
+        SET_PROPERTY("Value", tgui::to_string(scrollbar->getValue()));
+        SET_PROPERTY("ArrowScrollAmount", tgui::to_string(scrollbar->getArrowScrollAmount()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveSlider(Slider::Ptr slider)
+    {
+        auto node = saveWidget(slider);
+        SET_PROPERTY("Minimum", tgui::to_string(slider->getMinimum()));
+        SET_PROPERTY("Maximum", tgui::to_string(slider->getMaximum()));
+        SET_PROPERTY("Value", tgui::to_string(slider->getValue()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveSpinButton(SpinButton::Ptr spinButton)
+    {
+        auto node = saveWidget(spinButton);
+
+        if (spinButton->getVerticalScroll())
+            SET_PROPERTY("VerticalScroll", "true");
+        else
+            SET_PROPERTY("VerticalScroll", "false");
+
+        SET_PROPERTY("Minimum", tgui::to_string(spinButton->getMinimum()));
+        SET_PROPERTY("Maximum", tgui::to_string(spinButton->getMaximum()));
+        SET_PROPERTY("Value", tgui::to_string(spinButton->getValue()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveTooltip(Tooltip::Ptr tooltip)
+    {
+        auto node = saveLabel(tooltip);
+        SET_PROPERTY("TimeToDisplay", tgui::to_string(tooltip->getTimeToDisplay().asSeconds()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,10 +338,24 @@ namespace tgui
 
     std::map<std::string, WidgetSaver::SaveFunction> WidgetSaver::m_saveFunctions =
         {
-            {"widget", saveWidget},
-            {"button", saveButton},
-            {"container", saveContainer},
-            {"guicontainer", saveGuiContainer}
+            {toLower("Widget"), saveWidget},
+            {toLower("Container"), saveContainer},
+            {toLower("GuiContainer"), saveGuiContainer},
+            {toLower("Button"), saveButton},
+            {toLower("Canvas"), saveWidget},
+            {toLower("CheckBox"), saveRadioButton},
+            {toLower("ClickableWidget"), saveWidget},
+            {toLower("EditBox"), saveEditBox},
+            {toLower("Knob"), saveKnob},
+            {toLower("Label"), saveLabel},
+            {toLower("Panel"), saveContainer},
+            {toLower("Picture"), savePicture},
+            {toLower("ProgressBar"), saveProgressBar},
+            {toLower("RadioButton"), saveRadioButton},
+            {toLower("Scrollbar"), saveScrollbar},
+            {toLower("Slider"), saveSlider},
+            {toLower("SpinButton"), saveSpinButton},
+            {toLower("ToolTip"), saveTooltip}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,18 +364,7 @@ namespace tgui
     {
         auto& saveFunction = m_saveFunctions[toLower(widget->getWidgetType())];
         if (saveFunction)
-        {
-            auto node = saveFunction(WidgetConverter{widget});
-            if (node->propertyValuePairs.size() > 0)
-            {
-                auto root = std::make_shared<DataIO::Node>();
-                root->children.push_back(node);
-                node->parent = root.get();
-                node = root;
-            }
-
-            DataIO::emit(node, stream);
-        }
+            DataIO::emit(saveFunction(WidgetConverter{widget}), stream);
         else
             throw Exception{"No save function exists for widget type '" + widget->getWidgetType() + "'."};
     }

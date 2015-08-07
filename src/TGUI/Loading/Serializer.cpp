@@ -32,14 +32,21 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string serializeFont(ObjectConverter&& /*value*/)
+    TGUI_API std::string serializeEmptyObject(ObjectConverter&& )
+    {
+        throw Exception{"Can't serialize empty object"};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::string serializeFont(ObjectConverter&& /*value*/)
     {
         return "FONT_PLACEHOLDER";    /// TODO: Support deserializing fonts
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string serializeColor(ObjectConverter&& value)
+    TGUI_API std::string serializeColor(ObjectConverter&& value)
     {
         sf::Color color = value.getColor();
         if (color.a < 255)
@@ -50,7 +57,41 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string serializeBorders(ObjectConverter&& value)
+    TGUI_API std::string serializeString(ObjectConverter&& value)
+    {
+        std::string result = value.getString();
+
+        auto replace = [&](char from, char to)
+            {
+                std::size_t pos = 0;
+                while ((pos = result.find(from, pos)) != std::string::npos)
+                {
+                    result[pos] = to;
+                    result.insert(pos, 1, '\\');
+                    pos += 2;
+                }
+            };
+
+        replace('\\', '\\');
+        replace('\"', '\"');
+        replace('\v', 'v');
+        replace('\t', 't');
+        replace('\n', 'n');
+        replace('\0', '0');
+
+        return "\"" + result + "\"";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::string serializeNumber(ObjectConverter&& value)
+    {
+        return tgui::to_string(value.getNumber());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::string serializeBorders(ObjectConverter&& value)
     {
         Borders borders = value.getBorders();
         return "(" + std::to_string(static_cast<unsigned int>(borders.left)) + ", " + std::to_string(static_cast<unsigned int>(borders.top))
@@ -59,7 +100,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string serializeTexture(ObjectConverter&& value)
+    TGUI_API std::string serializeTexture(ObjectConverter&& value)
     {
         Texture texture = value.getTexture();
         std::string result = "\"" + texture.getId() + "\"";
@@ -81,32 +122,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string serializeString(ObjectConverter&& value)
-    {
-        std::string result = value.getString();
-
-        auto replace = [&](char from, char to)
-            {
-                std::size_t pos = 0;
-                while ((pos = result.find(from, pos)) != std::string::npos)
-                {
-                    result[pos] = to;
-                    result.insert(pos, 1, '\\');
-                    pos += 2;
-                }
-            };
-
-        replace('\\', '\\');
-        replace('\"', '\"');
-        replace('\v', 'v');
-        replace('\t', 't');
-        replace('\n', 'n');
-
-        return "\"" + result + "\"";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 namespace tgui
@@ -115,9 +130,11 @@ namespace tgui
 
     std::map<ObjectConverter::Type, Serializer::SerializeFunc> Serializer::m_serializers =
         {
+            {ObjectConverter::Type::None, serializeEmptyObject},
             {ObjectConverter::Type::Font, serializeFont},
             {ObjectConverter::Type::Color, serializeColor},
             {ObjectConverter::Type::String, serializeString},
+            {ObjectConverter::Type::Number, serializeNumber},
             {ObjectConverter::Type::Borders, serializeBorders},
             {ObjectConverter::Type::Texture, serializeTexture}
         };

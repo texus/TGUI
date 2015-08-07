@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Container.hpp>
-#include <TGUI/Checkbox.hpp>
+#include <TGUI/Widgets/Checkbox.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -43,49 +43,6 @@ namespace tgui
         m_renderer = std::make_shared<CheckboxRenderer>(this);
 
         getRenderer()->setPadding({3, 3, 3, 3});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Checkbox::Ptr Checkbox::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto checkbox = std::make_shared<Checkbox>();
-
-        if (themeFileFilename != "")
-        {
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    checkbox->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-
-            if (checkbox->getRenderer()->m_textureUnchecked.getData())
-                checkbox->setSize(checkbox->getRenderer()->m_textureUnchecked.getImageSize());
-
-            // The widget can only be focused when there is an image available for this phase
-            if (checkbox->getRenderer()->m_textureFocused.getData() != nullptr)
-                checkbox->m_allowFocus = true;
-        }
-
-        return checkbox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,25 +119,25 @@ namespace tgui
 
     void CheckboxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if ((m_textureUnchecked.getData() != nullptr) && (m_textureChecked.getData() != nullptr))
+        if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
         {
             if (m_radioButton->m_checked)
             {
-                if (m_radioButton->m_mouseHover && m_textureCheckedHover.getData())
+                if (m_radioButton->m_mouseHover && m_textureCheckedHover.isLoaded())
                     target.draw(m_textureCheckedHover, states);
                 else
                     target.draw(m_textureChecked, states);
             }
             else
             {
-                if (m_radioButton->m_mouseHover && m_textureUncheckedHover.getData())
+                if (m_radioButton->m_mouseHover && m_textureUncheckedHover.isLoaded())
                     target.draw(m_textureUncheckedHover, states);
                 else
                     target.draw(m_textureUnchecked, states);
             }
 
             // When the radio button is focused then draw an extra image
-            if (m_radioButton->m_focused && m_textureFocused.getData())
+            if (m_radioButton->m_focused && m_textureFocused.isLoaded())
                 target.draw(m_textureFocused, states);
         }
         else // There are no images

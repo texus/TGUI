@@ -61,22 +61,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the scrollbar
-        ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section             The section in the theme file to read.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Scrollbar::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "Scrollbar");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another scrollbar
         ///
         /// @param scrollbar  The other scrollbar
@@ -301,6 +285,21 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload the widget
+        ///
+        /// @param primary    Primary parameter for the loader
+        /// @param secondary  Secondary parameter for the loader
+        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
+        ///
+        /// @throw Exception when the connected theme could not create the widget
+        ///
+        /// When primary is an empty string the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() override
@@ -388,172 +387,49 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
-        ///
-        /// This function should only be used when you don't know the type of the widget.
-        /// Otherwise you can make a direct function call to make the wanted change.
+        /// @brief Change a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property
-        /// @param rootPath  Path that should be placed in front of any resource filename
+        /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when the property does not exist for this widget.
-        /// @throw Exception when the value is invalid for this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath());
+        virtual void setProperty(std::string property, const std::string& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the track that is displayed when the mouse is not on top of the scrollbar
+        /// @brief Change a property of the renderer
         ///
-        /// When all normal are set, then the alternative color properties will be ignored.
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
         ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// @throw Exception for unknown properties or when value was of a wrong type.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTrackNormalImage(const std::string& filename,
-                                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                 bool repeated = false);
+        virtual void setProperty(std::string property, ObjectConverter&& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the track that is displayed when the mouse is standing on top of the scrollbar
+        /// @brief Retrieve the value of a certain property
         ///
-        /// This image is ignored when no normal track image has been set.
+        /// @param property  The property that you would like to retrieve
         ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTrackHoverImage(const std::string& filename,
-                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                bool repeated = false);
+        virtual ObjectConverter getProperty(std::string property) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the thumb that is displayed when the mouse is not on top of the scrollbar
+        /// @brief Get a map with all properties and their values
         ///
-        /// When all normal are set, then the alternative color properties will be ignored.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// @return Property-value pairs of the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setThumbNormalImage(const std::string& filename,
-                                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                 bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the thumb that is displayed when the mouse is standing on top of the scrollbar
-        ///
-        /// This image is ignored when no normal thumb image has been set.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setThumbHoverImage(const std::string& filename,
-                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as the up arrow.
-        ///
-        /// When all normal are set, then the alternative color properties will be ignored.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setArrowUpNormalImage(const std::string& filename,
-                                   const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                   const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                   bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as the up arrow when the mouse is on top of this arrow.
-        ///
-        /// When hover image is ignored if the normal image has not been set.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setArrowUpHoverImage(const std::string& filename,
-                                   const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                   const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                   bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as the down arrow.
-        ///
-        /// When all normal are set, then the alternative color properties will be ignored.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setArrowDownNormalImage(const std::string& filename,
-                                     const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                     const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                     bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as the down arrow when the mouse is on top of this arrow.
-        ///
-        /// When hover image is ignored if the normal image has not been set.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setArrowDownHoverImage(const std::string& filename,
-                                     const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                     const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                     bool repeated = false);
+        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -706,6 +582,102 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setArrowColorHover(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the track that is displayed when the mouse is not on top of the scrollbar
+        ///
+        /// @param texture  The new track texture
+        ///
+        /// When all normal are set, then the alternative color properties will be ignored.
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the track that is displayed when the mouse is on top of the slider
+        ///
+        /// @param texture  The new hover track texture
+        ///
+        /// The hover texture is ignored if no normal texture was set.
+        /// Pass an empty texture to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTrackHoverTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the thumb that is displayed when the mouse is not on top of the slider
+        ///
+        /// @param texture  The new thumb texture
+        ///
+        /// When all normal are set, then the alternative color properties will be ignored.
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the thumb that is displayed when the mouse is on top of the slider
+        ///
+        /// @param texture  The new hover thumb texture
+        ///
+        /// The hover texture is ignored if no normal texture was set.
+        /// Pass an empty texture to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setThumbHoverTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the up arrow
+        ///
+        /// @param texture  The new arrow texture
+        ///
+        /// When all normal are set, then the alternative color properties will be ignored.
+        /// Pass an empty texture to unset the image, in this case the color properties will be used again.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the down arrow
+        ///
+        /// @param texture  The new arrow texture
+        ///
+        /// When all normal are set, then the alternative color properties will be ignored.
+        /// Pass an empty texture to unset the image, in this case the color properties will be used again.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the up arrow when the mouse is on top of this arrow
+        ///
+        /// @param texture  The new hover arrow texture
+        ///
+        /// The hover texture is ignored if no normal texture was set.
+        /// Pass an empty texture to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpHoverTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is used as the up arrow when the mouse is on top of this arrow
+        ///
+        /// @param texture  The new hover arrow texture
+        ///
+        /// The hover texture is ignored if no normal texture was set.
+        /// Pass an empty texture to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownHoverTexture(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

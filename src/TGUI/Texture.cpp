@@ -45,12 +45,12 @@ namespace tgui
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
+
     Texture::Texture(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
     {
         load(filename, partRect, middlePart, repeated);
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(const Texture& copy) :
@@ -115,7 +115,7 @@ namespace tgui
 
         m_loaded = false;
         if (!m_textureLoader(*this, id, partRect))
-            throw Exception{"Failed to load " + id};
+            throw Exception{"Failed to load '" + id + "'"};
 
         m_id = id;
         m_data->texture.setRepeated(repeated);
@@ -195,20 +195,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setCopyCallback(const std::function<void(std::shared_ptr<TextureData>)>& func)
-    {
-        m_copyCallback = func;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Texture::setDestructCallback(const std::function<void(std::shared_ptr<TextureData>)>& func)
-    {
-        m_destructCallback = func;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool Texture::isTransparentPixel(float x, float y) const
     {
         if (m_data->image == nullptr)
@@ -269,6 +255,20 @@ namespace tgui
     const Texture::TextureLoaderFunc& Texture::getTextureLoader()
     {
         return m_textureLoader;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::setCopyCallback(const std::function<void(std::shared_ptr<TextureData>)>& func)
+    {
+        m_copyCallback = func;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::setDestructCallback(const std::function<void(std::shared_ptr<TextureData>)>& func)
+    {
+        m_destructCallback = func;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

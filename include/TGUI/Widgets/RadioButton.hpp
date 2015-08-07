@@ -65,22 +65,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the radio button
-        ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static RadioButton::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "RadioButton");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another radio button
         ///
         /// @param radioButton  The other radio button
@@ -264,6 +248,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload the widget
+        ///
+        /// @param primary    Primary parameter for the loader
+        /// @param secondary  Secondary parameter for the loader
+        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
+        ///
+        /// @throw Exception when the connected theme could not create the widget
+        ///
+        /// When primary is an empty string the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() override
@@ -328,20 +327,49 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
-        ///
-        /// This function should only be used when you don't know the type of the widget.
-        /// Otherwise you can make a direct function call to make the wanted change.
+        /// @brief Change a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property
-        /// @param rootPath  Path that should be placed in front of any resource filename
+        /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when the property doesn't exist for this widget.
-        /// @throw Exception when the value is invalid for this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath());
+        virtual void setProperty(std::string property, const std::string& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change a property of the renderer
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, ObjectConverter&& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieve the value of a certain property
+        ///
+        /// @param property  The property that you would like to retrieve
+        ///
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ObjectConverter getProperty(std::string property) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get a map with all properties and their values
+        ///
+        /// @return Property-value pairs of the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -387,82 +415,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColorHover(const sf::Color& color);
 
-/*
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the checkbox is not checked.
-        ///
-        /// When checked and unchecked images are set, the background and foreground color properties will be ignored.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setUncheckedImage(const std::string& filename,
-                               const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                               const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                               bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the checkbox is checked.
-        ///
-        /// When checked and unchecked images are set, the background and foreground color properties will be ignored.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCheckedImage(const std::string& filename,
-                             const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                             const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                             bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the checkbox is not checked and the mouse is on top of the checkbox.
-        ///
-        /// This only has effect when the normal checked and unchecked images are also set.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setUncheckedHoverImage(const std::string& filename,
-                               const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                               const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                               bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the checkbox is checked and the mouse is on top of the checkbox.
-        ///
-        /// This only has effect when the normal checked and unchecked images are also set.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCheckedHoverImage(const std::string& filename,
-                                  const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                  const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                  bool repeated = false);
-*/
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color.
@@ -596,6 +548,66 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the checkbox is not checked.
+        ///
+        /// @param texture  The new unchecked texture
+        ///
+        /// When checked and unchecked images are set, the background and foreground color properties will be ignored.
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setUncheckedTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the checkbox is checked.
+        ///
+        /// @param texture  The new checked texture
+        ///
+        /// When checked and unchecked images are set, the background and foreground color properties will be ignored.
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setCheckedTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the checkbox is not checked and the mouse is on top of the checkbox.
+        ///
+        /// @param texture  The new unchecked hover texture
+        ///
+        /// This only has effect when the normal checked and unchecked images are also set.
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setUncheckedHoverTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the checkbox is checked and the mouse is on top of the checkbox.
+        ///
+        /// @param texture  The new checked hover texture
+        ///
+        /// This only has effect when the normal checked and unchecked images are also set.
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setCheckedHoverTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed on top of the checkbox when it is focused.
+        ///
+        /// @param texture  The new checked hover texture
+        ///
+        /// This only has effect when the normal checked and unchecked images are also set.
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setFocusedTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -626,17 +638,17 @@ namespace tgui
         Texture m_textureCheckedHover;
         Texture m_textureFocused;
 
-        sf::Color m_textColorNormal       = { 60,  60,  60};
-        sf::Color m_textColorHover        = {  0,   0,   0};
+        sf::Color m_textColorNormal;
+        sf::Color m_textColorHover;
 
-        sf::Color m_backgroundColorNormal = { 60,  60,  60};
-        sf::Color m_backgroundColorHover  = {  0,   0,   0};
+        sf::Color m_backgroundColorNormal;
+        sf::Color m_backgroundColorHover;
 
-        sf::Color m_foregroundColorNormal = {245, 245, 245};
-        sf::Color m_foregroundColorHover  = {255, 255, 255};
+        sf::Color m_foregroundColorNormal;
+        sf::Color m_foregroundColorHover;
 
-        sf::Color m_checkColorNormal      = { 60,  60,  60};
-        sf::Color m_checkColorHover       = {  0,   0,   0};
+        sf::Color m_checkColorNormal;
+        sf::Color m_checkColorHover;
 
         friend class RadioButton;
 

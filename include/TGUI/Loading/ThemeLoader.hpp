@@ -34,8 +34,6 @@
 #include <vector>
 #include <map>
 
-/// TODO: Change descriptions
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -49,8 +47,12 @@ namespace tgui
     class TGUI_API BaseThemeLoader
     {
     public:
-        /// TODO: Documentation
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Virtual destructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual ~BaseThemeLoader() = default;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Load the property-value pairs from the theme
@@ -59,9 +61,9 @@ namespace tgui
         /// @param secondary  Secondary parameter of the loader
         /// @param properties Empty map op property-value pairs that will be filled by this function
         ///
-        /// @return Type of the widget
-        ///
         /// For the default loader, the primary parameter is the filename while the secondary parameter is the class name.
+        ///
+        /// @return Type of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual std::string load(const std::string& primary, const std::string& secondary, std::map<std::string, std::string>& properties) = 0;
@@ -89,6 +91,9 @@ namespace tgui
         /// @param properties Empty map op property-value pairs that will be filled by this function
         ///
         /// @return Type of the widget
+        ///
+        /// @exception Exception when finding syntax errors in the file
+        /// @exception Exception when file did not contain requested class name
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual std::string load(const std::string& filename, const std::string& className, std::map<std::string, std::string>& properties);

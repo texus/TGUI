@@ -41,33 +41,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Ptr Picture::create(const std::string& filename, bool fullyClickable)
+    Picture::Picture(const std::string& filename, bool fullyClickable) :
+        Picture{}
     {
-        auto picture = std::make_shared<Picture>();
-
-        picture->m_fullyClickable = fullyClickable;
-        picture->m_loadedFilename = getResourcePath() + filename;
+        m_fullyClickable = fullyClickable;
+        m_loadedFilename = getResourcePath() + filename;
 
         // Try to load the texture from the file
-        picture->m_texture.load(picture->m_loadedFilename);
+        m_texture.load(m_loadedFilename);
 
         // Remember the size of the texture
-        picture->setSize(picture->m_texture.getImageSize());
-
-        return picture;
+        setSize(m_texture.getImageSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Ptr Picture::create(const sf::Texture& texture)
+    Picture::Picture(const sf::Texture& texture) :
+        Picture{}
     {
-        auto picture = std::make_shared<Picture>();
-
         auto data = std::make_shared<TextureData>();
         data->texture = texture;
-        picture->m_texture.setTexture(data);
-
-        return picture;
+        m_texture.setTexture(data);
+        setSize(m_texture.getImageSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,6 +91,13 @@ namespace tgui
         Widget::setSize(size);
 
         m_texture.setSize(getSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Picture::setSmooth(bool smooth)
+    {
+        m_texture.setSmooth(smooth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

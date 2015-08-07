@@ -24,7 +24,8 @@
 
 
 #include <TGUI/Container.hpp>
-#include <TGUI/SpinButton.hpp>
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Widgets/SpinButton.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,55 +40,9 @@ namespace tgui
         addSignal<int>("ValueChanged");
 
         m_renderer = std::make_shared<SpinButtonRenderer>(this);
-
-        getRenderer()->setBorders({2, 2, 2, 2});
+        reload();
 
         setSize(20, 42);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    SpinButton::Ptr SpinButton::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto spinButton = std::make_shared<SpinButton>();
-
-        if (themeFileFilename != "")
-        {
-            spinButton->getRenderer()->setBorders({0, 0, 0, 0});
-
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    spinButton->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-
-            // Use the size of the images when images were loaded
-            if (spinButton->getRenderer()->m_textureArrowUpNormal.getData() && spinButton->getRenderer()->m_textureArrowDownNormal.getData())
-            {
-                spinButton->setSize({spinButton->getRenderer()->m_textureArrowUpNormal.getSize().x,
-                                     spinButton->getRenderer()->m_textureArrowUpNormal.getSize().y + spinButton->getRenderer()->m_textureArrowDownNormal.getSize().y});
-            }
-        }
-
-        return spinButton;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,6 +290,42 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void SpinButton::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        if (m_theme && primary != "")
+        {
+            getRenderer()->setBorders({0, 0, 0, 0});
+
+            m_theme->initWidget(this, primary, secondary);
+
+            if (force)
+            {
+                // Use the size of the images when images were loaded
+                if (getRenderer()->m_textureArrowUpNormal.isLoaded() && getRenderer()->m_textureArrowDownNormal.isLoaded())
+                {
+                    setSize({getRenderer()->m_textureArrowUpNormal.getSize().x,
+                             getRenderer()->m_textureArrowUpNormal.getSize().y + getRenderer()->m_textureArrowDownNormal.getSize().y});
+                }
+            }
+        }
+        else // Load white theme
+        {
+            getRenderer()->setBorders({2, 2, 2, 2});
+            getRenderer()->setBackgroundColorNormal({245, 245, 245});
+            getRenderer()->setBackgroundColorHover({255, 255, 255});
+            getRenderer()->setArrowColorNormal({60, 60, 60});
+            getRenderer()->setArrowColorHover({0, 0, 0});
+            getRenderer()->setBorderColor({0, 0, 0});
+            getRenderer()->setSpaceBetweenArrows(0);
+            getRenderer()->setArrowUpTexture({});
+            getRenderer()->setArrowDownTexture({});
+            getRenderer()->setArrowUpHoverTexture({});
+            getRenderer()->setArrowDownHoverTexture({});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpinButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         getRenderer()->draw(target, states);
@@ -343,76 +334,157 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    void SpinButtonRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "arrowupnormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowUpNormal);
-        else if (property == "arrowuphoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowUpHover);
-        else if (property == "arrowdownnormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowDownNormal);
-        else if (property == "arrowdownhoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowDownHover);
-        else if (property == "backgroundcolor")
-            setBackgroundColor(extractColorFromString(property, value));
-        else if (property == "backgroundcolornormal")
-            setBackgroundColorNormal(extractColorFromString(property, value));
-        else if (property == "backgroundcolorhover")
-            setBackgroundColorHover(extractColorFromString(property, value));
-        else if (property == "arrowcolor")
-            setArrowColor(extractColorFromString(property, value));
-        else if (property == "arrowcolornormal")
-            setArrowColorNormal(extractColorFromString(property, value));
-        else if (property == "arrowcolorhover")
-            setArrowColorHover(extractColorFromString(property, value));
-        else if (property == "bordercolor")
-            setBorderColor(extractColorFromString(property, value));
-        else if (property == "borders")
-            setBorders(extractBordersFromString(property, value));
-        else if (property == "spacebetweenarrows")
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("BackgroundColor"))
+            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BackgroundColorNormal"))
+            setBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BackgroundColorHover"))
+            setBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowColor"))
+            setArrowColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowColorNormal"))
+            setArrowColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowColorHover"))
+            setArrowColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BorderColor"))
+            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowUpImage"))
+            setArrowUpTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowDownImage"))
+            setArrowDownTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowUpHoverImage"))
+            setArrowUpHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowDownHoverImage"))
+            setArrowDownHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("SpaceBetweenArrows"))
             setSpaceBetweenArrows(tgui::stof(value));
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            WidgetRenderer::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setArrowUpNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void SpinButtonRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
-        if (filename != "")
-            m_textureArrowUpNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Borders)
+        {
+            if (property == toLower("Borders"))
+                setBorders(value.getBorders());
+            else
+                return WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("BackgroundColor"))
+                setBackgroundColor(value.getColor());
+            else if (property == toLower("BackgroundColorNormal"))
+                setBackgroundColorNormal(value.getColor());
+            else if (property == toLower("BackgroundColorHover"))
+                setBackgroundColorHover(value.getColor());
+            else if (property == toLower("ArrowColor"))
+                setArrowColor(value.getColor());
+            else if (property == toLower("ArrowColorNormal"))
+                setArrowColorNormal(value.getColor());
+            else if (property == toLower("ArrowColorHover"))
+                setArrowColorHover(value.getColor());
+            else if (property == toLower("BorderColor"))
+                setBorderColor(value.getColor());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Texture)
+        {
+            if (property == toLower("ArrowUpImage"))
+                setArrowUpTexture(value.getTexture());
+            else if (property == toLower("ArrowDownImage"))
+                setArrowDownTexture(value.getTexture());
+            else if (property == toLower("ArrowUpHoverImage"))
+                setArrowUpHoverTexture(value.getTexture());
+            else if (property == toLower("ArrowDownHoverImage"))
+                setArrowDownHoverTexture(value.getTexture());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Number)
+        {
+            if (property == toLower("SpaceBetweenArrows"))
+                setSpaceBetweenArrows(value.getNumber());
+        }
         else
-            m_textureArrowUpNormal = {};
+            WidgetRenderer::setProperty(property, std::move(value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setArrowDownNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    ObjectConverter SpinButtonRenderer::getProperty(std::string property) const
     {
-        if (filename != "")
-            m_textureArrowDownNormal.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            return m_borders;
+        else if (property == toLower("BackgroundColor"))
+            return m_backgroundColorNormal;
+        else if (property == toLower("BackgroundColorNormal"))
+            return m_backgroundColorNormal;
+        else if (property == toLower("BackgroundColorHover"))
+            return m_backgroundColorHover;
+        else if (property == toLower("ArrowColor"))
+            return m_arrowColorNormal;
+        else if (property == toLower("ArrowColorNormal"))
+            return m_arrowColorNormal;
+        else if (property == toLower("ArrowColorHover"))
+            return m_arrowColorHover;
+        else if (property == toLower("BorderColor"))
+            return m_borderColor;
+        else if (property == toLower("ArrowUpImage"))
+            return m_textureArrowUpNormal;
+        else if (property == toLower("ArrowDownImage"))
+            return m_textureArrowDownNormal;
+        else if (property == toLower("ArrowUpHoverImage"))
+            return m_textureArrowUpHover;
+        else if (property == toLower("ArrowDownHoverImage"))
+            return m_textureArrowDownHover;
+        if (property == toLower("SpaceBetweenArrows"))
+            return m_spaceBetweenArrows;
         else
-            m_textureArrowDownNormal = {};
+            return WidgetRenderer::getProperty(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setArrowUpHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    std::map<std::string, ObjectConverter> SpinButtonRenderer::getPropertyValuePairs() const
     {
-        if (filename != "")
-            m_textureArrowUpHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_textureArrowUpHover = {};
-    }
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SpinButtonRenderer::setArrowDownHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
-    {
-        if (filename != "")
-            m_textureArrowDownHover.load(getResourcePath() + filename, partRect, middlePart, repeated);
+        if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+        {
+            pairs.emplace("ArrowUpImage", m_textureArrowUpNormal);
+            pairs.emplace("ArrowDownImage", m_textureArrowDownNormal);
+            if (m_textureArrowUpHover.isLoaded())
+                pairs.emplace("ArrowUpHoverImage", m_textureArrowUpHover);
+            if (m_textureArrowDownHover.isLoaded())
+                pairs.emplace("ArrowDownHoverImage", m_textureArrowDownHover);
+        }
         else
-            m_textureArrowDownHover = {};
+        {
+            pairs.emplace("BackgroundColorNormal", m_backgroundColorNormal);
+            pairs.emplace("BackgroundColorHover", m_backgroundColorHover);
+            pairs.emplace("ArrowColorNormal", m_arrowColorNormal);
+            pairs.emplace("ArrowColorHover", m_arrowColorHover);
+        }
+
+        pairs.emplace("BorderColor", m_borderColor);
+        pairs.emplace("Borders", m_borders);
+        pairs.emplace("SpaceBetweenArrows", m_spaceBetweenArrows);
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -468,6 +540,46 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void SpinButtonRenderer::setArrowUpTexture(const Texture& texture)
+    {
+        m_textureArrowUpNormal = texture;
+        m_textureArrowUpNormal.setPosition(m_spinButton->getPosition());
+        m_textureArrowUpNormal.setSize(m_spinButton->getSize());
+        m_textureArrowUpNormal.setColor({255, 255, 255, m_spinButton->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowDownTexture(const Texture& texture)
+    {
+        m_textureArrowDownNormal = texture;
+        m_textureArrowDownNormal.setPosition(m_spinButton->getPosition());
+        m_textureArrowDownNormal.setSize(m_spinButton->getSize());
+        m_textureArrowDownNormal.setColor({255, 255, 255, m_spinButton->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowUpHoverTexture(const Texture& texture)
+    {
+        m_textureArrowUpHover = texture;
+        m_textureArrowUpHover.setPosition(m_spinButton->getPosition());
+        m_textureArrowUpHover.setSize(m_spinButton->getSize());
+        m_textureArrowUpHover.setColor({255, 255, 255, m_spinButton->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButtonRenderer::setArrowDownHoverTexture(const Texture& texture)
+    {
+        m_textureArrowDownHover = texture;
+        m_textureArrowDownHover.setPosition(m_spinButton->getPosition());
+        m_textureArrowDownHover.setSize(m_spinButton->getSize());
+        m_textureArrowDownHover.setColor({255, 255, 255, m_spinButton->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpinButtonRenderer::setSpaceBetweenArrows(float space)
     {
         m_spaceBetweenArrows = space;
@@ -483,14 +595,14 @@ namespace tgui
         sf::Vector2f size = m_spinButton->getSize();
 
         // Draw the arrows
-        if (m_textureArrowUpNormal.getData() && m_textureArrowDownNormal.getData())
+        if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
         {
-            if (m_spinButton->m_mouseHover && m_spinButton->m_mouseHoverOnTopArrow && m_textureArrowUpHover.getData())
+            if (m_spinButton->m_mouseHover && m_spinButton->m_mouseHoverOnTopArrow && m_textureArrowUpHover.isLoaded())
                 target.draw(m_textureArrowUpHover, states);
             else
                 target.draw(m_textureArrowUpNormal, states);
 
-            if (m_spinButton->m_mouseHover && !m_spinButton->m_mouseHoverOnTopArrow && m_textureArrowDownHover.getData())
+            if (m_spinButton->m_mouseHover && !m_spinButton->m_mouseHoverOnTopArrow && m_textureArrowDownHover.isLoaded())
                 target.draw(m_textureArrowDownHover, states);
             else
                 target.draw(m_textureArrowDownNormal, states);
