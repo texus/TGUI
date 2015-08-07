@@ -26,6 +26,8 @@
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Exception.hpp>
 
+#include <cctype>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -34,8 +36,7 @@ namespace tgui
 
     std::shared_ptr<DataIO::Node> DataIO::parse(std::stringstream& stream)
     {
-        /// TODO: Allow comments (#, // and /*)
-        /// TODO: Allow spaces between type and class name (class name with special characters might need "" around it)
+        /// TODO: Allow spaces and spacial characters in class name (has to be serialized with quotes around it)
 
         auto root = std::make_shared<Node>();
         auto node = root;
@@ -47,6 +48,55 @@ namespace tgui
             if (stream.peek() == EOF)
                 break;
 
+            if (stream.peek() == '#')
+            {
+                while (stream.peek() != EOF)
+                {
+                    if (stream.peek() != '\n')
+                    {
+                        char c;
+                        stream.read(&c, 1);
+                        break;
+                    }
+                }
+                continue;
+            }
+            else if (stream.peek() == '/')
+            {
+                char c;
+                stream.read(&c, 1);
+                if (stream.peek() == '/')
+                {
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        if (c == '\n')
+                            break;
+                    }
+                }
+                else if (stream.peek() == '*')
+                {
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        if (stream.peek() == '*')
+                        {
+                            stream.read(&c, 1);
+                            if (stream.peek() == '/')
+                            {
+                                stream.read(&c, 1);
+                                break;
+                            }
+                        }
+                    }
+                    continue;
+                }
+                else
+                    error = "Found '/' while trying to read new section.";
+
+                continue;
+            }
+
             std::string word = readWord(stream);
             if (word != "")
             {
@@ -55,13 +105,13 @@ namespace tgui
                     error = parseSection(stream, node, word);
                 else if (stream.peek() == ':')
                     error = parseKeyValue(stream, node, word);
-                else if (stream.peek() == EOF)
-                    error = "Found EOF while trying to read new section.";
                 else if (stream.peek() == '}')
                 {
                     char c;
                     stream.read(&c, 1);
                 }
+                else if (stream.peek() == EOF)
+                    error = "Found EOF while trying to read new section.";
                 else
                     error = "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
             }
@@ -162,6 +212,53 @@ namespace tgui
             if (stream.peek() == EOF)
                 break;
 
+            if (stream.peek() == '#')
+            {
+                while (stream.peek() != EOF)
+                {
+                    if (stream.peek() != '\n')
+                    {
+                        stream.read(&c, 1);
+                        break;
+                    }
+                }
+                continue;
+            }
+            else if (stream.peek() == '/')
+            {
+                stream.read(&c, 1);
+                if (stream.peek() == '/')
+                {
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        if (c == '\n')
+                            break;
+                    }
+                }
+                else if (stream.peek() == '*')
+                {
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        if (stream.peek() == '*')
+                        {
+                            stream.read(&c, 1);
+                            if (stream.peek() == '/')
+                            {
+                                stream.read(&c, 1);
+                                break;
+                            }
+                        }
+                    }
+                    continue;
+                }
+                else
+                    return "Found '/' while trying to read new section.";
+
+                continue;
+            }
+
             std::string word = readWord(stream);
             if (word != "")
             {
@@ -178,13 +275,13 @@ namespace tgui
                     if (!error.empty())
                         return error;
                 }
-                else if (stream.peek() == EOF)
-                    return "Found EOF while trying to read new section.";
                 else if (stream.peek() == '}')
                 {
                     stream.read(&c, 1);
                     return "";
                 }
+                else if (stream.peek() == EOF)
+                    return "Found EOF while trying to read new section.";
                 else
                     return "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
             }
@@ -251,13 +348,57 @@ namespace tgui
 
     std::string DataIO::readLine(std::stringstream& stream)
     {
-        /// TODO: When quote is encountered, read everything till the next quote (needed before adding comment support)
-
         std::string line;
-        bool newLineFound = false;
+        bool whitespaceFound = false;
         while (stream.peek() != EOF)
         {
             char c = stream.peek();
+
+            if (stream.peek() == '#')
+            {
+                stream.read(&c, 1);
+                while (stream.peek() != EOF)
+                {
+                    stream.read(&c, 1);
+                    if (stream.peek() == '\n')
+                        break;
+                }
+                continue;
+            }
+            else if (stream.peek() == '/')
+            {
+                stream.read(&c, 1);
+                if (stream.peek() == '/')
+                {
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        if (c == '\n')
+                            break;
+                    }
+                }
+                else if (stream.peek() == '*')
+                {
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        if (stream.peek() == '*')
+                        {
+                            stream.read(&c, 1);
+                            if (stream.peek() == '/')
+                            {
+                                stream.read(&c, 1);
+                                break;
+                            }
+                        }
+                    }
+                    continue;
+                }
+                else
+                    return "";
+
+                continue;
+            }
 
             if (c == '"')
             {
@@ -286,23 +427,19 @@ namespace tgui
                 line.erase(line.find_last_not_of(" \n\r\t")+1);
                 return line;
             }
-            else if ((c == '\r') || (c == '\n'))
+            else if (::isspace(c))
             {
-                // A single newline is seen as a space
-                if (!newLineFound)
-                    line.push_back(' ');
-
-                newLineFound = true;
                 stream.read(&c, 1);
+                if (!whitespaceFound)
+                {
+                    whitespaceFound = true;
+                    line.push_back(c);
+                }
             }
             else
             {
-                // Skip whitespace right after a newline
-                if ((c != ' ') && (c != '\t'))
-                    newLineFound = false;
-                if (!newLineFound)
-                    line.push_back(c);
-
+                whitespaceFound = false;
+                line.push_back(c);
                 stream.read(&c, 1);
             }
         }
@@ -318,10 +455,52 @@ namespace tgui
         while (stream.peek() != EOF)
         {
             char c = stream.peek();
-            if ((c != ' ') && (c != '\t') && (c != '\r') && (c != ':') && (c != ';') && (c != '{') && (c != '}') && (c != '#') && (c != '/'))
+            if (!::isspace(c) && (c != ':') && (c != ';') && (c != '{') && (c != '}'))
             {
-                word.push_back(c);
                 stream.read(&c, 1);
+
+                if ((c == '#') || ((c == '/') && (stream.peek() == '/')))
+                {
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        if (c == '\n')
+                        {
+                            if (!word.empty())
+                                return word;
+                            else
+                                break;
+                        }
+                    }
+                }
+                else if ((c == '/') && (stream.peek() == '*'))
+                {
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        if (c == '*')
+                        {
+                            if (stream.peek() == '/')
+                            {
+                                stream.read(&c, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (c == '"')
+                {
+                    word.push_back(c);
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        word.push_back(c);
+                        if (c == '"')
+                            break;
+                    }
+                }
+                else
+                    word.push_back(c);
             }
             else
             {

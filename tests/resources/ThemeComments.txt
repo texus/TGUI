@@ -5,9 +5,13 @@ Button.Button1 {
 } // Comment
 
 Button.Correct/*Comment*/Name {
-    TextColor : rgb(0, 255 /*100*/, 0); # Comment
+    TextColor : rgb(0, 255 /*100*/ , 0); # Comment
 }
 
+/**/
+
 Button.Button3 { // Comment
-    Text/*Comment*/Color : rgb(0, 0, 255);
+    Text/*Comment*/Color : rgb(0, # Red
+                               0, // Green
+                               255   /* Blue */);
 }
