@@ -181,7 +181,9 @@ namespace tgui
 
     void Label::initialize(Container *const parent)
     {
+        bool autoSize = getAutoSize();
         Widget::initialize(parent);
+        setAutoSize(autoSize);
 
         if (!getFont() && m_parent->getGlobalFont())
             setTextFont(m_parent->getGlobalFont());
