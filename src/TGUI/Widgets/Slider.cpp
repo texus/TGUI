@@ -532,23 +532,23 @@ namespace tgui
 
         if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
         {
-            pairs.emplace("TrackImage", m_textureTrackNormal);
-            pairs.emplace("ThumbImage", m_textureThumbNormal);
+            pairs["TrackImage"] = m_textureTrackNormal;
+            pairs["ThumbImage"] = m_textureThumbNormal;
             if (m_textureTrackHover.isLoaded())
-                pairs.emplace("TrackHoverImage", m_textureTrackHover);
+                pairs["TrackHoverImage"] = m_textureTrackHover;
             if (m_textureThumbHover.isLoaded())
-                pairs.emplace("ThumbHoverImage", m_textureThumbHover);
+                pairs["ThumbHoverImage"] = m_textureThumbHover;
         }
         else
         {
-            pairs.emplace("TrackColorNormal", m_trackColorNormal);
-            pairs.emplace("TrackColorHover", m_trackColorHover);
-            pairs.emplace("ThumbColorNormal", m_thumbColorNormal);
-            pairs.emplace("ThumbColorHover", m_thumbColorHover);
+            pairs["TrackColorNormal"] = m_trackColorNormal;
+            pairs["TrackColorHover"] = m_trackColorHover;
+            pairs["ThumbColorNormal"] = m_thumbColorNormal;
+            pairs["ThumbColorHover"] = m_thumbColorHover;
         }
 
-        pairs.emplace("BorderColor", m_borderColor);
-        pairs.emplace("Borders", m_borders);
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
         return pairs;
     }
 

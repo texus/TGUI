@@ -879,29 +879,29 @@ namespace tgui
 
         if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
         {
-            pairs.emplace("TrackImage", m_textureTrackNormal);
-            pairs.emplace("ThumbImage", m_textureThumbNormal);
-            pairs.emplace("ArrowUpImage", m_textureArrowUpNormal);
-            pairs.emplace("ArrowDownImage", m_textureArrowDownNormal);
+            pairs["TrackImage"] = m_textureTrackNormal;
+            pairs["ThumbImage"] = m_textureThumbNormal;
+            pairs["ArrowUpImage"] = m_textureArrowUpNormal;
+            pairs["ArrowDownImage"] = m_textureArrowDownNormal;
             if (m_textureTrackHover.isLoaded())
-                pairs.emplace("TrackHoverImage", m_textureTrackHover);
+                pairs["TrackHoverImage"] = m_textureTrackHover;
             if (m_textureThumbHover.isLoaded())
-                pairs.emplace("ThumbHoverImage", m_textureThumbHover);
+                pairs["ThumbHoverImage"] = m_textureThumbHover;
             if (m_textureArrowUpHover.isLoaded())
-                pairs.emplace("ArrowUpHoverImage", m_textureArrowUpHover);
+                pairs["ArrowUpHoverImage"] = m_textureArrowUpHover;
             if (m_textureArrowDownHover.isLoaded())
-                pairs.emplace("ArrowDownHoverImage", m_textureArrowDownHover);
+                pairs["ArrowDownHoverImage"] = m_textureArrowDownHover;
         }
         else
         {
-            pairs.emplace("TrackColorNormal", m_trackColorNormal);
-            pairs.emplace("TrackColorHover", m_trackColorHover);
-            pairs.emplace("ThumbColorNormal", m_thumbColorNormal);
-            pairs.emplace("ThumbColorHover", m_thumbColorHover);
-            pairs.emplace("ArrowBackgroundColorNormal", m_arrowBackgroundColorNormal);
-            pairs.emplace("ArrowBackgroundColorHover", m_arrowBackgroundColorHover);
-            pairs.emplace("ArrowColorNormal", m_arrowColorNormal);
-            pairs.emplace("ArrowColorHover", m_arrowColorHover);
+            pairs["TrackColorNormal"] = m_trackColorNormal;
+            pairs["TrackColorHover"] = m_trackColorHover;
+            pairs["ThumbColorNormal"] = m_thumbColorNormal;
+            pairs["ThumbColorHover"] = m_thumbColorHover;
+            pairs["ArrowBackgroundColorNormal"] = m_arrowBackgroundColorNormal;
+            pairs["ArrowBackgroundColorHover"] = m_arrowBackgroundColorHover;
+            pairs["ArrowColorNormal"] = m_arrowColorNormal;
+            pairs["ArrowColorHover"] = m_arrowColorHover;
         }
 
         return pairs;

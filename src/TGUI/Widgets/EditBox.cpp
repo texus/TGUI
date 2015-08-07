@@ -1356,26 +1356,26 @@ namespace tgui
 
         if (m_textureNormal.isLoaded())
         {
-            pairs.emplace("NormalImage", m_textureNormal);
+            pairs["NormalImage"] = m_textureNormal;
             if (m_textureHover.isLoaded())
-                pairs.emplace("HoverImage", m_textureHover);
+                pairs["HoverImage"] = m_textureHover;
             if (m_textureFocused.isLoaded())
-                pairs.emplace("FocusedImage", m_textureFocused);
+                pairs["FocusedImage"] = m_textureFocused;
         }
         else
         {
-            pairs.emplace("BackgroundColorNormal", m_backgroundColorNormal);
-            pairs.emplace("BackgroundColorHover", m_backgroundColorHover);
+            pairs["BackgroundColorNormal"] = m_backgroundColorNormal;
+            pairs["BackgroundColorHover"] = m_backgroundColorHover;
         }
 
-        pairs.emplace("TextColor", m_editBox->m_textBeforeSelection.getColor());
-        pairs.emplace("SelectedTextColor", m_editBox->m_textSelection.getColor());
-        pairs.emplace("SelectedTextBackgroundColor", m_editBox->m_selectedTextBackground.getFillColor());
-        pairs.emplace("DefaultTextColor", m_editBox->m_defaultText.getColor());
-        pairs.emplace("CaretColor", m_editBox->m_caret.getFillColor());
-        pairs.emplace("BorderColor", m_borderColor);
-        pairs.emplace("Borders", m_borders);
-        pairs.emplace("Padding", m_padding);
+        pairs["TextColor"] = m_editBox->m_textBeforeSelection.getColor();
+        pairs["SelectedTextColor"] = m_editBox->m_textSelection.getColor();
+        pairs["SelectedTextBackgroundColor"] = m_editBox->m_selectedTextBackground.getFillColor();
+        pairs["DefaultTextColor"] = m_editBox->m_defaultText.getColor();
+        pairs["CaretColor"] = m_editBox->m_caret.getFillColor();
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
+        pairs["Padding"] = m_padding;
 
         return pairs;
     }

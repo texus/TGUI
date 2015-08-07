@@ -484,28 +484,28 @@ namespace tgui
 
         if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
         {
-            pairs.emplace("UncheckedImage", m_textureUnchecked);
-            pairs.emplace("CheckedImage", m_textureChecked);
+            pairs["UncheckedImage"] = m_textureUnchecked;
+            pairs["CheckedImage"] = m_textureChecked;
             if (m_textureUncheckedHover.isLoaded())
-                pairs.emplace("UncheckedHoverImage", m_textureUncheckedHover);
+                pairs["UncheckedHoverImage"] = m_textureUncheckedHover;
             if (m_textureCheckedHover.isLoaded())
-                pairs.emplace("CheckedHoverImage", m_textureCheckedHover);
+                pairs["CheckedHoverImage"] = m_textureCheckedHover;
             if (m_textureFocused.isLoaded())
-                pairs.emplace("FocusedImage", m_textureFocused);
+                pairs["FocusedImage"] = m_textureFocused;
         }
         else
         {
-            pairs.emplace("BackgroundColorNormal", m_backgroundColorNormal);
-            pairs.emplace("BackgroundColorHover", m_backgroundColorHover);
-            pairs.emplace("ForegroundColorNormal", m_foregroundColorNormal);
-            pairs.emplace("ForegroundColorHover", m_foregroundColorHover);
-            pairs.emplace("CheckColorNormal", m_checkColorNormal);
-            pairs.emplace("CheckColorHover", m_checkColorHover);
+            pairs["BackgroundColorNormal"] = m_backgroundColorNormal;
+            pairs["BackgroundColorHover"] = m_backgroundColorHover;
+            pairs["ForegroundColorNormal"] = m_foregroundColorNormal;
+            pairs["ForegroundColorHover"] = m_foregroundColorHover;
+            pairs["CheckColorNormal"] = m_checkColorNormal;
+            pairs["CheckColorHover"] = m_checkColorHover;
         }
 
-        pairs.emplace("TextColorNormal", m_textColorNormal);
-        pairs.emplace("TextColorHover", m_textColorHover);
-        pairs.emplace("Padding", m_padding);
+        pairs["TextColorNormal"] = m_textColorNormal;
+        pairs["TextColorHover"] = m_textColorHover;
+        pairs["Padding"] = m_padding;
         return pairs;
     }
 

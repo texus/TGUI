@@ -453,25 +453,25 @@ namespace tgui
 
         if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
         {
-            pairs.emplace("BackImage", m_textureBack);
-            pairs.emplace("FrontImage", m_textureFront);
+            pairs["BackImage"] = m_textureBack;
+            pairs["FrontImage"] = m_textureFront;
         }
         else
         {
-            pairs.emplace("BackgroundColor", m_backgroundColor);
-            pairs.emplace("ForegroundColor", m_foregroundColor);
+            pairs["BackgroundColor"] = m_backgroundColor;
+            pairs["ForegroundColor"] = m_foregroundColor;
         }
 
         if (m_progressBar->m_textBack.getTextColor() == m_progressBar->m_textFront.getTextColor())
-            pairs.emplace("TextColor", m_progressBar->m_textBack.getTextColor());
+            pairs["TextColor"] = m_progressBar->m_textBack.getTextColor();
         else
         {
-            pairs.emplace("TextColorBack", m_progressBar->m_textBack.getTextColor());
-            pairs.emplace("TextColorFront", m_progressBar->m_textFront.getTextColor());
+            pairs["TextColorBack"] = m_progressBar->m_textBack.getTextColor();
+            pairs["TextColorFront"] = m_progressBar->m_textFront.getTextColor();
         }
 
-        pairs.emplace("BorderColor", m_borderColor);
-        pairs.emplace("Borders", m_borders);
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
         return pairs;
     }
 

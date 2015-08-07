@@ -488,11 +488,11 @@ namespace tgui
     std::map<std::string, ObjectConverter> LabelRenderer::getPropertyValuePairs() const
     {
         auto pairs = WidgetRenderer::getPropertyValuePairs();
-        pairs.emplace("TextColor", m_label->m_text.getColor());
-        pairs.emplace("BackgroundColor", m_label->m_background.getFillColor());
-        pairs.emplace("BorderColor", m_borderColor);
-        pairs.emplace("Borders", m_borders);
-        pairs.emplace("Padding", m_padding);
+        pairs["TextColor"] = m_label->m_text.getColor();
+        pairs["BackgroundColor"] = m_label->m_background.getFillColor();
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
+        pairs["Padding"] = m_padding;
         return pairs;
     }
 

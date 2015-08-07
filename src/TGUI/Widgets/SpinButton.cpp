@@ -466,24 +466,24 @@ namespace tgui
 
         if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
         {
-            pairs.emplace("ArrowUpImage", m_textureArrowUpNormal);
-            pairs.emplace("ArrowDownImage", m_textureArrowDownNormal);
+            pairs["ArrowUpImage"] = m_textureArrowUpNormal;
+            pairs["ArrowDownImage"] = m_textureArrowDownNormal;
             if (m_textureArrowUpHover.isLoaded())
-                pairs.emplace("ArrowUpHoverImage", m_textureArrowUpHover);
+                pairs["ArrowUpHoverImage"] = m_textureArrowUpHover;
             if (m_textureArrowDownHover.isLoaded())
-                pairs.emplace("ArrowDownHoverImage", m_textureArrowDownHover);
+                pairs["ArrowDownHoverImage"] = m_textureArrowDownHover;
         }
         else
         {
-            pairs.emplace("BackgroundColorNormal", m_backgroundColorNormal);
-            pairs.emplace("BackgroundColorHover", m_backgroundColorHover);
-            pairs.emplace("ArrowColorNormal", m_arrowColorNormal);
-            pairs.emplace("ArrowColorHover", m_arrowColorHover);
+            pairs["BackgroundColorNormal"] = m_backgroundColorNormal;
+            pairs["BackgroundColorHover"] = m_backgroundColorHover;
+            pairs["ArrowColorNormal"] = m_arrowColorNormal;
+            pairs["ArrowColorHover"] = m_arrowColorHover;
         }
 
-        pairs.emplace("BorderColor", m_borderColor);
-        pairs.emplace("Borders", m_borders);
-        pairs.emplace("SpaceBetweenArrows", m_spaceBetweenArrows);
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
+        pairs["SpaceBetweenArrows"] = m_spaceBetweenArrows;
         return pairs;
     }
 

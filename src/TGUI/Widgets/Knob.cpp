@@ -555,18 +555,18 @@ namespace tgui
 
         if (m_backgroundTexture.isLoaded() && m_foregroundTexture.isLoaded())
         {
-            pairs.emplace("BackgroundImage", m_backgroundTexture);
-            pairs.emplace("ForegroundImage", m_foregroundTexture);
-            pairs.emplace("ImageRotation", m_imageRotation);
+            pairs["BackgroundImage"] = m_backgroundTexture;
+            pairs["ForegroundImage"] = m_foregroundTexture;
+            pairs["ImageRotation"] = m_imageRotation;
         }
         else
         {
-            pairs.emplace("BackgroundColor", m_backgroundColor);
-            pairs.emplace("ThumbColor", m_thumbColor);
+            pairs["BackgroundColor"] = m_backgroundColor;
+            pairs["ThumbColor"] = m_thumbColor;
         }
 
-        pairs.emplace("BorderColor", m_borderColor);
-        pairs.emplace("Borders", m_borders);
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
         return pairs;
     }
 

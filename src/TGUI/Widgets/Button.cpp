@@ -427,26 +427,26 @@ namespace tgui
 
         if (m_textureNormal.isLoaded())
         {
-            pairs.emplace("NormalImage", m_textureNormal);
+            pairs["NormalImage"] = m_textureNormal;
             if (m_textureHover.isLoaded())
-                pairs.emplace("HoverImage", m_textureHover);
+                pairs["HoverImage"] = m_textureHover;
             if (m_textureDown.isLoaded())
-                pairs.emplace("DownImage", m_textureDown);
+                pairs["DownImage"] = m_textureDown;
             if (m_textureFocused.isLoaded())
-                pairs.emplace("FocusedImage", m_textureFocused);
+                pairs["FocusedImage"] = m_textureFocused;
         }
         else
         {
-            pairs.emplace("BackgroundColorNormal", m_backgroundColorNormal);
-            pairs.emplace("BackgroundColorHover", m_backgroundColorHover);
-            pairs.emplace("BackgroundColorDown", m_backgroundColorDown);
+            pairs["BackgroundColorNormal"] = m_backgroundColorNormal;
+            pairs["BackgroundColorHover"] = m_backgroundColorHover;
+            pairs["BackgroundColorDown"] = m_backgroundColorDown;
         }
 
-        pairs.emplace("TextColorNormal", m_textColorNormal);
-        pairs.emplace("TextColorHover", m_textColorHover);
-        pairs.emplace("TextColorDown", m_textColorDown);
-        pairs.emplace("BorderColor", m_borderColor);
-        pairs.emplace("Borders", m_borders);
+        pairs["TextColorNormal"] = m_textColorNormal;
+        pairs["TextColorHover"] = m_textColorHover;
+        pairs["TextColorDown"] = m_textColorDown;
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
 
         return pairs;
     }
