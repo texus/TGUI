@@ -7,7 +7,7 @@ int main()
     gui.setGlobalFont("../../fonts/DejaVuSans.ttf");
     
     // Create the background image
-    gui.add(tgui::Picture::create("../Linux.jpg"));
+    gui.add(std::make_shared<tgui::Picture>("../Linux.jpg"));
 
     // Get a bound version of the window size
     // Passing this to setPosition or setSize will make the widget automatically update when the view of the gui changes
@@ -19,7 +19,7 @@ int main()
     // Top:    20% of window height
     // Width:  80% of window width
     // Height: 25% of window height
-    auto play = tgui::Button::create("../../widgets/Black.conf");
+    tgui::Button::Ptr play = std::make_shared<tgui::Button>();
     play->setPosition(windowWidth*0.1, windowHeight*0.2);
     play->setSize(windowWidth*0.8, windowHeight*0.25);
     play->setText("Play");
@@ -28,7 +28,7 @@ int main()
     // Create the second button, which has the same size as the first one
     // Left:   10% of window width
     // Top:    60% of window height
-    auto exit = tgui::Button::copy(play);
+    tgui::Button::Ptr exit = tgui::Button::copy(play);
     exit->setPosition(windowWidth*0.1, windowHeight*0.6);
     exit->setText("Exit");
     gui.add(exit);
