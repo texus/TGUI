@@ -150,7 +150,12 @@ namespace tgui
                 {
                     std::string className;
                     if (nameSeparator != std::string::npos)
-                        className = childNode->name.substr(nameSeparator + 1);
+                    {
+                        if ((childNode->name.size() >= nameSeparator + 2) && (childNode->name[nameSeparator+1] == '"') && (childNode->name.back() == '"'))
+                            className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
+                        else
+                            className = childNode->name.substr(nameSeparator + 1);
+                    }
 
                     tgui::Widget::Ptr childWidget = loadFunction(childNode);
                     container->add(childWidget, className);
@@ -573,7 +578,12 @@ namespace tgui
             {
                 std::string className;
                 if (nameSeparator != std::string::npos)
-                    className = node->name.substr(nameSeparator + 1);
+                {
+                    if ((node->name.size() >= nameSeparator + 2) && (node->name[nameSeparator+1] == '"') && (node->name.back() == '"'))
+                        className = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
+                    else
+                        className = node->name.substr(nameSeparator + 1);
+                }
 
                 tgui::Widget::Ptr widget = loadFunction(node);
                 parent->add(widget, className);

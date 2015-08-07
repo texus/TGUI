@@ -88,7 +88,12 @@ namespace tgui
                 std::string parsedClassName;
                 std::string widgetType = toLower(child->name.substr(0, pos));
                 if (pos != std::string::npos)
-                    parsedClassName = toLower(child->name.substr(pos + 1));
+                {
+                    if ((child->name.size() >= pos + 2) && (child->name[pos+1] == '"') && (child->name.back() == '"'))
+                        parsedClassName = toLower(Deserializer::deserialize(ObjectConverter::Type::String, child->name.substr(pos + 1)).getString());
+                    else
+                        parsedClassName = toLower(child->name.substr(pos + 1));
+                }
                 else
                     parsedClassName = widgetType;
 

@@ -74,13 +74,13 @@ TEST_CASE("[ThemeLoader]") {
         REQUIRE(properties.size() == 1);
         REQUIRE(properties["textcolor"] == "rgb(255, 0, 0)");
 
+        REQUIRE_NOTHROW(loader->load("resources/ThemeComments.txt", "Correct/*Comment*/Name", properties));
+        REQUIRE(properties.size() == 1);
+        REQUIRE(properties["textcolor"] == "rgb(0, 255, 0 )");
+
         REQUIRE_NOTHROW(loader->load("resources/ThemeComments.txt", "CorrectName", properties));
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["textcolor"] == "rgb(0, 255 , 0)");
-
-        REQUIRE_NOTHROW(loader->load("resources/ThemeComments.txt", "Button3", properties));
-        REQUIRE(properties.size() == 1);
-        REQUIRE(properties["textcolor"] == "rgb(0, 0, 255 )");
+        REQUIRE(properties["textcolor"] == "rgb(0, 0 , 255)");
     }
 
     SECTION("cache") {
@@ -93,22 +93,25 @@ TEST_CASE("[ThemeLoader]") {
         REQUIRE(properties["backgroundcolor"] == "rgb(255, 255, 255)");
         REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 1);
         REQUIRE(tgui::DefaultThemeLoaderTest::getWidgetTypeCache(loader).size() == 1);
-        
+
         auto& cache = tgui::DefaultThemeLoaderTest::getPropertiesCache(loader)["resources/ThemeSpecialCases.txt"];
-        REQUIRE(cache.size() == 3);
+        REQUIRE(cache.size() == 4);
         REQUIRE(cache["button1"].size() == 1);
         REQUIRE(cache["button1"]["textcolor"] == "rgb(255, 0, 0)");
         REQUIRE(cache["name.with.dots"].size() == 2);
         REQUIRE(cache["name.with.dots"]["textcolor"] == "rgb(0, 255, 0)");
         REQUIRE(cache["name.with.dots"]["backgroundcolor"] == "rgb(255, 255, 255)");
-        REQUIRE(cache["button"].size() == 1);
-        REQUIRE(cache["button"]["textcolor"] == "rgb(0, 0, 255)");
+        REQUIRE(cache["specialchars.{}:;/*#//\t"].size() == 1);
+        REQUIRE(cache["specialchars.{}:;/*#//\t"]["textcolor"] == "rgba(,,,)");
+        REQUIRE(cache["label"].size() == 1);
+        REQUIRE(cache["label"]["textcolor"] == "rgb(0, 0, 255)");
 
         auto& typeCache = tgui::DefaultThemeLoaderTest::getWidgetTypeCache(loader)["resources/ThemeSpecialCases.txt"];
-        REQUIRE(typeCache.size() == 3);
+        REQUIRE(typeCache.size() == 4);
         REQUIRE(typeCache["button1"] == "button");
-        REQUIRE(typeCache["name.with.dots"] == "button");
-        REQUIRE(typeCache["button"] == "button");
+        REQUIRE(typeCache["name.with.dots"] == "checkbox");
+        REQUIRE(typeCache["specialchars.{}:;/*#//\t"] == "editbox");
+        REQUIRE(typeCache["label"] == "label");
 
         loader->load("resources/Black.txt", "EditBox", properties);
         REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 2);

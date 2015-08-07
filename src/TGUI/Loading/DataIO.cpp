@@ -36,8 +36,6 @@ namespace tgui
 
     std::shared_ptr<DataIO::Node> DataIO::parse(std::stringstream& stream)
     {
-        /// TODO: Allow spaces and spacial characters in class name (has to be serialized with quotes around it)
-
         auto root = std::make_shared<Node>();
         auto node = root;
 

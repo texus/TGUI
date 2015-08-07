@@ -4,14 +4,14 @@ Button.Button1 {
  /* BackgroundColor : rgb(255, 255, 255); */
 } // Comment
 
-Button.Correct/*Comment*/Name {
-    TextColor : rgb(0, 255 /*100*/ , 0); # Comment
+Button."Correct/*Comment*/Name" { // Comment
+    Text/*Comment*/Color : rgb(0, # Red
+                               255, // Green
+                               0   /* Blue */);
 }
 
 /**/
 
-Button.Button3 { // Comment
-    Text/*Comment*/Color : rgb(0, # Red
-                               0, // Green
-                               255   /* Blue */);
+Button.Correct/*Comment*/Name {
+    TextColor : rgb(0, 0 /*100*/ , 255); # Comment
 }
