@@ -285,9 +285,9 @@ namespace tgui
 
         loadWidget(node, knob);
         if (node->propertyValuePairs["StartRotation"])
-            knob->setStartRotation(tgui::stoi(node->propertyValuePairs["StartRotation"]->value));
+            knob->setStartRotation(tgui::stof(node->propertyValuePairs["StartRotation"]->value));
         if (node->propertyValuePairs["EndRotation"])
-            knob->setEndRotation(tgui::stoi(node->propertyValuePairs["EndRotation"]->value));
+            knob->setEndRotation(tgui::stof(node->propertyValuePairs["EndRotation"]->value));
         if (node->propertyValuePairs["Minimum"])
             knob->setMinimum(tgui::stoi(node->propertyValuePairs["Minimum"]->value));
         if (node->propertyValuePairs["Maximum"])
@@ -339,7 +339,7 @@ namespace tgui
         if (node->propertyValuePairs["TextSize"])
             label->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
         if (node->propertyValuePairs["MaximumTextWidth"])
-            label->setMaximumTextWidth(tgui::stoi(node->propertyValuePairs["MaximumTextWidth"]->value));
+            label->setMaximumTextWidth(tgui::stof(node->propertyValuePairs["MaximumTextWidth"]->value));
         if (node->propertyValuePairs["AutoSize"])
             label->setAutoSize(parseBoolean(node->propertyValuePairs["AutoSize"]->value));
 

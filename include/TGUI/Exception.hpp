@@ -37,7 +37,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Exception : public std::runtime_error {
+    class Exception : public std::runtime_error {
     public:
         explicit Exception(const std::string& argument) :
             std::runtime_error(argument)
