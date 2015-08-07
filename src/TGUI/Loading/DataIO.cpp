@@ -36,7 +36,6 @@ namespace tgui
     {
         /// TODO: Allow comments (#, // and /*)
         /// TODO: Allow spaces between type and class name (class name with special characters might need "" around it)
-        ///       Watch out with strings that have dots in it. Change places where find('.') is used.
 
         auto root = std::make_shared<Node>();
         auto node = root;
@@ -259,6 +258,26 @@ namespace tgui
         while (stream.peek() != EOF)
         {
             char c = stream.peek();
+
+            if (c == '"')
+            {
+                stream.read(&c, 1);
+                line.push_back(c);
+
+                while (stream.peek() != EOF)
+                {
+                    stream.read(&c, 1);
+                    line.push_back(c);
+                    if (c == '"')
+                        break;
+                }
+
+                if (stream.peek() == EOF)
+                    return "";
+
+                c = stream.peek();
+            }
+
             if ((c == ':') || (c == '{'))
                 return "";
             else if ((c == ';') || (c == '}'))
