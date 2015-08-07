@@ -114,7 +114,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @param Retrieve the saved font
+        /// @brief Retrieve the saved font
         ///
         /// @return The saved font
         ///
@@ -125,7 +125,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @param Retrieve the saved color
+        /// @brief Retrieve the saved color
         ///
         /// @return The saved color
         ///
@@ -136,7 +136,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @param Retrieve the saved borders
+        /// @brief Retrieve the saved borders
         ///
         /// @return The saved borders
         ///
@@ -147,7 +147,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @param Retrieve the saved string
+        /// @brief Retrieve the saved string
         ///
         /// @return The saved string
         ///
@@ -158,7 +158,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @param Retrieve the saved number
+        /// @brief Retrieve the saved number
         ///
         /// @return The saved number
         ///
@@ -169,7 +169,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @param Retrieve the saved texture
+        /// @brief Retrieve the saved texture
         ///
         /// @return The saved texture
         ///
@@ -180,7 +180,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @param Retrieve the type of the object that has been stored
+        /// @brief Retrieve the type of the object that has been stored
         ///
         /// @return The stored object type
         ///

@@ -82,8 +82,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the construct function of a specific widget type
         ///
-        /// @param type    Type of the widget which will cause this construct function to be used
-        /// @param loader  New function to be called when this type of widget is being loaded
+        /// @param type        Type of the widget which will cause this construct function to be used
+        /// @param constructor New function to be called when this type of widget is being loaded
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void setConstructFunction(const std::string& type, const std::function<Widget::Ptr()>& constructor);
