@@ -45,7 +45,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ClickableWidget::ClickableWidget(const Layout& width, const Layout& height) :
-        ClickableWidget{{width, height}}
+        ClickableWidget{Layout2d{width, height}}
     {
     }
 

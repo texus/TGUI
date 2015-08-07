@@ -47,7 +47,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Layout& width, const Layout& height) :
-        Panel{{width, height}}
+        Panel{Layout2d{width, height}}
     {
     }
 

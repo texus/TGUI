@@ -41,7 +41,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Canvas::Canvas(const Layout& width, const Layout& height) :
-        Canvas{{width, height}}
+        Canvas{Layout2d{width, height}}
     {
     }
 

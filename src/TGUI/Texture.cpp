@@ -64,7 +64,7 @@ namespace tgui
         m_scalingType     {copy.m_scalingType},
         m_loaded          {copy.m_loaded},
         m_rotation        {copy.m_rotation},
-        m_id              {copy.m_id},
+        m_id              (copy.m_id), // Did not compile in VS2013 when using braces
         m_copyCallback    {copy.m_copyCallback},
         m_destructCallback{copy.m_destructCallback}
     {
