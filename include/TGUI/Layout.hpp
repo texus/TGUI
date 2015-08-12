@@ -447,7 +447,9 @@ namespace tgui
 
     // Put TGUI_IMPORT_LAYOUT_BIND_FUNCTIONS somewhere in your code to no longer have to put "tgui::" in front of the bind functions
     // without having to import everything from tgui in your namespace or writing all these using statements yourself.
-    #define TGUI_IMPORT_LAYOUT_BIND_FUNCTIONS \
+    #define TGUI_IMPORT_LAYOUTS \
+        using tgui::Layout; \
+        using tgui::Layout2d; \
         using tgui::bindLeft; \
         using tgui::bindTop; \
         using tgui::bindWidth; \

@@ -270,6 +270,8 @@ TEST_CASE("[RadioButton]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         REQUIRE_NOTHROW(radioButton = theme->load("RadioButton"));
+        REQUIRE(radioButton->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(radioButton->getSecondaryLoadingParameter() == "radiobutton");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(radioButton);

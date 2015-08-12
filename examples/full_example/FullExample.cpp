@@ -12,7 +12,7 @@ int main()
     tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("../../widgets/Black.txt");
 
     gui.add(std::make_shared<tgui::Picture>("../RedBackground.jpg"));
-/*
+
     tgui::Tab::Ptr tab = theme->load("tab");
     tab->setTabHeight(30);
     tab->setPosition(70, 40);
@@ -33,7 +33,7 @@ int main()
     menu->addMenu("MenuOption-3");
     menu->addMenuItem("MenuOption-3", "About");
     gui.add(menu);
-    */
+
     tgui::Label::Ptr label = theme->load("label");
     label->setText("This is a label.\nAnd these are radio buttons:");
     label->setPosition(10, 90);
@@ -76,7 +76,7 @@ int main()
     label->setPosition(10, 310);
     label->setTextSize(18);
     gui.add(label);
-    /*
+
     tgui::ListBox::Ptr listBox = theme->load("ListBox");
     listBox->setSize(250, 120);
     listBox->setItemHeight(20);
@@ -85,7 +85,7 @@ int main()
     listBox->addItem("Item 2");
     listBox->addItem("Item 3");
     gui.add(listBox);
-    */
+
     label = theme->load("label");
     label->setText("It's the progress bar below");
     label->setPosition(10, 470);
@@ -122,7 +122,7 @@ int main()
     scrollbar->setMaximum(100);
     scrollbar->setLowValue(70);
     gui.add(scrollbar);
-    /*
+
     tgui::ComboBox::Ptr comboBox = theme->load("ComboBox");
     comboBox->setSize(120, 21);
     comboBox->setPosition(420, 40);
@@ -143,14 +143,14 @@ int main()
     label->setPosition(30, 30);
     label->setTextSize(15);
     child->add(label);
-    */
-    tgui::Button::Ptr button = theme->load("button");/*
+
+    tgui::Button::Ptr button = theme->load("button");
     button->setPosition(75, 70);
     button->setText("OK");
     button->setSize(100, 30);
     button->connect("pressed", [=](){ child->hide(); });
     child->add(button);
-   */
+
     tgui::Checkbox::Ptr checkbox = theme->load("checkbox");
     checkbox->setPosition(420, 240);
     checkbox->setText("Ok, I got it");
@@ -168,17 +168,18 @@ int main()
     label->setPosition(420, 280);
     label->setTextSize(18);
     gui.add(label);
-    /*
+
     tgui::ChatBox::Ptr chatbox = theme->load("ChatBox");
     chatbox->setSize(300, 100);
     chatbox->setTextSize(18);
     chatbox->setPosition(420, 310);
-    gui.add(chatbox);
+    chatbox->setLinesStartFromTop();
     chatbox->addLine("texus : Hey, this is TGUI!", sf::Color::Green);
     chatbox->addLine("Me : Looks awesome! ;)", sf::Color::Yellow);
     chatbox->addLine("texus : Thanks! :)", sf::Color::Green);
     chatbox->addLine("Me : The widgets rock ^^", sf::Color::Yellow);
-    */
+    gui.add(chatbox);
+
     sf::Texture texture;
     sf::Sprite  sprite;
     texture.loadFromFile("../ThinkLinux.jpg");

@@ -27,6 +27,7 @@
 #define TGUI_COMBO_BOX_HPP
 
 
+#include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,6 +253,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Selects an item in the list.
+        ///
+        /// @param index  Index of the item in the list
+        ///
+        /// @return
+        ///         - true on success
+        ///         - false when the index was too high
+        ///
+        /// @see setSelectedItem
+        /// @see setSelectedItemById
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setSelectedItemByIndex(std::size_t index);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Deselects the selected item.
         ///
         /// The combo box will be empty after this function is called.
@@ -291,6 +308,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Removes the item from the list.
+        ///
+        /// @param index  Index of the item in the list
+        ///
+        /// @return
+        ///        - true when the item was removed
+        ///        - false when the index was too high
+        ///
+        /// @see removeItem
+        /// @see removeItemById
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool removeItemByIndex(std::size_t index);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes all items from the list.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,7 +340,10 @@ namespace tgui
         /// @return The requested item, or an empty string when no item matches the id
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getItemById(const sf::String& id) const;
+        sf::String getItemById(const sf::String& id) const
+        {
+            return m_listBox->getItemById(id);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,6 +369,18 @@ namespace tgui
         sf::String getSelectedItemId() const
         {
             return m_listBox->getSelectedItemId();
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get the index of the selected item.
+        ///
+        /// @return The index of the selected item, or -1 when no item was selected
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        int getSelectedItemIndex() const
+        {
+            return m_listBox->getSelectedItemIndex();
         }
 
 
@@ -369,9 +417,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the amount of items in the list box
+        /// @brief Changes the name of an item at the given index to newValue.
         ///
-        /// @return Number of items inside the list box
+        /// @param index    The index of the item which you want to change
+        /// @param newValue The new name for that item
+        ///
+        /// @return
+        ///        - true when the item was changed
+        ///        - false when the index was too high
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeItemByIndex(std::size_t index, const sf::String& newValue);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the amount of items in the combo box
+        ///
+        /// @return Number of items inside the combo box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::size_t getItemCount()
@@ -381,12 +443,78 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the scrollbar.
+        /// @brief Return a copy of the items in the combo box
         ///
-        /// When there are too many items to fit in the list then the items will be removed.
+        /// @return items
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeScrollbar();
+        std::vector<sf::String> getItems();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Return a copy of the item ids in the combo box
+        ///
+        /// @return item ids
+        ///
+        /// Items that were not given an id simply have an empty string as id.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const std::vector<sf::String>& getItemIds();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the scrollbar.
+        ///
+        /// @param scrollbar The new scrollbar to use
+        ///
+        /// Pass a nullptr to remove the scrollbar. Note that when removing the scrollbar while there are too many items
+        /// to fit in the list then the excess items will be removed.
+        ///
+        /// The scrollbar should have no parent and you should not change it yourself.
+        /// The function is meant to be used like this:
+        /// @code
+        /// comboBox->setScrollbar(theme->load("scrollbar"));
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScrollbar(Scrollbar::Ptr scrollbar);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Access the scrollbar
+        ///
+        /// @return scrollbar that can be displayed next to the list
+        ///
+        /// You should not change the scrollbar yourself.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Scrollbar::Ptr getScrollbar() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the internal list box
+        ///
+        /// @return listBox  The new list box used to display all the items
+        ///
+        /// The list box should have no parent and you should not longer change it after calling this function.
+        /// The function is meant to be used like this:
+        /// @code
+        /// comboBox->setListBox(theme->load("ListBox"));
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setListBox(ListBox::Ptr listBox);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the internal list box
+        ///
+        /// @return The list box used to display all the items
+        ///
+        /// You should not change this list box yourself.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ListBox::Ptr getListBox() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -460,6 +588,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload the widget
+        ///
+        /// @param primary    Primary parameter for the loader
+        /// @param secondary  Secondary parameter for the loader
+        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
+        ///
+        /// @throw Exception when the connected theme could not create the widget
+        ///
+        /// When primary is an empty string the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() override
@@ -512,7 +655,7 @@ namespace tgui
         std::size_t m_nrOfItemsToDisplay = 0;
 
         // Internally a list box is used to store all items
-        ListBox::Ptr m_listBox = ListBox::create();
+        ListBox::Ptr m_listBox = std::make_shared<ListBox>();
 
         Label m_text;
 
@@ -538,115 +681,51 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
-        ///
-        /// This function should only be used when you don't know the type of the widget.
-        /// Otherwise you can make a direct function call to make the wanted change.
+        /// @brief Change a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property
-        /// @param rootPath  Path that should be placed in front of any resource filename
+        /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when the property doesn't exist for this widget.
-        /// @throw Exception when the value is invalid for this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath());
+        virtual void setProperty(std::string property, const std::string& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background image
+        /// @brief Change a property of the renderer
         ///
-        /// When this image is set, the background color property will be ignored.
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
         ///
-        /// Pass an empty string to unset the image, in this case the background color property will be used again.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundImage(const std::string& filename,
-                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                bool repeated = false);
+        virtual void setProperty(std::string property, ObjectConverter&& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the arrow up image
+        /// @brief Retrieve the value of a certain property
         ///
-        /// When this image and the down image are set, the arrow color properties will be ignored.
+        /// @param property  The property that you would like to retrieve
         ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setArrowUpNormalImage(const std::string& filename,
-                                   const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                   const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                   bool repeated = false);
+        virtual ObjectConverter getProperty(std::string property) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the arrow down image
+        /// @brief Get a map with all properties and their values
         ///
-        /// When this image and the up image are set, the arrow color properties will be ignored.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// @return Property-value pairs of the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setArrowDownNormalImage(const std::string& filename,
-                                     const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                     const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                     bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the arrow up image for when the mouse is on top of the combo box
-        ///
-        /// This image is ignored when the up and down normal images are not set.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setArrowUpHoverImage(const std::string& filename,
-                                  const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                  const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                  bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the arrow down image for when the mouse is on top of the combo box
-        ///
-        /// This image is ignored when the up and down normal images are not set.
-        ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setArrowDownHoverImage(const std::string& filename,
-                                    const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                    const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                    bool repeated = false);
+        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -754,6 +833,64 @@ namespace tgui
         void setBorderColor(const sf::Color& borderColor);
 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background image
+        ///
+        /// @param texture  New background texture
+        ///
+        /// When this image is set, the background color property will be ignored.
+        /// Pass an empty string to unset the image, in this case the background color property will be used again.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the arrow up image
+        ///
+        /// @param texture  New arrow up texture
+        ///
+        /// When this image and the down image are set, the arrow color properties will be ignored.
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the arrow down image
+        ///
+        /// @param texture  New arrow down texture
+        ///
+        /// When this image and the up image are set, the arrow color properties will be ignored.
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the arrow up image when the mouse is on top of the arrow
+        ///
+        /// @param texture  New arrow up hover texture
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowUpHoverTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the arrow down image when the mouse is on top of the arrow
+        ///
+        /// @param texture  New arrow down hover texture
+        ///
+        /// Pass an empty string to unset the image.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setArrowDownHoverTexture(const Texture& texture);
+
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the font of the items.
         ///
@@ -836,10 +973,10 @@ namespace tgui
         Texture   m_textureArrowDownNormal;
         Texture   m_textureArrowDownHover;
 
-        sf::Color m_arrowBackgroundColorNormal = {245, 245, 245};
-        sf::Color m_arrowBackgroundColorHover  = {255, 255, 255};
-        sf::Color m_arrowColorNormal           = { 60,  60,  60};
-        sf::Color m_arrowColorHover            = {  0,   0,   0};
+        sf::Color m_arrowBackgroundColorNormal;
+        sf::Color m_arrowBackgroundColorHover;
+        sf::Color m_arrowColorNormal;
+        sf::Color m_arrowColorHover;
 
         friend class ComboBox;
 

@@ -26,7 +26,7 @@
 #include <SFML/OpenGL.hpp>
 
 #include <TGUI/Container.hpp>
-#include <TGUI/extra/Slider2d.hpp>
+#include <TGUI/Widgets/extra/Slider2d.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,55 +36,21 @@ namespace ext
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider2d::Slider2d()
+    Slider2d::Slider2d(const Texture& trackNormal, const Texture& thumbNormal, const Texture& trackHover, const Texture& thumbHover)
     {
         m_callback.widgetType = "Slider2d";
         m_draggableWidget = true;
 
         addSignal<sf::Vector2f>("ValueChanged");
         addSignal<sf::Vector2f>("ThumbReturnedToCenter");
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Slider2d::Ptr Slider2d::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto slider = std::make_shared<Slider2d>();
-
-        std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-        // Open the theme file
-        ThemeFileParser themeFile{loadedThemeFile, section};
-
-        // Find the folder that contains the theme file
-        std::string themeFileFolder = "";
-        std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-        if (slashPos != std::string::npos)
-            themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-        // Handle the read properties
-        for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-        {
-            if (it->first == "tracknormalimage")
-                extractTextureFromString(it->first, it->second, themeFileFolder, slider->m_textureTrackNormal);
-            else if (it->first == "trackhoverimage")
-                extractTextureFromString(it->first, it->second, themeFileFolder, slider->m_textureTrackHover);
-            else if (it->first == "thumbnormalimage")
-                extractTextureFromString(it->first, it->second, themeFileFolder, slider->m_textureThumbNormal);
-            else if (it->first == "thumbhoverimage")
-                extractTextureFromString(it->first, it->second, themeFileFolder, slider->m_textureThumbHover);
-            else
-                throw Exception{"Unrecognized property '" + it->first + "' in section '" + section + "' in " + loadedThemeFile + "."};
-        }
-
-        // Make sure the required textures were loaded
-        if ((slider->m_textureTrackNormal.getData() == nullptr) || (slider->m_textureThumbNormal.getData() == nullptr))
-            throw Exception{"Not all needed images were loaded for the slider. Is the section '" + section + "' in " + loadedThemeFile + " complete?"};
+        m_textureTrackNormal = trackNormal;
+        m_textureThumbNormal = thumbNormal;
+        m_textureTrackHover = trackHover;
+        m_textureThumbHover = thumbHover;
 
         // Set the size of the slider
-        slider->setSize(slider->m_textureTrackNormal.getSize());
-
-        return slider;
+        setSize(m_textureTrackNormal.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,7 +254,7 @@ namespace ext
         states.transform.scale(scaling);
 
         // Draw the track image
-        if (m_mouseHover && m_textureTrackHover.getData())
+        if (m_mouseHover && m_textureTrackHover.isLoaded())
             target.draw(m_textureTrackHover, states);
         else
             target.draw(m_textureTrackNormal, states);
@@ -330,7 +296,7 @@ namespace ext
         glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
         // Draw the thumb image
-        if (m_mouseHover && m_textureThumbHover.getData())
+        if (m_mouseHover && m_textureThumbHover.isLoaded())
             target.draw(m_textureThumbHover, states);
         else
             target.draw(m_textureThumbNormal, states);

@@ -69,6 +69,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief This function can be used inside a widget to load other widgets without access to the derived theme class
+        ///
+        /// @brief primary  Primary parameter of the loader
+        /// @param secondary Secondary parameter of the loader
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual WidgetConverter internalLoad(const std::string& primary, const std::string& secondary) = 0;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Virtual function called by the widget to finish its initialization
         ///
         /// @param widget    The widget that needs to be initialized
@@ -248,6 +258,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief This function can be used inside a widget to load other widgets without access to the derived theme class
+        ///
+        /// @brief filename  The filename that has to match the one used to load this theme
+        /// @param className The class name of the theme to load
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual WidgetConverter internalLoad(const std::string& filename, const std::string& className) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called by the widget to finish its initialization
         ///
         /// @param widget    The widget that needs to be initialized
@@ -262,6 +282,7 @@ namespace tgui
     private:
         std::string m_filename;
         std::string m_resourcePath;
+        bool m_resourcePathLock = false;
         std::map<Widget*, std::string> m_widgets; // Map widget to class name
         std::map<std::string, std::string> m_widgetTypes; // Map class name to type
         std::map<std::string, std::map<std::string, std::string>> m_widgetProperties; // Map class name to property-value pairs

@@ -26,14 +26,19 @@
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Knob.hpp>
+#include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Tab.hpp>
+#include <TGUI/Widgets/TextBox.hpp>
 #include <TGUI/Widgets/Tooltip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,6 +140,50 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    TGUI_API std::shared_ptr<DataIO::Node> saveChildWindow(ChildWindow::Ptr childWindow)
+    {
+        auto node = saveWidget(childWindow);
+
+        if (childWindow->getTitleAlignment() == ChildWindow::TitleAlignment::Left)
+            SET_PROPERTY("TitleAlignment", "Left");
+        else if (childWindow->getTitleAlignment() == ChildWindow::TitleAlignment::Center)
+            SET_PROPERTY("TitleAlignment", "Center");
+        else if (childWindow->getTitleAlignment() == ChildWindow::TitleAlignment::Right)
+            SET_PROPERTY("TitleAlignment", "Right");
+
+        if (childWindow->getTitle().getSize() > 0)
+            SET_PROPERTY("Title", Serializer::serialize(childWindow->getTitle()));
+
+        if (childWindow->getIcon().isLoaded() > 0)
+            SET_PROPERTY("Icon", Serializer::serialize(childWindow->getIcon()));
+
+        if (childWindow->isKeptInParent())
+            SET_PROPERTY("KeepInParent", "true");
+
+        node->children.push_back(WidgetSaver::getSaveFunction("button")(tgui::WidgetConverter{childWindow->getCloseButton()}));
+        node->children.back()->parent = node.get();
+        node->children.back()->name = "CloseButton";
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveComboBox(ComboBox::Ptr comboBox)
+    {
+        auto node = saveWidget(comboBox);
+
+        SET_PROPERTY("ItemsToDisplay", tgui::to_string(comboBox->getItemsToDisplay()));
+
+        node->children.push_back(WidgetSaver::getSaveFunction("listbox")(tgui::WidgetConverter{comboBox->getListBox()}));
+        node->children.back()->parent = node.get();
+        node->children.back()->name = "ListBox";
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TGUI_API std::shared_ptr<DataIO::Node> saveEditBox(EditBox::Ptr editBox)
     {
         auto node = saveWidget(editBox);
@@ -214,6 +263,44 @@ namespace tgui
             SET_PROPERTY("AutoSize", "true");
 
         SET_PROPERTY("TextSize", tgui::to_string(label->getTextSize()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveListBox(ListBox::Ptr listBox)
+    {
+        auto node = saveWidget(listBox);
+
+        if (listBox->getItemCount() > 0)
+        {
+            auto items = listBox->getItems();
+            auto& ids = listBox->getItemIds();
+
+            std::string itemList = "[" + Serializer::serialize(items[0]);
+            std::string itemIdList = "[" + Serializer::serialize(ids[0]);
+            for (unsigned int i = 1; i < items.size(); ++i)
+            {
+                itemList += ", " + Serializer::serialize(items[i]);
+                itemIdList += ", " + Serializer::serialize(ids[i]);
+            }
+            itemList += "]";
+            itemIdList += "]";
+
+            SET_PROPERTY("Items", itemList);
+            SET_PROPERTY("ItemIds", itemIdList);
+        }
+
+        SET_PROPERTY("ItemHeight", tgui::to_string(listBox->getItemHeight()));
+        SET_PROPERTY("MaximumItems", tgui::to_string(listBox->getMaximumItems()));
+
+        if (listBox->getScrollbar() != nullptr)
+        {
+            node->children.push_back(WidgetSaver::getSaveFunction("scrollbar")(tgui::WidgetConverter{listBox->getScrollbar()}));
+            node->children.back()->parent = node.get();
+            node->children.back()->name = "Scrollbar";
+        }
+
         return node;
     }
 
@@ -320,6 +407,56 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    TGUI_API std::shared_ptr<DataIO::Node> saveTab(Tab::Ptr tab)
+    {
+        auto node = saveWidget(tab);
+
+        if (tab->getTabsCount() > 0)
+        {
+            std::string tabList = "[" + Serializer::serialize(tab->getText(0));
+            for (unsigned int i = 1; i < tab->getTabsCount(); ++i)
+                tabList += ", " + Serializer::serialize(tab->getText(i));
+
+            tabList += "]";
+            SET_PROPERTY("Tabs", tabList);
+        }
+
+        if (tab->getSelectedIndex() >= 0)
+            SET_PROPERTY("Selected", tgui::to_string(tab->getSelectedIndex()));
+
+        if (tab->getMaximumTabWidth() > 0)
+            SET_PROPERTY("MaximumTabWidth", tgui::to_string(tab->getMaximumTabWidth()));
+
+        SET_PROPERTY("TextSize", tgui::to_string(tab->getTextSize()));
+        SET_PROPERTY("TabHeight", tgui::to_string(tab->getTabHeight()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveTextBox(TextBox::Ptr textBox)
+    {
+        auto node = saveWidget(textBox);
+
+        SET_PROPERTY("Text", Serializer::serialize(textBox->getText()));
+        SET_PROPERTY("TextSize", tgui::to_string(textBox->getTextSize()));
+        SET_PROPERTY("MaximumCharacters", tgui::to_string(textBox->getMaximumCharacters()));
+
+        if (textBox->isReadOnly())
+            SET_PROPERTY("ReadOnly", "true");
+
+        if (textBox->getScrollbar() != nullptr)
+        {
+            node->children.push_back(WidgetSaver::getSaveFunction("scrollbar")(tgui::WidgetConverter{textBox->getScrollbar()}));
+            node->children.back()->parent = node.get();
+            node->children.back()->name = "Scrollbar";
+        }
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TGUI_API std::shared_ptr<DataIO::Node> saveTooltip(Tooltip::Ptr tooltip)
     {
         auto node = saveLabel(tooltip);
@@ -345,9 +482,12 @@ namespace tgui
             {toLower("Canvas"), saveWidget},
             {toLower("CheckBox"), saveRadioButton},
             {toLower("ClickableWidget"), saveWidget},
+            {toLower("ChildWindow"), saveChildWindow},
+            {toLower("ComboBox"), saveComboBox},
             {toLower("EditBox"), saveEditBox},
             {toLower("Knob"), saveKnob},
             {toLower("Label"), saveLabel},
+            {toLower("ListBox"), saveListBox},
             {toLower("Panel"), saveContainer},
             {toLower("Picture"), savePicture},
             {toLower("ProgressBar"), saveProgressBar},
@@ -355,6 +495,8 @@ namespace tgui
             {toLower("Scrollbar"), saveScrollbar},
             {toLower("Slider"), saveSlider},
             {toLower("SpinButton"), saveSpinButton},
+            {toLower("Tab"), saveTab},
+            {toLower("TextBox"), saveTextBox},
             {toLower("ToolTip"), saveTooltip}
         };
 

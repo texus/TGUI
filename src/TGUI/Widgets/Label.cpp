@@ -217,11 +217,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::reload(const std::string& primary, const std::string& secondary, bool)
+    void Label::reload(const std::string& primary, const std::string& secondary, bool force)
     {
         if (m_theme && primary != "")
         {
-            m_theme->initWidget(this, primary, secondary);
+            Widget::reload(primary, secondary, force);
         }
         else // Load white theme
         {

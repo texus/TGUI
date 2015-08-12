@@ -885,8 +885,7 @@ namespace tgui
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
-
-            m_theme->initWidget(this, primary, secondary);
+            Widget::reload(primary, secondary, force);
 
             if (force)
             {

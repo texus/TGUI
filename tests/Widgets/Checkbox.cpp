@@ -53,6 +53,8 @@ TEST_CASE("[Checkbox]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         REQUIRE_NOTHROW(checkbox = theme->load("Checkbox"));
+        REQUIRE(checkbox->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(checkbox->getSecondaryLoadingParameter() == "checkbox");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(checkbox);

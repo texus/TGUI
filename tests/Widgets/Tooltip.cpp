@@ -63,6 +63,9 @@ TEST_CASE("[Tooltip]") {
             auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
             tgui::Button::Ptr button = theme->load("Button");
             tooltip = theme->load("Tooltip");
+            REQUIRE(tooltip->getPrimaryLoadingParameter() == "resources/Black.txt");
+            REQUIRE(tooltip->getSecondaryLoadingParameter() == "tooltip");
+
             tooltip->setText("Tooltip text");
             button->setTooltip(tooltip);
             

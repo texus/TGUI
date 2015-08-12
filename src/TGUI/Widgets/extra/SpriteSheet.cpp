@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/extra/SpriteSheet.hpp>
+#include <TGUI/Widgets/extra/SpriteSheet.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,24 +33,14 @@ namespace ext
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpriteSheet::SpriteSheet()
+    SpriteSheet::SpriteSheet(const std::string& filename, unsigned int rows, unsigned int columns) :
+        Picture{filename}
     {
         m_callback.widgetType = "SpriteSheet";
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    SpriteSheet::Ptr SpriteSheet::create(const std::string& filename, unsigned int rows, unsigned int columns)
-    {
-        auto spriteSheet = std::make_shared<SpriteSheet>();
-
-        spriteSheet->Picture::operator=(*Picture::create(filename));
-        spriteSheet->setCells(rows, columns);
-
+        setCells(rows, columns);
         if ((rows > 1) || (columns > 1))
-            spriteSheet->setSize(spriteSheet->m_texture.getImageSize().x / columns, spriteSheet->m_texture.getImageSize().y / rows);
-
-        return spriteSheet;
+            setSize(m_texture.getImageSize().x / columns, m_texture.getImageSize().y / rows);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

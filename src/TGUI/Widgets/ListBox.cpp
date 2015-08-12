@@ -25,12 +25,10 @@
 
 #include <SFML/OpenGL.hpp>
 
-#include <TGUI/Scrollbar.hpp>
 #include <TGUI/Container.hpp>
-#include <TGUI/ListBox.hpp>
-#include <TGUI/Label.hpp>
-
-#include <cassert>
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/Label.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,8 +48,7 @@ namespace tgui
         addSignal<sf::String, TypeSet<sf::String, sf::String>>("DoubleClicked");
 
         m_renderer = std::make_shared<ListBoxRenderer>(this);
-
-        getRenderer()->setBorders({2, 2, 2, 2});
+        reload();
 
         setSize({150, 150});
         setItemHeight(20);
@@ -94,60 +91,6 @@ namespace tgui
         }
 
         return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ListBox::Ptr ListBox::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto listBox = std::make_shared<ListBox>();
-
-        if (themeFileFilename != "")
-        {
-            listBox->getRenderer()->setBorders({0, 0, 0, 0});
-            listBox->getRenderer()->setHoverBackgroundColor(sf::Color::Transparent);
-
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    if (it->first == "scrollbar")
-                    {
-                        if (toLower(it->second) != "none")
-                        {
-                            if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                                throw Exception{"Failed to parse value for 'Scrollbar' property."};
-
-                            listBox->getRenderer()->setScrollbar(themeFileFilename, it->second.substr(1, it->second.length()-2));
-                        }
-                        else // There should be no scrollbar
-                            listBox->removeScrollbar();
-                    }
-                    else
-                        listBox->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-
-            listBox->updateSize();
-        }
-
-        return listBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +142,6 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             Padding padding = getRenderer()->getScaledPadding();
-
             m_scroll->setSize({m_scroll->getSize().x, std::max(0.f, getSize().y - padding.top - padding.bottom)});
             m_scroll->setLowValue(static_cast<unsigned int>(std::max(0.f, getSize().y - padding.top - padding.bottom)));
         }
@@ -266,10 +208,7 @@ namespace tgui
         }
 
         // No match was found
-        if (m_selectedItem >= 0)
-            m_items[m_selectedItem].setTextColor(getRenderer()->m_textColor);
-
-        m_selectedItem = -1;
+        deselectItem();
         return false;
     }
 
@@ -284,10 +223,7 @@ namespace tgui
         }
 
         // No match was found
-        if (m_selectedItem >= 0)
-            m_items[m_selectedItem].setTextColor(getRenderer()->m_textColor);
-
-        m_selectedItem = -1;
+        deselectItem();
         return false;
     }
 
@@ -296,7 +232,10 @@ namespace tgui
     bool ListBox::setSelectedItemByIndex(std::size_t index)
     {
         if (index >= m_items.size())
+        {
+            deselectItem();
             return false;
+        }
 
         if (m_selectedItem >= 0)
             m_items[m_selectedItem].setTextColor(getRenderer()->m_textColor);
@@ -438,15 +377,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    int ListBox::getSelectedItemIndex() const
+    {
+        return m_selectedItem;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListBox::changeItem(const sf::String& originalValue, const sf::String& newValue)
     {
-        for (auto& item : m_items)
+        for (std::size_t i = 0; i < m_items.size(); ++i)
         {
-            if (item.getText() == originalValue)
-            {
-                item.setText(newValue);
-                return true;
-            }
+            if (m_items[i].getText() == originalValue)
+                return changeItemByIndex(i, newValue);
         }
 
         return false;
@@ -459,10 +402,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_items.size(); ++i)
         {
             if (m_itemIds[i] == id)
-            {
-                m_items[i].setText(newValue);
-                return true;
-            }
+                return changeItemByIndex(i, newValue);
         }
 
         return false;
@@ -470,22 +410,69 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::removeScrollbar()
+    bool ListBox::changeItemByIndex(std::size_t index, const sf::String& newValue)
     {
-        m_scroll = nullptr;
+        if (index >= m_items.size())
+            return false;
 
-        // When the items no longer fit inside the list box then we need to remove some
-        if ((m_items.size() * m_itemHeight) > static_cast<std::size_t>(getSize().y))
+        m_items[index].setText(newValue);
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<sf::String> ListBox::getItems()
+    {
+        std::vector<sf::String> items;
+        for (auto& label : m_items)
+            items.push_back(label.getText());
+
+        return items;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::vector<sf::String>& ListBox::getItemIds()
+    {
+        return m_itemIds;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::setScrollbar(Scrollbar::Ptr scrollbar)
+    {
+        m_scroll = scrollbar;
+
+        if (m_scroll)
         {
-            // Calculate ho many items fit inside the list box
-            m_maxItems = static_cast<std::size_t>(getSize().y / m_itemHeight);
+            Padding padding = getRenderer()->getScaledPadding();
+            m_scroll->setSize({m_scroll->getSize().x, std::max(0.f, getSize().y - padding.top - padding.bottom)});
+            m_scroll->setLowValue(static_cast<unsigned int>(std::max(0.f, getSize().y - padding.top - padding.bottom)));
+            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+            m_scroll->setPosition(getPosition().x + getSize().x - m_scroll->getSize().x, getPosition().y);
+        }
+        else // The scrollbar was removed
+        {
+            // When the items no longer fit inside the list box then we need to remove some
+            if ((m_items.size() * m_itemHeight) > static_cast<std::size_t>(getSize().y))
+            {
+                // Calculate ho many items fit inside the list box
+                m_maxItems = static_cast<std::size_t>(getSize().y / m_itemHeight);
 
-            // Remove the items that did not fit inside the list box
-            m_items.erase(m_items.begin() + m_maxItems, m_items.end());
-            m_itemIds.erase(m_itemIds.begin() + m_maxItems, m_itemIds.end());
+                // Remove the items that did not fit inside the list box
+                m_items.erase(m_items.begin() + m_maxItems, m_items.end());
+                m_itemIds.erase(m_itemIds.begin() + m_maxItems, m_itemIds.end());
+            }
         }
 
         updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Scrollbar::Ptr ListBox::getScrollbar() const
+    {
+        return m_scroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -890,6 +877,39 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        if (m_theme && primary != "")
+        {
+            getRenderer()->setBorders({0, 0, 0, 0});
+            getRenderer()->setHoverBackgroundColor(sf::Color::Transparent);
+
+            Widget::reload(primary, secondary, force);
+
+            if (force)
+            {
+                if (getRenderer()->m_backgroundTexture.isLoaded())
+                    setSize(getRenderer()->m_backgroundTexture.getImageSize());
+            }
+            else
+                updateSize();
+        }
+        else // Load white theme
+        {
+            getRenderer()->setBorders({2, 2, 2, 2});
+            getRenderer()->setBackgroundColor({245, 245, 245});
+            getRenderer()->setTextColorNormal({60, 60, 60});
+            getRenderer()->setTextColorHover({0, 0, 0});
+            getRenderer()->setHoverBackgroundColor({255, 255, 255});
+            getRenderer()->setSelectedBackgroundColor({0, 110, 255});
+            getRenderer()->setSelectedTextColor({255, 255, 255});
+            getRenderer()->setBorderColor({0, 0, 0});
+            getRenderer()->setBackgroundTexture({});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListBox::update()
     {
         // When double-clicking, the second click has to come within 500 milliseconds
@@ -997,42 +1017,163 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBoxRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    void ListBoxRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "backgroundimage")
-            extractTextureFromString(property, value, rootPath, m_backgroundTexture);
-        else if (property == "backgroundcolor")
-            setBackgroundColor(extractColorFromString(property, value));
-        else if (property == "textcolor")
-            setTextColor(extractColorFromString(property, value));
-        else if (property == "textcolornormal")
-            setTextColorNormal(extractColorFromString(property, value));
-        else if (property == "textcolorhover")
-            setTextColorHover(extractColorFromString(property, value));
-        else if (property == "hoverbackgroundcolor")
-            setHoverBackgroundColor(extractColorFromString(property, value));
-        else if (property == "selectedbackgroundcolor")
-            setSelectedBackgroundColor(extractColorFromString(property, value));
-        else if (property == "selectedtextcolor")
-            setSelectedTextColor(extractColorFromString(property, value));
-        else if (property == "bordercolor")
-            setBorderColor(extractColorFromString(property, value));
-        else if (property == "borders")
-            setBorders(extractBordersFromString(property, value));
-        else if (property == "padding")
-            setPadding(extractBordersFromString(property, value));
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("Padding"))
+            setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("BackgroundColor"))
+            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TextColor"))
+            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TextColorNormal"))
+            setTextColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TextColorHover"))
+            setTextColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("HoverBackgroundColor"))
+            setHoverBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("SelectedBackgroundColor"))
+            setSelectedBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("SelectedTextColor"))
+            setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BorderColor"))
+            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BackgroundImage"))
+            setBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("Scrollbar"))
+        {
+            if (toLower(value) == "none")
+                m_listBox->setScrollbar(nullptr);
+            else
+            {
+                if (m_listBox->getTheme() == nullptr)
+                    throw Exception{"Failed to load scrollbar, ListBox has no connected theme to load the scrollbar with"};
+
+                m_listBox->setScrollbar(m_listBox->getTheme()->internalLoad(m_listBox->m_primaryLoadingParameter,
+                                                                            Deserializer::deserialize(ObjectConverter::Type::String, value).getString()));
+            }
+        }
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            WidgetRenderer::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBoxRenderer::setBackgroundImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void ListBoxRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
-        if (filename != "")
-            m_backgroundTexture.load(filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Borders)
+        {
+            if (property == toLower("Borders"))
+                setBorders(value.getBorders());
+            else if (property == toLower("Padding"))
+                setPadding(value.getBorders());
+            else
+                return WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("BackgroundColor"))
+                setBackgroundColor(value.getColor());
+            else if (property == toLower("TextColor"))
+                setTextColor(value.getColor());
+            else if (property == toLower("TextColorNormal"))
+                setTextColorNormal(value.getColor());
+            else if (property == toLower("TextColorHover"))
+                setTextColorHover(value.getColor());
+            else if (property == toLower("HoverBackgroundColor"))
+                setHoverBackgroundColor(value.getColor());
+            else if (property == toLower("SelectedBackgroundColor"))
+                setSelectedBackgroundColor(value.getColor());
+            else if (property == toLower("SelectedTextColor"))
+                setSelectedTextColor(value.getColor());
+            else if (property == toLower("BorderColor"))
+                setBorderColor(value.getColor());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Texture)
+        {
+            if (property == toLower("BackgroundImage"))
+                setBackgroundTexture(value.getTexture());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::String)
+        {
+            if (property == toLower("Scrollbar"))
+            {
+                if (toLower(value.getString()) == "none")
+                    m_listBox->setScrollbar(nullptr);
+                else
+                {
+                    if (m_listBox->getTheme() == nullptr)
+                        throw Exception{"Failed to load scrollbar, ListBox has no connected theme to load the scrollbar with"};
+
+                    m_listBox->setScrollbar(m_listBox->getTheme()->internalLoad(m_listBox->getPrimaryLoadingParameter(), value.getString()));
+                }
+            }
+        }
         else
-            m_backgroundTexture = {};
+            WidgetRenderer::setProperty(property, std::move(value));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ObjectConverter ListBoxRenderer::getProperty(std::string property) const
+    {
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            return m_borders;
+        else if (property == toLower("Padding"))
+            return m_padding;
+        else if (property == toLower("BackgroundColor"))
+            return m_backgroundColor;
+        else if (property == toLower("TextColor"))
+            return m_textColor;
+        else if (property == toLower("TextColorNormal"))
+            return m_textColor;
+        else if (property == toLower("TextColorHover"))
+            return m_hoverTextColor;
+        else if (property == toLower("HoverBackgroundColor"))
+            return m_hoverBackgroundColor;
+        else if (property == toLower("SelectedBackgroundColor"))
+            return m_selectedBackgroundColor;
+        else if (property == toLower("SelectedTextColor"))
+            return m_selectedTextColor;
+        else if (property == toLower("BorderColor"))
+            return m_borderColor;
+        else if (property == toLower("BackgroundImage"))
+            return m_backgroundTexture;
+        else
+            return WidgetRenderer::getProperty(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<std::string, ObjectConverter> ListBoxRenderer::getPropertyValuePairs() const
+    {
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
+
+        if (m_backgroundTexture.isLoaded())
+            pairs["BackgroundImage"] = m_backgroundTexture;
+        else
+            pairs["BackgroundColor"] = m_backgroundColor;
+
+        pairs["TextColorNormal"] = m_textColor;
+        pairs["TextColorHover"] = m_hoverTextColor;
+        pairs["HoverBackgroundColor"] = m_hoverBackgroundColor;
+        pairs["SelectedBackgroundColor"] = m_selectedBackgroundColor;
+        pairs["SelectedTextColor"] = m_selectedTextColor;
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
+        pairs["Padding"] = m_padding;
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1099,6 +1240,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBoxRenderer::setBackgroundTexture(const Texture& texture)
+    {
+        m_backgroundTexture = texture;
+        m_backgroundTexture.setPosition(m_listBox->getPosition());
+        m_backgroundTexture.setSize(m_listBox->getSize());
+        m_backgroundTexture.setColor({255, 255, 255, m_listBox->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
         m_listBox->m_font = font;
@@ -1120,32 +1271,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBoxRenderer::setScrollbar(const std::string& scrollbarThemeFileFilename, const std::string& section)
-    {
-        m_listBox->m_scroll = Scrollbar::create(scrollbarThemeFileFilename, section);
-
-        m_listBox->m_scroll->setSize({m_listBox->m_scroll->getSize().x, m_listBox->getSize().y});
-        m_listBox->m_scroll->setLowValue(static_cast<unsigned int>(m_listBox->getSize().y));
-        m_listBox->m_scroll->setMaximum(static_cast<unsigned int>(m_listBox->m_items.size() * m_listBox->m_itemHeight));
-        m_listBox->m_scroll->setPosition(m_listBox->getPosition().x + m_listBox->getSize().x - m_listBox->m_scroll->getSize().x, m_listBox->getPosition().y);
-
-        m_listBox->updatePosition();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ListBoxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Draw the background
-        if (m_backgroundTexture.getData() == nullptr)
+        if (m_backgroundTexture.isLoaded())
+            target.draw(m_backgroundTexture, states);
+        else
         {
             sf::RectangleShape background(m_listBox->getSize());
             background.setPosition(m_listBox->getPosition());
             background.setFillColor(m_backgroundColor);
             target.draw(background, states);
         }
-        else
-            target.draw(m_backgroundTexture, states);
 
         // Draw the borders
         if (m_borders != Borders{0, 0, 0, 0})
@@ -1184,29 +1321,38 @@ namespace tgui
         Padding scaledPadding = padding;
 
         auto& texture = m_backgroundTexture;
-        if (texture.getData() != nullptr)
+        if (texture.isLoaded())
         {
             switch (texture.getScalingType())
             {
             case Texture::ScalingType::Normal:
-                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                if ((texture.getImageSize().x != 0) && (texture.getImageSize().y != 0))
+                {
+                    scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
+                    scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                }
                 break;
 
             case Texture::ScalingType::Horizontal:
-                scaledPadding.left = padding.left * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.right = padding.right * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                if ((texture.getImageSize().x != 0) && (texture.getImageSize().y != 0))
+                {
+                    scaledPadding.left = padding.left * (texture.getSize().y / texture.getImageSize().y);
+                    scaledPadding.right = padding.right * (texture.getSize().y / texture.getImageSize().y);
+                    scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
+                    scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                }
                 break;
 
             case Texture::ScalingType::Vertical:
-                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.top = padding.top * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.bottom = padding.bottom * (texture.getSize().x / texture.getImageSize().x);
+                if ((texture.getImageSize().x != 0) && (texture.getImageSize().y != 0))
+                {
+                    scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.top = padding.top * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.bottom = padding.bottom * (texture.getSize().x / texture.getImageSize().x);
+                }
                 break;
 
             case Texture::ScalingType::NineSliceScaling:

@@ -303,10 +303,7 @@ namespace tgui
         /// @param color  The new default text color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(const sf::Color& color)
-        {
-            m_textColor = color;
-        }
+        void setTextColor(const sf::Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -337,10 +334,32 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the scrollbar from the chat box (if there is one).
+        /// @brief Changes the scrollbar of the chat box.
+        ///
+        /// @param scrollbar The new scrollbar to use in the chat box
+        ///
+        /// Pass a nullptr to remove the scrollbar. Note that when removing the scrollbar while there are too many lines
+        /// to fit in the chat box then the oldest lines will be removed.
+        ///
+        /// The scrollbar should have no parent and you should not change it yourself.
+        /// The function is meant to be used like this:
+        /// @code
+        /// chatBox->setScrollbar(theme->load("scrollbar"));
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeScrollbar();
+        void setScrollbar(Scrollbar::Ptr scrollbar);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Access the scrollbar of the chat box
+        ///
+        /// @return scrollbar in the chat box
+        ///
+        /// You should not change the scrollbar yourself
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Scrollbar::Ptr getScrollbar() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -354,7 +373,7 @@ namespace tgui
         /// By default the first lines will be placed at the bottom of the chat box.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setLinesStartFromTop(bool startFromTop);
+        void setLinesStartFromTop(bool startFromTop = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,6 +462,21 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload the widget
+        ///
+        /// @param primary    Primary parameter for the loader
+        /// @param secondary  Secondary parameter for the loader
+        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
+        ///
+        /// @throw Exception when the connected theme could not create the widget
+        ///
+        /// When primary is an empty string the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() override
@@ -496,23 +530,54 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ChatBoxRenderer(ChatBox* chatBox) : m_chatBox{chatBox} {}
 
-/*
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
-        ///
-        /// This function should only be used when you don't know the type of the widget.
-        /// Otherwise you can make a direct function call to make the wanted change.
+        /// @brief Change a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property
-        /// @param rootPath  Path that should be placed in front of any resource filename
+        /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when the property doesn't exist for this widget.
-        /// @throw Exception when the value is invalid for this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath());
-*/
+        virtual void setProperty(std::string property, const std::string& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change a property of the renderer
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, ObjectConverter&& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieve the value of a certain property
+        ///
+        /// @param property  The property that you would like to retrieve
+        ///
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ObjectConverter getProperty(std::string property) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get a map with all properties and their values
+        ///
+        /// @return Property-value pairs of the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const override;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Set the border color that will be used inside the chat box.
@@ -520,10 +585,7 @@ namespace tgui
         /// @param borderColor  The color of the borders
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBorderColor(const sf::Color& borderColor)
-        {
-            m_borderColor = borderColor;
-        }
+        void setBorderColor(const sf::Color& borderColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -534,45 +596,19 @@ namespace tgui
         /// Note that this color is ignored when you set a background image.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& backgroundColor)
-        {
-            m_backgroundColor = backgroundColor;
-        }
+        void setBackgroundColor(const sf::Color& backgroundColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background image
+        /// @brief Changes the background image
+        ///
+        /// @param texture  New background texture
         ///
         /// When this image is set, the background color property will be ignored.
-        ///
         /// Pass an empty string to unset the image, in this case the background color property will be used again.
         ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundImage(const std::string& filename,
-                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar of the chat box.
-        ///
-        /// @param scrollbarThemeFileFilename  Filename of the theme file.
-        /// @param section  The section to look for inside the theme file.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbar(const std::string& scrollbarThemeFileFilename = "", const std::string& section = "Scrollbar");
+        void setBackgroundTexture(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -613,8 +649,8 @@ namespace tgui
 
         ChatBox* m_chatBox;
 
-        sf::Color m_borderColor = {0, 0, 0};
-        sf::Color m_backgroundColor = {245, 245, 245};
+        sf::Color m_borderColor;
+        sf::Color m_backgroundColor;
 
         Texture m_backgroundTexture;
 

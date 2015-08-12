@@ -312,6 +312,8 @@ TEST_CASE("[Scrollbar]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         REQUIRE_NOTHROW(scrollbar = theme->load("Scrollbar"));
+        REQUIRE(scrollbar->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(scrollbar->getSecondaryLoadingParameter() == "scrollbar");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(scrollbar);

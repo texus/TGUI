@@ -26,15 +26,23 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/Checkbox.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/MenuBar.hpp>
+#include <TGUI/Widgets/MessageBox.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Tab.hpp>
+#include <TGUI/Widgets/TextBox.hpp>
 #include <TGUI/Widgets/Tooltip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,15 +54,23 @@ namespace tgui
     std::map<std::string, std::function<Widget::Ptr()>> BaseTheme::m_constructors =
         {
             {toLower("Button"), std::make_shared<Button>},
+            {toLower("ChatBox"), std::make_shared<ChatBox>},
             {toLower("CheckBox"), std::make_shared<Checkbox>},
+            {toLower("ChildWindow"), std::make_shared<ChildWindow>},
+            {toLower("ComboBox"), std::make_shared<ComboBox>},
             {toLower("EditBox"), std::make_shared<EditBox>},
             {toLower("Knob"), std::make_shared<Knob>},
             {toLower("Label"), std::make_shared<Label>},
+            {toLower("ListBox"), std::make_shared<ListBox>},
+            {toLower("MenuBar"), std::make_shared<MenuBar>},
+            {toLower("MessageBox"), std::make_shared<MessageBox>},
             {toLower("ProgressBar"), std::make_shared<ProgressBar>},
             {toLower("RadioButton"), std::make_shared<RadioButton>},
             {toLower("Scrollbar"), std::make_shared<Scrollbar>},
             {toLower("Slider"), std::make_shared<Slider>},
             {toLower("SpinButton"), std::make_shared<SpinButton>},
+            {toLower("Tab"), std::make_shared<Tab>},
+            {toLower("TextBox"), std::make_shared<TextBox>},
             {toLower("ToolTip"), std::make_shared<Tooltip>}
         };
 
@@ -168,7 +184,7 @@ namespace tgui
                 widgetType = widget.second;
 
             m_widgetTypes[widget.second] = widgetType;
-            widgetReload(widget.first, filename, widget.second);
+            widgetReload(widget.first, filename, widget.second, false);
         }
     }
 
@@ -192,7 +208,7 @@ namespace tgui
             if (widget.second == oldClassName)
             {
                 widget.second = newClassName;
-                widgetReload(widget.first, m_filename, newClassName);
+                widgetReload(widget.first, m_filename, newClassName, false);
             }
         }
     }
@@ -220,7 +236,7 @@ namespace tgui
         }
 
         widgetAttached(widget.get());
-        widgetReload(widget.get(), m_filename, className);
+        widgetReload(widget.get(), m_filename, className, false);
 
         m_widgetTypes[className] = widgetType;
         m_widgets[widget.get()] = className;
@@ -233,6 +249,16 @@ namespace tgui
         auto it = m_widgets.find(widget);
         if (it != m_widgets.end())
             m_widgets.erase(it);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    WidgetConverter Theme::internalLoad(const std::string& filename, const std::string& className)
+    {
+        if (filename != m_filename)
+            throw Exception{"Internal load failed in theme because wrong filename was given"};
+
+        return load(className);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,11 +317,18 @@ namespace tgui
     void Theme::initWidget(Widget* widget, std::string filename, std::string className)
     {
         if (filename != m_filename)
-            throw Exception{"Theme tried to init widget which gave a wrong filename."};
+            throw Exception{"Theme tried to init widget which gave a wrong filename"};
 
         // Temporarily change the resource path to load relative from the theme file
         std::string oldResourcePath = getResourcePath();
-        setResourcePath(oldResourcePath + m_resourcePath);
+
+        bool resourcePathChanged = false;
+        if (!m_resourcePathLock && !m_resourcePath.empty())
+        {
+            m_resourcePathLock = true;
+            resourcePathChanged = true;
+            setResourcePath(oldResourcePath + m_resourcePath);
+        }
 
         try
         {
@@ -305,12 +338,20 @@ namespace tgui
         catch (Exception& e)
         {
             // Restore the resource path before throwing
-            setResourcePath(oldResourcePath);
+            if (resourcePathChanged)
+            {
+                setResourcePath(oldResourcePath);
+                m_resourcePathLock = false;
+            }
             throw e;
         }
 
         // Restore the resource path
-        setResourcePath(oldResourcePath);
+        if (resourcePathChanged)
+        {
+            setResourcePath(oldResourcePath);
+            m_resourcePathLock = false;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

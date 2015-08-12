@@ -23,10 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Scrollbar.hpp>
-#include <TGUI/Container.hpp>
-#include <TGUI/TextBox.hpp>
 #include <TGUI/Clipboard.hpp>
+#include <TGUI/Container.hpp>
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
+#include <TGUI/Widgets/TextBox.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -48,10 +49,7 @@ namespace tgui
         addSignal<sf::String>("TextChanged");
 
         m_renderer = std::make_shared<TextBoxRenderer>(this);
-
-        getRenderer()->setBorders(2, 2, 2, 2);
-        getRenderer()->setTextColor({0, 0, 0});
-        getRenderer()->setSelectedTextColor({255, 255, 255});
+        reload();
 
         setSize({360, 200});
     }
@@ -115,57 +113,6 @@ namespace tgui
         }
 
         return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TextBox::Ptr TextBox::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto textBox = std::make_shared<TextBox>();
-
-        if (themeFileFilename != "")
-        {
-            textBox->getRenderer()->setBorders(0, 0, 0, 0);
-
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = themeFileFilename.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = themeFileFilename.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    if (it->first == "scrollbar")
-                    {
-                        if (toLower(it->second) != "none")
-                        {
-                            if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                                throw Exception{"Failed to parse value for 'Scrollbar' property."};
-
-                            textBox->getRenderer()->setScrollbar(themeFileFilename, it->second.substr(1, it->second.length()-2));
-                        }
-                        else // There should be no scrollbar
-                            textBox->removeScrollbar();
-                    }
-                    else
-                        textBox->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-        }
-
-        return textBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -446,10 +393,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::removeScrollbar()
+    void TextBox::setScrollbar(Scrollbar::Ptr scrollbar)
     {
-        m_scroll = nullptr;
-        rearrangeText(false);
+        m_scroll = scrollbar;
+
+        if (m_scroll)
+            updateSize();
+        else
+            rearrangeText(false);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Scrollbar::Ptr TextBox::getScrollbar()
+    {
+        return m_scroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::setReadOnly(bool readOnly)
+    {
+        m_readOnly = readOnly;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool TextBox::isReadOnly()
+    {
+        return m_readOnly;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -889,7 +861,7 @@ namespace tgui
             case sf::Keyboard::C:
             {
                 if (event.control)
-                    TGUI_Clipboard.set(m_textSelection1.getString() + m_textSelection2.getString());
+                    Clipboard::set(m_textSelection1.getString() + m_textSelection2.getString());
 
                 break;
             }
@@ -898,7 +870,7 @@ namespace tgui
             {
                 if (event.control && !m_readOnly)
                 {
-                    TGUI_Clipboard.set(m_textSelection1.getString() + m_textSelection2.getString());
+                    Clipboard::set(m_textSelection1.getString() + m_textSelection2.getString());
                     deleteSelectedCharacters();
                 }
 
@@ -909,7 +881,7 @@ namespace tgui
             {
                 if (event.control && !m_readOnly)
                 {
-                    sf::String clipboardContents = TGUI_Clipboard.get();
+                    sf::String clipboardContents = Clipboard::get();
 
                     // Only continue pasting if you actually have to do something
                     if ((m_selStart != m_selEnd) || (clipboardContents != ""))
@@ -1490,6 +1462,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        if (m_theme && primary != "")
+        {
+            getRenderer()->setBorders({0, 0, 0, 0});
+            Widget::reload(primary, secondary, force);
+        }
+        else // Load white theme
+        {
+            getRenderer()->setBorders(2, 2, 2, 2);
+            getRenderer()->setTextColor({0, 0, 0});
+            getRenderer()->setSelectedTextColor({255, 255, 255});
+            getRenderer()->setCaretColor({0, 0, 0});
+            getRenderer()->setBackgroundColor({255, 255, 255});
+            getRenderer()->setSelectedTextBackgroundColor({0, 110, 255});
+            getRenderer()->setBorderColor({0, 0, 0});
+            getRenderer()->setBackgroundTexture({});
+            getRenderer()->setCaretWidth(2);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         const sf::View& view = target.getView();
@@ -1570,38 +1565,150 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    void TextBoxRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "backgroundimage")
-            extractTextureFromString(property, value, rootPath, m_backgroundTexture);
-        else if (property == "backgroundcolor")
-            setBackgroundColor(extractColorFromString(property, value));
-        else if (property == "textcolor")
-            setTextColor(extractColorFromString(property, value));
-        else if (property == "selectedtextcolor")
-            setSelectedTextColor(extractColorFromString(property, value));
-        else if (property == "selectedtextbackgroundcolor")
-            setSelectedTextBackgroundColor(extractColorFromString(property, value));
-        else if (property == "caretcolor")
-            setCaretColor(extractColorFromString(property, value));
-        else if (property == "bordercolor")
-            setBorderColor(extractColorFromString(property, value));
-        else if (property == "borders")
-            setBorders(extractBordersFromString(property, value));
-        else if (property == "padding")
-            setPadding(extractBordersFromString(property, value));
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("Padding"))
+            setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("BackgroundColor"))
+            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TextColor"))
+            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("SelectedTextColor"))
+            setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("SelectedTextBackgroundColor"))
+            setSelectedTextBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("CaretColor"))
+            setCaretColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BorderColor"))
+            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BackgroundImage"))
+            setBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("Scrollbar"))
+        {
+            if (toLower(value) == "none")
+                m_textBox->setScrollbar(nullptr);
+            else
+            {
+                if (m_textBox->getTheme() == nullptr)
+                    throw Exception{"Failed to load scrollbar, TextBox has no connected theme to load the scrollbar with"};
+
+                m_textBox->setScrollbar(m_textBox->getTheme()->internalLoad(m_textBox->m_primaryLoadingParameter,
+                                                                            Deserializer::deserialize(ObjectConverter::Type::String, value).getString()));
+            }
+        }
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            WidgetRenderer::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setBackgroundImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void TextBoxRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
-        if (filename != "")
-            m_backgroundTexture.load(filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Borders)
+        {
+            if (property == toLower("Borders"))
+                setBorders(value.getBorders());
+            else if (property == toLower("Padding"))
+                setPadding(value.getBorders());
+            else
+                return WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("BackgroundColor"))
+                setBackgroundColor(value.getColor());
+            else if (property == toLower("TextColor"))
+                setTextColor(value.getColor());
+            else if (property == toLower("SelectedTextColor"))
+                setSelectedTextColor(value.getColor());
+            else if (property == toLower("SelectedTextBackgroundColor"))
+                setSelectedTextBackgroundColor(value.getColor());
+            else if (property == toLower("CaretColor"))
+                setCaretColor(value.getColor());
+            else if (property == toLower("BorderColor"))
+                setBorderColor(value.getColor());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Texture)
+        {
+            if (property == toLower("BackgroundImage"))
+                setBackgroundTexture(value.getTexture());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::String)
+        {
+            if (property == toLower("Scrollbar"))
+            {
+                if (toLower(value.getString()) == "none")
+                    m_textBox->setScrollbar(nullptr);
+                else
+                {
+                    if (m_textBox->getTheme() == nullptr)
+                        throw Exception{"Failed to load scrollbar, TextBox has no connected theme to load the scrollbar with"};
+
+                    m_textBox->setScrollbar(m_textBox->getTheme()->internalLoad(m_textBox->getPrimaryLoadingParameter(), value.getString()));
+                }
+            }
+        }
         else
-            m_backgroundTexture = {};
+            WidgetRenderer::setProperty(property, std::move(value));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ObjectConverter TextBoxRenderer::getProperty(std::string property) const
+    {
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            return m_borders;
+        else if (property == toLower("Padding"))
+            return m_padding;
+        else if (property == toLower("BackgroundColor"))
+            return m_backgroundColor;
+        else if (property == toLower("TextColor"))
+            return m_textBox->m_textBeforeSelection.getColor();
+        else if (property == toLower("SelectedTextColor"))
+            return m_textBox->m_textSelection1.getColor();
+        else if (property == toLower("SelectedTextBackgroundColor"))
+            return m_selectedTextBgrColor;
+        else if (property == toLower("CaretColor"))
+            return m_caretColor;
+        else if (property == toLower("BorderColor"))
+            return m_borderColor;
+        else if (property == toLower("BackgroundImage"))
+            return m_backgroundTexture;
+        else
+            return WidgetRenderer::getProperty(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<std::string, ObjectConverter> TextBoxRenderer::getPropertyValuePairs() const
+    {
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
+
+        if (m_backgroundTexture.isLoaded())
+            pairs["BackgroundImage"] = m_backgroundTexture;
+        else
+            pairs["BackgroundColor"] = m_backgroundColor;
+
+        pairs["TextColor"] = m_textBox->m_textBeforeSelection.getColor();
+        pairs["SelectedTextColor"] = m_textBox->m_textSelection1.getColor();
+        pairs["SelectedTextBackgroundColor"] = m_selectedTextBgrColor;
+        pairs["CaretColor"] = m_caretColor;
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
+        pairs["Padding"] = m_padding;
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1658,6 +1765,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBoxRenderer::setBackgroundTexture(const Texture& texture)
+    {
+        m_backgroundTexture = texture;
+        m_backgroundTexture.setPosition(m_textBox->getPosition());
+        m_backgroundTexture.setSize(m_textBox->getSize());
+        m_backgroundTexture.setColor({255, 255, 255, m_textBox->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
     {
         m_textBox->m_font = font;
@@ -1684,26 +1801,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setScrollbar(const std::string& scrollbarThemeFileFilename, const std::string& section)
-    {
-        m_textBox->m_scroll = Scrollbar::create(scrollbarThemeFileFilename, section);
-        m_textBox->updateSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void TextBoxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Draw the background
-        if (m_backgroundTexture.getData() == nullptr)
+        if (m_backgroundTexture.isLoaded())
+            target.draw(m_backgroundTexture, states);
+        else
         {
             sf::RectangleShape background(m_textBox->getSize());
             background.setPosition(m_textBox->getPosition());
             background.setFillColor(m_backgroundColor);
             target.draw(background, states);
         }
-        else
-            target.draw(m_backgroundTexture, states);
 
         // Draw the borders
         if (m_borders != Borders{0, 0, 0, 0})
@@ -1742,7 +1851,7 @@ namespace tgui
         Padding scaledPadding = padding;
 
         auto& texture = m_backgroundTexture;
-        if (texture.getData() != nullptr)
+        if (texture.isLoaded())
         {
             switch (texture.getScalingType())
             {

@@ -119,6 +119,8 @@ TEST_CASE("[Label]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         REQUIRE_NOTHROW(label = theme->load("Label"));
+        REQUIRE(label->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(label->getSecondaryLoadingParameter() == "label");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(label);

@@ -123,7 +123,7 @@ namespace tgui
         // If the file does not start with a slash then load it from the assets
         if (!fullFilename.empty() && (fullFilename[0] != '/'))
         {
-            /// TODO: Workaround until SFML makes native activity publically accessible
+            /// TODO: Workaround until SFML makes native activity publicly accessible
             /// When this happens, extra SFML folder in include can be removed as well.
             ANativeActivity* activity = sf::priv::getActivity(NULL)->activity;
 

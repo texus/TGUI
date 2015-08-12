@@ -62,22 +62,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the menu bar
-        ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static MenuBar::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "MenuBar");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another menu bar
         ///
         /// @param menuBar  The other menu bar
@@ -298,6 +282,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload the widget
+        ///
+        /// @param primary    Primary parameter for the loader
+        /// @param secondary  Secondary parameter for the loader
+        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
+        ///
+        /// @throw Exception when the connected theme could not create the widget
+        ///
+        /// When primary is an empty string the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -343,20 +342,51 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
-        ///
-        /// This function should only be used when you don't know the type of the widget.
-        /// Otherwise you can make a direct function call to make the wanted change.
+        /// @brief Change a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property
-        /// @param rootPath  Path that should be placed in front of any resource filename
+        /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when the property doesn't exist for this widget.
-        /// @throw Exception when the value is invalid for this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath());
+        virtual void setProperty(std::string property, const std::string& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change a property of the renderer
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setProperty(std::string property, ObjectConverter&& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieve the value of a certain property
+        ///
+        /// @param property  The property that you would like to retrieve
+        ///
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ObjectConverter getProperty(std::string property) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get a map with all properties and their values
+        ///
+        /// @return Property-value pairs of the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,52 +458,34 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Change the image that is used to fill the entire menu bar
         ///
-        /// Pass an empty string to unset the image.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundImage(const std::string& filename,
-                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                bool repeated = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as background for every menu item
+        /// @param texture  New item background texture
         ///
         /// Pass an empty string to unset the image.
         ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image that is displayed when the tab is not selected
+        ///
+        /// @param texture  New item background texture
+        ///
+        /// Pass an empty string to unset the image.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setItemBackgroundImage(const std::string& filename,
-                                    const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                    const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                    bool repeated = false);
+        void setItemBackgroundTexture(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Change the image that is used as background of the selected menu item
         ///
+        /// @param texture  New selected item background texture
+        ///
         /// Pass an empty string to unset the image.
         ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedItemBackgroundImage(const std::string& filename,
-                                            const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                            const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                            bool repeated = false);
+        void setSelectedItemBackgroundTexture(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -501,13 +513,13 @@ namespace tgui
 
         MenuBar*  m_menuBar;
 
-        float     m_distanceToSide = 4;
+        float     m_distanceToSide;
 
-        sf::Color m_textColor               = {  0,   0,   0};
-        sf::Color m_selectedTextColor       = {255, 255, 255};
+        sf::Color m_textColor;
+        sf::Color m_selectedTextColor;
 
-        sf::Color m_backgroundColor         = {255, 255, 255};
-        sf::Color m_selectedBackgroundColor = {  0, 110, 255};
+        sf::Color m_backgroundColor;
+        sf::Color m_selectedBackgroundColor;
 
         Texture   m_backgroundTexture;
         Texture   m_itemBackgroundTexture;

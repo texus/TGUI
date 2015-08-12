@@ -60,16 +60,11 @@ namespace tgui
 
 
         /// Title alignments, possible options for the setTitleAlignment function
-        enum TitleAlignment
+        enum class TitleAlignment
         {
-            /// Places the title on the left side of the title bar
-            TitleAlignmentLeft,
-
-            /// Places the title in the middle of the title bar
-            TitleAlignmentCentered,
-
-            /// Places the title on the right side of the title bar
-            TitleAlignmentRight
+            Left,   ///< Places the title on the left side of the title bar
+            Center, ///< Places the title in the middle of the title bar
+            Right   ///< Places the title on the right side of the title bar
         };
 
 
@@ -77,22 +72,6 @@ namespace tgui
         // Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ChildWindow();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates the child window
-        ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ChildWindow::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "ChildWindow");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,19 +218,22 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the icon in the top left corner of the child window.
         ///
-        /// @param filename  Filename of the icon image
+        /// @param icon  the icon image
         ///
         /// There is no icon by default.
+        /// Set an empty texture to remove the icon.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setIcon(const std::string& filename);
+        void setIcon(const Texture& icon);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the icon in the top left corner of the child window.
+        /// @brief Returns the icon in the top left corner of the child window.
+        ///
+        /// @return the icon image
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeIcon();
+        const Texture& getIcon();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,7 +257,7 @@ namespace tgui
         ///                 It's set to false by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void keepInParent(bool enabled);
+        void keepInParent(bool enabled = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,6 +270,32 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isKeptInParent() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the close button
+        ///
+        /// @return closeButton  The new close button
+        ///
+        /// The close button should have no parent and you should not longer change it after calling this function.
+        /// The function is meant to be used like this:
+        /// @code
+        /// childWindow->setCloseButton(theme->load("CloseButton"));
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setCloseButton(Button::Ptr closeButton);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the close button
+        ///
+        /// @return close button of the child window
+        ///
+        /// You should not change this close button yourself.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Button::Ptr getCloseButton() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,9 +350,18 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Creates the child window
+        /// @brief Reload the widget
+        ///
+        /// @param primary    Primary parameter for the loader
+        /// @param secondary  Secondary parameter for the loader
+        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
+        ///
+        /// @throw Exception when the connected theme could not create the widget
+        ///
+        /// When primary is an empty string the built-in white theme will be used.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void createChildWindow(const std::string& themeFileFilename, const std::string& section);
+        virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,9 +387,9 @@ namespace tgui
 
         Label          m_titleText;
         sf::Vector2f   m_draggingPosition;
-        TitleAlignment m_titleAlignment = TitleAlignmentCentered;
+        TitleAlignment m_titleAlignment = TitleAlignment::Center;
 
-        Button m_closeButton;
+        std::shared_ptr<Button> m_closeButton = std::make_shared<Button>();
 
         bool m_mouseDownOnTitleBar = false;
         bool m_keepInParent = false;
@@ -399,39 +416,51 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
-        ///
-        /// This function should only be used when you don't know the type of the widget.
-        /// Otherwise you can make a direct function call to make the wanted change.
+        /// @brief Change a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property
-        /// @param rootPath  Path that should be placed in front of any resource filename
+        /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when the property doesn't exist for this widget.
-        /// @throw Exception when the value is invalid for this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath());
+        virtual void setProperty(std::string property, const std::string& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the title bar
+        /// @brief Change a property of the renderer
         ///
-        /// When this image is set, the title bar color property will be ignored.
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
         ///
-        /// Pass an empty string to unset the image, in this case the title bar color property will be used again.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTitleBarImage(const std::string& filename,
-                              const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                              const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                              bool repeated = false);
+        virtual void setProperty(std::string property, ObjectConverter&& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieve the value of a certain property
+        ///
+        /// @param property  The property that you would like to retrieve
+        ///
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ObjectConverter getProperty(std::string property) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get a map with all properties and their values
+        ///
+        /// @return Property-value pairs of the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -501,6 +530,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image of the title bar
+        ///
+        /// @param texture  New title bar texture
+        ///
+        /// When this image is set, the title bar color property will be ignored.
+        /// Pass an empty string to unset the image, in this case the title bar color property will be used again.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTitleBarTexture(const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer of the close button
         ///
         /// @return The close button renderer
@@ -534,15 +575,15 @@ namespace tgui
 
         ChildWindow* m_childWindow;
 
-        float        m_titleBarHeight = 20;
-        float        m_distanceToSide = 3;
+        float        m_titleBarHeight;
+        float        m_distanceToSide;
 
         Texture      m_textureTitleBar;
 
-        sf::Color    m_titleBarColor   = {255, 255, 255};
+        sf::Color    m_titleBarColor;
 
-        sf::Color    m_backgroundColor = {230, 230, 230};
-        sf::Color    m_borderColor     = {0, 0, 0};
+        sf::Color    m_backgroundColor;
+        sf::Color    m_borderColor;
 
         friend class ChildWindow;
 

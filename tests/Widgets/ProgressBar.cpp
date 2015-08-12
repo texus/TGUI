@@ -235,6 +235,8 @@ TEST_CASE("[ProgressBar]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         REQUIRE_NOTHROW(progressBar = theme->load("ProgressBar"));
+        REQUIRE(progressBar->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(progressBar->getSecondaryLoadingParameter() == "progressbar");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(progressBar);

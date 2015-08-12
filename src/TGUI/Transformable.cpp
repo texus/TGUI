@@ -57,6 +57,8 @@ namespace tgui
         m_position = position;
         m_position.x.connectUpdateCallback(std::bind(&Transformable::updatePosition, this, false));
         m_position.y.connectUpdateCallback(std::bind(&Transformable::updatePosition, this, false));
+
+        m_prevPosition = m_position.getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,15 +79,20 @@ namespace tgui
 
     void Transformable::setSize(const Layout2d& size)
     {
-        m_size = size;
-        if (m_size.getValue().x < 0)
-            m_size.x = m_size.x * -1;
+        if (size.getValue().x >= 0)
+            m_size.x = size.x;
+        else
+            m_size.x = size.x * -1;
 
-        if (m_size.getValue().y < 0)
-            m_size.y = m_size.y * -1;
+        if (size.getValue().y >= 0)
+            m_size.y = size.y;
+        else
+            m_size.y = size.y * -1;
 
         m_size.x.connectUpdateCallback(std::bind(&Transformable::updateSize, this, false));
         m_size.y.connectUpdateCallback(std::bind(&Transformable::updateSize, this, false));
+
+        m_prevSize = m_size.getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,8 +120,6 @@ namespace tgui
             if (m_prevPosition != m_position.getValue())
                 setPosition(m_position);
         }
-
-        m_prevPosition = m_position.getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,8 +133,6 @@ namespace tgui
             if (m_prevSize != m_size.getValue())
                 setSize(m_size);
         }
-
-        m_prevSize = m_size.getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

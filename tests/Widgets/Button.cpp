@@ -202,6 +202,8 @@ TEST_CASE("[Button]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         REQUIRE_NOTHROW(button = theme->load("Button"));
+        REQUIRE(button->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(button->getSecondaryLoadingParameter() == "button");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(button);

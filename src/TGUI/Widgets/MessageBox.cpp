@@ -23,7 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/MessageBox.hpp>
+#include <TGUI/Widgets/MessageBox.hpp>
+#include <TGUI/Loading/Theme.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,8 +39,7 @@ namespace tgui
         addSignal<sf::String>("ButtonPressed");
 
         m_renderer = std::make_shared<MessageBoxRenderer>(this);
-
-        getRenderer()->setBorders({1, 1, 1, 1});
+        reload();
 
         add(m_label, "#TGUI_INTERNAL$MessageBoxText#");
         m_label->setTextSize(m_textSize);
@@ -50,10 +50,10 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox(const MessageBox& messageBoxToCopy) :
-        ChildWindow        {messageBoxToCopy},
-        m_loadedThemeFile  (messageBoxToCopy.m_loadedThemeFile), // Did not compile in VS2013 when using braces
-        m_buttonSectionName(messageBoxToCopy.m_buttonSectionName), // Did not compile in VS2013 when using braces
-        m_textSize         {messageBoxToCopy.m_textSize}
+        ChildWindow      {messageBoxToCopy},
+        m_loadedThemeFile(messageBoxToCopy.m_loadedThemeFile), // Did not compile in VS2013 when using braces
+        m_buttonClassName(messageBoxToCopy.m_buttonClassName), // Did not compile in VS2013 when using braces
+        m_textSize       {messageBoxToCopy.m_textSize}
     {
         m_label = Label::copy(messageBoxToCopy.m_label);
         add(m_label, "#TGUI_INTERNAL$MessageBoxText#");
@@ -78,78 +78,13 @@ namespace tgui
             ChildWindow::operator=(right);
 
             std::swap(m_loadedThemeFile,   temp.m_loadedThemeFile);
-            std::swap(m_buttonSectionName, temp.m_buttonSectionName);
+            std::swap(m_buttonClassName,    temp.m_buttonClassName);
             std::swap(m_buttons,           temp.m_buttons);
             std::swap(m_label,             temp.m_label);
             std::swap(m_textSize,          temp.m_textSize);
         }
 
         return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    MessageBox::Ptr MessageBox::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto messageBox = std::make_shared<MessageBox>();
-
-        if (themeFileFilename != "")
-        {
-            messageBox->m_loadedThemeFile = themeFileFilename;
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    if (it->first == "childwindow")
-                    {
-                        if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                            throw Exception{"Failed to parse value for ChildWindow property in section '" + section + "' in " + loadedThemeFile + "."};
-
-                        try
-                        {
-                            messageBox->createChildWindow(messageBox->m_loadedThemeFile, it->second.substr(1, it->second.length()-2));
-                        }
-                        catch (const Exception& e)
-                        {
-                            throw Exception{"Failed to load the internal ChildWindow for MessageBox. " + std::string{e.what()}};
-                        }
-                    }
-                    else
-                        messageBox->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-
-            if (messageBox->getRenderer()->m_textureTitleBar.getData())
-                messageBox->getRenderer()->m_titleBarHeight = messageBox->getRenderer()->m_textureTitleBar.getImageSize().y;
-        }
-
-        if (!messageBox->m_closeButton.getRenderer()->m_textureNormal.getData())
-        {
-            messageBox->m_closeButton.setSize({messageBox->getRenderer()->m_titleBarHeight * 0.8f, messageBox->getRenderer()->m_titleBarHeight * 0.8f});
-            messageBox->m_closeButton.getRenderer()->setBorders({1, 1, 1, 1});
-            messageBox->m_closeButton.setText("X");
-        }
-
-        // Set the size of the title text
-        messageBox->m_titleText.setTextSize(static_cast<unsigned int>(messageBox->getRenderer()->m_titleBarHeight * 0.8f));
-
-        return messageBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +124,12 @@ namespace tgui
 
     void MessageBox::addButton(const sf::String& caption)
     {
-        auto button = Button::create(m_loadedThemeFile, m_buttonSectionName);
+        Button::Ptr button;
+        if (!getTheme() || m_buttonClassName.empty())
+            button = std::make_shared<Button>();
+        else
+            getTheme()->internalLoad(getPrimaryLoadingParameter(), m_buttonClassName);
+
         button->setTextSize(m_textSize);
         button->setText(caption);
         button->connect("Pressed", [=](){ m_callback.text = caption; sendSignal("ButtonPressed", caption); });
@@ -260,21 +200,92 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        ChildWindow::reload(primary, secondary, force);
+
+        if (!m_theme || primary == "")
+        {
+            getRenderer()->setTextColor({0, 0, 0});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBoxRenderer::setProperty(std::string property, const std::string& value, const std::string&)
+    void MessageBoxRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "button")
-        {
-            if ((value.length() < 3) || (value[0] != '"') || (value[value.length()-1] != '"'))
-                throw Exception{"Failed to parse value for Button  property."};
+        property = toLower(property);
 
-            m_messageBox->m_buttonSectionName = value.substr(1, value.length()-2);
+        if (property == toLower("TextColor"))
+            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("Button"))
+            m_messageBox->m_buttonClassName = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
+        else if (property == toLower("ChildWindow"))
+        {
+            if (m_messageBox->getTheme() == nullptr)
+                throw Exception{"Failed to load scrollbar, ChatBox has no connected theme to load the scrollbar with"};
+
+            tgui::ChildWindow::Ptr childWindow = m_messageBox->getTheme()->internalLoad(
+                                                        m_messageBox->m_primaryLoadingParameter,
+                                                        Deserializer::deserialize(ObjectConverter::Type::String, value).getString()
+                                                    );
+            m_messageBox->ChildWindow::operator=(*childWindow);
         }
-        else if (property == "textcolor")
-            setTextColor(extractColorFromString(property, value));
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            ChildWindowRenderer::setProperty(property, value);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBoxRenderer::setProperty(std::string property, ObjectConverter&& value)
+    {
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("TextColor"))
+                setTextColor(value.getColor());
+            else
+                ChildWindowRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::String)
+        {
+            if (property == toLower("Button"))
+                m_messageBox->m_buttonClassName = value.getString();
+            else if (property == toLower("ChildWindow"))
+            {
+                if (m_messageBox->getTheme() == nullptr)
+                    throw Exception{"Failed to load scrollbar, ChatBox has no connected theme to load the scrollbar with"};
+
+                tgui::ChildWindow::Ptr childWindow = m_messageBox->getTheme()->internalLoad(m_messageBox->m_primaryLoadingParameter, value.getString());
+                m_messageBox->ChildWindow::operator=(*childWindow);
+            }
+        }
+        else
+            ChildWindowRenderer::setProperty(property, std::move(value));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ObjectConverter MessageBoxRenderer::getProperty(std::string property) const
+    {
+        property = toLower(property);
+
+        if (property == toLower("TextColor"))
+            return m_messageBox->m_label->getTextColor();
+        else
+            return ChildWindowRenderer::getProperty(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<std::string, ObjectConverter> MessageBoxRenderer::getPropertyValuePairs() const
+    {
+        auto pairs = ChildWindowRenderer::getPropertyValuePairs();
+        pairs["TextColor"] = m_messageBox->m_label->getTextColor();
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

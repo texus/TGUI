@@ -229,6 +229,8 @@ TEST_CASE("[Slider]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         REQUIRE_NOTHROW(slider = theme->load("Slider"));
+        REQUIRE(slider->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(slider->getSecondaryLoadingParameter() == "slider");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(slider);

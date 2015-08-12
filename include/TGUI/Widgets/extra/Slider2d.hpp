@@ -49,6 +49,8 @@ namespace ext
     ///
     ///     - Inherited signals from ClickableWidget
     ///
+    /// This widget may be removed in a future release of TGUI.
+    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Slider2d : public ClickableWidget
     {
@@ -59,23 +61,9 @@ namespace ext
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Default constructor
+        /// @brief constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Slider2d();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the slider
-        ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Slider2d::Ptr create(const std::string& themeFileFilename, const std::string& section = "Slider2d");
+        Slider2d(const Texture& trackNormal, const Texture& thumbNormal, const Texture& trackHover = {}, const Texture& thumbHover = {});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

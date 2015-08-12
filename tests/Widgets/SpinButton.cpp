@@ -241,6 +241,8 @@ TEST_CASE("[SpinButton]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         REQUIRE_NOTHROW(spinButton = theme->load("SpinButton"));
+        REQUIRE(spinButton->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(spinButton->getSecondaryLoadingParameter() == "spinbutton");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(spinButton);

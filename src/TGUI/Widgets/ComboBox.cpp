@@ -25,11 +25,9 @@
 
 #include <SFML/OpenGL.hpp>
 
-#include <TGUI/Scrollbar.hpp>
-#include <TGUI/ListBox.hpp>
 #include <TGUI/Container.hpp>
-#include <TGUI/ChildWindow.hpp>
-#include <TGUI/ComboBox.hpp>
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,12 +45,9 @@ namespace tgui
         initListBox();
 
         m_renderer = std::make_shared<ComboBoxRenderer>(this);
-
-        getRenderer()->setBorders({2, 2, 2, 2});
+        reload();
 
         setSize({50, 24});
-
-        m_text.setTextColor(sf::Color::Black);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,51 +80,6 @@ namespace tgui
         }
 
         return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ComboBox::Ptr ComboBox::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto comboBox = std::make_shared<ComboBox>();
-
-        if (themeFileFilename != "")
-        {
-            comboBox->getRenderer()->setBorders({0, 0, 0, 0});
-
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = themeFileFilename.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = themeFileFilename.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    if (it->first == "listbox")
-                    {
-                        if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                            throw Exception{"Failed to parse value for 'ListBox' property."};
-
-                        comboBox->m_listBox = ListBox::create(themeFileFilename, it->second.substr(1, it->second.length()-2));
-                        comboBox->initListBox();
-                    }
-                    else
-                        comboBox->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-        }
-
-        return comboBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,7 +137,7 @@ namespace tgui
         else
             m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + listBoxPadding.top + listBoxPadding.bottom});
 
-        if (getRenderer()->m_textureArrowUpNormal.getData() && getRenderer()->m_textureArrowDownNormal.getData())
+        if (getRenderer()->m_textureArrowUpNormal.isLoaded() && getRenderer()->m_textureArrowDownNormal.isLoaded())
         {
             getRenderer()->m_textureArrowUpNormal.setSize({getRenderer()->m_textureArrowUpNormal.getImageSize().x * (height / getRenderer()->m_textureArrowUpNormal.getImageSize().y), height});
             getRenderer()->m_textureArrowDownNormal.setSize({getRenderer()->m_textureArrowDownNormal.getImageSize().x * (height / getRenderer()->m_textureArrowDownNormal.getImageSize().y), height});
@@ -255,6 +205,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ComboBox::setSelectedItemByIndex(std::size_t index)
+    {
+        bool ret = m_listBox->setSelectedItemByIndex(index);
+        m_text.setText(m_listBox->getSelectedItem());
+        return ret;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::deselectItem()
     {
         m_text.setText("");
@@ -284,6 +243,24 @@ namespace tgui
     bool ComboBox::removeItemById(const sf::String& id)
     {
         bool ret = m_listBox->removeItemById(id);
+
+        m_text.setText(m_listBox->getSelectedItem());
+
+        // Shrink the list size
+        if ((m_nrOfItemsToDisplay == 0) || (m_listBox->getItemCount() < m_nrOfItemsToDisplay))
+        {
+            Padding padding = m_listBox->getRenderer()->getScaledPadding();
+            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + padding.top + padding.bottom});
+        }
+
+        return ret;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ComboBox::removeItemByIndex(std::size_t index)
+    {
+        bool ret = m_listBox->removeItemByIndex(index);
 
         m_text.setText(m_listBox->getSelectedItem());
 
@@ -329,9 +306,69 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::removeScrollbar()
+    bool ComboBox::changeItemByIndex(std::size_t index, const sf::String& newValue)
     {
-        m_listBox->removeScrollbar();
+        bool ret = m_listBox->changeItemByIndex(index, newValue);
+        m_text.setText(m_listBox->getSelectedItem());
+        return ret;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<sf::String> ComboBox::getItems()
+    {
+        return m_listBox->getItems();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::vector<sf::String>& ComboBox::getItemIds()
+    {
+        return m_listBox->getItemIds();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::setScrollbar(Scrollbar::Ptr scrollbar)
+    {
+        m_listBox->setScrollbar(scrollbar);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Scrollbar::Ptr ComboBox::getScrollbar() const
+    {
+        return m_listBox->getScrollbar();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::setListBox(ListBox::Ptr listBox)
+    {
+        m_listBox = listBox;
+
+        Padding listBoxPadding = m_listBox->getRenderer()->getScaledPadding();
+        Padding padding = getRenderer()->getScaledPadding();
+        float height = getSize().y - padding.top - padding.bottom;
+
+        m_listBox->setItemHeight(static_cast<unsigned int>(height));
+
+        if (m_nrOfItemsToDisplay > 0)
+            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * (std::min<std::size_t>(m_nrOfItemsToDisplay, std::max<std::size_t>(m_listBox->getItemCount(), 1)))) + listBoxPadding.top + listBoxPadding.bottom});
+        else
+            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + listBoxPadding.top + listBoxPadding.bottom});
+
+        if (m_listBox->getSelectedItemIndex() >= 0)
+            m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex()));
+        else
+            m_listBox->deselectItem();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ListBox::Ptr ComboBox::getListBox() const
+    {
+        return m_listBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -461,6 +498,42 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        if (m_theme && primary != "")
+        {
+            getRenderer()->setBorders({0, 0, 0, 0});
+            Widget::reload(primary, secondary, force);
+
+            if (force)
+            {
+                if (getRenderer()->m_backgroundTexture.isLoaded())
+                    setSize(getRenderer()->m_backgroundTexture.getImageSize());
+            }
+
+            updateSize();
+        }
+        else // Load white theme
+        {
+            m_listBox->reload();
+            getRenderer()->setBorders({2, 2, 2, 2});
+            getRenderer()->setBackgroundColor({245, 245, 245});
+            getRenderer()->setArrowBackgroundColorNormal({245, 245, 245});
+            getRenderer()->setArrowBackgroundColorHover({255, 255, 255});
+            getRenderer()->setArrowColorNormal({60, 60, 60});
+            getRenderer()->setArrowColorHover({0, 0, 0});
+            getRenderer()->setTextColor({0, 0, 0});
+            getRenderer()->setBorderColor({0, 0, 0});
+            getRenderer()->setBackgroundTexture({});
+            getRenderer()->setArrowUpTexture({});
+            getRenderer()->setArrowDownTexture({});
+            getRenderer()->setArrowUpHoverTexture({});
+            getRenderer()->setArrowDownHoverTexture({});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::showListBox()
     {
         if (!m_listBox->isVisible() && getParent())
@@ -542,7 +615,7 @@ namespace tgui
         Padding padding = getRenderer()->getScaledPadding();
 
         float arrowWidth;
-        if (getRenderer()->m_textureArrowUpNormal.getData() && getRenderer()->m_textureArrowDownNormal.getData())
+        if (getRenderer()->m_textureArrowUpNormal.isLoaded() && getRenderer()->m_textureArrowDownNormal.isLoaded())
             arrowWidth = getRenderer()->m_textureArrowDownNormal.getSize().x * (getSize().y / getRenderer()->m_textureArrowDownNormal.getSize().y);
         else
             arrowWidth = getSize().y - padding.top - padding.bottom;
@@ -581,102 +654,217 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBoxRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    void ComboBoxRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "backgroundimage")
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("Padding"))
+            setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("BackgroundColor"))
+            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowBackgroundColor"))
+            setArrowBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowBackgroundColorNormal"))
+            setArrowBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowBackgroundColorHover"))
+            setArrowBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowColor"))
+            setArrowColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowColorNormal"))
+            setArrowColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("ArrowColorHover"))
+            setArrowColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TextColor"))
+            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BorderColor"))
+            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BackgroundImage"))
+            setBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowUpImage"))
+            setArrowUpTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowUpHoverImage"))
+            setArrowUpHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowDownImage"))
+            setArrowDownTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ArrowDownHoverImage"))
+            setArrowDownHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ListBox"))
         {
-            extractTextureFromString(property, value, rootPath, m_comboBox->m_listBox->getRenderer()->m_backgroundTexture);
-            extractTextureFromString(property, value, rootPath, m_backgroundTexture);
+            if (m_comboBox->getTheme() == nullptr)
+                throw Exception{"Failed to load the internal list box, ComboBox has no connected theme to load the list box with"};
+
+            if (toLower(value) == "default")
+                m_comboBox->m_listBox = std::make_shared<ListBox>();
+            else
+            {
+                m_comboBox->m_listBox = m_comboBox->getTheme()->internalLoad(m_comboBox->getPrimaryLoadingParameter(),
+                                                                             Deserializer::deserialize(ObjectConverter::Type::String, value).getString());
+            }
+
+            m_comboBox->initListBox();
         }
-        else if (property == "arrowupnormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowUpNormal);
-        else if (property == "arrowuphoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowUpHover);
-        else if (property == "arrowdownnormalimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowDownNormal);
-        else if (property == "arrowdownhoverimage")
-            extractTextureFromString(property, value, rootPath, m_textureArrowDownHover);
-        else if (property == "backgroundcolor")
-            setBackgroundColor(extractColorFromString(property, value));
-        else if (property == "arrowbackgroundcolor")
-            setArrowBackgroundColor(extractColorFromString(property, value));
-        else if (property == "arrowbackgroundcolornormal")
-            setArrowBackgroundColorNormal(extractColorFromString(property, value));
-        else if (property == "arrowbackgroundcolorhover")
-            setArrowBackgroundColorHover(extractColorFromString(property, value));
-        else if (property == "arrowcolor")
-            setArrowColor(extractColorFromString(property, value));
-        else if (property == "arrowcolornormal")
-            setArrowColorNormal(extractColorFromString(property, value));
-        else if (property == "arrowcolorhover")
-            setArrowColorHover(extractColorFromString(property, value));
-        else if (property == "textcolor")
-            setTextColor(extractColorFromString(property, value));
-        else if (property == "bordercolor")
-            setBorderColor(extractColorFromString(property, value));
-        else if (property == "borders")
-            setBorders(extractBordersFromString(property, value));
-        else if (property == "padding")
-            setPadding(extractBordersFromString(property, value));
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            WidgetRenderer::setProperty(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBoxRenderer::setBackgroundImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void ComboBoxRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
-        if (filename != "")
-            m_backgroundTexture.load(filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Borders)
+        {
+            if (property == toLower("Borders"))
+                setBorders(value.getBorders());
+            else if (property == toLower("Padding"))
+                setPadding(value.getBorders());
+            else
+                return WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("BackgroundColor"))
+                setBackgroundColor(value.getColor());
+            else if (property == toLower("ArrowBackgroundColor"))
+                setArrowBackgroundColor(value.getColor());
+            else if (property == toLower("ArrowBackgroundColorNormal"))
+                setArrowBackgroundColorNormal(value.getColor());
+            else if (property == toLower("ArrowBackgroundColorHover"))
+                setArrowBackgroundColorHover(value.getColor());
+            else if (property == toLower("ArrowColor"))
+                setArrowColor(value.getColor());
+            else if (property == toLower("ArrowColorNormal"))
+                setArrowColorNormal(value.getColor());
+            else if (property == toLower("ArrowColorHover"))
+                setArrowColorHover(value.getColor());
+            else if (property == toLower("TextColor"))
+                setTextColor(value.getColor());
+            else if (property == toLower("BorderColor"))
+                setBorderColor(value.getColor());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Texture)
+        {
+            if (property == toLower("BackgroundImage"))
+                setBackgroundTexture(value.getTexture());
+            else if (property == toLower("ArrowUpImage"))
+                setArrowUpTexture(value.getTexture());
+            else if (property == toLower("ArrowUpHoverImage"))
+                setArrowUpHoverTexture(value.getTexture());
+            else if (property == toLower("ArrowDownImage"))
+                setArrowDownTexture(value.getTexture());
+            else if (property == toLower("ArrowDownHoverImage"))
+                setArrowDownHoverTexture(value.getTexture());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::String)
+        {
+            if (property == toLower("ListBox"))
+            {
+                if (toLower(value.getString()) == "default")
+                    m_comboBox->m_listBox = std::make_shared<ListBox>();
+                else
+                {
+                    if (m_comboBox->getTheme() == nullptr)
+                        throw Exception{"Failed to load the internal list box, ComboBox has no connected theme to load the list box with"};
+
+                    m_comboBox->m_listBox = m_comboBox->getTheme()->internalLoad(m_comboBox->getPrimaryLoadingParameter(), value.getString());
+                }
+
+                m_comboBox->initListBox();
+            }
+        }
         else
-            m_backgroundTexture = {};
+            WidgetRenderer::setProperty(property, std::move(value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBoxRenderer::setArrowUpNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    ObjectConverter ComboBoxRenderer::getProperty(std::string property) const
     {
-        if (filename != "")
-            m_comboBox->getRenderer()->m_textureArrowUpNormal.load(filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            return m_borders;
+        else if (property == toLower("Padding"))
+            return m_padding;
+        else if (property == toLower("BackgroundColor"))
+            return getListBox()->m_backgroundColor;
+        else if (property == toLower("ArrowBackgroundColor"))
+            return m_arrowBackgroundColorNormal;
+        else if (property == toLower("ArrowBackgroundColorNormal"))
+            return m_arrowBackgroundColorNormal;
+        else if (property == toLower("ArrowBackgroundColorHover"))
+            return m_arrowBackgroundColorHover;
+        else if (property == toLower("ArrowColor"))
+            return m_arrowColorNormal;
+        else if (property == toLower("ArrowColorNormal"))
+            return m_arrowColorNormal;
+        else if (property == toLower("ArrowColorHover"))
+            return m_arrowColorHover;
+        else if (property == toLower("TextColor"))
+            return m_comboBox->m_text.getTextColor();
+        else if (property == toLower("BorderColor"))
+            return getListBox()->m_borderColor;
+        else if (property == toLower("BackgroundImage"))
+            return m_backgroundTexture;
+        else if (property == toLower("ArrowUpImage"))
+            return m_textureArrowUpNormal;
+        else if (property == toLower("ArrowUpHoverImage"))
+            return m_textureArrowUpHover;
+        else if (property == toLower("ArrowDownImage"))
+            return m_textureArrowDownNormal;
+        else if (property == toLower("ArrowDownHoverImage"))
+            return m_textureArrowDownHover;
         else
-            m_comboBox->getRenderer()->m_textureArrowUpNormal = {};
+            return WidgetRenderer::getProperty(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBoxRenderer::setArrowDownNormalImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    std::map<std::string, ObjectConverter> ComboBoxRenderer::getPropertyValuePairs() const
     {
-        if (filename != "")
-            m_comboBox->getRenderer()->m_textureArrowDownNormal.load(filename, partRect, middlePart, repeated);
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
+
+        if (m_backgroundTexture.isLoaded())
+            pairs["BackgroundImage"] = m_backgroundTexture;
         else
-            m_comboBox->getRenderer()->m_textureArrowDownNormal = {};
-    }
+            pairs["BackgroundColor"] = getListBox()->m_backgroundColor;
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBoxRenderer::setArrowUpHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
-    {
-        if (filename != "")
-            m_comboBox->getRenderer()->m_textureArrowUpHover.load(filename, partRect, middlePart, repeated);
+        if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+        {
+            pairs["ArrowUpImage"] = m_textureArrowUpNormal;
+            pairs["ArrowDownImage"] = m_textureArrowDownNormal;
+            if (m_textureArrowUpHover.isLoaded())
+                pairs["ArrowUpHoverImage"] = m_textureArrowUpHover;
+            if (m_textureArrowDownHover.isLoaded())
+                pairs["ArrowDownHoverImage"] = m_textureArrowDownHover;
+        }
         else
-            m_comboBox->getRenderer()->m_textureArrowUpHover = {};
-    }
+        {
+            pairs["ArrowBackgroundColorNormal"] = m_arrowBackgroundColorNormal;
+            pairs["ArrowBackgroundColorHover"] = m_arrowBackgroundColorHover;
+            pairs["ArrowColorNormal"] = m_arrowColorNormal;
+            pairs["ArrowColorHover"] = m_arrowColorHover;
+        }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBoxRenderer::setArrowDownHoverImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
-    {
-        if (filename != "")
-            m_comboBox->getRenderer()->m_textureArrowDownHover.load(filename, partRect, middlePart, repeated);
-        else
-            m_comboBox->getRenderer()->m_textureArrowDownHover = {};
+        pairs["TextColor"] = m_comboBox->m_text.getTextColor();
+        pairs["BorderColor"] = getListBox()->m_borderColor;
+        pairs["Borders"] = m_borders;
+        pairs["Padding"] = m_padding;
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBoxRenderer::setBackgroundColor(const sf::Color& backgroundColor)
     {
-        m_comboBox->m_listBox->getRenderer()->setBackgroundColor(backgroundColor);
+        getListBox()->setBackgroundColor(backgroundColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -734,7 +922,57 @@ namespace tgui
 
     void ComboBoxRenderer::setBorderColor(const sf::Color& borderColor)
     {
-        m_comboBox->m_listBox->getRenderer()->setBorderColor(borderColor);
+        getListBox()->setBorderColor(borderColor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBoxRenderer::setBackgroundTexture(const Texture& texture)
+    {
+        m_backgroundTexture = texture;
+        m_backgroundTexture.setPosition(m_comboBox->getPosition());
+        m_backgroundTexture.setSize(m_comboBox->getSize());
+        m_backgroundTexture.setColor({255, 255, 255, m_comboBox->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBoxRenderer::setArrowUpTexture(const Texture& texture)
+    {
+        m_textureArrowUpNormal = texture;
+        m_textureArrowUpNormal.setPosition(m_comboBox->getPosition());
+        m_textureArrowUpNormal.setSize(m_comboBox->getSize());
+        m_textureArrowUpNormal.setColor({255, 255, 255, m_comboBox->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBoxRenderer::setArrowDownTexture(const Texture& texture)
+    {
+        m_textureArrowDownNormal = texture;
+        m_textureArrowDownNormal.setPosition(m_comboBox->getPosition());
+        m_textureArrowDownNormal.setSize(m_comboBox->getSize());
+        m_textureArrowDownNormal.setColor({255, 255, 255, m_comboBox->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBoxRenderer::setArrowUpHoverTexture(const Texture& texture)
+    {
+        m_textureArrowUpHover = texture;
+        m_textureArrowUpHover.setPosition(m_comboBox->getPosition());
+        m_textureArrowUpHover.setSize(m_comboBox->getSize());
+        m_textureArrowUpHover.setColor({255, 255, 255, m_comboBox->getTransparency()});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBoxRenderer::setArrowDownHoverTexture(const Texture& texture)
+    {
+        m_textureArrowDownHover = texture;
+        m_textureArrowDownHover.setPosition(m_comboBox->getPosition());
+        m_textureArrowDownHover.setSize(m_comboBox->getSize());
+        m_textureArrowDownHover.setColor({255, 255, 255, m_comboBox->getTransparency()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -752,7 +990,7 @@ namespace tgui
     void ComboBoxRenderer::setBorders(const Borders& borders)
     {
         WidgetBorders::setBorders(borders);
-        m_comboBox->m_listBox->getRenderer()->setBorders({m_borders.left, 0, m_borders.right, m_borders.bottom});
+        getListBox()->setBorders({m_borders.left, 0, m_borders.right, m_borders.bottom});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -777,15 +1015,15 @@ namespace tgui
         sf::Vector2f position = m_comboBox->getPosition();
         sf::Vector2f size = m_comboBox->getSize();
 
-        if (m_backgroundTexture.getData() == nullptr)
+        if (m_backgroundTexture.isLoaded())
+            target.draw(m_backgroundTexture, states);
+        else
         {
             sf::RectangleShape front(size);
             front.setPosition(position);
-            front.setFillColor(m_comboBox->m_listBox->getRenderer()->m_backgroundColor);
+            front.setFillColor(getListBox()->m_backgroundColor);
             target.draw(front, states);
         }
-        else
-            target.draw(m_backgroundTexture, states);
 
         // Draw the borders
         if (m_borders != Borders{0, 0, 0, 0})
@@ -793,7 +1031,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(m_comboBox->m_listBox->getRenderer()->m_borderColor);
+            border.setFillColor(getListBox()->m_borderColor);
             target.draw(border, states);
 
             // Draw top border
@@ -813,19 +1051,19 @@ namespace tgui
         }
 
         // Check if we have textures for the arrow
-        if (m_textureArrowUpNormal.getData() && m_textureArrowDownNormal.getData())
+        if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
         {
             // Set the arrow like it should (down when list box is invisible, up when it is visible)
             if (m_comboBox->m_listBox->isVisible())
             {
-                if (m_comboBox->m_mouseHover && m_textureArrowUpHover.getData())
+                if (m_comboBox->m_mouseHover && m_textureArrowUpHover.isLoaded())
                     target.draw(m_textureArrowUpHover, states);
                 else
                     target.draw(m_textureArrowUpNormal, states);
             }
             else
             {
-                if (m_comboBox->m_mouseHover && m_textureArrowDownHover.getData())
+                if (m_comboBox->m_mouseHover && m_textureArrowDownHover.isLoaded())
                     target.draw(m_textureArrowDownHover, states);
                 else
                     target.draw(m_textureArrowDownNormal, states);
@@ -877,7 +1115,7 @@ namespace tgui
         Padding scaledPadding = padding;
 
         auto& texture = m_backgroundTexture;
-        if (texture.getData() != nullptr)
+        if (texture.isLoaded())
         {
             switch (texture.getScalingType())
             {

@@ -652,7 +652,7 @@ namespace tgui
     {
         if (m_theme && primary != "")
         {
-            m_theme->initWidget(this, primary, secondary);
+            Widget::reload(primary, secondary, force);
 
             if (force)
             {

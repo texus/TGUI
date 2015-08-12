@@ -24,7 +24,8 @@
 
 
 #include <TGUI/Container.hpp>
-#include <TGUI/MenuBar.hpp>
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Widgets/MenuBar.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -41,44 +42,9 @@ namespace tgui
         addSignal<std::vector<sf::String>, sf::String>("MenuItemClicked");
 
         m_renderer = std::make_shared<MenuBarRenderer>(this);
+        reload();
 
         setSize({0, 20});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    MenuBar::Ptr MenuBar::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto menuBar = std::make_shared<MenuBar>();
-
-        if (themeFileFilename != "")
-        {
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    menuBar->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-        }
-
-        return menuBar;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -491,6 +457,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MenuBar::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        if (m_theme && primary != "")
+        {
+            Widget::reload(primary, secondary, force);
+        }
+        else // Load white theme
+        {
+            getRenderer()->setBackgroundColor({255, 255, 255});
+            getRenderer()->setTextColor({0, 0, 0});
+            getRenderer()->setSelectedBackgroundColor({0, 110, 255});
+            getRenderer()->setSelectedTextColor({255, 255, 255});
+            getRenderer()->setBackgroundTexture({});
+            getRenderer()->setItemBackgroundTexture({});
+            getRenderer()->setSelectedItemBackgroundTexture({});
+            getRenderer()->setDistanceToSide(4);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MenuBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Draw the background
@@ -513,26 +500,114 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+    void MenuBarRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "backgroundcolor")
-            setBackgroundColor(extractColorFromString(property, value));
-        else if (property == "textcolor")
-            setTextColor(extractColorFromString(property, value));
-        else if (property == "selectedbackgroundcolor")
-            setSelectedBackgroundColor(extractColorFromString(property, value));
-        else if (property == "selectedtextcolor")
-            setSelectedTextColor(extractColorFromString(property, value));
-        else if (property == "distancetoside")
-            setDistanceToSide(tgui::stof(value));
-        else if (property == "backgroundimage")
-            extractTextureFromString(property, value, rootPath, m_backgroundTexture);
-        else if (property == "itembackgroundimage")
-            extractTextureFromString(property, value, rootPath, m_itemBackgroundTexture);
-        else if (property == "selecteditembackgroundimage")
-            extractTextureFromString(property, value, rootPath, m_selectedItemBackgroundTexture);
+        property = toLower(property);
+
+        if (property == toLower("BackgroundColor"))
+            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("SelectedBackgroundColor"))
+            setSelectedBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("TextColor"))
+            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("SelectedTextColor"))
+            setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BackgroundImage"))
+            setBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("ItemBackgroundImage"))
+            setItemBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("SelectedItemBackgroundImage"))
+            setSelectedItemBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("DistanceToSide"))
+            setDistanceToSide(Deserializer::deserialize(ObjectConverter::Type::Number, value).getNumber());
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            WidgetRenderer::setProperty(property, value);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBarRenderer::setProperty(std::string property, ObjectConverter&& value)
+    {
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("BackgroundColor"))
+                setBackgroundColor(value.getColor());
+            else if (property == toLower("SelectedBackgroundColor"))
+                setSelectedBackgroundColor(value.getColor());
+            else if (property == toLower("TextColor"))
+                setTextColor(value.getColor());
+            else if (property == toLower("SelectedTextColor"))
+                setSelectedTextColor(value.getColor());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Texture)
+        {
+            if (property == toLower("BackgroundImage"))
+                setBackgroundTexture(value.getTexture());
+            else if (property == toLower("ItemBackgroundImage"))
+                setItemBackgroundTexture(value.getTexture());
+            else if (property == toLower("SelectedItemBackgroundImage"))
+                setSelectedItemBackgroundTexture(value.getTexture());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Number)
+        {
+            if (property == toLower("DistanceToSide"))
+                setDistanceToSide(value.getNumber());
+        }
+        else
+            WidgetRenderer::setProperty(property, std::move(value));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ObjectConverter MenuBarRenderer::getProperty(std::string property) const
+    {
+        property = toLower(property);
+
+        if (property == toLower("BackgroundColor"))
+            return m_backgroundColor;
+        else if (property == toLower("SelectedBackgroundColor"))
+            return m_selectedBackgroundColor;
+        else if (property == toLower("TextColor"))
+            return m_textColor;
+        else if (property == toLower("SelectedTextColor"))
+            return m_selectedTextColor;
+        else if (property == toLower("BackgroundImage"))
+            return m_backgroundTexture;
+        else if (property == toLower("ItemBackgroundImage"))
+            return m_itemBackgroundTexture;
+        else if (property == toLower("SelectedItemBackgroundImage"))
+            return m_selectedItemBackgroundTexture;
+        else if (property == toLower("DistanceToSide"))
+            return m_distanceToSide;
+        else
+            return WidgetRenderer::getProperty(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<std::string, ObjectConverter> MenuBarRenderer::getPropertyValuePairs() const
+    {
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
+
+        if (m_backgroundTexture.isLoaded())
+            pairs["BackgroundImage"] = m_backgroundTexture;
+        if (m_itemBackgroundTexture.isLoaded())
+            pairs["ItemBackgroundImage"] = m_itemBackgroundTexture;
+        if (m_selectedItemBackgroundTexture.isLoaded())
+            pairs["SelectedItemBackgroundImage"] = m_selectedItemBackgroundTexture;
+
+        pairs["BackgroundColor"] = m_backgroundColor;
+        pairs["SelectedBackgroundColor"] = m_selectedBackgroundColor;
+        pairs["TextColor"] = m_textColor;
+        pairs["SelectedTextColor"] = m_selectedTextColor;
+        pairs["DistanceToSide"] = m_distanceToSide;
+        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -606,32 +681,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setBackgroundImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void MenuBarRenderer::setBackgroundTexture(const Texture& texture)
     {
-        if (filename != "")
-            m_backgroundTexture.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_backgroundTexture = {};
+        m_backgroundTexture = texture;
+        m_backgroundTexture.setPosition(m_menuBar->getPosition());
+        m_backgroundTexture.setSize(m_menuBar->getSize());
+        m_backgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setItemBackgroundImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void MenuBarRenderer::setItemBackgroundTexture(const Texture& texture)
     {
-        if (filename != "")
-            m_itemBackgroundTexture.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_itemBackgroundTexture = {};
+        m_itemBackgroundTexture = texture;
+        m_itemBackgroundTexture.setPosition(m_menuBar->getPosition());
+        m_itemBackgroundTexture.setSize(m_menuBar->getSize());
+        m_itemBackgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setSelectedItemBackgroundImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void MenuBarRenderer::setSelectedItemBackgroundTexture(const Texture& texture)
     {
-        if (filename != "")
-            m_selectedItemBackgroundTexture.load(getResourcePath() + filename, partRect, middlePart, repeated);
-        else
-            m_selectedItemBackgroundTexture = {};
+        m_selectedItemBackgroundTexture = texture;
+        m_selectedItemBackgroundTexture.setPosition(m_menuBar->getPosition());
+        m_selectedItemBackgroundTexture.setSize(m_menuBar->getSize());
+        m_selectedItemBackgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -639,7 +714,7 @@ namespace tgui
     void MenuBarRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Draw the background
-        if (m_backgroundTexture.getData())
+        if (m_backgroundTexture.isLoaded())
         {
             Texture background = m_backgroundTexture;
             background.setPosition(m_menuBar->getPosition());
@@ -667,7 +742,7 @@ namespace tgui
                 for (unsigned int j = 0; j < m_menuBar->m_menus[i].menuItems.size(); ++j)
                     menuWidth = std::max(menuWidth, m_menuBar->m_menus[i].menuItems[j].getSize().x + (3 * m_distanceToSide));
 
-                if (m_selectedItemBackgroundTexture.getData() && backgroundTexture.getData())
+                if (m_selectedItemBackgroundTexture.isLoaded() && backgroundTexture.isLoaded())
                 {
                     Texture selectedBackgroundTexture = m_selectedItemBackgroundTexture;
                     selectedBackgroundTexture.setPosition({positionX, m_menuBar->getPosition().y});
@@ -690,7 +765,7 @@ namespace tgui
                         }
                     }
                 }
-                else if (backgroundTexture.getData())
+                else if (backgroundTexture.isLoaded())
                 {
                     backgroundTexture.setPosition({positionX, m_menuBar->getPosition().y});
                     backgroundTexture.setSize({m_menuBar->m_menus[i].text.getSize().x + 2*m_distanceToSide, m_menuBar->getSize().y});
@@ -726,7 +801,7 @@ namespace tgui
             }
             else // This menu is not open
             {
-                if (backgroundTexture.getData())
+                if (backgroundTexture.isLoaded())
                 {
                     backgroundTexture.setPosition({positionX, m_menuBar->getPosition().y});
                     backgroundTexture.setSize({m_menuBar->m_menus[i].text.getSize().x + 2*m_distanceToSide, m_menuBar->getSize().y});

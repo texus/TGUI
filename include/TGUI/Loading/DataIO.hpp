@@ -70,13 +70,8 @@ namespace tgui
             Node* parent;
             std::string value;
 
-            /*
             bool listNode = false;
-            union
-            {
-                std::string value;
-                std::vector<std::shared_ptr<ValueNode>> values;
-            };*/
+            std::vector<std::string> valueList;
         };
 
 

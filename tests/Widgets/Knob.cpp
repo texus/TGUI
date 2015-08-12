@@ -208,6 +208,8 @@ TEST_CASE("[Knob]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Knob/Black.txt");
         REQUIRE_NOTHROW(knob = theme->load("Knob"));
+        REQUIRE(knob->getPrimaryLoadingParameter() == "resources/Knob/Black.txt");
+        REQUIRE(knob->getSecondaryLoadingParameter() == "knob");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(knob);

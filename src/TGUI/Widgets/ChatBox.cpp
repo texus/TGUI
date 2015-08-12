@@ -27,6 +27,7 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
+#include <TGUI/Loading/Theme.hpp>
 
 #include <cassert>
 #include <cmath>
@@ -42,12 +43,10 @@ namespace tgui
         m_callback.widgetType = "ChatBox";
         m_draggableWidget = true;
 
-        m_renderer = std::make_shared<ChatBoxRenderer>(this);
-
-        getRenderer()->setBorders({2, 2, 2, 2});
-        getRenderer()->setPadding({2, 2, 2, 2});
-
         m_panel->setBackgroundColor(sf::Color::Transparent);
+
+        m_renderer = std::make_shared<ChatBoxRenderer>(this);
+        reload();
 
         setSize({200, 120});
     }
@@ -89,59 +88,6 @@ namespace tgui
         return *this;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-    ChatBox::Ptr ChatBox::create(const std::string& themeFileFilename, const std::string& section)
-    {
-        auto chatBox = std::make_shared<ChatBox>();
-
-        if (themeFileFilename != "")
-        {
-            chatBox->getRenderer()->setBorders({0, 0, 0, 0});
-
-            std::string loadedThemeFile = getResourcePath() + themeFileFilename;
-
-            // Open the theme file
-            ThemeFileParser themeFile{loadedThemeFile, section};
-
-            // Find the folder that contains the theme file
-            std::string themeFileFolder = "";
-            std::string::size_type slashPos = loadedThemeFile.find_last_of("/\\");
-            if (slashPos != std::string::npos)
-                themeFileFolder = loadedThemeFile.substr(0, slashPos+1);
-
-            // Handle the read properties
-            for (auto it = themeFile.getProperties().cbegin(); it != themeFile.getProperties().cend(); ++it)
-            {
-                try
-                {
-                    if (it->first == "scrollbar")
-                    {
-                        if (toLower(it->second) != "none")
-                        {
-                            if ((it->second.length() < 3) || (it->second[0] != '"') || (it->second[it->second.length()-1] != '"'))
-                                throw Exception{"Failed to parse value for 'Scrollbar' property."};
-
-                            chatBox->getRenderer()->setScrollbar(themeFileFilename, it->second.substr(1, it->second.length()-2));
-                        }
-                        else // There should be no scrollbar
-                            chatBox->removeScrollbar();
-                    }
-                    else
-                        chatBox->getRenderer()->setProperty(it->first, it->second, themeFileFolder);
-                }
-                catch (const Exception& e)
-                {
-                    throw Exception{std::string(e.what()) + " In section '" + section + "' in " + loadedThemeFile + "."};
-                }
-            }
-
-            chatBox->updateSize();
-        }
-
-        return chatBox;
-    }
-*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::Ptr ChatBox::copy(ChatBox::ConstPtr chatBox)
@@ -329,6 +275,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChatBox::setTextColor(const sf::Color& color)
+    {
+        m_textColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChatBox::setLineSpacing(unsigned int lineSpacing)
     {
         if (m_lineSpacing != lineSpacing)
@@ -342,15 +295,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::removeScrollbar()
+    void ChatBox::setScrollbar(Scrollbar::Ptr scrollbar)
     {
-        if (m_scroll != nullptr)
-        {
-            m_scroll = nullptr;
+        m_scroll = scrollbar;
 
-            recalculateFullTextHeight();
-            updateDisplayedText();
+        if (m_scroll)
+        {
+            m_scroll->setSize({m_scroll->getSize().x, getSize().y});
+            m_scroll->setLowValue(static_cast<unsigned int>(getSize().y));
         }
+
+        recalculateFullTextHeight();
+        updateDisplayedText();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Scrollbar::Ptr ChatBox::getScrollbar() const
+    {
+        return m_scroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -670,7 +633,7 @@ namespace tgui
         Padding scaledPadding = padding;
 
         auto& texture = getRenderer()->m_backgroundTexture;
-        if (texture.getData() != nullptr)
+        if (texture.isLoaded())
         {
             switch (texture.getScalingType())
             {
@@ -715,6 +678,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChatBox::reload(const std::string& primary, const std::string& secondary, bool force)
+    {
+        if (m_theme && primary != "")
+        {
+            getRenderer()->setBorders({0, 0, 0, 0});
+            getRenderer()->setPadding({0, 0, 0, 0});
+
+            Widget::reload(primary, secondary, force);
+
+            if (force)
+            {
+                if (getRenderer()->m_backgroundTexture.isLoaded())
+                    setSize(getRenderer()->m_backgroundTexture.getImageSize());
+            }
+
+            updateSize();
+        }
+        else // Load white theme
+        {
+            getRenderer()->setBorders({2, 2, 2, 2});
+            getRenderer()->setPadding({2, 2, 2, 2});
+            getRenderer()->setBackgroundColor({245, 245, 245});
+            getRenderer()->setBorderColor({0, 0, 0});
+            getRenderer()->setBackgroundTexture({});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChatBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Draw the background
@@ -730,44 +722,147 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-    void ChatBoxRenderer::setProperty(std::string property, const std::string& value, const std::string& rootPath)
+
+    void ChatBoxRenderer::setProperty(std::string property, const std::string& value)
     {
-        if (property == "backgroundimage")
-            extractTextureFromString(property, value, rootPath, m_backgroundTexture);
-        else if (property == "backgroundcolor")
-            setBackgroundColor(extractColorFromString(property, value));
-        else if (property == "bordercolor")
-            setBorderColor(extractColorFromString(property, value));
-        else if (property == "borders")
-            setBorders(extractBordersFromString(property, value));
-        else if (property == "padding")
-            setPadding(extractBordersFromString(property, value));
+        property = toLower(property);
+
+        if (property == toLower("Borders"))
+            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("Padding"))
+            setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == toLower("BackgroundColor"))
+            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BorderColor"))
+            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == toLower("BackgroundImage"))
+            setBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
+        else if (property == toLower("Scrollbar"))
+        {
+            if (toLower(value) == "none")
+                m_chatBox->setScrollbar(nullptr);
+            else
+            {
+                if (m_chatBox->getTheme() == nullptr)
+                    throw Exception{"Failed to load scrollbar, ChatBox has no connected theme to load the scrollbar with"};
+
+                m_chatBox->setScrollbar(m_chatBox->getTheme()->internalLoad(m_chatBox->m_primaryLoadingParameter,
+                                                                            Deserializer::deserialize(ObjectConverter::Type::String, value).getString()));
+            }
+        }
         else
-            throw Exception{"Unrecognized property '" + property + "'."};
+            WidgetRenderer::setProperty(property, value);
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBoxRenderer::setBackgroundImage(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool repeated)
+    void ChatBoxRenderer::setProperty(std::string property, ObjectConverter&& value)
     {
-        if (filename != "")
-            m_backgroundTexture.load(filename, partRect, middlePart, repeated);
+        property = toLower(property);
+
+        if (value.getType() == ObjectConverter::Type::Borders)
+        {
+            if (property == toLower("Borders"))
+                setBorders(value.getBorders());
+            else if (property == toLower("Padding"))
+                setPadding(value.getBorders());
+            else
+                return WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == toLower("BackgroundColor"))
+                setBackgroundColor(value.getColor());
+            else if (property == toLower("BorderColor"))
+                setBorderColor(value.getColor());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Texture)
+        {
+            if (property == toLower("BackgroundImage"))
+                setBackgroundTexture(value.getTexture());
+            else
+                WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::String)
+        {
+            if (property == toLower("Scrollbar"))
+            {
+                if (toLower(value.getString()) == "none")
+                    m_chatBox->setScrollbar(nullptr);
+                else
+                {
+                    if (m_chatBox->getTheme() == nullptr)
+                        throw Exception{"Failed to load scrollbar, ChatBox has no connected theme to load the scrollbar with"};
+
+                    m_chatBox->setScrollbar(m_chatBox->getTheme()->internalLoad(m_chatBox->getPrimaryLoadingParameter(), value.getString()));
+                }
+            }
+        }
         else
-            m_backgroundTexture = {};
+            WidgetRenderer::setProperty(property, std::move(value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBoxRenderer::setScrollbar(const std::string& scrollbarThemeFileFilename, const std::string& section)
+    ObjectConverter ChatBoxRenderer::getProperty(std::string property) const
     {
-        m_chatBox->m_scroll = Scrollbar::create(scrollbarThemeFileFilename, section);
+        property = toLower(property);
 
-        m_chatBox->m_scroll->setSize({m_chatBox->m_scroll->getSize().x, m_chatBox->getSize().y});
-        m_chatBox->m_scroll->setLowValue(static_cast<unsigned int>(m_chatBox->getSize().y));
+        if (property == toLower("Borders"))
+            return m_borders;
+        else if (property == toLower("Padding"))
+            return m_padding;
+        else if (property == toLower("BackgroundColor"))
+            return m_backgroundColor;
+        else if (property == toLower("BorderColor"))
+            return m_borderColor;
+        else if (property == toLower("BackgroundImage"))
+            return m_backgroundTexture;
+        else
+            return WidgetRenderer::getProperty(property);
+    }
 
-        m_chatBox->recalculateFullTextHeight();
-        m_chatBox->updateDisplayedText();
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<std::string, ObjectConverter> ChatBoxRenderer::getPropertyValuePairs() const
+    {
+        auto pairs = WidgetRenderer::getPropertyValuePairs();
+
+        if (m_backgroundTexture.isLoaded())
+            pairs["BackgroundImage"] = m_backgroundTexture;
+        else
+            pairs["BackgroundColor"] = m_backgroundColor;
+
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
+        pairs["Padding"] = m_padding;
+        return pairs;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBoxRenderer::setBorderColor(const sf::Color& borderColor)
+    {
+        m_borderColor = borderColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBoxRenderer::setBackgroundColor(const sf::Color& backgroundColor)
+    {
+        m_backgroundColor = backgroundColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBoxRenderer::setBackgroundTexture(const Texture& texture)
+    {
+        m_backgroundTexture = texture;
+        m_backgroundTexture.setPosition(m_chatBox->getPosition());
+        m_backgroundTexture.setSize(m_chatBox->getSize());
+        m_backgroundTexture.setColor({255, 255, 255, m_chatBox->getTransparency()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -783,15 +878,15 @@ namespace tgui
 
     void ChatBoxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        if (m_backgroundTexture.getData() == nullptr)
+        if (m_backgroundTexture.isLoaded())
+            target.draw(m_backgroundTexture, states);
+        else
         {
             sf::RectangleShape background(m_chatBox->getSize());
             background.setPosition(m_chatBox->getPosition());
             background.setFillColor(m_backgroundColor);
             target.draw(background, states);
         }
-        else
-            target.draw(m_backgroundTexture, states);
 
         if (m_borders != Borders{0, 0, 0, 0})
         {

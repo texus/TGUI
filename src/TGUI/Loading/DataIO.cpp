@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Loading/DataIO.hpp>
-#include <TGUI/Exception.hpp>
+#include <TGUI/Global.hpp>
 
 #include <cctype>
 
@@ -310,7 +310,7 @@ namespace tgui
         stream >> std::ws;
 
         // Read the value
-        std::string line = readLine(stream);
+        std::string line = trim(readLine(stream));
         if (!line.empty())
         {
             // Remove the ';' if it is there
@@ -321,7 +321,59 @@ namespace tgui
             auto valueNode = std::make_shared<ValueNode>();
             valueNode->parent = node.get();
             valueNode->value = line;
-            node->propertyValuePairs[key] = valueNode;
+            node->propertyValuePairs[key] = valueNode; /// TODO: toLower(key)
+
+            // It might be a list node
+            if ((line.size() >= 2) && (line[0] == '[') && (line.back() == ']'))
+            {
+                valueNode->listNode = true;
+                if (line.size() >= 3)
+                {
+                    valueNode->valueList.push_back("");
+
+                    unsigned int i = 1;
+                    while (i < line.size()-1)
+                    {
+                        if (line[i] == ',')
+                        {
+                            i++;
+                            valueNode->valueList.back() = trim(valueNode->valueList.back());
+                            valueNode->valueList.push_back("");
+                        }
+                        else if (line[i] == '"')
+                        {
+                            valueNode->valueList.back().push_back(line[i]);
+                            i++;
+
+                            bool backslash = false;
+                            while (i < line.size()-1)
+                            {
+                                valueNode->valueList.back().push_back(line[i]);
+
+                                if (line[i] == '"' && !backslash)
+                                {
+                                    i++;
+                                    break;
+                                }
+
+                                if (line[i] == '\\' && !backslash)
+                                    backslash = true;
+                                else
+                                    backslash = false;
+
+                                i++;
+                            }
+                        }
+                        else
+                        {
+                            valueNode->valueList.back().push_back(line[i]);
+                            i++;
+                        }
+                    }
+
+                    valueNode->valueList.back() = trim(valueNode->valueList.back());
+                }
+            }
 
             return "";
         }
@@ -403,12 +455,19 @@ namespace tgui
                 stream.read(&c, 1);
                 line.push_back(c);
 
+                bool backslash = false;
                 while (stream.peek() != EOF)
                 {
                     stream.read(&c, 1);
                     line.push_back(c);
-                    if (c == '"')
+
+                    if (c == '"' && !backslash)
                         break;
+
+                    if (c == '\\' && !backslash)
+                        backslash = true;
+                    else
+                        backslash = false;
                 }
 
                 if (stream.peek() == EOF)
@@ -489,12 +548,19 @@ namespace tgui
                 else if (c == '"')
                 {
                     word.push_back(c);
+                    bool backslash = false;
                     while (stream.peek() != EOF)
                     {
                         stream.read(&c, 1);
                         word.push_back(c);
-                        if (c == '"')
+
+                        if (c == '"' && !backslash)
                             break;
+
+                        if (c == '\\' && !backslash)
+                            backslash = true;
+                        else
+                            backslash = false;
                     }
                 }
                 else

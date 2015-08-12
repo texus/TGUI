@@ -25,9 +25,7 @@
 #include "catch.hpp"
 #include <TGUI/TGUI.hpp>
 
-using tgui::Layout;
-using tgui::Layout2d;
-TGUI_IMPORT_LAYOUT_BIND_FUNCTIONS
+TGUI_IMPORT_LAYOUTS
 
 TEST_CASE("[Layouts]") {
     SECTION("constants") {

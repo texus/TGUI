@@ -26,10 +26,13 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/WidgetLoader.hpp>
 #include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/Checkbox.hpp>
 #include <TGUI/Widgets/Canvas.hpp>
+#include <TGUI/Widgets/Checkbox.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Knob.hpp>
+#include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
@@ -37,6 +40,8 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Tab.hpp>
+#include <TGUI/Widgets/TextBox.hpp>
 #include <TGUI/Widgets/Tooltip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,12 +125,12 @@ namespace tgui
 
         for (auto& childNode : node->children)
         {
-            if (childNode->name == "Renderer")
+            if (toLower(childNode->name) == "renderer")
             {
                 for (auto& pair : childNode->propertyValuePairs)
                     widget->getRenderer()->setProperty(pair.first, pair.second->value);
             }
-            else if (childNode->name == "Tooltip")
+            else if (toLower(childNode->name) == "tooltip")
                 widget->setTooltip(std::dynamic_pointer_cast<tgui::Tooltip>(tgui::WidgetLoader::getLoadFunction("Tooltip")(childNode)));
         }
 
@@ -141,7 +146,7 @@ namespace tgui
 
         for (auto& childNode : node->children)
         {
-            if ((childNode->name != "Renderer") && (childNode->name != "Tooltip"))
+            if ((toLower(childNode->name) != "renderer") && (toLower(childNode->name) != "tooltip"))
             {
                 auto nameSeparator = childNode->name.find('.');
                 auto widgetType = childNode->name.substr(0, nameSeparator);
@@ -223,12 +228,78 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    TGUI_API Widget::Ptr loadChildWindow(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        ChildWindow::Ptr childWindow;
+        if (widget)
+            childWindow = std::static_pointer_cast<ChildWindow>(widget);
+        else
+            childWindow = std::make_shared<ChildWindow>();
+
+        loadWidget(node, childWindow);
+
+        if (node->propertyValuePairs["TitleAlignment"])
+        {
+            if (toLower(node->propertyValuePairs["TitleAlignment"]->value) == "left")
+                childWindow->setTitleAlignment(ChildWindow::TitleAlignment::Left);
+            else if (toLower(node->propertyValuePairs["TitleAlignment"]->value) == "center")
+                childWindow->setTitleAlignment(ChildWindow::TitleAlignment::Center);
+            else if (toLower(node->propertyValuePairs["TitleAlignment"]->value) == "right")
+                childWindow->setTitleAlignment(ChildWindow::TitleAlignment::Right);
+            else
+                throw Exception{"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
+        }
+
+        if (node->propertyValuePairs["Title"])
+            childWindow->setTitle(DESERIALIZE_STRING("Title"));
+
+        if (node->propertyValuePairs["Icon"])
+            childWindow->setIcon(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs["Icon"]->value).getTexture());
+
+        if (node->propertyValuePairs["KeepInParent"])
+            childWindow->keepInParent(parseBoolean(node->propertyValuePairs["KeepInParent"]->value));
+
+        for (auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "closebutton")
+                childWindow->setCloseButton(std::static_pointer_cast<Button>(WidgetLoader::getLoadFunction("button")(childNode)));
+        }
+
+        return childWindow;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TGUI_API Widget::Ptr loadClickableWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         if (widget)
             return loadWidget(node, widget);
         else
             return loadWidget(node, std::make_shared<ClickableWidget>());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadComboBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        ComboBox::Ptr comboBox;
+        if (widget)
+            comboBox = std::static_pointer_cast<ComboBox>(widget);
+        else
+            comboBox = std::make_shared<ComboBox>();
+
+        for (auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "listbox")
+                comboBox->setListBox(std::static_pointer_cast<ListBox>(WidgetLoader::getLoadFunction("listbox")(childNode)));
+        }
+
+        loadWidget(node, comboBox);
+
+        if (node->propertyValuePairs["ItemsToDisplay"])
+            comboBox->setItemsToDisplay(tgui::stoi(node->propertyValuePairs["ItemsToDisplay"]->value));
+
+        return comboBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +420,69 @@ namespace tgui
             label->setAutoSize(parseBoolean(node->propertyValuePairs["AutoSize"]->value));
 
         return label;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadListBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        ListBox::Ptr listBox;
+        if (widget)
+            listBox = std::static_pointer_cast<ListBox>(widget);
+        else
+            listBox = std::make_shared<ListBox>();
+
+        loadWidget(node, listBox);
+
+        if (node->propertyValuePairs["Items"])
+        {
+            if (!node->propertyValuePairs["Items"]->listNode)
+                throw Exception{"Failed to parse 'Items' property, expected a list as value"};
+
+            if (node->propertyValuePairs["ItemIds"])
+            {
+                if (!node->propertyValuePairs["ItemIds"]->listNode)
+                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+
+                if (node->propertyValuePairs["Items"]->valueList.size() != node->propertyValuePairs["ItemIds"]->valueList.size())
+                    throw Exception{"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
+
+                for (unsigned int i = 0; i < node->propertyValuePairs["Items"]->valueList.size(); ++i)
+                {
+                    listBox->addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Items"]->valueList[i]).getString(),
+                                     Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["ItemIds"]->valueList[i]).getString());
+                }
+            }
+            else // There are no item ids
+            {
+                for (auto& item : node->propertyValuePairs["Items"]->valueList)
+                    listBox->addItem(item);
+            }
+        }
+        else // If there are no items, there should be no item ids
+        {
+            if (node->propertyValuePairs["ItemIds"])
+            {
+                if (!node->propertyValuePairs["ItemIds"]->listNode)
+                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+
+                if (!node->propertyValuePairs["ItemIds"]->valueList.empty())
+                    throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
+            }
+        }
+
+        if (node->propertyValuePairs["ItemHeight"])
+            listBox->setItemHeight(tgui::stoi(node->propertyValuePairs["ItemHeight"]->value));
+        if (node->propertyValuePairs["MaximumItems"])
+            listBox->setMaximumItems(tgui::stoi(node->propertyValuePairs["MaximumItems"]->value));
+
+        for (auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "scrollbar")
+                listBox->setScrollbar(std::static_pointer_cast<Scrollbar>(WidgetLoader::getLoadFunction("scrollbar")(childNode)));
+        }
+
+        return listBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -515,6 +649,69 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    TGUI_API Widget::Ptr loadTab(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Tab::Ptr tab;
+        if (widget)
+            tab = std::static_pointer_cast<Tab>(widget);
+        else
+            tab = std::make_shared<Tab>();
+
+        loadWidget(node, tab);
+
+        if (node->propertyValuePairs["Tabs"])
+        {
+            if (!node->propertyValuePairs["Tabs"]->listNode)
+                throw Exception{"Failed to parse 'Tabs' property, expected a list as value"};
+
+            for (auto& tabText : node->propertyValuePairs["Tabs"]->valueList)
+                tab->add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString());
+        }
+
+        if (node->propertyValuePairs["MaximumTabWidth"])
+            tab->setMaximumTabWidth(tgui::stoi(node->propertyValuePairs["MaximumTabWidth"]->value));
+        if (node->propertyValuePairs["TextSize"])
+            tab->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+        if (node->propertyValuePairs["TabHeight"])
+            tab->setTabHeight(tgui::stoi(node->propertyValuePairs["TabHeight"]->value));
+        if (node->propertyValuePairs["Selected"])
+            tab->select(tgui::stoi(node->propertyValuePairs["Selected"]->value));
+
+        return tab;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadTextBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        TextBox::Ptr textBox;
+        if (widget)
+            textBox = std::static_pointer_cast<TextBox>(widget);
+        else
+            textBox = std::make_shared<TextBox>();
+
+        loadWidget(node, textBox);
+
+        if (node->propertyValuePairs["Text"])
+            textBox->setText(DESERIALIZE_STRING("Text"));
+        if (node->propertyValuePairs["TextSize"])
+            textBox->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+        if (node->propertyValuePairs["MaximumCharacters"])
+            textBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["MaximumCharacters"]->value));
+        if (node->propertyValuePairs["ReadOnly"])
+            textBox->setReadOnly(parseBoolean(node->propertyValuePairs["ReadOnly"]->value));
+
+        for (auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "scrollbar")
+                textBox->setScrollbar(std::static_pointer_cast<Scrollbar>(WidgetLoader::getLoadFunction("scrollbar")(childNode)));
+        }
+
+        return textBox;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TGUI_API Widget::Ptr loadTooltip(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         Tooltip::Ptr tooltip;
@@ -546,9 +743,12 @@ namespace tgui
             {toLower("Button"), std::bind(loadButton, std::placeholders::_1, nullptr)},
             {toLower("Canvas"), std::bind(loadCanvas, std::placeholders::_1, nullptr)},
             {toLower("CheckBox"), std::bind(loadCheckbox, std::placeholders::_1, nullptr)},
+            {toLower("ChildWindow"), std::bind(loadChildWindow, std::placeholders::_1, nullptr)},
             {toLower("ClickableWidget"), std::bind(loadClickableWidget, std::placeholders::_1, nullptr)},
+            {toLower("ComboBox"), std::bind(loadComboBox, std::placeholders::_1, nullptr)},
             {toLower("EditBox"), std::bind(loadEditBox, std::placeholders::_1, nullptr)},
             {toLower("Knob"), std::bind(loadKnob, std::placeholders::_1, nullptr)},
+            {toLower("ListBox"), std::bind(loadListBox, std::placeholders::_1, nullptr)},
             {toLower("Label"), std::bind(loadLabel, std::placeholders::_1, nullptr)},
             {toLower("Panel"), std::bind(loadPanel, std::placeholders::_1, nullptr)},
             {toLower("Picture"), std::bind(loadPicture, std::placeholders::_1, nullptr)},
@@ -557,6 +757,8 @@ namespace tgui
             {toLower("Scrollbar"), std::bind(loadScrollbar, std::placeholders::_1, nullptr)},
             {toLower("Slider"), std::bind(loadSlider, std::placeholders::_1, nullptr)},
             {toLower("SpinButton"), std::bind(loadSpinButton, std::placeholders::_1, nullptr)},
+            {toLower("Tab"), std::bind(loadTab, std::placeholders::_1, nullptr)},
+            {toLower("TextBox"), std::bind(loadTextBox, std::placeholders::_1, nullptr)},
             {toLower("ToolTip"), std::bind(loadTooltip, std::placeholders::_1, nullptr)}
         };
 

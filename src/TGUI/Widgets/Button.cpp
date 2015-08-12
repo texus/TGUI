@@ -228,8 +228,7 @@ namespace tgui
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
-
-            m_theme->initWidget(this, primary, secondary);
+            Widget::reload(primary, secondary, force);
 
             // The widget can only be focused when there is an image available for this phase
             if (getRenderer()->m_textureFocused.isLoaded())

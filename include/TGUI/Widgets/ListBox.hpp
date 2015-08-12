@@ -27,14 +27,13 @@
 #define TGUI_LIST_BOX_HPP
 
 
-#include <TGUI/Widget.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     class Label;
-    class Scrollbar;
     class ListBoxRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,22 +98,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create list box
-        ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ListBox::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "ListBox");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another list box
         ///
         /// @param listBox  The other list box
@@ -153,24 +136,24 @@ namespace tgui
         using Transformable::setPosition;
 
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the list box.
         ///
         /// @param size  The new size of the list box
         ///
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Transformable::setSize;
 
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the full size of the list box
         ///
         /// The size returned by this function includes the borders.
         ///
         /// @return Full size of the list box
         ///
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getFullSize() const override;
 
 
@@ -234,8 +217,6 @@ namespace tgui
         ///         - true on success
         ///         - false when the index was too high
         ///
-        /// @warning The index of an item could have changed when removing items.
-        ///
         /// @see setSelectedItem
         /// @see setSelectedItemById
         ///
@@ -289,8 +270,6 @@ namespace tgui
         ///        - true when the item was removed
         ///        - false when the index was too high
         ///
-        /// @warning The index of an item could have changed when removing items.
-        ///
         /// @see removeItem
         /// @see removeItemById
         ///
@@ -339,6 +318,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get the index of the selected item.
+        ///
+        /// @return The index of the selected item, or -1 when no item was selected
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        int getSelectedItemIndex() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes an item with name originalValue to newValue.
         ///
         /// @param originalValue The name of the item which you want to change
@@ -371,6 +359,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the name of an item at the given index to newValue.
+        ///
+        /// @param index    The index of the item which you want to change
+        /// @param newValue The new name for that item
+        ///
+        /// @return
+        ///        - true when the item was changed
+        ///        - false when the index was too high
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeItemByIndex(std::size_t index, const sf::String& newValue);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the amount of items in the list box
         ///
         /// @return Number of items inside the list box
@@ -383,12 +385,52 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the scrollbar from the list box.
+        /// @brief Return a copy of the items in the list box
         ///
-        /// When there are too many items to fit in the list box then the items will be removed.
+        /// @return items
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeScrollbar();
+        std::vector<sf::String> getItems();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Return a copy of the item ids in the list box
+        ///
+        /// @return item ids
+        ///
+        /// Items that were not given an id simply have an empty string as id.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const std::vector<sf::String>& getItemIds();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the scrollbar of the list box.
+        ///
+        /// @param scrollbar The new scrollbar to use in the list box
+        ///
+        /// Pass a nullptr to remove the scrollbar. Note that when removing the scrollbar while there are too many items
+        /// to fit in the list box then the excess items will be removed.
+        ///
+        /// The scrollbar should have no parent and you should not change it yourself.
+        /// The function is meant to be used like this:
+        /// @code
+        /// listBox->setScrollbar(theme->load("scrollbar"));
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setScrollbar(Scrollbar::Ptr scrollbar);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Access the scrollbar of the list box
+        ///
+        /// @return scrollbar in the list box
+        ///
+        /// You should not change the scrollbar yourself
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Scrollbar::Ptr getScrollbar() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -506,6 +548,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Reload the widget
+        ///
+        /// @param primary    Primary parameter for the loader
+        /// @param secondary  Secondary parameter for the loader
+        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
+        ///
+        /// @throw Exception when the connected theme could not create the widget
+        ///
+        /// When primary is an empty string the built-in white theme will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() override
@@ -576,39 +633,51 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Dynamically change a property of the renderer, without even knowing the type of the widget.
-        ///
-        /// This function should only be used when you don't know the type of the widget.
-        /// Otherwise you can make a direct function call to make the wanted change.
+        /// @brief Change a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property
-        /// @param rootPath  Path that should be placed in front of any resource filename
+        /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when the property doesn't exist for this widget.
-        /// @throw Exception when the value is invalid for this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value, const std::string& rootPath = getResourcePath());
+        virtual void setProperty(std::string property, const std::string& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background image
+        /// @brief Change a property of the renderer
         ///
-        /// When this image is set, the background color property will be ignored.
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types.
         ///
-        /// Pass an empty string to unset the image, in this case the background color property will be used again.
-        ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
-        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundImage(const std::string& filename,
-                                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                                bool repeated = false);
+        virtual void setProperty(std::string property, ObjectConverter&& value) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieve the value of a certain property
+        ///
+        /// @param property  The property that you would like to retrieve
+        ///
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ObjectConverter getProperty(std::string property) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get a map with all properties and their values
+        ///
+        /// @return Property-value pairs of the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -688,6 +757,18 @@ namespace tgui
         void setBorderColor(const sf::Color& borderColor);
 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background image
+        ///
+        /// @param texture  New background texture
+        ///
+        /// When this image is set, the background color property will be ignored.
+        /// Pass an empty string to unset the image, in this case the background color property will be used again.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBackgroundTexture(const Texture& texture);
+
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the font of the items.
         ///
@@ -711,22 +792,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setPadding(const Padding& padding) override;
         using WidgetPadding::setPadding;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar of the list box.
-        ///
-        /// @param scrollbarThemeFileFilename  Filename of the theme file.
-        /// @param section  The section to look for inside the theme file.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbar(const std::string& scrollbarThemeFileFilename = "", const std::string& section = "Scrollbar");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -762,13 +827,13 @@ namespace tgui
 
         Texture   m_backgroundTexture;
 
-        sf::Color m_backgroundColor         = {245, 245, 245};
-        sf::Color m_textColor               = { 60,  60,  60};
-        sf::Color m_hoverBackgroundColor    = {255, 255, 255};
-        sf::Color m_hoverTextColor          = {  0,   0  , 0};
-        sf::Color m_selectedBackgroundColor = {  0, 110, 255};
-        sf::Color m_selectedTextColor       = {255, 255, 255};
-        sf::Color m_borderColor             = {  0,   0,   0};
+        sf::Color m_backgroundColor;
+        sf::Color m_textColor;
+        sf::Color m_hoverBackgroundColor;
+        sf::Color m_hoverTextColor;
+        sf::Color m_selectedBackgroundColor;
+        sf::Color m_selectedTextColor;
+        sf::Color m_borderColor;
 
         friend class ListBox;
         friend class ComboBox;

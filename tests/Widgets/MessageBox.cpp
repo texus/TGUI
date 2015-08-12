@@ -23,15 +23,45 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "../Tests.hpp"
-#include <TGUI/Widgets/Grid.hpp>
-#include <TGUI/Widgets/ClickableWidget.hpp>
+#include <TGUI/Widgets/MessageBox.hpp>
 
-TEST_CASE("[Grid]") {
-    tgui::Grid::Ptr grid = std::make_shared<tgui::Grid>();
+TEST_CASE("[MessageBox]") {
+    tgui::MessageBox::Ptr childWindow = std::make_shared<tgui::MessageBox>();
 
-    SECTION("WidgetType") {
-        REQUIRE(grid->getWidgetType() == "Grid");
+    SECTION("Signals") {
+        REQUIRE_NOTHROW(childWindow->connect("ButtonPressed", [](){}));
+        REQUIRE_NOTHROW(childWindow->connect("ButtonPressed", [](sf::String){}));
+
     }
 
-    /// TODO: Loading from and saving to file
+    SECTION("WidgetType") {
+        REQUIRE(childWindow->getWidgetType() == "MessageBox");
+    }
+
+    /// TODO: Test the functions in the MessageBox class
+
+    SECTION("Renderer") {
+        auto renderer = childWindow->getRenderer();
+
+        SECTION("set serialized property") {
+            REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(10, 20, 30)"));
+        }
+
+        SECTION("set object property") {
+            REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{10, 20, 30}));
+        }
+
+        SECTION("functions") {
+            renderer->setTextColor({10, 20, 30});
+
+            SECTION("getPropertyValuePairs") {
+                auto pairs = renderer->getPropertyValuePairs();
+                REQUIRE(pairs["TextColor"].getColor() == sf::Color(10, 20, 30));
+            }
+        }
+
+        REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
+    }
+
+    /// TODO: Saving to and loading from file
 }

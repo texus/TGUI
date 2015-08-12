@@ -258,6 +258,8 @@ TEST_CASE("[EditBox]") {
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
         REQUIRE_NOTHROW(editBox = theme->load("EditBox"));
+        REQUIRE(editBox->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(editBox->getSecondaryLoadingParameter() == "editbox");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(editBox);

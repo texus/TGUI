@@ -386,6 +386,9 @@ namespace tgui
 
     void Widget::reload(const std::string& primary, const std::string& secondary, bool)
     {
+        m_primaryLoadingParameter = primary;
+        m_secondaryLoadingParameter = secondary;
+
         if (m_theme && primary != "")
             m_theme->initWidget(this, primary, secondary);
     }

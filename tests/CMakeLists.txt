@@ -11,11 +11,17 @@ set(TEST_SOURCES
     Loading/ThemeLoader.cpp
     Widgets/Button.cpp
     Widgets/Canvas.cpp
+    Widgets/ChatBox.cpp
     Widgets/Checkbox.cpp
+    Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
+    Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
     Widgets/Knob.cpp
     Widgets/Label.cpp
+    Widgets/ListBox.cpp
+    Widgets/MenuBar.cpp
+    Widgets/MessageBox.cpp
     Widgets/Panel.cpp
     Widgets/Picture.cpp
     Widgets/ProgressBar.cpp
@@ -23,6 +29,8 @@ set(TEST_SOURCES
     Widgets/Scrollbar.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
+    Widgets/Tab.cpp
+    Widgets/TextBox.cpp
     Widgets/Tooltip.cpp
 )
 
