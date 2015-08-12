@@ -68,7 +68,7 @@ namespace ext
         Widget::setSize(size);
 
         for (auto& texture : m_textures)
-            texture.setScale({getSize().x / texture.getSize().x, getSize().y / texture.getSize().y});
+            texture.setSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
