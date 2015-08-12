@@ -154,7 +154,7 @@ namespace tgui
         if (childWindow->getTitle().getSize() > 0)
             SET_PROPERTY("Title", Serializer::serialize(childWindow->getTitle()));
 
-        if (childWindow->getIcon().isLoaded() > 0)
+        if (childWindow->getIcon().isLoaded())
             SET_PROPERTY("Icon", Serializer::serialize(childWindow->getIcon()));
 
         if (childWindow->isKeptInParent())

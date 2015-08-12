@@ -669,11 +669,11 @@ namespace tgui
         }
 
         if (node->propertyValuePairs["MaximumTabWidth"])
-            tab->setMaximumTabWidth(tgui::stoi(node->propertyValuePairs["MaximumTabWidth"]->value));
+            tab->setMaximumTabWidth(tgui::stof(node->propertyValuePairs["MaximumTabWidth"]->value));
         if (node->propertyValuePairs["TextSize"])
             tab->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
         if (node->propertyValuePairs["TabHeight"])
-            tab->setTabHeight(tgui::stoi(node->propertyValuePairs["TabHeight"]->value));
+            tab->setTabHeight(tgui::stof(node->propertyValuePairs["TabHeight"]->value));
         if (node->propertyValuePairs["Selected"])
             tab->select(tgui::stoi(node->propertyValuePairs["Selected"]->value));
 
