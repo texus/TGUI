@@ -500,13 +500,13 @@ namespace tgui
             m_closeButton->reload();
             m_closeButton->getRenderer()->setBorders({1, 1, 1, 1});
 
+            getRenderer()->setTitleBarHeight(20);
+            getRenderer()->setDistanceToSide(3);
             getRenderer()->setBorders({1, 1, 1, 1});
             getRenderer()->setTitleBarColor({255, 255, 255});
             getRenderer()->setTitleColor({0, 0, 0});
             getRenderer()->setBackgroundColor({230, 230, 230});
             getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setTitleBarHeight(20);
-            getRenderer()->setDistanceToSide(3);
             getRenderer()->setTitleBarTexture({});
         }
 

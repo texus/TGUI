@@ -27,8 +27,10 @@
 
 bool compareFiles(const std::string& leftFileName, const std::string& rightFileName)
 {
-    std::ifstream leftFile, rightFile;
-    char leftRead, rightRead;
+    std::ifstream leftFile;
+    std::ifstream rightFile;
+    char leftRead = 0;
+    char rightRead = 0;
     bool result;
 
     // Open the two files.

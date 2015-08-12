@@ -307,18 +307,12 @@ TEST_CASE("[Theme]") {
     SECTION("setConstructFunction") {
         tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>();
 
-        unsigned int count = 0;
-        tgui::Theme::setConstructFunction("Button", [&](){ count++; return std::make_shared<tgui::Button>(); });
-        theme->load("button");
-        REQUIRE(count == 1);
-
         REQUIRE_THROWS_AS(theme->load("CustomWidget"), tgui::Exception);
 
-        unsigned int count2 = 0;
-        tgui::Theme::setConstructFunction("CustomWidget", [&](){ count2++; return std::make_shared<tgui::EditBox>(); });
+        unsigned int count = 0;
+        tgui::Theme::setConstructFunction("CustomWidget", [&](){ count++; return std::make_shared<tgui::EditBox>(); });
         theme->load("CustomWidget");
         REQUIRE(count == 1);
-        REQUIRE(count2 == 1);
     }
 
     SECTION("setThemeLoader") {

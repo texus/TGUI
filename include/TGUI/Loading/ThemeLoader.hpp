@@ -127,7 +127,7 @@ namespace tgui
         static std::map<std::string, std::map<std::string, std::map<std::string, std::string>>> m_propertiesCache;
         static std::map<std::string, std::map<std::string, std::string>> m_widgetTypeCache;
 
-        friend class DefaultThemeLoaderTest;
+        friend struct DefaultThemeLoaderTest;
     };
 
 
