@@ -48,7 +48,7 @@ TEST_CASE("[Panel]") {
     }
 
     SECTION("Saving and loading from file") {
-        panel = std::make_shared<tgui::Panel>(400, 300);
+        panel = std::make_shared<tgui::Panel>(400.f, 300.f);
 
         SECTION("independent panel") {
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("WidgetFilePanel1.txt"));

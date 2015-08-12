@@ -30,11 +30,11 @@ TGUI_IMPORT_LAYOUTS
 TEST_CASE("[Layouts]") {
     SECTION("constants") {
         Layout l1;
-        Layout l2(-20.3);
+        Layout l2(-20.3f);
         Layout l3{"60"};
 
         Layout2d l4;
-        Layout2d l5({10, {" 50 "}});
+        Layout2d l5({10.f, {" 50 "}});
         Layout2d l6("{.2, -3.5}");
 
         REQUIRE(l1.getValue() == 0);
@@ -43,7 +43,7 @@ TEST_CASE("[Layouts]") {
 
         REQUIRE(l4.getValue() == sf::Vector2f(0, 0));
         REQUIRE(l5.getValue() == sf::Vector2f(10, 50));
-        REQUIRE(l6.getValue() == sf::Vector2f(0.2, -3.5));
+        REQUIRE(l6.getValue() == sf::Vector2f(0.2f, -3.5f));
     }
 
     SECTION("copying layouts") {
