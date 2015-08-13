@@ -279,6 +279,10 @@ namespace tgui
 
     void Slider::leftMouseReleased(float, float)
     {
+        // The thumb might have been dragged between two values
+        if (m_mouseDown)
+            updatePosition();
+
         m_mouseDown = false;
     }
 
@@ -339,6 +343,12 @@ namespace tgui
                 else
                     m_thumb.left = getPosition().x - (m_thumb.width / 2.0f) + (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum));
             }
+
+            if (getRenderer()->m_textureThumbNormal.isLoaded())
+            {
+                getRenderer()->m_textureThumbNormal.setPosition({m_thumb.left, m_thumb.top});
+                getRenderer()->m_textureThumbHover.setPosition({m_thumb.left, m_thumb.top});
+            }
         }
     }
 
@@ -358,6 +368,17 @@ namespace tgui
     {
         // A slider can't be focused (yet)
         unfocus();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Slider::mouseNoLongerDown()
+    {
+        // The thumb might have been dragged between two values
+        if (m_mouseDown)
+            updatePosition();
+
+        Widget::mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

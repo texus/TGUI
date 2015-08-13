@@ -380,7 +380,7 @@ namespace tgui
     void Scrollbar::leftMouseReleased(float x, float y)
     {
         // Check if one of the arrows was clicked
-        if ((m_mouseDown) && (m_mouseDownOnArrow))
+        if (m_mouseDown && m_mouseDownOnArrow)
         {
             // Only continue when the calculations can be made
             if (m_maximum > m_lowValue)
@@ -451,6 +451,10 @@ namespace tgui
             }
         }
 
+        // The thumb might have been dragged between two values
+        if (m_mouseDown)
+            updatePosition();
+
         // The mouse is no longer down
         m_mouseDown = false;
     }
@@ -497,6 +501,12 @@ namespace tgui
                         m_thumb.top = thumbTop;
                     else
                         m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_lowValue));
+
+                    if (getRenderer()->m_textureThumbNormal.isLoaded())
+                    {
+                        getRenderer()->m_textureThumbNormal.setPosition({m_thumb.left, m_thumb.top});
+                        getRenderer()->m_textureThumbHover.setPosition({m_thumb.left, m_thumb.top});
+                    }
                 }
                 else // The click occurred on the track
                 {
@@ -565,6 +575,12 @@ namespace tgui
                         m_thumb.left = thumbLeft;
                     else
                         m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_lowValue));
+
+                    if (getRenderer()->m_textureThumbNormal.isLoaded())
+                    {
+                        getRenderer()->m_textureThumbNormal.setPosition({m_thumb.left, m_thumb.top});
+                        getRenderer()->m_textureThumbHover.setPosition({m_thumb.left, m_thumb.top});
+                    }
                 }
                 else // The click occurred on the track
                 {
@@ -644,6 +660,17 @@ namespace tgui
     {
         // A scrollbar can't be focused (yet)
         unfocus();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Scrollbar::mouseNoLongerDown()
+    {
+        // The thumb might have been dragged between two values
+        if (m_mouseDown)
+            updatePosition();
+
+        Widget::mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
