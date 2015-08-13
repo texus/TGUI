@@ -736,22 +736,23 @@ namespace tgui
     void TabRenderer::setNormalTexture(const Texture& texture)
     {
         m_textureNormal = texture;
-        m_textureNormal.setPosition(m_tab->getPosition());
-        m_textureNormal.setSize(m_tab->getSize());
-        m_textureNormal.setColor({255, 255, 255, m_tab->getTransparency()});
-
-        if (m_textureNormal.isLoaded() && m_textureSelected.isLoaded())
+        if (m_textureNormal.isLoaded())
         {
-            m_texturesNormal.clear();
-            m_texturesSelected.clear();
+            m_textureNormal.setColor({255, 255, 255, m_tab->getTransparency()});
 
-            for (std::size_t i = 0; i < m_tab->getTabsCount(); ++i)
+            if (m_textureSelected.isLoaded())
             {
-                m_texturesNormal.push_back(m_textureNormal);
-                m_texturesSelected.push_back(m_textureSelected);
-            }
+                m_texturesNormal.clear();
+                m_texturesSelected.clear();
 
-            m_tab->recalculateTabsWidth();
+                for (std::size_t i = 0; i < m_tab->getTabsCount(); ++i)
+                {
+                    m_texturesNormal.push_back(m_textureNormal);
+                    m_texturesSelected.push_back(m_textureSelected);
+                }
+
+                m_tab->recalculateTabsWidth();
+            }
         }
     }
 
@@ -760,22 +761,23 @@ namespace tgui
     void TabRenderer::setSelectedTexture(const Texture& texture)
     {
         m_textureSelected = texture;
-        m_textureSelected.setPosition(m_tab->getPosition());
-        m_textureSelected.setSize(m_tab->getSize());
-        m_textureSelected.setColor({255, 255, 255, m_tab->getTransparency()});
-
-        if (m_textureNormal.isLoaded() && m_textureSelected.isLoaded())
+        if (m_textureSelected.isLoaded())
         {
-            m_texturesNormal.clear();
-            m_texturesSelected.clear();
+            m_textureSelected.setColor({255, 255, 255, m_tab->getTransparency()});
 
-            for (std::size_t i = 0; i < m_tab->getTabsCount(); ++i)
+            if (m_textureNormal.isLoaded())
             {
-                m_texturesNormal.push_back(m_textureNormal);
-                m_texturesSelected.push_back(m_textureSelected);
-            }
+                m_texturesNormal.clear();
+                m_texturesSelected.clear();
 
-            m_tab->recalculateTabsWidth();
+                for (std::size_t i = 0; i < m_tab->getTabsCount(); ++i)
+                {
+                    m_texturesNormal.push_back(m_textureNormal);
+                    m_texturesSelected.push_back(m_textureSelected);
+                }
+
+                m_tab->recalculateTabsWidth();
+            }
         }
     }
 

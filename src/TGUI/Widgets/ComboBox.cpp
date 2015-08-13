@@ -930,9 +930,12 @@ namespace tgui
     void ComboBoxRenderer::setBackgroundTexture(const Texture& texture)
     {
         m_backgroundTexture = texture;
-        m_backgroundTexture.setPosition(m_comboBox->getPosition());
-        m_backgroundTexture.setSize(m_comboBox->getSize());
-        m_backgroundTexture.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        if (m_backgroundTexture.isLoaded())
+        {
+            m_backgroundTexture.setPosition(m_comboBox->getPosition());
+            m_backgroundTexture.setSize(m_comboBox->getSize());
+            m_backgroundTexture.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -940,9 +943,15 @@ namespace tgui
     void ComboBoxRenderer::setArrowUpTexture(const Texture& texture)
     {
         m_textureArrowUpNormal = texture;
-        m_textureArrowUpNormal.setPosition(m_comboBox->getPosition());
-        m_textureArrowUpNormal.setSize(m_comboBox->getSize());
-        m_textureArrowUpNormal.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        if (m_textureArrowUpNormal.isLoaded())
+        {
+            Padding padding = getScaledPadding();
+            float height = m_comboBox->getSize().y - padding.top - padding.bottom;
+
+            m_textureArrowUpNormal.setSize({m_textureArrowUpNormal.getImageSize().x * (height / m_textureArrowUpNormal.getImageSize().y), height});
+            m_textureArrowUpNormal.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowUpNormal.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
+            m_textureArrowUpNormal.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -950,9 +959,15 @@ namespace tgui
     void ComboBoxRenderer::setArrowDownTexture(const Texture& texture)
     {
         m_textureArrowDownNormal = texture;
-        m_textureArrowDownNormal.setPosition(m_comboBox->getPosition());
-        m_textureArrowDownNormal.setSize(m_comboBox->getSize());
-        m_textureArrowDownNormal.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        if (m_textureArrowDownNormal.isLoaded())
+        {
+            Padding padding = getScaledPadding();
+            float height = m_comboBox->getSize().y - padding.top - padding.bottom;
+
+            m_textureArrowDownNormal.setSize({m_textureArrowDownNormal.getImageSize().x * (height / m_textureArrowDownNormal.getImageSize().y), height});
+            m_textureArrowDownNormal.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowDownNormal.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
+            m_textureArrowDownNormal.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -960,9 +975,15 @@ namespace tgui
     void ComboBoxRenderer::setArrowUpHoverTexture(const Texture& texture)
     {
         m_textureArrowUpHover = texture;
-        m_textureArrowUpHover.setPosition(m_comboBox->getPosition());
-        m_textureArrowUpHover.setSize(m_comboBox->getSize());
-        m_textureArrowUpHover.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        if (m_textureArrowUpHover.isLoaded())
+        {
+            Padding padding = getScaledPadding();
+            float height = m_comboBox->getSize().y - padding.top - padding.bottom;
+
+            m_textureArrowUpHover.setSize({m_textureArrowUpHover.getImageSize().x * (height / m_textureArrowUpHover.getImageSize().y), height});
+            m_textureArrowUpHover.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowUpHover.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
+            m_textureArrowUpHover.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -970,9 +991,15 @@ namespace tgui
     void ComboBoxRenderer::setArrowDownHoverTexture(const Texture& texture)
     {
         m_textureArrowDownHover = texture;
-        m_textureArrowDownHover.setPosition(m_comboBox->getPosition());
-        m_textureArrowDownHover.setSize(m_comboBox->getSize());
-        m_textureArrowDownHover.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        if (m_textureArrowDownHover.isLoaded())
+        {
+            Padding padding = getScaledPadding();
+            float height = m_comboBox->getSize().y - padding.top - padding.bottom;
+
+            m_textureArrowDownHover.setSize({m_textureArrowDownHover.getImageSize().x * (height / m_textureArrowDownHover.getImageSize().y), height});
+            m_textureArrowDownHover.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowDownHover.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
+            m_textureArrowDownHover.setColor({255, 255, 255, m_comboBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

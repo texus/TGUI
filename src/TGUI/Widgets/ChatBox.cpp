@@ -860,9 +860,12 @@ namespace tgui
     void ChatBoxRenderer::setBackgroundTexture(const Texture& texture)
     {
         m_backgroundTexture = texture;
-        m_backgroundTexture.setPosition(m_chatBox->getPosition());
-        m_backgroundTexture.setSize(m_chatBox->getSize());
-        m_backgroundTexture.setColor({255, 255, 255, m_chatBox->getTransparency()});
+        if (m_backgroundTexture.isLoaded())
+        {
+            m_backgroundTexture.setPosition(m_chatBox->getPosition());
+            m_backgroundTexture.setSize(m_chatBox->getSize());
+            m_backgroundTexture.setColor({255, 255, 255, m_chatBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

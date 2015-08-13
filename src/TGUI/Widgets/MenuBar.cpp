@@ -684,9 +684,12 @@ namespace tgui
     void MenuBarRenderer::setBackgroundTexture(const Texture& texture)
     {
         m_backgroundTexture = texture;
-        m_backgroundTexture.setPosition(m_menuBar->getPosition());
-        m_backgroundTexture.setSize(m_menuBar->getSize());
-        m_backgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
+        if (m_backgroundTexture.isLoaded())
+        {
+            m_backgroundTexture.setPosition(m_menuBar->getPosition());
+            m_backgroundTexture.setSize(m_menuBar->getSize());
+            m_backgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -694,9 +697,12 @@ namespace tgui
     void MenuBarRenderer::setItemBackgroundTexture(const Texture& texture)
     {
         m_itemBackgroundTexture = texture;
-        m_itemBackgroundTexture.setPosition(m_menuBar->getPosition());
-        m_itemBackgroundTexture.setSize(m_menuBar->getSize());
-        m_itemBackgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
+        if (m_itemBackgroundTexture.isLoaded())
+        {
+            m_itemBackgroundTexture.setPosition(m_menuBar->getPosition());
+            m_itemBackgroundTexture.setSize(m_menuBar->getSize());
+            m_itemBackgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -704,9 +710,12 @@ namespace tgui
     void MenuBarRenderer::setSelectedItemBackgroundTexture(const Texture& texture)
     {
         m_selectedItemBackgroundTexture = texture;
-        m_selectedItemBackgroundTexture.setPosition(m_menuBar->getPosition());
-        m_selectedItemBackgroundTexture.setSize(m_menuBar->getSize());
-        m_selectedItemBackgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
+        if (m_selectedItemBackgroundTexture.isLoaded())
+        {
+            m_selectedItemBackgroundTexture.setPosition(m_menuBar->getPosition());
+            m_selectedItemBackgroundTexture.setSize(m_menuBar->getSize());
+            m_selectedItemBackgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -602,9 +602,13 @@ namespace tgui
     void KnobRenderer::setBackgroundTexture(const Texture& texture)
     {
         m_backgroundTexture = texture;
-        m_backgroundTexture.setPosition(m_knob->getPosition());
-        m_backgroundTexture.setSize(m_knob->getSize());
-        m_backgroundTexture.setColor({255, 255, 255, m_knob->getTransparency()});
+        if (m_backgroundTexture.isLoaded())
+        {
+            m_backgroundTexture.setColor({255, 255, 255, m_knob->getTransparency()});
+
+            if (m_foregroundTexture.isLoaded())
+                m_knob->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -612,14 +616,18 @@ namespace tgui
     void KnobRenderer::setForegroundTexture(const Texture& texture)
     {
         m_foregroundTexture = texture;
-        m_foregroundTexture.setPosition(m_knob->getPosition());
-        m_foregroundTexture.setSize(m_knob->getSize());
-        m_foregroundTexture.setColor({255, 255, 255, m_knob->getTransparency()});
+        if (m_foregroundTexture.isLoaded())
+        {
+            m_foregroundTexture.setColor({255, 255, 255, m_knob->getTransparency()});
 
-        if (m_imageRotation > m_knob->m_angle)
-            m_foregroundTexture.setRotation(m_imageRotation - m_knob->m_angle);
-        else
-            m_foregroundTexture.setRotation(360 - m_knob->m_angle + m_imageRotation);
+            if (m_backgroundTexture.isLoaded())
+                m_knob->updateSize();
+
+            if (m_imageRotation > m_knob->m_angle)
+                m_foregroundTexture.setRotation(m_imageRotation - m_knob->m_angle);
+            else
+                m_foregroundTexture.setRotation(360 - m_knob->m_angle + m_imageRotation);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

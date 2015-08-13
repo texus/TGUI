@@ -1027,9 +1027,13 @@ namespace tgui
     void ScrollbarRenderer::setTrackTexture(const Texture& texture)
     {
         m_textureTrackNormal = texture;
-        m_textureTrackNormal.setPosition(m_scrollbar->getPosition());
-        m_textureTrackNormal.setSize(m_scrollbar->getSize());
-        m_textureTrackNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+        if (m_textureTrackNormal.isLoaded())
+        {
+            m_textureTrackNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_scrollbar->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1037,9 +1041,13 @@ namespace tgui
     void ScrollbarRenderer::setTrackHoverTexture(const Texture& texture)
     {
         m_textureTrackHover = texture;
-        m_textureTrackHover.setPosition(m_scrollbar->getPosition());
-        m_textureTrackHover.setSize(m_scrollbar->getSize());
-        m_textureTrackHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+        if (m_textureTrackHover.isLoaded())
+        {
+            m_textureTrackHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_scrollbar->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1047,9 +1055,13 @@ namespace tgui
     void ScrollbarRenderer::setThumbTexture(const Texture& texture)
     {
         m_textureThumbNormal = texture;
-        m_textureThumbNormal.setPosition(m_scrollbar->getPosition());
-        m_textureThumbNormal.setSize(m_scrollbar->getSize());
-        m_textureThumbNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+        if (m_textureThumbNormal.isLoaded())
+        {
+            m_textureThumbNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_scrollbar->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1057,9 +1069,13 @@ namespace tgui
     void ScrollbarRenderer::setThumbHoverTexture(const Texture& texture)
     {
         m_textureThumbHover = texture;
-        m_textureThumbHover.setPosition(m_scrollbar->getPosition());
-        m_textureThumbHover.setSize(m_scrollbar->getSize());
-        m_textureThumbHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+        if (m_textureThumbHover.isLoaded())
+        {
+            m_textureThumbHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_scrollbar->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1067,9 +1083,13 @@ namespace tgui
     void ScrollbarRenderer::setArrowUpTexture(const Texture& texture)
     {
         m_textureArrowUpNormal = texture;
-        m_textureArrowUpNormal.setPosition(m_scrollbar->getPosition());
-        m_textureArrowUpNormal.setSize(m_scrollbar->getSize());
-        m_textureArrowUpNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+        if (m_textureArrowUpNormal.isLoaded())
+        {
+            m_textureArrowUpNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_scrollbar->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1077,9 +1097,13 @@ namespace tgui
     void ScrollbarRenderer::setArrowDownTexture(const Texture& texture)
     {
         m_textureArrowDownNormal = texture;
-        m_textureArrowDownNormal.setPosition(m_scrollbar->getPosition());
-        m_textureArrowDownNormal.setSize(m_scrollbar->getSize());
-        m_textureArrowDownNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+        if (m_textureArrowDownNormal.isLoaded())
+        {
+            m_textureArrowDownNormal.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_scrollbar->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1087,9 +1111,13 @@ namespace tgui
     void ScrollbarRenderer::setArrowUpHoverTexture(const Texture& texture)
     {
         m_textureArrowUpHover = texture;
-        m_textureArrowUpHover.setPosition(m_scrollbar->getPosition());
-        m_textureArrowUpHover.setSize(m_scrollbar->getSize());
-        m_textureArrowUpHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+        if (m_textureArrowUpHover.isLoaded())
+        {
+            m_textureArrowUpHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_scrollbar->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1097,9 +1125,13 @@ namespace tgui
     void ScrollbarRenderer::setArrowDownHoverTexture(const Texture& texture)
     {
         m_textureArrowDownHover = texture;
-        m_textureArrowDownHover.setPosition(m_scrollbar->getPosition());
-        m_textureArrowDownHover.setSize(m_scrollbar->getSize());
-        m_textureArrowDownHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+        if (m_textureArrowDownHover.isLoaded())
+        {
+            m_textureArrowDownHover.setColor({255, 255, 255, m_scrollbar->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_scrollbar->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

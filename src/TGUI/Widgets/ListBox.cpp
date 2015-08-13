@@ -1243,9 +1243,12 @@ namespace tgui
     void ListBoxRenderer::setBackgroundTexture(const Texture& texture)
     {
         m_backgroundTexture = texture;
-        m_backgroundTexture.setPosition(m_listBox->getPosition());
-        m_backgroundTexture.setSize(m_listBox->getSize());
-        m_backgroundTexture.setColor({255, 255, 255, m_listBox->getTransparency()});
+        if (m_backgroundTexture.isLoaded())
+        {
+            m_backgroundTexture.setPosition(m_listBox->getPosition());
+            m_backgroundTexture.setSize(m_listBox->getSize());
+            m_backgroundTexture.setColor({255, 255, 255, m_listBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

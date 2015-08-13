@@ -542,9 +542,13 @@ namespace tgui
     void SpinButtonRenderer::setArrowUpTexture(const Texture& texture)
     {
         m_textureArrowUpNormal = texture;
-        m_textureArrowUpNormal.setPosition(m_spinButton->getPosition());
-        m_textureArrowUpNormal.setSize(m_spinButton->getSize());
-        m_textureArrowUpNormal.setColor({255, 255, 255, m_spinButton->getTransparency()});
+        if (m_textureArrowUpNormal.isLoaded())
+        {
+            m_textureArrowUpNormal.setColor({255, 255, 255, m_spinButton->getTransparency()});
+
+            if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_spinButton->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -552,9 +556,13 @@ namespace tgui
     void SpinButtonRenderer::setArrowDownTexture(const Texture& texture)
     {
         m_textureArrowDownNormal = texture;
-        m_textureArrowDownNormal.setPosition(m_spinButton->getPosition());
-        m_textureArrowDownNormal.setSize(m_spinButton->getSize());
-        m_textureArrowDownNormal.setColor({255, 255, 255, m_spinButton->getTransparency()});
+        if (m_textureArrowDownNormal.isLoaded())
+        {
+            m_textureArrowDownNormal.setColor({255, 255, 255, m_spinButton->getTransparency()});
+
+            if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_spinButton->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -562,9 +570,13 @@ namespace tgui
     void SpinButtonRenderer::setArrowUpHoverTexture(const Texture& texture)
     {
         m_textureArrowUpHover = texture;
-        m_textureArrowUpHover.setPosition(m_spinButton->getPosition());
-        m_textureArrowUpHover.setSize(m_spinButton->getSize());
-        m_textureArrowUpHover.setColor({255, 255, 255, m_spinButton->getTransparency()});
+        if (m_textureArrowUpHover.isLoaded())
+        {
+            m_textureArrowUpHover.setColor({255, 255, 255, m_spinButton->getTransparency()});
+
+            if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_spinButton->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -572,9 +584,13 @@ namespace tgui
     void SpinButtonRenderer::setArrowDownHoverTexture(const Texture& texture)
     {
         m_textureArrowDownHover = texture;
-        m_textureArrowDownHover.setPosition(m_spinButton->getPosition());
-        m_textureArrowDownHover.setSize(m_spinButton->getSize());
-        m_textureArrowDownHover.setColor({255, 255, 255, m_spinButton->getTransparency()});
+        if (m_textureArrowDownHover.isLoaded())
+        {
+            m_textureArrowDownHover.setColor({255, 255, 255, m_spinButton->getTransparency()});
+
+            if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
+                m_spinButton->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1768,9 +1768,12 @@ namespace tgui
     void TextBoxRenderer::setBackgroundTexture(const Texture& texture)
     {
         m_backgroundTexture = texture;
-        m_backgroundTexture.setPosition(m_textBox->getPosition());
-        m_backgroundTexture.setSize(m_textBox->getSize());
-        m_backgroundTexture.setColor({255, 255, 255, m_textBox->getTransparency()});
+        if (m_backgroundTexture.isLoaded())
+        {
+            m_backgroundTexture.setPosition(m_textBox->getPosition());
+            m_backgroundTexture.setSize(m_textBox->getSize());
+            m_backgroundTexture.setColor({255, 255, 255, m_textBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

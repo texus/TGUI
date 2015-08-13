@@ -533,9 +533,15 @@ namespace tgui
     void ProgressBarRenderer::setBackTexture(const Texture& texture)
     {
         m_textureBack = texture;
-        m_textureBack.setPosition(m_progressBar->getPosition());
-        m_textureBack.setSize(m_progressBar->getSize());
-        m_textureBack.setColor({255, 255, 255, m_progressBar->getTransparency()});
+        if (m_textureBack.isLoaded())
+        {
+            m_textureBack.setPosition(m_progressBar->getPosition());
+            m_textureBack.setSize(m_progressBar->getSize());
+            m_textureBack.setColor({255, 255, 255, m_progressBar->getTransparency()});
+
+            if (m_textureFront.isLoaded())
+                m_progressBar->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -543,9 +549,13 @@ namespace tgui
     void ProgressBarRenderer::setFrontTexture(const Texture& texture)
     {
         m_textureFront = texture;
-        m_textureFront.setPosition(m_progressBar->getPosition());
-        m_textureFront.setSize(m_progressBar->getSize());
-        m_textureFront.setColor({255, 255, 255, m_progressBar->getTransparency()});
+        if (m_textureFront.isLoaded())
+        {
+            if (m_textureBack.isLoaded())
+                m_progressBar->updateSize();
+
+            m_textureFront.setColor({255, 255, 255, m_progressBar->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

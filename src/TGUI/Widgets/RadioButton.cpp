@@ -621,9 +621,13 @@ namespace tgui
     void RadioButtonRenderer::setUncheckedTexture(const Texture& texture)
     {
         m_textureUnchecked = texture;
-        m_textureUnchecked.setPosition(m_radioButton->getPosition());
-        m_textureUnchecked.setSize(m_radioButton->getSize());
-        m_textureUnchecked.setColor({255, 255, 255, m_radioButton->getTransparency()});
+        if (m_textureUnchecked.isLoaded())
+        {
+            m_textureUnchecked.setColor({255, 255, 255, m_radioButton->getTransparency()});
+
+            if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
+                m_radioButton->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -631,9 +635,13 @@ namespace tgui
     void RadioButtonRenderer::setCheckedTexture(const Texture& texture)
     {
         m_textureChecked = texture;
-        m_textureChecked.setPosition(m_radioButton->getPosition());
-        m_textureChecked.setSize(m_radioButton->getSize());
-        m_textureChecked.setColor({255, 255, 255, m_radioButton->getTransparency()});
+        if (m_textureChecked.isLoaded())
+        {
+            m_textureChecked.setColor({255, 255, 255, m_radioButton->getTransparency()});
+
+            if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
+                m_radioButton->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -641,9 +649,13 @@ namespace tgui
     void RadioButtonRenderer::setUncheckedHoverTexture(const Texture& texture)
     {
         m_textureUncheckedHover = texture;
-        m_textureUncheckedHover.setPosition(m_radioButton->getPosition());
-        m_textureUncheckedHover.setSize(m_radioButton->getSize());
-        m_textureUncheckedHover.setColor({255, 255, 255, m_radioButton->getTransparency()});
+        if (m_textureUncheckedHover.isLoaded())
+        {
+            m_textureUncheckedHover.setColor({255, 255, 255, m_radioButton->getTransparency()});
+
+            if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
+                m_radioButton->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -651,9 +663,13 @@ namespace tgui
     void RadioButtonRenderer::setCheckedHoverTexture(const Texture& texture)
     {
         m_textureCheckedHover = texture;
-        m_textureCheckedHover.setPosition(m_radioButton->getPosition());
-        m_textureCheckedHover.setSize(m_radioButton->getSize());
-        m_textureCheckedHover.setColor({255, 255, 255, m_radioButton->getTransparency()});
+        if (m_textureCheckedHover.isLoaded())
+        {
+            m_textureCheckedHover.setColor({255, 255, 255, m_radioButton->getTransparency()});
+
+            if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
+                m_radioButton->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -661,9 +677,12 @@ namespace tgui
     void RadioButtonRenderer::setFocusedTexture(const Texture& texture)
     {
         m_textureFocused = texture;
-        m_textureFocused.setPosition(m_radioButton->getPosition());
-        m_textureFocused.setSize(m_radioButton->getSize());
-        m_textureFocused.setColor({255, 255, 255, m_radioButton->getTransparency()});
+        if (m_textureFocused.isLoaded())
+        {
+            m_textureFocused.setSize(m_radioButton->getSize());
+            m_textureFocused.setPosition(m_radioButton->getPosition());
+            m_textureFocused.setColor({255, 255, 255, m_radioButton->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

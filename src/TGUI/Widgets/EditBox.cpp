@@ -1482,9 +1482,12 @@ namespace tgui
     void EditBoxRenderer::setNormalTexture(const Texture& texture)
     {
         m_textureNormal = texture;
-        m_textureNormal.setPosition(m_editBox->getPosition());
-        m_textureNormal.setSize(m_editBox->getSize());
-        m_textureNormal.setColor({255, 255, 255, m_editBox->getTransparency()});
+        if (m_textureNormal.isLoaded())
+        {
+            m_textureNormal.setPosition(m_editBox->getPosition());
+            m_textureNormal.setSize(m_editBox->getSize());
+            m_textureNormal.setColor({255, 255, 255, m_editBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1492,9 +1495,12 @@ namespace tgui
     void EditBoxRenderer::setHoverTexture(const Texture& texture)
     {
         m_textureHover = texture;
-        m_textureHover.setPosition(m_editBox->getPosition());
-        m_textureHover.setSize(m_editBox->getSize());
-        m_textureHover.setColor({255, 255, 255, m_editBox->getTransparency()});
+        if (m_textureHover.isLoaded())
+        {
+            m_textureHover.setPosition(m_editBox->getPosition());
+            m_textureHover.setSize(m_editBox->getSize());
+            m_textureHover.setColor({255, 255, 255, m_editBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1502,9 +1508,12 @@ namespace tgui
     void EditBoxRenderer::setFocusTexture(const Texture& texture)
     {
         m_textureFocused = texture;
-        m_textureFocused.setPosition(m_editBox->getPosition());
-        m_textureFocused.setSize(m_editBox->getSize());
-        m_textureFocused.setColor({255, 255, 255, m_editBox->getTransparency()});
+        if (m_textureFocused.isLoaded())
+        {
+            m_textureFocused.setPosition(m_editBox->getPosition());
+            m_textureFocused.setSize(m_editBox->getSize());
+            m_textureFocused.setColor({255, 255, 255, m_editBox->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

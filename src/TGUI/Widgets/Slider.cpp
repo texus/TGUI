@@ -628,9 +628,13 @@ namespace tgui
     void SliderRenderer::setTrackTexture(const Texture& texture)
     {
         m_textureTrackNormal = texture;
-        m_textureTrackNormal.setPosition(m_slider->getPosition());
-        m_textureTrackNormal.setSize(m_slider->getSize());
-        m_textureTrackNormal.setColor({255, 255, 255, m_slider->getTransparency()});
+        if (m_textureTrackNormal.isLoaded())
+        {
+            m_textureTrackNormal.setColor({255, 255, 255, m_slider->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
+                m_slider->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -638,9 +642,13 @@ namespace tgui
     void SliderRenderer::setTrackHoverTexture(const Texture& texture)
     {
         m_textureTrackHover = texture;
-        m_textureTrackHover.setPosition(m_slider->getPosition());
-        m_textureTrackHover.setSize(m_slider->getSize());
-        m_textureTrackHover.setColor({255, 255, 255, m_slider->getTransparency()});
+        if (m_textureTrackHover.isLoaded())
+        {
+            m_textureTrackHover.setColor({255, 255, 255, m_slider->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
+                m_slider->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -648,9 +656,13 @@ namespace tgui
     void SliderRenderer::setThumbTexture(const Texture& texture)
     {
         m_textureThumbNormal = texture;
-        m_textureThumbNormal.setPosition(m_slider->getPosition());
-        m_textureThumbNormal.setSize(m_slider->getSize());
-        m_textureThumbNormal.setColor({255, 255, 255, m_slider->getTransparency()});
+        if (m_textureThumbNormal.isLoaded())
+        {
+            m_textureThumbNormal.setColor({255, 255, 255, m_slider->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
+                m_slider->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -658,9 +670,13 @@ namespace tgui
     void SliderRenderer::setThumbHoverTexture(const Texture& texture)
     {
         m_textureThumbHover = texture;
-        m_textureThumbHover.setPosition(m_slider->getPosition());
-        m_textureThumbHover.setSize(m_slider->getSize());
-        m_textureThumbHover.setColor({255, 255, 255, m_slider->getTransparency()});
+        if (m_textureThumbHover.isLoaded())
+        {
+            m_textureThumbHover.setColor({255, 255, 255, m_slider->getTransparency()});
+
+            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
+                m_slider->updateSize();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

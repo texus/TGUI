@@ -544,9 +544,12 @@ namespace tgui
     void ButtonRenderer::setNormalTexture(const Texture& texture)
     {
         m_textureNormal = texture;
-        m_textureNormal.setPosition(m_button->getPosition());
-        m_textureNormal.setSize(m_button->getSize());
-        m_textureNormal.setColor({255, 255, 255, m_button->getTransparency()});
+        if (m_textureNormal.isLoaded())
+        {
+            m_textureNormal.setPosition(m_button->getPosition());
+            m_textureNormal.setSize(m_button->getSize());
+            m_textureNormal.setColor({255, 255, 255, m_button->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,9 +557,12 @@ namespace tgui
     void ButtonRenderer::setHoverTexture(const Texture& texture)
     {
         m_textureHover = texture;
-        m_textureHover.setPosition(m_button->getPosition());
-        m_textureHover.setSize(m_button->getSize());
-        m_textureHover.setColor({255, 255, 255, m_button->getTransparency()});
+        if (m_textureHover.isLoaded())
+        {
+            m_textureHover.setPosition(m_button->getPosition());
+            m_textureHover.setSize(m_button->getSize());
+            m_textureHover.setColor({255, 255, 255, m_button->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -564,9 +570,12 @@ namespace tgui
     void ButtonRenderer::setDownTexture(const Texture& texture)
     {
         m_textureDown = texture;
-        m_textureDown.setPosition(m_button->getPosition());
-        m_textureDown.setSize(m_button->getSize());
-        m_textureDown.setColor({255, 255, 255, m_button->getTransparency()});
+        if (m_textureDown.isLoaded())
+        {
+            m_textureDown.setPosition(m_button->getPosition());
+            m_textureDown.setSize(m_button->getSize());
+            m_textureDown.setColor({255, 255, 255, m_button->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -574,9 +583,12 @@ namespace tgui
     void ButtonRenderer::setFocusTexture(const Texture& texture)
     {
         m_textureFocused = texture;
-        m_textureFocused.setPosition(m_button->getPosition());
-        m_textureFocused.setSize(m_button->getSize());
-        m_textureFocused.setColor({255, 255, 255, m_button->getTransparency()});
+        if (m_textureFocused.isLoaded())
+        {
+            m_textureFocused.setPosition(m_button->getPosition());
+            m_textureFocused.setSize(m_button->getSize());
+            m_textureFocused.setColor({255, 255, 255, m_button->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

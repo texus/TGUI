@@ -825,9 +825,12 @@ namespace tgui
     void ChildWindowRenderer::setTitleBarTexture(const Texture& texture)
     {
         m_textureTitleBar = texture;
-        m_textureTitleBar.setPosition(m_childWindow->getPosition());
-        m_textureTitleBar.setSize(m_childWindow->getSize());
-        m_textureTitleBar.setColor({255, 255, 255, m_childWindow->getTransparency()});
+        if (m_textureTitleBar.isLoaded())
+        {
+            m_textureTitleBar.setPosition(m_childWindow->getPosition());
+            m_textureTitleBar.setSize({m_childWindow->getSize().x + m_borders.left + m_borders.right, m_titleBarHeight});
+            m_textureTitleBar.setColor({255, 255, 255, m_childWindow->getTransparency()});
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
