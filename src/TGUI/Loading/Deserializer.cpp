@@ -191,7 +191,7 @@ namespace tgui
 
     TGUI_API ObjectConverter deserializeNumber(const std::string& value)
     {
-        return {std::stof(value)};
+        return {tgui::stof(value)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

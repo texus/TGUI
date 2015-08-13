@@ -738,28 +738,29 @@ namespace tgui
 
     std::map<std::string, WidgetLoader::LoadFunction> WidgetLoader::m_loadFunctions =
         {
-            {toLower("Widget"), std::bind(loadWidget, std::placeholders::_1, nullptr)},
-            {toLower("Container"), std::bind(loadContainer, std::placeholders::_1, nullptr)},
-            {toLower("Button"), std::bind(loadButton, std::placeholders::_1, nullptr)},
-            {toLower("Canvas"), std::bind(loadCanvas, std::placeholders::_1, nullptr)},
-            {toLower("CheckBox"), std::bind(loadCheckbox, std::placeholders::_1, nullptr)},
-            {toLower("ChildWindow"), std::bind(loadChildWindow, std::placeholders::_1, nullptr)},
-            {toLower("ClickableWidget"), std::bind(loadClickableWidget, std::placeholders::_1, nullptr)},
-            {toLower("ComboBox"), std::bind(loadComboBox, std::placeholders::_1, nullptr)},
-            {toLower("EditBox"), std::bind(loadEditBox, std::placeholders::_1, nullptr)},
-            {toLower("Knob"), std::bind(loadKnob, std::placeholders::_1, nullptr)},
-            {toLower("ListBox"), std::bind(loadListBox, std::placeholders::_1, nullptr)},
-            {toLower("Label"), std::bind(loadLabel, std::placeholders::_1, nullptr)},
-            {toLower("Panel"), std::bind(loadPanel, std::placeholders::_1, nullptr)},
-            {toLower("Picture"), std::bind(loadPicture, std::placeholders::_1, nullptr)},
-            {toLower("ProgressBar"), std::bind(loadProgressBar, std::placeholders::_1, nullptr)},
-            {toLower("RadioButton"), std::bind(loadRadioButton, std::placeholders::_1, nullptr)},
-            {toLower("Scrollbar"), std::bind(loadScrollbar, std::placeholders::_1, nullptr)},
-            {toLower("Slider"), std::bind(loadSlider, std::placeholders::_1, nullptr)},
-            {toLower("SpinButton"), std::bind(loadSpinButton, std::placeholders::_1, nullptr)},
-            {toLower("Tab"), std::bind(loadTab, std::placeholders::_1, nullptr)},
-            {toLower("TextBox"), std::bind(loadTextBox, std::placeholders::_1, nullptr)},
-            {toLower("ToolTip"), std::bind(loadTooltip, std::placeholders::_1, nullptr)}
+            // Using "std::shared_ptr<Widget>{}" instead of "nullptr" to work around internal compiler error with MinGW 4.7 TDM
+            {toLower("Widget"), std::bind(loadWidget, std::placeholders::_1, std::shared_ptr<Widget>{})},
+            {toLower("Container"), std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
+            {toLower("Button"), std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
+            {toLower("Canvas"), std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
+            {toLower("CheckBox"), std::bind(loadCheckbox, std::placeholders::_1, std::shared_ptr<Checkbox>{})},
+            {toLower("ChildWindow"), std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},
+            {toLower("ClickableWidget"), std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},
+            {toLower("ComboBox"), std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},
+            {toLower("EditBox"), std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},
+            {toLower("Knob"), std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},
+            {toLower("ListBox"), std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},
+            {toLower("Label"), std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
+            {toLower("Panel"), std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},
+            {toLower("Picture"), std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},
+            {toLower("ProgressBar"), std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},
+            {toLower("RadioButton"), std::bind(loadRadioButton, std::placeholders::_1, std::shared_ptr<RadioButton>{})},
+            {toLower("Scrollbar"), std::bind(loadScrollbar, std::placeholders::_1, std::shared_ptr<Scrollbar>{})},
+            {toLower("Slider"), std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},
+            {toLower("SpinButton"), std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},
+            {toLower("Tab"), std::bind(loadTab, std::placeholders::_1, std::shared_ptr<Tab>{})},
+            {toLower("TextBox"), std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})},
+            {toLower("ToolTip"), std::bind(loadTooltip, std::placeholders::_1, std::shared_ptr<Tooltip>{})}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

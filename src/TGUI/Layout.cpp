@@ -237,7 +237,7 @@ namespace tgui
                     }
 
                     maxNum = std::max(maxNum, parseLayoutString(expression.substr(prevPos + 1, closeBracketPos - prevPos - 1)));
-                    newExpression += std::to_string(maxNum);
+                    newExpression += tgui::to_string(maxNum);
                 }
                 else
                     newExpression += tgui::to_string(parseLayoutString(expression.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1)));
@@ -260,7 +260,7 @@ namespace tgui
                     }
 
                     maxNum = std::min(maxNum, parseLayoutString(expression.substr(prevPos + 1, closeBracketPos - prevPos - 1)));
-                    newExpression += std::to_string(maxNum);
+                    newExpression += tgui::to_string(maxNum);
                 }
                 else
                     newExpression += tgui::to_string(parseLayoutString(expression.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1)));
@@ -281,7 +281,7 @@ namespace tgui
                             float minValue = parseLayoutString(expression.substr(openBracketPos + 1, firstCommaPos - openBracketPos - 1));
                             float maxValue = parseLayoutString(expression.substr(firstCommaPos + 1, secondCommaPos - firstCommaPos - 1));
                             float wantedValue = parseLayoutString(expression.substr(secondCommaPos + 1, closeBracketPos - secondCommaPos - 1));
-                            newExpression += std::to_string(std::max(std::min(wantedValue, maxValue), minValue));
+                            newExpression += tgui::to_string(std::max(std::min(wantedValue, maxValue), minValue));
                         }
                         else // There shouldn't be a third comma
                             newExpression += "0";

@@ -50,9 +50,9 @@ namespace tgui
     {
         sf::Color color = value.getColor();
         if (color.a < 255)
-            return "rgba(" + std::to_string(color.r) + ", " + std::to_string(color.g) + ", " + std::to_string(color.b) + ", " + std::to_string(color.a) + ")";
+            return "rgba(" + tgui::to_string((int)color.r) + ", " + tgui::to_string((int)color.g) + ", " + tgui::to_string((int)color.b) + ", " + tgui::to_string((int)color.a) + ")";
         else
-            return "rgb(" + std::to_string(color.r) + ", " + std::to_string(color.g) + ", " + std::to_string(color.b) + ")";
+            return "rgb(" + tgui::to_string((int)color.r) + ", " + tgui::to_string((int)color.g) + ", " + tgui::to_string((int)color.b) + ")";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,8 +94,8 @@ namespace tgui
     TGUI_API std::string serializeBorders(ObjectConverter&& value)
     {
         Borders borders = value.getBorders();
-        return "(" + std::to_string(static_cast<unsigned int>(borders.left)) + ", " + std::to_string(static_cast<unsigned int>(borders.top))
-             + ", " + std::to_string(static_cast<unsigned int>(borders.right)) + ", " + std::to_string(static_cast<unsigned int>(borders.bottom)) + ")";
+        return "(" + tgui::to_string(static_cast<unsigned int>(borders.left)) + ", " + tgui::to_string(static_cast<unsigned int>(borders.top))
+             + ", " + tgui::to_string(static_cast<unsigned int>(borders.right)) + ", " + tgui::to_string(static_cast<unsigned int>(borders.bottom)) + ")";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
