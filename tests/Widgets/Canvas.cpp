@@ -33,12 +33,12 @@ TEST_CASE("[Canvas]") {
     }
 
     SECTION("constructor") {
-        canvas = std::make_shared<tgui::Canvas>(200, 100);
+        canvas = std::make_shared<tgui::Canvas>(200.f, 100.f);
         REQUIRE(canvas->getSize() == sf::Vector2f(200, 100));
     }
 
     SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(canvas = std::make_shared<tgui::Canvas>(60, 40));
+        REQUIRE_NOTHROW(canvas = std::make_shared<tgui::Canvas>(60.f, 40.f));
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(canvas);

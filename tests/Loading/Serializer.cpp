@@ -81,7 +81,7 @@ TEST_CASE("[Serializer]") {
     SECTION("serialize number") {
         REQUIRE(tgui::Serializer::serialize({0}) == "0");
         REQUIRE(tgui::Serializer::serialize({1}) == "1");
-        REQUIRE(tgui::Serializer::serialize({2.15}) == "2.15");
+        REQUIRE(tgui::Serializer::serialize({2.15f}) == "2.15");
     }
 
     SECTION("custom serialize function") {
