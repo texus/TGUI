@@ -1,14 +1,17 @@
 # TODO: Make sure all files are listed
 set(TGUI_SRC
+    BoxLayout.cpp
     Clipboard.cpp
     Container.cpp
     Global.cpp
     Gui.cpp
+    HorizontalLayout.cpp
     Layout.cpp
     Signal.cpp
     Texture.cpp
     TextureManager.cpp
     Transformable.cpp
+    VerticalLayout.cpp
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
@@ -43,6 +46,9 @@ set(TGUI_SRC
     Widgets/Tab.cpp
     Widgets/TextBox.cpp
     Widgets/Tooltip.cpp
+    Widgets/extra/AnimatedPicture.cpp
+    Widgets/extra/Slider2d.cpp
+    Widgets/extra/SpriteSheet.cpp
 )
 
 # Determine library suffixes depending on static/shared configuration

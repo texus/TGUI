@@ -1,5 +1,5 @@
-#include <TGUI/ClickableWidget.hpp>
 #include <TGUI/BoxLayout.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,7 +55,7 @@ namespace tgui
 
     void BoxLayout::addSpace(float ratio)
     {
-        add(tgui::ClickableWidget::create(), "");
+        add(std::make_shared<ClickableWidget>(), "");
         setRatio(m_layoutWidgets.size()-1, ratio);
     }
 
@@ -63,7 +63,7 @@ namespace tgui
 
     bool BoxLayout::insertSpace(std::size_t index, float ratio)
     {
-        bool success = insert(index, tgui::ClickableWidget::create(), "");
+        bool success = insert(index, std::make_shared<ClickableWidget>(), "");
         setRatio(index, ratio);
         return success;
     }
