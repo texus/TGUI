@@ -414,6 +414,7 @@ namespace tgui
         sf::Vector2f  m_size;
         sf::IntRect   m_middleRect;
         sf::FloatRect m_textureRect;
+        sf::Color     m_vertexColor = sf::Color::White;
 
         ScalingType   m_scalingType = ScalingType::Normal;
 
