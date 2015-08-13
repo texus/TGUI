@@ -103,6 +103,10 @@ namespace tgui
 
     bool Grid::remove(const Widget::Ptr& widget)
     {
+        auto callbackIt = m_connectedCallbacks.find(widget);
+        if (callbackIt != m_connectedCallbacks.end())
+            m_connectedCallbacks.erase(callbackIt);
+
         // Find the widget in the grid
         for (unsigned int row = 0; row < m_gridWidgets.size(); ++row)
         {
@@ -163,6 +167,8 @@ namespace tgui
         m_rowHeight.clear();
         m_columnWidth.clear();
 
+        m_connectedCallbacks.clear();
+
         Container::removeAllWidgets();
 
         setSize(0,0);
@@ -208,6 +214,9 @@ namespace tgui
 
         // Update the widgets
         updateWidgets();
+
+        // Automatically update the widgets when their size changes
+        m_connectedCallbacks[widget] = widget->connect("SizeChanged", &Grid::updateWidgets, this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

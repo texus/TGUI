@@ -177,7 +177,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Updates the position and size of the widget.
         ///
-        /// Once a widget has been added to the grid, you will have to call this function every time you change the size of the widget.
+        /// You should no longer have to call this function manually as widgets are supposed to call this function themselves
+        /// when their position or size is changed.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateWidgets();
@@ -249,6 +250,8 @@ namespace tgui
 
         std::vector<float> m_rowHeight;
         std::vector<float> m_columnWidth;
+
+        std::map<Widget::Ptr, unsigned int> m_connectedCallbacks;
 
         sf::Vector2f m_realSize; // Actual size of the grid, while m_size contains the intended size
 
