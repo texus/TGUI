@@ -44,106 +44,197 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /// @internal
     template <typename... Types>
-    struct TypeSet {};
+    struct TypeSet;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /// @internal
-    template <typename T>
-    std::string convertTypeToString();
-
-    /// @internal
-    template <> inline std::string convertTypeToString<int>() { return "int"; }
-    
-    /// @internal
-    template <> inline std::string convertTypeToString<sf::Vector2f>() { return "sf::Vector2f"; }
-    
-    /// @internal
-    template <> inline std::string convertTypeToString<sf::String>() { return "sf::String"; }
-    
-    /// @internal
-    template <> inline std::string convertTypeToString<std::vector<sf::String>>() { return "std::vector<sf::String>"; }
-    
-    /// @internal
-    template <> inline std::string convertTypeToString<std::shared_ptr<ChildWindow>>() { return "std::shared_ptr<ChildWindow>"; }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /// @internal
-    template <typename... Types>
-    struct extractTypes
+    namespace priv
     {
-        static std::vector<std::vector<std::string>> get() { return {}; }
-        static std::vector<std::string> getRow() { return {}; }
-    };
+        extern TGUI_API std::vector<const void*> data;
 
-    /// @internal
-    template <typename Type>
-    struct extractTypes<Type>
-    {
-        static std::vector<std::vector<std::string>> get() { return {{convertTypeToString<Type>()}}; }
-        static std::vector<std::string> getRow() { return {convertTypeToString<Type>()}; }
-    };
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /// @internal
-    template <typename Type, typename... OtherTypes>
-    struct extractTypes<Type, OtherTypes...>
-    {
-        static std::vector<std::vector<std::string>> get()
+        template <typename T>
+        std::string convertTypeToString();
+
+        template <> inline std::string convertTypeToString<int>() { return "int"; }
+        template <> inline std::string convertTypeToString<sf::Vector2f>() { return "sf::Vector2f"; }
+        template <> inline std::string convertTypeToString<sf::String>() { return "sf::String"; }
+        template <> inline std::string convertTypeToString<std::vector<sf::String>>() { return "std::vector<sf::String>"; }
+        template <> inline std::string convertTypeToString<std::shared_ptr<ChildWindow>>() { return "std::shared_ptr<ChildWindow>"; }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        template <typename... Types>
+        struct extractTypes
         {
-            auto types = extractTypes<OtherTypes...>::get();
-            types.push_back({convertTypeToString<Type>()});
-            return types;
+            static std::vector<std::vector<std::string>> get() { return {}; }
+            static std::vector<std::string> getRow() { return {}; }
+        };
+
+        template <typename Type>
+        struct extractTypes<Type>
+        {
+            static std::vector<std::vector<std::string>> get() { return {{convertTypeToString<Type>()}}; }
+            static std::vector<std::string> getRow() { return {convertTypeToString<Type>()}; }
+        };
+
+        template <typename Type, typename... OtherTypes>
+        struct extractTypes<Type, OtherTypes...>
+        {
+            static std::vector<std::vector<std::string>> get()
+            {
+                auto types = extractTypes<OtherTypes...>::get();
+                types.push_back({convertTypeToString<Type>()});
+                return types;
+            }
+
+            static std::vector<std::string> getRow()
+            {
+                auto types = extractTypes<OtherTypes...>::getRow();
+                types.push_back(convertTypeToString<Type>());
+                return types;
+            }
+        };
+
+        template <typename... T>
+        struct extractTypes<TypeSet<T...>>
+        {
+            static std::vector<std::vector<std::string>> get() { return {extractTypes<T...>::getRow()}; }
+        };
+
+        template <typename... T, typename... U>
+        struct extractTypes<TypeSet<T...>, U...>
+        {
+            static std::vector<std::vector<std::string>> get()
+            {
+                auto types = {extractTypes<T...>::getRow()};
+                types.insert(types.end(), extractTypes<U...>::get());
+                return types;
+            }
+        };
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        template <typename Func, typename TypeA, typename TypeB, typename... Args>
+        struct isConvertible;
+
+        template <typename Func, typename... TypesA, typename... TypesB, typename... Args>
+        struct isConvertible<Func, TypeSet<TypesA...>, TypeSet<TypesB...>, Args...>
+        {
+            using type = typename std::conditional<std::is_convertible<Func, std::function<void(Args..., TypesA...)>>::value, TypeSet<TypesA...>, TypeSet<TypesB...>>::type;
+        };
+
+        template <typename Func, typename... Type, typename... Args>
+        struct isConvertible<Func, TypeSet<>, TypeSet<Type...>, Args...>
+        {
+            using type = typename std::conditional<std::is_convertible<Func, std::function<void(Args...)>>::value || std::is_convertible<Func, std::function<void(Args...)>>::value, TypeSet<>, TypeSet<Type...>>::type;
+        };
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        template <typename T, typename = void>
+        struct isCallable : std::is_function<T> {};
+
+        template <typename T>
+        struct isCallable<T, typename std::enable_if<std::is_same<decltype(void(&T::operator())), void>::value>::type> : std::true_type {};
+
+        template <typename... T>
+        struct areCallable : std::true_type {};
+
+        template <typename T>
+        struct areCallable<T> : isCallable<T> {};
+
+        template <typename T, typename... OtherT>
+        struct areCallable<T, OtherT...> : std::conditional<isCallable<T>::value, typename isCallable<T>::value, typename std::conditional<areCallable<OtherT...>::value, typename areCallable<OtherT...>::value, std::false_type>::value> {};
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        template <typename Type>
+        const Type& dereference(const void* obj)
+        {
+            return *static_cast<const Type*>(obj);
         }
 
-        static std::vector<std::string> getRow()
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        template <typename... T>
+        struct connector;
+
+        template <typename Func, typename... Args>
+        struct connector<TypeSet<>, Func, Args...>
         {
-            auto types = extractTypes<OtherTypes...>::getRow();
-            types.push_back(convertTypeToString<Type>());
-            return types;
-        }
-    };
+            static std::function<void()> connect(Func func, Args... args)
+            {
+                return std::bind(func, args...);
+            }
+        };
 
-    /// @internal
-    template <typename... T>
-    struct extractTypes<TypeSet<T...>>
-    {
-        static std::vector<std::vector<std::string>> get() { return {extractTypes<T...>::getRow()}; }
-    };
-
-    /// @internal
-    template <typename... T, typename... U>
-    struct extractTypes<TypeSet<T...>, U...>
-    {
-        static std::vector<std::vector<std::string>> get()
+        template <typename Func, typename... Args, typename Type>
+        struct connector<TypeSet<Type>, Func, Args...>
         {
-            auto types = {extractTypes<T...>::getRow()};
-            types.insert(types.end(), extractTypes<U...>::get());
-            return types;
-        }
-    };
+            static std::function<void()> connect(Func func, Args... args)
+            {
+                return std::bind(func, args..., std::bind(dereference<Type>, std::cref(data[0])));
+            }
+        };
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... Args, typename TypeA, typename TypeB>
+        struct connector<TypeSet<TypeA, TypeB>, Func, Args...>
+        {
+            static std::function<void()> connect(Func func, Args... args)
+            {
+                return std::bind(func, args...,
+                                 std::bind(dereference<TypeA>, std::cref(data[0])),
+                                 std::bind(dereference<TypeB>, std::cref(data[1])));
+            }
+        };
 
-    /// @internal
-    template <typename Func, typename TypeA, typename TypeB, typename... Args>
-    struct isConvertible;
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /// @internal
-    template <typename Func, typename... TypesA, typename... TypesB, typename... Args>
-    struct isConvertible<Func, TypeSet<TypesA...>, TypeSet<TypesB...>, Args...>
-    {
-        using type = typename std::conditional<std::is_convertible<Func, std::function<void(Args..., TypesA...)>>::value, TypeSet<TypesA...>, TypeSet<TypesB...>>::type;
-    };
+        template <typename Func, typename Arg, typename = void>
+        struct bindRemover
+        {
+            static const Arg& remove(Func, const Arg& arg)
+            {
+                return arg;
+            }
+        };
 
-    /// @internal
-    template <typename Func, typename... Type>
-    struct isConvertible<Func, TypeSet<>, TypeSet<Type...>>
-    {
-        using type = typename std::conditional<std::is_convertible<Func, std::function<void()>>::value, TypeSet<>, TypeSet<Type...>>::type;
-    };
+        template <typename Func, typename Arg>
+        struct bindRemover<Func, Arg, typename std::enable_if<std::is_bind_expression<Arg>::value>::type>
+        {
+            static auto remove(Func, const Arg& arg) -> decltype(arg())
+            {
+                return arg();
+            }
+        };
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        template <typename Func, typename... Args>
+        struct isFunctionConvertible
+        {
+            using type = typename isConvertible<Func, TypeSet<>,
+                            typename isConvertible<Func, TypeSet<int>,
+                                typename isConvertible<Func, TypeSet<sf::Vector2f>,
+                                    typename isConvertible<Func, TypeSet<sf::String>,
+                                        typename isConvertible<Func, TypeSet<std::vector<sf::String>>,
+                                            typename isConvertible<Func, TypeSet<std::shared_ptr<ChildWindow>>,
+                                                typename isConvertible<Func, TypeSet<sf::String, sf::String>,
+                                                    TypeSet<void>,
+                                                    Args...>::type,
+                                                Args...>::type,
+                                            Args...>::type,
+                                        Args...>::type,
+                                    Args...>::type,
+                                Args...>::type,
+                            Args...>::type;
+        };
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,23 +250,11 @@ namespace tgui
         template <typename Func, typename... Args>
         void connect(unsigned int id, Func func, Args... args)
         {
-            using Type = typename isConvertible<Func, TypeSet<>,
-                            typename isConvertible<Func, TypeSet<int>,
-                                typename isConvertible<Func, TypeSet<sf::Vector2f>,
-                                    typename isConvertible<Func, TypeSet<sf::String>,
-                                        typename isConvertible<Func, TypeSet<std::vector<sf::String>>,
-                                            typename isConvertible<Func, TypeSet<std::shared_ptr<ChildWindow>>,
-                                                typename isConvertible<Func, TypeSet<sf::String, sf::String>,
-                                                    TypeSet<void>,
-                                                    Args...>::type,
-                                                Args...>::type,
-                                            Args...>::type,
-                                        Args...>::type,
-                                    Args...>::type,
-                                Args...>::type,
-                            Args...>::type;
+            using type = typename priv::isFunctionConvertible<Func, decltype(priv::bindRemover<Func, Args>::remove(func, args))...>::type;
+            static_assert(!std::is_same<type, TypeSet<void>>::value, "Parameters passed to the connect function are wrong!");
 
-            m_functions[id] = connectInternal(Type{}, func, args...);
+            checkCompatibleParameterType<type>();
+            m_functions[id] = priv::connector<type, Func, Args...>::connect(func, args...);
         }
 
         template <typename Func, typename... Args>
@@ -195,45 +274,19 @@ namespace tgui
         template <typename T, typename... Args>
         void operator()(unsigned int count, const T& value, Args... args)
         {
-            m_data[count] = static_cast<const void*>(&value);
+            priv::data[count] = static_cast<const void*>(&value);
             (*this)(count+1, args...);
         }
 
     protected:
 
-        template <typename Func, typename... Args>
-        std::function<void()> connectInternal(TypeSet<void>, Func, Args...)
-        {
-            static_assert(!std::is_same<Func, Func>::value, "Parameters passed to the connect function are wrong!");
-            return nullptr;
-        }
-
-        template <typename Func, typename... Args>
-        std::function<void()> connectInternal(TypeSet<>, Func func, Args... args)
-        {
-            return std::bind(func, args...);
-        }
-
-        template <typename Func, typename... Args, typename Type>
-        std::function<void()> connectInternal(TypeSet<Type>, Func func, Args... args)
-        {
-            checkCompatibleParameterType<Type>();
-            return std::bind(func, args..., std::bind(dereference<Type>, std::cref(m_data[0])));
-        }
-
-        template <typename Func, typename... Args, typename TypeA, typename TypeB>
-        std::function<void()> connectInternal(TypeSet<TypeA, TypeB>, Func func, Args... args)
-        {
-            checkCompatibleParameterType<TypeA, TypeB>();
-            return std::bind(func, args...,
-                             std::bind(dereference<TypeA>, std::cref(m_data[0])),
-                             std::bind(dereference<TypeB>, std::cref(m_data[1])));
-        }
-
-        template <typename... Types>
+        template <typename Type>
         void checkCompatibleParameterType()
         {
-            auto acceptedType = extractTypes<TypeSet<Types...>>::get();
+            if (std::is_same<Type, TypeSet<>>::value)
+                return;
+
+            auto acceptedType = priv::extractTypes<Type>::get();
             assert(acceptedType.size() == 1);
 
             for (auto& type : m_allowedTypes)
@@ -242,13 +295,7 @@ namespace tgui
                     return;
             }
 
-            throw Exception{"Failed to bind parameter to callback function."};
-        }
-
-        template <typename Type>
-        static const Type& dereference(const void* obj)
-        {
-            return *static_cast<const Type*>(obj);
+            throw Exception{"Failed to bind parameter to callback function. Parameter is of wrong type."};
         }
 
     private:
@@ -257,7 +304,6 @@ namespace tgui
         std::map<unsigned int, std::function<void(const Callback&)>> m_functionsEx;
 
         std::vector<std::vector<std::string>> m_allowedTypes;
-        static std::vector<const void*> m_data;
 
         friend class SignalWidgetBase; // Only needed for m_functionsEx
     };
@@ -395,7 +441,7 @@ namespace tgui
         void addSignal(std::string&& name)
         {
             assert(m_signals[toLower(name)] == nullptr);
-            m_signals[toLower(name)] = std::make_shared<Signal>(extractTypes<T...>::get());
+            m_signals[toLower(name)] = std::make_shared<Signal>(priv::extractTypes<T...>::get());
         }
 
 
