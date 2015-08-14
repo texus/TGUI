@@ -63,7 +63,10 @@ namespace tgui
         operator std::shared_ptr<T>()
         {
             std::shared_ptr<T> result = std::dynamic_pointer_cast<T>(m_widget);
-            assert(result != nullptr); // Value returned by Theme::load must match type of variable
+
+            if (result == nullptr)
+                throw Exception{"Value returned by Theme::load must match type of variable!"};
+
             return result;
         }
 
