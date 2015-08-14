@@ -134,23 +134,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        template <typename T, typename = void>
-        struct isCallable : std::is_function<T> {};
-
-        template <typename T>
-        struct isCallable<T, typename std::enable_if<std::is_same<decltype(void(&T::operator())), void>::value>::type> : std::true_type {};
-
-        template <typename... T>
-        struct areCallable : std::true_type {};
-
-        template <typename T>
-        struct areCallable<T> : isCallable<T> {};
-
-        template <typename T, typename... OtherT>
-        struct areCallable<T, OtherT...> : std::conditional<isCallable<T>::value, typename isCallable<T>::value, typename std::conditional<areCallable<OtherT...>::value, typename areCallable<OtherT...>::value, std::false_type>::value> {};
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         template <typename Type>
         const Type& dereference(const void* obj)
         {
