@@ -31,6 +31,8 @@ TEST_CASE("[Widget]") {
     tgui::Widget::Ptr widget = std::make_shared<tgui::Button>();
 
     SECTION("Signals") {
+        tgui::Widget::Ptr widget2 = std::make_shared<tgui::Button>();
+
         REQUIRE_NOTHROW(widget->connect("PositionChanged", [](){}));
         REQUIRE_NOTHROW(widget->connect("SizeChanged", [](){}));
         REQUIRE_NOTHROW(widget->connect("Focused", [](){}));
@@ -41,8 +43,8 @@ TEST_CASE("[Widget]") {
         REQUIRE_NOTHROW(widget->connect("PositionChanged", [](sf::Vector2f){}));
         REQUIRE_NOTHROW(widget->connect("SizeChanged", [](sf::Vector2f){}));
 
-        REQUIRE_NOTHROW(widget->connect("PositionChanged", [](sf::Vector2f, sf::Vector2f){}, widget->getPosition()));
-//        REQUIRE_NOTHROW(widget->connect("SizeChanged", [](sf::Vector2f, sf::Vector2f){}, std::bind(&tgui::Widget::getSize, widget)));
+        REQUIRE_NOTHROW(widget->connect("PositionChanged", [](sf::Vector2f, sf::Vector2f){}, widget2->getPosition()));
+        REQUIRE_NOTHROW(widget->connect("SizeChanged", [](sf::Vector2f, sf::Vector2f){}, std::bind(&tgui::Widget::getSize, widget2)));
     }
 
     SECTION("Visibile") {
