@@ -42,7 +42,7 @@ TEST_CASE("[Widget]") {
         REQUIRE_NOTHROW(widget->connect("SizeChanged", [](sf::Vector2f){}));
 
         REQUIRE_NOTHROW(widget->connect("PositionChanged", [](sf::Vector2f, sf::Vector2f){}, widget->getPosition()));
-        REQUIRE_NOTHROW(widget->connect("SizeChanged", [](sf::Vector2f, sf::Vector2f){}, std::bind(&tgui::Widget::getSize, widget)));
+//        REQUIRE_NOTHROW(widget->connect("SizeChanged", [](sf::Vector2f, sf::Vector2f){}, std::bind(&tgui::Widget::getSize, widget)));
     }
 
     SECTION("Visibile") {
