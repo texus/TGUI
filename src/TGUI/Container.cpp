@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Container.hpp>
-#include <TGUI/Widgets/Tooltip.hpp>
+#include <TGUI/Widgets/ToolTip.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Loading/WidgetLoader.hpp>
@@ -599,24 +599,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tooltip::Ptr Container::askTooltip(sf::Vector2f mousePos)
+    ToolTip::Ptr Container::askToolTip(sf::Vector2f mousePos)
     {
         if (mouseOnWidget(mousePos.x, mousePos.y))
         {
-            Tooltip::Ptr tooltip = nullptr;
+            ToolTip::Ptr tooltip = nullptr;
 
             mousePos -= getPosition() + getWidgetsOffset();
 
             Widget::Ptr widget = mouseOnWhichWidget(mousePos.x, mousePos.y);
             if (widget)
             {
-                tooltip = widget->askTooltip(mousePos);
+                tooltip = widget->askToolTip(mousePos);
                 if (tooltip)
                     return tooltip;
             }
 
-            if (m_tooltip && getTooltip()->getText() != "")
-                return getTooltip();
+            if (m_tooltip && getToolTip()->getText() != "")
+                return getToolTip();
         }
 
         return nullptr;

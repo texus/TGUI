@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Clipboard.hpp>
-#include <TGUI/Widgets/Tooltip.hpp>
+#include <TGUI/Widgets/ToolTip.hpp>
 #include <TGUI/Gui.hpp>
 
 #include <SFML/OpenGL.hpp>
@@ -160,12 +160,12 @@ namespace tgui
             }
 
             // If a tooltip is visible then hide it now
-            if (m_visibleTooltip != nullptr)
+            if (m_visibleToolTip != nullptr)
             {
-                m_visibleTooltip->setPosition(m_visibleTooltip->getPosition() - m_lastMousePos);
+                m_visibleToolTip->setPosition(m_visibleToolTip->getPosition() - m_lastMousePos);
 
-                remove(m_visibleTooltip);
-                m_visibleTooltip = nullptr;
+                remove(m_visibleToolTip);
+                m_visibleToolTip = nullptr;
             }
 
             // Reset the data for the tooltip since the mouse has moved
@@ -371,13 +371,13 @@ namespace tgui
         if (m_tooltipPossible)
         {
             m_tooltipTime += elapsedTime;
-            if (m_tooltipTime >= Tooltip::getTimeToDisplay())
+            if (m_tooltipTime >= ToolTip::getTimeToDisplay())
             {
-                Tooltip::Ptr tooltip = m_container->askTooltip(m_lastMousePos);
+                ToolTip::Ptr tooltip = m_container->askToolTip(m_lastMousePos);
                 if (tooltip)
                 {
-                    m_visibleTooltip = tooltip;
-                    add(tooltip, "#TGUI_INTERNAL$Tooltip#");
+                    m_visibleToolTip = tooltip;
+                    add(tooltip, "#TGUI_INTERNAL$ToolTip#");
 
                     tooltip->setPosition(m_lastMousePos + tooltip->getPosition());
                 }

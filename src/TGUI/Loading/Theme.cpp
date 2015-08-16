@@ -43,7 +43,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Widgets/Tooltip.hpp>
+#include <TGUI/Widgets/ToolTip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -71,7 +71,7 @@ namespace tgui
             {toLower("SpinButton"), std::make_shared<SpinButton>},
             {toLower("Tab"), std::make_shared<Tab>},
             {toLower("TextBox"), std::make_shared<TextBox>},
-            {toLower("ToolTip"), std::make_shared<Tooltip>}
+            {toLower("ToolTip"), std::make_shared<ToolTip>}
         };
 
     std::shared_ptr<BaseThemeLoader> BaseTheme::m_themeLoader = std::make_shared<DefaultThemeLoader>();

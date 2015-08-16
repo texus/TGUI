@@ -39,7 +39,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Widgets/Tooltip.hpp>
+#include <TGUI/Widgets/ToolTip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,8 +77,8 @@ namespace tgui
 
         /// TODO: Font
 
-        if (!widget->getTooltip()->getText().isEmpty())
-            node->children.emplace_back(tgui::WidgetSaver::getSaveFunction("Tooltip")(tgui::WidgetConverter{widget->getTooltip()}));
+        if (!widget->getToolTip()->getText().isEmpty())
+            node->children.emplace_back(tgui::WidgetSaver::getSaveFunction("ToolTip")(tgui::WidgetConverter{widget->getToolTip()}));
 
         if (widget->getRenderer())
         {
@@ -457,7 +457,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API std::shared_ptr<DataIO::Node> saveTooltip(Tooltip::Ptr tooltip)
+    TGUI_API std::shared_ptr<DataIO::Node> saveToolTip(ToolTip::Ptr tooltip)
     {
         auto node = saveLabel(tooltip);
         SET_PROPERTY("TimeToDisplay", tgui::to_string(tooltip->getTimeToDisplay().asSeconds()));
@@ -497,7 +497,7 @@ namespace tgui
             {toLower("SpinButton"), saveSpinButton},
             {toLower("Tab"), saveTab},
             {toLower("TextBox"), saveTextBox},
-            {toLower("ToolTip"), saveTooltip}
+            {toLower("ToolTip"), saveToolTip}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

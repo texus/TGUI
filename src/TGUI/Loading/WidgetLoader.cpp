@@ -42,7 +42,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Widgets/Tooltip.hpp>
+#include <TGUI/Widgets/ToolTip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -131,7 +131,7 @@ namespace tgui
                     widget->getRenderer()->setProperty(pair.first, pair.second->value);
             }
             else if (toLower(childNode->name) == "tooltip")
-                widget->setTooltip(std::dynamic_pointer_cast<tgui::Tooltip>(tgui::WidgetLoader::getLoadFunction("Tooltip")(childNode)));
+                widget->setToolTip(std::dynamic_pointer_cast<tgui::ToolTip>(tgui::WidgetLoader::getLoadFunction("ToolTip")(childNode)));
         }
 
         return widget;
@@ -712,13 +712,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API Widget::Ptr loadTooltip(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    TGUI_API Widget::Ptr loadToolTip(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
-        Tooltip::Ptr tooltip;
+        ToolTip::Ptr tooltip;
         if (widget)
-            tooltip = std::static_pointer_cast<Tooltip>(widget);
+            tooltip = std::static_pointer_cast<ToolTip>(widget);
         else
-            tooltip = std::make_shared<Tooltip>();
+            tooltip = std::make_shared<ToolTip>();
 
         loadLabel(node, tooltip);
         if (node->propertyValuePairs["TimeToDisplay"])
@@ -760,7 +760,7 @@ namespace tgui
             {toLower("SpinButton"), std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},
             {toLower("Tab"), std::bind(loadTab, std::placeholders::_1, std::shared_ptr<Tab>{})},
             {toLower("TextBox"), std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})},
-            {toLower("ToolTip"), std::bind(loadTooltip, std::placeholders::_1, std::shared_ptr<Tooltip>{})}
+            {toLower("ToolTip"), std::bind(loadToolTip, std::placeholders::_1, std::shared_ptr<ToolTip>{})}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

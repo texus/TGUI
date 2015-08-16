@@ -37,7 +37,7 @@
 
 namespace tgui
 {
-    class Tooltip;
+    class ToolTip;
     class BaseTheme;
     class Container;
     class WidgetRenderer;
@@ -347,7 +347,7 @@ namespace tgui
         /// @param tooltip  The new tooltip
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTooltip(std::shared_ptr<Tooltip> tooltip);
+        void setToolTip(std::shared_ptr<ToolTip> tooltip);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -359,11 +359,11 @@ namespace tgui
         ///
         /// This function can be used to change the text of the tooltip.
         /// @code
-        /// widget->getTooltip()->setText("Hello");
+        /// widget->getToolTip()->setText("Hello");
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<Tooltip> getTooltip();
+        std::shared_ptr<ToolTip> getToolTip();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -492,7 +492,7 @@ namespace tgui
         // Returns its tooltip or the tooltip from a child widget if the mouse is on top of the widget.
         // A nullptr is returned when the mouse is not on top of the widget or when the tooltip is empty.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::shared_ptr<Tooltip> askTooltip(sf::Vector2f mousePos);
+        virtual std::shared_ptr<ToolTip> askToolTip(sf::Vector2f mousePos);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -591,7 +591,7 @@ namespace tgui
         bool m_containerWidget = false;
 
         // The tooltip connected to the widget
-        std::shared_ptr<Tooltip> m_tooltip = nullptr;
+        std::shared_ptr<ToolTip> m_tooltip = nullptr;
 
         // The font that the widget can use
         std::shared_ptr<sf::Font> m_font = nullptr;

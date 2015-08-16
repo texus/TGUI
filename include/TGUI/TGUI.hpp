@@ -63,7 +63,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Widgets/Tooltip.hpp>
+#include <TGUI/Widgets/ToolTip.hpp>
 
 #include <TGUI/Widgets/extra/AnimatedPicture.hpp>
 #include <TGUI/Widgets/extra/Slider2d.hpp>

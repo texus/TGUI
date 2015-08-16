@@ -416,7 +416,7 @@ namespace tgui
         // Returns its tooltip or the tooltip from a child widget if the mouse is on top of the widget.
         // A nullptr is returned when the mouse is not on top of the widget or when the tooltip is empty.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::shared_ptr<Tooltip> askTooltip(sf::Vector2f mousePos);
+        virtual std::shared_ptr<ToolTip> askToolTip(sf::Vector2f mousePos);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
