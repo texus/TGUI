@@ -71,7 +71,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief This function can be used inside a widget to load other widgets without access to the derived theme class
         ///
-        /// @brief primary  Primary parameter of the loader
+        /// @param primary  Primary parameter of the loader
         /// @param secondary Secondary parameter of the loader
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +260,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief This function can be used inside a widget to load other widgets without access to the derived theme class
         ///
-        /// @brief filename  The filename that has to match the one used to load this theme
+        /// @param filename  The filename that has to match the one used to load this theme
         /// @param className The class name of the theme to load
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
