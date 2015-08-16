@@ -16,7 +16,7 @@
     <h2>XCode</h2>
     <p>Tip: The sfml example comes with a resourcePath() function which you must set before the paths to load resources. You can use tgui::setResourcePath(resourcePath()) at the beginning of your program so that everything tgui loads starts with that folder.</p>
     <div>
-        <h3>CMake</h3>
+        <h3 id="cmake">CMake</h3>
         <ul>
           <li>You will need to use CMake in order to build TGUI. You can download the latest version <a href="http://www.cmake.org/download/">here</a>.</li>
           <li>On some macs you might have to manually install the Command Line Tools to run CMake. You can install it by running "xcode-select --install" in the terminal.</li>
@@ -39,13 +39,13 @@
     </div>
 
     <div>
-        <h3>Building the library</h3>
+        <h3 id="building_the_library">Building the library</h3>
         <p>You are not done yet. CMake created a Makefile in the build directory that will build the library (if you used the Unix Makefiles generator). Open the terminal, go to the directory were the Makefile is and type "make -j2" (or a bigger number than 2 if you have more cores). When this is done, type "sudo make install" and enter your password.
         </p>
     </div>
 
     <div>
-        <h3>Using TGUI (framework)</h3>
+        <h3 id="using_tgui_framework">Using TGUI (framework)</h3>
         <p class="SmallBottomMargin">If you chose to build a framework in cmake then the make install command from the previous step installed the framework to /Library/Frameworks. All you need to do to use it is dragging the TGUI framework into your project.</p>
         <a class="img" href="{{site.url}}/resources/XCodeDragFramework.jpg"><img alt="XCode drag framework" src="{{site.url}}/resources/XCodeDragFramework.jpg" width="397" height="214" /></a>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div>
-        <h3>Using TGUI (dylib)</h3>
+        <h3 id="using_tgui_dylib">Using TGUI (dylib)</h3>
 
         <p class="SmallBottomMargin">If you chose to build a dylib in cmake then you have to add the dylib to your linker settings. First, go to the Build Settings.</p>
         <a class="img" href="{{site.url}}/resources/XCodeBuildSettings.jpg"><img alt="XCode Build Settings" src="{{site.url}}/resources/XCodeBuildSettings.jpg" width="826" height="536" /></a>

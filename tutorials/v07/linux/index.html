@@ -15,7 +15,7 @@
 <div id="contents" class="NoMargin">
     <h2>Linux</h2>
     <div>
-        <h3>Preparation</h3>
+        <h3 id="preparation">Preparation</h3>
         <ul>
           <li>You will need to use CMake in order to build TGUI.<br>
               Depenging on your distro, you can download it as easily as typing the following in the terminal:<br>
@@ -28,7 +28,7 @@
     </div>
 
     <div>
-        <h3>Installing</h3>
+        <h3 id="installing">Installing</h3>
         <p class="SmallBottomMargin">Type the following in the terminal in order to install tgui. Of course you will have to be inside the downloaded tgui directory. You can change the 2 in -j2 to a higher number if you have more cores.</p>
 {% highlight bash %}
 cmake .
@@ -38,7 +38,7 @@ sudo make install
     </div>
 
     <div>
-        <h3>Using TGUI (Terminal)</h3>
+        <h3 id="using_tgui_terminal">Using TGUI (Terminal)</h3>
 
         <p class="SmallBottomMargin">The two things to add is linking to tgui and tell the compiler that it uses c++11.</p>
 {% highlight bash %}
@@ -47,7 +47,7 @@ g++ -std=c++11 main.cpp -ltgui -lsfml-graphics -lsfml-window -lsfml-system -o pr
     </div>
 
     <div>
-        <h3>Using TGUI (CodeBlocks)</h3>
+        <h3 id="using_tgui_codeBlocks">Using TGUI (CodeBlocks)</h3>
 
         <p class="SmallBottomMargin">Open the “Project build options” and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.</p>
         <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg"><img alt="CodeBlocks Project Build Options" src="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg" width="641" height="355" /></a>
@@ -64,7 +64,7 @@ g++ -std=c++11 main.cpp -ltgui -lsfml-graphics -lsfml-window -lsfml-system -o pr
     </div>
 
     <div>
-        <h3>Possible error</h3>
+        <h3 id="possible_error">Possible error</h3>
         <p>It is possible to get the following error when running your program:<br>
            “/pathname/of/program: error while loading shared libraries: libtgui.so: cannot open shared object file: no such file or directory”
         </p>

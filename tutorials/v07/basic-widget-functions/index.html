@@ -21,31 +21,24 @@
     </div>
 
     <div>
-    <h3 name="Position_and_size">Position and size</h3>
+    <h3 id="position_and_size">Position and size</h3>
     <p>Every widget can be given a certain position. This position is relative to the position of the parent widget. If you really need the absolute position on the screen you can use the getAbsolutePosition function.</p>
     <p>The size is also a property that all widgets are supposed to have. Important to know is that borders are never part of the size, they are drawn around the widget. To get the size including the borders (and including the title bar in child window) you can use the getFullSize function.</p>
 {% highlight c++ %}
-widget->setPosition({50, 50}); // There is currently an extra overload that allows you to drop the braces
+widget->setPosition(50, 50);
 sf::Vector2f position = widget->getPosition();
 sf::Vector2f absolutePosition = widget->getAbsolutePosition();
 
-widget->setSize({200, 50}); // There is currently an extra overload that allows you to drop the braces
+widget->setSize(200, 50);
 sf::Vector2f size = widget->getSize();
 sf::Vector2f fullSize = widget->getFullSize();
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">Absolute position and sizes are definately not the only way. There is a layout system that allows you to set relative positions and sizes which are automatically updated when the bound widget gets changed. You can also bind to the Gui object, which has a width and height equal to the view of the gui (screen size by default).
-{% highlight c++ %}
-widget->setPosition({tgui::bindWidth(gui) * 0.1f, tgui::bindHeight(gui) * 0.1f});
-widget->setSize({tgui::bindWidth(gui) * 0.8f, tgui::bindHeight(gui) * 0.2f});
-
-widget2->setPosition(tgui::bindLeft(widget), tgui::bindTop(widget) + tgui::bindHeight(gui) * 0.2f);
-widget2->setSize(tgui::bindSize(widget));
-{% endhighlight %}
+    <p>Instead of constants, the setPosition and setSize functions can also be given <a href="../layouts/">layouts</a> as argument so that you can give your widget a relative position or size. If you tell widget B to have the same size as widget A then widget B will automatically change size when you give widget A a new size.</p>
     </div>
 
     <div>
-    <h3 name="Visible_and_enabled">Visible and enabled</h3>
+    <h3 id="visible_and_enabled">Visible and enabled</h3>
     <p>The enabled property determines if a widget receives events. If a widget is disabled, it will still be drawn but it will be unresponsive to your mouse clicks.</p>
     <p>The visibility property determines if a widget is drawn. A hidden widget also no longer receives events, it is no longer there. The only way to have an invisible yet still functioning widget is to use ClickableWidget. Hiding and showing widgets is similar to adding and removing them, its just easier and faster. It can be very handy to put different screens into different Panel widgets and just hide all the panels except for one.</p>
     <p>Every widget is visible and enabled by default.</p>
@@ -61,9 +54,8 @@ widget->isEnabled();
     </div>
 
     <div>
-    <h3 name="Overlapping_widgets">Overlapping widgets</h3>
-    <p>What happens when widgets overlap? Which is the topmost widget? The answer is simple: the last widget that you created.</p>
-    <p class="SmallBottomMargin">You can manipulate the order in which widgets are drawn by using the moveToFront and moveToBack functions though.</p>
+    <h3 id="overlapping_widgets">Overlapping widgets</h3>
+    <p>What happens when widgets overlap? Which is the topmost widget? The answer is simple: the last widget that you added to the parent. You can manipulate the order in which widgets are drawn by using the moveToFront and moveToBack functions though.</p>
 {% highlight c++ %}
 widget->moveToFront();
 widget->moveToBack();
@@ -71,12 +63,12 @@ widget->moveToBack();
     </div>
 
     <div>
-    <h3 name="Tooltips">Tooltips</h3>
+    <h3 id="tooltips">Tooltips</h3>
     <p class="SmallBottomMargin">Every widget can have a tooltip displayed next to your mouse when you rest the mouse on top of it. You don't even have to load a tooltip yourself, you can immediately set the text and it will work. However, if you want to use other colors than the one provided by the built-in White theme then you should still load your own theme.</p>
 {% highlight c++ %}
 widget->getTooltip()->setText("Hello world");
 
-widget->setTooltip(tgui::Tooltip::create("Black.conf"));
+widget->setTooltip(theme->load("tooltip"));
 {% endhighlight %}
     </div>
 </div>

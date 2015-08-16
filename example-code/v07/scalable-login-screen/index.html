@@ -31,32 +31,35 @@ void login(tgui::EditBox::Ptr username, tgui::EditBox::Ptr password)
 
 void loadWidgets( tgui::Gui& gui )
 {
+    // Load the black theme
+    auto theme = std::make_shared<tgui::Theme>("TGUI/widgets/Black.txt");
+
     // Get a bound version of the window size
     // Passing this to setPosition or setSize will make the widget automatically update when the view of the gui changes
     auto windowWidth = tgui::bindWidth(gui);
     auto windowHeight = tgui::bindHeight(gui);
 
     // Create the background image (picture is of type tgui::Picture::Ptr or std::shared_widget<Picture>)
-    auto picture = tgui::Picture::create("../xubuntu_bg_aluminium.jpg");
-    picture->setSize(tgui::bindMaximum(800, windowWidth), tgui::bindMaximum(600, windowHeight));
+    auto picture = std::make_shared<tgui::Picture>("xubuntu_bg_aluminium.jpg");
+    picture->setSize(tgui::bindMax(800, windowWidth), tgui::bindMax(600, windowHeight));
     gui.add(picture);
 
     // Create the username edit box
-    auto editBoxUsername = tgui::EditBox::create("../../widgets/Black.conf");
+    tgui::EditBox::Ptr editBoxUsername = theme->load("EditBox");
     editBoxUsername->setSize(windowWidth * 2/3, windowHeight / 8);
     editBoxUsername->setPosition(windowWidth / 6, windowHeight / 6);
     editBoxUsername->setDefaultText("Username");
     gui.add(editBoxUsername, "Username");
 
     // Create the password edit box (we will copy the previously created edit box)
-    auto editBoxPassword = tgui::EditBox::copy(editBoxUsername);
+    tgui::EditBox::Ptr editBoxPassword = tgui::EditBox::copy(editBoxUsername);
     editBoxPassword->setPosition(windowWidth / 6, windowHeight * 5/12);
     editBoxPassword->setPasswordCharacter('*');
     editBoxPassword->setDefaultText("Password");
     gui.add(editBoxPassword, "Password");
 
     // Create the login button
-    auto button = tgui::Button::create("../../widgets/Black.conf");
+    tgui::Button::Ptr button = theme->load("Button");
     button->setSize(windowWidth / 2, windowHeight / 6);
     button->setPosition(windowWidth / 4, windowHeight * 7/10);
     button->setText("Login");
@@ -75,7 +78,7 @@ int main()
     try
     {
         // Load the font
-        gui.setGlobalFont("../../fonts/DejaVuSans.ttf");
+        gui.setGlobalFont("TGUI/fonts/DejaVuSans.ttf");
 
         // Load the widgets
         loadWidgets(gui);

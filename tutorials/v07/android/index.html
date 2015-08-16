@@ -20,14 +20,14 @@
   </div>
 
   <div>
-    <h3>Requirements</h3>
+    <h3 id="requirements">Requirements</h3>
     <p>You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly.</p>
 
     <p>You will need to use CMake in order to build TGUI. You can download the latest version <a href="http://www.cmake.org/download/">here</a>.</p>
   </div>
 
   <div>
-    <h3>CMake</h3>
+    <h3 id="cmake">CMake</h3>
     <ol>
       <li>Set the pathname to the TGUI folder that you downloaded.</li>
       <li>Set a folder to build TGUI in, usually a new empty folder in the same directory as (1).</li>
@@ -55,7 +55,7 @@
   </div>
 
   <div>
-    <h3>Building the library</h3>
+    <h3 id="building_the_library">Building the library</h3>
     <p>CMake will have generated makefiles or project files. You now have to execute these to build the library.</p>
     <p class="SmallBottomMargin">On linux you would have to run the following command inside the build folder:</p>
 {% highlight bash %}
@@ -65,7 +65,7 @@ make -j4 && make install
   </div>
 
   <div>
-    <h3>Running the demo</h3>
+    <h3 id="running_the_demo">Running the demo</h3>
     <p>To test if everything is working, you can build the example code.</p>
     <p class="SmallBottomMargin">First you have to run ndk-build. You can do this by opening your console inside the TGUI/example/android folder and running the following</p>
 {% highlight bash %}
@@ -85,7 +85,7 @@ $ANDROID_NDK/ndk-build
   </div>
 
   <div>
-    <h3>Using TGUI</h3>
+    <h3 id="using_tgui">Using TGUI</h3>
     <p>If you don't have much experience with android then your can just use the tgui demo code as a starting point. But below I will explain some settings that you need in order to use tgui if you have your own project set up.</p>
 
     <p class="SmallBottomMargin">In the Android.mk file you must add the tgui library</p>

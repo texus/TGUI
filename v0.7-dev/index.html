@@ -17,11 +17,16 @@
 
     <div>
         <p>This page is about the current version in development. You will find links to tutorials and documentation here, but keep in mind that everything can still change.</p>
-        <p>The expected release date for the final 0.7 version (or at least a release candidate) is set to September 2015.</p>
+        <p>Current release estimates:<br>
+        - Alpha1: end of August 2015 (biggest API breaking rewrites done)<br>
+        - Alpha2: end of September 2015 (planned rewrites finished + more stability)<br>
+        - Beta1: July/August 2016 (small API breaking improvements to widgets plus perhaps new widgets)<br>
+        - Beta2: September 2016<br>
+        - RC: Unknown</p>
     </div>
 
     <div>
-        <h3 name="Minimum_requirements">Minimum requirements</h3>
+        <h3 id="Minimum_requirements">Minimum requirements</h3>
         <p>The requirements for v0.7 differ from the ones in v0.6.</p>
         <p>First of all, you need sfml 2.2, it will NOT compile with sfml 2.1 or sfml 2.0.</p>
         <p class="SmallBottomMargin">Secondly, these are the new minimal supported compilers:</p>
@@ -33,12 +38,13 @@
     </div>
 
     <div>
-        <h3 name="Features">Features</h3>
+        <h3 id="Features">Features</h3>
         <p class="SmallBottomMargin">Here is a list of some important features that are already implemented and available.</p>
         <ul>
             <li>Experimental Android and iOS support.</li>
             <li>The layout system. You can now give widgets a position or size relative to another one. The value will automatically be updated when the bound widget changes.</li>
             <li>There is a new callback system</li>
+            <li>New loading system to share theme between widgets and allow customizing loading steps</li>
             <li>Exceptions are now used for error handing</li>
             <li>Widgets no longer need textures. There is also a simple colored version for each widget. There is even a built-in theme that is used when you don't provide any theme file.</li>
             <li>Label and TextBox were rewritten. The biggest addition is probably that they now have word wrap.</li>
@@ -49,7 +55,7 @@
     </div>
 
     <div>
-        <h3 name="Try_it_out">Try it out</h3>
+        <h3 id="Try_it_out">Try it out</h3>
         <p><a href="../tutorials/v07/">Tutorials</a></p>
         <p><a href="../documentation/v0.7/">Documentation</a></p>
         <p><a href="../example-code/v07/">Example codes</a></p>

@@ -12,7 +12,7 @@
 <body>
 <div id="body" class="NoMargin">
 {% include navigation.ext %}
-    
+
 <div id="contents" class="NoMargin">
     <h2>Changing mouse cursor on button hover</h2>
 
@@ -44,7 +44,7 @@ int main()
     tgui::Gui gui(window);
     gui.setGlobalFont("TGUI/fonts/DejaVuSans.ttf");
 
-    auto play = tgui::Button::create("TGUI/widgets/Black.conf");
+    auto play = std::make_shared<tgui::Button>();
     play->setPosition(tgui::bindWidth(gui)*0.15, tgui::bindHeight(gui)*0.125);
     play->setSize(tgui::bindWidth(gui)*0.7, tgui::bindHeight(gui)*0.15);
     play->setText("Play");

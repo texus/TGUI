@@ -2,7 +2,6 @@ var searchData=
 [
   ['add',['add',['../classtgui_1_1BoxLayout.html#ae37fb8ab61812047a7451b336cee4e1f',1,'tgui::BoxLayout::add()'],['../classtgui_1_1Container.html#aa6f2df81711d1576a18c674fadc4d3d2',1,'tgui::Container::add()'],['../classtgui_1_1Gui.html#aa5148777e159aed6d08dca0602cf79da',1,'tgui::Gui::add()'],['../classtgui_1_1Tab.html#a76db7686dc3566c993da9a903e660bfd',1,'tgui::Tab::add()']]],
   ['addbutton',['addButton',['../classtgui_1_1MessageBox.html#ae08471cc0f815149a09d92eefec84aba',1,'tgui::MessageBox']]],
-  ['addframe',['addFrame',['../classtgui_1_1ext_1_1AnimatedPicture.html#a7c23fd575f8c0729e339da2b35ac2d17',1,'tgui::ext::AnimatedPicture']]],
   ['additem',['addItem',['../classtgui_1_1ComboBox.html#aa4ea3ebc910d03cd72425b0037d5f2f9',1,'tgui::ComboBox::addItem()'],['../classtgui_1_1ListBox.html#a3b365723f420d917230b937aecb87850',1,'tgui::ListBox::addItem()']]],
   ['addline',['addLine',['../classtgui_1_1ChatBox.html#ad4f3a6b72787f598db549478093a0079',1,'tgui::ChatBox::addLine(const sf::String &amp;text)'],['../classtgui_1_1ChatBox.html#a839d31cc28b30be3d4aa5ac88265637c',1,'tgui::ChatBox::addLine(const sf::String &amp;text, unsigned int textSize)'],['../classtgui_1_1ChatBox.html#a9089353b93dba3d348763e676919666b',1,'tgui::ChatBox::addLine(const sf::String &amp;text, const sf::Color &amp;color)'],['../classtgui_1_1ChatBox.html#a08449b2ab944a8b806e277b648fe76ec',1,'tgui::ChatBox::addLine(const sf::String &amp;text, const sf::Color &amp;color, unsigned int textSize, std::shared_ptr&lt; sf::Font &gt; font=nullptr)']]],
   ['addmenu',['addMenu',['../classtgui_1_1MenuBar.html#a0c396d8974348871bd19957b6108d3e2',1,'tgui::MenuBar']]],
@@ -14,5 +13,5 @@ var searchData=
   ['alignment',['Alignment',['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9',1,'tgui::Grid']]],
   ['alignments',['Alignments',['../structtgui_1_1EditBox_1_1Alignment.html#a6b50cb28df0c96e0fbee8396a416c9de',1,'tgui::EditBox::Alignment']]],
   ['allowtextclick',['allowTextClick',['../classtgui_1_1RadioButton.html#ab2aac253766bc22642127e92bf4f73fb',1,'tgui::RadioButton']]],
-  ['animatedpicture',['AnimatedPicture',['../classtgui_1_1ext_1_1AnimatedPicture.html',1,'tgui::ext']]]
+  ['attachtheme',['attachTheme',['../classtgui_1_1Widget.html#a05545f21decd950ac0bfee2d9b26e9e2',1,'tgui::Widget']]]
 ];

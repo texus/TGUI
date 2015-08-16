@@ -43,7 +43,7 @@ int main()
     gui.setGlobalFont("TGUI/fonts/DejaVuSans.ttf");
 
     // The chatbox will contain out given commands
-    auto chatBox = tgui::ChatBox::create();
+    auto chatBox = std::make_shared<tgui::ChatBox>();
     chatBox->setSize(400, 300);
     chatBox->setTextSize(18);
     chatBox->setTextColor(sf::Color::Black);
@@ -51,7 +51,7 @@ int main()
     gui.add(chatBox);
 
     // The edit box will be used to type new commands
-    auto editBox = tgui::EditBox::create();
+    auto editBox = std::make_shared<tgui::EditBox>();
     editBox->setSize(376, 30);
     editBox->setPosition(400 - editBox->getSize().x, 300 - editBox->getSize().y);
     editBox->setTextSize(18);
