@@ -27,7 +27,7 @@
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
-#include <TGUI/Widgets/Checkbox.hpp>
+#include <TGUI/Widgets/CheckBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/Knob.hpp>
@@ -55,7 +55,7 @@ namespace tgui
         {
             {toLower("Button"), std::make_shared<Button>},
             {toLower("ChatBox"), std::make_shared<ChatBox>},
-            {toLower("CheckBox"), std::make_shared<Checkbox>},
+            {toLower("CheckBox"), std::make_shared<CheckBox>},
             {toLower("ChildWindow"), std::make_shared<ChildWindow>},
             {toLower("ComboBox"), std::make_shared<ComboBox>},
             {toLower("EditBox"), std::make_shared<EditBox>},

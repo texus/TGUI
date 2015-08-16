@@ -305,7 +305,7 @@ namespace tgui
         unsigned int m_textSize = 0;
 
         friend class RadioButtonRenderer;
-        friend class CheckboxRenderer;
+        friend class CheckBoxRenderer;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

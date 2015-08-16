@@ -33,27 +33,27 @@
 
 namespace tgui
 {
-    class CheckboxRenderer;
+    class CheckBoxRenderer;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Checkbox widget
+    /// @brief CheckBox widget
     ///
     /// Signals
     ///     - Inherited signals from RadioButton
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Checkbox : public RadioButton
+    class TGUI_API CheckBox : public RadioButton
     {
       public:
 
-        typedef std::shared_ptr<Checkbox> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Checkbox> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<CheckBox> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const CheckBox> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Checkbox();
+        CheckBox();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ namespace tgui
         /// @return The new checkbox
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Checkbox::Ptr copy(Checkbox::ConstPtr checkbox);
+        static CheckBox::Ptr copy(CheckBox::ConstPtr checkbox);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,9 +73,9 @@ namespace tgui
         /// @return Reference to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<CheckboxRenderer> getRenderer() const
+        std::shared_ptr<CheckBoxRenderer> getRenderer() const
         {
-            return std::static_pointer_cast<CheckboxRenderer>(m_renderer);
+            return std::static_pointer_cast<CheckBoxRenderer>(m_renderer);
         }
 
 
@@ -112,7 +112,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() override
         {
-            return std::make_shared<Checkbox>(*this);
+            return std::make_shared<CheckBox>(*this);
         }
 
 
@@ -122,7 +122,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API CheckboxRenderer : public RadioButtonRenderer
+    class TGUI_API CheckBoxRenderer : public RadioButtonRenderer
     {
     public:
 
@@ -132,7 +132,7 @@ namespace tgui
         /// @param checkbox  The checkbox that is connected to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        CheckboxRenderer(Checkbox* checkbox) : RadioButtonRenderer{checkbox} {}
+        CheckBoxRenderer(CheckBox* checkbox) : RadioButtonRenderer{checkbox} {}
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,11 +152,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        CheckboxRenderer(const CheckboxRenderer&) = default;
-        CheckboxRenderer& operator=(const CheckboxRenderer&) = delete;
+        CheckBoxRenderer(const CheckBoxRenderer&) = default;
+        CheckBoxRenderer& operator=(const CheckBoxRenderer&) = delete;
 
 
-        friend class Checkbox;
+        friend class CheckBox;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

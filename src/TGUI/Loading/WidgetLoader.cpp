@@ -27,7 +27,7 @@
 #include <TGUI/Loading/WidgetLoader.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Canvas.hpp>
-#include <TGUI/Widgets/Checkbox.hpp>
+#include <TGUI/Widgets/CheckBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
@@ -204,13 +204,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API Widget::Ptr loadCheckbox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    TGUI_API Widget::Ptr loadCheckBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
-        Checkbox::Ptr checkbox;
+        CheckBox::Ptr checkbox;
         if (widget)
-            checkbox = std::static_pointer_cast<Checkbox>(widget);
+            checkbox = std::static_pointer_cast<CheckBox>(widget);
         else
-            checkbox = std::make_shared<Checkbox>();
+            checkbox = std::make_shared<CheckBox>();
 
         loadWidget(node, checkbox);
         if (node->propertyValuePairs["Text"])
@@ -743,7 +743,7 @@ namespace tgui
             {toLower("Container"), std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
             {toLower("Button"), std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
             {toLower("Canvas"), std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
-            {toLower("CheckBox"), std::bind(loadCheckbox, std::placeholders::_1, std::shared_ptr<Checkbox>{})},
+            {toLower("CheckBox"), std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},
             {toLower("ChildWindow"), std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},
             {toLower("ClickableWidget"), std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},
             {toLower("ComboBox"), std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},

@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Container.hpp>
-#include <TGUI/Widgets/Checkbox.hpp>
+#include <TGUI/Widgets/CheckBox.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -36,28 +36,28 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Checkbox::Checkbox()
+    CheckBox::CheckBox()
     {
-        m_callback.widgetType = "Checkbox";
+        m_callback.widgetType = "CheckBox";
 
-        m_renderer = std::make_shared<CheckboxRenderer>(this);
+        m_renderer = std::make_shared<CheckBoxRenderer>(this);
 
         getRenderer()->setPadding({3, 3, 3, 3});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Checkbox::Ptr Checkbox::copy(Checkbox::ConstPtr checkbox)
+    CheckBox::Ptr CheckBox::copy(CheckBox::ConstPtr checkbox)
     {
         if (checkbox)
-            return std::make_shared<Checkbox>(*checkbox);
+            return std::make_shared<CheckBox>(*checkbox);
         else
             return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::check()
+    void CheckBox::check()
     {
         if (m_checked == false)
         {
@@ -70,7 +70,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::uncheck()
+    void CheckBox::uncheck()
     {
         if (m_checked)
         {
@@ -83,7 +83,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::leftMouseReleased(float x, float y)
+    void CheckBox::leftMouseReleased(float x, float y)
     {
         bool mouseDown = m_mouseDown;
 
@@ -102,7 +102,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Checkbox::keyPressed(const sf::Event::KeyEvent& event)
+    void CheckBox::keyPressed(const sf::Event::KeyEvent& event)
     {
         // Check or uncheck the checkbox if the space key or the return key was pressed
         if ((event.code == sf::Keyboard::Space) || (event.code == sf::Keyboard::Return))
@@ -117,7 +117,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CheckboxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void CheckBoxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
         {
@@ -245,9 +245,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<WidgetRenderer> CheckboxRenderer::clone(Widget* widget)
+    std::shared_ptr<WidgetRenderer> CheckBoxRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<CheckboxRenderer>(new CheckboxRenderer{*this});
+        auto renderer = std::shared_ptr<CheckBoxRenderer>(new CheckBoxRenderer{*this});
         renderer->m_radioButton = static_cast<RadioButton*>(widget);
         return renderer;
     }
