@@ -151,7 +151,7 @@ int main()
     button->connect("pressed", [=](){ child->hide(); });
     child->add(button);
 
-    tgui::Checkbox::Ptr checkbox = theme->load("checkbox");
+    tgui::CheckBox::Ptr checkbox = theme->load("checkbox");
     checkbox->setPosition(420, 240);
     checkbox->setText("Ok, I got it");
     checkbox->setSize(25, 25);
