@@ -29,6 +29,11 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace
+{
+    const float textDistanceRatio = 1.25f;
+}
+
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +74,7 @@ namespace tgui
         getRenderer()->m_textureCheckedHover.setPosition(getPosition());
         getRenderer()->m_textureFocused.setPosition(getPosition());
 
-        m_text.setPosition(getPosition().x + getSize().x * 11.0f / 10.0f,
+        m_text.setPosition(getPosition().x + getSize().x * textDistanceRatio,
                            getPosition().y + ((getSize().y - m_text.getSize().y) / 2.0f));
     }
 
@@ -108,7 +113,7 @@ namespace tgui
         if (m_text.getText().isEmpty())
             return getSize();
         else
-            return {(getSize().x * 11.0f / 10.0f) + m_text.getSize().x, getSize().y};
+            return {(getSize().x * textDistanceRatio) + m_text.getSize().x, getSize().y};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,11 +202,11 @@ namespace tgui
         if (m_allowTextClick)
         {
             // Check if the mouse is on top of the image or the small gap between image and text
-            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x * 11.0f / 10.0f, getSize().y}.contains(x, y))
+            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x * textDistanceRatio, getSize().y}.contains(x, y))
                 return true;
 
             // Check if the mouse is on top of the text
-            if (sf::FloatRect{getPosition().x, getPosition().y, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x * 11.0f / 10.0f), y - ((getSize().y - m_text.getSize().y) / 2.0f)))
+            if (sf::FloatRect{getPosition().x, getPosition().y, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x * textDistanceRatio), y - ((getSize().y - m_text.getSize().y) / 2.0f)))
                 return true;
         }
         else // You are not allowed to click on the text
@@ -712,35 +717,25 @@ namespace tgui
         }
         else // There are no images
         {
-            // Draw the background (borders) if needed
-            if (m_padding != Padding{0, 0, 0, 0})
-            {
-                sf::CircleShape background{std::min(m_radioButton->getSize().x / 2.0f, m_radioButton->getSize().y / 2.0f)};
-                background.setPosition(m_radioButton->getPosition());
-
-                if (m_radioButton->m_mouseHover)
-                    background.setFillColor(m_backgroundColorHover);
-                else
-                    background.setFillColor(m_backgroundColorNormal);
-
-                target.draw(background, states);
-            }
-
             float foregroundSize = std::min(m_radioButton->getSize().x - m_padding.left - m_padding.right,
                                             m_radioButton->getSize().y - m_padding.top - m_padding.bottom);
 
-            // Draw the foreground
+            sf::CircleShape circle{std::min(m_radioButton->getSize().x / 2.0f, m_radioButton->getSize().y / 2.0f)};
+            circle.setPosition(m_radioButton->getPosition());
+            circle.setOutlineThickness(-m_padding.left);
+
+            if (m_radioButton->m_mouseHover)
             {
-                sf::CircleShape foreground{foregroundSize / 2.0f};
-                foreground.setPosition(m_radioButton->getPosition().x + m_padding.left, m_radioButton->getPosition().y + m_padding.top);
-
-                if (m_radioButton->m_mouseHover)
-                    foreground.setFillColor(m_foregroundColorHover);
-                else
-                    foreground.setFillColor(m_foregroundColorNormal);
-
-                target.draw(foreground, states);
+                circle.setFillColor(m_foregroundColorHover);
+                circle.setOutlineColor(m_backgroundColorHover);
             }
+            else
+            {
+                circle.setFillColor(m_foregroundColorNormal);
+                circle.setOutlineColor(m_backgroundColorNormal);
+            }
+
+            target.draw(circle, states);
 
             // Draw the check if the radio button is checked
             if (m_radioButton->m_checked)

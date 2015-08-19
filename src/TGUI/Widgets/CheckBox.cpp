@@ -142,34 +142,72 @@ namespace tgui
         }
         else // There are no images
         {
-            // Draw the background (borders) if needed
-            if (m_padding != Padding{0, 0, 0, 0})
-            {
-                sf::RectangleShape background(m_radioButton->getSize());
-                background.setPosition(m_radioButton->getPosition());
-
-                if (m_radioButton->m_mouseHover)
-                    background.setFillColor(m_backgroundColorHover);
-                else
-                    background.setFillColor(m_backgroundColorNormal);
-
-                target.draw(background, states);
-            }
-
             sf::Vector2f foregroundSize = {m_radioButton->getSize().x - m_padding.left - m_padding.right,
                                            m_radioButton->getSize().y - m_padding.top - m_padding.bottom};
 
-            // Draw the foreground
+            // Draw the background and foreground at once when possible
+            if (m_padding.left == m_padding.top && m_padding.top == m_padding.right && m_padding.right == m_padding.bottom && m_padding.bottom > 0)
             {
-                sf::RectangleShape foreground{foregroundSize};
-                foreground.setPosition(m_radioButton->getPosition().x + m_padding.left, m_radioButton->getPosition().y + m_padding.top);
+                sf::RectangleShape rect{m_radioButton->getSize()};
+                rect.setPosition(m_radioButton->getPosition());
+                rect.setOutlineThickness(-m_padding.left);
 
                 if (m_radioButton->m_mouseHover)
-                    foreground.setFillColor(m_foregroundColorHover);
+                {
+                    rect.setFillColor(m_foregroundColorHover);
+                    rect.setOutlineColor(m_backgroundColorHover);
+                }
                 else
-                    foreground.setFillColor(m_foregroundColorNormal);
+                {
+                    rect.setFillColor(m_foregroundColorNormal);
+                    rect.setOutlineColor(m_backgroundColorNormal);
+                }
 
-                target.draw(foreground, states);
+                target.draw(rect, states);
+            }
+            else // Draw background and foreground separately
+            {
+                // Draw the background (borders) if needed
+                if (m_padding != Padding{0, 0, 0, 0})
+                {
+                    sf::RectangleShape border;
+                    if (m_radioButton->m_mouseHover)
+                        border.setFillColor(m_backgroundColorHover);
+                    else
+                        border.setFillColor(m_backgroundColorNormal);
+
+                    sf::Vector2f position = m_radioButton->getPosition();
+                    sf::Vector2f size = m_radioButton->getSize();
+
+                    border.setSize({m_padding.left, size.y - m_padding.top});
+                    border.setPosition(position.x, position.y + m_padding.top);
+                    target.draw(border, states);
+
+                    border.setSize({size.x - m_padding.right, m_padding.top});
+                    border.setPosition(position.x, position.y);
+                    target.draw(border, states);
+
+                    border.setSize({m_padding.right, size.y - m_padding.bottom});
+                    border.setPosition(position.x + size.x - m_padding.right, position.y);
+                    target.draw(border, states);
+
+                    border.setSize({size.x - m_padding.left, m_padding.bottom});
+                    border.setPosition(position.x + m_padding.left, position.y + size.y - m_padding.top);
+                    target.draw(border, states);
+                }
+
+                // Draw the foreground
+                {
+                    sf::RectangleShape foreground{foregroundSize};
+                    foreground.setPosition(m_radioButton->getPosition().x + m_padding.left, m_radioButton->getPosition().y + m_padding.top);
+
+                    if (m_radioButton->m_mouseHover)
+                        foreground.setFillColor(m_foregroundColorHover);
+                    else
+                        foreground.setFillColor(m_foregroundColorNormal);
+
+                    target.draw(foreground, states);
+                }
             }
 
             // Draw the check if the radio button is checked
