@@ -729,7 +729,7 @@ namespace tgui
                 else // When we did not select any text so move right
                 {
                     // Delete a character from the line below you if you are at the end of the line
-                    if (m_selEnd.x == m_lines[m_selEnd.y].getSize())
+                    if ((m_selEnd.x == m_lines[m_selEnd.y].getSize()) || ((m_selEnd.x+1 == m_lines[m_selEnd.y].getSize()) && (m_lines[m_selEnd.y][m_selEnd.x] == '\n')))
                     {
                         if (m_selEnd.y < m_lines.size()-1)
                         {
