@@ -12,7 +12,7 @@ set(TEST_SOURCES
     Widgets/Button.cpp
     Widgets/Canvas.cpp
     Widgets/ChatBox.cpp
-    Widgets/Checkbox.cpp
+    Widgets/CheckBox.cpp
     Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
     Widgets/ComboBox.cpp
@@ -31,7 +31,7 @@ set(TEST_SOURCES
     Widgets/SpinButton.cpp
     Widgets/Tab.cpp
     Widgets/TextBox.cpp
-    Widgets/Tooltip.cpp
+    Widgets/ToolTip.cpp
 )
 
 # The tests require c++14

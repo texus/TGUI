@@ -25,7 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/Tooltip.hpp>
+#include <TGUI/Widgets/ToolTip.hpp>
 
 TEST_CASE("[Widget]") {
     tgui::Widget::Ptr widget = std::make_shared<tgui::Button>();
@@ -82,19 +82,19 @@ TEST_CASE("[Widget]") {
 
     SECTION("Tooltip") {
         // Tooltip gets created when trying to access it when not not yet loaded
-        REQUIRE(widget->getTooltip() != nullptr);
+        REQUIRE(widget->getToolTip() != nullptr);
 
-        widget->getTooltip()->setText("text");
-        REQUIRE(widget->getTooltip()->getText() == "text");
+        widget->getToolTip()->setText("text");
+        REQUIRE(widget->getToolTip()->getText() == "text");
 
-        auto tooltip1 = std::make_shared<tgui::Tooltip>();
+        auto tooltip1 = std::make_shared<tgui::ToolTip>();
         tooltip1->setText("some text");
-        widget->setTooltip(tooltip1);
-        REQUIRE(widget->getTooltip()->getText() == "some text");
+        widget->setToolTip(tooltip1);
+        REQUIRE(widget->getToolTip()->getText() == "some text");
         
         // If new tooltip has an empty text, the current one is copied to it
-        auto tooltip2 = std::make_shared<tgui::Tooltip>();
-        widget->setTooltip(tooltip2);
-        REQUIRE(widget->getTooltip()->getText() == "some text");
+        auto tooltip2 = std::make_shared<tgui::ToolTip>();
+        widget->setToolTip(tooltip2);
+        REQUIRE(widget->getToolTip()->getText() == "some text");
     }
 }

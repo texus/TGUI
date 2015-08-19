@@ -23,62 +23,62 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "../Tests.hpp"
-#include <TGUI/Widgets/Tooltip.hpp>
+#include <TGUI/Widgets/ToolTip.hpp>
 #include <TGUI/Widgets/Button.hpp>
 
-TEST_CASE("[Tooltip]") {
-    tgui::Tooltip::Ptr tooltip = std::make_shared<tgui::Tooltip>();
+TEST_CASE("[ToolTip]") {
+    tgui::ToolTip::Ptr tooltip = std::make_shared<tgui::ToolTip>();
 
     SECTION("WidgetType") {
-        REQUIRE(tooltip->getWidgetType() == "Tooltip");
+        REQUIRE(tooltip->getWidgetType() == "ToolTip");
     }
 
     SECTION("TimeToDisplay") {
-        tgui::Tooltip::setTimeToDisplay(sf::milliseconds(280));
-        REQUIRE(tgui::Tooltip::getTimeToDisplay() == sf::milliseconds(280));
+        tgui::ToolTip::setTimeToDisplay(sf::milliseconds(280));
+        REQUIRE(tgui::ToolTip::getTimeToDisplay() == sf::milliseconds(280));
     }
 
     SECTION("Saving and loading from file") {
-        tgui::Tooltip::setTimeToDisplay(sf::milliseconds(280));
+        tgui::ToolTip::setTimeToDisplay(sf::milliseconds(280));
 
         SECTION("independent tooltip") {
-            REQUIRE_NOTHROW(tooltip = std::make_shared<tgui::Theme>()->load("Tooltip"));
+            REQUIRE_NOTHROW(tooltip = std::make_shared<tgui::Theme>()->load("ToolTip"));
 
             auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-            REQUIRE_NOTHROW(tooltip = theme->load("Tooltip"));
+            REQUIRE_NOTHROW(tooltip = theme->load("ToolTip"));
 
             auto parent = std::make_shared<tgui::GuiContainer>();
             parent->add(tooltip);
 
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTooltip1.txt"));
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileToolTip1.txt"));
 
             parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileTooltip1.txt"));
+            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileToolTip1.txt"));
 
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTooltip2.txt"));
-            REQUIRE(compareFiles("WidgetFileTooltip1.txt", "WidgetFileTooltip2.txt"));
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileToolTip2.txt"));
+            REQUIRE(compareFiles("WidgetFileToolTip1.txt", "WidgetFileToolTip2.txt"));
         }
 
         SECTION("tooltip in widget") {
             auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
             tgui::Button::Ptr button = theme->load("Button");
-            tooltip = theme->load("Tooltip");
+            tooltip = theme->load("ToolTip");
             REQUIRE(tooltip->getPrimaryLoadingParameter() == "resources/Black.txt");
             REQUIRE(tooltip->getSecondaryLoadingParameter() == "tooltip");
 
-            tooltip->setText("Tooltip text");
-            button->setTooltip(tooltip);
+            tooltip->setText("ToolTip text");
+            button->setToolTip(tooltip);
             
             auto parent = std::make_shared<tgui::GuiContainer>();
             parent->add(button, "Name");
 
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTooltip3.txt"));
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileToolTip3.txt"));
 
             parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileTooltip3.txt"));
+            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileToolTip3.txt"));
 
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTooltip4.txt"));
-            REQUIRE(compareFiles("WidgetFileTooltip3.txt", "WidgetFileTooltip4.txt"));
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileToolTip4.txt"));
+            REQUIRE(compareFiles("WidgetFileToolTip3.txt", "WidgetFileToolTip4.txt"));
         }
     }
 }

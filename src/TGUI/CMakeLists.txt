@@ -25,7 +25,7 @@ set(TGUI_SRC
     Widgets/Button.cpp
     Widgets/Canvas.cpp
     Widgets/ChatBox.cpp
-    Widgets/Checkbox.cpp
+    Widgets/CheckBox.cpp
     Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
     Widgets/ComboBox.cpp
@@ -45,7 +45,7 @@ set(TGUI_SRC
     Widgets/SpinButton.cpp
     Widgets/Tab.cpp
     Widgets/TextBox.cpp
-    Widgets/Tooltip.cpp
+    Widgets/ToolTip.cpp
     Widgets/extra/AnimatedPicture.cpp
     Widgets/extra/Slider2d.cpp
     Widgets/extra/SpriteSheet.cpp

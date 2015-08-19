@@ -23,10 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "../Tests.hpp"
-#include <TGUI/Widgets/Checkbox.hpp>
+#include <TGUI/Widgets/CheckBox.hpp>
 
-TEST_CASE("[Checkbox]") {
-    tgui::Checkbox::Ptr checkbox = std::make_shared<tgui::Checkbox>();
+TEST_CASE("[CheckBox]") {
+    tgui::CheckBox::Ptr checkbox = std::make_shared<tgui::CheckBox>();
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(checkbox->connect("Checked", [](){}));
@@ -37,7 +37,7 @@ TEST_CASE("[Checkbox]") {
     }
 
     SECTION("WidgetType") {
-        REQUIRE(checkbox->getWidgetType() == "Checkbox");
+        REQUIRE(checkbox->getWidgetType() == "CheckBox");
     }
 
     SECTION("Checked") {
@@ -49,10 +49,10 @@ TEST_CASE("[Checkbox]") {
     }
 
     SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(checkbox = std::make_shared<tgui::Theme>()->load("Checkbox"));
+        REQUIRE_NOTHROW(checkbox = std::make_shared<tgui::Theme>()->load("CheckBox"));
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(checkbox = theme->load("Checkbox"));
+        REQUIRE_NOTHROW(checkbox = theme->load("CheckBox"));
         REQUIRE(checkbox->getPrimaryLoadingParameter() == "resources/Black.txt");
         REQUIRE(checkbox->getSecondaryLoadingParameter() == "checkbox");
 
@@ -63,12 +63,12 @@ TEST_CASE("[Checkbox]") {
         checkbox->setText("SomeText");
         checkbox->setTextSize(25);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckbox1.txt"));
+        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox1.txt"));
         
         parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileCheckbox1.txt"));
+        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileCheckBox1.txt"));
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckbox2.txt"));
-        REQUIRE(compareFiles("WidgetFileCheckbox1.txt", "WidgetFileCheckbox2.txt"));
+        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox2.txt"));
+        REQUIRE(compareFiles("WidgetFileCheckBox1.txt", "WidgetFileCheckBox2.txt"));
     }
 }
