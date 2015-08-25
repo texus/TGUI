@@ -448,7 +448,7 @@ namespace tgui
     std::map<std::string, ObjectConverter> WidgetRenderer::getPropertyValuePairs() const
     {
         /// TODO: Font in every widget
-        return {};
+        return std::map<std::string, ObjectConverter>{};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

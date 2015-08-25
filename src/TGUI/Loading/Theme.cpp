@@ -309,7 +309,7 @@ namespace tgui
         if (m_widgetProperties.find(className) != m_widgetProperties.end())
             return m_widgetProperties.at(className);
         else
-            return {};
+            return std::map<std::string, std::string>{};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
