@@ -1,0 +1,49 @@
+---
+layout: page
+title: Raspberry Pi (experimental)
+breadcrumb: raspberry pi
+---
+<p>This guide is for compiling TGUI on the Raspberry Pi itself, I haven't tried cross-compilation yet.</p>
+
+<div>
+  <h3 id="preparation">Preparation</h3>
+  <ul>
+    <li>You will need to use CMake in order to build TGUI. If you have not yet installed it then do so now: “sudo apt-get install cmake”.</li>
+    <li>Also make sure that you already have sfml on your computer.
+        It would be even better to make sure you have sfml working before trying to use TGUI. If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.</li>
+  </ul>
+</div>
+
+<div>
+    <h3 id="installing_gles">Installing</h3>
+    <p class="SmallBottomMargin">Type the following in the terminal in order to install tgui. Of course you will have to be inside the downloaded tgui directory.</p>
+{% highlight bash %}
+cmake -DTGUI_OPENGL_ES=TRUE .
+make
+sudo make install
+{% endhighlight %}
+</div>
+
+<div>
+    <h3 id="using_tgui_terminal">Using TGUI (Terminal)</h3>
+    <p class="SmallBottomMargin">The two things to add is linking to tgui and tell the compiler that it uses c++11.</p>
+{% highlight bash %}
+g++ -std=c++11 main.cpp -ltgui -lsfml-graphics -lsfml-window -lsfml-system -o program
+{% endhighlight %}
+</div>
+<!--
+<div>
+    <h3 id="possible_error">Possible error</h3>
+    <p>It is possible to get the following error when running your program:<br>
+       “/pathname/of/program: error while loading shared libraries: libtgui.so: cannot open shared object file: no such file or directory”
+    </p>
+
+    <p>If you get this then you did install tgui correctly, but it is not in the shared library cache.<br>
+       All you have to do is open the terminal, type “sudo ldconfig”, hit enter and type your password.
+    </p>
+
+    <p>If that doesn’t solve it then make sure the library was installed to a place where your distro searches for it.<br>
+       The easiest solution is probably to add the line “/usr/local/lib/” (without the quotes) at the end of /etc/ld.so.conf and then run “sudo ldconfig” again.
+    </p>
+</div>
+-->
