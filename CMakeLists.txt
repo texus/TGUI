@@ -242,8 +242,17 @@ if (NOT TGUI_OPENGL_ES)
     set(TGUI_EXT_LIBS ${OPENGL_gl_LIBRARY} ${SFML_LIBRARIES})
 else()
     if (SFML_OS_LINUX)
+
+        # Try to manually find the packages for when we are on Raspberry Pi
+        find_path(EGL_INCLUDE_DIR EGL/egl.h PATHS /opt/vc/include)
+        find_path(GLES_INCLUDE_DIR GLES/gl.h PATHS /opt/vc/include)
+        find_library(EGL_LIBRARY NAMES EGL PATHS /opt/vc/lib)
+        find_library(GLES_LIBRARY NAMES GLESv1_CM PATHS /opt/vc/lib)
+
+        # Search on other places in case we did not find them yet
         find_package(EGL REQUIRED)
         find_package(GLES REQUIRED)
+
         add_definitions(-DSFML_OPENGL_ES)
         include_directories(${EGL_INCLUDE_DIR} ${GLES_INCLUDE_DIR})
     elseif(SFML_OS_ANDROID)
