@@ -4,5 +4,9 @@
 <link rel="stylesheet" type="text/css" href="{{site.url}}/resources/style.css">
 <link rel="icon" type="image/png" href="/favicon.png" />
 
+{% if page.canonical %}
+  <link rel="canonical" href="{{site.url}}{{page.canonical}}" />
+{% endif %}
+
 <meta name="description" content="TGUI is an easy to use cross-platform c++ GUI library for SFML" />
 <meta name="keywords" content="TGUI, SFML, GUI, UI" />

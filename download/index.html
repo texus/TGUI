@@ -1,37 +1,20 @@
 ---
+layout: page
+title: Download
 ---
-<!DOCTYPE html>
 
-<head>
-{% include head.ext %}
-
-    <title>TGUI downloads</title>
-</head>
-
-<body>
-<div id="body" class="NoMargin">
-{% include navigation.ext %}
-    
-<div id="contents" class="NoMargin">
-    <h2>Download</h2>
-
-    <div>
-        <p><b>TGUI v0.6.9</b> - latest stable version<br>
-            <a href="https://www.dropbox.com/s/eayqjpdsk15v7t9/TGUI-0.6.9%20MinGW%204.7%20TDM%20%28SJLJ%29%20-%2032bit.zip?dl=1">Download TGUI v0.6.9 with precompiled MinGW 4.7.1 TDM (SJLJ) 32-bit libraries</a> (for SFML 2.3.1)<br>
-            <a href="https://www.dropbox.com/s/duzhlqjksic7kkx/TGUI-0.6.9%20Visual%20C%2B%2B10%20%282010%29%20-%2032bit.zip?dl=1">Download TGUI v0.6.9 with precompiled Visual C++ 10 (2010) 32-bit libraries</a> (for SFML 2.3.1)<br>
-            <a href="https://www.dropbox.com/s/vk4vp2qj1d1z1iv/TGUI-0.6.9%20Visual%20C%2B%2B11%20%282012%29%20-%2032bit.zip?dl=1">Download TGUI v0.6.9 with precompiled Visual C++ 11 (2012) 32-bit libraries</a> (for SFML 2.3.1)<br>
-            <a href="https://www.dropbox.com/s/297hz93agbjgg1n/TGUI-0.6.9%20Visual%20C%2B%2B12%20%282013%29%20-%2032bit.zip?dl=1">Download TGUI v0.6.9 with precompiled Visual C++ 12 (2013) 32-bit libraries</a> (for SFML 2.3.1)<br>
-            <a href="https://github.com/texus/TGUI/archive/v0.6.9.zip">Download TGUI v0.6.9 without precompiled libraries</a> (to build it with CMake with SFML 2.2 or higher)
-        </p>
-    </div>
-
-    <div>
-        <p><b>TGUI v0.7-dev</b> - development version (including experimental Android and iOS support)<br>
-            Looking for the very <a href="../v0.7-dev/">latest version</a>?
-        </p>
-    </div>
+<div>
+  <h4>TGUI v0.7-dev</h4>
+  <p>Current development version, including experimental Android and iOS support. You will have to build the source code yourself with CMake. <a href="../v0.7-dev/">More information</a></p>
+  {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/v0.7-dev.zip" style="Orange" %}
 </div>
 
-{% include footer.ext %}
+<div>
+  <h4>TGUI v0.6.9</h4>
+  <p>Latest stable version. Precompiled libraries are 32-bit and require SFML 2.3.1, when building TGUI yourself from the source code with CMake you need at least SFML 2.3.</p>
+  {% include button.ext text="MinGW 4.7.1 TDM (SJLJ)" link="https://www.dropbox.com/s/eayqjpdsk15v7t9/TGUI-0.6.9%20MinGW%204.7%20TDM%20%28SJLJ%29%20-%2032bit.zip?dl=1" style="Green" %}<br><br>
+  {% include button.ext text="Visual C++10 (2010)" link="https://www.dropbox.com/s/duzhlqjksic7kkx/TGUI-0.6.9%20Visual%20C%2B%2B10%20%282010%29%20-%2032bit.zip?dl=1" style="Green" %}<br><br>
+  {% include button.ext text="Visual C++11 (2012)" link="https://www.dropbox.com/s/vk4vp2qj1d1z1iv/TGUI-0.6.9%20Visual%20C%2B%2B11%20%282012%29%20-%2032bit.zip?dl=1" style="Green" %}<br><br>
+  {% include button.ext text="Visual C++12 (2013)" link="https://www.dropbox.com/s/297hz93agbjgg1n/TGUI-0.6.9%20Visual%20C%2B%2B12%20%282013%29%20-%2032bit.zip?dl=1" style="Green" %}<br><br>
+  {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/v0.6.9.zip" style="Green" %}<br><br>
 </div>
-</body>

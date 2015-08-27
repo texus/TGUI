@@ -1,0 +1,52 @@
+---
+redirect_from: "/tutorials/v06/grid/index.html"
+---
+
+<!DOCTYPE html>
+
+<head>
+{% include head.ext %}
+
+    <title>Grid</title>
+</head>
+
+<body>
+<div id="body" class="NoMargin">
+{% include navigation.ext %}
+
+<div id="contents" class="NoMargin">
+    <h2>Grid</h2>
+    <p>Grid allows you to automatically position your widgets.</p>
+
+    <p class="SmallBottomMargin">You create the grid like you would create any other widget. But unlike most widgets there is no load function, since you don't have to load anything.</p>
+{% highlight c++ %}
+tgui::Grid::Ptr grid(gui);
+{% endhighlight %}
+
+    <p class="SmallBottomMargin">Adding widgets goes in two fases. The first one is creating the widget, just like you would do in the Gui, Panel, ChildWindow, ...
+    </p>
+{% highlight c++ %}
+tgui::EditBox::Ptr editBox(*grid);
+editBox->load(...);
+{% endhighlight %}
+
+    <p class="SmallBottomMargin">Now the Grid controls the widget. The next phase is to actually set it to a square in the grid. If you don’t do this then the widget simply won’t be draw. The addWidget function takes at least three parameters: the widget, the row and the column. The function can takes more parameters, which allow you to put borders around the widgets and to align the widgets in their squares, but you should look at the documentation for that.</p>
+{% highlight c++ %}
+grid->addWidget(editBox, 0, 0);
+{% endhighlight %}
+
+    <p class="SmallBottomMargin">Of course, the grid has no idea of when a widget is resized and thus cannot automatically rearrange the other widgets in the grid. After you change the size of a widget, you must tell the Grid about it. You do this by calling updateWidgets.</p>
+{% highlight c++ %}
+editBox->setSize(300, 30);
+grid->updateWidgets();
+{% endhighlight %}
+
+    <p class="SmallBottomMargin">By setting a size in Grid, the widgets will be automatically spread to fit best in the area. The space between the widgets will be changed so that all widgets together fill the requested size. However, if the size is too small, then the widgets will be placed against each other but will not reach the requested size (until widgets are removed).</p>
+{% highlight c++ %}
+grid->setSize(800, 600);
+{% endhighlight %}
+</div>
+
+{% include footer.ext %}
+</div>
+</body>

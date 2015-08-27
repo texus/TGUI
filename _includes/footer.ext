@@ -1,12 +1,3 @@
-<div id="footer" class="NoMargin clear">
-  <p>
-    <a href="{{site.url}}/donate/">Donate</a>
-    <a href="{{site.url}}/privacy-policy/">Privacy Policy</a>
-    <a href="{{site.url}}/sitemap.xml">Sitemap</a>
-    <a href="https://www.facebook.com/feeds/page.php?format=rss20&id=213243868883901">Blog RSS</a>
-  </p>
-</div>
-
 <!-- Piwik -->
 <script type="text/javascript">
   var _paq = _paq || [];

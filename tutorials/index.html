@@ -1,29 +1,9 @@
 ---
+layout: page
+title: Tutorials
+breadcrumb: "tutorials"
 ---
-<!DOCTYPE html>
-
-<head>
-{% include head.ext %}
-
-    <title>TGUI tutorials</title>
-</head>
-
-<body>
-<div id="body" class="NoMargin">
-{% include navigation.ext %}
-    
-<div id="contents" class="NoMargin">
-    <h2>Tutorials</h2>
-
-    <div>
-        <p>Choose your tgui version.</p>
-
-        <p><a href="v06/">TGUI v0.6</a> (latest stable version)</p>
-
-        <p><a href="v05/">TGUI v0.5</a> (older version)</p>
-    </div>
-</div>
-
-{% include footer.ext %}
-</div>
-</body>
+<p>Choose your tgui version.</p>
+{% include button.ext text="TGUI v0.7-dev" link="v0.7/" style="Orange" %}<br><br>
+{% include button.ext text="TGUI v0.6" link="v0.6/" style="Green" %}<br><br>
+{% include button.ext text="TGUI v0.5" link="v0.5/" style="Grey" %}

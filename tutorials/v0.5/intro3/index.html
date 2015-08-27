@@ -1,0 +1,163 @@
+---
+layout: page
+title: Handling callbacks
+breadcrumb: "handling callbacks"
+redirect_from: "/tutorials/v05/intro3/index.html"
+canonical: "/tutorials/v0.6/intro3/"
+---
+<div>
+<p>In part 2 of this tutorial, you have seen how to create a login screen. It all looks fine but there is one important thing missing: the callbacks.</p>
+
+<p>You will need to find out when the user clicked on the login button. This is what you will learn in this part of the tutorial.</p>
+
+<p>At the bottom of the page you will find the full code for the working login screen.</p>
+
+<p class="SmallBottomMargin">
+    First of all, you will need to get the callbacks from the window.<br />
+    This procedure is very similar to polling events from sfml.
+</p>
+{% highlight c++ %}
+tgui::Callback callback;
+while (window.getCallback(callback))
+{
+}
+{% endhighlight %}
+
+<p class="SmallBottomMargin">
+    By default, objects will not send any callback. You will have to explicitly ask the object to send you callback. You do this by changing the callback id of the object. When receiving the callbacks, you will also use this id to find out where the callback came from.<br />
+    So you will need to add the following line to the button creation:
+</p>
+{% highlight c++ %}
+button->callbackID = 1;
+{% endhighlight %}
+
+<p class="SmallBottomMargin">
+    Now that the button is sending callbacks, it is time to receive them.<br />
+    First we will check if the id is 1 to make sure that the event comes from the button.<br />
+    Then we check if the button was clicked (it also sends mouseDown events).<br />
+    Finally we get the username and password that were filled in inside the edit boxes. As the pointers are not accessible in this scope, we will use the get function to get the pointers back.
+</p>
+{% highlight c++ %}
+tgui::Callback callback;
+while (window.getCallback(callback))
+{
+    if (callback.callbackID == 1)
+    {
+        if (callback.trigger == tgui::Callback::mouseClick)
+        {
+            sf::String username = window.get<tgui::EditBox>("Username")->getText();
+            sf::String password = window.get<tgui::EditBox>("Password")->getText();
+
+            // Continue here by checking if they are correct ...
+        }
+    }
+}
+{% endhighlight %}
+
+<p class="SmallBottomMargin">Here is the full code of the introduction tutorial.</p>
+{% highlight c++ %}
+#include <TGUI/TGUI.hpp>
+
+void loadObjects( tgui::Window& window )
+{
+    // Create the background image
+    tgui::Picture* picture = window.add<tgui::Picture>();
+    picture->load("myBackgroundImage.png");
+    picture->setSize(800, 600);
+
+    // Create the username label
+    tgui::Label* labelUsername = window.add<tgui::Label>();
+    labelUsername->setText("Username:");
+    labelUsername->setPosition(200, 100);
+
+    // Create the password label
+    tgui::Label* labelPassword = window.add<tgui::Label>();
+    labelPassword->setText("Password:");
+    labelPassword->setPosition(200, 250);
+
+    // Create the username edit box
+    tgui::EditBox* editBoxUsername = window.add<tgui::EditBox>("Username");
+    editBoxUsername->load("TGUI/objects/EditBox/Black");
+    editBoxUsername->setSize(400, 40);
+    editBoxUsername->setPosition(200, 140);
+
+    // Create the password edit box (we will copy the previously created edit box)
+    tgui::EditBox* editBoxPassword = window.copy(editBoxUsername, "Password");
+    editBoxPassword->setPosition(200, 290);
+    editBoxPassword->setPasswordChar('*');
+
+    // Create the login button
+    tgui::Button* button = window.add<tgui::Button>();
+    button->load("TGUI/objects/Button/Black");
+    button->setSize(260, 60);
+    button->setPosition(270, 440);
+    button->setText("Login");
+    button->callbackID = 1;
+}
+
+int main()
+{
+    // Create the window
+    tgui::Window window(sf::VideoMode(800, 600), "TGUI window");
+
+    // Load the font (you should check the return value to make sure that it is loaded)
+    window.globalFont.loadFromFile("TGUI/Fonts/DejaVuSans.ttf");
+
+    // Load the objects
+    loadObjects(window);
+
+    // Main loop
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            // Pass the event to all the object (if there would be objects)
+            window.handleEvent(event);
+        }
+
+        // The callback loop
+        tgui::Callback callback;
+        while (window.getCallback(callback))
+        {
+            // Make sure tha callback comes from the button
+            if (callback.callbackID == 1)
+            {
+                // Make sure the button was pressed
+                if (callback.trigger == tgui::Callback::mouseClick)
+                {
+                    // Get the username and password
+                    sf::String username = window.get<tgui::EditBox>("Username")->getText();
+                    sf::String password = window.get<tgui::EditBox>("Password")->getText();
+
+                    // Continue here by checking if they are correct ...
+                }
+            }
+        }
+
+        window.clear();
+
+        // Draw all created objects
+        window.drawGUI();
+
+        window.display();
+    }
+
+    return EXIT_SUCCESS;
+}
+{% endhighlight %}
+
+<p>There is still one very important thing that you should take into account: errors.<br />
+   In the above code, there is no error checking. If you write a program then you will probably want to add error checking to the following places:
+   <ul>
+       <li>window.globalFont.loadFromFile will return false when the font couldn’t be loaded.</li>
+       <li>All load functions return false on failure. (you could also use isLoaded later).</li>
+       <li>The get function will return NULL when the object name was wrong.</li>
+   </ul>
+</p>
+
+<p>Previous: <a href="../intro2/">Working with objects</a></p>
+</div>

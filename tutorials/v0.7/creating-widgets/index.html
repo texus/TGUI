@@ -1,0 +1,68 @@
+---
+layout: page
+title: Creating, copying and removing widgets
+breadcrumb: creating widgets
+redirect_from: "/tutorials/v07/creating-widgets/index.html"
+---
+<div>
+<h3 id="creating_widgets">Creating widgets</h3>
+<p>Creating a widget goes in two steps: creating it and adding it to its parent.</p>
+<p class="SmallBottomMargin">The widgets should always be used as shared pointers so you can just create one with std::make_shared.</p>
+{% highlight c++ %}
+tgui::Button::Ptr button = std::make_shared<tgui::Button>();
+{% endhighlight %}
+
+<p>When creating a widget like that, they will make use of the build-in "White" theme. No external resources are needed for them and you have something on your screen immediately. Although you can customize the widgets by changing property by property, you probably want to <a href="../using-themes/">use themes</a> to give your widgets a different look. TGUI already ships with some theme files that you can load and use out of the box.</p>
+
+<p class="SmallBottomMargin">The second step is to add the widget to its parent widget. Usually this is the Gui object, but it could also be e.g. a child window.
+{% highlight c++ %}
+gui.add(button1);
+gui.add(button2, "MyUniqueName");
+{% endhighlight %}
+
+<p class="SmallBottomMargin">After your widget is created, you can start making changes to it. The button should e.g. display some text on top of it.
+{% highlight c++ %}
+button->setText("Quit");
+{% endhighlight %}
+</div>
+
+<div>
+<h3 id="retrieving_widgets">Retrieving widgets</h3>
+<p class="SmallBottomMargin">Once a widget is added to a parent widget (or directly to the gui), you no longer have to store it yourself, you can just let your pointer go out of scope. When you need it later you can always get it back from the parent widget. The name that the get function takes as parameter was the optional parameter of the add function.
+</p>
+{% highlight c++ %}
+tgui::Button::Ptr button = gui.get<tgui::Button>("MyUniqueName");
+tgui::Widget::Ptr widget = gui.get("MyWidgetName");
+{% endhighlight %}
+</div>
+
+<div>
+<h3 id="copying_widgets">Copying widgets</h3>
+<p class="SmallBottomMargin">When you know the type of your widget then you can simply use the copy function. The copied widget is however not bound to the same parent widget, you must add it again. This is done so that you can e.g. make a copy of a widget inside a child window and then add the copy to another child window.
+</p>
+{% highlight c++ %}
+tgui::Button::Ptr newButton = tgui::Button::copy(oldButton);
+gui.add(newButton);
+{% endhighlight %}
+
+<p class="SmallBottomMargin">It is of course possible that you do not know the type of the widget. If you have been storing all the widgets in a list and you want to copy the list then you cannot use the copy function. In this situation you must use the clone function instead.
+</p>
+{% highlight c++ %}
+std::vector<tgui::Widget::Ptr> newList;
+for (auto& widget : oldList)
+    newList.push_back(widget->clone());
+{% endhighlight %}
+</div>
+
+<div>
+<h3 id="removing_widgets">Removing widgets</h3>
+<p class="SmallBottomMargin">Once a widget is no longer needed, you can remove it from its parent container.</p>
+{% highlight c++ %}
+gui.remove(button);
+{% endhighlight %}
+
+<p class="SmallBottomMargin">You could also remove all widgets inside a container at once.</p>
+{% highlight c++ %}
+gui.removeAllWidgets();
+{% endhighlight %}
+</div>
