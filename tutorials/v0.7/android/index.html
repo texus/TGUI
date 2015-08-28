@@ -34,6 +34,9 @@ redirect_from: "/tutorials/v07/android/index.html"
   <p class="SmallBottomMargin">You may see some warnings about the toolchain file not being able to uniquely determine machine name for the compiler, you can just ignore them. If all goes well you will see the "Found SFML 2.2 in ..." and "Configuring done" outputs at the bottom.</p>
   <a class="img" href="{{site.url}}/resources/AndroidTutorial/CMakeConfigure.jpg"><img alt="CMake Configure" src="{{site.url}}/resources/AndroidTutorial/CMakeConfigure.jpg" width="783" height="633" /></a>
 
+  <p>Make sure that it finds the android sfml libraries though. If you see a message like "Found SFML 2.3.1 in /usr/local/include" then it is finding the ones for your own system instead. Remove the libraries from /usr/local/lib and the includes from /usr/local/include, delete the cmake cache and rebuild. After that it should find the ones in the android ndk.
+</p>
+
   <p class="SmallBottomMargin">You can now change some of the options:</p>
   <ul>
     <li>ANDROID_ABI: One of the following: armeabi, armeabi-v7a, x86, mips</li>
@@ -61,6 +64,9 @@ make -j4 && make install
 {% highlight bash %}
 $ANDROID_NDK/ndk-build
 {% endhighlight %}
+
+  <p>WARNING: Android Studio seems to have changed since I wrote this tutorial. Instructions below may no longer be correct.</p>
+
   <p>This should build the main.cpp file and copy the sfml and tgui libraries to that folder.</p>
   <p class="SmallBottomMargin">Next you have to build the apk file. I uses Android Studio instead of eclipse for this. In the main screen select "Import Non-Android Studio project".</p>
   <a class="img" href="{{site.url}}/resources/AndroidTutorial/AndroidStudioStartScreen.jpg"><img alt="Android Studio" src="{{site.url}}/resources/AndroidTutorial/AndroidStudioStartScreen.jpg" width="799" height="602" /></a>
@@ -88,9 +94,9 @@ LOCAL_SHARED_LIBRARIES += tgui
 $(call import-module,tgui)
 {% endhighlight %}
 
-  <p class="SmallBottomMargin">In Application.mk you must enable exceptions and add the tgui activity</p>
+  <p class="SmallBottomMargin">In Application.mk you must enable exceptions and rtti and add the tgui activity</p>
 {% highlight bash %}
-APP_CPPFLAGS += -fexceptions
+APP_CPPFLAGS += -fexceptions -frtti
 {% endhighlight %}
 {% highlight bash %}
 APP_MODULES := sfml-activity tgui-activity your-program
