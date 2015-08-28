@@ -710,8 +710,8 @@ namespace tgui
         {
             getRenderer()->setTrackColorNormal({245, 245, 245});
             getRenderer()->setTrackColorHover({255, 255, 255});
-            getRenderer()->setThumbColorNormal({245, 245, 245});
-            getRenderer()->setThumbColorHover({255, 255, 255});
+            getRenderer()->setThumbColorNormal({220, 220, 220});
+            getRenderer()->setThumbColorHover({210, 210, 210});
             getRenderer()->setArrowColorNormal({60, 60, 60});
             getRenderer()->setArrowColorHover({0, 0, 0});
             getRenderer()->setTrackTexture({});
