@@ -12,6 +12,26 @@ endmacro()
 tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
 tgui_set_option(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" STRING "The path to the cmake modules. This path must contain the FindSFML.cmake file.")
 
+# Android specific stuff which has to be set before CMake detects/configures the toolchain.
+# If not building on android they will be unset later.
+
+    # Define the minimum API level to be used
+    tgui_set_option(ANDROID_API_MIN 9 STRING "Choose the Android API level to be used (minimum 9)")
+
+    # Mirror the setting for the toolchain file
+    set(ANDROID_NATIVE_API_LEVEL ${ANDROID_API_MIN})
+
+    # Define the path to the Android NDK
+    tgui_set_option(ANDROID_NDK "$ENV{ANDROID_NDK}" PATH "Path to the Android NDK")
+
+    # Define the STL implementation to be used
+    tgui_set_option(ANDROID_STL c++_shared STRING "Choose the STL implementation to be used (experimental)")
+
+    # Default the ABI to ARM v7a for hardware floating point
+    if(NOT ANDROID_ABI)
+        set(ANDROID_ABI armeabi-v7a)
+    endif()
+
 # Project name
 project(tgui)
 
@@ -62,9 +82,8 @@ tgui_set_option( TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentati
 if (SFML_OS_ANDROID)
     set(TGUI_ACTIVITY_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
-    string(REPLACE " " ";" TGUI_CXX_FLAGS_LIST ${CMAKE_CXX_FLAGS})
-
     # Remove "-fno-exceptions" from the CMAKE_CXX_FLAGS
+    string(REPLACE " " ";" TGUI_CXX_FLAGS_LIST ${CMAKE_CXX_FLAGS})
     set(TGUI_TEMP_CXX_FLAGS "")
     foreach (flag ${TGUI_CXX_FLAGS_LIST})
         if (NOT (${flag} STREQUAL "-fno-exceptions"))
@@ -72,26 +91,28 @@ if (SFML_OS_ANDROID)
         endif()
     endforeach(flag)
 
-    # Detect if we have "-std=c++11" and "-fexceptions" flags already
-    set(TGUI_CPP11_SET FALSE)
-    set(TGUI_EXCEPTIONS_SET FALSE)
+    # Remove "-fno-rtti" from the CMAKE_CXX_FLAGS
+    string(REPLACE " " ";" TGUI_CXX_FLAGS_LIST ${TGUI_TEMP_CXX_FLAGS})
+    set(TGUI_TEMP_CXX_FLAGS "")
     foreach (flag ${TGUI_CXX_FLAGS_LIST})
-        if (${flag} STREQUAL "-std=c++11")
-            set(TGUI_CPP11_SET TRUE)
-        endif()
-        if (${flag} STREQUAL "-fexceptions")
-            set(TGUI_EXCEPTIONS_SET TRUE)
+        if (NOT (${flag} STREQUAL "-fno-rtti"))
+            set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} ${flag}")
         endif()
     endforeach(flag)
 
     # Add the "-std=c++11" flag if it wasn't there already
-    if (NOT TGUI_CPP11_SET)
+    if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-std=c\\+\\+11.*"))
         set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} -std=c++11")
     endif()
 
     # Add the "-fexceptions" flag if it wasn't there already
-    if (NOT TGUI_EXCEPTIONS_SET)
+    if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-fexceptions.*"))
         set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} -fexceptions")
+    endif()
+
+    # Add the "-frtti" flag if it wasn't there already
+    if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-frtti.*"))
+        set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} -frtti")
     endif()
 
     set(CMAKE_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS}")
@@ -165,12 +186,17 @@ endif()
 # Android options
 if(SFML_OS_ANDROID)
 
-    # Force usage of the STL port
-    set(ANDROID_USE_STLPORT TRUE)
+    if (${ANDROID_API_MIN} LESS 9)
+        message(FATAL_ERROR "Android API level must be equal or greater than 9. Please adjust the CMake variable 'ANDROID_API_MIN'.")
+    endif()
 
-    # Make sure there's the android library available
-    if (${ANDROID_NATIVE_API_LEVEL} LESS 9)
-        message(FATAL_ERROR "API level must be equal or greater than 9")
+    if(NOT ANDROID_NDK)
+        message(FATAL_ERROR "The Android NDK couldn't be found. Please adjust the CMake variable 'ANDROID_NDK' to point to the NDK directory.")
+    endif()
+
+    # CMake doesn't support defining the STL to be used with Nsight Tegra, so warn the user
+    if(CMAKE_VS_PLATFORM_NAME STREQUAL "Tegra-Android")
+        message(WARNING "CMake might not properly support setting the STL. Make sure to adjust all generated library projects!")
     endif()
 
     # Install everything in $NDK/sources/ because this path is appended by the NDK (convenient)
@@ -178,6 +204,41 @@ if(SFML_OS_ANDROID)
 
     # We install libs in a subdirectory named after the ABI (e.g. lib/armeabi/libtgui.so)
     set(LIB_SUFFIX "/${ANDROID_ABI}")
+
+    # Pass shared STL configuration (if any)
+    if (ANDROID_STL MATCHES "_shared")
+        add_definitions("-DSTL_LIBRARY=${ANDROID_STL}")
+    endif()
+
+    # Macro to find packages on the host OS
+    # This is the same as in the toolchain file, which is here for Nsight Tegra VS since it won't use the Android toolchain file
+    if(CMAKE_VS_PLATFORM_NAME STREQUAL "Tegra-Android")
+        macro(find_host_package)
+            set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+            set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER)
+            set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
+            if(CMAKE_HOST_WIN32)
+                set(WIN32 1)
+                set(UNIX)
+            elseif(CMAKE_HOST_APPLE)
+                set(APPLE 1)
+                set(UNIX)
+            endif()
+            find_package(${ARGN})
+            set(WIN32)
+            set(APPLE)
+            set(UNIX 1)
+            set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
+            set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+            set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+        endmacro()
+    endif()
+else()
+    unset(ANDROID_ABI CACHE)
+    unset(ANDROID_API_MIN CACHE)
+    unset(ANDROID_STL CACHE)
+    unset(ANDROID_NATIVE_API_LEVEL CACHE)
+    unset(ANDROID_NDK CACHE)
 endif()
 
 # Link to the static sfml libraries when building tgui statically

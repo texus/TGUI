@@ -24,15 +24,16 @@ int main(int argc, char *argv[])
     tgui::Gui gui(window);
 
     gui.setGlobalFont("fonts/DejaVuSans.ttf");
+    auto theme = std::make_shared<tgui::Theme>("widgets/Black.conf");
 
-    auto picLandscape = tgui::Picture::create("Background-Landscape.png");
+    auto picLandscape = std::make_shared<tgui::Picture>("Background-Landscape.png");
     gui.add(picLandscape, "Landscape");
 
-    auto picPortrait = tgui::Picture::create("Background-Portrait.png");
+    auto picPortrait = std::make_shared<tgui::Picture>("Background-Portrait.png");
     gui.add(picPortrait, "Portrait");
 
     // The button will quit the program
-    auto button = tgui::Button::create("widgets/Black.conf");
+    tgui::Button::Ptr button = theme->load("button");
     button->setText("Quit");
     button->setPosition(50, 50);
     button->setSize(200, 50);
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
     gui.add(button);
 
     // Clicking on this edit box will open the keyboard and allow you to type in it
-    auto editBox = tgui::EditBox::create("widgets/Black.conf");
+    tgui::EditBox::Ptr editBox = theme->load("editbox");
     editBox->setPosition(50, 150);
     editBox->setSize(400, 40);
     editBox->setDefaultText("Enter text here...");

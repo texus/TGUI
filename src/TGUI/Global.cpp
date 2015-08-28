@@ -32,11 +32,6 @@
 #include <cctype>
 #include <cmath>
 
-#ifdef SFML_SYSTEM_ANDROID
-    #include "SFML/System/Android/Activity.hpp"
-    #include <android/native_activity.h>
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui

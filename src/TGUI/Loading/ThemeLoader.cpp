@@ -32,6 +32,14 @@
 #include <sstream>
 #include <fstream>
 
+#ifdef SFML_SYSTEM_ANDROID
+    #include "SFML/System/Android/Activity.hpp"
+    #include <android/asset_manager_jni.h>
+    #include <android/asset_manager.h>
+    #include <android/native_activity.h>
+    #include <android/configuration.h>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
