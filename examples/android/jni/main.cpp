@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     tgui::Gui gui(window);
 
     gui.setGlobalFont("fonts/DejaVuSans.ttf");
-    auto theme = std::make_shared<tgui::Theme>("widgets/Black.conf");
+    auto theme = std::make_shared<tgui::Theme>("widgets/Black.txt");
 
     auto picLandscape = std::make_shared<tgui::Picture>("Background-Landscape.png");
     gui.add(picLandscape, "Landscape");
@@ -65,8 +65,9 @@ int main(int argc, char *argv[])
                 view.setSize(event.size.width, event.size.height);
                 view.setCenter(event.size.width/2, event.size.height/2);
                 window.setView(view);
+                gui.setView(view);
 
-                setBackground(gui, window.getDefaultView());
+                setBackground(gui, view);
             }
             
             gui.handleEvent(event);
