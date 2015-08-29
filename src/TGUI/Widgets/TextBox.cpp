@@ -497,13 +497,110 @@ namespace tgui
                 // The next click is going to be a normal one again
                 m_possibleDoubleClick = false;
 
-                // Select the whole text
-                m_selStart = {0, 0};
-                m_selEnd = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
+                // If the click was to the right of the end of line then make sure to select the word on the left
+                if (m_lines[m_selStart.y].getSize() > 1 && (m_selStart.x == (m_lines[m_selStart.y].getSize()-1) || m_selStart.x == m_lines[m_selStart.y].getSize()))
+                {
+                    m_selStart.x--;
+                    m_selEnd.x = m_selStart.x;
+                }
+
+                bool selectingWhitespace;
+                if (isWhitespace(m_lines[m_selStart.y][m_selStart.x]))
+                    selectingWhitespace = true;
+                else
+                    selectingWhitespace = false;
+
+                // Move start pointer to the beginning of the word/whitespace
+                bool done = false;
+                for (unsigned int j = m_selStart.y + 1; j > 0; --j)
+                {
+                    for (unsigned int i = m_selStart.x; i > 0; --i)
+                    {
+                        if (selectingWhitespace != isWhitespace(m_lines[m_selStart.y][i-1]))
+                        {
+                            m_selStart.x = i;
+                            done = true;
+                            break;
+                        }
+                        else
+                            m_selStart.x = 0;
+                    }
+
+                    if (!done)
+                    {
+                        if (!selectingWhitespace && m_selStart.x == 0)
+                        {
+                            if (m_selStart.y > 0)
+                            {
+                                m_selStart.y--;
+                                m_selStart.x = m_lines[m_selStart.y].getSize();
+                            }
+                            else
+                            {
+                                done = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (m_selStart.x == m_lines[m_selStart.y].getSize())
+                        {
+                            m_selStart.y++;
+                            m_selStart.x = 0;
+                        }
+                        break;
+                    }
+                }
+
+                // Move start pointer to the end of the word/whitespace
+                done = false;
+                for (unsigned int j = m_selEnd.y; j < m_lines.size(); ++j)
+                {
+                    for (unsigned int i = m_selEnd.x; i < m_lines[m_selEnd.y].getSize(); ++i)
+                    {
+                        if (selectingWhitespace != isWhitespace(m_lines[m_selEnd.y][i]))
+                        {
+                            m_selEnd.x = i;
+                            done = true;
+                            break;
+                        }
+                        else
+                            m_selEnd.x = m_lines[m_selEnd.y].getSize();
+                    }
+
+                    if (!done)
+                    {
+                        if (!selectingWhitespace && m_selEnd.x == m_lines[m_selEnd.y].getSize())
+                        {
+                            if (m_selEnd.y + 1 < m_lines.size())
+                            {
+                                m_selEnd.y++;
+                                m_selEnd.x = 0;
+                            }
+                            else
+                            {
+                                done = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (m_selEnd.x == m_lines[m_selEnd.y].getSize())
+                        {
+                            m_selEnd.y--;
+                            m_selEnd.x = m_lines[m_selEnd.y].getSize();
+                        }
+                        break;
+                    }
+                }
             }
             else // No double clicking
             {
-                m_selStart = caretPosition;
+                if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+                    m_selStart = caretPosition;
+
                 m_selEnd = caretPosition;
 
                 // If the next click comes soon enough then it will be a double click
@@ -666,7 +763,9 @@ namespace tgui
                 else
                     m_selEnd = {0, 0};
 
-                m_selStart = m_selEnd;
+                if (!event.shift)
+                    m_selStart = m_selEnd;
+
                 updateSelectionTexts();
                 break;
             }
@@ -678,22 +777,70 @@ namespace tgui
                 else
                     m_selEnd = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
 
-                m_selStart = m_selEnd;
+                if (!event.shift)
+                    m_selStart = m_selEnd;
+
                 updateSelectionTexts();
                 break;
             }
 
             case sf::Keyboard::Left:
             {
-                // Just undo the selection when some text is selected
-                if (m_selStart != m_selEnd)
+                if (event.control)
                 {
-                    if ((m_selStart.y > m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x > m_selEnd.x)))
-                        m_selStart = m_selEnd;
-                    else
-                        m_selEnd = m_selStart;
+                    // Move to the beginning of the word (or to the previous word when already at the beginning)
+                    bool skippedWhitespace = false;
+                    bool done = false;
+                    for (unsigned int j = m_selEnd.y + 1; j > 0; --j)
+                    {
+                        for (unsigned int i = m_selEnd.x; i > 0; --i)
+                        {
+                            if (skippedWhitespace)
+                            {
+                                if (isWhitespace(m_lines[m_selEnd.y][i-1]))
+                                {
+                                    m_selEnd.x = i;
+                                    done = true;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                if (!isWhitespace(m_lines[m_selEnd.y][i-1]))
+                                    skippedWhitespace = true;
+                            }
+                        }
+
+                        if (!done)
+                        {
+                            if (m_selEnd.y > 0)
+                            {
+                                m_selEnd.y--;
+                                if (!m_lines[m_selEnd.y].isEmpty() && m_lines[m_selEnd.y][m_lines[m_selEnd.y].getSize()-1] == '\n')
+                                {
+                                    if (!skippedWhitespace)
+                                        m_selEnd.x = m_lines[m_selEnd.y].getSize()-1;
+                                    else
+                                    {
+                                        m_selEnd.x = 0;
+                                        m_selEnd.y++;
+                                        break;
+                                    }
+                                }
+                                else
+                                    m_selEnd.x = m_lines[m_selEnd.y].getSize();
+                            }
+                            else
+                            {
+                                m_selEnd.x = 0;
+                                m_selEnd.y = 0;
+                            }
+                        }
+                        else
+                            break;
+                    }
                 }
-                else // When we did not select any text so move left
+                else
                 {
                     if (m_selEnd.x > 0)
                         m_selEnd.x--;
@@ -705,12 +852,11 @@ namespace tgui
                             m_selEnd.y--;
                             m_selEnd.x = m_lines[m_selEnd.y].getSize() - 1;
                         }
-                        else // You are at the beginning of the text
-                            break;
                     }
-
-                    m_selStart = m_selEnd;
                 }
+
+                if (!event.shift)
+                    m_selStart = m_selEnd;
 
                 updateSelectionTexts();
                 break;
@@ -718,17 +864,57 @@ namespace tgui
 
             case sf::Keyboard::Right:
             {
-                // Just undo the selection when some text is selected
-                if (m_selStart != m_selEnd)
+                // You can still move to the right on this line
+                if (event.control)
                 {
-                    if ((m_selStart.y > m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x > m_selEnd.x)))
-                        m_selEnd = m_selStart;
-                    else
-                        m_selStart = m_selEnd;
+                    // Move to the beginning of the word (or to the previous word when already at the beginning)
+                    bool skippedWhitespace = false;
+                    bool done = false;
+                    for (unsigned int j = m_selEnd.y; j < m_lines.size(); ++j)
+                    {
+                        for (unsigned int i = m_selEnd.x; i < m_lines[m_selEnd.y].getSize(); ++i)
+                        {
+                            if (skippedWhitespace)
+                            {
+                                if (isWhitespace(m_lines[m_selEnd.y][i]))
+                                {
+                                    m_selEnd.x = i;
+                                    done = true;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                if (!isWhitespace(m_lines[m_selEnd.y][i]))
+                                    skippedWhitespace = true;
+                            }
+                        }
+
+                        if (!done)
+                        {
+                            if (!skippedWhitespace)
+                            {
+                                if (m_selEnd.y+1 < m_lines.size())
+                                {
+                                    m_selEnd.y++;
+                                    m_selEnd.x = 0;
+                                }
+                            }
+                            else
+                            {
+                                if (!m_lines[m_selEnd.y].isEmpty() && (m_lines[m_selEnd.y][m_lines[m_selEnd.y].getSize()-1] == '\n'))
+                                    m_selEnd.x = m_lines[m_selEnd.y].getSize() - 1;
+                                else
+                                    m_selEnd.x = m_lines[m_selEnd.y].getSize();
+                            }
+                        }
+                        else
+                            break;
+                    }
                 }
-                else // When we did not select any text so move right
+                else
                 {
-                    // Delete a character from the line below you if you are at the end of the line
+                    // Move to the next line if you are at the end of the line
                     if ((m_selEnd.x == m_lines[m_selEnd.y].getSize()) || ((m_selEnd.x+1 == m_lines[m_selEnd.y].getSize()) && (m_lines[m_selEnd.y][m_selEnd.x] == '\n')))
                     {
                         if (m_selEnd.y < m_lines.size()-1)
@@ -736,14 +922,13 @@ namespace tgui
                             m_selEnd.y++;
                             m_selEnd.x = 0;
                         }
-                        else // You are at the end of the text
-                            break;
                     }
-                    else // You can still move to the right on this line
+                    else
                         m_selEnd.x++;
-
-                    m_selStart = m_selEnd;
                 }
+
+                if (!event.shift)
+                    m_selStart = m_selEnd;
 
                 updateSelectionTexts();
                 break;
@@ -751,16 +936,88 @@ namespace tgui
 
             case sf::Keyboard::Home:
             {
-                m_selStart = {0, 0};
-                m_selEnd = {0, 0};
+                if (event.control)
+                    m_selEnd = {0, 0};
+                else
+                    m_selEnd.x = 0;
+
+                if (!event.shift)
+                    m_selStart = m_selEnd;
+
                 updateSelectionTexts();
                 break;
             }
 
             case sf::Keyboard::End:
             {
-                m_selStart = sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
-                m_selEnd = m_selStart;
+                if (event.control)
+                    m_selEnd = {m_lines[m_lines.size()-1].getSize(), m_lines.size()-1};
+                else
+                {
+                    if (!m_lines[m_selEnd.y].isEmpty() && (m_lines[m_selEnd.y][m_lines[m_selEnd.y].getSize()-1] == '\n'))
+                        m_selEnd.x = m_lines[m_selEnd.y].getSize() - 1;
+                    else
+                        m_selEnd.x = m_lines[m_selEnd.y].getSize();
+                }
+
+                if (!event.shift)
+                    m_selStart = m_selEnd;
+
+                updateSelectionTexts();
+                break;
+            }
+
+            case sf::Keyboard::PageUp:
+            {
+                // Move to the top line when not there already
+                if (m_selEnd.y != m_topLine)
+                    m_selEnd.y = m_topLine;
+                else
+                {
+                    // Scroll up when we already where at the top line
+                    Padding padding = getRenderer()->getScaledPadding();
+                    auto visibleLines = static_cast<std::size_t>((getSize().y - padding.top - padding.bottom) / m_lineHeight);
+                    if (m_topLine < visibleLines - 1)
+                        m_selEnd.y = 0;
+                    else
+                        m_selEnd.y = m_topLine - visibleLines + 1;
+                }
+
+                m_selEnd.x = 0;
+
+                if (!event.shift)
+                    m_selStart = m_selEnd;
+
+                updateSelectionTexts();
+                break;
+            }
+
+            case sf::Keyboard::PageDown:
+            {
+                // Move to the bottom line when not there already
+                if (m_topLine + m_visibleLines > m_lines.size())
+                    m_selEnd.y = m_lines.size() - 1;
+                else if (m_selEnd.y != m_topLine + m_visibleLines - 1)
+                    m_selEnd.y = m_topLine + m_visibleLines - 1;
+                else
+                {
+                    // Scroll down when we already where at the bottom line
+                    Padding padding = getRenderer()->getScaledPadding();
+                    auto visibleLines = static_cast<std::size_t>((getSize().y - padding.top - padding.bottom) / m_lineHeight);
+                    if (m_selEnd.y + visibleLines >= m_lines.size() + 2)
+                        m_selEnd.y = m_lines.size() - 1;
+                    else
+                        m_selEnd.y = m_selEnd.y + visibleLines - 2;
+                }
+
+                if (!m_lines[m_selEnd.y].isEmpty() && (m_lines[m_selEnd.y][m_lines[m_selEnd.y].getSize()-1] == '\n'))
+                    m_selEnd.x = m_lines[m_selEnd.y].getSize() - 1;
+                else
+                    m_selEnd.x = m_lines[m_selEnd.y].getSize();
+
+                if (!event.shift)
+                    m_selStart = m_selEnd;
+
                 updateSelectionTexts();
                 break;
             }
@@ -1387,7 +1644,10 @@ namespace tgui
             }
             else
             {
-                m_textSelection1.setString(m_lines[selectionStart.y].substring(selectionStart.x, m_lines[selectionStart.y].getSize() - selectionStart.x));
+                if (!m_lines[selectionStart.y].isEmpty() && (m_lines[selectionStart.y][m_lines[selectionStart.y].getSize()-1] != '\n') && (selectionEnd.y > selectionStart.y))
+                    m_textSelection1.setString(m_lines[selectionStart.y].substring(selectionStart.x, m_lines[selectionStart.y].getSize() - selectionStart.x) + '\n');
+                else
+                    m_textSelection1.setString(m_lines[selectionStart.y].substring(selectionStart.x, m_lines[selectionStart.y].getSize() - selectionStart.x));
 
                 sf::String string;
                 for (std::size_t i = selectionStart.y + 1; i < selectionEnd.y; ++i)
