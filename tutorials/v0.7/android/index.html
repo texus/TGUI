@@ -14,70 +14,47 @@ redirect_from: "/tutorials/v07/android/index.html"
   <p>You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly.</p>
 
   <p>You will need to use CMake in order to build TGUI. You can download the latest version <a href="http://www.cmake.org/download/">here</a>.</p>
-</div>
 
-<div>
-  <h3 id="cmake">CMake</h3>
-  <ol>
-    <li>Set the pathname to the TGUI folder that you downloaded.</li>
-    <li>Set a folder to build TGUI in, usually a new empty folder in the same directory as (1).</li>
-    <li>Press this button to start configuring.</li>
-  </ol>
-  <a class="img" href="{{site.url}}/resources/AndroidTutorial/CMakeBuildDirectory.jpg"><img alt="CMake Build Directory" src="{{site.url}}/resources/AndroidTutorial/CMakeBuildDirectory.jpg" width="783" height="359" /></a>
-
-  <p class="SmallBottomMargin">In the window that pops up, you must change the selected option to "Specify toolchain file for cross-compiling". On linux you can leave the generator on "Unix Makefiles", on windows you probably want to use "MinGW Makefiles".</p>
-  <a class="img" href="{{site.url}}/resources/AndroidTutorial/CMakeSelectGenerator.jpg"><img alt="CMake Select Generator" src="{{site.url}}/resources/AndroidTutorial/CMakeSelectGenerator.jpg" width="502" height="384" /></a>
-
-  <p class="SmallBottomMargin">In the next screen, point it to the toolchain file that can be found in TGUI/cmake/toolchains.</p>
-  <a class="img" href="{{site.url}}/resources/AndroidTutorial/CMakeSelectToolchain.jpg"><img alt="CMake Select Toolchain" src="{{site.url}}/resources/AndroidTutorial/CMakeSelectToolchain.jpg" width="526" height="204" /></a>
-
-  <p class="SmallBottomMargin">You may see some warnings about the toolchain file not being able to uniquely determine machine name for the compiler, you can just ignore them. If all goes well you will see the "Found SFML 2.2 in ..." and "Configuring done" outputs at the bottom.</p>
-  <a class="img" href="{{site.url}}/resources/AndroidTutorial/CMakeConfigure.jpg"><img alt="CMake Configure" src="{{site.url}}/resources/AndroidTutorial/CMakeConfigure.jpg" width="783" height="633" /></a>
-
-  <p>Make sure that it finds the android sfml libraries though. If you see a message like "Found SFML 2.3.1 in /usr/local/include" then it is finding the ones for your own system instead. Remove the libraries from /usr/local/lib and the includes from /usr/local/include, delete the cmake cache and rebuild. After that it should find the ones in the android ndk.
-</p>
-
-  <p class="SmallBottomMargin">You can now change some of the options:</p>
-  <ul>
-    <li>ANDROID_ABI: One of the following: armeabi, armeabi-v7a, x86, mips</li>
-    <li>ANDROID_NATIVE_API_LEVEL: API level (9 for android 2.3, 14 for android 4.0, ...)</li>
-    <li>CMAKE_BUILD_TYPE: Release or Debug (only Release has been tested so far)</li>
-  </ul>
-
-  <p>Once you are done setting the options, press Configure again and then press Generate.</p>
+  <p>If you create the .apk file through the command line like described below then you will also need <a href="http://ant.apache.org/">Apache Ant</a>.</p>
 </div>
 
 <div>
   <h3 id="building_the_library">Building the library</h3>
-  <p>CMake will have generated makefiles or project files. You now have to execute these to build the library.</p>
-  <p class="SmallBottomMargin">On linux you would have to run the following command inside the build folder:</p>
+  <p class="SmallBottomMargin">From inside the TGUI folder that you download execute the following. The ANDROID_ABI should be set to the ABI that you want to use, this will most likely be "armeabi-v7a", but you can also set it to "armeabi", "x86" or "mips". On windows you might also have to pass your <a href="http://www.cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html">generator</a> to the cmake command with the -G parameter. On linux and mac "Unix Makefiles" will be used by default.</p>
 {% highlight bash %}
-make -j4 && make install
+mkdir build-android-arm
+cd build-android-arm
+cmake -DANDROID_ABI=armeabi-v7a -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android.toolchain.cmake ..
 {% endhighlight %}
-  <p>This will build the library and install it inside your NDK folder. If writing to this folder requires root access, then you must of course use "sude make install" instead.</p>
+
+  <p>Make sure that it finds the android sfml libraries. If you see a message like "Found SFML 2.3.1 in /usr/local/include" then it is finding the ones for your own system instead. Remove the libraries from /usr/local/lib and the includes from /usr/local/include, delete the cmake cache and rebuild. After that it should find the ones in the android ndk.</p>
+
+  <p class="SmallBottomMargin">Depending on the generator, CMake will have created a build file or project. For "Unix Makefiles" (linux and mac) you use the following code to build the library and install it to the ndk folder. The "-j2" after the make command means it uses 2 threads, if you have more cores you can increase the number to speed up the build.</p>
+{% highlight bash %}
+make -j2
+make install
+{% endhighlight %}
 </div>
 
 <div>
   <h3 id="running_the_demo">Running the demo</h3>
   <p>To test if everything is working, you can build the example code.</p>
-  <p class="SmallBottomMargin">First you have to run ndk-build. You can do this by opening your console inside the TGUI/example/android folder and running the following</p>
+  <p class="SmallBottomMargin">First you have to run ndk-build. You can do this by opening your console inside the TGUI/example/android folder and running the following.</p>
 {% highlight bash %}
 $ANDROID_NDK/ndk-build
 {% endhighlight %}
 
-  <p>WARNING: Android Studio seems to have changed since I wrote this tutorial. Instructions below may no longer be correct.</p>
+  <p class="SmallBottomMargin">If this succeeds then you can build the apk. The target sets the API level to use (you need this version of the android SDK installed).</p>
+{% highlight bash %}
+Android-SDK-Path/tools/android update project --name TGUI --path . --target android-21
+ant debug
+cp bin/TGUI-debug.apk TGUI-example.apk
+{% endhighlight %}
 
-  <p>This should build the main.cpp file and copy the sfml and tgui libraries to that folder.</p>
-  <p class="SmallBottomMargin">Next you have to build the apk file. I uses Android Studio instead of eclipse for this. In the main screen select "Import Non-Android Studio project".</p>
-  <a class="img" href="{{site.url}}/resources/AndroidTutorial/AndroidStudioStartScreen.jpg"><img alt="Android Studio" src="{{site.url}}/resources/AndroidTutorial/AndroidStudioStartScreen.jpg" width="799" height="602" /></a>
-
-  <p class="SmallBottomMargin">Next, select the folder to import. Here this will be the TGUI/example/android folder.</p>
-  <a class="img" href="{{site.url}}/resources/AndroidTutorial/AndroidStudioImportProjectFolder.jpg"><img alt="Android Studio" src="{{site.url}}/resources/AndroidTutorial/AndroidStudioImportProjectFolder.jpg" width="476" height="514" /></a>
-
-  <p>After that you get to a screen where you can just leave "Create project from existing sources" checked and click Next. In the next screen can give the project a name, just click Next again. It will tell you it found source files, click Next once more. Then hit Finish on the screen where it says that it detected frameworks.</p>
-
-  <p class="SmallBottomMargin">All you got to do now is hit the green play button. This will build the apk file and depending on the configurations start an emulator or run on a USB connected device.</p>
-  <a class="img" href="{{site.url}}/resources/AndroidTutorial/AndroidStudioRun.jpg"><img alt="Android Studio" src="{{site.url}}/resources/AndroidTutorial/AndroidStudioRun.jpg" width="159" height="45" /></a>
+  <p class="SmallBottomMargin">You can now install the .apk file to your android device with adb. Note that the adb server might have to run as root to have permissions to access the android device.</p>
+{% highlight bash %}
+adb install TGUI-example.apk
+{% endhighlight %}
 </div>
 
 <div>
