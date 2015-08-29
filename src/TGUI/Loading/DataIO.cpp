@@ -48,14 +48,13 @@ namespace tgui
 
             if (stream.peek() == '#')
             {
+                char c;
                 while (stream.peek() != EOF)
                 {
                     if (stream.peek() != '\n')
-                    {
-                        char c;
                         stream.read(&c, 1);
+                    else
                         break;
-                    }
                 }
                 continue;
             }
@@ -215,10 +214,9 @@ namespace tgui
                 while (stream.peek() != EOF)
                 {
                     if (stream.peek() != '\n')
-                    {
                         stream.read(&c, 1);
+                    else
                         break;
-                    }
                 }
                 continue;
             }
