@@ -1,11 +1,11 @@
 
 #include <TGUI/TGUI.hpp>
 
-#define THEME_CONFIG_FILE "../../widgets/Black.conf"
-
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 600), "TGUI window");
+    window.setFramerateLimit(60);
+
     tgui::Gui gui(window);
     gui.setGlobalFont("../../fonts/DejaVuSans.ttf");
 
@@ -20,7 +20,7 @@ int main()
     tab->add("Tab - 2");
     tab->add("Tab - 3");
     gui.add(tab);
-    
+
     tgui::MenuBar::Ptr menu = theme->load("MenuBar");
     menu->setSize(window.getSize().x, 22);
     menu->addMenu("MenuOption-1");
@@ -45,32 +45,32 @@ int main()
     radioButton->setText("Yep!");
     radioButton->setSize(25, 25);
     gui.add(radioButton);
-    
+
     radioButton = theme->load("RadioButton");
     radioButton->setPosition(20, 170);
     radioButton->setText("Nope!");
     radioButton->setSize(25, 25);
     gui.add(radioButton);
-    
+
     radioButton = theme->load("RadioButton");
     radioButton->setPosition(20, 200);
     radioButton->setText("Don't know!");
     radioButton->setSize(25, 25);
     gui.add(radioButton);
-    
+
     label = theme->load("label");
     label->setText("We've got some edit boxes:");
     label->setPosition(10, 240);
     label->setTextSize(18);
     gui.add(label);
-    
+
     tgui::EditBox::Ptr editBox = theme->load("EditBox");
     editBox->setSize(200, 25);
     editBox->setTextSize(18);
     editBox->setPosition(10, 270);
     editBox->setDefaultText("Click to edit text...");
     gui.add(editBox);
-    
+
     label = theme->load("label");
     label->setText("And some list boxes too...");
     label->setPosition(10, 310);
@@ -91,31 +91,31 @@ int main()
     label->setPosition(10, 470);
     label->setTextSize(18);
     gui.add(label);
-    
+
     tgui::ProgressBar::Ptr progressBar = theme->load("ProgressBar");
     progressBar->setPosition(10, 500);
     progressBar->setSize(200, 20);
     progressBar->setValue(50);
     gui.add(progressBar);
-    
+
     label = theme->load("label");
     label->setText(std::to_string(progressBar->getValue()) + "%");
     label->setPosition(220, 500);
     label->setTextSize(18);
     gui.add(label);
-    
+
     label = theme->load("label");
     label->setText("That's the slider");
     label->setPosition(10, 530);
     label->setTextSize(18);
     gui.add(label);
-    
+
     tgui::Slider::Ptr slider = theme->load("slider");
     slider->setPosition(10, 560);
     slider->setSize(200, 18);
     slider->setValue(4);
     gui.add(slider);
-    
+
     tgui::Scrollbar::Ptr scrollbar = theme->load("scrollbar");
     scrollbar->setPosition(380, 40);
     scrollbar->setSize(18, 540);
@@ -131,13 +131,13 @@ int main()
     comboBox->addItem("Item 3");
     comboBox->setSelectedItem("Item 2");
     gui.add(comboBox);
-    
+
     tgui::ChildWindow::Ptr child = theme->load("ChildWindow");
     child->setSize(250, 120);
     child->setPosition(420, 80);
     child->setTitle("Child window");
     gui.add(child);
-    
+
     label = theme->load("label");
     label->setText("Hi! I'm a child window.");
     label->setPosition(30, 30);
@@ -156,13 +156,13 @@ int main()
     checkbox->setText("Ok, I got it");
     checkbox->setSize(25, 25);
     gui.add(checkbox);
-    
+
     checkbox = theme->load("checkbox");
     checkbox->setPosition(570, 240);
     checkbox->setText("No, I didn't");
     checkbox->setSize(25, 25);
     gui.add(checkbox);
-    
+
     label = theme->load("label");
     label->setText("Chatbox");
     label->setPosition(420, 280);
@@ -185,11 +185,11 @@ int main()
     texture.loadFromFile("../ThinkLinux.jpg");
     sprite.setTexture(texture);
     sprite.setScale(200.f / texture.getSize().x, 140.f / texture.getSize().y);
-    
+
     sf::Text text{"SFML Canvas", *gui.getGlobalFont(), 24};
     text.setPosition(25, 100);
     text.setColor({200, 200, 200});
-    
+
     tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>(200, 140);
     canvas->setPosition(420, 430);
     canvas->clear();
