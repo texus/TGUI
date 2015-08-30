@@ -744,45 +744,45 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("TrackColor"))
+        if (property == "trackcolor")
             setTrackColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TrackColorNormal"))
+        else if (property == "trackcolornormal")
             setTrackColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TrackColorHover"))
+        else if (property == "trackcolorhover")
             setTrackColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ThumbColor"))
+        else if (property == "thumbcolor")
             setThumbColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ThumbColorNormal"))
+        else if (property == "thumbcolornormal")
             setThumbColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ThumbColorHover"))
+        else if (property == "thumbcolorhover")
             setThumbColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowBackgroundColor"))
+        else if (property == "arrowbackgroundcolor")
             setArrowBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowBackgroundColorNormal"))
+        else if (property == "arrowbackgroundcolornormal")
             setArrowBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowBackgroundColorHover"))
+        else if (property == "arrowbackgroundcolorhover")
             setArrowBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowColor"))
+        else if (property == "arrowcolor")
             setArrowColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowColorNormal"))
+        else if (property == "arrowcolornormal")
             setArrowColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowColorHover"))
+        else if (property == "arrowcolorhover")
             setArrowColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TrackImage"))
+        else if (property == "trackimage")
             setTrackTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("TrackHoverImage"))
+        else if (property == "trackhoverimage")
             setTrackHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ThumbImage"))
+        else if (property == "thumbimage")
             setThumbTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ThumbHoverImage"))
+        else if (property == "thumbhoverimage")
             setThumbHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowUpImage"))
+        else if (property == "arrowupimage")
             setArrowUpTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowDownImage"))
+        else if (property == "arrowdownimage")
             setArrowDownTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowUpHoverImage"))
+        else if (property == "arrowuphoverimage")
             setArrowUpHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowDownHoverImage"))
+        else if (property == "arrowdownhoverimage")
             setArrowDownHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
         else
             WidgetRenderer::setProperty(property, value);
@@ -796,50 +796,50 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("TrackColor"))
+            if (property == "trackcolor")
                 setTrackColor(value.getColor());
-            else if (property == toLower("TrackColorNormal"))
+            else if (property == "trackcolornormal")
                 setTrackColorNormal(value.getColor());
-            else if (property == toLower("TrackColorHover"))
+            else if (property == "trackcolorhover")
                 setTrackColorHover(value.getColor());
-            else if (property == toLower("ThumbColor"))
+            else if (property == "thumbcolor")
                 setThumbColor(value.getColor());
-            else if (property == toLower("ThumbColorNormal"))
+            else if (property == "thumbcolornormal")
                 setThumbColorNormal(value.getColor());
-            else if (property == toLower("ThumbColorHover"))
+            else if (property == "thumbcolorhover")
                 setThumbColorHover(value.getColor());
-            else if (property == toLower("ArrowBackgroundColor"))
+            else if (property == "arrowbackgroundcolor")
                 setArrowBackgroundColor(value.getColor());
-            else if (property == toLower("ArrowBackgroundColorNormal"))
+            else if (property == "arrowbackgroundcolornormal")
                 setArrowBackgroundColorNormal(value.getColor());
-            else if (property == toLower("ArrowBackgroundColorHover"))
+            else if (property == "arrowbackgroundcolorhover")
                 setArrowBackgroundColorHover(value.getColor());
-            else if (property == toLower("ArrowColor"))
+            else if (property == "arrowcolor")
                 setArrowColor(value.getColor());
-            else if (property == toLower("ArrowColorNormal"))
+            else if (property == "arrowcolornormal")
                 setArrowColorNormal(value.getColor());
-            else if (property == toLower("ArrowColorHover"))
+            else if (property == "arrowcolorhover")
                 setArrowColorHover(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("TrackImage"))
+            if (property == "trackimage")
                 setTrackTexture(value.getTexture());
-            else if (property == toLower("TrackHoverImage"))
+            else if (property == "trackhoverimage")
                 setTrackHoverTexture(value.getTexture());
-            else if (property == toLower("ThumbImage"))
+            else if (property == "thumbimage")
                 setThumbTexture(value.getTexture());
-            else if (property == toLower("ThumbHoverImage"))
+            else if (property == "thumbhoverimage")
                 setThumbHoverTexture(value.getTexture());
-            else if (property == toLower("ArrowUpImage"))
+            else if (property == "arrowupimage")
                 setArrowUpTexture(value.getTexture());
-            else if (property == toLower("ArrowDownImage"))
+            else if (property == "arrowdownimage")
                 setArrowDownTexture(value.getTexture());
-            else if (property == toLower("ArrowUpHoverImage"))
+            else if (property == "arrowuphoverimage")
                 setArrowUpHoverTexture(value.getTexture());
-            else if (property == toLower("ArrowDownHoverImage"))
+            else if (property == "arrowdownhoverimage")
                 setArrowDownHoverTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
@@ -854,45 +854,45 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("TrackColor"))
+        if (property == "trackcolor")
             return m_trackColorNormal;
-        else if (property == toLower("TrackColorNormal"))
+        else if (property == "trackcolornormal")
             return m_trackColorNormal;
-        else if (property == toLower("TrackColorHover"))
+        else if (property == "trackcolorhover")
             return m_trackColorHover;
-        else if (property == toLower("ThumbColor"))
+        else if (property == "thumbcolor")
             return m_thumbColorNormal;
-        else if (property == toLower("ThumbColorNormal"))
+        else if (property == "thumbcolornormal")
             return m_thumbColorNormal;
-        else if (property == toLower("ThumbColorHover"))
+        else if (property == "thumbcolorhover")
             return m_thumbColorHover;
-        else if (property == toLower("ArrowBackgroundColor"))
+        else if (property == "arrowbackgroundcolor")
             return m_arrowBackgroundColorNormal;
-        else if (property == toLower("ArrowBackgroundColorNormal"))
+        else if (property == "arrowbackgroundcolornormal")
             return m_arrowBackgroundColorNormal;
-        else if (property == toLower("ArrowBackgroundColorHover"))
+        else if (property == "arrowbackgroundcolorhover")
             return m_arrowBackgroundColorHover;
-        else if (property == toLower("ArrowColor"))
+        else if (property == "arrowcolor")
             return m_arrowColorNormal;
-        else if (property == toLower("ArrowColorNormal"))
+        else if (property == "arrowcolornormal")
             return m_arrowColorNormal;
-        else if (property == toLower("ArrowColorHover"))
+        else if (property == "arrowcolorhover")
             return m_arrowColorHover;
-        else if (property == toLower("TrackImage"))
+        else if (property == "trackimage")
             return m_textureTrackNormal;
-        else if (property == toLower("TrackHoverImage"))
+        else if (property == "trackhoverimage")
             return m_textureTrackHover;
-        else if (property == toLower("ThumbImage"))
+        else if (property == "thumbimage")
             return m_textureThumbNormal;
-        else if (property == toLower("ThumbHoverImage"))
+        else if (property == "thumbhoverimage")
             return m_textureThumbHover;
-        else if (property == toLower("ArrowUpImage"))
+        else if (property == "arrowupimage")
             return m_textureArrowUpNormal;
-        else if (property == toLower("ArrowDownImage"))
+        else if (property == "arrowdownimage")
             return m_textureArrowDownNormal;
-        else if (property == toLower("ArrowUpHoverImage"))
+        else if (property == "arrowuphoverimage")
             return m_textureArrowUpHover;
-        else if (property == toLower("ArrowDownHoverImage"))
+        else if (property == "arrowdownhoverimage")
             return m_textureArrowDownHover;
         else
             return WidgetRenderer::getProperty(property);

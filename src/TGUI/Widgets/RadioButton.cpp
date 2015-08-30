@@ -335,41 +335,41 @@ namespace tgui
     void RadioButtonRenderer::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
-        if (property == toLower("Padding"))
+        if (property == "padding")
             setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TextColorNormal"))
+        else if (property == "textcolornormal")
             setTextColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TextColorHover"))
+        else if (property == "textcolorhover")
             setTextColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundColorNormal"))
+        else if (property == "backgroundcolornormal")
             setBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundColorHover"))
+        else if (property == "backgroundcolorhover")
             setBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ForegroundColor"))
+        else if (property == "foregroundcolor")
             setForegroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ForegroundColorNormal"))
+        else if (property == "foregroundcolornormal")
             setForegroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ForegroundColorHover"))
+        else if (property == "foregroundcolorhover")
             setForegroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("CheckColor"))
+        else if (property == "checkcolor")
             setCheckColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("CheckColorNormal"))
+        else if (property == "checkcolornormal")
             setCheckColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("CheckColorHover"))
+        else if (property == "checkcolorhover")
             setCheckColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("UncheckedImage"))
+        else if (property == "uncheckedimage")
             setUncheckedTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("CheckedImage"))
+        else if (property == "checkedimage")
             setCheckedTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("UncheckedHoverImage"))
+        else if (property == "uncheckedhoverimage")
             setUncheckedHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("CheckedHoverImage"))
+        else if (property == "checkedhoverimage")
             setCheckedHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("FocusedImage"))
+        else if (property == "focusedimage")
             setFocusedTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
         else
             WidgetRenderer::setProperty(property, value);
@@ -383,51 +383,51 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == toLower("Padding"))
+            if (property == "padding")
                 setPadding(value.getBorders());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("TextColor"))
+            if (property == "textcolor")
                 setTextColor(value.getColor());
-            else if (property == toLower("TextColorNormal"))
+            else if (property == "textcolornormal")
                 setTextColorNormal(value.getColor());
-            else if (property == toLower("TextColorHover"))
+            else if (property == "textcolorhover")
                 setTextColorHover(value.getColor());
-            else if (property == toLower("BackgroundColor"))
+            else if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
-            else if (property == toLower("BackgroundColorNormal"))
+            else if (property == "backgroundcolornormal")
                 setBackgroundColorNormal(value.getColor());
-            else if (property == toLower("BackgroundColorHover"))
+            else if (property == "backgroundcolorhover")
                 setBackgroundColorHover(value.getColor());
-            else if (property == toLower("ForegroundColor"))
+            else if (property == "foregroundcolor")
                 setForegroundColor(value.getColor());
-            else if (property == toLower("ForegroundColorNormal"))
+            else if (property == "foregroundcolornormal")
                 setForegroundColorNormal(value.getColor());
-            else if (property == toLower("ForegroundColorHover"))
+            else if (property == "foregroundcolorhover")
                 setForegroundColorHover(value.getColor());
-            else if (property == toLower("CheckColor"))
+            else if (property == "checkcolor")
                 setCheckColor(value.getColor());
-            else if (property == toLower("CheckColorNormal"))
+            else if (property == "checkcolornormal")
                 setCheckColorNormal(value.getColor());
-            else if (property == toLower("CheckColorHover"))
+            else if (property == "checkcolorhover")
                 setCheckColorHover(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("UncheckedImage"))
+            if (property == "uncheckedimage")
                 setUncheckedTexture(value.getTexture());
-            else if (property == toLower("CheckedImage"))
+            else if (property == "checkedimage")
                 setCheckedTexture(value.getTexture());
-            else if (property == toLower("UncheckedHoverImage"))
+            else if (property == "uncheckedhoverimage")
                 setUncheckedHoverTexture(value.getTexture());
-            else if (property == toLower("CheckedHoverImage"))
+            else if (property == "checkedhoverimage")
                 setCheckedHoverTexture(value.getTexture());
-            else if (property == toLower("FocusedImage"))
+            else if (property == "focusedimage")
                 setFocusedTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
@@ -441,41 +441,41 @@ namespace tgui
     ObjectConverter RadioButtonRenderer::getProperty(std::string property) const
     {
         property = toLower(property);
-        if (property == toLower("Padding"))
+        if (property == "padding")
             return m_padding;
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             return m_textColorNormal;
-        else if (property == toLower("TextColorNormal"))
+        else if (property == "textcolornormal")
             return m_textColorNormal;
-        else if (property == toLower("TextColorHover"))
+        else if (property == "textcolorhover")
             return m_textColorHover;
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             return m_backgroundColorNormal;
-        else if (property == toLower("BackgroundColorNormal"))
+        else if (property == "backgroundcolornormal")
             return m_backgroundColorNormal;
-        else if (property == toLower("BackgroundColorHover"))
+        else if (property == "backgroundcolorhover")
             return m_backgroundColorHover;
-        else if (property == toLower("ForegroundColor"))
+        else if (property == "foregroundcolor")
             return m_foregroundColorNormal;
-        else if (property == toLower("ForegroundColorNormal"))
+        else if (property == "foregroundcolornormal")
             return m_foregroundColorNormal;
-        else if (property == toLower("ForegroundColorHover"))
+        else if (property == "foregroundcolorhover")
             return m_foregroundColorHover;
-        else if (property == toLower("CheckColor"))
+        else if (property == "checkcolor")
             return m_checkColorNormal;
-        else if (property == toLower("CheckColorNormal"))
+        else if (property == "checkcolornormal")
             return m_checkColorNormal;
-        else if (property == toLower("CheckColorHover"))
+        else if (property == "checkcolorhover")
             return m_checkColorHover;
-        else if (property == toLower("UncheckedImage"))
+        else if (property == "uncheckedimage")
             return m_textureUnchecked;
-        else if (property == toLower("CheckedImage"))
+        else if (property == "checkedimage")
             return m_textureChecked;
-        else if (property == toLower("UncheckedHoverImage"))
+        else if (property == "uncheckedhoverimage")
             return m_textureUncheckedHover;
-        else if (property == toLower("CheckedHoverImage"))
+        else if (property == "checkedhoverimage")
             return m_textureCheckedHover;
-        else if (property == toLower("FocusedImage"))
+        else if (property == "focusedimage")
             return m_textureFocused;
         else
             return WidgetRenderer::getProperty(property);

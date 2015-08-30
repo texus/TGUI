@@ -53,25 +53,25 @@ namespace tgui
 
     std::map<std::string, std::function<Widget::Ptr()>> BaseTheme::m_constructors =
         {
-            {toLower("Button"), std::make_shared<Button>},
-            {toLower("ChatBox"), std::make_shared<ChatBox>},
-            {toLower("CheckBox"), std::make_shared<CheckBox>},
-            {toLower("ChildWindow"), std::make_shared<ChildWindow>},
-            {toLower("ComboBox"), std::make_shared<ComboBox>},
-            {toLower("EditBox"), std::make_shared<EditBox>},
-            {toLower("Knob"), std::make_shared<Knob>},
-            {toLower("Label"), std::make_shared<Label>},
-            {toLower("ListBox"), std::make_shared<ListBox>},
-            {toLower("MenuBar"), std::make_shared<MenuBar>},
-            {toLower("MessageBox"), std::make_shared<MessageBox>},
-            {toLower("ProgressBar"), std::make_shared<ProgressBar>},
-            {toLower("RadioButton"), std::make_shared<RadioButton>},
-            {toLower("Scrollbar"), std::make_shared<Scrollbar>},
-            {toLower("Slider"), std::make_shared<Slider>},
-            {toLower("SpinButton"), std::make_shared<SpinButton>},
-            {toLower("Tab"), std::make_shared<Tab>},
-            {toLower("TextBox"), std::make_shared<TextBox>},
-            {toLower("ToolTip"), std::make_shared<ToolTip>}
+            {"button", std::make_shared<Button>},
+            {"chatbox", std::make_shared<ChatBox>},
+            {"checkbox", std::make_shared<CheckBox>},
+            {"childwindow", std::make_shared<ChildWindow>},
+            {"combobox", std::make_shared<ComboBox>},
+            {"editbox", std::make_shared<EditBox>},
+            {"knob", std::make_shared<Knob>},
+            {"label", std::make_shared<Label>},
+            {"listbox", std::make_shared<ListBox>},
+            {"menubar", std::make_shared<MenuBar>},
+            {"messagebox", std::make_shared<MessageBox>},
+            {"progressbar", std::make_shared<ProgressBar>},
+            {"radiobutton", std::make_shared<RadioButton>},
+            {"scrollbar", std::make_shared<Scrollbar>},
+            {"slider", std::make_shared<Slider>},
+            {"spinbutton", std::make_shared<SpinButton>},
+            {"tab", std::make_shared<Tab>},
+            {"textbox", std::make_shared<TextBox>},
+            {"tooltip", std::make_shared<ToolTip>}
         };
 
     std::shared_ptr<BaseThemeLoader> BaseTheme::m_themeLoader = std::make_shared<DefaultThemeLoader>();

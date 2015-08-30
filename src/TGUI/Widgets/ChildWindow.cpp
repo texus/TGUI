@@ -626,23 +626,23 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TitleColor"))
+        else if (property == "titlecolor")
             setTitleColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TitleBarColor"))
+        else if (property == "titlebarcolor")
             setTitleBarColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TitleBarImage"))
+        else if (property == "titlebarimage")
             setTitleBarTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("DistanceToSide"))
+        else if (property == "distancetoside")
             setDistanceToSide(Deserializer::deserialize(ObjectConverter::Type::Number, value).getNumber());
-        else if (property == toLower("TitleBarHeight"))
+        else if (property == "titlebarheight")
             setTitleBarHeight(Deserializer::deserialize(ObjectConverter::Type::Number, value).getNumber());
-        else if (property == toLower("CloseButton"))
+        else if (property == "closebutton")
         {
             if (m_childWindow->getTheme() == nullptr)
                 throw Exception{"Failed to load the internal list box, ComboBox has no connected theme to load the list box with"};
@@ -669,36 +669,36 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == toLower("Borders"))
+            if (property == "borders")
                 setBorders(value.getBorders());
             else
                 return WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("BackgroundColor"))
+            if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
-            else if (property == toLower("TitleColor"))
+            else if (property == "titlecolor")
                 setTitleColor(value.getColor());
-            else if (property == toLower("TitleBarColor"))
+            else if (property == "titlebarcolor")
                 setTitleBarColor(value.getColor());
-            else if (property == toLower("BorderColor"))
+            else if (property == "bordercolor")
                 setBorderColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("TitleBarImage"))
+            if (property == "titlebarimage")
                 setTitleBarTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Number)
         {
-            if (property == toLower("DistanceToSide"))
+            if (property == "distancetoside")
                 setDistanceToSide(value.getNumber());
-            else if (property == toLower("TitleBarHeight"))
+            else if (property == "titlebarheight")
                 setTitleBarHeight(value.getNumber());
         }
         else
@@ -711,21 +711,21 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             return m_borders;
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             return m_backgroundColor;
-        else if (property == toLower("TitleColor"))
+        else if (property == "titlecolor")
             return m_childWindow->m_titleText.getTextColor();
-        else if (property == toLower("TitleBarColor"))
+        else if (property == "titlebarcolor")
             return m_titleBarColor;
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             return m_borderColor;
-        else if (property == toLower("TitleBarImage"))
+        else if (property == "titlebarimage")
             return m_textureTitleBar;
-        else if (property == toLower("DistanceToSide"))
+        else if (property == "distancetoside")
             return m_distanceToSide;
-        else if (property == toLower("TitleBarHeight"))
+        else if (property == "titlebarheight")
             return m_titleBarHeight;
         else
             return WidgetRenderer::getProperty(property);

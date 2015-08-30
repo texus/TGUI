@@ -504,21 +504,21 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("BackgroundColor"))
+        if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("SelectedBackgroundColor"))
+        else if (property == "selectedbackgroundcolor")
             setSelectedBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("SelectedTextColor"))
+        else if (property == "selectedtextcolor")
             setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundImage"))
+        else if (property == "backgroundimage")
             setBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ItemBackgroundImage"))
+        else if (property == "itembackgroundimage")
             setItemBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("SelectedItemBackgroundImage"))
+        else if (property == "selecteditembackgroundimage")
             setSelectedItemBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("DistanceToSide"))
+        else if (property == "distancetoside")
             setDistanceToSide(Deserializer::deserialize(ObjectConverter::Type::Number, value).getNumber());
         else
             WidgetRenderer::setProperty(property, value);
@@ -532,31 +532,31 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("BackgroundColor"))
+            if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
-            else if (property == toLower("SelectedBackgroundColor"))
+            else if (property == "selectedbackgroundcolor")
                 setSelectedBackgroundColor(value.getColor());
-            else if (property == toLower("TextColor"))
+            else if (property == "textcolor")
                 setTextColor(value.getColor());
-            else if (property == toLower("SelectedTextColor"))
+            else if (property == "selectedtextcolor")
                 setSelectedTextColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("BackgroundImage"))
+            if (property == "backgroundimage")
                 setBackgroundTexture(value.getTexture());
-            else if (property == toLower("ItemBackgroundImage"))
+            else if (property == "itembackgroundimage")
                 setItemBackgroundTexture(value.getTexture());
-            else if (property == toLower("SelectedItemBackgroundImage"))
+            else if (property == "selecteditembackgroundimage")
                 setSelectedItemBackgroundTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Number)
         {
-            if (property == toLower("DistanceToSide"))
+            if (property == "distancetoside")
                 setDistanceToSide(value.getNumber());
         }
         else
@@ -569,21 +569,21 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("BackgroundColor"))
+        if (property == "backgroundcolor")
             return m_backgroundColor;
-        else if (property == toLower("SelectedBackgroundColor"))
+        else if (property == "selectedbackgroundcolor")
             return m_selectedBackgroundColor;
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             return m_textColor;
-        else if (property == toLower("SelectedTextColor"))
+        else if (property == "selectedtextcolor")
             return m_selectedTextColor;
-        else if (property == toLower("BackgroundImage"))
+        else if (property == "backgroundimage")
             return m_backgroundTexture;
-        else if (property == toLower("ItemBackgroundImage"))
+        else if (property == "itembackgroundimage")
             return m_itemBackgroundTexture;
-        else if (property == toLower("SelectedItemBackgroundImage"))
+        else if (property == "selecteditembackgroundimage")
             return m_selectedItemBackgroundTexture;
-        else if (property == toLower("DistanceToSide"))
+        else if (property == "distancetoside")
             return m_distanceToSide;
         else
             return WidgetRenderer::getProperty(property);

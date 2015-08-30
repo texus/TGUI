@@ -1224,33 +1224,33 @@ namespace tgui
     void EditBoxRenderer::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
-        if (property == toLower("Padding"))
+        if (property == "padding")
             setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("Borders"))
+        else if (property == "borders")
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("SelectedTextColor"))
+        else if (property == "selectedtextcolor")
             setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("SelectedTextBackgroundColor"))
+        else if (property == "selectedtextbackgroundcolor")
             setSelectedTextBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("DefaultTextColor"))
+        else if (property == "defaulttextcolor")
             setDefaultTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("CaretColor"))
+        else if (property == "caretcolor")
             setCaretColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundColorNormal"))
+        else if (property == "backgroundcolornormal")
             setBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundColorHover"))
+        else if (property == "backgroundcolorhover")
             setBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("NormalImage"))
+        else if (property == "normalimage")
             setNormalTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("HoverImage"))
+        else if (property == "hoverimage")
             setHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("FocusedImage"))
+        else if (property == "focusedimage")
             setFocusTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
         else
             WidgetRenderer::setProperty(property, value);
@@ -1264,43 +1264,43 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == toLower("Padding"))
+            if (property == "padding")
                 setPadding(value.getBorders());
-            else if (property == toLower("Borders"))
+            else if (property == "borders")
                 setBorders(value.getBorders());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("TextColor"))
+            if (property == "textcolor")
                 setTextColor(value.getColor());
-            else if (property == toLower("SelectedTextColor"))
+            else if (property == "selectedtextcolor")
                 setSelectedTextColor(value.getColor());
-            else if (property == toLower("SelectedTextBackgroundColor"))
+            else if (property == "selectedtextbackgroundcolor")
                 setSelectedTextBackgroundColor(value.getColor());
-            else if (property == toLower("DefaultTextColor"))
+            else if (property == "defaulttextcolor")
                 setDefaultTextColor(value.getColor());
-            else if (property == toLower("CaretColor"))
+            else if (property == "caretcolor")
                 setCaretColor(value.getColor());
-            else if (property == toLower("BackgroundColor"))
+            else if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
-            else if (property == toLower("BackgroundColorNormal"))
+            else if (property == "backgroundcolornormal")
                 setBackgroundColorNormal(value.getColor());
-            else if (property == toLower("BackgroundColorHover"))
+            else if (property == "backgroundcolorhover")
                 setBackgroundColorHover(value.getColor());
-            else if (property == toLower("BorderColor"))
+            else if (property == "bordercolor")
                 setBorderColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("NormalImage"))
+            if (property == "normalimage")
                 setNormalTexture(value.getTexture());
-            else if (property == toLower("HoverImage"))
+            else if (property == "hoverimage")
                 setHoverTexture(value.getTexture());
-            else if (property == toLower("FocusedImage"))
+            else if (property == "focusedimage")
                 setFocusTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
@@ -1315,33 +1315,33 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Padding"))
+        if (property == "padding")
             return m_padding;
-        else if (property == toLower("Borders"))
+        else if (property == "borders")
             return m_borders;
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             return m_editBox->m_textBeforeSelection.getColor();
-        else if (property == toLower("SelectedTextColor"))
+        else if (property == "selectedtextcolor")
             return m_editBox->m_textSelection.getColor();
-        else if (property == toLower("SelectedTextBackgroundColor"))
+        else if (property == "selectedtextbackgroundcolor")
             return m_editBox->m_selectedTextBackground.getFillColor();
-        else if (property == toLower("DefaultTextColor"))
+        else if (property == "defaulttextcolor")
             return m_editBox->m_defaultText.getColor();
-        else if (property == toLower("CaretColor"))
+        else if (property == "caretcolor")
             return m_editBox->m_caret.getFillColor();
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             return m_backgroundColorNormal;
-        else if (property == toLower("BackgroundColorNormal"))
+        else if (property == "backgroundcolornormal")
             return m_backgroundColorNormal;
-        else if (property == toLower("BackgroundColorHover"))
+        else if (property == "backgroundcolorhover")
             return m_backgroundColorHover;
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             return m_borderColor;
-        else if (property == toLower("NormalImage"))
+        else if (property == "normalimage")
             return m_textureNormal;
-        else if (property == toLower("HoverImage"))
+        else if (property == "hoverimage")
             return m_textureHover;
-        else if (property == toLower("FocusedImage"))
+        else if (property == "focusedimage")
             return m_textureFocused;
         else
             return WidgetRenderer::getProperty(property);

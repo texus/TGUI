@@ -218,11 +218,11 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("TextColor"))
+        if (property == "textcolor")
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("Button"))
+        else if (property == "button")
             m_messageBox->m_buttonClassName = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
-        else if (property == toLower("ChildWindow"))
+        else if (property == "childwindow")
         {
             if (m_messageBox->getTheme() == nullptr)
                 throw Exception{"Failed to load scrollbar, ChatBox has no connected theme to load the scrollbar with"};
@@ -245,16 +245,16 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("TextColor"))
+            if (property == "textcolor")
                 setTextColor(value.getColor());
             else
                 ChildWindowRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::String)
         {
-            if (property == toLower("Button"))
+            if (property == "button")
                 m_messageBox->m_buttonClassName = value.getString();
-            else if (property == toLower("ChildWindow"))
+            else if (property == "childwindow")
             {
                 if (m_messageBox->getTheme() == nullptr)
                     throw Exception{"Failed to load scrollbar, ChatBox has no connected theme to load the scrollbar with"};
@@ -273,7 +273,7 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("TextColor"))
+        if (property == "textcolor")
             return m_messageBox->m_label->getTextColor();
         else
             return ChildWindowRenderer::getProperty(property);

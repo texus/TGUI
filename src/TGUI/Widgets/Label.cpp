@@ -421,15 +421,15 @@ namespace tgui
     void LabelRenderer::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
-        if (property == toLower("TextColor"))
+        if (property == "textcolor")
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("Borders"))
+        else if (property == "borders")
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("Padding"))
+        else if (property == "padding")
             setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
         else
             WidgetRenderer::setProperty(property, value);
@@ -443,20 +443,20 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == toLower("Borders"))
+            if (property == "borders")
                 setBorders(value.getBorders());
-            else if (property == toLower("Padding"))
+            else if (property == "padding")
                 setPadding(value.getBorders());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("TextColor"))
+            if (property == "textcolor")
                 setTextColor(value.getColor());
-            else if (property == toLower("BackgroundColor"))
+            else if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
-            else if (property == toLower("BorderColor"))
+            else if (property == "bordercolor")
                 setBorderColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
@@ -471,15 +471,15 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             return m_borders;
-        else if (property == toLower("Padding"))
+        else if (property == "padding")
             return m_padding;
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             return m_label->m_text.getColor();
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             return m_label->m_background.getFillColor();
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             return m_borderColor;
         else
             return WidgetRenderer::getProperty(property);

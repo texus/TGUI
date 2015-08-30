@@ -433,29 +433,29 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("TrackColor"))
+        else if (property == "trackcolor")
             setTrackColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TrackColorNormal"))
+        else if (property == "trackcolornormal")
             setTrackColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TrackColorHover"))
+        else if (property == "trackcolorhover")
             setTrackColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ThumbColor"))
+        else if (property == "thumbcolor")
             setThumbColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ThumbColorNormal"))
+        else if (property == "thumbcolornormal")
             setThumbColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ThumbColorHover"))
+        else if (property == "thumbcolorhover")
             setThumbColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TrackImage"))
+        else if (property == "trackimage")
             setTrackTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("TrackHoverImage"))
+        else if (property == "trackhoverimage")
             setTrackHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ThumbImage"))
+        else if (property == "thumbimage")
             setThumbTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ThumbHoverImage"))
+        else if (property == "thumbhoverimage")
             setThumbHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
         else
             WidgetRenderer::setProperty(property, value);
@@ -469,39 +469,39 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == toLower("Borders"))
+            if (property == "borders")
                 setBorders(value.getBorders());
             else
                 return WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("TrackColor"))
+            if (property == "trackcolor")
                 setTrackColor(value.getColor());
-            else if (property == toLower("TrackColorNormal"))
+            else if (property == "trackcolornormal")
                 setTrackColorNormal(value.getColor());
-            else if (property == toLower("TrackColorHover"))
+            else if (property == "trackcolorhover")
                 setTrackColorHover(value.getColor());
-            else if (property == toLower("ThumbColor"))
+            else if (property == "thumbcolor")
                 setThumbColor(value.getColor());
-            else if (property == toLower("ThumbColorNormal"))
+            else if (property == "thumbcolornormal")
                 setThumbColorNormal(value.getColor());
-            else if (property == toLower("ThumbColorHover"))
+            else if (property == "thumbcolorhover")
                 setThumbColorHover(value.getColor());
-            else if (property == toLower("BorderColor"))
+            else if (property == "bordercolor")
                 setBorderColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("TrackImage"))
+            if (property == "trackimage")
                 setTrackTexture(value.getTexture());
-            else if (property == toLower("TrackHoverImage"))
+            else if (property == "trackhoverimage")
                 setTrackHoverTexture(value.getTexture());
-            else if (property == toLower("ThumbImage"))
+            else if (property == "thumbimage")
                 setThumbTexture(value.getTexture());
-            else if (property == toLower("ThumbHoverImage"))
+            else if (property == "thumbhoverimage")
                 setThumbHoverTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
@@ -516,29 +516,29 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             return m_borders;
-        else if (property == toLower("TrackColor"))
+        else if (property == "trackcolor")
             return m_trackColorNormal;
-        else if (property == toLower("TrackColorNormal"))
+        else if (property == "trackcolornormal")
             return m_trackColorNormal;
-        else if (property == toLower("TrackColorHover"))
+        else if (property == "trackcolorhover")
             return m_trackColorHover;
-        else if (property == toLower("ThumbColor"))
+        else if (property == "thumbcolor")
             return m_thumbColorNormal;
-        else if (property == toLower("ThumbColorNormal"))
+        else if (property == "thumbcolornormal")
             return m_thumbColorNormal;
-        else if (property == toLower("ThumbColorHover"))
+        else if (property == "thumbcolorhover")
             return m_thumbColorHover;
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             return m_borderColor;
-        else if (property == toLower("TrackImage"))
+        else if (property == "trackimage")
             return m_textureTrackNormal;
-        else if (property == toLower("TrackHoverImage"))
+        else if (property == "trackhoverimage")
             return m_textureTrackHover;
-        else if (property == toLower("ThumbImage"))
+        else if (property == "thumbimage")
             return m_textureThumbNormal;
-        else if (property == toLower("ThumbHoverImage"))
+        else if (property == "thumbhoverimage")
             return m_textureThumbHover;
         else
             return WidgetRenderer::getProperty(property);

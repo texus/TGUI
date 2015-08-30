@@ -401,7 +401,7 @@ namespace tgui
                     style |= sf::Text::Italic;
                 else if (requestedStyle == "underlined")
                     style |= sf::Text::Underlined;
-                else if (requestedStyle == toLower("StrikeThrough"))
+                else if (requestedStyle == "strikethrough")
                     style |= sf::Text::StrikeThrough;
                 else if (requestedStyle != "regular")
                     throw Exception{"Failed to parse TextStyle property, found unknown style."};
@@ -539,13 +539,13 @@ namespace tgui
         if (node->propertyValuePairs["FillDirection"])
         {
             std::string requestedStyle = toLower(trim(node->propertyValuePairs["FillDirection"]->value));
-            if (requestedStyle == toLower("LeftToRight"))
+            if (requestedStyle == "lefttoright")
                 progressBar->setFillDirection(tgui::ProgressBar::FillDirection::LeftToRight);
-            else if (requestedStyle == toLower("RightToLeft"))
+            else if (requestedStyle == "righttoleft")
                 progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
-            else if (requestedStyle == toLower("TopToBottom"))
+            else if (requestedStyle == "toptobottom")
                 progressBar->setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
-            else if (requestedStyle == toLower("TopToBottom"))
+            else if (requestedStyle == "toptobottom")
                 progressBar->setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
             else
                 throw Exception{"Failed to parse FillDirection property, found unknown value."};
@@ -739,28 +739,28 @@ namespace tgui
     std::map<std::string, WidgetLoader::LoadFunction> WidgetLoader::m_loadFunctions =
         {
             // Using "std::shared_ptr<Widget>{}" instead of "nullptr" to work around internal compiler error with MinGW 4.7 TDM
-            {toLower("Widget"), std::bind(loadWidget, std::placeholders::_1, std::shared_ptr<Widget>{})},
-            {toLower("Container"), std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
-            {toLower("Button"), std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
-            {toLower("Canvas"), std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
-            {toLower("CheckBox"), std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},
-            {toLower("ChildWindow"), std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},
-            {toLower("ClickableWidget"), std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},
-            {toLower("ComboBox"), std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},
-            {toLower("EditBox"), std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},
-            {toLower("Knob"), std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},
-            {toLower("ListBox"), std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},
-            {toLower("Label"), std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
-            {toLower("Panel"), std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},
-            {toLower("Picture"), std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},
-            {toLower("ProgressBar"), std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},
-            {toLower("RadioButton"), std::bind(loadRadioButton, std::placeholders::_1, std::shared_ptr<RadioButton>{})},
-            {toLower("Scrollbar"), std::bind(loadScrollbar, std::placeholders::_1, std::shared_ptr<Scrollbar>{})},
-            {toLower("Slider"), std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},
-            {toLower("SpinButton"), std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},
-            {toLower("Tab"), std::bind(loadTab, std::placeholders::_1, std::shared_ptr<Tab>{})},
-            {toLower("TextBox"), std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})},
-            {toLower("ToolTip"), std::bind(loadToolTip, std::placeholders::_1, std::shared_ptr<ToolTip>{})}
+            {"widget", std::bind(loadWidget, std::placeholders::_1, std::shared_ptr<Widget>{})},
+            {"container", std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
+            {"button", std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
+            {"canvas", std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
+            {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},
+            {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},
+            {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},
+            {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},
+            {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},
+            {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},
+            {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},
+            {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
+            {"panel", std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},
+            {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},
+            {"progressbar", std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},
+            {"radiobutton", std::bind(loadRadioButton, std::placeholders::_1, std::shared_ptr<RadioButton>{})},
+            {"scrollbar", std::bind(loadScrollbar, std::placeholders::_1, std::shared_ptr<Scrollbar>{})},
+            {"slider", std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},
+            {"spinbutton", std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},
+            {"tab", std::bind(loadTab, std::placeholders::_1, std::shared_ptr<Tab>{})},
+            {"textbox", std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})},
+            {"tooltip", std::bind(loadToolTip, std::placeholders::_1, std::shared_ptr<ToolTip>{})}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -658,39 +658,39 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("Padding"))
+        else if (property == "padding")
             setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowBackgroundColor"))
+        else if (property == "arrowbackgroundcolor")
             setArrowBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowBackgroundColorNormal"))
+        else if (property == "arrowbackgroundcolornormal")
             setArrowBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowBackgroundColorHover"))
+        else if (property == "arrowbackgroundcolorhover")
             setArrowBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowColor"))
+        else if (property == "arrowcolor")
             setArrowColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowColorNormal"))
+        else if (property == "arrowcolornormal")
             setArrowColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowColorHover"))
+        else if (property == "arrowcolorhover")
             setArrowColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundImage"))
+        else if (property == "backgroundimage")
             setBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowUpImage"))
+        else if (property == "arrowupimage")
             setArrowUpTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowUpHoverImage"))
+        else if (property == "arrowuphoverimage")
             setArrowUpHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowDownImage"))
+        else if (property == "arrowdownimage")
             setArrowDownTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowDownHoverImage"))
+        else if (property == "arrowdownhoverimage")
             setArrowDownHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ListBox"))
+        else if (property == "listbox")
         {
             if (m_comboBox->getTheme() == nullptr)
                 throw Exception{"Failed to load the internal list box, ComboBox has no connected theme to load the list box with"};
@@ -717,54 +717,54 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == toLower("Borders"))
+            if (property == "borders")
                 setBorders(value.getBorders());
-            else if (property == toLower("Padding"))
+            else if (property == "padding")
                 setPadding(value.getBorders());
             else
                 return WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("BackgroundColor"))
+            if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
-            else if (property == toLower("ArrowBackgroundColor"))
+            else if (property == "arrowbackgroundcolor")
                 setArrowBackgroundColor(value.getColor());
-            else if (property == toLower("ArrowBackgroundColorNormal"))
+            else if (property == "arrowbackgroundcolornormal")
                 setArrowBackgroundColorNormal(value.getColor());
-            else if (property == toLower("ArrowBackgroundColorHover"))
+            else if (property == "arrowbackgroundcolorhover")
                 setArrowBackgroundColorHover(value.getColor());
-            else if (property == toLower("ArrowColor"))
+            else if (property == "arrowcolor")
                 setArrowColor(value.getColor());
-            else if (property == toLower("ArrowColorNormal"))
+            else if (property == "arrowcolornormal")
                 setArrowColorNormal(value.getColor());
-            else if (property == toLower("ArrowColorHover"))
+            else if (property == "arrowcolorhover")
                 setArrowColorHover(value.getColor());
-            else if (property == toLower("TextColor"))
+            else if (property == "textcolor")
                 setTextColor(value.getColor());
-            else if (property == toLower("BorderColor"))
+            else if (property == "bordercolor")
                 setBorderColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("BackgroundImage"))
+            if (property == "backgroundimage")
                 setBackgroundTexture(value.getTexture());
-            else if (property == toLower("ArrowUpImage"))
+            else if (property == "arrowupimage")
                 setArrowUpTexture(value.getTexture());
-            else if (property == toLower("ArrowUpHoverImage"))
+            else if (property == "arrowuphoverimage")
                 setArrowUpHoverTexture(value.getTexture());
-            else if (property == toLower("ArrowDownImage"))
+            else if (property == "arrowdownimage")
                 setArrowDownTexture(value.getTexture());
-            else if (property == toLower("ArrowDownHoverImage"))
+            else if (property == "arrowdownhoverimage")
                 setArrowDownHoverTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::String)
         {
-            if (property == toLower("ListBox"))
+            if (property == "listbox")
             {
                 if (toLower(value.getString()) == "default")
                     m_comboBox->m_listBox = std::make_shared<ListBox>();
@@ -789,37 +789,37 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             return m_borders;
-        else if (property == toLower("Padding"))
+        else if (property == "padding")
             return m_padding;
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             return getListBox()->m_backgroundColor;
-        else if (property == toLower("ArrowBackgroundColor"))
+        else if (property == "arrowbackgroundcolor")
             return m_arrowBackgroundColorNormal;
-        else if (property == toLower("ArrowBackgroundColorNormal"))
+        else if (property == "arrowbackgroundcolornormal")
             return m_arrowBackgroundColorNormal;
-        else if (property == toLower("ArrowBackgroundColorHover"))
+        else if (property == "arrowbackgroundcolorhover")
             return m_arrowBackgroundColorHover;
-        else if (property == toLower("ArrowColor"))
+        else if (property == "arrowcolor")
             return m_arrowColorNormal;
-        else if (property == toLower("ArrowColorNormal"))
+        else if (property == "arrowcolornormal")
             return m_arrowColorNormal;
-        else if (property == toLower("ArrowColorHover"))
+        else if (property == "arrowcolorhover")
             return m_arrowColorHover;
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             return m_comboBox->m_text.getTextColor();
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             return getListBox()->m_borderColor;
-        else if (property == toLower("BackgroundImage"))
+        else if (property == "backgroundimage")
             return m_backgroundTexture;
-        else if (property == toLower("ArrowUpImage"))
+        else if (property == "arrowupimage")
             return m_textureArrowUpNormal;
-        else if (property == toLower("ArrowUpHoverImage"))
+        else if (property == "arrowuphoverimage")
             return m_textureArrowUpHover;
-        else if (property == toLower("ArrowDownImage"))
+        else if (property == "arrowdownimage")
             return m_textureArrowDownNormal;
-        else if (property == toLower("ArrowDownHoverImage"))
+        else if (property == "arrowdownhoverimage")
             return m_textureArrowDownHover;
         else
             return WidgetRenderer::getProperty(property);

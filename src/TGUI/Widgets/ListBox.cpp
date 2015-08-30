@@ -1021,29 +1021,29 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("Padding"))
+        else if (property == "padding")
             setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TextColorNormal"))
+        else if (property == "textcolornormal")
             setTextColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TextColorHover"))
+        else if (property == "textcolorhover")
             setTextColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("HoverBackgroundColor"))
+        else if (property == "hoverbackgroundcolor")
             setHoverBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("SelectedBackgroundColor"))
+        else if (property == "selectedbackgroundcolor")
             setSelectedBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("SelectedTextColor"))
+        else if (property == "selectedtextcolor")
             setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundImage"))
+        else if (property == "backgroundimage")
             setBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("Scrollbar"))
+        else if (property == "scrollbar")
         {
             if (toLower(value) == "none")
                 m_listBox->setScrollbar(nullptr);
@@ -1068,44 +1068,44 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == toLower("Borders"))
+            if (property == "borders")
                 setBorders(value.getBorders());
-            else if (property == toLower("Padding"))
+            else if (property == "padding")
                 setPadding(value.getBorders());
             else
                 return WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("BackgroundColor"))
+            if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
-            else if (property == toLower("TextColor"))
+            else if (property == "textcolor")
                 setTextColor(value.getColor());
-            else if (property == toLower("TextColorNormal"))
+            else if (property == "textcolornormal")
                 setTextColorNormal(value.getColor());
-            else if (property == toLower("TextColorHover"))
+            else if (property == "textcolorhover")
                 setTextColorHover(value.getColor());
-            else if (property == toLower("HoverBackgroundColor"))
+            else if (property == "hoverbackgroundcolor")
                 setHoverBackgroundColor(value.getColor());
-            else if (property == toLower("SelectedBackgroundColor"))
+            else if (property == "selectedbackgroundcolor")
                 setSelectedBackgroundColor(value.getColor());
-            else if (property == toLower("SelectedTextColor"))
+            else if (property == "selectedtextcolor")
                 setSelectedTextColor(value.getColor());
-            else if (property == toLower("BorderColor"))
+            else if (property == "bordercolor")
                 setBorderColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("BackgroundImage"))
+            if (property == "backgroundimage")
                 setBackgroundTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::String)
         {
-            if (property == toLower("Scrollbar"))
+            if (property == "scrollbar")
             {
                 if (toLower(value.getString()) == "none")
                     m_listBox->setScrollbar(nullptr);
@@ -1128,27 +1128,27 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             return m_borders;
-        else if (property == toLower("Padding"))
+        else if (property == "padding")
             return m_padding;
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             return m_backgroundColor;
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             return m_textColor;
-        else if (property == toLower("TextColorNormal"))
+        else if (property == "textcolornormal")
             return m_textColor;
-        else if (property == toLower("TextColorHover"))
+        else if (property == "textcolorhover")
             return m_hoverTextColor;
-        else if (property == toLower("HoverBackgroundColor"))
+        else if (property == "hoverbackgroundcolor")
             return m_hoverBackgroundColor;
-        else if (property == toLower("SelectedBackgroundColor"))
+        else if (property == "selectedbackgroundcolor")
             return m_selectedBackgroundColor;
-        else if (property == toLower("SelectedTextColor"))
+        else if (property == "selectedtextcolor")
             return m_selectedTextColor;
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             return m_borderColor;
-        else if (property == toLower("BackgroundImage"))
+        else if (property == "backgroundimage")
             return m_backgroundTexture;
         else
             return WidgetRenderer::getProperty(property);

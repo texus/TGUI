@@ -337,31 +337,31 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundColorNormal"))
+        else if (property == "backgroundcolornormal")
             setBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BackgroundColorHover"))
+        else if (property == "backgroundcolorhover")
             setBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowColor"))
+        else if (property == "arrowcolor")
             setArrowColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowColorNormal"))
+        else if (property == "arrowcolornormal")
             setArrowColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowColorHover"))
+        else if (property == "arrowcolorhover")
             setArrowColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("ArrowUpImage"))
+        else if (property == "arrowupimage")
             setArrowUpTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowDownImage"))
+        else if (property == "arrowdownimage")
             setArrowDownTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowUpHoverImage"))
+        else if (property == "arrowuphoverimage")
             setArrowUpHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("ArrowDownHoverImage"))
+        else if (property == "arrowdownhoverimage")
             setArrowDownHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("SpaceBetweenArrows"))
+        else if (property == "spacebetweenarrows")
             setSpaceBetweenArrows(tgui::stof(value));
         else
             WidgetRenderer::setProperty(property, value);
@@ -375,46 +375,46 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == toLower("Borders"))
+            if (property == "borders")
                 setBorders(value.getBorders());
             else
                 return WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("BackgroundColor"))
+            if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
-            else if (property == toLower("BackgroundColorNormal"))
+            else if (property == "backgroundcolornormal")
                 setBackgroundColorNormal(value.getColor());
-            else if (property == toLower("BackgroundColorHover"))
+            else if (property == "backgroundcolorhover")
                 setBackgroundColorHover(value.getColor());
-            else if (property == toLower("ArrowColor"))
+            else if (property == "arrowcolor")
                 setArrowColor(value.getColor());
-            else if (property == toLower("ArrowColorNormal"))
+            else if (property == "arrowcolornormal")
                 setArrowColorNormal(value.getColor());
-            else if (property == toLower("ArrowColorHover"))
+            else if (property == "arrowcolorhover")
                 setArrowColorHover(value.getColor());
-            else if (property == toLower("BorderColor"))
+            else if (property == "bordercolor")
                 setBorderColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("ArrowUpImage"))
+            if (property == "arrowupimage")
                 setArrowUpTexture(value.getTexture());
-            else if (property == toLower("ArrowDownImage"))
+            else if (property == "arrowdownimage")
                 setArrowDownTexture(value.getTexture());
-            else if (property == toLower("ArrowUpHoverImage"))
+            else if (property == "arrowuphoverimage")
                 setArrowUpHoverTexture(value.getTexture());
-            else if (property == toLower("ArrowDownHoverImage"))
+            else if (property == "arrowdownhoverimage")
                 setArrowDownHoverTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Number)
         {
-            if (property == toLower("SpaceBetweenArrows"))
+            if (property == "spacebetweenarrows")
                 setSpaceBetweenArrows(value.getNumber());
         }
         else
@@ -427,31 +427,31 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             return m_borders;
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             return m_backgroundColorNormal;
-        else if (property == toLower("BackgroundColorNormal"))
+        else if (property == "backgroundcolornormal")
             return m_backgroundColorNormal;
-        else if (property == toLower("BackgroundColorHover"))
+        else if (property == "backgroundcolorhover")
             return m_backgroundColorHover;
-        else if (property == toLower("ArrowColor"))
+        else if (property == "arrowcolor")
             return m_arrowColorNormal;
-        else if (property == toLower("ArrowColorNormal"))
+        else if (property == "arrowcolornormal")
             return m_arrowColorNormal;
-        else if (property == toLower("ArrowColorHover"))
+        else if (property == "arrowcolorhover")
             return m_arrowColorHover;
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             return m_borderColor;
-        else if (property == toLower("ArrowUpImage"))
+        else if (property == "arrowupimage")
             return m_textureArrowUpNormal;
-        else if (property == toLower("ArrowDownImage"))
+        else if (property == "arrowdownimage")
             return m_textureArrowDownNormal;
-        else if (property == toLower("ArrowUpHoverImage"))
+        else if (property == "arrowuphoverimage")
             return m_textureArrowUpHover;
-        else if (property == toLower("ArrowDownHoverImage"))
+        else if (property == "arrowdownhoverimage")
             return m_textureArrowDownHover;
-        if (property == toLower("SpaceBetweenArrows"))
+        if (property == "spacebetweenarrows")
             return m_spaceBetweenArrows;
         else
             return WidgetRenderer::getProperty(property);

@@ -575,23 +575,23 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("SelectedBackgroundColor"))
+        else if (property == "selectedbackgroundcolor")
             setSelectedBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("SelectedTextColor"))
+        else if (property == "selectedtextcolor")
             setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == toLower("NormalImage"))
+        else if (property == "normalimage")
             setNormalTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("SelectedImage"))
+        else if (property == "selectedimage")
             setSelectedTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == toLower("DistanceToSide"))
+        else if (property == "distancetoside")
             setDistanceToSide(Deserializer::deserialize(ObjectConverter::Type::Number, value).getNumber());
         else
             WidgetRenderer::setProperty(property, value);
@@ -605,38 +605,38 @@ namespace tgui
 
         if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == toLower("Borders"))
+            if (property == "borders")
                 setBorders(value.getBorders());
             else
                 return WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Color)
         {
-            if (property == toLower("BackgroundColor"))
+            if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
-            else if (property == toLower("SelectedBackgroundColor"))
+            else if (property == "selectedbackgroundcolor")
                 setSelectedBackgroundColor(value.getColor());
-            else if (property == toLower("TextColor"))
+            else if (property == "textcolor")
                 setTextColor(value.getColor());
-            else if (property == toLower("SelectedTextColor"))
+            else if (property == "selectedtextcolor")
                 setSelectedTextColor(value.getColor());
-            else if (property == toLower("BorderColor"))
+            else if (property == "bordercolor")
                 setBorderColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Texture)
         {
-            if (property == toLower("NormalImage"))
+            if (property == "normalimage")
                 setNormalTexture(value.getTexture());
-            else if (property == toLower("SelectedImage"))
+            else if (property == "selectedimage")
                 setSelectedTexture(value.getTexture());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
         else if (value.getType() == ObjectConverter::Type::Number)
         {
-            if (property == toLower("DistanceToSide"))
+            if (property == "distancetoside")
                 setDistanceToSide(value.getNumber());
         }
         else
@@ -649,23 +649,23 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == toLower("Borders"))
+        if (property == "borders")
             return m_borders;
-        else if (property == toLower("BackgroundColor"))
+        else if (property == "backgroundcolor")
             return m_backgroundColor;
-        else if (property == toLower("SelectedBackgroundColor"))
+        else if (property == "selectedbackgroundcolor")
             return m_selectedBackgroundColor;
-        else if (property == toLower("TextColor"))
+        else if (property == "textcolor")
             return m_textColor;
-        else if (property == toLower("SelectedTextColor"))
+        else if (property == "selectedtextcolor")
             return m_selectedTextColor;
-        else if (property == toLower("BorderColor"))
+        else if (property == "bordercolor")
             return m_borderColor;
-        else if (property == toLower("NormalImage"))
+        else if (property == "normalimage")
             return m_textureNormal;
-        else if (property == toLower("SelectedImage"))
+        else if (property == "selectedimage")
             return m_textureSelected;
-        else if (property == toLower("DistanceToSide"))
+        else if (property == "distancetoside")
             return m_distanceToSide;
         else
             return WidgetRenderer::getProperty(property);
