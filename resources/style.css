@@ -654,10 +654,15 @@ pre {
 .HomePageLeftColumn, .HomePageRightColumn {
   display: inline-block;
   height: auto;
-  width: 48%;
   margin-left: 0.5%;
   margin-right: 0.5%;
   vertical-align: middle;
+}
+.HomePageLeftColumn {
+  width: 53%;
+}
+.HomePageRightColumn {
+  width: 43%;
 }
 
 .HomePageLeftColumn img, .HomePageRightColumn img {
