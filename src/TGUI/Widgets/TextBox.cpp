@@ -512,9 +512,9 @@ namespace tgui
 
                 // Move start pointer to the beginning of the word/whitespace
                 bool done = false;
-                for (unsigned int j = m_selStart.y + 1; j > 0; --j)
+                for (std::size_t j = m_selStart.y + 1; j > 0; --j)
                 {
-                    for (unsigned int i = m_selStart.x; i > 0; --i)
+                    for (std::size_t i = m_selStart.x; i > 0; --i)
                     {
                         if (selectingWhitespace != isWhitespace(m_lines[m_selStart.y][i-1]))
                         {
@@ -555,9 +555,9 @@ namespace tgui
 
                 // Move start pointer to the end of the word/whitespace
                 done = false;
-                for (unsigned int j = m_selEnd.y; j < m_lines.size(); ++j)
+                for (std::size_t j = m_selEnd.y; j < m_lines.size(); ++j)
                 {
-                    for (unsigned int i = m_selEnd.x; i < m_lines[m_selEnd.y].getSize(); ++i)
+                    for (std::size_t i = m_selEnd.x; i < m_lines[m_selEnd.y].getSize(); ++i)
                     {
                         if (selectingWhitespace != isWhitespace(m_lines[m_selEnd.y][i]))
                         {
@@ -791,9 +791,9 @@ namespace tgui
                     // Move to the beginning of the word (or to the previous word when already at the beginning)
                     bool skippedWhitespace = false;
                     bool done = false;
-                    for (unsigned int j = m_selEnd.y + 1; j > 0; --j)
+                    for (std::size_t j = m_selEnd.y + 1; j > 0; --j)
                     {
-                        for (unsigned int i = m_selEnd.x; i > 0; --i)
+                        for (std::size_t i = m_selEnd.x; i > 0; --i)
                         {
                             if (skippedWhitespace)
                             {
@@ -870,9 +870,9 @@ namespace tgui
                     // Move to the beginning of the word (or to the previous word when already at the beginning)
                     bool skippedWhitespace = false;
                     bool done = false;
-                    for (unsigned int j = m_selEnd.y; j < m_lines.size(); ++j)
+                    for (std::size_t j = m_selEnd.y; j < m_lines.size(); ++j)
                     {
-                        for (unsigned int i = m_selEnd.x; i < m_lines[m_selEnd.y].getSize(); ++i)
+                        for (std::size_t i = m_selEnd.x; i < m_lines[m_selEnd.y].getSize(); ++i)
                         {
                             if (skippedWhitespace)
                             {
