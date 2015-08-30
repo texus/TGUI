@@ -319,7 +319,7 @@ namespace tgui
             auto valueNode = std::make_shared<ValueNode>();
             valueNode->parent = node.get();
             valueNode->value = line;
-            node->propertyValuePairs[key] = valueNode; /// TODO: toLower(key)
+            node->propertyValuePairs[toLower(key)] = valueNode;
 
             // It might be a list node
             if ((line.size() >= 2) && (line[0] == '[') && (line.back() == ']'))

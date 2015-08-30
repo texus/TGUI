@@ -92,29 +92,29 @@ namespace tgui
     {
         assert(widget != nullptr);
 
-        if (node->propertyValuePairs["Visible"])
+        if (node->propertyValuePairs["visible"])
         {
-            bool visible = parseBoolean(node->propertyValuePairs["Visible"]->value);
+            bool visible = parseBoolean(node->propertyValuePairs["visible"]->value);
             if (visible)
                 widget->show();
             else
                 widget->hide();
         }
-        if (node->propertyValuePairs["Enabled"])
+        if (node->propertyValuePairs["enabled"])
         {
-            bool enabled = parseBoolean(node->propertyValuePairs["Enabled"]->value);
+            bool enabled = parseBoolean(node->propertyValuePairs["enabled"]->value);
             if (enabled)
                 widget->enable();
             else
                 widget->disable();
         }
-        if (node->propertyValuePairs["Position"])
-            widget->setPosition(parseVector2f(node->propertyValuePairs["Position"]->value));
-        if (node->propertyValuePairs["Size"])
-            widget->setSize(parseVector2f(node->propertyValuePairs["Size"]->value));
-        if (node->propertyValuePairs["Transparency"])
+        if (node->propertyValuePairs["position"])
+            widget->setPosition(parseVector2f(node->propertyValuePairs["position"]->value));
+        if (node->propertyValuePairs["size"])
+            widget->setSize(parseVector2f(node->propertyValuePairs["size"]->value));
+        if (node->propertyValuePairs["transparency"])
         {
-            auto transparency = tgui::stoi(node->propertyValuePairs["Transparency"]->value);
+            auto transparency = tgui::stoi(node->propertyValuePairs["transparency"]->value);
             if (transparency < 0 || transparency > 255)
                 throw Exception{"Transparency value has to lie between 0 and 255"};
 
@@ -184,10 +184,10 @@ namespace tgui
             button = std::make_shared<Button>();
 
         loadWidget(node, button);
-        if (node->propertyValuePairs["Text"])
-            button->setText(DESERIALIZE_STRING("Text"));
-        if (node->propertyValuePairs["TextSize"])
-            button->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+        if (node->propertyValuePairs["text"])
+            button->setText(DESERIALIZE_STRING("text"));
+        if (node->propertyValuePairs["textsize"])
+            button->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
 
         return button;
     }
@@ -213,13 +213,13 @@ namespace tgui
             checkbox = std::make_shared<CheckBox>();
 
         loadWidget(node, checkbox);
-        if (node->propertyValuePairs["Text"])
-            checkbox->setText(DESERIALIZE_STRING("Text"));
-        if (node->propertyValuePairs["TextSize"])
-            checkbox->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
-        if (node->propertyValuePairs["Checked"])
+        if (node->propertyValuePairs["text"])
+            checkbox->setText(DESERIALIZE_STRING("text"));
+        if (node->propertyValuePairs["textsize"])
+            checkbox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["checked"])
         {
-            if (parseBoolean(node->propertyValuePairs["Checked"]->value))
+            if (parseBoolean(node->propertyValuePairs["checked"]->value))
                 checkbox->check();
         }
 
@@ -238,26 +238,26 @@ namespace tgui
 
         loadWidget(node, childWindow);
 
-        if (node->propertyValuePairs["TitleAlignment"])
+        if (node->propertyValuePairs["titlealignment"])
         {
-            if (toLower(node->propertyValuePairs["TitleAlignment"]->value) == "left")
+            if (toLower(node->propertyValuePairs["titlealignment"]->value) == "left")
                 childWindow->setTitleAlignment(ChildWindow::TitleAlignment::Left);
-            else if (toLower(node->propertyValuePairs["TitleAlignment"]->value) == "center")
+            else if (toLower(node->propertyValuePairs["titlealignment"]->value) == "center")
                 childWindow->setTitleAlignment(ChildWindow::TitleAlignment::Center);
-            else if (toLower(node->propertyValuePairs["TitleAlignment"]->value) == "right")
+            else if (toLower(node->propertyValuePairs["titlealignment"]->value) == "right")
                 childWindow->setTitleAlignment(ChildWindow::TitleAlignment::Right);
             else
                 throw Exception{"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
         }
 
-        if (node->propertyValuePairs["Title"])
-            childWindow->setTitle(DESERIALIZE_STRING("Title"));
+        if (node->propertyValuePairs["title"])
+            childWindow->setTitle(DESERIALIZE_STRING("title"));
 
-        if (node->propertyValuePairs["Icon"])
-            childWindow->setIcon(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs["Icon"]->value).getTexture());
+        if (node->propertyValuePairs["icon"])
+            childWindow->setIcon(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs["icon"]->value).getTexture());
 
-        if (node->propertyValuePairs["KeepInParent"])
-            childWindow->keepInParent(parseBoolean(node->propertyValuePairs["KeepInParent"]->value));
+        if (node->propertyValuePairs["keepinparent"])
+            childWindow->keepInParent(parseBoolean(node->propertyValuePairs["keepinparent"]->value));
 
         for (auto& childNode : node->children)
         {
@@ -296,8 +296,8 @@ namespace tgui
 
         loadWidget(node, comboBox);
 
-        if (node->propertyValuePairs["ItemsToDisplay"])
-            comboBox->setItemsToDisplay(tgui::stoi(node->propertyValuePairs["ItemsToDisplay"]->value));
+        if (node->propertyValuePairs["itemstodisplay"])
+            comboBox->setItemsToDisplay(tgui::stoi(node->propertyValuePairs["itemstodisplay"]->value));
 
         return comboBox;
     }
@@ -314,33 +314,33 @@ namespace tgui
 
         loadWidget(node, editBox);
 
-        if (node->propertyValuePairs["Text"])
-            editBox->setText(DESERIALIZE_STRING("Text"));
-        if (node->propertyValuePairs["DefaultText"])
-            editBox->setDefaultText(DESERIALIZE_STRING("DefaultText"));
-        if (node->propertyValuePairs["TextSize"])
-            editBox->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
-        if (node->propertyValuePairs["MaximumCharacters"])
-            editBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["MaximumCharacters"]->value));
-        if (node->propertyValuePairs["TextWidthLimited"])
-            editBox->limitTextWidth(parseBoolean(node->propertyValuePairs["TextWidthLimited"]->value));
-        if (node->propertyValuePairs["CaretWidth"])
-            editBox->setCaretWidth(tgui::stof(node->propertyValuePairs["CaretWidth"]->value));
-        if (node->propertyValuePairs["NumbersOnly"])
-            editBox->setNumbersOnly(parseBoolean(node->propertyValuePairs["NumbersOnly"]->value));
-        if (node->propertyValuePairs["PasswordCharacter"])
+        if (node->propertyValuePairs["text"])
+            editBox->setText(DESERIALIZE_STRING("text"));
+        if (node->propertyValuePairs["defaulttext"])
+            editBox->setDefaultText(DESERIALIZE_STRING("defaulttext"));
+        if (node->propertyValuePairs["textsize"])
+            editBox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["maximumcharacters"])
+            editBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
+        if (node->propertyValuePairs["textwidthlimited"])
+            editBox->limitTextWidth(parseBoolean(node->propertyValuePairs["textwidthlimited"]->value));
+        if (node->propertyValuePairs["caretwidth"])
+            editBox->setCaretWidth(tgui::stof(node->propertyValuePairs["caretwidth"]->value));
+        if (node->propertyValuePairs["numbersonly"])
+            editBox->setNumbersOnly(parseBoolean(node->propertyValuePairs["numbersonly"]->value));
+        if (node->propertyValuePairs["passwordcharacter"])
         {
-            std::string pass = DESERIALIZE_STRING("PasswordCharacter");
+            std::string pass = DESERIALIZE_STRING("passwordcharacter");
             if (!pass.empty())
                 editBox->setPasswordCharacter(pass[0]);
         }
-        if (node->propertyValuePairs["Alignment"])
+        if (node->propertyValuePairs["alignment"])
         {
-            if (toLower(node->propertyValuePairs["Alignment"]->value) == "left")
+            if (toLower(node->propertyValuePairs["alignment"]->value) == "left")
                 editBox->setAlignment(EditBox::Alignment::Left);
-            else if (toLower(node->propertyValuePairs["Alignment"]->value) == "center")
+            else if (toLower(node->propertyValuePairs["alignment"]->value) == "center")
                 editBox->setAlignment(EditBox::Alignment::Center);
-            else if (toLower(node->propertyValuePairs["Alignment"]->value) == "right")
+            else if (toLower(node->propertyValuePairs["alignment"]->value) == "right")
                 editBox->setAlignment(EditBox::Alignment::Right);
             else
                 throw Exception{"Failed to parse Alignment property. Only the values Left, Center and Right are correct."};
@@ -360,18 +360,18 @@ namespace tgui
             knob = std::make_shared<Knob>();
 
         loadWidget(node, knob);
-        if (node->propertyValuePairs["StartRotation"])
-            knob->setStartRotation(tgui::stof(node->propertyValuePairs["StartRotation"]->value));
-        if (node->propertyValuePairs["EndRotation"])
-            knob->setEndRotation(tgui::stof(node->propertyValuePairs["EndRotation"]->value));
-        if (node->propertyValuePairs["Minimum"])
-            knob->setMinimum(tgui::stoi(node->propertyValuePairs["Minimum"]->value));
-        if (node->propertyValuePairs["Maximum"])
-            knob->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
-        if (node->propertyValuePairs["Value"])
-            knob->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
-        if (node->propertyValuePairs["ClockwiseTurning"])
-            knob->setClockwiseTurning(parseBoolean(node->propertyValuePairs["ClockwiseTurning"]->value));
+        if (node->propertyValuePairs["startrotation"])
+            knob->setStartRotation(tgui::stof(node->propertyValuePairs["startrotation"]->value));
+        if (node->propertyValuePairs["endrotation"])
+            knob->setEndRotation(tgui::stof(node->propertyValuePairs["endrotation"]->value));
+        if (node->propertyValuePairs["minimum"])
+            knob->setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+        if (node->propertyValuePairs["maximum"])
+            knob->setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+        if (node->propertyValuePairs["value"])
+            knob->setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+        if (node->propertyValuePairs["clockwiseturning"])
+            knob->setClockwiseTurning(parseBoolean(node->propertyValuePairs["clockwiseturning"]->value));
 
         return knob;
     }
@@ -388,10 +388,10 @@ namespace tgui
 
         loadWidget(node, label);
 
-        if (node->propertyValuePairs["TextStyle"])
+        if (node->propertyValuePairs["textstyle"])
         {
             sf::Uint32 style = sf::Text::Regular;
-            std::vector<std::string> styles = tgui::split(node->propertyValuePairs["TextStyle"]->value, '|');
+            std::vector<std::string> styles = tgui::split(node->propertyValuePairs["textstyle"]->value, '|');
             for (auto& elem : styles)
             {
                 std::string requestedStyle = toLower(trim(elem));
@@ -410,14 +410,14 @@ namespace tgui
             label->setTextStyle(style);
         }
 
-        if (node->propertyValuePairs["Text"])
-            label->setText(DESERIALIZE_STRING("Text"));
-        if (node->propertyValuePairs["TextSize"])
-            label->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
-        if (node->propertyValuePairs["MaximumTextWidth"])
-            label->setMaximumTextWidth(tgui::stof(node->propertyValuePairs["MaximumTextWidth"]->value));
-        if (node->propertyValuePairs["AutoSize"])
-            label->setAutoSize(parseBoolean(node->propertyValuePairs["AutoSize"]->value));
+        if (node->propertyValuePairs["text"])
+            label->setText(DESERIALIZE_STRING("text"));
+        if (node->propertyValuePairs["textsize"])
+            label->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["maximumtextwidth"])
+            label->setMaximumTextWidth(tgui::stof(node->propertyValuePairs["maximumtextwidth"]->value));
+        if (node->propertyValuePairs["autosize"])
+            label->setAutoSize(parseBoolean(node->propertyValuePairs["autosize"]->value));
 
         return label;
     }
@@ -434,47 +434,47 @@ namespace tgui
 
         loadWidget(node, listBox);
 
-        if (node->propertyValuePairs["Items"])
+        if (node->propertyValuePairs["items"])
         {
-            if (!node->propertyValuePairs["Items"]->listNode)
+            if (!node->propertyValuePairs["items"]->listNode)
                 throw Exception{"Failed to parse 'Items' property, expected a list as value"};
 
-            if (node->propertyValuePairs["ItemIds"])
+            if (node->propertyValuePairs["itemids"])
             {
-                if (!node->propertyValuePairs["ItemIds"]->listNode)
+                if (!node->propertyValuePairs["itemids"]->listNode)
                     throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
 
-                if (node->propertyValuePairs["Items"]->valueList.size() != node->propertyValuePairs["ItemIds"]->valueList.size())
+                if (node->propertyValuePairs["items"]->valueList.size() != node->propertyValuePairs["itemids"]->valueList.size())
                     throw Exception{"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
 
-                for (unsigned int i = 0; i < node->propertyValuePairs["Items"]->valueList.size(); ++i)
+                for (unsigned int i = 0; i < node->propertyValuePairs["items"]->valueList.size(); ++i)
                 {
-                    listBox->addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["Items"]->valueList[i]).getString(),
-                                     Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["ItemIds"]->valueList[i]).getString());
+                    listBox->addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["items"]->valueList[i]).getString(),
+                                     Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["itemids"]->valueList[i]).getString());
                 }
             }
             else // There are no item ids
             {
-                for (auto& item : node->propertyValuePairs["Items"]->valueList)
+                for (auto& item : node->propertyValuePairs["items"]->valueList)
                     listBox->addItem(item);
             }
         }
         else // If there are no items, there should be no item ids
         {
-            if (node->propertyValuePairs["ItemIds"])
+            if (node->propertyValuePairs["itemids"])
             {
-                if (!node->propertyValuePairs["ItemIds"]->listNode)
+                if (!node->propertyValuePairs["itemids"]->listNode)
                     throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
 
-                if (!node->propertyValuePairs["ItemIds"]->valueList.empty())
+                if (!node->propertyValuePairs["itemids"]->valueList.empty())
                     throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
             }
         }
 
-        if (node->propertyValuePairs["ItemHeight"])
-            listBox->setItemHeight(tgui::stoi(node->propertyValuePairs["ItemHeight"]->value));
-        if (node->propertyValuePairs["MaximumItems"])
-            listBox->setMaximumItems(tgui::stoi(node->propertyValuePairs["MaximumItems"]->value));
+        if (node->propertyValuePairs["itemheight"])
+            listBox->setItemHeight(tgui::stoi(node->propertyValuePairs["itemheight"]->value));
+        if (node->propertyValuePairs["maximumitems"])
+            listBox->setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
 
         for (auto& childNode : node->children)
         {
@@ -506,10 +506,10 @@ namespace tgui
             picture = std::make_shared<Picture>();
 
         loadWidget(node, picture);
-        if (node->propertyValuePairs["Filename"])
-            picture = std::make_shared<Picture>(DESERIALIZE_STRING("Filename"));
-        if (node->propertyValuePairs["Smooth"])
-            picture->setSmooth(parseBoolean(node->propertyValuePairs["Smooth"]->value));
+        if (node->propertyValuePairs["filename"])
+            picture = std::make_shared<Picture>(DESERIALIZE_STRING("filename"));
+        if (node->propertyValuePairs["smooth"])
+            picture->setSmooth(parseBoolean(node->propertyValuePairs["smooth"]->value));
 
         return picture;
     }
@@ -525,20 +525,20 @@ namespace tgui
             progressBar = std::make_shared<ProgressBar>();
 
         loadWidget(node, progressBar);
-        if (node->propertyValuePairs["Minimum"])
-            progressBar->setMinimum(tgui::stoi(node->propertyValuePairs["Minimum"]->value));
-        if (node->propertyValuePairs["Maximum"])
-            progressBar->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
-        if (node->propertyValuePairs["Value"])
-            progressBar->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
-        if (node->propertyValuePairs["Text"])
-            progressBar->setText(DESERIALIZE_STRING("Text"));
-        if (node->propertyValuePairs["TextSize"])
-            progressBar->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
+        if (node->propertyValuePairs["minimum"])
+            progressBar->setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+        if (node->propertyValuePairs["maximum"])
+            progressBar->setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+        if (node->propertyValuePairs["value"])
+            progressBar->setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+        if (node->propertyValuePairs["text"])
+            progressBar->setText(DESERIALIZE_STRING("text"));
+        if (node->propertyValuePairs["textsize"])
+            progressBar->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
 
-        if (node->propertyValuePairs["FillDirection"])
+        if (node->propertyValuePairs["filldirection"])
         {
-            std::string requestedStyle = toLower(trim(node->propertyValuePairs["FillDirection"]->value));
+            std::string requestedStyle = toLower(trim(node->propertyValuePairs["filldirection"]->value));
             if (requestedStyle == "lefttoright")
                 progressBar->setFillDirection(tgui::ProgressBar::FillDirection::LeftToRight);
             else if (requestedStyle == "righttoleft")
@@ -565,13 +565,13 @@ namespace tgui
             radioButton = std::make_shared<RadioButton>();
 
         loadWidget(node, radioButton);
-        if (node->propertyValuePairs["Text"])
-            radioButton->setText(DESERIALIZE_STRING("Text"));
-        if (node->propertyValuePairs["TextSize"])
-            radioButton->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
-        if (node->propertyValuePairs["Checked"])
+        if (node->propertyValuePairs["text"])
+            radioButton->setText(DESERIALIZE_STRING("text"));
+        if (node->propertyValuePairs["textsize"])
+            radioButton->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["checked"])
         {
-            if (parseBoolean(node->propertyValuePairs["Checked"]->value))
+            if (parseBoolean(node->propertyValuePairs["checked"]->value))
                 radioButton->check();
         }
 
@@ -589,16 +589,16 @@ namespace tgui
             scrollbar = std::make_shared<Scrollbar>();
 
         loadWidget(node, scrollbar);
-        if (node->propertyValuePairs["LowValue"])
-            scrollbar->setLowValue(tgui::stoi(node->propertyValuePairs["LowValue"]->value));
-        if (node->propertyValuePairs["Maximum"])
-            scrollbar->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
-        if (node->propertyValuePairs["Value"])
-            scrollbar->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
-        if (node->propertyValuePairs["ArrowScrollAmount"])
-            scrollbar->setArrowScrollAmount(tgui::stoi(node->propertyValuePairs["ArrowScrollAmount"]->value));
-        if (node->propertyValuePairs["AutoHide"])
-            scrollbar->setAutoHide(parseBoolean(node->propertyValuePairs["AutoHide"]->value));
+        if (node->propertyValuePairs["lowvalue"])
+            scrollbar->setLowValue(tgui::stoi(node->propertyValuePairs["lowvalue"]->value));
+        if (node->propertyValuePairs["maximum"])
+            scrollbar->setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+        if (node->propertyValuePairs["value"])
+            scrollbar->setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+        if (node->propertyValuePairs["arrowscrollamount"])
+            scrollbar->setArrowScrollAmount(tgui::stoi(node->propertyValuePairs["arrowscrollamount"]->value));
+        if (node->propertyValuePairs["autohide"])
+            scrollbar->setAutoHide(parseBoolean(node->propertyValuePairs["autohide"]->value));
 
         return scrollbar;
     }
@@ -614,12 +614,12 @@ namespace tgui
             slider = std::make_shared<Slider>();
 
         loadWidget(node, slider);
-        if (node->propertyValuePairs["Minimum"])
-            slider->setMinimum(tgui::stoi(node->propertyValuePairs["Minimum"]->value));
-        if (node->propertyValuePairs["Maximum"])
-            slider->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
-        if (node->propertyValuePairs["Value"])
-            slider->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
+        if (node->propertyValuePairs["minimum"])
+            slider->setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+        if (node->propertyValuePairs["maximum"])
+            slider->setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+        if (node->propertyValuePairs["value"])
+            slider->setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
 
         return slider;
     }
@@ -635,14 +635,14 @@ namespace tgui
             spinButton = std::make_shared<SpinButton>();
 
         loadWidget(node, spinButton);
-        if (node->propertyValuePairs["Minimum"])
-            spinButton->setMinimum(tgui::stoi(node->propertyValuePairs["Minimum"]->value));
-        if (node->propertyValuePairs["Maximum"])
-            spinButton->setMaximum(tgui::stoi(node->propertyValuePairs["Maximum"]->value));
-        if (node->propertyValuePairs["Value"])
-            spinButton->setValue(tgui::stoi(node->propertyValuePairs["Value"]->value));
-        if (node->propertyValuePairs["VerticalScroll"])
-            spinButton->setVerticalScroll(parseBoolean(node->propertyValuePairs["VerticalScroll"]->value));
+        if (node->propertyValuePairs["minimum"])
+            spinButton->setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+        if (node->propertyValuePairs["maximum"])
+            spinButton->setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+        if (node->propertyValuePairs["value"])
+            spinButton->setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+        if (node->propertyValuePairs["verticalscroll"])
+            spinButton->setVerticalScroll(parseBoolean(node->propertyValuePairs["verticalscroll"]->value));
 
         return spinButton;
     }
@@ -659,23 +659,23 @@ namespace tgui
 
         loadWidget(node, tab);
 
-        if (node->propertyValuePairs["Tabs"])
+        if (node->propertyValuePairs["tabs"])
         {
-            if (!node->propertyValuePairs["Tabs"]->listNode)
+            if (!node->propertyValuePairs["tabs"]->listNode)
                 throw Exception{"Failed to parse 'Tabs' property, expected a list as value"};
 
-            for (auto& tabText : node->propertyValuePairs["Tabs"]->valueList)
+            for (auto& tabText : node->propertyValuePairs["tabs"]->valueList)
                 tab->add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString());
         }
 
-        if (node->propertyValuePairs["MaximumTabWidth"])
-            tab->setMaximumTabWidth(tgui::stof(node->propertyValuePairs["MaximumTabWidth"]->value));
-        if (node->propertyValuePairs["TextSize"])
-            tab->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
-        if (node->propertyValuePairs["TabHeight"])
-            tab->setTabHeight(tgui::stof(node->propertyValuePairs["TabHeight"]->value));
-        if (node->propertyValuePairs["Selected"])
-            tab->select(tgui::stoi(node->propertyValuePairs["Selected"]->value));
+        if (node->propertyValuePairs["maximumtabwidth"])
+            tab->setMaximumTabWidth(tgui::stof(node->propertyValuePairs["maximumtabwidth"]->value));
+        if (node->propertyValuePairs["textsize"])
+            tab->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["tabheight"])
+            tab->setTabHeight(tgui::stof(node->propertyValuePairs["tabheight"]->value));
+        if (node->propertyValuePairs["selected"])
+            tab->select(tgui::stoi(node->propertyValuePairs["selected"]->value));
 
         return tab;
     }
@@ -692,14 +692,14 @@ namespace tgui
 
         loadWidget(node, textBox);
 
-        if (node->propertyValuePairs["Text"])
-            textBox->setText(DESERIALIZE_STRING("Text"));
-        if (node->propertyValuePairs["TextSize"])
-            textBox->setTextSize(tgui::stoi(node->propertyValuePairs["TextSize"]->value));
-        if (node->propertyValuePairs["MaximumCharacters"])
-            textBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["MaximumCharacters"]->value));
-        if (node->propertyValuePairs["ReadOnly"])
-            textBox->setReadOnly(parseBoolean(node->propertyValuePairs["ReadOnly"]->value));
+        if (node->propertyValuePairs["text"])
+            textBox->setText(DESERIALIZE_STRING("text"));
+        if (node->propertyValuePairs["textsize"])
+            textBox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["maximumcharacters"])
+            textBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
+        if (node->propertyValuePairs["readonly"])
+            textBox->setReadOnly(parseBoolean(node->propertyValuePairs["readonly"]->value));
 
         for (auto& childNode : node->children)
         {
@@ -721,8 +721,8 @@ namespace tgui
             tooltip = std::make_shared<ToolTip>();
 
         loadLabel(node, tooltip);
-        if (node->propertyValuePairs["TimeToDisplay"])
-            tooltip->setTimeToDisplay(sf::seconds(tgui::stof(node->propertyValuePairs["TimeToDisplay"]->value)));
+        if (node->propertyValuePairs["timetodisplay"])
+            tooltip->setTimeToDisplay(sf::seconds(tgui::stof(node->propertyValuePairs["timetodisplay"]->value)));
 
         return tooltip;
     }
@@ -738,7 +738,7 @@ namespace tgui
 
     std::map<std::string, WidgetLoader::LoadFunction> WidgetLoader::m_loadFunctions =
         {
-            // Using "std::shared_ptr<Widget>{}" instead of "nullptr" to work around internal compiler error with MinGW 4.7 TDM
+            // Using "std::shared_ptr<Widget>{}" instead of "nullptr" to work around internal compiler error with MinGW 4.7.1 TDM
             {"widget", std::bind(loadWidget, std::placeholders::_1, std::shared_ptr<Widget>{})},
             {"container", std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
             {"button", std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
