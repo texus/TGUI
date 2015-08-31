@@ -22,9 +22,9 @@ This download contains the latest development snapshot of TGUI v0.7.
 Tutorials
 ---------
 
-Tutorials can be found on my site (http://tgui.eu/tutorials/v07/).
+Tutorials can be found on my site (https://tgui.eu/tutorials/v0.7/).
 
-You can also find example code there (http://tgui.eu/example-code/v07/).
+You can also find example code there (https://tgui.eu/example-code/v0.7/).
 
 
 
