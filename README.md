@@ -21,9 +21,9 @@ This download contains the latest development snapshot of TGUI v0.6.
 Tutorials
 ---------
 
-Tutorials can be found on my site (http://tgui.eu/tutorials/v06/).
+Tutorials can be found on my site (https://tgui.eu/tutorials/v0.6/).
 
-You can also find example code there (http://tgui.eu/example-code/v06/).
+You can also find example code there (https://tgui.eu/example-code/v0.6/).
 
 
 
