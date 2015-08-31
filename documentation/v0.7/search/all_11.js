@@ -15,7 +15,7 @@ var searchData=
   ['theme',['Theme',['../classtgui_1_1Theme.html#a030fa19678bb9f8a5844ce6b4e17c767',1,'tgui::Theme']]],
   ['theme',['Theme',['../classtgui_1_1Theme.html',1,'tgui']]],
   ['titlealignment',['TitleAlignment',['../classtgui_1_1ChildWindow.html#a247720248700e8ddbbb4af19bbfad5b8',1,'tgui::ChildWindow']]],
-  ['tooltip',['Tooltip',['../classtgui_1_1Tooltip.html',1,'tgui']]],
+  ['tooltip',['ToolTip',['../classtgui_1_1ToolTip.html',1,'tgui']]],
   ['top',['top',['../classtgui_1_1Borders.html#a590a94ae1512a72027b8f2f6a0a43b88',1,'tgui::Borders']]],
   ['toptobottom',['TopToBottom',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85eaf2b1a19a8d0f523d042f9ede79a80804',1,'tgui::ProgressBar']]],
   ['transformable',['Transformable',['../classtgui_1_1Transformable.html',1,'tgui']]]

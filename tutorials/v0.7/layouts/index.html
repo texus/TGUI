@@ -29,7 +29,7 @@ assert(button2->getSize() == sf::Vector2f{100, 20});
 <p>Just put it somewhere on top of your file or function:</p>
 {% highlight c++ %}
 TGUI_IMPORT_LAYOUT_BIND_FUNCTIONS
-button2->setSize(bindPosition(button1));
+button2->setPosition(bindPosition(button1));
 {% endhighlight %}
 </div>
 
@@ -38,7 +38,7 @@ button2->setSize(bindPosition(button1));
 <p>Oh look, more bind functions! There are also bind functions to combine those simple bind functions that were mentioned above. They are called bindMin, bindMax, bindRange and bindIf.</p>
 <p class="SmallBottomMargin">The bindMin and bindMax functions are self explaining, you give them two layouts as parameter and the lowest or highest one will be used. Remember that when any of the bound widgets changes the entire expression will be recalculated so which one is the minimum or maximum will be automatically re-evaluated on changes.</p>
 {% highlight c++ %}
-button2->setSize(bindMax(bindSize(button1));
+button2->setSize(bindMin(bindWidth(button1), bindHeight(button1)), bindMax(bindWidth(button1).x, bindHeight(button1)));
 {% endhighlight %}
 <p class="SmallBottomMargin">The bindRange function is a combination of the two. The first two parameters are min and max and the third argument is the value that has to remain between the two values. So the following code will try to give button3 the same top position as button2, but it will be at least 100 and maximum the top position of button1.</p>
 {% highlight c++ %}
