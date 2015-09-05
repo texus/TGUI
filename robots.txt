@@ -1,4 +1,4 @@
 Sitemap: https://tgui.eu/sitemap.xml
 
 User-agent: *
-Disallow:
+Disallow: /cdn-cgi/

@@ -8,5 +8,5 @@
   <link rel="canonical" href="{{site.url}}{{page.canonical}}" />
 {% endif %}
 
-<meta name="description" content="TGUI is an easy to use cross-platform c++ GUI library for SFML" />
+<meta name="description" content="TGUI is an easy to use cross-platform c++ GUI library for SFML. The GUI library is available for Windows, Linux, Mac OS X, FreeBSD and experimentally supports Android, iOS and the Raspberry Pi." />
 <meta name="keywords" content="TGUI, SFML, GUI, UI" />

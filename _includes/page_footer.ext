@@ -1,8 +1,8 @@
 <div id="footer" class="NoMargin clear">
-<p style="float:left;">
+<p class="FloatLeft">
   <a href="{{site.url}}/donate/">Donate</a>
   <a href="{{site.url}}/privacy-policy/">Privacy Policy</a>
   <a href="{{site.url}}/sitemap.xml">Sitemap</a>
 </p>
-<p style="float:right;">Copyright &copy; {{ site.time | date: '%Y' }} <a href="https://texus.me">Bruno Van de Velde</a></p>
+<p class="FloatRight">Copyright &copy; {{ site.time | date: '%Y' }} <a href="https://texus.me">Bruno Van de Velde</a></p>
 </div>
