@@ -12,7 +12,6 @@
         <li><a href="{{site.url}}/example-code/">Example code</a></li>
         <li><a href="{{site.url}}/tutorials/">Tutorials</a></li>
         <li><a href="{{site.url}}/documentation/">Documentation</a></li>
-        <li><a href="https://www.facebook.com/TexusGUI">Blog</a></li>
         <li><a href="https://forum.tgui.eu/">Forum</a></li>
     </ul>
     </div>
