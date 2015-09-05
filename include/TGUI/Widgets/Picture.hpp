@@ -78,8 +78,27 @@ namespace tgui
         ///
         /// Note that the texture will be copied, so any changes applied to it afterwards will not affect the picture.
         ///
+        /// @code
+        /// sf::Texture texture;
+        /// texture.loadFromFile("image.png", {10, 10, 80, 80});
+        /// auto picture = std::make_shared<tgui::Picture>(texture);
+        /// @endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Picture(const sf::Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor to create the picture from an image
+        ///
+        /// @param texture  The texture to load the picture from
+        ///
+        /// @code
+        /// auto picture = std::make_shared<tgui::Picture>(tgui::Texture{"image.png", {10, 10, 80, 80}});
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Picture(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
