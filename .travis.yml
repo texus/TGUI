@@ -1,6 +1,10 @@
 sudo: false
 language: cpp
 
+os:
+  - linux
+  - osx
+
 addons:
   apt:
     sources:
@@ -22,34 +26,18 @@ addons:
 
 cache:
   directories:
-  - $HOME/SFML
-
-before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-
-install:
-  - >
-    if [ ! -d "$HOME/SFML/lib" ]; then
-      wget -O SFML.tar.gz https://github.com/LaurentGomila/SFML/archive/2.2.tar.gz;
-      tar -xzf SFML.tar.gz;
-      cd SFML-2.2;
-      cmake -DCMAKE_INSTALL_PREFIX=$HOME/SFML .;
-      make -j2 && make install;
-      cd ..;
-    else
-      echo 'Using cached SFML directory.';
-    fi
-
-before_script:
-  - mkdir build_gcc-4.7
-  - mkdir build_gcc-5.1
-  - export SFML_ROOT=$HOME/SFML
+  - $HOME/SFML_LINUX
+  - $HOME/SFML_OSX
 
 script:
-  - cd build_gcc-5.1
-  - export CXX="g++-5"
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_TESTS=TRUE .. && make -j2 && cd tests/ && ./tests && cd ..
-  - cd ../build_gcc-4.7
-  - export CXX="g++-4.7"
-  - cmake .. && make -j2
+  - >
+    if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
+      chmod +x tests/travis_linux.sh
+      tests/travis_linux.sh
+    elif [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+      chmod +x tests/travis_osx.sh
+      tests/travis_osx.sh
+    else
+      echo 'Invalid OS'
+      exit 1
+    fi
