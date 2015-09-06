@@ -30,9 +30,9 @@ install:
       msbuild SFML.sln /p:Configuration=Debug /m &&
       xcopy lib\Debug lib\ &&
       cd .. &&
-      mkdir C:\SFML\build-VS2013-Win64 &&
-      cd C:\SFML\build-VS2013-Win64 &&
-      cmake -G"Visual Studio 12 2013 Win64" -DCMAKE_BUILD_TYPE=Release .. &&
+      mkdir C:\SFML\build-VS2015-Win64 &&
+      cd C:\SFML\build-VS2015-Win64 &&
+      cmake -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release .. &&
       msbuild SFML.sln /p:Configuration=Release /m &&
       xcopy lib\Release lib\ &&
       cd ..
@@ -49,8 +49,8 @@ build_script:
   - cmake -G"Visual Studio 12 2013" -DCMAKE_BUILD_TYPE=Debug -DSFML_ROOT=C:\SFML\build-VS2013-Win32 -DSFML_INCLUDE_DIR=C:\SFML\include ..
   - msbuild tgui.sln /p:Configuration=Debug /m
   - cd ..
-  - mkdir build-VS2013-Win64
-  - cd build-VS2013-Win64
-  - cmake -G"Visual Studio 12 2013 Win64" -DCMAKE_BUILD_TYPE=Release -DSFML_ROOT=C:\SFML\build-VS2013-Win64 -DSFML_INCLUDE_DIR=C:\SFML\include ..
+  - mkdir build-VS2015-Win64
+  - cd build-VS2015-Win64
+  - cmake -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DSFML_ROOT=C:\SFML\build-VS2015-Win64 -DSFML_INCLUDE_DIR=C:\SFML\include ..
   - msbuild tgui.sln /p:Configuration=Release /m
   - cd ..
