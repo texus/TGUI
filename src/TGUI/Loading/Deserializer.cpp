@@ -34,9 +34,9 @@ namespace
 
     unsigned char hexToDec(char c)
     {
-        if (c >= '0' && c <= '9')
-            return c - '0';
-        else if (c == 'A' || c == 'a')
+        assert((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F')  || (c >= 'a' && c <= 'f'));
+
+        if (c == 'A' || c == 'a')
             return 10;
         else if (c == 'B' || c == 'b')
             return 11;
@@ -48,8 +48,8 @@ namespace
             return 14;
         else if (c == 'F' || c == 'f')
             return 15;
-        else
-            return 0;
+        else // if (c >= '0' && c <= '9')
+            return c - '0';
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,8 +175,6 @@ namespace tgui
                     result[backslashPos] = '\t';
                 else if (result[backslashPos] == 'v')
                     result[backslashPos] = '\v';
-                else if (result[backslashPos] == '0')
-                    result[backslashPos] = '\0';
 
                 backslashPos++;
             }

@@ -128,6 +128,11 @@ TEST_CASE("[Theme]") {
             REQUIRE(tgui::ThemeTest::getWidgetProperties(theme).begin()->first == "nonexistent_section");
             REQUIRE(tgui::ThemeTest::getWidgetProperties(theme).begin()->second.size() == 0);
         }
+
+        SECTION("wrong widget type") {
+            auto theme = std::make_shared<tgui::Theme>("resources/Black.conf");
+            REQUIRE_THROWS_AS(tgui::EditBox::Ptr widget = theme->load("Button"), tgui::Exception);
+        }
     }
 
     SECTION("reload") {
@@ -285,6 +290,20 @@ TEST_CASE("[Theme]") {
         REQUIRE(button2->getRenderer()->getProperty("TextColor").getColor() == sf::Color(0, 255, 0));
         REQUIRE(button3->getRenderer()->getProperty("TextColor").getColor() == sf::Color(0, 0, 255));
 
+        REQUIRE(theme->getProperty("button1", "TextColor") == "rgb(255, 0, 0)");
+        REQUIRE(theme->getProperty("Button2", "TextColor") == "rgb(0, 255, 0)");
+        REQUIRE(theme->getProperty("BUTTON3", "TextColor") == "rgb(0, 0, 255)");
+        REQUIRE(theme->getProperty("Button3", "Something") == "");
+        REQUIRE(theme->getProperty("button4", "TextColor") == "");
+
+        REQUIRE(theme->getPropertyValuePairs("button1").size() == 1);
+        REQUIRE(theme->getPropertyValuePairs("button1")["textcolor"] == "rgb(255, 0, 0)");
+        REQUIRE(theme->getPropertyValuePairs("button2").size() == 1);
+        REQUIRE(theme->getPropertyValuePairs("button2")["textcolor"] == "rgb(0, 255, 0)");
+        REQUIRE(theme->getPropertyValuePairs("button3").size() == 1);
+        REQUIRE(theme->getPropertyValuePairs("button3")["textcolor"] == "rgb(0, 0, 255)");
+        REQUIRE(theme->getPropertyValuePairs("button4").size() == 0);
+
         theme->setProperty("button1", "textcolor", "rgb(0, 255, 0)");
         REQUIRE(tgui::ThemeTest::getWidgetProperties(theme).size() == 3);
         REQUIRE(tgui::ThemeTest::getWidgetProperties(theme)["button1"]["textcolor"] == "rgb(0, 255, 0)");
@@ -303,7 +322,7 @@ TEST_CASE("[Theme]") {
         REQUIRE(button2->getRenderer()->getProperty("TextColor").getColor() == sf::Color(0, 0, 255));
         REQUIRE(button3->getRenderer()->getProperty("TextColor").getColor() == sf::Color(0, 0, 255));
     }
-    
+
     SECTION("setConstructFunction") {
         tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>();
 

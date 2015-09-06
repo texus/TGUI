@@ -101,8 +101,8 @@ TEST_CASE("[ThemeLoader]") {
         REQUIRE(cache["name.with.dots"].size() == 2);
         REQUIRE(cache["name.with.dots"]["textcolor"] == "rgb(0, 255, 0)");
         REQUIRE(cache["name.with.dots"]["backgroundcolor"] == "rgb(255, 255, 255)");
-        REQUIRE(cache["specialchars.{}:;/*#//\t"].size() == 1);
-        REQUIRE(cache["specialchars.{}:;/*#//\t"]["textcolor"] == "rgba(,,,)");
+        REQUIRE(cache["specialchars.{}:;/*#//\t\\\""].size() == 1);
+        REQUIRE(cache["specialchars.{}:;/*#//\t\\\""]["textcolor"] == "rgba(,,,)");
         REQUIRE(cache["label"].size() == 1);
         REQUIRE(cache["label"]["textcolor"] == "rgb(0, 0, 255)");
 
@@ -110,10 +110,15 @@ TEST_CASE("[ThemeLoader]") {
         REQUIRE(typeCache.size() == 4);
         REQUIRE(typeCache["button1"] == "button");
         REQUIRE(typeCache["name.with.dots"] == "checkbox");
-        REQUIRE(typeCache["specialchars.{}:;/*#//\t"] == "editbox");
+        REQUIRE(typeCache["specialchars.{}:;/*#//\t\\\""] == "editbox");
         REQUIRE(typeCache["label"] == "label");
 
         loader->load("resources/Black.txt", "EditBox", properties);
+        REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 2);
+        loader->load("resources/ThemeButton1.txt", "Button1", properties);
+        REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 3);
+
+        tgui::DefaultThemeLoader::flushCache("resources/Black.txt");
         REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 2);
 
         tgui::DefaultThemeLoader::flushCache();

@@ -51,6 +51,8 @@ TEST_CASE("[Deserializer]") {
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, ""), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, "rgb(0,1)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, ",,,,"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, "#Hi"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, "#123456789"), tgui::Exception);
     }
 
     SECTION("deserialize string") {
@@ -117,11 +119,17 @@ TEST_CASE("[Deserializer]") {
         REQUIRE(texture.getData()->rect == sf::IntRect(0, 0, 40, 40));
         REQUIRE(texture.getMiddleRect() == sf::IntRect(10, 10, 20, 20));
         
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "resources/image.png"), tgui::Exception);
+        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20) Stretch").getTexture();
+        REQUIRE(texture.isLoaded());
+
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, ""), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "resources/image.png"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "resources/image.png\""), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" xyz(0,0,0,0)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0,1)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(0,)"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 20, 20"), tgui::Exception);
     }
 
     SECTION("custom deserialize function") {

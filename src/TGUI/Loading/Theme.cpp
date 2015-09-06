@@ -293,6 +293,8 @@ namespace tgui
 
     std::string Theme::getProperty(std::string className, std::string property) const
     {
+        className = toLower(className);
+        property = toLower(property);
         if (m_widgetProperties.find(className) != m_widgetProperties.end())
         {
             if (m_widgetProperties.at(className).find(property) != m_widgetProperties.at(className).end())
@@ -306,6 +308,7 @@ namespace tgui
 
     std::map<std::string, std::string> Theme::getPropertyValuePairs(std::string className) const
     {
+        className = toLower(className);
         if (m_widgetProperties.find(className) != m_widgetProperties.end())
             return m_widgetProperties.at(className);
         else

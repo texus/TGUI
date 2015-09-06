@@ -26,6 +26,10 @@
 #include <TGUI/Loading/Serializer.hpp>
 
 TEST_CASE("[Serializer]") {
+    SECTION("serialize uninitialized object") {
+        REQUIRE_THROWS_AS(tgui::Serializer::serialize({}), tgui::Exception);
+    }
+
     SECTION("serialize font") {
     /*
         auto font = std::make_shared<sf::Font>();
