@@ -38,9 +38,9 @@ namespace tgui
 
     Signal::Signal(std::vector<std::vector<std::string>>&& types)
     {
-        std::vector<std::string>::size_type maxSize = 0;
+        std::size_t maxSize = 0;
         for (auto& typeList : types)
-            maxSize = std::max(maxSize, typeList.size());
+            maxSize += typeList.size();
 
         m_allowedTypes = types;
         if (maxSize > priv::data.size())

@@ -588,7 +588,7 @@ namespace tgui
 
         m_callback.text   = m_listBox->getSelectedItem();
         m_callback.itemId = m_listBox->getSelectedItemId();
-        sendSignal("ItemSelected", m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
+        sendSignal("ItemSelected", m_listBox->getSelectedItem(), m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

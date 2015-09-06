@@ -86,14 +86,14 @@ namespace tgui
             static std::vector<std::vector<std::string>> get()
             {
                 auto types = extractTypes<OtherTypes...>::get();
-                types.push_back({convertTypeToString<Type>()});
+                types.insert(types.begin(), {convertTypeToString<Type>()});
                 return types;
             }
 
             static std::vector<std::string> getRow()
             {
                 auto types = extractTypes<OtherTypes...>::getRow();
-                types.push_back(convertTypeToString<Type>());
+                types.insert(types.begin(), convertTypeToString<Type>());
                 return types;
             }
         };
@@ -148,7 +148,7 @@ namespace tgui
         template <typename Func, typename... Args>
         struct connector<TypeSet<>, Func, Args...>
         {
-            static std::function<void()> connect(Func func, Args... args)
+            static std::function<void()> connect(Func func, std::size_t, Args... args)
             {
                 return std::bind(func, args...);
             }
@@ -157,20 +157,20 @@ namespace tgui
         template <typename Func, typename... Args, typename Type>
         struct connector<TypeSet<Type>, Func, Args...>
         {
-            static std::function<void()> connect(Func func, Args... args)
+            static std::function<void()> connect(Func func, std::size_t argPos, Args... args)
             {
-                return std::bind(func, args..., std::bind(dereference<Type>, std::cref(data[0])));
+                return std::bind(func, args..., std::bind(dereference<Type>, std::cref(data[argPos])));
             }
         };
 
         template <typename Func, typename... Args, typename TypeA, typename TypeB>
         struct connector<TypeSet<TypeA, TypeB>, Func, Args...>
         {
-            static std::function<void()> connect(Func func, Args... args)
+            static std::function<void()> connect(Func func, std::size_t argPos, Args... args)
             {
                 return std::bind(func, args...,
-                                 std::bind(dereference<TypeA>, std::cref(data[0])),
-                                 std::bind(dereference<TypeB>, std::cref(data[1])));
+                                 std::bind(dereference<TypeA>, std::cref(data[argPos])),
+                                 std::bind(dereference<TypeB>, std::cref(data[argPos+1])));
             }
         };
 
@@ -236,8 +236,8 @@ namespace tgui
             using type = typename priv::isFunctionConvertible<Func, decltype(priv::bindRemover<Func, Args>::remove(func, args))...>::type;
             static_assert(!std::is_same<type, TypeSet<void>>::value, "Parameters passed to the connect function are wrong!");
 
-            checkCompatibleParameterType<type>();
-            m_functions[id] = priv::connector<type, Func, Args...>::connect(func, args...);
+            auto argPos = checkCompatibleParameterType<type>();
+            m_functions[id] = priv::connector<type, Func, Args...>::connect(func, argPos, args...);
         }
 
         template <typename Func, typename... Args>
@@ -264,18 +264,21 @@ namespace tgui
     protected:
 
         template <typename Type>
-        void checkCompatibleParameterType()
+        std::size_t checkCompatibleParameterType()
         {
             if (std::is_same<Type, TypeSet<>>::value)
-                return;
+                return 0;
 
             auto acceptedType = priv::extractTypes<Type>::get();
             assert(acceptedType.size() == 1);
 
-            for (auto& type : m_allowedTypes)
+            std::size_t count = 0;
+            for (std::size_t i = 0; i < m_allowedTypes.size(); ++i)
             {
-                if (acceptedType[0] == type)
-                    return;
+                if (acceptedType[0] == m_allowedTypes[i])
+                    return count;
+
+                count += m_allowedTypes[i].size();
             }
 
             throw Exception{"Failed to bind parameter to callback function. Parameter is of wrong type."};

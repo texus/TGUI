@@ -589,7 +589,7 @@ namespace tgui
             {
                 m_callback.text = m_items[m_hoveringItem].getText();
                 m_callback.itemId = m_itemIds[m_hoveringItem];
-                sendSignal("MousePressed", m_items[m_hoveringItem].getText(), m_itemIds[m_hoveringItem]);
+                sendSignal("MousePressed", m_items[m_hoveringItem].getText(), m_items[m_hoveringItem].getText(), m_itemIds[m_hoveringItem]);
             }
 
             if (m_selectedItem != m_hoveringItem)
@@ -607,13 +607,13 @@ namespace tgui
 
                     m_callback.text  = m_items[m_selectedItem].getText();
                     m_callback.itemId = m_itemIds[m_selectedItem];
-                    sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                    sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
                 }
                 else
                 {
                     m_callback.text  = "";
                     m_callback.itemId = "";
-                    sendSignal("ItemSelected", "", "");
+                    sendSignal("ItemSelected", "", "", "");
                 }
             }
         }
@@ -664,7 +664,7 @@ namespace tgui
             {
                 m_callback.text  = m_items[m_selectedItem].getText();
                 m_callback.itemId = m_itemIds[m_selectedItem];
-                sendSignal("MouseReleased", m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                sendSignal("MouseReleased", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
             }
 
             // Check if you double-clicked
@@ -673,7 +673,7 @@ namespace tgui
                 m_possibleDoubleClick = false;
 
                 if (m_selectedItem >= 0)
-                    sendSignal("DoubleClicked", m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                    sendSignal("DoubleClicked", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
             }
             else // This is the first click
             {
@@ -777,13 +777,13 @@ namespace tgui
 
                         m_callback.text = m_items[m_selectedItem].getText();
                         m_callback.itemId = m_itemIds[m_selectedItem];
-                        sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                        sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
                     }
                     else
                     {
                         m_callback.text = "";
                         m_callback.itemId = "";
-                        sendSignal("ItemSelected", "", "");
+                        sendSignal("ItemSelected", "", "", "");
                     }
                 }
             }
