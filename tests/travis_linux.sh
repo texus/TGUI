@@ -19,11 +19,13 @@ fi
 mkdir build_gcc-5.1
 cd build_gcc-5.1
 export CXX="g++-5"
-cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_TESTS=TRUE ..
+cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_TESTS=TRUE -DTGUI_USE_GCOV=TRUE ..
 make -j2
 cd tests/
 ./tests
 cd ../..
+
+bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
 
 mkdir build_gcc-4.7
 cd build_gcc-4.7

@@ -356,6 +356,18 @@ if (TGUI_BUILD_TESTS)
     endif()
 
     add_subdirectory(tests)
+
+    if (TGUI_USE_GCOV)
+        set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+
+        if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-fprofile-arcs.*"))
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs")
+        endif()
+
+        if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-ftest-coverage.*"))
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftest-coverage")
+        endif()
+    endif()
 endif()
 
 # Install include files
