@@ -40,7 +40,6 @@ namespace tgui
     {
         m_callback.widgetType = "ListBox";
         m_draggableWidget = true;
-        m_animatedWidget = true;
 
         addSignal<sf::String, TypeSet<sf::String, sf::String>>("ItemSelected");
         addSignal<sf::String, TypeSet<sf::String, sf::String>>("MousePressed");
@@ -910,8 +909,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::update()
+    void ListBox::update(sf::Time elapsedTime)
     {
+        Widget::update(elapsedTime);
+
         // When double-clicking, the second click has to come within 500 milliseconds
         if (m_animationTimeElapsed >= sf::milliseconds(500))
         {

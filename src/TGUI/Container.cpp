@@ -42,7 +42,6 @@ namespace tgui
     Container::Container()
     {
         m_containerWidget = true;
-        m_animatedWidget = true;
         m_allowFocus = true;
     }
 
@@ -639,17 +638,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::update()
+    void Container::update(sf::Time elapsedTime)
     {
+        Widget::update(elapsedTime);
+
         // Loop through all widgets
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             // Update the elapsed time in widgets that need it
-            if ((m_widgets[i]->m_animatedWidget) && (m_widgets[i]->isVisible()))
-            {
-                m_widgets[i]->m_animationTimeElapsed += m_animationTimeElapsed;
-                m_widgets[i]->update();
-            }
+            if (m_widgets[i]->isVisible())
+                m_widgets[i]->update(elapsedTime);
         }
 
         m_animationTimeElapsed = {};

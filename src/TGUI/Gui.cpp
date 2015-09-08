@@ -367,7 +367,7 @@ namespace tgui
     void Gui::updateTime(const sf::Time& elapsedTime)
     {
         m_container->m_animationTimeElapsed = elapsedTime;
-        m_container->update();
+        m_container->update(elapsedTime);
 
         if (m_tooltipPossible)
         {

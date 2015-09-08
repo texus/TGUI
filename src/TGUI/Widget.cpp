@@ -26,6 +26,7 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Widgets/ToolTip.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/Animation.hpp>
 
 #include <cassert>
 
@@ -69,7 +70,6 @@ namespace tgui
         m_mouseDown      {false},
         m_focused        {false},
         m_allowFocus     {copy.m_allowFocus},
-        m_animatedWidget {copy.m_animatedWidget},
         m_draggableWidget{copy.m_draggableWidget},
         m_containerWidget{copy.m_containerWidget},
         m_font           {copy.m_font}
@@ -102,7 +102,6 @@ namespace tgui
             m_mouseDown       = false;
             m_focused         = false;
             m_allowFocus      = right.m_allowFocus;
-            m_animatedWidget  = right.m_animatedWidget;
             m_draggableWidget = right.m_draggableWidget;
             m_containerWidget = right.m_containerWidget;
             m_font            = right.m_font;
@@ -117,6 +116,9 @@ namespace tgui
                 m_renderer = right.m_renderer->clone(this);
             else
                 m_renderer = nullptr;
+
+            // Animations can't be copied
+            m_showAnimations = {};
         }
 
         return *this;
@@ -183,12 +185,107 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::showWithEffect(ShowAnimationType type, sf::Time duration)
+    {
+        show();
+
+        switch (type)
+        {
+            case ShowAnimationType::Fade:
+            {
+                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), 0, getTransparency(), duration));
+                setTransparency(0);
+                break;
+            }
+            case ShowAnimationType::SlideToRight:
+            {
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{-getFullSize().x, getPosition().y}, getPosition(), duration));
+                setPosition({-getSize().x, getPosition().y});
+                break;
+            }
+            case ShowAnimationType::SlideToLeft:
+            {
+                if (getParent())
+                {
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getParent()->getSize().x, getPosition().y}, getPosition(), duration));
+                    setPosition({getParent()->getSize().x, getPosition().y});
+                }
+                else
+                    sf::err() << "TGUI Warning: showWithEffect(SlideToLeft) does not work before widget has a parent." << std::endl;
+
+                break;
+            }
+            case ShowAnimationType::SlideToBottom:
+            {
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, -getFullSize().x}, getPosition(), duration));
+                setPosition({getPosition().x, -getSize().x});
+                break;
+            }
+            case ShowAnimationType::SlideToTop:
+            {
+                if (getParent())
+                {
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, getParent()->getSize().y}, getPosition(), duration));
+                    setPosition({getPosition().x, getParent()->getSize().y});
+                }
+                else
+                    sf::err() << "TGUI Warning: showWithEffect(SlideToTop) does not work before widget has a parent." << std::endl;
+
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Widget::hide()
     {
         m_visible = false;
 
         // If the widget is focused then it must be unfocused
         unfocus();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::hideWithEffect(ShowAnimationType type, sf::Time duration)
+    {
+        switch (type)
+        {
+            case ShowAnimationType::Fade:
+            {
+                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), getTransparency(), 0, duration, std::bind(&Widget::hide, this)));
+                break;
+            }
+            case ShowAnimationType::SlideToRight:
+            {
+                if (getParent())
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), sf::Vector2f{getParent()->getSize().x, getPosition().y}, duration, std::bind(&Widget::hide, this)));
+                else
+                    sf::err() << "TGUI Warning: showWithEffect(SlideToRight) does not work before widget has a parent." << std::endl;
+
+                break;
+            }
+            case ShowAnimationType::SlideToLeft:
+            {
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), sf::Vector2f{-getFullSize().x, getPosition().y}, duration, std::bind(&Widget::hide, this)));
+                break;
+            }
+            case ShowAnimationType::SlideToBottom:
+            {
+                if (getParent())
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), sf::Vector2f{getPosition().x, getParent()->getSize().y}, duration, std::bind(&Widget::hide, this)));
+                else
+                    sf::err() << "TGUI Warning: showWithEffect(SlideToBottom) does not work before widget has a parent." << std::endl;
+
+                break;
+            }
+            case ShowAnimationType::SlideToTop:
+            {
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), sf::Vector2f{getPosition().x, -getFullSize().x}, duration, std::bind(&Widget::hide, this)));
+                break;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -269,8 +366,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::update()
+    void Widget::update(sf::Time elapsedTime)
     {
+        m_animationTimeElapsed += elapsedTime;
+
+        for (unsigned int i = 0; i < m_showAnimations.size();)
+        {
+            if (m_showAnimations[i]->update(elapsedTime))
+                m_showAnimations.erase(m_showAnimations.begin() + i);
+            else
+                i++;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

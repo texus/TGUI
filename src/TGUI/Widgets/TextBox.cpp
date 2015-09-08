@@ -43,7 +43,6 @@ namespace tgui
     TextBox::TextBox()
     {
         m_callback.widgetType = "TextBox";
-        m_animatedWidget = true;
         m_draggableWidget = true;
 
         addSignal<sf::String>("TextChanged");
@@ -1704,8 +1703,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::update()
+    void TextBox::update(sf::Time elapsedTime)
     {
+        Widget::update(elapsedTime);
+
         // Only show/hide the caret every half second
         if (m_animationTimeElapsed >= sf::milliseconds(500))
         {

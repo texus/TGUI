@@ -1,5 +1,6 @@
 # TODO: Make sure all files are listed
 set(TGUI_SRC
+    Animation.cpp
     BoxLayout.cpp
     Clipboard.cpp
     Container.cpp

@@ -40,7 +40,6 @@ namespace tgui
     Label::Label()
     {
         m_callback.widgetType = "Label";
-        m_animatedWidget = true;
 
         addSignal<sf::String>("DoubleClicked");
 
@@ -233,8 +232,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::update()
+    void Label::update(sf::Time elapsedTime)
     {
+        Widget::update(elapsedTime);
+
         // When double-clicking, the second click has to come within 500 milliseconds
         if (m_animationTimeElapsed >= sf::milliseconds(500))
         {

@@ -41,7 +41,6 @@ namespace tgui
     EditBox::EditBox()
     {
         m_callback.widgetType = "EditBox";
-        m_animatedWidget = true;
         m_draggableWidget = true;
         m_allowFocus = true;
 
@@ -1139,8 +1138,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::update()
+    void EditBox::update(sf::Time elapsedTime)
     {
+        Widget::update(elapsedTime);
+
         // Only show/hide the caret every half second
         if (m_animationTimeElapsed >= sf::milliseconds(500))
         {

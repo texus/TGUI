@@ -36,7 +36,6 @@ namespace ext
     AnimatedPicture::AnimatedPicture()
     {
         m_callback.widgetType = "AnimatedPicture";
-        m_animatedWidget = true;
 
         addSignal("AnimationFinished");
     }
@@ -200,11 +199,13 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void AnimatedPicture::update()
+    void AnimatedPicture::update(sf::Time elapsedTime)
     {
         // Only continue when you are playing
         if (m_playing == false)
             return;
+
+        Widget::update(elapsedTime);
 
         // Check if the next frame should be displayed
         while (m_animationTimeElapsed > m_frameDuration[m_currentFrame])

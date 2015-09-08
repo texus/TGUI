@@ -34,7 +34,6 @@ namespace tgui
     Picture::Picture()
     {
         m_callback.widgetType = "Picture";
-        m_animatedWidget = true;
 
         addSignal("DoubleClicked");
     }
@@ -167,8 +166,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::update()
+    void Picture::update(sf::Time elapsedTime)
     {
+        Widget::update(elapsedTime);
+
         // When double-clicking, the second click has to come within 500 milliseconds
         if (m_animationTimeElapsed >= sf::milliseconds(500))
         {
