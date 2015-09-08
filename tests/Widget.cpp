@@ -84,20 +84,18 @@ TEST_CASE("[Widget]") {
     }
 
     SECTION("Tooltip") {
-        // Tooltip gets created when trying to access it when not not yet loaded
-        REQUIRE(widget->getToolTip() != nullptr);
-
-        widget->getToolTip()->setText("text");
-        REQUIRE(widget->getToolTip()->getText() == "text");
-
-        auto tooltip1 = std::make_shared<tgui::ToolTip>();
+        auto tooltip1 = std::make_shared<tgui::Label>();
         tooltip1->setText("some text");
         widget->setToolTip(tooltip1);
-        REQUIRE(widget->getToolTip()->getText() == "some text");
-        
-        // If new tooltip has an empty text, the current one is copied to it
-        auto tooltip2 = std::make_shared<tgui::ToolTip>();
+        REQUIRE(widget->getToolTip() == tooltip1);
+
+        // ToolTip does not has to be a label
+        auto tooltip2 = std::make_shared<tgui::Panel>();
         widget->setToolTip(tooltip2);
-        REQUIRE(widget->getToolTip()->getText() == "some text");
+        REQUIRE(widget->getToolTip() == tooltip2);
+
+        // ToolTip can be removed
+        widget->setToolTip(nullptr);
+        REQUIRE(widget->getToolTip() == nullptr);
     }
 }

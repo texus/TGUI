@@ -24,61 +24,15 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/ToolTip.hpp>
-#include <TGUI/Widgets/Button.hpp>
 
 TEST_CASE("[ToolTip]") {
-    tgui::ToolTip::Ptr tooltip = std::make_shared<tgui::ToolTip>();
-
-    SECTION("WidgetType") {
-        REQUIRE(tooltip->getWidgetType() == "ToolTip");
-    }
-
     SECTION("TimeToDisplay") {
         tgui::ToolTip::setTimeToDisplay(sf::milliseconds(280));
         REQUIRE(tgui::ToolTip::getTimeToDisplay() == sf::milliseconds(280));
     }
 
-    SECTION("Saving and loading from file") {
-        tgui::ToolTip::setTimeToDisplay(sf::milliseconds(280));
-
-        SECTION("independent tooltip") {
-            REQUIRE_NOTHROW(tooltip = std::make_shared<tgui::Theme>()->load("ToolTip"));
-
-            auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-            REQUIRE_NOTHROW(tooltip = theme->load("ToolTip"));
-
-            auto parent = std::make_shared<tgui::GuiContainer>();
-            parent->add(tooltip);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileToolTip1.txt"));
-
-            parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileToolTip1.txt"));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileToolTip2.txt"));
-            REQUIRE(compareFiles("WidgetFileToolTip1.txt", "WidgetFileToolTip2.txt"));
-        }
-
-        SECTION("tooltip in widget") {
-            auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-            tgui::Button::Ptr button = theme->load("Button");
-            tooltip = theme->load("ToolTip");
-            REQUIRE(tooltip->getPrimaryLoadingParameter() == "resources/Black.txt");
-            REQUIRE(tooltip->getSecondaryLoadingParameter() == "tooltip");
-
-            tooltip->setText("ToolTip text");
-            button->setToolTip(tooltip);
-            
-            auto parent = std::make_shared<tgui::GuiContainer>();
-            parent->add(button, "Name");
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileToolTip3.txt"));
-
-            parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileToolTip3.txt"));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileToolTip4.txt"));
-            REQUIRE(compareFiles("WidgetFileToolTip3.txt", "WidgetFileToolTip4.txt"));
-        }
+    SECTION("DistanceToMouse") {
+        tgui::ToolTip::setDistanceToMouse({5, 5});
+        REQUIRE(tgui::ToolTip::getDistanceToMouse() == sf::Vector2f(5, 5));
     }
 }
