@@ -298,7 +298,12 @@ namespace tgui
                     std::advance(c, 6);
                 }
                 else
-                    throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket."};
+                {
+                    if (word.empty())
+                        throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Expected 'Part' or 'Middle' in front of opening bracket."};
+                    else
+                        throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket. Expected 'Part' or 'Middle'."};
+                }
 
                 auto closeBracketPos = value.find(')', c - value.begin());
                 if (closeBracketPos != std::string::npos)
