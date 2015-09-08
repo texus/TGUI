@@ -151,7 +151,7 @@ TextBox {
     Scrollbar                   : "Scrollbar";
 }
 
-Tooltip {
+Label.Tooltip {
     TextColor       : rgb(190, 190, 190);
     BackgroundColor : rgb( 80,  80,  80);
     BorderColor     : rgb(  0,   0,   0);

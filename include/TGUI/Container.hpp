@@ -412,11 +412,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
-        // Show the tooltip when the widget is located below the mouse.
-        // Returns its tooltip or the tooltip from a child widget if the mouse is on top of the widget.
-        // A nullptr is returned when the mouse is not on top of the widget or when the tooltip is empty.
+        // Show the tool tip when the widget is located below the mouse.
+        // Returns its tool tip or the tool tip from a child widget if the mouse is on top of the widget.
+        // A nullptr is returned when the mouse is not on top of the widget or when the tool tip is empty.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::shared_ptr<ToolTip> askToolTip(sf::Vector2f mousePos);
+        virtual Widget::Ptr askToolTip(sf::Vector2f mousePos) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

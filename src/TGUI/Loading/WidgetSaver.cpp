@@ -39,7 +39,6 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Widgets/ToolTip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -76,9 +75,7 @@ namespace tgui
             SET_PROPERTY("Transparency", tgui::to_string(widget->getTransparency()));
 
         /// TODO: Font
-
-        if (!widget->getToolTip()->getText().isEmpty())
-            node->children.emplace_back(tgui::WidgetSaver::getSaveFunction("ToolTip")(tgui::WidgetConverter{widget->getToolTip()}));
+        /// TODO: ToolTip
 
         if (widget->getRenderer())
         {
@@ -456,15 +453,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API std::shared_ptr<DataIO::Node> saveToolTip(ToolTip::Ptr tooltip)
-    {
-        auto node = saveLabel(tooltip);
-        SET_PROPERTY("TimeToDisplay", tgui::to_string(tooltip->getTimeToDisplay().asSeconds()));
-        return node;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -496,8 +484,7 @@ namespace tgui
             {"slider", saveSlider},
             {"spinbutton", saveSpinButton},
             {"tab", saveTab},
-            {"textbox", saveTextBox},
-            {"tooltip", saveToolTip}
+            {"textbox", saveTextBox}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

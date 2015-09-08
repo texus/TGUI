@@ -599,23 +599,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ToolTip::Ptr Container::askToolTip(sf::Vector2f mousePos)
+    Widget::Ptr Container::askToolTip(sf::Vector2f mousePos)
     {
         if (mouseOnWidget(mousePos.x, mousePos.y))
         {
-            ToolTip::Ptr tooltip = nullptr;
+            Widget::Ptr toolTip = nullptr;
 
             mousePos -= getPosition() + getWidgetsOffset();
 
             Widget::Ptr widget = mouseOnWhichWidget(mousePos.x, mousePos.y);
             if (widget)
             {
-                tooltip = widget->askToolTip(mousePos);
-                if (tooltip)
-                    return tooltip;
+                toolTip = widget->askToolTip(mousePos);
+                if (toolTip)
+                    return toolTip;
             }
 
-            if (m_tooltip && getToolTip()->getText() != "")
+            if (m_toolTip)
                 return getToolTip();
         }
 

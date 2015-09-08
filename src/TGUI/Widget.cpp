@@ -72,15 +72,15 @@ namespace tgui
         m_animatedWidget {copy.m_animatedWidget},
         m_draggableWidget{copy.m_draggableWidget},
         m_containerWidget{copy.m_containerWidget},
-        m_tooltip        {ToolTip::copy(copy.m_tooltip)},
         m_font           {copy.m_font}
     {
         m_callback.widget = this;
 
+        if (copy.m_toolTip != nullptr)
+            m_toolTip = copy.m_toolTip->clone();
+
         if (copy.m_renderer != nullptr)
             m_renderer = copy.m_renderer->clone(this);
-        else
-            m_renderer = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,9 +105,13 @@ namespace tgui
             m_animatedWidget  = right.m_animatedWidget;
             m_draggableWidget = right.m_draggableWidget;
             m_containerWidget = right.m_containerWidget;
-            m_tooltip         = ToolTip::copy(right.m_tooltip);
             m_font            = right.m_font;
             m_callback.widget = this;
+
+            if (right.m_toolTip != nullptr)
+                m_toolTip = right.m_toolTip->clone();
+            else
+                m_toolTip = nullptr;
 
             if (right.m_renderer != nullptr)
                 m_renderer = right.m_renderer->clone(this);
@@ -240,26 +244,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::setToolTip(ToolTip::Ptr tooltip)
+    void Widget::setToolTip(Widget::Ptr toolTip)
     {
-        sf::String oldToolTipText;
-        if (m_tooltip)
-            oldToolTipText = getToolTip()->getText();
-
-        m_tooltip = tooltip;
-
-        if ((oldToolTipText != "") && (tooltip->getText() == ""))
-            m_tooltip->setText(oldToolTipText);
+        m_toolTip = toolTip;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ToolTip::Ptr Widget::getToolTip()
+    Widget::Ptr Widget::getToolTip()
     {
-        if (!m_tooltip)
-            m_tooltip = std::make_shared<ToolTip>();
-
-        return m_tooltip;
+        return m_toolTip;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -352,9 +346,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ToolTip::Ptr Widget::askToolTip(sf::Vector2f mousePos)
+    Widget::Ptr Widget::askToolTip(sf::Vector2f mousePos)
     {
-        if (m_tooltip && mouseOnWidget(mousePos.x, mousePos.y) && getToolTip()->getText() != "")
+        if (m_toolTip && mouseOnWidget(mousePos.x, mousePos.y))
             return getToolTip();
         else
             return nullptr;

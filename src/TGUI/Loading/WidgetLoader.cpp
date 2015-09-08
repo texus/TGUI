@@ -42,7 +42,6 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Widgets/ToolTip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -121,7 +120,7 @@ namespace tgui
             widget->setTransparency(transparency);
         }
 
-        /// TODO: Font (and Theme?)
+        /// TODO: Font and ToolTip (and Theme?)
 
         for (auto& childNode : node->children)
         {
@@ -130,8 +129,6 @@ namespace tgui
                 for (auto& pair : childNode->propertyValuePairs)
                     widget->getRenderer()->setProperty(pair.first, pair.second->value);
             }
-            else if (toLower(childNode->name) == "tooltip")
-                widget->setToolTip(std::dynamic_pointer_cast<tgui::ToolTip>(tgui::WidgetLoader::getLoadFunction("ToolTip")(childNode)));
         }
 
         return widget;
@@ -146,7 +143,7 @@ namespace tgui
 
         for (auto& childNode : node->children)
         {
-            if ((toLower(childNode->name) != "renderer") && (toLower(childNode->name) != "tooltip"))
+            if (toLower(childNode->name) != "renderer")
             {
                 auto nameSeparator = childNode->name.find('.');
                 auto widgetType = childNode->name.substr(0, nameSeparator);
@@ -711,23 +708,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API Widget::Ptr loadToolTip(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
-    {
-        ToolTip::Ptr tooltip;
-        if (widget)
-            tooltip = std::static_pointer_cast<ToolTip>(widget);
-        else
-            tooltip = std::make_shared<ToolTip>();
-
-        loadLabel(node, tooltip);
-        if (node->propertyValuePairs["timetodisplay"])
-            tooltip->setTimeToDisplay(sf::seconds(tgui::stof(node->propertyValuePairs["timetodisplay"]->value)));
-
-        return tooltip;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -759,8 +739,7 @@ namespace tgui
             {"slider", std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},
             {"spinbutton", std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},
             {"tab", std::bind(loadTab, std::placeholders::_1, std::shared_ptr<Tab>{})},
-            {"textbox", std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})},
-            {"tooltip", std::bind(loadToolTip, std::placeholders::_1, std::shared_ptr<ToolTip>{})}
+            {"textbox", std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

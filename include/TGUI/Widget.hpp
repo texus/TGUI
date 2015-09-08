@@ -37,7 +37,6 @@
 
 namespace tgui
 {
-    class ToolTip;
     class BaseTheme;
     class Container;
     class WidgetRenderer;
@@ -342,28 +341,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the tooltip that should be displayed when hovering over the widget
+        /// @brief Sets the tool tip that should be displayed when hovering over the widget
         ///
-        /// @param tooltip  The new tooltip
+        /// @param toolTip  Any widget that you want to use as a tool tip (usually a Label)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setToolTip(std::shared_ptr<ToolTip> tooltip);
+        void setToolTip(Widget::Ptr toolTip);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the tooltip that is displayed when hovering over the widget
+        /// @brief Returns the tool tip that is displayed when hovering over the widget
         ///
-        /// @return The tooltip
-        ///
-        /// This function is guaranteed to return a valid tooltip. It will never return a nullptr.
-        ///
-        /// This function can be used to change the text of the tooltip.
-        /// @code
-        /// widget->getToolTip()->setText("Hello");
-        /// @endcode
+        /// @return The widget that is used as tool tip or nullptr when no tool tip has been set
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<ToolTip> getToolTip();
+        Widget::Ptr getToolTip();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -488,11 +480,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
-        // Show the tooltip when the widget is located below the mouse.
-        // Returns its tooltip or the tooltip from a child widget if the mouse is on top of the widget.
-        // A nullptr is returned when the mouse is not on top of the widget or when the tooltip is empty.
+        // Show the tool tip when the widget is located below the mouse.
+        // Returns its tool tip or the tool tip from a child widget if the mouse is on top of the widget.
+        // A nullptr is returned when the mouse is not on top of the widget or when the tool tip is empty.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::shared_ptr<ToolTip> askToolTip(sf::Vector2f mousePos);
+        virtual Widget::Ptr askToolTip(sf::Vector2f mousePos);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -590,8 +582,8 @@ namespace tgui
         // This is set to true for widgets that store other widgets inside them
         bool m_containerWidget = false;
 
-        // The tooltip connected to the widget
-        std::shared_ptr<ToolTip> m_tooltip = nullptr;
+        // The tool tip connected to the widget
+        Widget::Ptr m_toolTip = nullptr;
 
         // The font that the widget can use
         std::shared_ptr<sf::Font> m_font = nullptr;

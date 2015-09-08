@@ -32,32 +32,34 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Time ToolTip::m_timeToDisplay = sf::milliseconds(500);
+    sf::Vector2f ToolTip::m_distanceToMouse = {5, 20};
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ToolTip::ToolTip()
+    void ToolTip::setTimeToDisplay(const sf::Time& timeToDisplay)
     {
-        m_callback.widgetType = "ToolTip";
-
-        setPosition(5, 20);
-
-        m_background.setFillColor({245, 245, 245});
-        m_text.setColor({60, 60, 60});
-
-        getRenderer()->setBorders(1);
-        getRenderer()->setPadding(2);
-
-        setTextSize(16);
+        m_timeToDisplay = timeToDisplay;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ToolTip::Ptr ToolTip::copy(ToolTip::ConstPtr tooltip)
+    sf::Time ToolTip::getTimeToDisplay()
     {
-        if (tooltip)
-            return std::make_shared<ToolTip>(*tooltip);
-        else
-            return nullptr;
+        return m_timeToDisplay;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ToolTip::setDistanceToMouse(const sf::Vector2f& distance)
+    {
+        m_distanceToMouse = distance;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ToolTip::getDistanceToMouse()
+    {
+        return m_distanceToMouse;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

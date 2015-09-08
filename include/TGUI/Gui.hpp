@@ -492,7 +492,7 @@ namespace tgui
         // Internal container to store all widgets
         GuiContainer::Ptr m_container = std::make_shared<GuiContainer>();
 
-        std::shared_ptr<ToolTip> m_visibleToolTip = nullptr;
+        Widget::Ptr m_visibleToolTip = nullptr;
         sf::Time m_tooltipTime;
         bool m_tooltipPossible = false;
         sf::Vector2f m_lastMousePos;

@@ -162,7 +162,8 @@ namespace tgui
             // If a tooltip is visible then hide it now
             if (m_visibleToolTip != nullptr)
             {
-                m_visibleToolTip->setPosition(m_visibleToolTip->getPosition() - m_lastMousePos);
+                // Correct the position of the tool tip so that it is relative again
+                m_visibleToolTip->setPosition(m_visibleToolTip->getPosition() - ToolTip::getDistanceToMouse() - m_lastMousePos);
 
                 remove(m_visibleToolTip);
                 m_visibleToolTip = nullptr;
@@ -373,13 +374,14 @@ namespace tgui
             m_tooltipTime += elapsedTime;
             if (m_tooltipTime >= ToolTip::getTimeToDisplay())
             {
-                ToolTip::Ptr tooltip = m_container->askToolTip(m_lastMousePos);
+                Widget::Ptr tooltip = m_container->askToolTip(m_lastMousePos);
                 if (tooltip)
                 {
                     m_visibleToolTip = tooltip;
                     add(tooltip, "#TGUI_INTERNAL$ToolTip#");
 
-                    tooltip->setPosition(m_lastMousePos + tooltip->getPosition());
+                    // Change the relative tool tip position in an absolute one
+                    tooltip->setPosition(m_lastMousePos + ToolTip::getDistanceToMouse() + tooltip->getPosition());
                 }
 
                 m_tooltipPossible = false;
