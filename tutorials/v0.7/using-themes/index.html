@@ -4,22 +4,50 @@ title: Using Themes/skins
 breadcrumb: themes
 redirect_from: "/tutorials/v07/using-themes/index.html"
 ---
-
-<p class="SmallBottomMargin">In the <a href="../creating-widgets/">creating widgets tutorial</a> you were shown that you can just create a widget without needing any resources.</p>
+<div>
+  <p class="SmallBottomMargin">In the <a href="../creating-widgets/">creating widgets tutorial</a> you were shown that you can just create a widget without needing any resources.</p>
 {% highlight c++ %}
 tgui::EditBox::Ptr editBox = std::make_shared<tgui::EditBox>();
 {% endhighlight %}
 
-<p class="SmallBottomMargin">But you can of course completely change the look of your widgets. The first thing to do it creating a theme object. The following line will create the theme object based on the Black.txt theme file that is shipped with TGUI.</p>
+  <p class="SmallBottomMargin">But you can of course completely change the look of your widgets. The first thing to do it creating a theme object. The following line will create the theme object based on the Black.txt theme file that is shipped with TGUI.</p>
 {% highlight c++ %}
 tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("TGUI/widgets/Black.txt");
 {% endhighlight %}
 
-<p class="SmallBottomMargin">The theme object now contains all the information needed to load your widgets. You choose the widget to load by passing the name of the section in the theme file. Unless you e.g. have multiple edit box skins in the same file you will most likely just use the name of the widget like it is done in Black.txt. To load the edit box you can now just write this:</p>
+  <p class="SmallBottomMargin">The theme object now contains all the information needed to load your widgets. You choose the widget to load by passing the name of the section in the theme file. Unless you e.g. have multiple edit box skins in the same file you will most likely just use the name of the widget like it is done in Black.txt. To load the edit box you can now just write this:</p>
 {% highlight c++ %}
 tgui::EditBox::Ptr editBox = theme->load("EditBox");
 {% endhighlight %}
 
-<p>In the line above there are two things that should be noted. First of all, the "EditBox" string is case-insensitive, you can just as well use "editbox". Secondly, the load function can return any widget. To do that it returns a WidgetConverter object which gets implicitly converted to any widget that you assign it to. If you would try to assign it to a wrong type then an exception will be thrown.</p>
+  <p>In the line above there are two things that should be noted. First of all, the "EditBox" string is case-insensitive, you can just as well use "editbox". Secondly, the load function can return any widget. To do that it returns a WidgetConverter object which gets implicitly converted to any widget that you assign it to. If you would try to assign it to a wrong type then an exception will be thrown.</p>
+</div>
 
-<p>There are many more things that can be said about the themes, but they will be added to this tutorial later. For now you will have to take a look at the documentation if you want to e.g. change the look of all your widgets with just one function call on the theme object.</p>
+<div>
+  <h3 id="theme_file_contents">Theme file contents</h3>
+  <p class="SmallBottomMargin">Above I have explained how to load sections from the theme file, but how do these theme files actually look? The theme files that are shipped with TGUI will contains sections like these:</p>
+{% highlight css %}
+EditBox {
+    Property1: Value1;
+    Property2: Value2;
+}
+{% endhighlight %}
+
+  <p class="SmallBottomMargin">That explains the "EditBox" string that you passed to the load function of the theme. But what if you want to create multiple edit box sections in the same file? The sections have to contain two parts in such case: the type of the widget and the name of the section.</p>
+{% highlight css %}
+EditBox.MySectionName {
+    Property1: Value1;
+    Property2: Value2;
+}
+{% endhighlight %}
+
+  <p class="SmallBottomMargin">The original "EditBox" section was actually being translated to "EditBox.EditBox" behind the scenes. Don't forget that the "EditBox.MySectionName" section should be loaded like this:</p>
+{% highlight c++ %}
+tgui::EditBox::Ptr editBox = theme->load("MySectionName");
+{% endhighlight %}
+</div>
+
+<div>
+  <h3 id="more">More to come</h3>
+  <p>There are many more things that can be said about the themes, but they will be added to this tutorial later. For now you will have to take a look at the documentation if you want to e.g. change the look of all your widgets with just one function call on the theme object.</p>
+</div>
