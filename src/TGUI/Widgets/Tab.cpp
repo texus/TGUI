@@ -119,7 +119,7 @@ namespace tgui
         // Create the new tab
         Label newTab;
         newTab.setTextFont(m_font);
-        newTab.setTextColor(getRenderer()->m_textColor);
+        newTab.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         newTab.setTextSize(getTextSize());
         newTab.setText(text);
 
@@ -238,11 +238,11 @@ namespace tgui
             return;
 
         if (m_selectedTab >= 0)
-            m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_textColor);
+            m_tabTexts[m_selectedTab].setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
 
         // Select the tab
         m_selectedTab = static_cast<int>(index);
-        m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_selectedTextColor);
+        m_tabTexts[m_selectedTab].setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
 
         // Send the callback
         m_callback.text = m_tabTexts[index].getText();
@@ -254,7 +254,7 @@ namespace tgui
     void Tab::deselect()
     {
         if (m_selectedTab >= 0)
-            m_tabTexts[m_selectedTab].setTextColor(getRenderer()->m_textColor);
+            m_tabTexts[m_selectedTab].setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
 
         m_selectedTab = -1;
     }
@@ -381,9 +381,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tab::setTransparency(unsigned char transparency)
+    void Tab::setOpacity(float opacity)
     {
-        Widget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
         if (getRenderer()->m_textureNormal.isLoaded() && getRenderer()->m_textureSelected.isLoaded())
         {
@@ -396,6 +396,12 @@ namespace tgui
             for (auto it = getRenderer()->m_texturesSelected.begin(); it != getRenderer()->m_texturesSelected.end(); ++it)
                 it->setColor(sf::Color(255, 255, 255, m_opacity));
         }
+
+        for (auto& tabText : m_tabTexts)
+            tabText.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+
+        if (m_selectedTab >= 0)
+            m_tabTexts[m_selectedTab].setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -713,6 +719,12 @@ namespace tgui
     void TabRenderer::setTextColor(const sf::Color& color)
     {
         m_textColor = color;
+
+        for (auto& tabText : m_tab->m_tabTexts)
+            tabText.setTextColor(calcColorOpacity(m_textColor, m_tab->getOpacity()));
+
+        if (m_tab->m_selectedTab >= 0)
+            m_tab->m_tabTexts[m_tab->m_selectedTab].setTextColor(calcColorOpacity(m_selectedTextColor, m_tab->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -720,6 +732,9 @@ namespace tgui
     void TabRenderer::setSelectedTextColor(const sf::Color& color)
     {
         m_selectedTextColor = color;
+
+        if (m_tab->m_selectedTab >= 0)
+            m_tab->m_tabTexts[m_tab->m_selectedTab].setTextColor(calcColorOpacity(m_selectedTextColor, m_tab->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -733,12 +748,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TabRenderer::setBackgroundColor(const sf::Color& color)
+    {
+        m_backgroundColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabRenderer::setSelectedBackgroundColor(const sf::Color& color)
+    {
+        m_selectedBackgroundColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabRenderer::setBorderColor(const sf::Color& color)
+    {
+        m_borderColor = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TabRenderer::setNormalTexture(const Texture& texture)
     {
         m_textureNormal = texture;
         if (m_textureNormal.isLoaded())
         {
-            m_textureNormal.setColor({255, 255, 255, m_tab->getTransparency()});
+            m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_tab->getOpacity() * 255)});
 
             if (m_textureSelected.isLoaded())
             {
@@ -763,7 +799,7 @@ namespace tgui
         m_textureSelected = texture;
         if (m_textureSelected.isLoaded())
         {
-            m_textureSelected.setColor({255, 255, 255, m_tab->getTransparency()});
+            m_textureSelected.setColor({255, 255, 255, static_cast<sf::Uint8>(m_tab->getOpacity() * 255)});
 
             if (m_textureNormal.isLoaded())
             {
@@ -803,9 +839,9 @@ namespace tgui
                 background.setPosition({positionX, m_tab->getPosition().y});
 
                 if (m_tab->m_selectedTab == static_cast<int>(i))
-                    background.setFillColor(m_selectedBackgroundColor);
+                    background.setFillColor(calcColorOpacity(m_selectedBackgroundColor, m_tab->getOpacity()));
                 else
-                    background.setFillColor(m_backgroundColor);
+                    background.setFillColor(calcColorOpacity(m_backgroundColor, m_tab->getOpacity()));
 
                 target.draw(background, states);
             }
@@ -815,7 +851,7 @@ namespace tgui
             {
                 sf::RectangleShape border({(m_borders.left + m_borders.right / 2.0f), m_tab->m_tabHeight});
                 border.setPosition(positionX + m_tab->m_tabWidth[i], m_tab->getPosition().y);
-                border.setFillColor(m_borderColor);
+                border.setFillColor(calcColorOpacity(m_borderColor, m_tab->getOpacity()));
                 target.draw(border, states);
             }
 
@@ -832,7 +868,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_tab->getOpacity()));
             target.draw(border, states);
 
             // Draw top border

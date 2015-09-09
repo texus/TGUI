@@ -537,12 +537,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setTransparency(unsigned char transparency)
+    void ListBox::setOpacity(float opacity)
     {
-        Widget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
         if (m_scroll != nullptr)
-            m_scroll->setTransparency(m_opacity);
+            m_scroll->setOpacity(m_opacity);
+
+        updateItemColors();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -858,10 +860,13 @@ namespace tgui
     void ListBox::updateItemColors()
     {
         for (auto& item : m_items)
-            item.setTextColor(getRenderer()->m_textColor);
+            item.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+
+        if ((m_hoveringItem >= 0) && (m_selectedItem != m_hoveringItem))
+            m_items[m_hoveringItem].setTextColor(calcColorOpacity(getRenderer()->m_hoverTextColor, getOpacity()));
 
         if (m_selectedItem >= 0)
-            m_items[m_selectedItem].setTextColor(getRenderer()->m_selectedTextColor);
+            m_items[m_selectedItem].setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -981,7 +986,7 @@ namespace tgui
         if (m_selectedItem >= 0)
         {
             sf::RectangleShape back({getSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)});
-            back.setFillColor(getRenderer()->m_selectedBackgroundColor);
+            back.setFillColor(calcColorOpacity(getRenderer()->m_selectedBackgroundColor, getOpacity()));
             back.setPosition({getPosition().x + padding.left, getPosition().y + padding.top + (m_selectedItem * m_itemHeight)});
 
             if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
@@ -994,7 +999,7 @@ namespace tgui
         if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && (getRenderer()->m_hoverBackgroundColor != sf::Color::Transparent))
         {
             sf::RectangleShape back({getSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)});
-            back.setFillColor(getRenderer()->m_hoverBackgroundColor);
+            back.setFillColor(calcColorOpacity(getRenderer()->m_hoverBackgroundColor, getOpacity()));
             back.setPosition({getPosition().x + padding.left, getPosition().y + padding.top + (m_hoveringItem * m_itemHeight)});
 
             if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
@@ -1186,27 +1191,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBoxRenderer::setTextColor(const sf::Color& textColor)
+    void ListBoxRenderer::setTextColor(const sf::Color& color)
     {
-        m_textColor = textColor;
-        m_hoverTextColor = textColor;
+        setTextColorNormal(color);
+        setTextColorHover(color);
+    }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBoxRenderer::setTextColorNormal(const sf::Color& color)
+    {
+        m_textColor = color;
         m_listBox->updateItemColors();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBoxRenderer::setTextColorNormal(const sf::Color& textColor)
+    void ListBoxRenderer::setTextColorHover(const sf::Color& color)
     {
-        m_textColor = textColor;
-        m_listBox->updateItemColors();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setTextColorHover(const sf::Color& textColor)
-    {
-        m_hoverTextColor = textColor;
+        m_hoverTextColor = color;
         m_listBox->updateItemColors();
     }
 
@@ -1248,7 +1251,7 @@ namespace tgui
         {
             m_backgroundTexture.setPosition(m_listBox->getPosition());
             m_backgroundTexture.setSize(m_listBox->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, m_listBox->getTransparency()});
+            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_listBox->getOpacity() * 255)});
         }
     }
 
@@ -1284,7 +1287,7 @@ namespace tgui
         {
             sf::RectangleShape background(m_listBox->getSize());
             background.setPosition(m_listBox->getPosition());
-            background.setFillColor(m_backgroundColor);
+            background.setFillColor(calcColorOpacity(m_backgroundColor, m_listBox->getOpacity()));
             target.draw(background, states);
         }
 
@@ -1297,7 +1300,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_listBox->getOpacity()));
             target.draw(border, states);
 
             // Draw top border

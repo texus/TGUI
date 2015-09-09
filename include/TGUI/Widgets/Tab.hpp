@@ -368,16 +368,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the transparency of the widget.
+        /// @brief Changes the opacity of the widget.
         ///
-        /// @param transparency  The transparency of the widget.
-        ///                      0 is completely transparent, while 255 (default) means fully opaque.
-        ///
-        /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
-        /// be changed. You must change them yourself by setting the alpha channel of the color.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setTransparency(unsigned char transparency) override;
+        virtual void setOpacity(float opacity) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -565,10 +561,7 @@ namespace tgui
         /// Note that this color is ignored when a normal and selected image were set.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& color)
-        {
-            m_backgroundColor = color;
-        }
+        void setBackgroundColor(const sf::Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -579,10 +572,7 @@ namespace tgui
         /// Note that this color is ignored when a normal and selected image were set.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSelectedBackgroundColor(const sf::Color& color)
-        {
-            m_selectedBackgroundColor = color;
-        }
+        void setSelectedBackgroundColor(const sf::Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -591,10 +581,7 @@ namespace tgui
         /// @param color  The new border color.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBorderColor(const sf::Color& color)
-        {
-            m_borderColor = color;
-        }
+        void setBorderColor(const sf::Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

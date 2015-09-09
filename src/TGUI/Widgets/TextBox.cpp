@@ -425,12 +425,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::setTransparency(unsigned char transparency)
+    void TextBox::setOpacity(float opacity)
     {
-        Widget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
         if (m_scroll != nullptr)
-            m_scroll->setTransparency(m_opacity);
+            m_scroll->setOpacity(m_opacity);
+
+        m_textBeforeSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        m_textAfterSelection1.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        m_textAfterSelection2.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        m_textSelection1.setColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
+        m_textSelection2.setColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1788,7 +1794,7 @@ namespace tgui
         {
             sf::RectangleShape rect{{selectionRect.width, selectionRect.height}};
             rect.setPosition({selectionRect.left, selectionRect.top});
-            rect.setFillColor(getRenderer()->m_selectedTextBgrColor);
+            rect.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextBgrColor, getOpacity()));
             target.draw(rect, states);
         }
 
@@ -1810,7 +1816,7 @@ namespace tgui
             {
                 sf::RectangleShape caret({getRenderer()->m_caretWidth, static_cast<float>(m_lineHeight)});
                 caret.setPosition(m_caretPosition.x - (getRenderer()->m_caretWidth * 0.5f), static_cast<float>(m_caretPosition.y));
-                caret.setFillColor(getRenderer()->m_caretColor);
+                caret.setFillColor(calcColorOpacity(getRenderer()->m_caretColor, getOpacity()));
                 target.draw(caret, states);
             }
         }
@@ -1936,9 +1942,9 @@ namespace tgui
         else if (property == "backgroundcolor")
             return m_backgroundColor;
         else if (property == "textcolor")
-            return m_textBox->m_textBeforeSelection.getColor();
+            return m_textColor;
         else if (property == "selectedtextcolor")
-            return m_textBox->m_textSelection1.getColor();
+            return m_selectedTextColor;
         else if (property == "selectedtextbackgroundcolor")
             return m_selectedTextBgrColor;
         else if (property == "caretcolor")
@@ -1962,8 +1968,8 @@ namespace tgui
         else
             pairs["BackgroundColor"] = m_backgroundColor;
 
-        pairs["TextColor"] = m_textBox->m_textBeforeSelection.getColor();
-        pairs["SelectedTextColor"] = m_textBox->m_textSelection1.getColor();
+        pairs["TextColor"] = m_textColor;
+        pairs["SelectedTextColor"] = m_selectedTextColor;
         pairs["SelectedTextBackgroundColor"] = m_selectedTextBgrColor;
         pairs["CaretColor"] = m_caretColor;
         pairs["BorderColor"] = m_borderColor;
@@ -1974,33 +1980,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setBackgroundColor(const sf::Color& backgroundColor)
+    void TextBoxRenderer::setBackgroundColor(const sf::Color& color)
     {
-        m_backgroundColor = backgroundColor;
+        m_backgroundColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setTextColor(const sf::Color& textColor)
+    void TextBoxRenderer::setTextColor(const sf::Color& color)
     {
-        m_textBox->m_textBeforeSelection.setColor(textColor);
-        m_textBox->m_textAfterSelection1.setColor(textColor);
-        m_textBox->m_textAfterSelection2.setColor(textColor);
+        m_textColor = color;
+        m_textBox->m_textBeforeSelection.setColor(calcColorOpacity(m_textColor, m_textBox->getOpacity()));
+        m_textBox->m_textAfterSelection1.setColor(calcColorOpacity(m_textColor, m_textBox->getOpacity()));
+        m_textBox->m_textAfterSelection2.setColor(calcColorOpacity(m_textColor, m_textBox->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setSelectedTextColor(const sf::Color& selectedTextColor)
+    void TextBoxRenderer::setSelectedTextColor(const sf::Color& color)
     {
-        m_textBox->m_textSelection1.setColor(selectedTextColor);
-        m_textBox->m_textSelection2.setColor(selectedTextColor);
+        m_selectedTextColor = color;
+        m_textBox->m_textSelection1.setColor(calcColorOpacity(m_selectedTextColor, m_textBox->getOpacity()));
+        m_textBox->m_textSelection2.setColor(calcColorOpacity(m_selectedTextColor, m_textBox->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
+    void TextBoxRenderer::setSelectedTextBackgroundColor(const sf::Color& color)
     {
-        m_selectedTextBgrColor = selectedTextBackgroundColor;
+        m_selectedTextBgrColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2033,7 +2041,7 @@ namespace tgui
         {
             m_backgroundTexture.setPosition(m_textBox->getPosition());
             m_backgroundTexture.setSize(m_textBox->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, m_textBox->getTransparency()});
+            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_textBox->getOpacity() * 255)});
         }
     }
 
@@ -2074,7 +2082,7 @@ namespace tgui
         {
             sf::RectangleShape background(m_textBox->getSize());
             background.setPosition(m_textBox->getPosition());
-            background.setFillColor(m_backgroundColor);
+            background.setFillColor(calcColorOpacity(m_backgroundColor, m_textBox->getOpacity()));
             target.draw(background, states);
         }
 
@@ -2087,7 +2095,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_textBox->getOpacity()));
             target.draw(border, states);
 
             // Draw top border

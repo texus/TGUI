@@ -42,7 +42,6 @@ namespace tgui
         m_renderer = std::make_shared<ButtonRenderer>(this);
         reload();
 
-        m_text.setTextColor(getRenderer()->m_textColorNormal);
         setSize(120, 30);
     }
 
@@ -161,14 +160,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::setTransparency(unsigned char transparency)
+    void Button::setOpacity(float opacity)
     {
-        ClickableWidget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
-        getRenderer()->m_textureNormal.setColor({255, 255, 255, m_opacity});
-        getRenderer()->m_textureHover.setColor({255, 255, 255, m_opacity});
-        getRenderer()->m_textureDown.setColor({255, 255, 255, m_opacity});
-        getRenderer()->m_textureFocused.setColor({255, 255, 255, m_opacity});
+        getRenderer()->m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureDown.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+
+        if (!m_mouseHover)
+            m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorNormal, getOpacity()));
+        else if (m_mouseHover && !m_mouseDown)
+            m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorHover, getOpacity()));
+        else if (m_mouseHover && m_mouseDown)
+            m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorDown, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,9 +270,9 @@ namespace tgui
         Widget::mouseEnteredWidget();
 
         if (m_mouseDown)
-            m_text.setTextColor(getRenderer()->m_textColorDown);
+            m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorDown, getOpacity()));
         else
-            m_text.setTextColor(getRenderer()->m_textColorHover);
+            m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorHover, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,7 +281,7 @@ namespace tgui
     {
         Widget::mouseLeftWidget();
 
-        m_text.setTextColor(getRenderer()->m_textColorNormal);
+        m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorNormal, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -465,11 +471,9 @@ namespace tgui
 
     void ButtonRenderer::setTextColor(const sf::Color& color)
     {
-        m_textColorNormal = color;
-        m_textColorHover = color;
-        m_textColorDown = color;
-
-        m_button->m_text.setTextColor(color);
+        setTextColorNormal(color);
+        setTextColorHover(color);
+        setTextColorDown(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -479,7 +483,7 @@ namespace tgui
         m_textColorNormal = color;
 
         if (!m_button->m_mouseHover)
-            m_button->m_text.setTextColor(color);
+            m_button->m_text.setTextColor(calcColorOpacity(m_textColorNormal, m_button->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -489,7 +493,7 @@ namespace tgui
         m_textColorHover = color;
 
         if (m_button->m_mouseHover && !m_button->m_mouseDown)
-            m_button->m_text.setTextColor(color);
+            m_button->m_text.setTextColor(calcColorOpacity(m_textColorHover, m_button->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -499,16 +503,16 @@ namespace tgui
         m_textColorDown = color;
 
         if (m_button->m_mouseHover && m_button->m_mouseDown)
-            m_button->m_text.setTextColor(color);
+            m_button->m_text.setTextColor(calcColorOpacity(m_textColorDown, m_button->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ButtonRenderer::setBackgroundColor(const sf::Color& color)
     {
-        m_backgroundColorNormal = color;
-        m_backgroundColorHover = color;
-        m_backgroundColorDown = color;
+        setBackgroundColorNormal(color);
+        setBackgroundColorHover(color);
+        setBackgroundColorDown(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -548,7 +552,7 @@ namespace tgui
         {
             m_textureNormal.setPosition(m_button->getPosition());
             m_textureNormal.setSize(m_button->getSize());
-            m_textureNormal.setColor({255, 255, 255, m_button->getTransparency()});
+            m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_button->getOpacity() * 255)});
         }
     }
 
@@ -561,7 +565,7 @@ namespace tgui
         {
             m_textureHover.setPosition(m_button->getPosition());
             m_textureHover.setSize(m_button->getSize());
-            m_textureHover.setColor({255, 255, 255, m_button->getTransparency()});
+            m_textureHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_button->getOpacity() * 255)});
         }
     }
 
@@ -574,7 +578,7 @@ namespace tgui
         {
             m_textureDown.setPosition(m_button->getPosition());
             m_textureDown.setSize(m_button->getSize());
-            m_textureDown.setColor({255, 255, 255, m_button->getTransparency()});
+            m_textureDown.setColor({255, 255, 255, static_cast<sf::Uint8>(m_button->getOpacity() * 255)});
         }
     }
 
@@ -587,7 +591,7 @@ namespace tgui
         {
             m_textureFocused.setPosition(m_button->getPosition());
             m_textureFocused.setSize(m_button->getSize());
-            m_textureFocused.setColor({255, 255, 255, m_button->getTransparency()});
+            m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_button->getOpacity() * 255)});
         }
     }
 
@@ -622,12 +626,12 @@ namespace tgui
             if (m_button->m_mouseHover)
             {
                 if (m_button->m_mouseDown)
-                    button.setFillColor(m_backgroundColorDown);
+                    button.setFillColor(calcColorOpacity(m_backgroundColorDown, m_button->getOpacity()));
                 else
-                    button.setFillColor(m_backgroundColorHover);
+                    button.setFillColor(calcColorOpacity(m_backgroundColorHover, m_button->getOpacity()));
             }
             else
-                button.setFillColor(m_backgroundColorNormal);
+                button.setFillColor(calcColorOpacity(m_backgroundColorNormal, m_button->getOpacity()));
 
             target.draw(button, states);
         }
@@ -641,7 +645,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_button->getOpacity()));
             target.draw(border, states);
 
             // Draw top border

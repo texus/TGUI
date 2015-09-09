@@ -99,7 +99,7 @@ namespace tgui
 
         newMenu.text.setTextFont(m_font);
         newMenu.text.setText(text);
-        newMenu.text.setTextColor(getRenderer()->m_textColor);
+        newMenu.text.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         newMenu.text.setTextSize(m_textSize);
 
         m_menus.push_back(std::move(newMenu));
@@ -126,7 +126,7 @@ namespace tgui
                 Label menuItem;
                 menuItem.setTextFont(m_font);
                 menuItem.setText(text);
-                menuItem.setTextColor(getRenderer()->m_textColor);
+                menuItem.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
                 menuItem.setTextSize(m_textSize);
 
                 m_menus[i].menuItems.push_back(std::move(menuItem));
@@ -230,6 +230,39 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MenuBar::setMinimumSubMenuWidth(float minimumWidth)
+    {
+        m_minimumSubMenuWidth = minimumWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::setOpacity(float opacity)
+    {
+        Widget::setOpacity(opacity);
+
+        for (unsigned int i = 0; i < m_menus.size(); ++i)
+        {
+            for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                m_menus[i].menuItems[j].setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+
+            m_menus[i].text.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        }
+
+        if (m_visibleMenu != -1)
+        {
+            if (m_menus[m_visibleMenu].selectedMenuItem != -1)
+            {
+                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+                m_menus[m_visibleMenu].selectedMenuItem = -1;
+            }
+
+            m_menus[m_visibleMenu].text.setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool MenuBar::mouseOnWidget(float x, float y)
     {
         // Check if the mouse is on top of the menu bar
@@ -284,18 +317,18 @@ namespace tgui
                     {
                         if (m_menus[m_visibleMenu].selectedMenuItem != -1)
                         {
-                            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(getRenderer()->m_textColor);
+                            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
                             m_menus[m_visibleMenu].selectedMenuItem = -1;
                         }
 
-                        m_menus[m_visibleMenu].text.setTextColor(getRenderer()->m_textColor);
+                        m_menus[m_visibleMenu].text.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
                         m_visibleMenu = -1;
                     }
 
                     // If this menu can be opened then do so
                     else if (!m_menus[i].menuItems.empty())
                     {
-                        m_menus[i].text.setTextColor(getRenderer()->m_selectedTextColor);
+                        m_menus[i].text.setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
                         m_visibleMenu = static_cast<int>(i);
                     }
 
@@ -359,7 +392,7 @@ namespace tgui
                             // If one of the menu items is selected then unselect it
                             if (m_menus[m_visibleMenu].selectedMenuItem != -1)
                             {
-                                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(getRenderer()->m_textColor);
+                                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
                                 m_menus[m_visibleMenu].selectedMenuItem = -1;
                             }
                         }
@@ -371,10 +404,7 @@ namespace tgui
                             // If this menu can be opened then do so
                             if (!m_menus[i].menuItems.empty())
                             {
-                                if (m_visibleMenu != -1)
-                                    m_menus[m_visibleMenu].text.setTextColor(getRenderer()->m_textColor);
-
-                                m_menus[i].text.setTextColor(getRenderer()->m_selectedTextColor);
+                                m_menus[i].text.setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
                                 m_visibleMenu = static_cast<int>(i);
                             }
                         }
@@ -393,11 +423,11 @@ namespace tgui
             {
                 // If another of the menu items is selected then unselect it
                 if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-                    m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(getRenderer()->m_textColor);
+                    m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
 
                 // Mark the item below the mouse as selected
                 m_menus[m_visibleMenu].selectedMenuItem = selectedMenuItem;
-                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(getRenderer()->m_selectedTextColor);
+                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
             }
         }
     }
@@ -429,7 +459,7 @@ namespace tgui
         // Menu items which are selected on mouse hover should not remain selected now that the mouse has left
         if ((m_visibleMenu != -1) && (m_menus[m_visibleMenu].selectedMenuItem != -1))
         {
-            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(getRenderer()->m_textColor);
+            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
             m_menus[m_visibleMenu].selectedMenuItem = -1;
         }
 
@@ -446,11 +476,11 @@ namespace tgui
             // If an item in that menu was selected then unselect it first
             if (m_menus[m_visibleMenu].selectedMenuItem != -1)
             {
-                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(getRenderer()->m_textColor);
+                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
                 m_menus[m_visibleMenu].selectedMenuItem = -1;
             }
 
-            m_menus[m_visibleMenu].text.setTextColor(getRenderer()->m_textColor);
+            m_menus[m_visibleMenu].text.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
             m_visibleMenu = -1;
         }
     }
@@ -628,10 +658,10 @@ namespace tgui
             for (unsigned int j = 0; j < m_menuBar->m_menus[i].menuItems.size(); ++j)
             {
                 if (m_menuBar->m_menus[i].selectedMenuItem != static_cast<int>(j))
-                    m_menuBar->m_menus[i].menuItems[j].setTextColor(textColor);
+                    m_menuBar->m_menus[i].menuItems[j].setTextColor(calcColorOpacity(m_textColor, m_menuBar->getOpacity()));
             }
 
-            m_menuBar->m_menus[i].text.setTextColor(textColor);
+            m_menuBar->m_menus[i].text.setTextColor(calcColorOpacity(m_textColor, m_menuBar->getOpacity()));
         }
     }
 
@@ -651,7 +681,7 @@ namespace tgui
         if (m_menuBar->m_visibleMenu != -1)
         {
             if (m_menuBar->m_menus[m_menuBar->m_visibleMenu].selectedMenuItem != -1)
-                m_menuBar->m_menus[m_menuBar->m_visibleMenu].menuItems[m_menuBar->m_menus[m_menuBar->m_visibleMenu].selectedMenuItem].setTextColor(selectedTextColor);
+                m_menuBar->m_menus[m_menuBar->m_visibleMenu].menuItems[m_menuBar->m_menus[m_menuBar->m_visibleMenu].selectedMenuItem].setTextColor(calcColorOpacity(m_selectedTextColor, m_menuBar->getOpacity()));
         }
     }
 
@@ -688,7 +718,7 @@ namespace tgui
         {
             m_backgroundTexture.setPosition(m_menuBar->getPosition());
             m_backgroundTexture.setSize(m_menuBar->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
+            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_menuBar->getOpacity() * 255)});
         }
     }
 
@@ -701,7 +731,7 @@ namespace tgui
         {
             m_itemBackgroundTexture.setPosition(m_menuBar->getPosition());
             m_itemBackgroundTexture.setSize(m_menuBar->getSize());
-            m_itemBackgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
+            m_itemBackgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_menuBar->getOpacity() * 255)});
         }
     }
 
@@ -714,7 +744,7 @@ namespace tgui
         {
             m_selectedItemBackgroundTexture.setPosition(m_menuBar->getPosition());
             m_selectedItemBackgroundTexture.setSize(m_menuBar->getSize());
-            m_selectedItemBackgroundTexture.setColor({255, 255, 255, m_menuBar->getTransparency()});
+            m_selectedItemBackgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_menuBar->getOpacity() * 255)});
         }
     }
 
@@ -734,7 +764,7 @@ namespace tgui
         {
             sf::RectangleShape background{m_menuBar->getSize()};
             background.setPosition({m_menuBar->getPosition()});
-            background.setFillColor(m_backgroundColor);
+            background.setFillColor(calcColorOpacity(m_backgroundColor, m_menuBar->getOpacity()));
             target.draw(background, states);
         }
 
@@ -791,7 +821,7 @@ namespace tgui
                 {
                     sf::RectangleShape background{{m_menuBar->m_menus[i].text.getSize().x + 2*m_distanceToSide, m_menuBar->getSize().y}};
                     background.setPosition({positionX, m_menuBar->getPosition().y});
-                    background.setFillColor(m_selectedBackgroundColor);
+                    background.setFillColor(calcColorOpacity(m_selectedBackgroundColor, m_menuBar->getOpacity()));
                     target.draw(background, states);
 
                     background.setSize({menuWidth, m_menuBar->getSize().y});
@@ -800,9 +830,9 @@ namespace tgui
                         background.setPosition({positionX, m_menuBar->getPosition().y + (j+1)*m_menuBar->getSize().y});
 
                         if (m_menuBar->m_menus[i].selectedMenuItem == static_cast<int>(j))
-                            background.setFillColor(m_selectedBackgroundColor);
+                            background.setFillColor(calcColorOpacity(m_selectedBackgroundColor, m_menuBar->getOpacity()));
                         else
-                            background.setFillColor(m_backgroundColor);
+                            background.setFillColor(calcColorOpacity(m_backgroundColor, m_menuBar->getOpacity()));
 
                         target.draw(background, states);
                     }

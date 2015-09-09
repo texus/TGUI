@@ -180,9 +180,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setTransparency(unsigned char transparency)
+    void SpinButton::setOpacity(float opacity)
     {
-        ClickableWidget::setTransparency(transparency);
+        ClickableWidget::setOpacity(opacity);
 
         getRenderer()->m_textureArrowUpNormal.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureArrowUpHover.setColor(sf::Color(255, 255, 255, m_opacity));
@@ -490,8 +490,8 @@ namespace tgui
 
     void SpinButtonRenderer::setBackgroundColor(const sf::Color& color)
     {
-        m_backgroundColorNormal = color;
-        m_backgroundColorHover = color;
+        setBackgroundColorNormal(color);
+        setBackgroundColorHover(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -512,8 +512,8 @@ namespace tgui
 
     void SpinButtonRenderer::setArrowColor(const sf::Color& color)
     {
-        m_arrowColorNormal = color;
-        m_arrowColorHover = color;
+        setArrowColorNormal(color);
+        setArrowColorHover(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -544,7 +544,7 @@ namespace tgui
         m_textureArrowUpNormal = texture;
         if (m_textureArrowUpNormal.isLoaded())
         {
-            m_textureArrowUpNormal.setColor({255, 255, 255, m_spinButton->getTransparency()});
+            m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
 
             if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_spinButton->updateSize();
@@ -558,7 +558,7 @@ namespace tgui
         m_textureArrowDownNormal = texture;
         if (m_textureArrowDownNormal.isLoaded())
         {
-            m_textureArrowDownNormal.setColor({255, 255, 255, m_spinButton->getTransparency()});
+            m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
 
             if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_spinButton->updateSize();
@@ -572,7 +572,7 @@ namespace tgui
         m_textureArrowUpHover = texture;
         if (m_textureArrowUpHover.isLoaded())
         {
-            m_textureArrowUpHover.setColor({255, 255, 255, m_spinButton->getTransparency()});
+            m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
 
             if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_spinButton->updateSize();
@@ -586,7 +586,7 @@ namespace tgui
         m_textureArrowDownHover = texture;
         if (m_textureArrowDownHover.isLoaded())
         {
-            m_textureArrowDownHover.setColor({255, 255, 255, m_spinButton->getTransparency()});
+            m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
 
             if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_spinButton->updateSize();
@@ -630,13 +630,13 @@ namespace tgui
 
             if (m_spinButton->m_mouseHover && m_spinButton->m_mouseHoverOnTopArrow)
             {
-                arrowBack.setFillColor(m_backgroundColorHover);
-                arrow.setFillColor(m_arrowColorHover);
+                arrowBack.setFillColor(calcColorOpacity(m_backgroundColorHover, m_spinButton->getOpacity()));
+                arrow.setFillColor(calcColorOpacity(m_arrowColorHover, m_spinButton->getOpacity()));
             }
             else
             {
-                arrowBack.setFillColor(m_backgroundColorNormal);
-                arrow.setFillColor(m_arrowColorNormal);
+                arrowBack.setFillColor(calcColorOpacity(m_backgroundColorNormal, m_spinButton->getOpacity()));
+                arrow.setFillColor(calcColorOpacity(m_arrowColorNormal, m_spinButton->getOpacity()));
             }
 
             if (m_spinButton->m_verticalScroll)
@@ -661,13 +661,13 @@ namespace tgui
 
             if (m_spinButton->m_mouseHover && !m_spinButton->m_mouseHoverOnTopArrow)
             {
-                arrowBack.setFillColor(m_backgroundColorHover);
-                arrow.setFillColor(m_arrowColorHover);
+                arrowBack.setFillColor(calcColorOpacity(m_backgroundColorHover, m_spinButton->getOpacity()));
+                arrow.setFillColor(calcColorOpacity(m_arrowColorHover, m_spinButton->getOpacity()));
             }
             else
             {
-                arrowBack.setFillColor(m_backgroundColorNormal);
-                arrow.setFillColor(m_arrowColorNormal);
+                arrowBack.setFillColor(calcColorOpacity(m_backgroundColorNormal, m_spinButton->getOpacity()));
+                arrow.setFillColor(calcColorOpacity(m_arrowColorNormal, m_spinButton->getOpacity()));
             }
 
             if (m_spinButton->m_verticalScroll)
@@ -706,7 +706,7 @@ namespace tgui
                 space.setPosition(position.x + (size.x - m_spaceBetweenArrows) / 2.0f, position.y);
             }
 
-            space.setFillColor(m_borderColor);
+            space.setFillColor(calcColorOpacity(m_borderColor, m_spinButton->getOpacity()));
             target.draw(space, states);
         }
 
@@ -716,7 +716,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_spinButton->getOpacity()));
             target.draw(border, states);
 
             // Draw top border

@@ -387,16 +387,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::setTransparency(unsigned char transparency)
+    void ComboBox::setOpacity(float opacity)
     {
-        Widget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
-        m_listBox->setTransparency(m_opacity);
+        m_listBox->setOpacity(m_opacity);
 
         getRenderer()->m_textureArrowUpNormal.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureArrowDownNormal.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureArrowUpHover.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureArrowDownHover.setColor(sf::Color(255, 255, 255, m_opacity));
+
+        m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -808,7 +810,7 @@ namespace tgui
         else if (property == "arrowcolorhover")
             return m_arrowColorHover;
         else if (property == "textcolor")
-            return m_comboBox->m_text.getTextColor();
+            return m_textColor;
         else if (property == "bordercolor")
             return getListBox()->m_borderColor;
         else if (property == "backgroundimage")
@@ -853,7 +855,7 @@ namespace tgui
             pairs["ArrowColorHover"] = m_arrowColorHover;
         }
 
-        pairs["TextColor"] = m_comboBox->m_text.getTextColor();
+        pairs["TextColor"] = m_textColor;
         pairs["BorderColor"] = getListBox()->m_borderColor;
         pairs["Borders"] = m_borders;
         pairs["Padding"] = m_padding;
@@ -915,7 +917,8 @@ namespace tgui
 
     void ComboBoxRenderer::setTextColor(const sf::Color& textColor)
     {
-        m_comboBox->m_text.setTextColor(textColor);
+        m_textColor = textColor;
+        m_comboBox->m_text.setTextColor(calcColorOpacity(m_textColor, m_comboBox->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -934,7 +937,7 @@ namespace tgui
         {
             m_backgroundTexture.setPosition(m_comboBox->getPosition());
             m_backgroundTexture.setSize(m_comboBox->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, m_comboBox->getTransparency()});
+            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 
@@ -950,7 +953,7 @@ namespace tgui
 
             m_textureArrowUpNormal.setSize({m_textureArrowUpNormal.getImageSize().x * (height / m_textureArrowUpNormal.getImageSize().y), height});
             m_textureArrowUpNormal.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowUpNormal.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
-            m_textureArrowUpNormal.setColor({255, 255, 255, m_comboBox->getTransparency()});
+            m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 
@@ -966,7 +969,7 @@ namespace tgui
 
             m_textureArrowDownNormal.setSize({m_textureArrowDownNormal.getImageSize().x * (height / m_textureArrowDownNormal.getImageSize().y), height});
             m_textureArrowDownNormal.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowDownNormal.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
-            m_textureArrowDownNormal.setColor({255, 255, 255, m_comboBox->getTransparency()});
+            m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 
@@ -982,7 +985,7 @@ namespace tgui
 
             m_textureArrowUpHover.setSize({m_textureArrowUpHover.getImageSize().x * (height / m_textureArrowUpHover.getImageSize().y), height});
             m_textureArrowUpHover.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowUpHover.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
-            m_textureArrowUpHover.setColor({255, 255, 255, m_comboBox->getTransparency()});
+            m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 
@@ -998,7 +1001,7 @@ namespace tgui
 
             m_textureArrowDownHover.setSize({m_textureArrowDownHover.getImageSize().x * (height / m_textureArrowDownHover.getImageSize().y), height});
             m_textureArrowDownHover.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowDownHover.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
-            m_textureArrowDownHover.setColor({255, 255, 255, m_comboBox->getTransparency()});
+            m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 
@@ -1048,7 +1051,7 @@ namespace tgui
         {
             sf::RectangleShape front(size);
             front.setPosition(position);
-            front.setFillColor(getListBox()->m_backgroundColor);
+            front.setFillColor(calcColorOpacity(getListBox()->m_backgroundColor, m_comboBox->getOpacity()));
             target.draw(front, states);
         }
 
@@ -1058,7 +1061,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(getListBox()->m_borderColor);
+            border.setFillColor(calcColorOpacity(getListBox()->m_borderColor, m_comboBox->getOpacity()));
             target.draw(border, states);
 
             // Draw top border
@@ -1120,13 +1123,13 @@ namespace tgui
 
             if (m_comboBox->m_mouseHover)
             {
-                arrow.setFillColor(m_arrowColorHover);
-                arrowBackground.setFillColor(m_arrowBackgroundColorHover);
+                arrow.setFillColor(calcColorOpacity(m_arrowColorHover, m_comboBox->getOpacity()));
+                arrowBackground.setFillColor(calcColorOpacity(m_arrowBackgroundColorHover, m_comboBox->getOpacity()));
             }
             else
             {
-                arrow.setFillColor(m_arrowColorNormal);
-                arrowBackground.setFillColor(m_arrowBackgroundColorNormal);
+                arrow.setFillColor(calcColorOpacity(m_arrowColorNormal, m_comboBox->getOpacity()));
+                arrowBackground.setFillColor(calcColorOpacity(m_arrowBackgroundColorNormal, m_comboBox->getOpacity()));
             }
 
             target.draw(arrowBackground, states);

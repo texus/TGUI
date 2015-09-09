@@ -43,8 +43,6 @@ namespace tgui
         m_callback.widgetType = "ChatBox";
         m_draggableWidget = true;
 
-        m_panel->setBackgroundColor(sf::Color::Transparent);
-
         m_renderer = std::make_shared<ChatBoxRenderer>(this);
         reload();
 
@@ -330,14 +328,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setTransparency(unsigned char transparency)
+    void ChatBox::setOpacity(float opacity)
     {
-        Widget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
-        m_panel->setTransparency(transparency);
+        m_panel->setOpacity(m_opacity);
 
         if (m_scroll != nullptr)
-            m_scroll->setTransparency(transparency);
+            m_scroll->setOpacity(m_opacity);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -864,7 +862,7 @@ namespace tgui
         {
             m_backgroundTexture.setPosition(m_chatBox->getPosition());
             m_backgroundTexture.setSize(m_chatBox->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, m_chatBox->getTransparency()});
+            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_chatBox->getOpacity() * 255)});
         }
     }
 
@@ -887,7 +885,7 @@ namespace tgui
         {
             sf::RectangleShape background(m_chatBox->getSize());
             background.setPosition(m_chatBox->getPosition());
-            background.setFillColor(m_backgroundColor);
+            background.setFillColor(calcColorOpacity(m_backgroundColor, m_chatBox->getOpacity()));
             target.draw(background, states);
         }
 
@@ -899,7 +897,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition({position.x - m_borders.left, position.y - m_borders.top});
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_chatBox->getOpacity()));
             target.draw(border, states);
 
             // Draw top border

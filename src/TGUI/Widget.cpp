@@ -193,8 +193,15 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), 0, getTransparency(), duration));
-                setTransparency(0);
+                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), 0, getOpacity(), duration));
+                setOpacity(0);
+                break;
+            }
+            case ShowAnimationType::Scale:
+            {
+                m_showAnimations.push_back(std::make_shared<priv::ScaleAnimation>(shared_from_this(), getPosition() + (getSize() / 2.f), getPosition(), sf::Vector2f{0, 0}, getSize(), duration));
+                setPosition(getPosition() + (getSize() / 2.f));
+                setSize(0, 0);
                 break;
             }
             case ShowAnimationType::SlideToRight:
@@ -250,17 +257,26 @@ namespace tgui
 
     void Widget::hideWithEffect(ShowAnimationType type, sf::Time duration)
     {
+        auto opacity = getOpacity();
+        auto position = getPosition();
+        auto size = getSize();
+
         switch (type)
         {
             case ShowAnimationType::Fade:
             {
-                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), getTransparency(), 0, duration, std::bind(&Widget::hide, this)));
+                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), opacity, 0, duration, [=](){ hide(); setOpacity(opacity); }));
+                break;
+            }
+            case ShowAnimationType::Scale:
+            {
+                m_showAnimations.push_back(std::make_shared<priv::ScaleAnimation>(shared_from_this(), position, position + (size / 2.f), size, sf::Vector2f{0, 0}, duration, [=](){ hide(); setPosition(position); setSize(size); }));
                 break;
             }
             case ShowAnimationType::SlideToRight:
             {
                 if (getParent())
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), sf::Vector2f{getParent()->getSize().x, getPosition().y}, duration, std::bind(&Widget::hide, this)));
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{getParent()->getSize().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
                 else
                     sf::err() << "TGUI Warning: showWithEffect(SlideToRight) does not work before widget has a parent." << std::endl;
 
@@ -268,13 +284,13 @@ namespace tgui
             }
             case ShowAnimationType::SlideToLeft:
             {
-                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), sf::Vector2f{-getFullSize().x, getPosition().y}, duration, std::bind(&Widget::hide, this)));
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{-getFullSize().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
                 break;
             }
             case ShowAnimationType::SlideToBottom:
             {
                 if (getParent())
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), sf::Vector2f{getPosition().x, getParent()->getSize().y}, duration, std::bind(&Widget::hide, this)));
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, getParent()->getSize().y}, duration, [=](){ hide(); setPosition(position); }));
                 else
                     sf::err() << "TGUI Warning: showWithEffect(SlideToBottom) does not work before widget has a parent." << std::endl;
 
@@ -282,7 +298,7 @@ namespace tgui
             }
             case ShowAnimationType::SlideToTop:
             {
-                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition(), sf::Vector2f{getPosition().x, -getFullSize().x}, duration, std::bind(&Widget::hide, this)));
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, -getFullSize().x}, duration, [=](){ hide(); setPosition(position); }));
                 break;
             }
         }
@@ -323,6 +339,18 @@ namespace tgui
     {
         if (m_focused)
             m_parent->unfocusWidgets();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setOpacity(float opacity)
+    {
+        if (opacity < 0)
+            m_opacity = 0;
+        else if (opacity > 1)
+            m_opacity = 1;
+        else
+            m_opacity = opacity;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

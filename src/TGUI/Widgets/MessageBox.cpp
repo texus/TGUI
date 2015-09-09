@@ -77,11 +77,11 @@ namespace tgui
             MessageBox temp(right);
             ChildWindow::operator=(right);
 
-            std::swap(m_loadedThemeFile,   temp.m_loadedThemeFile);
-            std::swap(m_buttonClassName,    temp.m_buttonClassName);
-            std::swap(m_buttons,           temp.m_buttons);
-            std::swap(m_label,             temp.m_label);
-            std::swap(m_textSize,          temp.m_textSize);
+            std::swap(m_loadedThemeFile, temp.m_loadedThemeFile);
+            std::swap(m_buttonClassName, temp.m_buttonClassName);
+            std::swap(m_buttons,         temp.m_buttons);
+            std::swap(m_label,           temp.m_label);
+            std::swap(m_textSize,        temp.m_textSize);
         }
 
         return *this;

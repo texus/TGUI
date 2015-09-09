@@ -48,7 +48,6 @@ namespace tgui
         m_renderer = std::make_shared<RadioButtonRenderer>(this);
         reload();
 
-        m_text.setTextColor(getRenderer()->m_textColorNormal);
         setSize({24, 24});
     }
 
@@ -184,15 +183,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::setTransparency(unsigned char transparency)
+    void RadioButton::setOpacity(float opacity)
     {
-        ClickableWidget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
         getRenderer()->m_textureUnchecked.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureChecked.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureUncheckedHover.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureCheckedHover.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureFocused.setColor(sf::Color(255, 255, 255, m_opacity));
+
+        if (m_mouseHover)
+            m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorHover, getOpacity()));
+        else
+            m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorNormal, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,7 +311,7 @@ namespace tgui
     {
         Widget::mouseEnteredWidget();
 
-        m_text.setTextColor(getRenderer()->m_textColorHover);
+        m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorHover, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -316,7 +320,7 @@ namespace tgui
     {
         Widget::mouseLeftWidget();
 
-        m_text.setTextColor(getRenderer()->m_textColorNormal);
+        m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorNormal, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -529,10 +533,8 @@ namespace tgui
 
     void RadioButtonRenderer::setTextColor(const sf::Color& color)
     {
-        m_textColorNormal = color;
-        m_textColorHover = color;
-
-        m_radioButton->m_text.setTextColor(color);
+        setTextColorNormal(color);
+        setTextColorHover(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -542,7 +544,7 @@ namespace tgui
         m_textColorNormal = color;
 
         if (!m_radioButton->m_mouseHover)
-            m_radioButton->m_text.setTextColor(color);
+            m_radioButton->m_text.setTextColor(calcColorOpacity(m_textColorNormal, m_radioButton->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -552,15 +554,15 @@ namespace tgui
         m_textColorHover = color;
 
         if (m_radioButton->m_mouseHover)
-            m_radioButton->m_text.setTextColor(color);
+            m_radioButton->m_text.setTextColor(calcColorOpacity(m_textColorHover, m_radioButton->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButtonRenderer::setBackgroundColor(const sf::Color& color)
     {
-        m_backgroundColorNormal = color;
-        m_backgroundColorHover = color;
+        setBackgroundColorNormal(color);
+        setBackgroundColorHover(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -581,8 +583,8 @@ namespace tgui
 
     void RadioButtonRenderer::setForegroundColor(const sf::Color& color)
     {
-        m_foregroundColorNormal = color;
-        m_foregroundColorHover = color;
+        setForegroundColorNormal(color);
+        setForegroundColorHover(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -603,8 +605,8 @@ namespace tgui
 
     void RadioButtonRenderer::setCheckColor(const sf::Color& color)
     {
-        m_checkColorNormal = color;
-        m_checkColorHover = color;
+        setCheckColorNormal(color);
+        setCheckColorHover(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -628,7 +630,7 @@ namespace tgui
         m_textureUnchecked = texture;
         if (m_textureUnchecked.isLoaded())
         {
-            m_textureUnchecked.setColor({255, 255, 255, m_radioButton->getTransparency()});
+            m_textureUnchecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
 
             if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
                 m_radioButton->updateSize();
@@ -642,7 +644,7 @@ namespace tgui
         m_textureChecked = texture;
         if (m_textureChecked.isLoaded())
         {
-            m_textureChecked.setColor({255, 255, 255, m_radioButton->getTransparency()});
+            m_textureChecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
 
             if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
                 m_radioButton->updateSize();
@@ -656,7 +658,7 @@ namespace tgui
         m_textureUncheckedHover = texture;
         if (m_textureUncheckedHover.isLoaded())
         {
-            m_textureUncheckedHover.setColor({255, 255, 255, m_radioButton->getTransparency()});
+            m_textureUncheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
 
             if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
                 m_radioButton->updateSize();
@@ -670,7 +672,7 @@ namespace tgui
         m_textureCheckedHover = texture;
         if (m_textureCheckedHover.isLoaded())
         {
-            m_textureCheckedHover.setColor({255, 255, 255, m_radioButton->getTransparency()});
+            m_textureCheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
 
             if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
                 m_radioButton->updateSize();
@@ -686,7 +688,7 @@ namespace tgui
         {
             m_textureFocused.setSize(m_radioButton->getSize());
             m_textureFocused.setPosition(m_radioButton->getPosition());
-            m_textureFocused.setColor({255, 255, 255, m_radioButton->getTransparency()});
+            m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
         }
     }
 
@@ -726,13 +728,13 @@ namespace tgui
 
             if (m_radioButton->m_mouseHover)
             {
-                circle.setFillColor(m_foregroundColorHover);
-                circle.setOutlineColor(m_backgroundColorHover);
+                circle.setFillColor(calcColorOpacity(m_foregroundColorHover, m_radioButton->getOpacity()));
+                circle.setOutlineColor(calcColorOpacity(m_backgroundColorHover, m_radioButton->getOpacity()));
             }
             else
             {
-                circle.setFillColor(m_foregroundColorNormal);
-                circle.setOutlineColor(m_backgroundColorNormal);
+                circle.setFillColor(calcColorOpacity(m_foregroundColorNormal, m_radioButton->getOpacity()));
+                circle.setOutlineColor(calcColorOpacity(m_backgroundColorNormal, m_radioButton->getOpacity()));
             }
 
             target.draw(circle, states);
@@ -745,9 +747,9 @@ namespace tgui
                                   m_radioButton->getPosition().y + m_padding.top + ((foregroundSize / 2.0f) - check.getRadius()));
 
                 if (m_radioButton->m_mouseHover)
-                    check.setFillColor(m_checkColorHover);
+                    check.setFillColor(calcColorOpacity(m_checkColorHover, m_radioButton->getOpacity()));
                 else
-                    check.setFillColor(m_checkColorNormal);
+                    check.setFillColor(calcColorOpacity(m_checkColorNormal, m_radioButton->getOpacity()));
 
                 target.draw(check, states);
             }

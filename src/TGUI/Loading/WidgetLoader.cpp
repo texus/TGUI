@@ -111,14 +111,8 @@ namespace tgui
             widget->setPosition(parseVector2f(node->propertyValuePairs["position"]->value));
         if (node->propertyValuePairs["size"])
             widget->setSize(parseVector2f(node->propertyValuePairs["size"]->value));
-        if (node->propertyValuePairs["transparency"])
-        {
-            auto transparency = tgui::stoi(node->propertyValuePairs["transparency"]->value);
-            if (transparency < 0 || transparency > 255)
-                throw Exception{"Transparency value has to lie between 0 and 255"};
-
-            widget->setTransparency(transparency);
-        }
+        if (node->propertyValuePairs["opacity"])
+            widget->setOpacity(tgui::stof(node->propertyValuePairs["opacity"]->value));
 
         /// TODO: Font and ToolTip (and Theme?)
 

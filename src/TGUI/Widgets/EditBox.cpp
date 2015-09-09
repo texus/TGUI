@@ -390,13 +390,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setTransparency(unsigned char transparency)
+    void EditBox::setOpacity(float opacity)
     {
-        ClickableWidget::setTransparency(transparency);
+        ClickableWidget::setOpacity(opacity);
 
         getRenderer()->m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureHover.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureFocused.setColor(sf::Color(255, 255, 255, m_opacity));
+
+        m_textBeforeSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        m_textAfterSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        m_textSelection.setColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
+        m_selectedTextBackground.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextBackgroundColor, getOpacity()));
+        m_defaultText.setColor(calcColorOpacity(getRenderer()->m_defaultTextColor, getOpacity()));
+        m_caret.setFillColor(calcColorOpacity(getRenderer()->m_caretColor, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1321,15 +1328,15 @@ namespace tgui
         else if (property == "borders")
             return m_borders;
         else if (property == "textcolor")
-            return m_editBox->m_textBeforeSelection.getColor();
+            return m_textColor;
         else if (property == "selectedtextcolor")
-            return m_editBox->m_textSelection.getColor();
+            return m_selectedTextColor;
         else if (property == "selectedtextbackgroundcolor")
-            return m_editBox->m_selectedTextBackground.getFillColor();
+            return m_selectedTextBackgroundColor;
         else if (property == "defaulttextcolor")
-            return m_editBox->m_defaultText.getColor();
+            return m_defaultTextColor;
         else if (property == "caretcolor")
-            return m_editBox->m_caret.getFillColor();
+            return m_caretColor;
         else if (property == "backgroundcolor")
             return m_backgroundColorNormal;
         else if (property == "backgroundcolornormal")
@@ -1368,11 +1375,11 @@ namespace tgui
             pairs["BackgroundColorHover"] = m_backgroundColorHover;
         }
 
-        pairs["TextColor"] = m_editBox->m_textBeforeSelection.getColor();
-        pairs["SelectedTextColor"] = m_editBox->m_textSelection.getColor();
-        pairs["SelectedTextBackgroundColor"] = m_editBox->m_selectedTextBackground.getFillColor();
-        pairs["DefaultTextColor"] = m_editBox->m_defaultText.getColor();
-        pairs["CaretColor"] = m_editBox->m_caret.getFillColor();
+        pairs["TextColor"] = m_textColor;
+        pairs["SelectedTextColor"] = m_selectedTextColor;
+        pairs["SelectedTextBackgroundColor"] = m_selectedTextBackgroundColor;
+        pairs["DefaultTextColor"] = m_defaultTextColor;
+        pairs["CaretColor"] = m_caretColor;
         pairs["BorderColor"] = m_borderColor;
         pairs["Borders"] = m_borders;
         pairs["Padding"] = m_padding;
@@ -1417,37 +1424,41 @@ namespace tgui
 
     void EditBoxRenderer::setTextColor(const sf::Color& textColor)
     {
-        m_editBox->m_textBeforeSelection.setColor(textColor);
-        m_editBox->m_textAfterSelection.setColor(textColor);
+        m_textColor = textColor;
+        m_editBox->m_textBeforeSelection.setColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
+        m_editBox->m_textAfterSelection.setColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBoxRenderer::setSelectedTextColor(const sf::Color& selectedTextColor)
     {
-        m_editBox->m_textSelection.setColor(selectedTextColor);
+        m_selectedTextColor = selectedTextColor;
+        m_editBox->m_textSelection.setColor(calcColorOpacity(m_selectedTextColor, m_editBox->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBoxRenderer::setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
     {
-        m_editBox->m_selectedTextBackground.setFillColor(selectedTextBackgroundColor);
+        m_selectedTextBackgroundColor = selectedTextBackgroundColor;
+        m_editBox->m_selectedTextBackground.setFillColor(calcColorOpacity(m_selectedTextBackgroundColor, m_editBox->getOpacity()));
     }
 
      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBoxRenderer::setDefaultTextColor(const sf::Color& defaultTextColor)
     {
-        m_editBox->m_defaultText.setColor(defaultTextColor);
+        m_defaultTextColor = defaultTextColor;
+        m_editBox->m_defaultText.setColor(calcColorOpacity(m_defaultTextColor, m_editBox->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBoxRenderer::setBackgroundColor(const sf::Color& color)
     {
-        m_backgroundColorNormal = color;
-        m_backgroundColorHover = color;
+        setBackgroundColorNormal(color);
+        setBackgroundColorHover(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1468,7 +1479,8 @@ namespace tgui
 
     void EditBoxRenderer::setCaretColor(const sf::Color& caretColor)
     {
-        m_editBox->m_caret.setFillColor(caretColor);
+        m_caretColor = caretColor;
+        m_editBox->m_caret.setFillColor(calcColorOpacity(m_caretColor, m_editBox->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1487,7 +1499,7 @@ namespace tgui
         {
             m_textureNormal.setPosition(m_editBox->getPosition());
             m_textureNormal.setSize(m_editBox->getSize());
-            m_textureNormal.setColor({255, 255, 255, m_editBox->getTransparency()});
+            m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
         }
     }
 
@@ -1500,7 +1512,7 @@ namespace tgui
         {
             m_textureHover.setPosition(m_editBox->getPosition());
             m_textureHover.setSize(m_editBox->getSize());
-            m_textureHover.setColor({255, 255, 255, m_editBox->getTransparency()});
+            m_textureHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
         }
     }
 
@@ -1513,7 +1525,7 @@ namespace tgui
         {
             m_textureFocused.setPosition(m_editBox->getPosition());
             m_textureFocused.setSize(m_editBox->getSize());
-            m_textureFocused.setColor({255, 255, 255, m_editBox->getTransparency()});
+            m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
         }
     }
 
@@ -1539,9 +1551,9 @@ namespace tgui
             editBox.setPosition(m_editBox->getPosition());
 
             if (m_editBox->m_mouseHover)
-                editBox.setFillColor(m_backgroundColorHover);
+                editBox.setFillColor(calcColorOpacity(m_backgroundColorHover, m_editBox->getOpacity()));
             else
-                editBox.setFillColor(m_backgroundColorNormal);
+                editBox.setFillColor(calcColorOpacity(m_backgroundColorNormal, m_editBox->getOpacity()));
 
             target.draw(editBox, states);
         }
@@ -1555,7 +1567,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_editBox->getOpacity()));
             target.draw(border, states);
 
             // Draw top border

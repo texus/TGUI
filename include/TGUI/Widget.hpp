@@ -193,6 +193,9 @@ namespace tgui
         ///
         /// The animation will also be played if the widget was already visible.
         ///
+        /// During the animation the position, size and/or opacity may change. Once the animation is done the widget will
+        /// be back in the state in which it was when this function was called.
+        ///
         /// @param type     Type of the animation
         /// @param duration Duration of the animation
         ///
@@ -214,7 +217,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Shows the widget by introducing it with an animation.
         ///
-        /// The animation will not be played if the widget was already hidden.
+        /// If the widget is already hidden then the animation will still play but you will not see it until you show the widget.
+        ///
+        /// During the animation the position, size and/or opacity may change. Once the animation is done the widget will
+        /// be back in the state in which it was when this function was called.
         ///
         /// @param type     Type of the animation
         /// @param duration Duration of the animation
@@ -332,29 +338,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the transparency of the widget.
+        /// @brief Changes the opacity of the widget.
         ///
-        /// @param transparency  The transparency of the widget.
-        ///                      0 is completely transparent, while 255 (default) means fully opaque.
-        ///
-        /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
-        /// be changed. You must change them yourself by setting the alpha channel of the color.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setTransparency(unsigned char transparency)
-        {
-            m_opacity = transparency;
-        }
+        virtual void setOpacity(float opacity);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the transparency of the widget.
+        /// @brief Returns the opacity of the widget.
         ///
-        /// @return The transparency of the widget.
-        ///         0 is completely transparent, while 255 (default) means fully opaque.
+        /// @return The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned char getTransparency() const
+        float getOpacity() const
         {
             return m_opacity;
         }
@@ -593,7 +591,7 @@ namespace tgui
         Container* m_parent = nullptr;
 
         // How transparent is the widget
-        unsigned char m_opacity = 255;
+        float m_opacity = 1;
 
         // Is the mouse on top of the widget? Did the mouse go down on the widget?
         bool m_mouseHover = false;

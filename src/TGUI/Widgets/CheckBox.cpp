@@ -41,6 +41,7 @@ namespace tgui
         m_callback.widgetType = "CheckBox";
 
         m_renderer = std::make_shared<CheckBoxRenderer>(this);
+        reload();
 
         getRenderer()->setPadding({3, 3, 3, 3});
     }
@@ -154,13 +155,13 @@ namespace tgui
 
                 if (m_radioButton->m_mouseHover)
                 {
-                    rect.setFillColor(m_foregroundColorHover);
-                    rect.setOutlineColor(m_backgroundColorHover);
+                    rect.setFillColor(calcColorOpacity(m_foregroundColorHover, m_radioButton->getOpacity()));
+                    rect.setOutlineColor(calcColorOpacity(m_backgroundColorHover, m_radioButton->getOpacity()));
                 }
                 else
                 {
-                    rect.setFillColor(m_foregroundColorNormal);
-                    rect.setOutlineColor(m_backgroundColorNormal);
+                    rect.setFillColor(calcColorOpacity(m_foregroundColorNormal, m_radioButton->getOpacity()));
+                    rect.setOutlineColor(calcColorOpacity(m_backgroundColorNormal, m_radioButton->getOpacity()));
                 }
 
                 target.draw(rect, states);
@@ -172,9 +173,9 @@ namespace tgui
                 {
                     sf::RectangleShape border;
                     if (m_radioButton->m_mouseHover)
-                        border.setFillColor(m_backgroundColorHover);
+                        border.setFillColor(calcColorOpacity(m_backgroundColorHover, m_radioButton->getOpacity()));
                     else
-                        border.setFillColor(m_backgroundColorNormal);
+                        border.setFillColor(calcColorOpacity(m_backgroundColorNormal, m_radioButton->getOpacity()));
 
                     sf::Vector2f position = m_radioButton->getPosition();
                     sf::Vector2f size = m_radioButton->getSize();
@@ -202,9 +203,9 @@ namespace tgui
                     foreground.setPosition(m_radioButton->getPosition().x + m_padding.left, m_radioButton->getPosition().y + m_padding.top);
 
                     if (m_radioButton->m_mouseHover)
-                        foreground.setFillColor(m_foregroundColorHover);
+                        foreground.setFillColor(calcColorOpacity(m_foregroundColorHover, m_radioButton->getOpacity()));
                     else
-                        foreground.setFillColor(m_foregroundColorNormal);
+                        foreground.setFillColor(calcColorOpacity(m_foregroundColorNormal, m_radioButton->getOpacity()));
 
                     target.draw(foreground, states);
                 }
@@ -263,13 +264,13 @@ namespace tgui
 
                 if (m_radioButton->m_mouseHover)
                 {
-                    left.setFillColor(m_checkColorHover);
-                    right.setFillColor(m_checkColorHover);
+                    left.setFillColor(calcColorOpacity(m_checkColorHover, m_radioButton->getOpacity()));
+                    right.setFillColor(calcColorOpacity(m_checkColorHover, m_radioButton->getOpacity()));
                 }
                 else
                 {
-                    left.setFillColor(m_checkColorNormal);
-                    right.setFillColor(m_checkColorNormal);
+                    left.setFillColor(calcColorOpacity(m_checkColorNormal, m_radioButton->getOpacity()));
+                    right.setFillColor(calcColorOpacity(m_checkColorNormal, m_radioButton->getOpacity()));
                 }
 
                 target.draw(left, states);

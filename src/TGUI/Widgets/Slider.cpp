@@ -230,9 +230,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setTransparency(unsigned char transparency)
+    void Slider::setOpacity(float opacity)
     {
-        Widget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
         getRenderer()->m_textureTrackNormal.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureTrackHover.setColor(sf::Color(255, 255, 255, m_opacity));
@@ -576,8 +576,8 @@ namespace tgui
 
     void SliderRenderer::setTrackColor(const sf::Color& color)
     {
-        m_trackColorNormal = color;
-        m_trackColorHover = color;
+        setTrackColorNormal(color);
+        setTrackColorHover(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -598,8 +598,8 @@ namespace tgui
 
     void SliderRenderer::setThumbColor(const sf::Color& color)
     {
-        m_thumbColorNormal = color;
-        m_thumbColorHover = color;
+        setThumbColorNormal(color);
+        setThumbColorHover(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -630,7 +630,7 @@ namespace tgui
         m_textureTrackNormal = texture;
         if (m_textureTrackNormal.isLoaded())
         {
-            m_textureTrackNormal.setColor({255, 255, 255, m_slider->getTransparency()});
+            m_textureTrackNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
                 m_slider->updateSize();
@@ -644,7 +644,7 @@ namespace tgui
         m_textureTrackHover = texture;
         if (m_textureTrackHover.isLoaded())
         {
-            m_textureTrackHover.setColor({255, 255, 255, m_slider->getTransparency()});
+            m_textureTrackHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
                 m_slider->updateSize();
@@ -658,7 +658,7 @@ namespace tgui
         m_textureThumbNormal = texture;
         if (m_textureThumbNormal.isLoaded())
         {
-            m_textureThumbNormal.setColor({255, 255, 255, m_slider->getTransparency()});
+            m_textureThumbNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
                 m_slider->updateSize();
@@ -672,7 +672,7 @@ namespace tgui
         m_textureThumbHover = texture;
         if (m_textureThumbHover.isLoaded())
         {
-            m_textureThumbHover.setColor({255, 255, 255, m_slider->getTransparency()});
+            m_textureThumbHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
                 m_slider->updateSize();
@@ -697,9 +697,9 @@ namespace tgui
             track.setPosition(m_slider->getPosition());
 
             if (m_slider->m_mouseHover)
-                track.setFillColor(m_trackColorHover);
+                track.setFillColor(calcColorOpacity(m_trackColorHover, m_slider->getOpacity()));
             else
-                track.setFillColor(m_trackColorNormal);
+                track.setFillColor(calcColorOpacity(m_trackColorNormal, m_slider->getOpacity()));
 
             target.draw(track, states);
         }
@@ -715,7 +715,7 @@ namespace tgui
                 // Draw left border
                 sf::RectangleShape border({m_borders.left, size[i].y + m_borders.top});
                 border.setPosition(position[i].x - m_borders.left, position[i].y - m_borders.top);
-                border.setFillColor(m_borderColor);
+                border.setFillColor(calcColorOpacity(m_borderColor, m_slider->getOpacity()));
                 target.draw(border, states);
 
                 // Draw top border
@@ -749,9 +749,9 @@ namespace tgui
             thumb.setPosition({m_slider->m_thumb.left, m_slider->m_thumb.top});
 
             if (m_slider->m_mouseHover)
-                thumb.setFillColor(m_thumbColorHover);
+                thumb.setFillColor(calcColorOpacity(m_thumbColorHover, m_slider->getOpacity()));
             else
-                thumb.setFillColor(m_thumbColorNormal);
+                thumb.setFillColor(calcColorOpacity(m_thumbColorNormal, m_slider->getOpacity()));
 
             target.draw(thumb, states);
         }

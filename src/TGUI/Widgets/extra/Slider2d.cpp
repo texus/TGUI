@@ -150,18 +150,6 @@ namespace ext
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider2d::setTransparency(unsigned char transparency)
-    {
-        ClickableWidget::setTransparency(transparency);
-
-        m_textureThumbNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureThumbHover.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureTrackNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        m_textureTrackHover.setColor(sf::Color(255, 255, 255, m_opacity));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Slider2d::leftMousePressed(float x, float y)
     {
         ClickableWidget::leftMousePressed(x, y);

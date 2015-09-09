@@ -175,14 +175,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setTransparency(unsigned char transparency)
+    void ChildWindow::setOpacity(float opacity)
     {
-        Container::setTransparency(transparency);
+        Container::setOpacity(opacity);
+
+        m_closeButton->setOpacity(m_opacity);
 
         m_iconTexture.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureTitleBar.setColor(sf::Color(255, 255, 255, m_opacity));
 
-        m_closeButton->setTransparency(m_opacity);
+        m_titleText.setTextColor(calcColorOpacity(getRenderer()->m_titleColor, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -594,7 +596,7 @@ namespace tgui
         if (getRenderer()->m_backgroundColor != sf::Color::Transparent)
         {
             sf::RectangleShape background(getSize());
-            background.setFillColor(getRenderer()->m_backgroundColor);
+            background.setFillColor(calcColorOpacity(getRenderer()->m_backgroundColor, getOpacity()));
             target.draw(background, states);
         }
 
@@ -716,7 +718,7 @@ namespace tgui
         else if (property == "backgroundcolor")
             return m_backgroundColor;
         else if (property == "titlecolor")
-            return m_childWindow->m_titleText.getTextColor();
+            return m_titleColor;
         else if (property == "titlebarcolor")
             return m_titleBarColor;
         else if (property == "bordercolor")
@@ -743,7 +745,7 @@ namespace tgui
             pairs["TitleBarColor"] = m_titleBarColor;
 
         pairs["BackgroundColor"] = m_backgroundColor;
-        pairs["TitleColor"] = m_childWindow->m_titleText.getTextColor();
+        pairs["TitleColor"] = m_titleColor;
         pairs["BorderColor"] = m_borderColor;
         pairs["Borders"] = m_borders;
         pairs["DistanceToSide"] = m_distanceToSide;
@@ -781,7 +783,8 @@ namespace tgui
 
     void ChildWindowRenderer::setTitleColor(const sf::Color& color)
     {
-        m_childWindow->m_titleText.setTextColor(color);
+        m_titleColor = color;
+        m_childWindow->m_titleText.setTextColor(calcColorOpacity(m_titleColor, m_childWindow->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -829,7 +832,7 @@ namespace tgui
         {
             m_textureTitleBar.setPosition(m_childWindow->getPosition());
             m_textureTitleBar.setSize({m_childWindow->getSize().x + m_borders.left + m_borders.right, m_titleBarHeight});
-            m_textureTitleBar.setColor({255, 255, 255, m_childWindow->getTransparency()});
+            m_textureTitleBar.setColor({255, 255, 255, static_cast<sf::Uint8>(m_childWindow->getOpacity() * 255)});
         }
     }
 
@@ -851,7 +854,7 @@ namespace tgui
         {
             sf::RectangleShape titleBar{{m_childWindow->getSize().x + m_borders.left + m_borders.right, m_titleBarHeight}};
             titleBar.setPosition({m_childWindow->getPosition().x, m_childWindow->getPosition().y});
-            titleBar.setFillColor(m_titleBarColor);
+            titleBar.setFillColor(calcColorOpacity(m_titleBarColor, m_childWindow->getOpacity()));
             target.draw(titleBar, states);
         }
 
@@ -867,7 +870,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x, position.y);
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_childWindow->getOpacity()));
             target.draw(border, states);
 
             // Draw top border

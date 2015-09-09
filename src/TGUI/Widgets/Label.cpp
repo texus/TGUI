@@ -125,7 +125,7 @@ namespace tgui
 
     void Label::setTextColor(const sf::Color& color)
     {
-        m_text.setColor(color);
+        getRenderer()->setTextColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,6 +174,16 @@ namespace tgui
             return m_maximumTextWidth;
         else
             return getSize().x;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::setOpacity(float opacity)
+    {
+        Widget::setOpacity(opacity);
+
+        m_text.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        m_background.setFillColor(calcColorOpacity(getRenderer()->m_backgroundColor, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,9 +487,9 @@ namespace tgui
         else if (property == "padding")
             return m_padding;
         else if (property == "textcolor")
-            return m_label->m_text.getColor();
+            return m_textColor;
         else if (property == "backgroundcolor")
-            return m_label->m_background.getFillColor();
+            return m_backgroundColor;
         else if (property == "bordercolor")
             return m_borderColor;
         else
@@ -491,8 +501,8 @@ namespace tgui
     std::map<std::string, ObjectConverter> LabelRenderer::getPropertyValuePairs() const
     {
         auto pairs = WidgetRenderer::getPropertyValuePairs();
-        pairs["TextColor"] = m_label->m_text.getColor();
-        pairs["BackgroundColor"] = m_label->m_background.getFillColor();
+        pairs["TextColor"] = m_textColor;
+        pairs["BackgroundColor"] = m_backgroundColor;
         pairs["BorderColor"] = m_borderColor;
         pairs["Borders"] = m_borders;
         pairs["Padding"] = m_padding;
@@ -516,14 +526,16 @@ namespace tgui
 
     void LabelRenderer::setTextColor(const sf::Color& color)
     {
-        m_label->m_text.setColor(color);
+        m_textColor = color;
+        m_label->m_text.setColor(calcColorOpacity(m_textColor, m_label->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void LabelRenderer::setBackgroundColor(const sf::Color& color)
     {
-        m_label->m_background.setFillColor(color);
+        m_backgroundColor = color;
+        m_label->m_background.setFillColor(calcColorOpacity(m_backgroundColor, m_label->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -546,7 +558,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_label->getOpacity()));
             target.draw(border, states);
 
             // Draw top border

@@ -88,7 +88,6 @@ namespace ext
         }
 
         // Add the texture and store its duration
-        tempTexture.setColor({255, 255, 255, m_opacity});
         m_textures.push_back(tempTexture);
         m_frameDuration.push_back(frameDuration);
     }
@@ -185,16 +184,6 @@ namespace ext
 
         // Reset the animation
         stop();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void AnimatedPicture::setTransparency(unsigned char transparency)
-    {
-        ClickableWidget::setTransparency(transparency);
-
-        for (unsigned int i = 0; i < m_textures.size(); ++i)
-            m_textures[i].setColor(sf::Color(255, 255, 255, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

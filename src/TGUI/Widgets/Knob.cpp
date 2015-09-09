@@ -198,9 +198,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::setTransparency(unsigned char transparency)
+    void Knob::setOpacity(float opacity)
     {
-        Widget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
         getRenderer()->m_backgroundTexture.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_foregroundTexture.setColor(sf::Color(255, 255, 255, m_opacity));
@@ -604,7 +604,7 @@ namespace tgui
         m_backgroundTexture = texture;
         if (m_backgroundTexture.isLoaded())
         {
-            m_backgroundTexture.setColor({255, 255, 255, m_knob->getTransparency()});
+            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_knob->getOpacity() * 255)});
 
             if (m_foregroundTexture.isLoaded())
                 m_knob->updateSize();
@@ -618,7 +618,7 @@ namespace tgui
         m_foregroundTexture = texture;
         if (m_foregroundTexture.isLoaded())
         {
-            m_foregroundTexture.setColor({255, 255, 255, m_knob->getTransparency()});
+            m_foregroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_knob->getOpacity() * 255)});
 
             if (m_backgroundTexture.isLoaded())
                 m_knob->updateSize();
@@ -645,13 +645,13 @@ namespace tgui
 
             sf::CircleShape background{size / 2.0f};
             background.setPosition(m_knob->getPosition());
-            background.setFillColor(m_backgroundColor);
-            background.setOutlineColor(m_borderColor);
+            background.setFillColor(calcColorOpacity(m_backgroundColor, m_knob->getOpacity()));
+            background.setOutlineColor(calcColorOpacity(m_borderColor, m_knob->getOpacity()));
             background.setOutlineThickness(std::min({m_borders.left, m_borders.top, m_borders.right, m_borders.bottom}));
             target.draw(background, states);
 
             sf::CircleShape thumb{size / 10.0f};
-            thumb.setFillColor(m_thumbColor);
+            thumb.setFillColor(calcColorOpacity(m_thumbColor, m_knob->getOpacity()));
             thumb.setPosition({m_knob->getPosition().x + (size / 2.0f) - thumb.getRadius() + (std::cos(m_knob->m_angle / 180 * pi) * background.getRadius() * 3/5),
                                m_knob->getPosition().y + (size / 2.0f) - thumb.getRadius() + (-std::sin(m_knob->m_angle / 180 * pi) * background.getRadius() * 3/5)});
             target.draw(thumb, states);

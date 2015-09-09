@@ -63,7 +63,7 @@ namespace tgui
         ///
         /// @param filename       The absolute or relative filename of the image that should be loaded
         /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
-        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it.
+        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
         ///
         /// @throw Exception when the image could not be loaded (probably not found)
         ///
@@ -183,16 +183,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the transparency of the widget.
+        /// @brief Changes the opacity of the widget.
         ///
-        /// @param transparency  The transparency of the widget.
-        ///                      0 is completely transparent, while 255 (default) means fully opaque.
-        ///
-        /// Note that this will only change the transparency of the images. The parts of the widgets that use a color will not
-        /// be changed. You must change them yourself by setting the alpha channel of the color.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setTransparency(unsigned char transparency) override;
+        virtual void setOpacity(float opacity) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

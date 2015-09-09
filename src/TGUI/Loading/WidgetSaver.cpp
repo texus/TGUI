@@ -71,8 +71,8 @@ namespace tgui
             SET_PROPERTY("Position", "(" + tgui::to_string(widget->getPosition().x) + ", " + tgui::to_string(widget->getPosition().y) + ")");
         if (widget->getSize() != sf::Vector2f{})
             SET_PROPERTY("Size", "(" + tgui::to_string(widget->getSize().x) + ", " + tgui::to_string(widget->getSize().y) + ")");
-        if (widget->getTransparency() != 255)
-            SET_PROPERTY("Transparency", tgui::to_string(widget->getTransparency()));
+        if (widget->getOpacity() != 255)
+            SET_PROPERTY("Opacity", tgui::to_string(widget->getOpacity()));
 
         /// TODO: Font
         /// TODO: ToolTip

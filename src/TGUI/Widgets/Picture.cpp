@@ -110,11 +110,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setTransparency(unsigned char transparency)
+    void Picture::setOpacity(float opacity)
     {
-        ClickableWidget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
-        m_texture.setColor({255, 255, 255, m_opacity});
+        m_texture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

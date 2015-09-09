@@ -77,10 +77,17 @@ TEST_CASE("[Widget]") {
         REQUIRE(widget->getParent() == panel2.get());
     }
     
-    SECTION("Transparency") {
-        REQUIRE(widget->getTransparency() == 255);
-        widget->setTransparency(100);
-        REQUIRE(widget->getTransparency() == 100);
+    SECTION("Opacity") {
+        REQUIRE(widget->getOpacity() == 1.F);
+
+        widget->setOpacity(0.5f);
+        REQUIRE(widget->getOpacity() == 0.5f);
+
+        widget->setOpacity(2.f);
+        REQUIRE(widget->getOpacity() == 1.f);
+
+        widget->setOpacity(-2.f);
+        REQUIRE(widget->getOpacity() == 0.f);
     }
 
     SECTION("Tooltip") {

@@ -104,6 +104,9 @@ namespace tgui
         widgetPtr->initialize(this);
         m_widgets.push_back(widgetPtr);
         m_objName.push_back(widgetName);
+
+        if (m_opacity < 1)
+            widgetPtr->setOpacity(m_opacity);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -438,12 +441,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::setTransparency(unsigned char transparency)
+    void Container::setOpacity(float opacity)
     {
-        Widget::setTransparency(transparency);
+        Widget::setOpacity(opacity);
 
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
-            m_widgets[i]->setTransparency(transparency);
+            m_widgets[i]->setOpacity(opacity);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -247,12 +247,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBar::setTransparency(unsigned char transparency)
+    void ProgressBar::setOpacity(float opacity)
     {
-        ClickableWidget::setTransparency(transparency);
+        ClickableWidget::setOpacity(opacity);
 
         getRenderer()->m_textureBack.setColor(sf::Color(255, 255, 255, m_opacity));
         getRenderer()->m_textureFront.setColor(sf::Color(255, 255, 255, m_opacity));
+
+        m_textBack.setTextColor(calcColorOpacity(getRenderer()->m_textColorBack, getOpacity()));
+        m_textFront.setTextColor(calcColorOpacity(getRenderer()->m_textColorFront, getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -429,11 +432,11 @@ namespace tgui
         else if (property == "foregroundcolor")
             return m_foregroundColor;
         else if (property == "textcolor")
-            return m_progressBar->m_textBack.getTextColor();
+            return m_textColorBack;
         else if (property == "textcolorback")
-            return m_progressBar->m_textBack.getTextColor();
+            return m_textColorBack;
         else if (property == "textcolorfront")
-            return m_progressBar->m_textFront.getTextColor();
+            return m_textColorFront;
         else if (property == "bordercolor")
             return m_borderColor;
         else if (property == "backimage")
@@ -462,11 +465,11 @@ namespace tgui
         }
 
         if (m_progressBar->m_textBack.getTextColor() == m_progressBar->m_textFront.getTextColor())
-            pairs["TextColor"] = m_progressBar->m_textBack.getTextColor();
+            pairs["TextColor"] = m_textColorBack;
         else
         {
-            pairs["TextColorBack"] = m_progressBar->m_textBack.getTextColor();
-            pairs["TextColorFront"] = m_progressBar->m_textFront.getTextColor();
+            pairs["TextColorBack"] = m_textColorBack;
+            pairs["TextColorFront"] = m_textColorFront;
         }
 
         pairs["BorderColor"] = m_borderColor;
@@ -489,22 +492,24 @@ namespace tgui
 
     void ProgressBarRenderer::setTextColor(const sf::Color& color)
     {
-        m_progressBar->m_textBack.setTextColor(color);
-        m_progressBar->m_textFront.setTextColor(color);
+        setTextColorBack(color);
+        setTextColorFront(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ProgressBarRenderer::setTextColorBack(const sf::Color& color)
     {
-        m_progressBar->m_textBack.setTextColor(color);
+        m_textColorBack = color;
+        m_progressBar->m_textBack.setTextColor(calcColorOpacity(m_textColorBack, m_progressBar->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ProgressBarRenderer::setTextColorFront(const sf::Color& color)
     {
-        m_progressBar->m_textFront.setTextColor(color);
+        m_textColorFront = color;
+        m_progressBar->m_textFront.setTextColor(calcColorOpacity(m_textColorFront, m_progressBar->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -537,7 +542,7 @@ namespace tgui
         {
             m_textureBack.setPosition(m_progressBar->getPosition());
             m_textureBack.setSize(m_progressBar->getSize());
-            m_textureBack.setColor({255, 255, 255, m_progressBar->getTransparency()});
+            m_textureBack.setColor({255, 255, 255, static_cast<sf::Uint8>(m_progressBar->getOpacity() * 255)});
 
             if (m_textureFront.isLoaded())
                 m_progressBar->updateSize();
@@ -554,7 +559,7 @@ namespace tgui
             if (m_textureBack.isLoaded())
                 m_progressBar->updateSize();
 
-            m_textureFront.setColor({255, 255, 255, m_progressBar->getTransparency()});
+            m_textureFront.setColor({255, 255, 255, static_cast<sf::Uint8>(m_progressBar->getOpacity() * 255)});
         }
     }
 
@@ -572,7 +577,7 @@ namespace tgui
         {
             sf::RectangleShape back(m_progressBar->getSize());
             back.setPosition(m_progressBar->getPosition());
-            back.setFillColor(m_backgroundColor);
+            back.setFillColor(calcColorOpacity(m_backgroundColor, m_progressBar->getOpacity()));
             target.draw(back, states);
 
             sf::Vector2f frontPosition = m_progressBar->getPosition();
@@ -583,7 +588,7 @@ namespace tgui
 
             sf::RectangleShape front({m_progressBar->m_frontRect.width, m_progressBar->m_frontRect.height});
             front.setPosition(frontPosition);
-            front.setFillColor(m_foregroundColor);
+            front.setFillColor(calcColorOpacity(m_foregroundColor, m_progressBar->getOpacity()));
             target.draw(front, states);
         }
 
@@ -751,7 +756,7 @@ namespace tgui
             // Draw left border
             sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
             border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(m_borderColor);
+            border.setFillColor(calcColorOpacity(m_borderColor, m_progressBar->getOpacity()));
             target.draw(border, states);
 
             // Draw top border
