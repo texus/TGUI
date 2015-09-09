@@ -193,7 +193,7 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), 0, getOpacity(), duration));
+                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, getOpacity(), duration));
                 setOpacity(0);
                 break;
             }
@@ -265,7 +265,7 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), opacity, 0, duration, [=](){ hide(); setOpacity(opacity); }));
+                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), opacity, 0.f, duration, [=](){ hide(); setOpacity(opacity); }));
                 break;
             }
             case ShowAnimationType::Scale:

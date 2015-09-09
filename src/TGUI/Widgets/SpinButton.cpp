@@ -184,10 +184,10 @@ namespace tgui
     {
         ClickableWidget::setOpacity(opacity);
 
-        getRenderer()->m_textureArrowUpNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureArrowUpHover.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureArrowDownNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureArrowDownHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

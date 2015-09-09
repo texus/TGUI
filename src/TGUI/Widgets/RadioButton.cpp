@@ -187,11 +187,11 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        getRenderer()->m_textureUnchecked.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureChecked.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureUncheckedHover.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureCheckedHover.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureFocused.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureUnchecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureChecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureUncheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureCheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
         if (m_mouseHover)
             m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorHover, getOpacity()));

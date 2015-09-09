@@ -289,17 +289,17 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        getRenderer()->m_textureTrackNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureTrackHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureTrackNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureTrackHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
-        getRenderer()->m_textureThumbNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureThumbHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureThumbNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureThumbHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
-        getRenderer()->m_textureArrowUpNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureArrowUpHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
-        getRenderer()->m_textureArrowDownNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureArrowDownHover.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -202,8 +202,8 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        getRenderer()->m_backgroundTexture.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_foregroundTexture.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_foregroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

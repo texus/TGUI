@@ -181,8 +181,8 @@ namespace tgui
 
         m_closeButton->setOpacity(m_opacity);
 
-        m_iconTexture.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureTitleBar.setColor(sf::Color(255, 255, 255, m_opacity));
+        m_iconTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureTitleBar.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
         m_titleText.setTextColor(calcColorOpacity(getRenderer()->m_titleColor, getOpacity()));
     }

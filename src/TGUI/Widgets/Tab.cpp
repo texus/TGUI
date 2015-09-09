@@ -387,14 +387,14 @@ namespace tgui
 
         if (getRenderer()->m_textureNormal.isLoaded() && getRenderer()->m_textureSelected.isLoaded())
         {
-            getRenderer()->m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-            getRenderer()->m_textureSelected.setColor(sf::Color(255, 255, 255, m_opacity));
+            getRenderer()->m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+            getRenderer()->m_textureSelected.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
             for (auto it = getRenderer()->m_texturesNormal.begin(); it != getRenderer()->m_texturesNormal.end(); ++it)
-                it->setColor(sf::Color(255, 255, 255, m_opacity));
+                it->setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
             for (auto it = getRenderer()->m_texturesSelected.begin(); it != getRenderer()->m_texturesSelected.end(); ++it)
-                it->setColor(sf::Color(255, 255, 255, m_opacity));
+                it->setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
         }
 
         for (auto& tabText : m_tabTexts)

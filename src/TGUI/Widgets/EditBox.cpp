@@ -394,9 +394,9 @@ namespace tgui
     {
         ClickableWidget::setOpacity(opacity);
 
-        getRenderer()->m_textureNormal.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureHover.setColor(sf::Color(255, 255, 255, m_opacity));
-        getRenderer()->m_textureFocused.setColor(sf::Color(255, 255, 255, m_opacity));
+        getRenderer()->m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
         m_textBeforeSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         m_textAfterSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
