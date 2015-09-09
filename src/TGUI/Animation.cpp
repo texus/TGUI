@@ -39,10 +39,15 @@ namespace tgui
             if (m_elapsedTime > m_totalDuration)
                 m_elapsedTime = m_totalDuration;
 
-            if (m_type == Type::Move)
+            if (m_type == Type::Fade)
+                m_widget->setOpacity(m_startOpacity + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endOpacity - m_startOpacity)));
+            else if (m_type == Type::Move)
                 m_widget->setPosition(m_startPos + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endPos - m_startPos)));
-            else if (m_type == Type::Fade)
-                m_widget->setTransparency(static_cast<unsigned char>(m_startOpacity + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (static_cast<int>(m_endOpacity) - static_cast<int>(m_startOpacity)))));
+            else if (m_type == Type::Scale)
+            {
+                m_widget->setPosition(m_startPos + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endPos - m_startPos)));
+                m_widget->setSize(m_startSize + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endSize - m_startSize)));
+            }
 
             if (m_elapsedTime == m_totalDuration)
             {
@@ -53,6 +58,18 @@ namespace tgui
             }
 
             return false;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback)
+        {
+            m_type = Type::Fade;
+            m_widget = widget;
+            m_startOpacity = std::max(0.f, std::min(1.f, start));
+            m_endOpacity = std::max(0.f, std::min(1.f, end));
+            m_totalDuration = duration;
+            m_finishedCallback = finishedCallback;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,12 +86,14 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        FadeAnimation::FadeAnimation(Widget::Ptr widget, unsigned char start, unsigned char end, sf::Time duration, std::function<void()> finishedCallback)
+        ScaleAnimation::ScaleAnimation(Widget::Ptr widget, sf::Vector2f startPos, sf::Vector2f endPos, sf::Vector2f startSize, sf::Vector2f endSize, sf::Time duration, std::function<void()> finishedCallback)
         {
-            m_type = Type::Fade;
+            m_type = Type::Scale;
             m_widget = widget;
-            m_startOpacity = start;
-            m_endOpacity = end;
+            m_startPos = startPos;
+            m_endPos = endPos;
+            m_startSize = startSize;
+            m_endSize = endSize;
             m_totalDuration = duration;
             m_finishedCallback = finishedCallback;
         }

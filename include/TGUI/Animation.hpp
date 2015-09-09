@@ -35,10 +35,11 @@ namespace tgui
     enum class ShowAnimationType
     {
         Fade,          ///< Fade widget in or out
-        SlideToRight,  ///< Slide from left to show or to the right to hide
-        SlideToLeft,   ///< Slide from right to show or to the left to hide
-        SlideToBottom, ///< Slide from top to show or to the bottom to hide
-        SlideToTop,    ///< Slide from bottom to show or to the top to hide
+        Scale,         ///< Shrink to the center of the widget to hide or grow from its center to show
+        SlideToRight,  ///< Slide to the right to hide or from left to show
+        SlideToLeft,   ///< Slide to the left to hide or from right to show
+        SlideToBottom, ///< Slide to the bottom to hide or from top to show
+        SlideToTop,    ///< Slide to the top to hide or from bottom to show
 
         SlideFromLeft = SlideToRight, ///< Slide from left to show or to the right to hide
         SlideFromRight = SlideToLeft, ///< Slide from right to show or to the left to hide
@@ -57,7 +58,8 @@ namespace tgui
             {
                 None,
                 Move,
-                Fade
+                Fade,
+                Scale
             };
 
             bool update(sf::Time elapsedTime);
@@ -72,10 +74,23 @@ namespace tgui
             sf::Vector2f m_startPos;
             sf::Vector2f m_endPos;
 
-            unsigned char m_startOpacity;
-            unsigned char m_endOpacity;
+            sf::Vector2f m_startSize;
+            sf::Vector2f m_endSize;
+
+            float m_startOpacity;
+            float m_endOpacity;
 
             std::function<void()> m_finishedCallback;
+
+            friend class tgui::Widget;
+        };
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        class TGUI_API FadeAnimation : public Animation
+        {
+        public:
+            FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,10 +103,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        class TGUI_API FadeAnimation : public Animation
+        class TGUI_API ScaleAnimation : public Animation
         {
         public:
-            FadeAnimation(Widget::Ptr widget, unsigned char start, unsigned char end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
+            ScaleAnimation(Widget::Ptr widget, sf::Vector2f startPos, sf::Vector2f endPos, sf::Vector2f startSize, sf::Vector2f endSize, sf::Time duration, std::function<void()> finishedCallback = nullptr);
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
