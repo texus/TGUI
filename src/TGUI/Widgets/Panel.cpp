@@ -160,7 +160,7 @@ namespace tgui
         if (m_backgroundColor != sf::Color::Transparent)
         {
             sf::RectangleShape background(getSize());
-            background.setFillColor(m_backgroundColor);
+            background.setFillColor(calcColorOpacity(m_backgroundColor, getOpacity()));
             target.draw(background, states);
         }
 
