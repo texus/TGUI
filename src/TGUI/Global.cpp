@@ -219,10 +219,10 @@ namespace tgui
             return 1;
 
         std::vector<unsigned int> textSizes(static_cast<std::size_t>(height));
-        for (std::size_t i = 0; i < static_cast<std::size_t>(height); ++i)
+        for (unsigned int i = 0; i < static_cast<unsigned int>(height); ++i)
             textSizes[i] = i + 1;
 
-        auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height, [&font](unsigned int charSize, float h){ return font->getLineSpacing(charSize) < h; });
+        std::vector<unsigned int>::iterator high = std::lower_bound(textSizes.begin(), textSizes.end(), height, [&font](unsigned int charSize, float h){ return font->getLineSpacing(charSize) < h; });
         if (high == textSizes.end())
             return height;
 
@@ -230,7 +230,7 @@ namespace tgui
         if (highLineSpacing == height)
             return *high;
 
-        auto low = high - 1;
+        std::vector<unsigned int>::iterator low = high - 1;
         float lowLineSpacing = font->getLineSpacing(*low);
 
         if (fit < 0)

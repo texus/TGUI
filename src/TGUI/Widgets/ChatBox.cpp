@@ -415,7 +415,7 @@ namespace tgui
                         m_scroll->setValue(m_scroll->getValue()-1);
 
                         // Scroll down with the whole item height instead of with a single pixel
-                        m_scroll->setValue(m_scroll->getValue() + getFont()->getLineSpacing(m_textSize) - (std::fmod(m_scroll->getValue(), getFont()->getLineSpacing(m_textSize))));
+                        m_scroll->setValue(static_cast<unsigned int>(m_scroll->getValue() + getFont()->getLineSpacing(m_textSize) - (std::fmod(m_scroll->getValue(), getFont()->getLineSpacing(m_textSize)))));
                     }
                     else if (m_scroll->getValue() == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
                     {
@@ -424,9 +424,9 @@ namespace tgui
 
                         // Scroll up with the whole item height instead of with a single pixel
                         if (std::fmod(m_scroll->getValue(), getFont()->getLineSpacing(m_textSize)) > 0)
-                            m_scroll->setValue(m_scroll->getValue() - std::fmod(m_scroll->getValue(), getFont()->getLineSpacing(m_textSize)));
+                            m_scroll->setValue(static_cast<unsigned int>(m_scroll->getValue() - std::fmod(m_scroll->getValue(), getFont()->getLineSpacing(m_textSize))));
                         else
-                            m_scroll->setValue(m_scroll->getValue() - getFont()->getLineSpacing(m_textSize));
+                            m_scroll->setValue(static_cast<unsigned int>(m_scroll->getValue() - getFont()->getLineSpacing(m_textSize)));
                     }
 
                     updateDisplayedText();
@@ -503,11 +503,11 @@ namespace tgui
                 if (delta < 0)
                 {
                     // Scroll down
-                    m_scroll->setValue(m_scroll->getValue() + (static_cast<unsigned int>(-delta) * getFont()->getLineSpacing(m_textSize)));
+                    m_scroll->setValue(static_cast<unsigned int>(m_scroll->getValue() + ((-delta) * getFont()->getLineSpacing(m_textSize))));
                 }
                 else // You are scrolling up
                 {
-                    unsigned int change = static_cast<unsigned int>(delta) * getFont()->getLineSpacing(m_textSize);
+                    unsigned int change = static_cast<unsigned int>(delta * getFont()->getLineSpacing(m_textSize));
 
                     // Scroll up
                     if (change < m_scroll->getValue())
