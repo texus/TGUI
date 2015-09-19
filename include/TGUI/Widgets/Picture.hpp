@@ -92,13 +92,60 @@ namespace tgui
         /// @brief Constructor to create the picture from an image
         ///
         /// @param texture  The texture to load the picture from
+        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
+        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
         ///
         /// @code
         /// auto picture = std::make_shared<tgui::Picture>(tgui::Texture{"image.png", {10, 10, 80, 80}});
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Picture(const Texture& texture);
+        Picture(const Texture& texture, bool fullyClickable = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image
+        ///
+        /// @param filename       The absolute or relative filename of the image that should be loaded
+        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
+        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
+        ///
+        /// @throw Exception when the image could not be loaded (probably not found)
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTexture(const std::string& filename, bool fullyClickable = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image
+        ///
+        /// @param texture  The texture to load the picture from
+        ///
+        /// Note that the texture will be copied, so any changes applied to it afterwards will not affect the picture.
+        ///
+        /// @code
+        /// sf::Texture texture;
+        /// texture.loadFromFile("image.png", {10, 10, 80, 80});
+        /// picture->setTexture(texture);
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTexture(const sf::Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the image
+        ///
+        /// @param texture  The texture to load the picture from
+        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
+        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
+        ///
+        /// @code
+        /// picture->setTexture({"image.png", {10, 10, 80, 80}});
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTexture(const Texture& texture, bool fullyClickable = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

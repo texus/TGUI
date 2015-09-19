@@ -81,18 +81,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::setGlobalFont(const std::string& filename)
+    void Container::setFont(const Font& font)
     {
-        m_font = std::make_shared<sf::Font>();
-        if (!m_font->loadFromFile(getResourcePath() + filename))
-            throw Exception{"Failed to load font '" + filename + "'."};
-    }
+        Widget::setFont(font);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::setGlobalFont(std::shared_ptr<sf::Font> font)
-    {
-        m_font = font;
+        for (auto& widget : m_widgets)
+            widget->setFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +94,10 @@ namespace tgui
     void Container::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
     {
         assert(widgetPtr != nullptr);
+
+        // Let the widget inherit our font if it did not had a font yet
+        if (!widgetPtr->getFont() && getFont())
+            widgetPtr->setFont(getFont());
 
         widgetPtr->initialize(this);
         m_widgets.push_back(widgetPtr);
@@ -622,21 +620,6 @@ namespace tgui
         }
 
         return nullptr;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            setGlobalFont(m_parent->getGlobalFont());
-
-        // Re-initialize any widget that was already added
-        // They were most likely not given a font yet, as we are only receiving a font now
-        for (auto& widget : m_widgets)
-            widget->initialize(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

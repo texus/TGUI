@@ -99,6 +99,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MessageBox::setFont(const Font& font)
+    {
+        ChildWindow::setFont(font);
+        m_label->setFont(font);
+
+        for (unsigned int i = 0; i < m_buttons.size(); ++i)
+            m_buttons[i]->setFont(font);
+
+        rearrange();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MessageBox::setText(const sf::String& text)
     {
         m_label->setText(text);
@@ -128,7 +141,7 @@ namespace tgui
         if (!getTheme() || m_buttonClassName.empty())
             button = std::make_shared<Button>();
         else
-            getTheme()->internalLoad(getPrimaryLoadingParameter(), m_buttonClassName);
+            button = getTheme()->internalLoad(getPrimaryLoadingParameter(), m_buttonClassName);
 
         button->setTextSize(m_textSize);
         button->setText(caption);
@@ -142,28 +155,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBox::initialize(Container *const parent)
-    {
-        std::shared_ptr<sf::Font> font = m_font;
-
-        ChildWindow::initialize(parent);
-
-        if (!font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void MessageBox::rearrange()
     {
+        float buttonWidth = 120;
+        float buttonHeight = 24;
+
         // Calculate the button size
-        float buttonWidth = 5.0f * m_textSize;
-        float buttonHeight = m_textSize * 10.0f / 8.0f;
-        for (unsigned int i = 0; i < m_buttons.size(); ++i)
+        if (getFont())
         {
-            float width = sf::Text(m_buttons[i]->getText(), *getGlobalFont(), m_textSize).getLocalBounds().width;
-            if (buttonWidth < width * 10.0f / 9.0f)
-                buttonWidth = width * 10.0f / 9.0f;
+            buttonWidth = 5.0f * getFont()->getLineSpacing(m_textSize);
+            buttonHeight = getFont()->getLineSpacing(m_textSize) / 0.85f;
+
+            for (unsigned int i = 0; i < m_buttons.size(); ++i)
+            {
+                float width = sf::Text(m_buttons[i]->getText(), *getFont(), m_textSize).getLocalBounds().width;
+                if (buttonWidth < width * 10.0f / 9.0f)
+                    buttonWidth = width * 10.0f / 9.0f;
+            }
         }
 
         // Calculate the space needed for the buttons
@@ -231,7 +239,9 @@ namespace tgui
                                                         m_messageBox->m_primaryLoadingParameter,
                                                         Deserializer::deserialize(ObjectConverter::Type::String, value).getString()
                                                     );
-            m_messageBox->ChildWindow::operator=(*childWindow);
+
+            for (auto& pair : childWindow->getRenderer()->getPropertyValuePairs())
+                setProperty(pair.first, std::move(pair.second));
         }
         else
             ChildWindowRenderer::setProperty(property, value);
@@ -260,8 +270,12 @@ namespace tgui
                     throw Exception{"Failed to load scrollbar, ChatBox has no connected theme to load the scrollbar with"};
 
                 tgui::ChildWindow::Ptr childWindow = m_messageBox->getTheme()->internalLoad(m_messageBox->m_primaryLoadingParameter, value.getString());
-                m_messageBox->ChildWindow::operator=(*childWindow);
+
+                for (auto& pair : childWindow->getRenderer()->getPropertyValuePairs())
+                    setProperty(pair.first, std::move(pair.second));
             }
+            else
+                ChildWindowRenderer::setProperty(property, std::move(value));
         }
         else
             ChildWindowRenderer::setProperty(property, std::move(value));
@@ -286,19 +300,6 @@ namespace tgui
         auto pairs = ChildWindowRenderer::getPropertyValuePairs();
         pairs["TextColor"] = m_messageBox->m_label->getTextColor();
         return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MessageBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_messageBox->m_font = font;
-        m_messageBox->m_label->setTextFont(font);
-
-        for (unsigned int i = 0; i < m_messageBox->m_buttons.size(); ++i)
-            m_messageBox->m_buttons[i]->getRenderer()->setTextFont(font);
-
-        m_messageBox->rearrange();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

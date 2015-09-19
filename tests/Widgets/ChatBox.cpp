@@ -38,7 +38,7 @@ TEST_CASE("[ChatBox]") {
         font->loadFromFile("resources/DroidSansArmenian.ttf");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->setGlobalFont("resources/DroidSansArmenian.ttf");
+        parent->setFont("resources/DroidSansArmenian.ttf");
         parent->add(chatBox);
 
         REQUIRE(chatBox->getLineAmount() == 0);

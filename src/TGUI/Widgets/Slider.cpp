@@ -167,6 +167,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f Slider::getFullSize() const
+    {
+        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Slider::setMinimum(int minimum)
     {
         // Set the new minimum
@@ -238,6 +246,13 @@ namespace tgui
         getRenderer()->m_textureTrackHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
         getRenderer()->m_textureThumbNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
         getRenderer()->m_textureThumbHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Slider::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

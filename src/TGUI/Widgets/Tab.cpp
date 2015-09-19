@@ -67,12 +67,6 @@ namespace tgui
 
         float positionX = getPosition().x;
 
-        float textHeight;
-        if (m_font)
-            textHeight = sf::Text{"kg", *m_font, getTextSize()}.getLocalBounds().height;
-        else
-            textHeight = 0;
-
         auto textureNormalIt = getRenderer()->m_texturesNormal.begin();
         auto textureSelectedIt = getRenderer()->m_texturesSelected.begin();
         auto tabTextIt = m_tabTexts.begin();
@@ -85,7 +79,7 @@ namespace tgui
             }
 
             tabTextIt->setPosition({positionX + getRenderer()->m_distanceToSide + ((*tabWidthIt - (2 * getRenderer()->m_distanceToSide) - tabTextIt->getSize().x) / 2.0f),
-                                    getPosition().y + ((m_tabHeight - textHeight) / 2.0f)});
+                                    getPosition().y + ((m_tabHeight - tabTextIt->getSize().y) / 2.0f)});
 
             positionX += *tabWidthIt + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
         }
@@ -95,6 +89,20 @@ namespace tgui
 
     void Tab::setSize(const Layout2d&)
     {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Tab::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+
+        for (auto& tab : m_tabTexts)
+            tab.setFont(font);
+
+        // Recalculate the size when auto sizing
+        if (m_requestedTextSize == 0)
+            setTextSize(0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +126,7 @@ namespace tgui
 
         // Create the new tab
         Label newTab;
-        newTab.setTextFont(m_font);
+        newTab.setFont(m_font);
         newTab.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         newTab.setTextSize(getTextSize());
         newTab.setText(text);
@@ -142,15 +150,9 @@ namespace tgui
             selectedIt->setPosition({getPosition().x + getSize().x, getPosition().y});
         }
 
-        float textHeight;
-        if (m_font)
-            textHeight = sf::Text{"kg", *m_font, getTextSize()}.getLocalBounds().height;
-        else
-            textHeight = 0;
-
         // Set the correct size of the tab text
         newTab.setPosition({getPosition().x + getSize().x + getRenderer()->m_distanceToSide + ((*tabWidthIt - (2 * getRenderer()->m_distanceToSide) - newTab.getSize().x) / 2.0f),
-                            getPosition().y + ((m_tabHeight - textHeight) / 2.0f)});
+                            getPosition().y + ((m_tabHeight - newTab.getSize().y) / 2.0f)});
 
         // Add the tab
         m_tabTexts.insert(m_tabTexts.begin() + index, std::move(newTab));
@@ -327,9 +329,15 @@ namespace tgui
 
     void Tab::setTextSize(unsigned int size)
     {
-        if (m_textSize != size)
+        if ((size == 0) || (m_requestedTextSize != size))
         {
-            m_textSize = size;
+            m_requestedTextSize = size;
+
+            if (size == 0)
+                m_textSize = findBestTextSize(getFont(), m_tabHeight * 0.85f);
+            else // An exact size was given
+                m_textSize = size;
+
             for (auto& label : m_tabTexts)
                 label.setTextSize(getTextSize());
 
@@ -341,10 +349,7 @@ namespace tgui
 
     unsigned int Tab::getTextSize() const
     {
-        if (m_textSize == 0)
-            return static_cast<unsigned int>(m_tabHeight * 0.75f);
-        else
-            return m_textSize;
+        return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,7 +371,7 @@ namespace tgui
         }
 
         // Recalculate the size when auto sizing
-        if (m_textSize == 0)
+        if (m_requestedTextSize == 0)
             setTextSize(0);
     }
 
@@ -402,6 +407,13 @@ namespace tgui
 
         if (m_selectedTab >= 0)
             m_tabTexts[m_selectedTab].setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Tab::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -469,16 +481,6 @@ namespace tgui
 
         // Recalculate the positions of the tabs
         updatePosition();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Tab::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -700,18 +702,6 @@ namespace tgui
         pairs["Borders"] = m_borders;
         pairs["DistanceToSide"] = m_distanceToSide;
         return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TabRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_tab->m_font = font;
-
-        for (auto& tab : m_tab->m_tabTexts)
-            tab.setTextFont(font);
-
-        m_tab->recalculateTabsWidth();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

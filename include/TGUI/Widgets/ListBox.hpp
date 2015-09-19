@@ -158,6 +158,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the font of the text in the widget.
+        ///
+        /// @param font  The new font.
+        ///
+        /// When you don't call this function then the font from the parent widget will be used.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setFont(const Font& font) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds an item to the list.
         ///
         /// @param itemName  The name of the item you want to add (this is the text that will be displayed inside the list box)
@@ -438,9 +449,7 @@ namespace tgui
         ///
         /// @param itemHeight  The size of a single item in the list
         ///
-        /// @remarks
-        ///         - This size is always a little big greater than the text size.
-        ///         - When there is no scrollbar then the items will be removed when they no longer fit inside the list box.
+        /// @warning When there is no scrollbar then the items will be removed when they no longer fit inside the list box.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setItemHeight(unsigned int itemHeight);
@@ -452,10 +461,30 @@ namespace tgui
         /// @return The item height
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getItemHeight() const
-        {
-            return m_itemHeight;
-        }
+        unsigned int getItemHeight() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the text size of the items
+        ///
+        /// @param textSize  The size size of the text
+        ///
+        /// This will not change the height that each item has. By default (or when passing 0 to this function) the text will
+        /// be auto-sized to nicely fit inside this item height.
+        ///
+        /// @see setItemHeight
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextSize(unsigned int textSize);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the text size of the items
+        ///
+        /// @return The text size
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -484,12 +513,47 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the list box scrolls to the bottom when a new item is added
+        ///
+        /// @param autoScroll  Should list box scroll to the bottom when new items are added?
+        ///
+        /// Auto scrolling is enabled by default.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setAutoScroll(bool autoScroll);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the maximum items that the list box can contain.
+        ///
+        /// @return The maximum items inside the list box.
+        ///         If the function returns 0 then there is no limit.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getAutoScroll() const
+        {
+            return m_autoScroll;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the opacity of the widget.
         ///
         /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
+        ///
+        /// This is basically the width and height of the optional borders drawn around widgets.
+        ///
+        /// @return Offset of the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual sf::Vector2f getWidgetOffset() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -535,12 +599,6 @@ namespace tgui
         // Update the color of the items
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateItemColors();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // This function is called when the widget is added to a container.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initialize(Container *const container) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -593,8 +651,9 @@ namespace tgui
         int m_hoveringItem = -1;
 
         // The size must be stored
-        unsigned int m_itemHeight = 24;
-        unsigned int m_textSize = 19;
+        unsigned int m_itemHeight = 22;
+        unsigned int m_requestedTextSize = 0;
+        unsigned int m_textSize = 18;
 
         // This will store the maximum number of items in the list box (zero by default, meaning that there is no limit)
         std::size_t m_maxItems = 0;
@@ -604,6 +663,8 @@ namespace tgui
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
+
+        bool m_autoScroll = true;
 
         // ComboBox contains a list box internally and it should be able to adjust it.
         friend class ComboBox;
@@ -763,18 +824,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundTexture(const Texture& texture);
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the items.
-        ///
-        /// When you don't call this function then the global font will be use.
-        /// This global font can be changed with the setGlobalFont function from the parent.
-        ///
-        /// @param font  The new font.
-        ///
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextFont(std::shared_ptr<sf::Font> font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

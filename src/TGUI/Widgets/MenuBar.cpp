@@ -65,17 +65,14 @@ namespace tgui
 
         if (!m_menus.empty())
         {
-            Label tempText(m_menus[0].text);
-            tempText.setText("kg");
-
             // Position the menus
-            sf::Vector2f pos = {getPosition().x, getPosition().y + (getSize().y - tempText.getSize().y) / 2.0f};
+            sf::Vector2f pos = getPosition();
             for (unsigned int i = 0; i < m_menus.size(); ++i)
             {
-                m_menus[i].text.setPosition({pos.x + getRenderer()->m_distanceToSide, pos.y});
+                m_menus[i].text.setPosition({pos.x + getRenderer()->m_distanceToSide, pos.y + ((getSize().y - m_menus[i].text.getSize().y) / 2.f)});
 
                 for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
-                    m_menus[i].menuItems[j].setPosition(pos.x + 2 * getRenderer()->m_distanceToSide, pos.y + (j+1)*getSize().y);
+                    m_menus[i].menuItems[j].setPosition(pos.x + 2 * getRenderer()->m_distanceToSide, pos.y + (j+1)*getSize().y + ((getSize().y - m_menus[i].menuItems[j].getSize().y) / 2.f));
 
                 pos.x += m_menus[i].text.getSize().x + 2 * getRenderer()->m_distanceToSide;
             }
@@ -88,7 +85,24 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        setTextSize(static_cast<unsigned int>(getSize().y * 0.75f));
+        setTextSize(findBestTextSize(getFont(), getSize().y * 0.85f));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+
+        for (unsigned int i = 0; i < m_menus.size(); ++i)
+        {
+            for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                m_menus[i].menuItems[j].setFont(font);
+
+            m_menus[i].text.setFont(font);
+        }
+
+        setTextSize(findBestTextSize(getFont(), getSize().y * 0.85f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +111,7 @@ namespace tgui
     {
         Menu newMenu;
 
-        newMenu.text.setTextFont(m_font);
+        newMenu.text.setFont(m_font);
         newMenu.text.setText(text);
         newMenu.text.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         newMenu.text.setTextSize(m_textSize);
@@ -112,10 +126,7 @@ namespace tgui
 
     bool MenuBar::addMenuItem(const sf::String& menu, const sf::String& text)
     {
-        Label tempText(m_menus[0].text);
-        tempText.setText("kg");
-
-        sf::Vector2f pos = {getPosition().x, getPosition().y + (getSize().y - tempText.getSize().y) / 2.0f};
+        sf::Vector2f pos = getPosition();
 
         // Search for the menu
         for (unsigned int i = 0; i < m_menus.size(); ++i)
@@ -124,7 +135,7 @@ namespace tgui
             if (m_menus[i].text.getText() == menu)
             {
                 Label menuItem;
-                menuItem.setTextFont(m_font);
+                menuItem.setFont(m_font);
                 menuItem.setText(text);
                 menuItem.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
                 menuItem.setTextSize(m_textSize);
@@ -132,7 +143,7 @@ namespace tgui
                 m_menus[i].menuItems.push_back(std::move(menuItem));
 
                 // Position the new menu item
-                m_menus[i].menuItems.back().setPosition({pos.x + 2 * getRenderer()->m_distanceToSide, pos.y + m_menus[i].menuItems.size() * getSize().y});
+                m_menus[i].menuItems.back().setPosition({pos.x + 2 * getRenderer()->m_distanceToSide, pos.y + m_menus[i].menuItems.size() * getSize().y + ((getSize().y - m_menus[i].menuItems.back().getSize().y) / 2.f)});
 
                 return true;
             }
@@ -445,9 +456,6 @@ namespace tgui
     {
         Widget::initialize(parent);
 
-        if (!m_font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
-
         if (getSize().x == 0)
             setSize(bindWidth(m_parent->shared_from_this()), m_size.y);
     }
@@ -683,23 +691,6 @@ namespace tgui
             if (m_menuBar->m_menus[m_menuBar->m_visibleMenu].selectedMenuItem != -1)
                 m_menuBar->m_menus[m_menuBar->m_visibleMenu].menuItems[m_menuBar->m_menus[m_menuBar->m_visibleMenu].selectedMenuItem].setTextColor(calcColorOpacity(m_selectedTextColor, m_menuBar->getOpacity()));
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MenuBarRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_menuBar->m_font = font;
-
-        for (unsigned int i = 0; i < m_menuBar->m_menus.size(); ++i)
-        {
-            for (unsigned int j = 0; j < m_menuBar->m_menus[i].menuItems.size(); ++j)
-                m_menuBar->m_menus[i].menuItems[j].setTextFont(font);
-
-            m_menuBar->m_menus[i].text.setTextFont(font);
-        }
-
-        m_menuBar->setTextSize(m_menuBar->m_textSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -192,44 +192,24 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the global font.
         ///
-        /// This font will be used by all widgets that are created after calling this function.
-        ///
-        /// @param filename  Path of the font file to load
-        ///
-        /// @throw Exception when loading fails
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setGlobalFont(const std::string& filename)
-        {
-            m_container->setGlobalFont(filename);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the global font.
-        ///
-        /// This font will be used by all widgets that are created after calling this function.
-        ///
         /// @param font  Font to use
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setGlobalFont(std::shared_ptr<sf::Font> font)
+        void setFont(const Font& font)
         {
-            m_container->setGlobalFont(font);
+            m_container->setFont(font);
         }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the global font.
         ///
-        /// This is the font that is used for newly created widget by default.
-        ///
         /// @return global font
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::shared_ptr<sf::Font> getGlobalFont() const
+        std::shared_ptr<sf::Font> getFont() const
         {
-            return m_container->getGlobalFont();
+            return m_container->getFont();
         }
 
 

@@ -74,8 +74,7 @@ namespace tgui
         if (widget->getOpacity() != 255)
             SET_PROPERTY("Opacity", tgui::to_string(widget->getOpacity()));
 
-        /// TODO: Font
-        /// TODO: ToolTip
+        /// TODO: Font and ToolTip
 
         if (widget->getRenderer())
         {

@@ -49,8 +49,8 @@ namespace tgui
         m_renderer = std::make_shared<ListBoxRenderer>(this);
         reload();
 
-        setSize({150, 150});
-        setItemHeight(20);
+        setSize({150, 154});
+        setItemHeight(22);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +62,7 @@ namespace tgui
         m_selectedItem       {listBoxToCopy.m_selectedItem},
         m_hoveringItem       {listBoxToCopy.m_hoveringItem},
         m_itemHeight         {listBoxToCopy.m_itemHeight},
+        m_requestedTextSize  {listBoxToCopy.m_requestedTextSize},
         m_textSize           {listBoxToCopy.m_textSize},
         m_maxItems           {listBoxToCopy.m_maxItems},
         m_scroll             {Scrollbar::copy(listBoxToCopy.m_scroll)},
@@ -83,6 +84,7 @@ namespace tgui
             std::swap(m_selectedItem,        temp.m_selectedItem);
             std::swap(m_hoveringItem,        temp.m_hoveringItem);
             std::swap(m_itemHeight,          temp.m_itemHeight);
+            std::swap(m_requestedTextSize,   temp.m_requestedTextSize);
             std::swap(m_textSize,            temp.m_textSize);
             std::swap(m_maxItems,            temp.m_maxItems);
             std::swap(m_scroll,              temp.m_scroll);
@@ -114,11 +116,10 @@ namespace tgui
 
         if (m_font != nullptr)
         {
-            float textHeight = sf::Text{"kg", *m_font, m_textSize}.getLocalBounds().height;
             for (std::size_t i = 0; i < m_items.size(); ++i)
             {
-                m_items[i].setPosition({getPosition().x + (textHeight / 10.0f) + padding.left,
-                                        getPosition().y + static_cast<float>(i * m_itemHeight) + ((m_itemHeight - textHeight) / 2.0f) + padding.top});
+                m_items[i].setPosition({getPosition().x + padding.left,
+                                        getPosition().y + padding.top + (i * m_itemHeight) + ((m_itemHeight - m_items[i].getSize().y) / 2.0f)});
 
                 if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
                     m_items[i].setPosition({m_items[i].getPosition().x, m_items[i].getPosition().y - m_scroll->getValue()});
@@ -158,6 +159,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+
+        for (auto& item : m_items)
+            item.setFont(font);
+
+        // Recalculate the text size with the new font
+        if (m_requestedTextSize == 0)
+        {
+            m_textSize = findBestTextSize(getFont(), m_itemHeight * 0.85f);
+            for (auto& item : m_items)
+                item.setTextSize(m_textSize);
+        }
+
+        updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListBox::addItem(const sf::String& itemName, const sf::String& id)
     {
         // Check if the item limit is reached (if there is one)
@@ -176,11 +197,15 @@ namespace tgui
             else // There is a scrollbar so tell it that another item was added
             {
                 m_scroll->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
+
+                // Scroll down when auto-scrolling is enabled
+                if (m_autoScroll && (m_scroll->getLowValue() < m_scroll->getMaximum()))
+                    m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
             }
 
             // Create the new item
             Label newItem;
-            newItem.setTextFont(m_font);
+            newItem.setFont(getFont());
             newItem.setTextColor(getRenderer()->m_textColor);
             newItem.setTextSize(m_textSize);
             newItem.setText(itemName);
@@ -478,16 +503,14 @@ namespace tgui
 
     void ListBox::setItemHeight(unsigned int itemHeight)
     {
-        // There is a minimum height
-        if (itemHeight < 10)
-            itemHeight = 10;
-
         // Set the new heights
         m_itemHeight = itemHeight;
-        m_textSize   = static_cast<unsigned int>(itemHeight * 0.8f);
-
-        for (auto& item : m_items)
-            item.setTextSize(m_textSize);
+        if (m_requestedTextSize == 0)
+        {
+            m_textSize = findBestTextSize(getFont(), itemHeight * 0.85f);
+            for (auto& item : m_items)
+                item.setTextSize(m_textSize);
+        }
 
         // Some items might be removed when there is no scrollbar
         if (m_scroll == nullptr)
@@ -510,6 +533,37 @@ namespace tgui
         }
 
         updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ListBox::getItemHeight() const
+    {
+        return m_itemHeight;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::setTextSize(unsigned int textSize)
+    {
+        m_requestedTextSize = textSize;
+
+        if (textSize)
+            m_textSize = textSize;
+        else
+            m_textSize = findBestTextSize(getFont(), m_itemHeight * 0.85f);
+
+        for (auto& item : m_items)
+            item.setTextSize(m_textSize);
+
+        updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ListBox::getTextSize() const
+    {
+        return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -537,6 +591,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::setAutoScroll(bool autoScroll)
+    {
+        m_autoScroll = autoScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListBox::setOpacity(float opacity)
     {
         Widget::setOpacity(opacity);
@@ -545,6 +606,13 @@ namespace tgui
             m_scroll->setOpacity(m_opacity);
 
         updateItemColors();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ListBox::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -809,11 +877,11 @@ namespace tgui
                 if (delta < 0)
                 {
                     // Scroll down
-                    m_scroll->setValue(m_scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_itemHeight / 2)));
+                    m_scroll->setValue(m_scroll->getValue() + (static_cast<unsigned int>(-delta) * m_itemHeight));
                 }
                 else // You are scrolling up
                 {
-                    unsigned int change = static_cast<unsigned int>(delta) * (m_itemHeight / 2);
+                    unsigned int change = static_cast<unsigned int>(delta) * m_itemHeight;
 
                     // Scroll up
                     if (change < m_scroll->getValue())
@@ -867,16 +935,6 @@ namespace tgui
 
         if (m_selectedItem >= 0)
             m_items[m_selectedItem].setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1253,18 +1311,6 @@ namespace tgui
             m_backgroundTexture.setSize(m_listBox->getSize());
             m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_listBox->getOpacity() * 255)});
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_listBox->m_font = font;
-
-        for (auto& item : m_listBox->m_items)
-            item.setTextFont(font);
-
-        m_listBox->updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

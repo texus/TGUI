@@ -36,6 +36,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -172,13 +173,28 @@ namespace tgui
     /// @internal
     // Returns the color with its alpha channel multiplied with the alpha parameter
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API inline sf::Color calcColorOpacity(sf::Color color, float alpha)
-    {
-        if (alpha == 1)
-            return color;
-        else
-            return {color.r, color.g, color.b, static_cast<sf::Uint8>(color.a * alpha)};
-    }
+    TGUI_API sf::Color calcColorOpacity(sf::Color color, float alpha);
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @internal
+    // The line spacing returned by sfml is correct but there is extra space on top.
+    // The text has to be moved up so that the line spacing really corresponds with the height of every line.
+    // This function returns the offset that the text has to be moved.
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    float getTextVerticalCorrection(std::shared_ptr<sf::Font> font, unsigned int characterSize, sf::Uint32 style = 0);
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @internal
+    /// @brief Finds the best character size for the text
+    ///
+    /// @param font    Font of the text
+    /// @param height  Height that the text should fill
+    /// @param fit     0 to choose best fit, 1 to select font of at least that height, -1 to select font of maximum that height
+    ///
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    unsigned int findBestTextSize(std::shared_ptr<sf::Font> font, float height, int fit = 0);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

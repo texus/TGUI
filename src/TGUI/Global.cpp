@@ -177,6 +177,74 @@ namespace tgui
         return tokens;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Color calcColorOpacity(sf::Color color, float alpha)
+    {
+        if (alpha == 1)
+            return color;
+        else
+            return {color.r, color.g, color.b, static_cast<sf::Uint8>(color.a * alpha)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float getTextVerticalCorrection(std::shared_ptr<sf::Font> font, unsigned int characterSize, sf::Uint32 style)
+    {
+        if (!font)
+            return 0;
+
+        bool bold = (style & sf::Text::Bold) != 0;
+
+        // Calculate the height of the first line (char size = everything above baseline, height + top = part below baseline)
+        float lineHeight = characterSize
+                           + font->getGlyph('g', characterSize, bold).bounds.height
+                           + font->getGlyph('g', characterSize, bold).bounds.top;
+
+        // Get the line spacing sfml returns
+        float lineSpacing = font->getLineSpacing(characterSize);
+
+        // Calculate the offset of the text
+        return lineHeight - lineSpacing;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int findBestTextSize(std::shared_ptr<sf::Font> font, float height, int fit)
+    {
+        if (!font)
+            return 0;
+
+        if (height < 2)
+            return 1;
+
+        std::vector<unsigned int> textSizes(static_cast<std::size_t>(height));
+        for (std::size_t i = 0; i < static_cast<std::size_t>(height); ++i)
+            textSizes[i] = i + 1;
+
+        auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height, [&font](unsigned int charSize, float h){ return font->getLineSpacing(charSize) < h; });
+        if (high == textSizes.end())
+            return height;
+
+        float highLineSpacing = font->getLineSpacing(*high);
+        if (highLineSpacing == height)
+            return *high;
+
+        auto low = high - 1;
+        float lowLineSpacing = font->getLineSpacing(*low);
+
+        if (fit < 0)
+            return *low;
+        else if (fit > 0)
+            return *high;
+        else
+        {
+            if (std::abs(height - lowLineSpacing) < std::abs(height - highLineSpacing))
+                return *low;
+            else
+                return *high;
+        }
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

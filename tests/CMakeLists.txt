@@ -2,8 +2,10 @@ set(TEST_SOURCES
     main.cpp
     Borders.cpp
     Clipboard.cpp
+    Font.cpp
     FileCompare.cpp
     Layouts.cpp
+    Signal.cpp
     Widget.cpp
     Loading/Serializer.cpp
     Loading/Deserializer.cpp

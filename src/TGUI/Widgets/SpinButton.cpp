@@ -192,6 +192,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f SpinButton::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SpinButton::leftMousePressed(float x, float y)
     {
         ClickableWidget::leftMousePressed(x, y);
@@ -294,6 +301,7 @@ namespace tgui
     {
         if (m_theme && primary != "")
         {
+            getRenderer()->setSpaceBetweenArrows(0);
             getRenderer()->setBorders({0, 0, 0, 0});
             Widget::reload(primary, secondary, force);
 
@@ -315,7 +323,7 @@ namespace tgui
             getRenderer()->setArrowColorNormal({60, 60, 60});
             getRenderer()->setArrowColorHover({0, 0, 0});
             getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setSpaceBetweenArrows(0);
+            getRenderer()->setSpaceBetweenArrows(2);
             getRenderer()->setArrowUpTexture({});
             getRenderer()->setArrowDownTexture({});
             getRenderer()->setArrowUpHoverTexture({});

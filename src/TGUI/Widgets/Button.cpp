@@ -92,6 +92,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f Button::getFullSize() const
+    {
+        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+        m_text.setFont(font);
+        setText(m_string);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Button::setText(const sf::String& text)
     {
         m_string = text;
@@ -116,13 +133,12 @@ namespace tgui
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                // Calculate a possible text size
-                float size = getSize().x * 0.75f;
-                m_text.setTextSize(static_cast<unsigned int>(size));
+                unsigned int textSize = findBestTextSize(getFont(), getSize().x * 0.85f);
+                m_text.setTextSize(textSize);
 
                 // Make the text smaller when it's too high
-                if (m_text.getSize().y > (getSize().y * 0.8f))
-                    m_text.setTextSize(static_cast<unsigned int>(size * getSize().y * 0.8f / m_text.getSize().y));
+                if (m_text.getSize().y > (getSize().y * 0.85f))
+                    m_text.setTextSize(static_cast<unsigned int>(textSize * getSize().y * 0.85f / m_text.getSize().y));
             }
         }
         else // The width of the button is big enough
@@ -132,13 +148,12 @@ namespace tgui
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                // Calculate a possible text size
-                float size = getSize().y * 0.75f;
-                m_text.setTextSize(static_cast<unsigned int>(size));
+                unsigned int textSize = findBestTextSize(getFont(), getSize().y * 0.85f);
+                m_text.setTextSize(textSize);
 
                 // Make the text smaller when it's too width
-                if (m_text.getSize().x > (getSize().x * 0.8f))
-                    m_text.setTextSize(static_cast<unsigned int>(size * getSize().x * 0.8f / m_text.getSize().x));
+                if (m_text.getSize().x > (getSize().x * 0.85f))
+                    m_text.setTextSize(static_cast<unsigned int>(textSize * ((getSize().x * 0.85f) / m_text.getSize().x)));
             }
         }
 
@@ -179,6 +194,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f Button::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Button::leftMousePressed(float x, float y)
     {
         ClickableWidget::leftMousePressed(x, y);
@@ -215,16 +237,6 @@ namespace tgui
             Widget::widgetFocused();
         else
             unfocus();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -454,17 +466,6 @@ namespace tgui
         pairs["Borders"] = m_borders;
 
         return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ButtonRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_button->m_font = font;
-        m_button->m_text.setTextFont(font);
-
-        // Reposition the text
-        m_button->setText(m_button->m_string);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

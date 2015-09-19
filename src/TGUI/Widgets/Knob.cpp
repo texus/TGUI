@@ -88,6 +88,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f Knob::getFullSize() const
+    {
+        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Knob::setStartRotation(float startRotation)
     {
         while (startRotation >= 360)
@@ -204,6 +212,13 @@ namespace tgui
 
         getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
         getRenderer()->m_foregroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Knob::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

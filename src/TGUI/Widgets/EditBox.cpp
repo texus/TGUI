@@ -104,17 +104,39 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f EditBox::getFullSize() const
+    {
+        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+
+        if (font.getFont())
+        {
+            m_textBeforeSelection.setFont(*font.getFont());
+            m_textSelection.setFont(*font.getFont());
+            m_textAfterSelection.setFont(*font.getFont());
+            m_textFull.setFont(*font.getFont());
+            m_defaultText.setFont(*font.getFont());
+        }
+
+        // Recalculate the text size and position
+        setText(m_text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::setText(const sf::String& text)
     {
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
-            // Calculate the text size
-            m_textFull.setString("kg");
-            m_textFull.setCharacterSize(static_cast<unsigned int>((getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top) * 0.75f));
-            m_textFull.setString(m_displayedText);
-
-            // Also adjust the character size of the other texts
+            m_textFull.setCharacterSize(findBestTextSize(getFont(), (getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top) * 0.85f));
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
@@ -122,11 +144,10 @@ namespace tgui
         }
         else // When the text has a fixed size
         {
-            // Set the text size
+            m_textFull.setCharacterSize(m_textSize);
             m_textBeforeSelection.setCharacterSize(m_textSize);
             m_textSelection.setCharacterSize(m_textSize);
             m_textAfterSelection.setCharacterSize(m_textSize);
-            m_textFull.setCharacterSize(m_textSize);
             m_defaultText.setCharacterSize(m_textSize);
         }
 
@@ -404,6 +425,13 @@ namespace tgui
         m_selectedTextBackground.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextBackgroundColor, getOpacity()));
         m_defaultText.setColor(calcColorOpacity(getRenderer()->m_defaultTextColor, getOpacity()));
         m_caret.setFillColor(calcColorOpacity(getRenderer()->m_caretColor, getOpacity()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f EditBox::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1066,13 +1094,15 @@ namespace tgui
 
     void EditBox::recalculateTextPositions()
     {
-        float textX = getPosition().x;
-        float textY = getPosition().y;
-
         Padding padding = getRenderer()->getScaledPadding();
 
-        textX += padding.left - m_textCropPosition;
-        textY += padding.top;
+        float textX = getPosition().x + padding.left - m_textCropPosition;
+        float textY = 0;
+        if (getFont())
+        {
+            textY = std::round((getPosition().y + padding.top - getTextVerticalCorrection(getFont(), getTextSize()))
+                               + ((getSize().y - padding.bottom - padding.top) - getFont()->getLineSpacing(getTextSize())) / 2.f);
+        }
 
         // Check if the layout wasn't left
         if (m_textAlignment != Alignment::Left)
@@ -1093,14 +1123,9 @@ namespace tgui
 
         float caretLeft = textX;
 
-        // Set the position of the text
-        sf::Text tempText(m_textFull);
-        tempText.setString("kg");
-        textY += (((getSize().y - padding.top - padding.bottom) - tempText.getLocalBounds().height) * 0.5f) - tempText.getLocalBounds().top;
-
         // Set the text before the selection on the correct position
-        m_textBeforeSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
-        m_defaultText.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
+        m_textBeforeSelection.setPosition(std::floor(textX + 0.5f), textY);
+        m_defaultText.setPosition(std::floor(textX + 0.5f), textY);
 
         // Check if there is a selection
         if (m_selChars != 0)
@@ -1117,7 +1142,7 @@ namespace tgui
             m_selectedTextBackground.setPosition(std::floor(textX + 0.5f), std::floor(getPosition().y + padding.top + 0.5f));
 
             // Set the text selected text on the correct position
-            m_textSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
+            m_textSelection.setPosition(std::floor(textX + 0.5f), textY);
 
             // Watch out for kerning
             if (m_displayedText.getSize() > m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize())
@@ -1125,22 +1150,12 @@ namespace tgui
 
             // Set the text selected text on the correct position
             textX += m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x  - m_textSelection.getPosition().x;
-            m_textAfterSelection.setPosition(std::floor(textX + 0.5f), std::floor(textY + 0.5f));
+            m_textAfterSelection.setPosition(std::floor(textX + 0.5f), textY);
         }
 
         // Set the position of the caret
         caretLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_caret.getSize().x * 0.5f);
         m_caret.setPosition(std::floor(caretLeft + 0.5f), std::floor(padding.top + getPosition().y + 0.5f));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1385,25 +1400,6 @@ namespace tgui
         pairs["Padding"] = m_padding;
 
         return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_editBox->m_font = font;
-
-        if (font != nullptr)
-        {
-            m_editBox->m_textBeforeSelection.setFont(*font);
-            m_editBox->m_textSelection.setFont(*font);
-            m_editBox->m_textAfterSelection.setFont(*font);
-            m_editBox->m_textFull.setFont(*font);
-            m_editBox->m_defaultText.setFont(*font);
-        }
-
-        // Recalculate the text size and position
-        m_editBox->setText(m_editBox->m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -30,26 +30,6 @@
 TEST_CASE("[Widget]") {
     tgui::Widget::Ptr widget = std::make_shared<tgui::Button>();
 
-    SECTION("Signals") {
-        tgui::Widget::Ptr widget2 = std::make_shared<tgui::Button>();
-
-        REQUIRE_NOTHROW(widget->connect("PositionChanged", [](){}));
-        REQUIRE_NOTHROW(widget->connect("SizeChanged", [](){}));
-        REQUIRE_NOTHROW(widget->connect("Focused", [](){}));
-        REQUIRE_NOTHROW(widget->connect("Unfocused", [](){}));
-        REQUIRE_NOTHROW(widget->connect("MouseEntered", [](){}));
-        REQUIRE_NOTHROW(widget->connect("MouseLeft", [](){}));
-        
-        REQUIRE_NOTHROW(widget->connect("PositionChanged", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->connect("SizeChanged", [](sf::Vector2f){}));
-
-        REQUIRE_NOTHROW(widget->connect("PositionChanged", [](sf::Vector2f, sf::Vector2f){}, widget2->getPosition()));
-        REQUIRE_NOTHROW(widget->connect("SizeChanged", [](sf::Vector2f, sf::Vector2f){}, std::bind(&tgui::Widget::getSize, widget2)));
-
-        REQUIRE_THROWS_AS(widget->connect("SomeWrongSignal", [](){}), tgui::Exception);
-        REQUIRE_THROWS_AS(widget->connect("PositionChanged", [](bool){}), tgui::Exception);
-    }
-
     SECTION("Visibile") {
         REQUIRE(widget->isVisible());
         widget->hide();
@@ -57,7 +37,7 @@ TEST_CASE("[Widget]") {
         widget->show();
         REQUIRE(widget->isVisible());
     }
-    
+
     SECTION("Enabled") {
         REQUIRE(widget->isEnabled());
         widget->disable();
@@ -73,10 +53,11 @@ TEST_CASE("[Widget]") {
         REQUIRE(widget->getParent() == nullptr);
         panel1->add(widget);
         REQUIRE(widget->getParent() == panel1.get());
-        widget->initialize(panel2.get());
+        panel1->remove(widget);
+        panel2->add(widget);
         REQUIRE(widget->getParent() == panel2.get());
     }
-    
+
     SECTION("Opacity") {
         REQUIRE(widget->getOpacity() == 1.F);
 

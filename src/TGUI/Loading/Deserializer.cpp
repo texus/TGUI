@@ -77,9 +77,14 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API ObjectConverter deserializeFont(const std::string& /*value*/)
+    TGUI_API ObjectConverter deserializeFont(const std::string& value)
     {
-        return {std::shared_ptr<sf::Font>()}; /// TODO: Support deserializing fonts
+        if (value == "null" || value == "nullptr")
+            return std::shared_ptr<sf::Font>();
+
+        auto font = std::make_shared<sf::Font>();
+        font->loadFromFile(Deserializer::deserialize(ObjectConverter::Type::String, value).getString());
+        return font;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

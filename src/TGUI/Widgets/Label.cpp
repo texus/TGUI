@@ -67,8 +67,8 @@ namespace tgui
 
         m_background.setPosition(getPosition());
 
-        m_text.setPosition(std::floor(getPosition().x + getRenderer()->getPadding().left - m_text.getLocalBounds().left + 0.5f),
-                           std::floor(getPosition().y + getRenderer()->getPadding().top - m_text.getLocalBounds().top + 0.5f));
+        m_text.setPosition(std::round(getPosition().x + getRenderer()->getPadding().left),
+                           std::floor(getPosition().y + getRenderer()->getPadding().top - getTextVerticalCorrection(getFont(), getTextSize(), m_text.getStyle())));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,9 +87,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setText(const sf::String& string)
+    sf::Vector2f Label::getFullSize() const
     {
-        m_string = string;
+        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+
+        if (font.getFont())
+            m_text.setFont(*font.getFont());
 
         rearrangeText();
         updatePosition();
@@ -97,14 +108,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setTextFont(std::shared_ptr<sf::Font> font)
+    void Label::setText(const sf::String& string)
     {
-        m_font = font;
+        m_string = string;
 
-        if (font != nullptr)
-            m_text.setFont(*font);
-
-        setText(getText());
+        rearrangeText();
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,14 +197,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::initialize(Container *const parent)
+    sf::Vector2f Label::getWidgetOffset() const
     {
-        bool autoSize = getAutoSize();
-        Widget::initialize(parent);
-        setAutoSize(autoSize);
-
-        if (!getFont() && m_parent->getGlobalFont())
-            setTextFont(m_parent->getGlobalFont());
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,6 +226,15 @@ namespace tgui
                 m_possibleDoubleClick = true;
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::initialize(Container *const parent)
+    {
+        bool autoSize = getAutoSize();
+        Widget::initialize(parent);
+        setAutoSize(autoSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,105 +271,108 @@ namespace tgui
 
     void Label::rearrangeText()
     {
-        if (getFont() == nullptr)
+        if (!getFont())
             return;
 
-        // Only rearrange the text when a maximum width was given
-        if (!m_autoSize || m_maximumTextWidth > 0)
+        // Find the maximum width of one line
+        float maxWidth = 0;
+        if (m_autoSize)
+            maxWidth = m_maximumTextWidth;
+        else if (getSize().x > getRenderer()->getPadding().left + getRenderer()->getPadding().right)
+            maxWidth = getSize().x - getRenderer()->getPadding().left - getRenderer()->getPadding().right;
+
+        m_text.setString("");
+        unsigned int index = 0;
+        unsigned int lineCount = 0;
+        float calculatedLabelWidth = 0;
+        bool bold = (m_text.getStyle() & sf::Text::Bold) != 0;
+        while (index < m_string.getSize())
         {
-            // Find the maximum width of one line
-            float maxWidth = 0;
-            if (m_autoSize)
-                maxWidth = m_maximumTextWidth;
-            else if (getSize().x > getRenderer()->getPadding().left + getRenderer()->getPadding().right)
-                maxWidth = getSize().x - getRenderer()->getPadding().left - getRenderer()->getPadding().right;
+            lineCount++;
+            unsigned int oldIndex = index;
 
-            m_text.setString("");
-            unsigned int index = 0;
-            while (index < m_string.getSize())
+            float width = 0;
+            sf::Uint32 prevChar = 0;
+            for (std::size_t i = index; i < m_string.getSize(); ++i)
             {
-                unsigned int oldIndex = index;
-
-                float width = 0;
-                sf::Uint32 prevChar = 0;
-                for (unsigned int i = index; i < m_string.getSize(); ++i)
+                float charWidth;
+                sf::Uint32 curChar = m_string[i];
+                if (curChar == '\n')
                 {
-                    float charWidth;
-                    sf::Uint32 curChar = m_string[i];
-                    if (curChar == '\n')
-                    {
-                        index++;
-                        break;
-                    }
-                    else if (curChar == '\t')
-                        charWidth = static_cast<float>(getFont()->getGlyph(' ', m_text.getCharacterSize(), false).textureRect.width) * 4;
-                    else
-                        charWidth = static_cast<float>(getFont()->getGlyph(curChar, m_text.getCharacterSize(), false).textureRect.width);
-
-                    float kerning = static_cast<float>(getFont()->getKerning(prevChar, curChar, m_text.getCharacterSize()));
-                    if (width + charWidth + kerning <= maxWidth)
-                    {
-                        if (curChar == '\t')
-                            charWidth = static_cast<float>(getFont()->getGlyph(' ', m_text.getCharacterSize(), false).advance) * 4;
-                        else
-                            charWidth = static_cast<float>(getFont()->getGlyph(curChar, m_text.getCharacterSize(), false).advance);
-
-                        width += charWidth + kerning;
-                        index++;
-                    }
-                    else
-                        break;
-
-                    prevChar = curChar;
-                }
-
-                // Every line contains at least one character
-                if (index == oldIndex)
                     index++;
-
-                // Implement the word-wrap
-                if (m_string[index-1] != '\n')
-                {
-                    unsigned int indexWithoutWordWrap = index;
-
-                    if ((index < m_string.getSize()) && (!isWhitespace(m_string[index])))
-                    {
-                        unsigned int wordWrapCorrection = 0;
-                        while ((index > oldIndex) && (!isWhitespace(m_string[index - 1])))
-                        {
-                            wordWrapCorrection++;
-                            index--;
-                        }
-
-                        // The word can't be split but there is no other choice, it does not fit on the line
-                        if ((index - oldIndex) <= wordWrapCorrection)
-                            index = indexWithoutWordWrap;
-                    }
+                    break;
                 }
-
-                if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
-                    m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex) + "\n");
+                else if (curChar == '\t')
+                    charWidth = static_cast<float>(getFont()->getGlyph(' ', m_text.getCharacterSize(), bold).textureRect.width) * 4;
                 else
-                    m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex));
+                    charWidth = static_cast<float>(getFont()->getGlyph(curChar, m_text.getCharacterSize(), bold).textureRect.width);
 
-                // If the next line starts with just a space, then the space need not be visible
-                if ((index < m_string.getSize()) && (m_string[index] == ' '))
+                float kerning = static_cast<float>(getFont()->getKerning(prevChar, curChar, m_text.getCharacterSize()));
+                if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
                 {
-                    if ((index == 0) || (!isWhitespace(m_string[index-1])))
+                    if (curChar == '\t')
+                        width += (static_cast<float>(getFont()->getGlyph(' ', m_text.getCharacterSize(), bold).advance) * 4) + kerning;
+                    else
+                        width += static_cast<float>(getFont()->getGlyph(curChar, m_text.getCharacterSize(), bold).advance) + kerning;
+
+                    index++;
+                }
+                else
+                    break;
+
+                prevChar = curChar;
+            }
+
+            calculatedLabelWidth = std::max(calculatedLabelWidth, width);
+
+            // Every line contains at least one character
+            if (index == oldIndex)
+                index++;
+
+            // Implement the word-wrap
+            if (m_string[index-1] != '\n')
+            {
+                unsigned int indexWithoutWordWrap = index;
+
+                if ((index < m_string.getSize()) && (!isWhitespace(m_string[index])))
+                {
+                    unsigned int wordWrapCorrection = 0;
+                    while ((index > oldIndex) && (!isWhitespace(m_string[index - 1])))
                     {
-                        if (((index + 1 < m_string.getSize()) && (!isWhitespace(m_string[index + 1]))) || (index + 1 == m_string.getSize()))
-                            index++;
+                        wordWrapCorrection++;
+                        index--;
                     }
+
+                    // The word can't be split but there is no other choice, it does not fit on the line
+                    if ((index - oldIndex) <= wordWrapCorrection)
+                        index = indexWithoutWordWrap;
+                }
+            }
+
+            if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
+                m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex) + "\n");
+            else
+                m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex));
+
+            // If the next line starts with just a space, then the space need not be visible
+            if ((index < m_string.getSize()) && (m_string[index] == ' '))
+            {
+                if ((index == 0) || (!isWhitespace(m_string[index-1])))
+                {
+                    // But two or more spaces indicate that it is not a normal text and the spaces should not be ignored
+                    if (((index + 1 < m_string.getSize()) && (!isWhitespace(m_string[index + 1]))) || (index + 1 == m_string.getSize()))
+                        index++;
                 }
             }
         }
-        else // There is no maximum width, so the text should not be changed
-            m_text.setString(m_string);
+
+        // There is always at least one line
+        lineCount = std::max(1u, lineCount);
 
         if (m_autoSize)
         {
-            m_size = {m_text.getLocalBounds().width + getRenderer()->getPadding().left + getRenderer()->getPadding().right,
-                      m_text.getLocalBounds().height + getRenderer()->getPadding().top + getRenderer()->getPadding().bottom};
+            m_size = {std::max(calculatedLabelWidth, maxWidth) + getRenderer()->getPadding().left + getRenderer()->getPadding().right,
+                      (lineCount * getFont()->getLineSpacing(m_text.getCharacterSize())) + getRenderer()->getPadding().top + getRenderer()->getPadding().bottom};
 
             m_background.setSize(getSize());
         }

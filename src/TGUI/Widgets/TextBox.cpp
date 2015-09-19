@@ -50,7 +50,7 @@ namespace tgui
         m_renderer = std::make_shared<TextBoxRenderer>(this);
         reload();
 
-        setSize({360, 200});
+        setSize({360, 189});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,8 +156,8 @@ namespace tgui
         {
             getRenderer()->m_backgroundTexture.setPosition(getPosition());
 
-            sf::Text tempText{"kg", *m_font, getTextSize()};
-            float textShiftY = tempText.getLocalBounds().top;
+            sf::Text tempText{"", *m_font, getTextSize()};
+            float textShiftY = getTextVerticalCorrection(getFont(), getTextSize());
             Padding padding = getRenderer()->getScaledPadding();
 
             // Position the caret
@@ -333,6 +333,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+
+        if (font.getFont())
+        {
+            m_textBeforeSelection.setFont(*font.getFont());
+            m_textSelection1.setFont(*font.getFont());
+            m_textSelection2.setFont(*font.getFont());
+            m_textAfterSelection1.setFont(*font.getFont());
+            m_textAfterSelection2.setFont(*font.getFont());
+        }
+
+        setTextSize(getTextSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextBox::setText(const sf::String& text)
     {
         m_text = text;
@@ -353,10 +371,8 @@ namespace tgui
     {
         // Store the new text size
         m_textSize = size;
-
-        // There is a minimum text size
-        if (m_textSize < 8)
-            m_textSize = 8;
+        if (m_textSize < 1)
+            m_textSize = 1;
 
         // Change the text size
         m_textBeforeSelection.setCharacterSize(m_textSize);
@@ -437,6 +453,13 @@ namespace tgui
         m_textAfterSelection2.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         m_textSelection1.setColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
         m_textSelection2.setColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f TextBox::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1247,11 +1270,11 @@ namespace tgui
                 if (delta < 0)
                 {
                     // Scroll down
-                    m_scroll->setValue(m_scroll->getValue() + (static_cast<unsigned int>(-delta) * (m_lineHeight / 2)));
+                    m_scroll->setValue(m_scroll->getValue() + (static_cast<unsigned int>(-delta) * m_lineHeight));
                 }
                 else // You are scrolling up
                 {
-                    unsigned int change = static_cast<unsigned int>(delta) * (m_lineHeight / 2);
+                    unsigned int change = static_cast<unsigned int>(delta) * m_lineHeight;
 
                     // Scroll up
                     if (change < m_scroll->getValue())
@@ -1699,16 +1722,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void TextBox::update(sf::Time elapsedTime)
     {
         Widget::update(elapsedTime);
@@ -2043,24 +2056,6 @@ namespace tgui
             m_backgroundTexture.setSize(m_textBox->getSize());
             m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_textBox->getOpacity() * 255)});
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_textBox->m_font = font;
-
-        if (font)
-        {
-            m_textBox->m_textBeforeSelection.setFont(*font);
-            m_textBox->m_textSelection1.setFont(*font);
-            m_textBox->m_textSelection2.setFont(*font);
-            m_textBox->m_textAfterSelection1.setFont(*font);
-            m_textBox->m_textAfterSelection2.setFont(*font);
-        }
-
-        m_textBox->setTextSize(m_textBox->getTextSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

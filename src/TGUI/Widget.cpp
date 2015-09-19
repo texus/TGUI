@@ -383,6 +383,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::setFont(const Font& font)
+    {
+        m_font = font.getFont();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<sf::Font> Widget::getFont() const
+    {
+        return m_font;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Widget::detachTheme()
     {
         if (m_theme)
@@ -542,7 +556,6 @@ namespace tgui
 
     void WidgetRenderer::setProperty(std::string property, const std::string&)
     {
-        /// TODO: Font in every widget
         throw Exception{"Could not set property '" + property + "', widget does not has this property."};
     }
 
@@ -550,16 +563,6 @@ namespace tgui
 
     void WidgetRenderer::setProperty(std::string property, ObjectConverter&&)
     {
-        /// TODO: Font in every widget
-        /**
-        if (value.getType() == ObjectConverter::Type::Font)
-        {
-            if (property == "font")
-                setTextFont(value.getFont());
-            else
-                return false;
-        }
-        */
         throw Exception{"Could not set property '" + property + "', widget does not has this property."};
     }
 
@@ -567,7 +570,6 @@ namespace tgui
 
     ObjectConverter WidgetRenderer::getProperty(std::string) const
     {
-        /// TODO: Font in every widget
         return {};
     }
 
@@ -575,7 +577,6 @@ namespace tgui
 
     std::map<std::string, ObjectConverter> WidgetRenderer::getPropertyValuePairs() const
     {
-        /// TODO: Font in every widget
         return std::map<std::string, ObjectConverter>{};
     }
 

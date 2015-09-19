@@ -49,6 +49,17 @@ namespace tgui
                 m_layoutWidgets[i]->setSize((m_size.x - sumFixedSize) * m_widgetsRatio[i] / sumRatio, m_size.y);
                 currentRatio += m_widgetsRatio[i] / sumRatio;
             }
+
+            // Correct the size for widgets that have borders around it or a text next to them
+            if (m_layoutWidgets[i]->getFullSize() != m_layoutWidgets[i]->getSize())
+            {
+                sf::Vector2f newSize = m_layoutWidgets[i]->getSize() - (m_layoutWidgets[i]->getFullSize() - m_layoutWidgets[i]->getSize());
+                if (newSize.x > 0 && newSize.y > 0)
+                {
+                    m_layoutWidgets[i]->setSize(newSize);
+                    m_layoutWidgets[i]->setPosition(m_layoutWidgets[i]->getPosition() + m_layoutWidgets[i]->getWidgetOffset());
+                }
+            }
         }
     }
 

@@ -121,6 +121,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f ProgressBar::getFullSize() const
+    {
+        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ProgressBar::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+        m_textBack.setFont(font);
+        m_textFront.setFont(font);
+
+        setText(getText());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ProgressBar::setMinimum(unsigned int minimum)
     {
         // Set the new minimum
@@ -205,13 +224,17 @@ namespace tgui
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
-            // Calculate a possible text size
-            float size = getSize().y * 0.75f;
-            m_textBack.setTextSize(static_cast<unsigned int>(size));
+            unsigned int textSize;
+            if (getRenderer()->m_textureBack.isLoaded() && getRenderer()->m_textureFront.isLoaded())
+               textSize = findBestTextSize(getFont(), getRenderer()->m_textureFront.getSize().y * 0.85f);
+            else
+                textSize = findBestTextSize(getFont(), getSize().y * 0.85f);
 
-            // Make the text smaller when it is too width
-            if (m_textBack.getSize().x > (getSize().x * 0.8f))
-                m_textBack.setTextSize(static_cast<unsigned int>(size / (m_textBack.getSize().x / (getSize().x * 0.8f))));
+            m_textBack.setTextSize(textSize);
+
+            // Make the text smaller when it's too width
+            if (m_textBack.getSize().x > (getSize().x * 0.85f))
+                m_textBack.setTextSize(static_cast<unsigned int>(textSize * ((getSize().x * 0.85f) / m_textBack.getSize().x)));
         }
         else // When the text has a fixed size
         {
@@ -260,6 +283,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f ProgressBar::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ProgressBar::recalculateSize()
     {
         sf::Vector2f size;
@@ -295,16 +325,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBar::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ProgressBar::reload(const std::string& primary, const std::string& secondary, bool force)
     {
         if (m_theme && primary != "")
@@ -315,7 +335,7 @@ namespace tgui
             if (force)
             {
                 // Use the size of the images when images were loaded
-                if (getRenderer()->m_textureBack.isLoaded())
+                if (getRenderer()->m_textureBack.isLoaded() && getRenderer()->m_textureFront.isLoaded())
                 {
                     setSize(getRenderer()->m_textureBack.getImageSize());
 
@@ -475,17 +495,6 @@ namespace tgui
         pairs["BorderColor"] = m_borderColor;
         pairs["Borders"] = m_borders;
         return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ProgressBarRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_progressBar->m_font = font;
-        m_progressBar->m_textBack.setTextFont(font);
-        m_progressBar->m_textFront.setTextFont(font);
-
-        m_progressBar->setText(m_progressBar->getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

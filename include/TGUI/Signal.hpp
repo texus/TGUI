@@ -344,14 +344,33 @@ namespace tgui
         {
             for (auto& signalName : extractSignalNames(signalNames))
             {
-                if (m_signals.find(toLower(signalName)) == m_signals.end())
-                    throw Exception{"Cannot connect to unknown signal '" + signalName + "'."};
-
-                try {
-                    m_signals[toLower(signalName)]->connect(++m_lastId, func, args...);
+                if (m_signals.find(toLower(signalName)) != m_signals.end())
+                {
+                    try {
+                        m_signals[toLower(signalName)]->connect(m_lastId, func, args...);
+                        m_lastId++;
+                    }
+                    catch (const Exception& e) {
+                        throw Exception{e.what() + (" The parameters are not valid for the '" + signalName + "' signal.")};
+                    }
                 }
-                catch (const Exception& e) {
-                    throw Exception{e.what() + (" The parameters are not valid for the '" + signalName + "' signal.")};
+                else
+                {
+                    if (toLower(signalName) != "all")
+                        throw Exception{"Cannot connect to unknown signal '" + signalName + "'."};
+                    else
+                    {
+                        for (auto& signal : m_signals)
+                        {
+                            try {
+                                signal.second->connect(m_lastId, func, args...);
+                                m_lastId++;
+                            }
+                            catch (const Exception& e) {
+                                throw Exception{e.what() + (" The parameters are not valid for the '" + signalName + "' signal.")};
+                            }
+                        }
+                    }
                 }
             }
 
@@ -376,14 +395,33 @@ namespace tgui
         {
             for (auto& name : extractSignalNames(signalName))
             {
-                if (m_signals.find(toLower(name)) == m_signals.end())
-                    throw Exception{"Cannot connect to unknown signal '" + name + "'."};
-
-                try {
-                    m_signals[toLower(name)]->connectEx(++m_lastId, func, args...);
+                if (m_signals.find(toLower(name)) != m_signals.end())
+                {
+                    try {
+                        m_signals[toLower(name)]->connectEx(m_lastId, func, args...);
+                        m_lastId++;
+                    }
+                    catch (const Exception& e) {
+                        throw Exception{e.what() + (" since it is not valid for the '" + name + "' signal.")};
+                    }
                 }
-                catch (const Exception& e) {
-                    throw Exception{e.what() + (" since it is not valid for the '" + name + "' signal.")};
+                else // Signal name does not exist
+                {
+                    if (toLower(name) != "all")
+                        throw Exception{"Cannot connect to unknown signal '" + name + "'."};
+                    else
+                    {
+                        for (auto& signal : m_signals)
+                        {
+                            try {
+                                signal.second->connectEx(m_lastId, func, args...);
+                                m_lastId++;
+                            }
+                            catch (const Exception& e) {
+                                throw Exception{e.what() + (" since it is not valid for the '" + name + "' signal.")};
+                            }
+                        }
+                    }
                 }
             }
 

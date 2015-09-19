@@ -31,11 +31,12 @@ TEST_CASE("[Serializer]") {
     }
 
     SECTION("serialize font") {
-    /*
         auto font = std::make_shared<sf::Font>();
         font->loadFromFile("resources/DroidSansArmenian.ttf");
-        REQUIRE(tgui::Serializer::serialize(font) == "FONT_PLACEHOLDER");
-    */
+        REQUIRE(tgui::Serializer::serialize(font) == "null"); // Serializing fonts is not supported yet
+
+        font = nullptr;
+        REQUIRE(tgui::Serializer::serialize(font) == "null");
     }
 
     SECTION("serialize color") {

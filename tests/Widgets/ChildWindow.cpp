@@ -54,6 +54,7 @@ TEST_CASE("[ChildWindow]") {
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarHeight", "25"));
+                REQUIRE_NOTHROW(renderer->setProperty("CloseButton", "default"));
             }
             
             SECTION("set object property") {
@@ -64,6 +65,7 @@ TEST_CASE("[ChildWindow]") {
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarHeight", 25));
+                REQUIRE_NOTHROW(renderer->setProperty("CloseButton", tgui::ObjectConverter("")));
             }
 
             SECTION("functions") {
@@ -95,6 +97,7 @@ TEST_CASE("[ChildWindow]") {
             REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
             REQUIRE(renderer->getProperty("TitleBarHeight").getNumber() == 25);
+            REQUIRE(renderer->getProperty("CloseButton").getString() == "");
         }
 
         SECTION("textured") {

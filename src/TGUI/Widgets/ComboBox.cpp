@@ -47,7 +47,7 @@ namespace tgui
         m_renderer = std::make_shared<ComboBoxRenderer>(this);
         reload();
 
-        setSize({50, 24});
+        setSize({150, 24});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,14 +108,8 @@ namespace tgui
         getRenderer()->m_textureArrowUpHover.setPosition(getRenderer()->m_textureArrowUpNormal.getPosition());
         getRenderer()->m_textureArrowDownHover.setPosition(getRenderer()->m_textureArrowUpNormal.getPosition());
 
-        float textHeight;
-        if (m_font)
-            textHeight = sf::Text{"kg", *m_font, m_text.getTextSize()}.getLocalBounds().height;
-        else
-            textHeight = 0;
-
-        m_text.setPosition(getPosition().x + padding.left + (m_text.getTextSize() / 10.0f),
-                           getPosition().y + padding.top + ((getSize().y - textHeight) / 2.0f));
+        m_text.setPosition(getPosition().x + padding.left,
+                           getPosition().y + padding.top + (((getSize().y - padding.top - padding.bottom) - m_text.getSize().y) / 2.0f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,7 +140,7 @@ namespace tgui
             getRenderer()->m_textureArrowDownHover.setSize(getRenderer()->m_textureArrowUpNormal.getSize());
         }
 
-        m_text.setTextSize(static_cast<unsigned int>(height * 0.8f));
+        m_text.setTextSize(m_listBox->getTextSize());
 
         updatePosition();
     }
@@ -157,6 +151,19 @@ namespace tgui
     {
         return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
                 getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+
+        m_text.setFont(font);
+        m_listBox->setFont(font);
+        m_text.setTextSize(m_listBox->getTextSize());
+
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -387,6 +394,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::setTextSize(unsigned int textSize)
+    {
+        m_listBox->setTextSize(textSize);
+        m_text.setTextSize(m_listBox->getTextSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ComboBox::getTextSize() const
+    {
+        return m_listBox->getTextSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::setOpacity(float opacity)
     {
         Widget::setOpacity(opacity);
@@ -399,6 +421,13 @@ namespace tgui
         getRenderer()->m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
         m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ComboBox::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -488,18 +517,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
-
-        m_text.initialize(parent);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ComboBox::reload(const std::string& primary, const std::string& secondary, bool force)
     {
         if (m_theme && primary != "")
@@ -510,7 +527,7 @@ namespace tgui
             if (force)
             {
                 if (getRenderer()->m_backgroundTexture.isLoaded())
-                    setSize(getRenderer()->m_backgroundTexture.getImageSize());
+                    setSize(5 * getRenderer()->m_backgroundTexture.getImageSize().x, getRenderer()->m_backgroundTexture.getImageSize().y);
             }
 
             updateSize();
@@ -1003,16 +1020,6 @@ namespace tgui
             m_textureArrowDownHover.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowDownHover.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
             m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBoxRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_comboBox->m_font = font;
-        m_comboBox->m_text.setTextFont(font);
-
-        m_comboBox->updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

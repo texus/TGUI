@@ -43,10 +43,12 @@ namespace tgui
         m_callback.widgetType = "ChatBox";
         m_draggableWidget = true;
 
+        m_panel->setBackgroundColor(sf::Color::Transparent);
+
         m_renderer = std::make_shared<ChatBoxRenderer>(this);
         reload();
 
-        setSize({200, 120});
+        setSize({200, 126});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,15 +102,11 @@ namespace tgui
 
     void ChatBox::setPosition(const Layout2d& position)
     {
-        sf::Vector2f oldPosition = getPosition();
-
         Widget::setPosition(position);
 
         getRenderer()->m_backgroundTexture.setPosition(getPosition());
 
-        m_panel->move(getPosition() - oldPosition);
-        if (m_scroll)
-            m_scroll->move(getPosition() - oldPosition);
+        updateRendering();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,7 +117,8 @@ namespace tgui
 
         getRenderer()->m_backgroundTexture.setSize(getSize());
 
-        updateRendering();
+        updatePosition();
+        recalculateFullTextHeight();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +152,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, std::shared_ptr<sf::Font> font)
+    void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const Font& font)
     {
         // Remove the top line if you exceed the maximum
         if ((m_maxLines > 0) && (m_maxLines < m_panel->getWidgets().size() + 1))
@@ -165,8 +164,10 @@ namespace tgui
         label->setText(text);
         m_panel->add(label);
 
-        if (font != nullptr)
-            label->setTextFont(font);
+        if (font.getFont())
+            label->setFont(font.getFont());
+        else
+            label->setFont(getFont());
 
         recalculateFullTextHeight();
 
@@ -232,18 +233,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setTextFont(std::shared_ptr<sf::Font> font)
+    void ChatBox::setFont(const Font& font)
     {
-        m_font = font;
-        m_panel->setGlobalFont(font);
+        Widget::setFont(font);
 
         bool lineChanged = false;
         for (auto& label : m_panel->getWidgets())
         {
             auto line = std::static_pointer_cast<Label>(label);
-            if (line->getTextFont() == nullptr)
+            if (line->getFont() == nullptr)
             {
-                line->setTextFont(font);
+                line->setFont(font);
                 lineChanged = true;
             }
         }
@@ -340,6 +340,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f ChatBox::getWidgetOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ChatBox::mouseOnWidget(float x, float y)
     {
         // Pass the event to the scrollbar (if there is one)
@@ -387,7 +394,7 @@ namespace tgui
     void ChatBox::leftMouseReleased(float x, float y)
     {
         // If there is a scrollbar then pass it the event
-        if (m_scroll != nullptr)
+        if (m_scroll && getFont())
         {
             // Only pass the event when the scrollbar still thinks the mouse is down
             if (m_scroll->m_mouseDown == true)
@@ -408,7 +415,7 @@ namespace tgui
                         m_scroll->setValue(m_scroll->getValue()-1);
 
                         // Scroll down with the whole item height instead of with a single pixel
-                        m_scroll->setValue(m_scroll->getValue() + m_textSize - (m_scroll->getValue() % m_textSize));
+                        m_scroll->setValue(m_scroll->getValue() + getFont()->getLineSpacing(m_textSize) - (std::fmod(m_scroll->getValue(), getFont()->getLineSpacing(m_textSize))));
                     }
                     else if (m_scroll->getValue() == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
                     {
@@ -416,10 +423,10 @@ namespace tgui
                         m_scroll->setValue(m_scroll->getValue()+1);
 
                         // Scroll up with the whole item height instead of with a single pixel
-                        if (m_scroll->getValue() % m_textSize > 0)
-                            m_scroll->setValue(m_scroll->getValue() - (m_scroll->getValue() % m_textSize));
+                        if (std::fmod(m_scroll->getValue(), getFont()->getLineSpacing(m_textSize)) > 0)
+                            m_scroll->setValue(m_scroll->getValue() - std::fmod(m_scroll->getValue(), getFont()->getLineSpacing(m_textSize)));
                         else
-                            m_scroll->setValue(m_scroll->getValue() - m_textSize);
+                            m_scroll->setValue(m_scroll->getValue() - getFont()->getLineSpacing(m_textSize));
                     }
 
                     updateDisplayedText();
@@ -485,7 +492,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::mouseWheelMoved(int delta, int, int)
+    void ChatBox::mouseWheelMoved(int delta, int x, int y)
     {
         // Only do something when there is a scrollbar
         if (m_scroll != nullptr)
@@ -496,11 +503,11 @@ namespace tgui
                 if (delta < 0)
                 {
                     // Scroll down
-                    m_scroll->setValue(m_scroll->getValue() + (static_cast<unsigned int>(-delta) * m_textSize));
+                    m_scroll->setValue(m_scroll->getValue() + (static_cast<unsigned int>(-delta) * getFont()->getLineSpacing(m_textSize)));
                 }
                 else // You are scrolling up
                 {
-                    unsigned int change = static_cast<unsigned int>(delta) * m_textSize;
+                    unsigned int change = static_cast<unsigned int>(delta) * getFont()->getLineSpacing(m_textSize);
 
                     // Scroll up
                     if (change < m_scroll->getValue())
@@ -510,42 +517,9 @@ namespace tgui
                 }
 
                 updateDisplayedText();
+                mouseMoved(static_cast<float>(x), static_cast<float>(y));
             }
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            setTextFont(m_parent->getGlobalFont());
-
-        m_panel->initialize(m_parent);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float ChatBox::getLineSpacing(const Label::Ptr& line)
-    {
-        // If a line spacing was manually set then just return that one
-        if (m_lineSpacing > 0)
-            return line->getSize().y + m_lineSpacing - line->getTextSize();
-
-        float lineSpacing = line->getSize().y;
-        if (line->getTextFont())
-        {
-            lineSpacing += line->getTextFont()->getLineSpacing(line->getTextSize()) - line->getTextSize();
-
-            lineSpacing = std::max(lineSpacing, sf::Text{"kg", *line->getTextFont(), line->getTextSize()}.getLocalBounds().height);
-        }
-
-        if (lineSpacing > line->getSize().y)
-            return lineSpacing;
-        else
-            return line->getSize().y + std::ceil(line->getTextSize() * 3.5f / 10.0f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -565,12 +539,8 @@ namespace tgui
                 else
                     label->setMaximumTextWidth(m_panel->getSize().x);
 
-                m_fullTextHeight += getLineSpacing(label);
+                m_fullTextHeight += label->getSize().y;
             }
-
-            // There should be no space below the bottom line
-            auto lastLine = std::static_pointer_cast<Label>(m_panel->getWidgets().back());
-            m_fullTextHeight -= getLineSpacing(lastLine) - lastLine->getSize().y;
 
             // Set the maximum of the scrollbar when there is one
             if (m_scroll != nullptr)
@@ -593,17 +563,12 @@ namespace tgui
             {
                 auto label = std::static_pointer_cast<Label>(m_panel->getWidgets()[i]);
 
-                // Not every line has the same height
-                float positionFix = 0;
-                if ((label->getTextFont()) && (label->getTextFont()->getGlyph('k', label->getTextSize(), false).bounds.height > label->getSize().y))
-                    positionFix = label->getTextFont()->getGlyph('k', label->getTextSize(), false).bounds.height - label->getSize().y;
-
-                label->setPosition({0, positionY + positionFix});
-                positionY += getLineSpacing(label);
+                label->setPosition({0, positionY});
+                positionY += label->getSize().y;
             }
 
             // Display the last lines when there is no scrollbar
-            if (m_scroll == nullptr)
+            if (!m_scroll)
             {
                 if (positionY > getSize().y)
                 {

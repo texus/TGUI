@@ -4,6 +4,7 @@ set(TGUI_SRC
     BoxLayout.cpp
     Clipboard.cpp
     Container.cpp
+    Font.cpp
     Global.cpp
     Gui.cpp
     HorizontalLayout.cpp

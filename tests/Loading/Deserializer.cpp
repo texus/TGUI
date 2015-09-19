@@ -29,10 +29,10 @@ using Type = tgui::ObjectConverter::Type;
 
 TEST_CASE("[Deserializer]") {
     SECTION("deserialize font") {
-    /*
-        std::shared_ptr<sf::Font> font;
-        font = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "resources/DroidSansArmenian.ttf"
-    */
+        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "resources/DroidSansArmenian.ttf").getFont() != nullptr);
+        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "\"resources/DroidSansArmenian.ttf\"").getFont() != nullptr);
+        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "nullptr").getFont() == nullptr);
+        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "null").getFont() == nullptr);
     }
 
     SECTION("deserialize color") {

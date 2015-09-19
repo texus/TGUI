@@ -31,7 +31,7 @@
 
 namespace
 {
-    const float textDistanceRatio = 1.25f;
+    const float textDistanceRatio = 0.25f;
 }
 
 namespace tgui
@@ -73,7 +73,7 @@ namespace tgui
         getRenderer()->m_textureCheckedHover.setPosition(getPosition());
         getRenderer()->m_textureFocused.setPosition(getPosition());
 
-        m_text.setPosition(getPosition().x + getSize().x * textDistanceRatio,
+        m_text.setPosition(getPosition().x + getSize().x + getSize().y * textDistanceRatio,
                            getPosition().y + ((getSize().y - m_text.getSize().y) / 2.0f));
     }
 
@@ -112,7 +112,18 @@ namespace tgui
         if (m_text.getText().isEmpty())
             return getSize();
         else
-            return {(getSize().x * textDistanceRatio) + m_text.getSize().x, getSize().y};
+            return {getSize().x + (getSize().y * textDistanceRatio) + m_text.getSize().x, getSize().y};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void RadioButton::setFont(const Font& font)
+    {
+        Widget::setFont(font);
+        m_text.setFont(font.getFont());
+
+        // Recalculate the text position and size
+        setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +166,7 @@ namespace tgui
 
         // Set the text size
         if (m_textSize == 0)
-            m_text.setTextSize(static_cast<unsigned int>(getSize().y * 0.75f));
+            m_text.setTextSize(findBestTextSize(getFont(), getSize().y * 0.85f));
         else
             m_text.setTextSize(m_textSize);
 
@@ -206,11 +217,11 @@ namespace tgui
         if (m_allowTextClick)
         {
             // Check if the mouse is on top of the image or the small gap between image and text
-            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x * textDistanceRatio, getSize().y}.contains(x, y))
+            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getSize().y * textDistanceRatio, getSize().y}.contains(x, y))
                 return true;
 
             // Check if the mouse is on top of the text
-            if (sf::FloatRect{getPosition().x, getPosition().y, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x * textDistanceRatio), y - ((getSize().y - m_text.getSize().y) / 2.0f)))
+            if (sf::FloatRect{getPosition().x, getPosition().y, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x + getSize().y * textDistanceRatio), y - ((getSize().y - m_text.getSize().y) / 2.0f)))
                 return true;
         }
         else // You are not allowed to click on the text
@@ -256,16 +267,6 @@ namespace tgui
             Widget::widgetFocused();
         else
             unfocus();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButton::initialize(Container *const parent)
-    {
-        Widget::initialize(parent);
-
-        if (!m_font && m_parent->getGlobalFont())
-            getRenderer()->setTextFont(m_parent->getGlobalFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -516,17 +517,6 @@ namespace tgui
         pairs["TextColorHover"] = m_textColorHover;
         pairs["Padding"] = m_padding;
         return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setTextFont(std::shared_ptr<sf::Font> font)
-    {
-        m_radioButton->m_font = font;
-        m_radioButton->m_text.setTextFont(font);
-
-        // Recalculate the text position and size
-        m_radioButton->setText(m_radioButton->getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

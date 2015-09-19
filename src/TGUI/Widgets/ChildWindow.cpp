@@ -153,24 +153,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setGlobalFont(const std::string& filename)
+    void ChildWindow::setFont(const Font& font)
     {
-        Container::setGlobalFont(filename);
+        Container::setFont(font);
 
-        m_closeButton->getRenderer()->setTextFont(getGlobalFont());
-        m_titleText.setTextFont(getGlobalFont());
-        setTitle(getTitle());
-    }
+        m_closeButton->setFont(getFont());
+        m_titleText.setFont(getFont());
+        m_titleText.setTextSize(findBestTextSize(getFont(), getRenderer()->m_titleBarHeight * 0.85f));
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::setGlobalFont(std::shared_ptr<sf::Font> font)
-    {
-        Container::setGlobalFont(font);
-
-        m_closeButton->getRenderer()->setTextFont(getGlobalFont());
-        m_titleText.setTextFont(getGlobalFont());
-        setTitle(getTitle());
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,15 +466,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::initialize(Container *const parent)
-    {
-        Container::initialize(parent);
-
-        m_closeButton->initialize(this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChildWindow::reload(const std::string& primary, const std::string& secondary, bool force)
     {
         if (m_theme && primary != "")
@@ -494,7 +476,13 @@ namespace tgui
             if (force)
             {
                 if (getRenderer()->m_textureTitleBar.isLoaded())
+                {
                     getRenderer()->m_titleBarHeight = getRenderer()->m_textureTitleBar.getImageSize().y;
+                    getRenderer()->m_textureTitleBar.setSize({getRenderer()->m_textureTitleBar.getSize().x, getRenderer()->m_titleBarHeight});
+
+                    if (m_closeButton->getRenderer()->m_textureNormal.isLoaded())
+                        m_closeButton->setSize(m_closeButton->getRenderer()->m_textureNormal.getImageSize());
+                }
             }
         }
         else // Load white theme
@@ -519,7 +507,7 @@ namespace tgui
         }
 
         // Set the size of the title text
-        m_titleText.setTextSize(static_cast<unsigned int>(getRenderer()->m_titleBarHeight * 0.8f));
+        m_titleText.setTextSize(findBestTextSize(getFont(), getRenderer()->m_titleBarHeight * 0.85f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -646,13 +634,26 @@ namespace tgui
             setTitleBarHeight(Deserializer::deserialize(ObjectConverter::Type::Number, value).getNumber());
         else if (property == "closebutton")
         {
-            if (m_childWindow->getTheme() == nullptr)
-                throw Exception{"Failed to load the internal list box, ComboBox has no connected theme to load the list box with"};
-
-            if (toLower(value) == "default")
+            if (value.empty() || toLower(value) == "default")
+            {
+                m_closeButtonClassName = "";
                 m_childWindow->m_closeButton = std::make_shared<Button>();
+            }
             else
             {
+                m_closeButtonClassName = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
+
+                /// TODO: Widget files do not contain themes yet. This means that child window cannot be loaded from one.
+                ///       Temporarily load default close button in case it is attempted.
+                if (m_childWindow->getTheme() == nullptr)
+                {
+                    m_childWindow->m_closeButton = std::make_shared<Button>();
+                    return;
+                }
+
+                if (m_childWindow->getTheme() == nullptr)
+                    throw Exception{"Failed to load the close button, ChildWindow has no connected theme to load the close button with"};
+
                 m_childWindow->m_closeButton = m_childWindow->getTheme()->internalLoad(
                                                     m_childWindow->getPrimaryLoadingParameter(),
                                                     Deserializer::deserialize(ObjectConverter::Type::String, value).getString()
@@ -703,6 +704,31 @@ namespace tgui
             else if (property == "titlebarheight")
                 setTitleBarHeight(value.getNumber());
         }
+        else if (value.getType() == ObjectConverter::Type::String)
+        {
+            if (property == "closebutton")
+            {
+                m_closeButtonClassName = value.getString();
+
+                if (value.getString().isEmpty())
+                    m_childWindow->m_closeButton = std::make_shared<Button>();
+                else
+                {
+                    /// TODO: Widget files do not contain themes yet. This means that child window cannot be loaded from one.
+                    ///       Temporarily load default close button in case it is attempted.
+                    if (m_childWindow->getTheme() == nullptr)
+                    {
+                        m_childWindow->m_closeButton = std::make_shared<Button>();
+                        return;
+                    }
+
+                    if (m_childWindow->getTheme() == nullptr)
+                        throw Exception{"Failed to load the close button, ChildWindow has no connected theme to load the close button with"};
+
+                    m_childWindow->m_closeButton = m_childWindow->getTheme()->internalLoad(m_childWindow->getPrimaryLoadingParameter(), value.getString());
+                }
+            }
+        }
         else
             WidgetRenderer::setProperty(property, std::move(value));
     }
@@ -729,6 +755,8 @@ namespace tgui
             return m_distanceToSide;
         else if (property == "titlebarheight")
             return m_titleBarHeight;
+        else if (property == "closebutton")
+            return m_closeButtonClassName;
         else
             return WidgetRenderer::getProperty(property);
     }
@@ -743,6 +771,9 @@ namespace tgui
             pairs["TitleBarImage"] = m_textureTitleBar;
         else
             pairs["TitleBarColor"] = m_titleBarColor;
+
+        if (!m_closeButtonClassName.isEmpty())
+            pairs["CloseButton"] = m_closeButtonClassName;
 
         pairs["BackgroundColor"] = m_backgroundColor;
         pairs["TitleColor"] = m_titleColor;
@@ -764,14 +795,21 @@ namespace tgui
 
     void ChildWindowRenderer::setTitleBarHeight(float height)
     {
+        // Set the size of the close button
+        if (m_titleBarHeight)
+        {
+            m_childWindow->m_closeButton->setSize({m_childWindow->m_closeButton->getSize().x * (height / m_titleBarHeight),
+                                                   m_childWindow->m_closeButton->getSize().y * (height / m_titleBarHeight)});
+        }
+        else
+        {
+            m_childWindow->m_closeButton->setSize({height * 0.8f, height * 0.8f});
+        }
+
         m_titleBarHeight = height;
 
-        // Set the size of the close button
-        m_childWindow->m_closeButton->setSize({m_childWindow->m_closeButton->getSize().x * (height / m_titleBarHeight),
-                                               m_childWindow->m_closeButton->getSize().y * (height / m_titleBarHeight)});
-
         // Set the size of the text in the title bar
-        m_childWindow->m_titleText.setTextSize(static_cast<unsigned int>(m_titleBarHeight * 0.8f));
+        m_childWindow->m_titleText.setTextSize(findBestTextSize(m_childWindow->getFont(), m_titleBarHeight * 0.85f));
 
         m_textureTitleBar.setSize({m_childWindow->getSize().x + m_borders.left + m_borders.right, m_titleBarHeight});
 
@@ -798,7 +836,7 @@ namespace tgui
 
     void ChildWindowRenderer::setBorders(const Borders& borders)
     {
-        m_borders = borders;
+        WidgetBorders::setBorders(borders);
 
         m_textureTitleBar.setSize({m_childWindow->getSize().x + borders.left + borders.right, m_titleBarHeight});
 

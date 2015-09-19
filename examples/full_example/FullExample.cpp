@@ -7,7 +7,7 @@ int main()
     window.setFramerateLimit(60);
 
     tgui::Gui gui(window);
-    gui.setGlobalFont("../../fonts/DejaVuSans.ttf");
+    gui.setFont("../../fonts/DejaVuSans.ttf");
 
     tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("../../widgets/Black.txt");
 
@@ -186,7 +186,7 @@ int main()
     sprite.setTexture(texture);
     sprite.setScale(200.f / texture.getSize().x, 140.f / texture.getSize().y);
 
-    sf::Text text{"SFML Canvas", *gui.getGlobalFont(), 24};
+    sf::Text text{"SFML Canvas", *gui.getFont(), 24};
     text.setPosition(25, 100);
     text.setColor({200, 200, 200});
 

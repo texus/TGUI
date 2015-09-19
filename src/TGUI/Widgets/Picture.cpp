@@ -43,13 +43,7 @@ namespace tgui
     Picture::Picture(const std::string& filename, bool fullyClickable) :
         Picture{}
     {
-        m_fullyClickable = fullyClickable;
-        m_loadedFilename = getResourcePath() + filename;
-
-        // Try to load the texture from the file
-        m_texture.load(m_loadedFilename);
-
-        // Remember the size of the texture
+        setTexture(filename, fullyClickable);
         setSize(m_texture.getImageSize());
     }
 
@@ -58,19 +52,48 @@ namespace tgui
     Picture::Picture(const sf::Texture& texture) :
         Picture{}
     {
-        auto data = std::make_shared<TextureData>();
-        data->texture = texture;
-        m_texture.setTexture(data);
+        setTexture(texture);
         setSize(m_texture.getImageSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture(const Texture& texture) :
+    Picture::Picture(const Texture& texture, bool fullyClickable) :
         Picture{}
     {
+        auto size = m_texture.getSize();
+        setTexture(texture, fullyClickable);
+        setSize(size);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Picture::setTexture(const std::string& filename, bool fullyClickable)
+    {
+        m_fullyClickable = fullyClickable;
+        m_loadedFilename = getResourcePath() + filename;
+
+        m_texture.load(m_loadedFilename);
+        m_texture.setSize(getSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Picture::setTexture(const sf::Texture& texture)
+    {
+        auto data = std::make_shared<TextureData>();
+        data->texture = texture;
+        m_texture.setTexture(data);
+        m_texture.setSize(getSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Picture::setTexture(const Texture& texture, bool fullyClickable)
+    {
+        m_fullyClickable = fullyClickable;
         m_texture = texture;
-        setSize(m_texture.getSize());
+        m_texture.setSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

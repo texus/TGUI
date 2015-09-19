@@ -4,7 +4,7 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(400, 300), "TGUI window");
     tgui::Gui gui(window);
-    gui.setGlobalFont("../../fonts/DejaVuSans.ttf");
+    gui.setFont("../../fonts/DejaVuSans.ttf");
     
     // Create the background image
     gui.add(std::make_shared<tgui::Picture>("../Linux.jpg"));
