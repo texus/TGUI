@@ -222,15 +222,15 @@ namespace tgui
         for (unsigned int i = 0; i < static_cast<unsigned int>(height); ++i)
             textSizes[i] = i + 1;
 
-        std::vector<unsigned int>::iterator high = std::lower_bound(textSizes.begin(), textSizes.end(), height, [&font](unsigned int charSize, float h){ return font->getLineSpacing(charSize) < h; });
+        auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height, [&font](unsigned int charSize, float h){ return font->getLineSpacing(charSize) < h; });
         if (high == textSizes.end())
-            return height;
+            return static_cast<unsigned int>(height);
 
         float highLineSpacing = font->getLineSpacing(*high);
         if (highLineSpacing == height)
             return *high;
 
-        std::vector<unsigned int>::iterator low = high - 1;
+        auto low = high - 1;
         float lowLineSpacing = font->getLineSpacing(*low);
 
         if (fit < 0)
