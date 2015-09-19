@@ -33,11 +33,9 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Container that automatically resize children to fit the entire available space equally between children.
+    /// @brief Container that automatically resizes children to fit the entire available space between children.
     ///
     /// The children are positioned side by side.
-    ///
-    /// @warning There are still some known issues with this class
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API HorizontalLayout : public BoxLayout
