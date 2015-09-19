@@ -126,6 +126,7 @@ TEST_CASE("[Deserializer]") {
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "resources/image.png"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "resources/image.png\""), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" (0,0,0,0)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" xyz(0,0,0,0)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0,1)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(0,)"), tgui::Exception);

@@ -4,8 +4,10 @@ set(TEST_SOURCES
     Clipboard.cpp
     Font.cpp
     FileCompare.cpp
+    HorizontalLayout.cpp
     Layouts.cpp
     Signal.cpp
+    VerticalLayout.cpp
     Widget.cpp
     Loading/Serializer.cpp
     Loading/Deserializer.cpp

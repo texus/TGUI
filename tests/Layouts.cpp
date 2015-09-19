@@ -22,8 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "catch.hpp"
-#include <TGUI/TGUI.hpp>
+#include "Tests.hpp"
+#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 
 TGUI_IMPORT_LAYOUT_BIND_FUNCTIONS
 using tgui::Layout;
