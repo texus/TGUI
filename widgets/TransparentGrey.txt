@@ -1,0 +1,159 @@
+Button {
+    BackgroundColorNormal : rgba(180, 180, 180, 215);
+    BackgroundColorHover : rgba(190, 190, 190, 215);
+    BackgroundColorDown : rgba(150, 150, 150, 215);
+    TextColorNormal : rgba(255, 255, 255, 215);
+    TextColorHover : rgba(255, 255, 255, 235);
+    TextColorDown : rgba(255, 255, 255, 235);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders : (1, 1, 1, 1);
+}
+
+ChatBox {
+    BackgroundColor : rgba(180, 180, 180, 215);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders : (1, 1, 1, 1);
+    Scrollbar : "Scrollbar";
+}
+
+CheckBox {
+    BackgroundColor : rgba(240, 240, 240, 215);
+    ForegroundColorNormal : rgba(180, 180, 180, 215);
+    ForegroundColorHover : rgba(190, 190, 190, 215);
+    TextColorNormal : rgba(255, 255, 255, 215);
+    TextColorHover : rgba(255, 255, 255, 235);
+    CheckColorNormal : rgba(255, 255, 255, 180);
+    CheckColorHover : rgba(255, 255, 255, 200);
+    Padding : (1, 1, 1, 1);
+}
+
+ChildWindow {
+    TitleColor : rgba(255, 255, 255, 215);
+    TitleBarColor : rgba(170, 170, 170, 215);
+    BackgroundColor : rgba(180, 180, 180, 215);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders : (1, 1, 1, 1);
+    CloseButton : "Button";
+}
+
+ComboBox {
+    BackgroundColor : rgba(180, 180, 180, 215);
+    TextColor : rgba(255, 255, 255, 215);
+    ArrowBackgroundColorNormal : rgba(160, 160, 160, 215);
+    ArrowBackgroundColorHover : rgba(170, 170, 170, 215);
+    ArrowColorNormal : rgba(200, 200, 200, 215);
+    ArrowColorHover : rgba(225, 225, 225, 215);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders : (1, 1, 1, 1);
+    ListBox : "ListBox";
+}
+
+EditBox {
+    BackgroundColorNormal : rgba(160, 160, 160, 215);
+    BackgroundColorHover : rgba(170, 170, 170, 215);
+    TextColor : rgba(255, 255, 255, 215);
+    SelectedTextColor : rgba(255, 255, 255, 245);
+    SelectedTextBackgroundColor : rgba(0, 110, 200, 130);
+    DefaultTextColor : rgba(240, 240, 240, 175);
+    CaretColor : rgba(255, 255, 255, 215);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders : (1, 1, 1, 1);
+}
+
+Label {
+    TextColor : rgba(255, 255, 255, 215);
+}
+
+ListBox {
+    BackgroundColor : rgba(180, 180, 180, 215);
+    HoverBackgroundColor : rgba(190, 190, 190, 215);
+    SelectedBackgroundColor : rgba(0, 110, 200, 130);
+    SelectedTextColor : rgba(255, 255, 255, 245);
+    TextColorNormal : rgba(255, 255, 255, 215);
+    TextColorHover : rgba(255, 255, 255, 235);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders : (1, 1, 1, 1);
+    Scrollbar : "Scrollbar";
+}
+
+MenuBar {
+    BackgroundColor : rgba(180, 180, 180, 215);
+    SelectedBackgroundColor : rgba(0, 110, 200, 130);
+    TextColor : rgb(255, 255, 255, 215);
+    SelectedTextColor : rgba(255, 255, 255, 245);
+}
+
+MessageBox {
+    ChildWindow : "ChildWindow";
+    Button : "Button";
+    TextColor : rgb(255, 255, 255, 215);
+}
+
+ProgressBar {
+    BackgroundColor : rgba(180, 180, 180, 215);
+    ForegroundColor : rgba(0, 110, 200, 130);
+    TextColorBack : rgba(255, 255, 255, 215);
+    TextColorFront : rgba(255, 255, 255, 245);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders: (1, 1, 1, 1);
+}
+
+RadioButton {
+    BackgroundColor : rgba(240, 240, 240, 215);
+    ForegroundColorNormal : rgba(180, 180, 180, 215);
+    ForegroundColorHover : rgba(190, 190, 190, 215);
+    TextColorNormal : rgba(255, 255, 255, 215);
+    TextColorHover : rgba(255, 255, 255, 235);
+    CheckColorNormal : rgba(255, 255, 255, 180);
+    CheckColorHover : rgba(255, 255, 255, 200);
+    Padding : (1, 1, 1, 1);
+}
+
+Scrollbar {
+    TrackColorNormal : rgba(160, 160, 160, 215);
+    TrackColorHover : rgba(170, 170, 170, 215);
+    ThumbColorNormal : rgba(185, 185, 185, 215);
+    ThumbColorHover : rgba(195, 195, 195, 215);
+    ArrowBackgroundColorNormal : rgba(160, 160, 160, 215);
+    ArrowBackgroundColorHover : rgba(170, 170, 170, 215);
+    ArrowColorNormal : rgba(200, 200, 200, 215);
+    ArrowColorHover : rgba(225, 225, 225, 215);
+    # BorderColor : rgba(240, 240, 240, 215);
+    # Borders : (1, 1, 1, 1);
+}
+
+Slider {
+    TrackColorNormal : rgba(160, 160, 160, 215);
+    TrackColorHover : rgba(170, 170, 170, 215);
+    ThumbColorNormal : rgba(160, 160, 160, 215);
+    ThumbColorHover : rgba(170, 170, 170, 215);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders : (1, 1, 1, 1);
+}
+
+SpinButton {
+    BackgroundColorNormal : rgba(160, 160, 160, 215);
+    BackgroundColorHover : rgba(170, 170, 170, 215);
+    ArrowColorNormal : rgba(200, 200, 200, 215);
+    ArrowColorHover : rgba(225, 225, 225, 215);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders : (1, 1, 1, 1);
+    SpaceBetweenArrows : 1;
+}
+
+Tab {
+    BackgroundColor : rgba(180, 180, 180, 215);
+    SelectedBackgroundColor : rgba(0, 110, 200, 130);
+    TextColor : rgba(255, 255, 255, 215);
+    SelectedTextColor : rgba(255, 255, 255, 245);
+    BorderColor : rgba(240, 240, 240, 215);
+    Borders : (1, 1, 1, 1);
+}
+
+Label.Tooltip {
+    TextColor       : rgb(255, 255, 255, 215);
+    BackgroundColor : rgb(180, 180, 180, 215);
+    BorderColor     : rgb(240, 240, 240, 215);
+    Borders         : (1, 1, 1, 1);
+    Padding         : (2, 2, 2, 2);
+}
