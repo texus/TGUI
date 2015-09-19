@@ -310,13 +310,13 @@ namespace tgui
     /// @brief \< operator for the Layout class
     TGUI_API Layout operator<(Layout left, Layout right);
 
-    /// @brief \<= operator for the Layout class
+    /// @brief <= operator for the Layout class
     TGUI_API Layout operator<=(Layout left, Layout right);
 
     /// @brief \> operator for the Layout class
     TGUI_API Layout operator>(Layout left, Layout right);
 
-    /// @brief \>= operator for the Layout class
+    /// @brief >= operator for the Layout class
     TGUI_API Layout operator>=(Layout left, Layout right);
 
     /// @brief == operator for the Layout class
