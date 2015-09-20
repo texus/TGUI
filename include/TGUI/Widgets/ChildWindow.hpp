@@ -551,8 +551,8 @@ namespace tgui
 
         ChildWindow* m_childWindow;
 
-        float        m_titleBarHeight;
-        float        m_distanceToSide;
+        float        m_titleBarHeight = 0;
+        float        m_distanceToSide = 0;
 
         Texture      m_textureTitleBar;
 
