@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['horizontal',['Horizontal',['../classtgui_1_1Texture.html#aaba70370fcc0e5fe13508646d2300014ac1b5fa03ecdb95d4a45dd1c40b02527f',1,'tgui::Texture']]]
+  ['fade',['Fade',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa04e0385c10aefee8e4681617d2f3ef40',1,'tgui']]]
 ];

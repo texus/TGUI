@@ -21,7 +21,7 @@ tgui::Gui gui{window};
 
 <p class="SmallBottomMargin">You will have to set a global font that all widgets can use by default.</p>
 {% highlight c++ %}
-gui.setGlobalFont("TGUI/fonts/DejaVuSans.ttf");
+gui.setFont("TGUI/fonts/DejaVuSans.ttf");
 {% endhighlight %}
 
 <p class="SmallBottomMargin">When you will have widgets, they will need to receive events. Otherwise they wouldn’t know if your mouse is on top of them or not. Every time you receive an event, you will have to tell the gui about this event. So in your event loop you must add the following line:
@@ -47,7 +47,7 @@ int main()
     tgui::Gui gui{window};
 
     // Load the font
-    gui.setGlobalFont("TGUI/fonts/DejaVuSans.ttf");
+    gui.setFont("TGUI/fonts/DejaVuSans.ttf");
 
     while (window.isOpen())
     {

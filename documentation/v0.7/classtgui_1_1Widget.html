@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7-alpha1</span>
+   &#160;<span id="projectnumber">v0.7-alpha2</span>
    </div>
   </td>
  </tr>
@@ -160,9 +160,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae3881afdad82cf8c2bd12f36238c04fe"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ae3881afdad82cf8c2bd12f36238c04fe">show</a> ()</td></tr>
 <tr class="memdesc:ae3881afdad82cf8c2bd12f36238c04fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows the widget.  <a href="#ae3881afdad82cf8c2bd12f36238c04fe">More...</a><br /></td></tr>
 <tr class="separator:ae3881afdad82cf8c2bd12f36238c04fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71432e6c38c2110991cd3856cf74670b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b">showWithEffect</a> (<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da">ShowAnimationType</a> type, sf::Time duration)</td></tr>
+<tr class="memdesc:a71432e6c38c2110991cd3856cf74670b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows the widget by introducing it with an animation.  <a href="#a71432e6c38c2110991cd3856cf74670b">More...</a><br /></td></tr>
+<tr class="separator:a71432e6c38c2110991cd3856cf74670b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4234b30173259e7b5082a58a9f0e2ca6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a4234b30173259e7b5082a58a9f0e2ca6">hide</a> ()</td></tr>
 <tr class="memdesc:a4234b30173259e7b5082a58a9f0e2ca6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the widget.  <a href="#a4234b30173259e7b5082a58a9f0e2ca6">More...</a><br /></td></tr>
 <tr class="separator:a4234b30173259e7b5082a58a9f0e2ca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bcb2d85d7e449ef7305771256ec79bf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a9bcb2d85d7e449ef7305771256ec79bf">hideWithEffect</a> (<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da">ShowAnimationType</a> type, sf::Time duration)</td></tr>
+<tr class="memdesc:a9bcb2d85d7e449ef7305771256ec79bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows the widget by introducing it with an animation.  <a href="#a9bcb2d85d7e449ef7305771256ec79bf">More...</a><br /></td></tr>
+<tr class="separator:a9bcb2d85d7e449ef7305771256ec79bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac30d0e386c262c5e830fdcc994584993"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ac30d0e386c262c5e830fdcc994584993">isVisible</a> () const </td></tr>
 <tr class="memdesc:ac30d0e386c262c5e830fdcc994584993"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true when the widget is visible.  <a href="#ac30d0e386c262c5e830fdcc994584993">More...</a><br /></td></tr>
 <tr class="separator:ac30d0e386c262c5e830fdcc994584993"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -190,24 +196,27 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0cf4e57ff28230753afe8197e8945a3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Container.html">Container</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a0cf4e57ff28230753afe8197e8945a3a">getParent</a> () const </td></tr>
 <tr class="memdesc:a0cf4e57ff28230753afe8197e8945a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to the parent widget.  <a href="#a0cf4e57ff28230753afe8197e8945a3a">More...</a><br /></td></tr>
 <tr class="separator:a0cf4e57ff28230753afe8197e8945a3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d577707ade1f73003c502a36cbcc295"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a4d577707ade1f73003c502a36cbcc295">setTransparency</a> (unsigned char transparency)</td></tr>
-<tr class="memdesc:a4d577707ade1f73003c502a36cbcc295"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the transparency of the widget.  <a href="#a4d577707ade1f73003c502a36cbcc295">More...</a><br /></td></tr>
-<tr class="separator:a4d577707ade1f73003c502a36cbcc295"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86dbcd7e5a526cffedc58e54439c18a1"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a86dbcd7e5a526cffedc58e54439c18a1">getTransparency</a> () const </td></tr>
-<tr class="memdesc:a86dbcd7e5a526cffedc58e54439c18a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the transparency of the widget.  <a href="#a86dbcd7e5a526cffedc58e54439c18a1">More...</a><br /></td></tr>
-<tr class="separator:a86dbcd7e5a526cffedc58e54439c18a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc86b091f871010533312fe77cbc2f78"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#abc86b091f871010533312fe77cbc2f78">setOpacity</a> (float opacity)</td></tr>
+<tr class="memdesc:abc86b091f871010533312fe77cbc2f78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the opacity of the widget.  <a href="#abc86b091f871010533312fe77cbc2f78">More...</a><br /></td></tr>
+<tr class="separator:abc86b091f871010533312fe77cbc2f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ab7b54eb87d1c7b28ad36fa5a8281ec"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a7ab7b54eb87d1c7b28ad36fa5a8281ec">getOpacity</a> () const </td></tr>
+<tr class="memdesc:a7ab7b54eb87d1c7b28ad36fa5a8281ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the opacity of the widget.  <a href="#a7ab7b54eb87d1c7b28ad36fa5a8281ec">More...</a><br /></td></tr>
+<tr class="separator:a7ab7b54eb87d1c7b28ad36fa5a8281ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98fd0f08b45e3e54b9054965060136dd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a98fd0f08b45e3e54b9054965060136dd">moveToFront</a> ()</td></tr>
 <tr class="memdesc:a98fd0f08b45e3e54b9054965060136dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the widget before all other widgets.  <a href="#a98fd0f08b45e3e54b9054965060136dd">More...</a><br /></td></tr>
 <tr class="separator:a98fd0f08b45e3e54b9054965060136dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15e7d3570551c72d9a4d9534ac7a7f19"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a15e7d3570551c72d9a4d9534ac7a7f19">moveToBack</a> ()</td></tr>
 <tr class="memdesc:a15e7d3570551c72d9a4d9534ac7a7f19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the widget behind all other widgets.  <a href="#a15e7d3570551c72d9a4d9534ac7a7f19">More...</a><br /></td></tr>
 <tr class="separator:a15e7d3570551c72d9a4d9534ac7a7f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a126d1f733a08718cbfc2c193a610a256"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a126d1f733a08718cbfc2c193a610a256">setToolTip</a> (std::shared_ptr&lt; <a class="el" href="classtgui_1_1ToolTip.html">ToolTip</a> &gt; tooltip)</td></tr>
-<tr class="memdesc:a126d1f733a08718cbfc2c193a610a256"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the tooltip that should be displayed when hovering over the widget.  <a href="#a126d1f733a08718cbfc2c193a610a256">More...</a><br /></td></tr>
-<tr class="separator:a126d1f733a08718cbfc2c193a610a256"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ab32301f33ffdfbcd878861b1cad4da"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classtgui_1_1ToolTip.html">ToolTip</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a8ab32301f33ffdfbcd878861b1cad4da">getToolTip</a> ()</td></tr>
-<tr class="memdesc:a8ab32301f33ffdfbcd878861b1cad4da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the tooltip that is displayed when hovering over the widget.  <a href="#a8ab32301f33ffdfbcd878861b1cad4da">More...</a><br /></td></tr>
-<tr class="separator:a8ab32301f33ffdfbcd878861b1cad4da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4f30ef364bf7594ec209688a9b43ec5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ae4f30ef364bf7594ec209688a9b43ec5">setToolTip</a> (<a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> toolTip)</td></tr>
+<tr class="memdesc:ae4f30ef364bf7594ec209688a9b43ec5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the tool tip that should be displayed when hovering over the widget.  <a href="#ae4f30ef364bf7594ec209688a9b43ec5">More...</a><br /></td></tr>
+<tr class="separator:ae4f30ef364bf7594ec209688a9b43ec5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e6e54fbaba931d0bb8eb0404e2e1c22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a0e6e54fbaba931d0bb8eb0404e2e1c22">getToolTip</a> ()</td></tr>
+<tr class="memdesc:a0e6e54fbaba931d0bb8eb0404e2e1c22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the tool tip that is displayed when hovering over the widget.  <a href="#a0e6e54fbaba931d0bb8eb0404e2e1c22">More...</a><br /></td></tr>
+<tr class="separator:a0e6e54fbaba931d0bb8eb0404e2e1c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b814d5ba9c02a9448fa0d0810bcfeba"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a0b814d5ba9c02a9448fa0d0810bcfeba">setFont</a> (const <a class="el" href="classtgui_1_1Font.html">Font</a> &amp;font)</td></tr>
+<tr class="memdesc:a0b814d5ba9c02a9448fa0d0810bcfeba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the font of the text in the widget.  <a href="#a0b814d5ba9c02a9448fa0d0810bcfeba">More...</a><br /></td></tr>
+<tr class="separator:a0b814d5ba9c02a9448fa0d0810bcfeba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec2d0dec0156536b93216797de49b497"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; sf::Font &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#aec2d0dec0156536b93216797de49b497">getFont</a> () const </td></tr>
 <tr class="memdesc:aec2d0dec0156536b93216797de49b497"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the font associated with the widget (if any)  <a href="#aec2d0dec0156536b93216797de49b497">More...</a><br /></td></tr>
 <tr class="separator:aec2d0dec0156536b93216797de49b497"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -223,6 +232,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a97e7325f223c7c49105b3b859542b652"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a97e7325f223c7c49105b3b859542b652">getSecondaryLoadingParameter</a> () const </td></tr>
 <tr class="memdesc:a97e7325f223c7c49105b3b859542b652"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the secondary parameter that was passed to the loader to load this widget.  <a href="#a97e7325f223c7c49105b3b859542b652">More...</a><br /></td></tr>
 <tr class="separator:a97e7325f223c7c49105b3b859542b652"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a569db174bec35957e0150f14b25a6423"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a569db174bec35957e0150f14b25a6423">getWidgetOffset</a> () const </td></tr>
+<tr class="memdesc:a569db174bec35957e0150f14b25a6423"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance between the position where the widget is drawn and where the widget is placed.  <a href="#a569db174bec35957e0150f14b25a6423">More...</a><br /></td></tr>
+<tr class="separator:a569db174bec35957e0150f14b25a6423"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0cb3b8532e7f6bdb07bad0ef57724f60"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a0cb3b8532e7f6bdb07bad0ef57724f60">clone</a> ()=0</td></tr>
 <tr class="memdesc:a0cb3b8532e7f6bdb07bad0ef57724f60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of the widget if you don't know its exact type.  <a href="#a0cb3b8532e7f6bdb07bad0ef57724f60">More...</a><br /></td></tr>
 <tr class="separator:a0cb3b8532e7f6bdb07bad0ef57724f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -459,7 +471,7 @@ Protected Member Functions</h2></td></tr>
 <p>This function should only be used when you don't know the type of the widget. If you know what kind of widget you are copying, you should use the copy function.</p>
 <dl class="section return"><dt>Returns</dt><dd>Copy of the widget </dd></dl>
 
-<p>Implemented in <a class="el" href="classtgui_1_1ComboBox.html#a2835365288e4b3beab5fc2f868daadbe">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#aa07093554a746aca96598b935afd3375">tgui::ListBox</a>, <a class="el" href="classtgui_1_1ChatBox.html#a13c1d257123fa26702eed677ac2ff948">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1EditBox.html#a86c986a970e16045507bd936c4d413c0">tgui::EditBox</a>, <a class="el" href="classtgui_1_1TextBox.html#ab7def5e91af24b7f308335e724b18923">tgui::TextBox</a>, <a class="el" href="classtgui_1_1Tab.html#a337365d365cb796a36b1780835acdfb7">tgui::Tab</a>, <a class="el" href="classtgui_1_1ChildWindow.html#a306050d6804a88a9d06f55657c2b4c89">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Knob.html#a75ccabdea225506d400b28655a774ecd">tgui::Knob</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a0d2c203c413229203f32d29e89aceba4">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1Label.html#a78cfdcd9e4de42593ca25886063de28f">tgui::Label</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a7e9c4d90e17b4edf21be04c47cdb232d">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1MenuBar.html#acee3fe1da81ff77b60e81c4e270b747d">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1SpinButton.html#a4172473a96f1752f9b32c4b8cbc463fe">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1RadioButton.html#a3a953afcbcae97d803c8ecb954d00ae7">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Slider.html#a984dcd9c6067a5a21a66661726817bdc">tgui::Slider</a>, <a class="el" href="classtgui_1_1Grid.html#a985496415ea1fe7da43bb31af8e4aba6">tgui::Grid</a>, <a class="el" href="classtgui_1_1Button.html#a73da1a49be3eea70d9a6876962a004b7">tgui::Button</a>, <a class="el" href="classtgui_1_1MessageBox.html#a6fd06356dfe55e1fe7af0c0cc1e2f085">tgui::MessageBox</a>, <a class="el" href="classtgui_1_1Picture.html#a9b29d2e6c45ca2833b8ede6388c66836">tgui::Picture</a>, <a class="el" href="classtgui_1_1Canvas.html#ad2efbdfdd915795e5e477d11fecabb02">tgui::Canvas</a>, <a class="el" href="classtgui_1_1Panel.html#a3ff0147fd9cab97010811b0eb0504037">tgui::Panel</a>, <a class="el" href="classtgui_1_1CheckBox.html#a0d2eb6f588600eb6220fcf291976317d">tgui::CheckBox</a>, <a class="el" href="classtgui_1_1ClickableWidget.html#a92daa637d62c2c8b6cf12e9fcf5cdef6">tgui::ClickableWidget</a>, <a class="el" href="classtgui_1_1ToolTip.html#a76298ac3aadb9576ef395b25036fa01d">tgui::ToolTip</a>, <a class="el" href="classtgui_1_1HorizontalLayout.html#a517b6d3fe92dd702b3877c97b9f82d82">tgui::HorizontalLayout</a>, and <a class="el" href="classtgui_1_1VerticalLayout.html#ac59a88b83e89144bf4c91c805d23110a">tgui::VerticalLayout</a>.</p>
+<p>Implemented in <a class="el" href="classtgui_1_1ComboBox.html#a2835365288e4b3beab5fc2f868daadbe">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#aa07093554a746aca96598b935afd3375">tgui::ListBox</a>, <a class="el" href="classtgui_1_1EditBox.html#a86c986a970e16045507bd936c4d413c0">tgui::EditBox</a>, <a class="el" href="classtgui_1_1ChatBox.html#a13c1d257123fa26702eed677ac2ff948">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1TextBox.html#ab7def5e91af24b7f308335e724b18923">tgui::TextBox</a>, <a class="el" href="classtgui_1_1Tab.html#a337365d365cb796a36b1780835acdfb7">tgui::Tab</a>, <a class="el" href="classtgui_1_1Knob.html#a75ccabdea225506d400b28655a774ecd">tgui::Knob</a>, <a class="el" href="classtgui_1_1ChildWindow.html#a306050d6804a88a9d06f55657c2b4c89">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a0d2c203c413229203f32d29e89aceba4">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1Label.html#a78cfdcd9e4de42593ca25886063de28f">tgui::Label</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a7e9c4d90e17b4edf21be04c47cdb232d">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1MenuBar.html#acee3fe1da81ff77b60e81c4e270b747d">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1SpinButton.html#a4172473a96f1752f9b32c4b8cbc463fe">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1Slider.html#a984dcd9c6067a5a21a66661726817bdc">tgui::Slider</a>, <a class="el" href="classtgui_1_1RadioButton.html#a3a953afcbcae97d803c8ecb954d00ae7">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Picture.html#a9b29d2e6c45ca2833b8ede6388c66836">tgui::Picture</a>, <a class="el" href="classtgui_1_1Button.html#a73da1a49be3eea70d9a6876962a004b7">tgui::Button</a>, <a class="el" href="classtgui_1_1Grid.html#a985496415ea1fe7da43bb31af8e4aba6">tgui::Grid</a>, <a class="el" href="classtgui_1_1MessageBox.html#a6fd06356dfe55e1fe7af0c0cc1e2f085">tgui::MessageBox</a>, <a class="el" href="classtgui_1_1Canvas.html#ad2efbdfdd915795e5e477d11fecabb02">tgui::Canvas</a>, <a class="el" href="classtgui_1_1Panel.html#a3ff0147fd9cab97010811b0eb0504037">tgui::Panel</a>, <a class="el" href="classtgui_1_1CheckBox.html#a0d2eb6f588600eb6220fcf291976317d">tgui::CheckBox</a>, <a class="el" href="classtgui_1_1ClickableWidget.html#a92daa637d62c2c8b6cf12e9fcf5cdef6">tgui::ClickableWidget</a>, <a class="el" href="classtgui_1_1HorizontalLayout.html#a517b6d3fe92dd702b3877c97b9f82d82">tgui::HorizontalLayout</a>, and <a class="el" href="classtgui_1_1VerticalLayout.html#ac59a88b83e89144bf4c91c805d23110a">tgui::VerticalLayout</a>.</p>
 
 </div>
 </div>
@@ -591,12 +603,30 @@ focusNextWidget </dd></dl>
 <a class="anchor" id="aec2d0dec0156536b93216797de49b497"></a>
 <div class="memitem">
 <div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;sf::Font&gt; tgui::Widget::getFont </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the font associated with the widget (if any) </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtgui_1_1Font.html">Font</a> used by widget </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a7ab7b54eb87d1c7b28ad36fa5a8281ec"></a>
+<div class="memitem">
+<div class="memproto">
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;sf::Font&gt; tgui::Widget::getFont </td>
+          <td class="memname">float tgui::Widget::getOpacity </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -609,8 +639,8 @@ focusNextWidget </dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p>Returns the font associated with the widget (if any) </p>
-<dl class="section return"><dt>Returns</dt><dd>Font used by widget </dd></dl>
+<p>Returns the opacity of the widget. </p>
+<dl class="section return"><dt>Returns</dt><dd>The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque. </dd></dl>
 
 </div>
 </div>
@@ -744,12 +774,12 @@ focusNextWidget </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a8ab32301f33ffdfbcd878861b1cad4da"></a>
+<a class="anchor" id="a0e6e54fbaba931d0bb8eb0404e2e1c22"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classtgui_1_1ToolTip.html">ToolTip</a>&gt; tgui::Widget::getToolTip </td>
+          <td class="memname"><a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> tgui::Widget::getToolTip </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -757,14 +787,12 @@ focusNextWidget </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the tooltip that is displayed when hovering over the widget. </p>
-<dl class="section return"><dt>Returns</dt><dd>The tooltip</dd></dl>
-<p>This function is guaranteed to return a valid tooltip. It will never return a nullptr.</p>
-<p>This function can be used to change the text of the tooltip. </p><div class="fragment"><div class="line">widget-&gt;getToolTip()-&gt;setText(<span class="stringliteral">&quot;Hello&quot;</span>);</div>
-</div><!-- fragment --> 
+<p>Returns the tool tip that is displayed when hovering over the widget. </p>
+<dl class="section return"><dt>Returns</dt><dd>The widget that is used as tool tip or nullptr when no tool tip has been set </dd></dl>
+
 </div>
 </div>
-<a class="anchor" id="a86dbcd7e5a526cffedc58e54439c18a1"></a>
+<a class="anchor" id="a569db174bec35957e0150f14b25a6423"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -772,7 +800,7 @@ focusNextWidget </dd></dl>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned char tgui::Widget::getTransparency </td>
+          <td class="memname">virtual sf::Vector2f tgui::Widget::getWidgetOffset </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -780,13 +808,16 @@ focusNextWidget </dd></dl>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Returns the transparency of the widget. </p>
-<dl class="section return"><dt>Returns</dt><dd>The transparency of the widget. 0 is completely transparent, while 255 (default) means fully opaque. </dd></dl>
+<p>Returns the distance between the position where the widget is drawn and where the widget is placed. </p>
+<p>This is basically the width and height of the optional borders drawn around widgets.</p>
+<dl class="section return"><dt>Returns</dt><dd>Offset of the widget </dd></dl>
+
+<p>Reimplemented in <a class="el" href="classtgui_1_1ComboBox.html#af21c38d9584457bc85cdfc8cffadd238">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#a8ef7188d8ce555063813fb05c668065c">tgui::ListBox</a>, <a class="el" href="classtgui_1_1EditBox.html#acfa8399865f5dba4dadd652b679c7dd4">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Tab.html#a3d178cdc8b07d9dfb05411773de21c08">tgui::Tab</a>, <a class="el" href="classtgui_1_1ChatBox.html#a14803d947e5ea9e38103a2801512c7a5">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1TextBox.html#aef03f0cbf51951d92ae01dcc43c96905">tgui::TextBox</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a17f4489f795840cbce8fbe5fb8543a43">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1Knob.html#ad52780eb750fec4c7f4ece4c0151b65c">tgui::Knob</a>, <a class="el" href="classtgui_1_1Label.html#aa9c1a7adec99b301d742f18c9dff0545">tgui::Label</a>, <a class="el" href="classtgui_1_1SpinButton.html#a66538761902cd7670d6f8ada1556568f">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1Slider.html#a13e3acfb1c6662c07f2e9a1a738a910d">tgui::Slider</a>, and <a class="el" href="classtgui_1_1Button.html#afecb9256c0c56fcaf42c03df7ad21ca0">tgui::Button</a>.</p>
 
 </div>
 </div>
@@ -839,6 +870,51 @@ focusNextWidget </dd></dl>
 
 <p>Hides the widget. </p>
 <p>The widget won't receive events nor will it be drawn when hidden. The widget is visible by default. </p>
+
+</div>
+</div>
+<a class="anchor" id="a9bcb2d85d7e449ef7305771256ec79bf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::hideWithEffect </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da">ShowAnimationType</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Time&#160;</td>
+          <td class="paramname"><em>duration</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Shows the widget by introducing it with an animation. </p>
+<p>If the widget is already hidden then the animation will still play but you will not see it until you show the widget.</p>
+<p>During the animation the position, size and/or opacity may change. Once the animation is done the widget will be back in the state in which it was when this function was called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">type</td><td>Type of the animation </td></tr>
+    <tr><td class="paramname">duration</td><td>Duration of the animation </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1052,7 +1128,77 @@ focusNextWidget </dd></dl>
 </dl>
 <p>When primary is an empty string the built-in white theme will be used. </p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1ComboBox.html#a16b57fc625c17ba25643b3930c5fce51">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#a72152bda2dfe550982fa1d6fef21711c">tgui::ListBox</a>, <a class="el" href="classtgui_1_1ChatBox.html#a2d7ca29bc51f03db6b2966525c67ba8b">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1EditBox.html#ad40eb8c454eeb246d9aeb6fd9014774b">tgui::EditBox</a>, <a class="el" href="classtgui_1_1TextBox.html#ab49c36ff08fbe2b85d3b3eabcfeab21c">tgui::TextBox</a>, <a class="el" href="classtgui_1_1Tab.html#ad5ecd21216d8eed81a211329edf72c9e">tgui::Tab</a>, <a class="el" href="classtgui_1_1ChildWindow.html#a24f36c89571747f684b0301fd91626c2">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Knob.html#ad2bc42896755d2d1a87b92c49db9393e">tgui::Knob</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a59c8c3ccbf6c2caaaa068fb280cb2e69">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1Label.html#a1888555da6e124ddca980ce0a15eba2d">tgui::Label</a>, <a class="el" href="classtgui_1_1Scrollbar.html#add2726407aec32e92d0b1fcf5f7a1844">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1MenuBar.html#aaa3c83f00bfb1a0440e5f0006d03a29b">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1SpinButton.html#a0626be3d55ddf9b96c05074a915e4bd1">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1RadioButton.html#af19d7a9d00feba2aa9008a13c058e9c3">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Slider.html#aef4845ecc25b3b6ba08633b39ff108ec">tgui::Slider</a>, <a class="el" href="classtgui_1_1Button.html#a1c78e51263f1f10b47ee8ba0121e49b0">tgui::Button</a>, and <a class="el" href="classtgui_1_1MessageBox.html#a5266dfbca208e8c4a3fd9b369d25856e">tgui::MessageBox</a>.</p>
+<p>Reimplemented in <a class="el" href="classtgui_1_1ComboBox.html#a16b57fc625c17ba25643b3930c5fce51">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#a72152bda2dfe550982fa1d6fef21711c">tgui::ListBox</a>, <a class="el" href="classtgui_1_1ChatBox.html#a2d7ca29bc51f03db6b2966525c67ba8b">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1EditBox.html#ad40eb8c454eeb246d9aeb6fd9014774b">tgui::EditBox</a>, <a class="el" href="classtgui_1_1TextBox.html#ab49c36ff08fbe2b85d3b3eabcfeab21c">tgui::TextBox</a>, <a class="el" href="classtgui_1_1Tab.html#ad5ecd21216d8eed81a211329edf72c9e">tgui::Tab</a>, <a class="el" href="classtgui_1_1Knob.html#ad2bc42896755d2d1a87b92c49db9393e">tgui::Knob</a>, <a class="el" href="classtgui_1_1ChildWindow.html#a24f36c89571747f684b0301fd91626c2">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a59c8c3ccbf6c2caaaa068fb280cb2e69">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1Label.html#a1888555da6e124ddca980ce0a15eba2d">tgui::Label</a>, <a class="el" href="classtgui_1_1MenuBar.html#aaa3c83f00bfb1a0440e5f0006d03a29b">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1Scrollbar.html#add2726407aec32e92d0b1fcf5f7a1844">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1SpinButton.html#a0626be3d55ddf9b96c05074a915e4bd1">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1Slider.html#aef4845ecc25b3b6ba08633b39ff108ec">tgui::Slider</a>, <a class="el" href="classtgui_1_1RadioButton.html#af19d7a9d00feba2aa9008a13c058e9c3">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Button.html#a1c78e51263f1f10b47ee8ba0121e49b0">tgui::Button</a>, and <a class="el" href="classtgui_1_1MessageBox.html#a5266dfbca208e8c4a3fd9b369d25856e">tgui::MessageBox</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0b814d5ba9c02a9448fa0d0810bcfeba"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setFont </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Font.html">Font</a> &amp;&#160;</td>
+          <td class="paramname"><em>font</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Changes the font of the text in the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">font</td><td>The new font.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>When you don't call this function then the font from the parent widget will be used.</p>
+<p>Some widget don't need a font and won't do anything when this function is called. </p>
+
+<p>Reimplemented in <a class="el" href="classtgui_1_1ChatBox.html#a949e8550e1cb4e6661b52ed5d7247605">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ComboBox.html#a997cc8cda0cca3f292842c29c2ba5e93">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1TextBox.html#a321a00b812caa5f4ef128f8fa812c249">tgui::TextBox</a>, <a class="el" href="classtgui_1_1ListBox.html#a2d102b2fa85cceb1a0dbb4aaa491abc7">tgui::ListBox</a>, <a class="el" href="classtgui_1_1EditBox.html#aa7a407e4fa0feaaa354c8e43af3e6d39">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Tab.html#a20d0a37af4d2af70bf1b2bcd93178ead">tgui::Tab</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a26888f3aed859b968516fd5191e6f011">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1ChildWindow.html#a022de33bb82e5645fbd084e985862bb3">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Label.html#a7c421eab75641a5301a24608eaa95f45">tgui::Label</a>, <a class="el" href="classtgui_1_1RadioButton.html#a7eebb95558ba271594fbb870288e43fc">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Button.html#a2b19fde26bd295fd8b4846240c415e76">tgui::Button</a>, <a class="el" href="classtgui_1_1MenuBar.html#add65aa88aa62b3bf9a8885894563eeb7">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1MessageBox.html#a781fa09e4c79265fef5981dac1dc6333">tgui::MessageBox</a>, <a class="el" href="classtgui_1_1Container.html#a7d4a9e6fca69f51ba11c12d6512768c0">tgui::Container</a>, and <a class="el" href="classtgui_1_1BoxLayout.html#a64b8eb552a3a441ad9a1b3ee767e7569">tgui::BoxLayout</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="abc86b091f871010533312fe77cbc2f78"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setOpacity </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>opacity</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Changes the opacity of the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">opacity</td><td>The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented in <a class="el" href="classtgui_1_1ComboBox.html#af7eecb25e68a1a455674359801bd6191">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#ad9b574fb3e607d6c899d7fdcfe74e39a">tgui::ListBox</a>, <a class="el" href="classtgui_1_1EditBox.html#ac7bfe8a0c230a18484efa9bf1a4db54f">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Tab.html#a79f50d4469aadb318e3e156ccaef087c">tgui::Tab</a>, <a class="el" href="classtgui_1_1ChatBox.html#a01c50d7978321acfdd68af305eb1694d">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1TextBox.html#a866b942be7cba87a1eadf96bdb89bcbc">tgui::TextBox</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a55ef87e583db0b0b24a5a9a77f553687">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1Knob.html#a683cc1da507c04ac3d19b7fa9219324f">tgui::Knob</a>, <a class="el" href="classtgui_1_1Label.html#a4834c8141a78320a627b60592d13e0da">tgui::Label</a>, <a class="el" href="classtgui_1_1Container.html#aae02dfdaba09fa0bd39057ab8580188c">tgui::Container</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a89290d650a694b9cd8aff5d91f2b4df5">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1MenuBar.html#aca310b94d416b39e796a0281d4e89545">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1Picture.html#abad3770507bb305c85c5efda32b2b683">tgui::Picture</a>, <a class="el" href="classtgui_1_1SpinButton.html#a91147dd0859f2e2888ba001844771912">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1RadioButton.html#ad2ba086303bde46569b2a126090b0ce3">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Slider.html#a22b2ee7b8535f91d3705086ceced1571">tgui::Slider</a>, <a class="el" href="classtgui_1_1Button.html#ad1d353e149926bc9cdc69cb085e1af47">tgui::Button</a>, <a class="el" href="classtgui_1_1Canvas.html#a9353212cf78c6522fd3697548c247c56">tgui::Canvas</a>, and <a class="el" href="classtgui_1_1ChildWindow.html#a4ee553b708634743f62b3e8b594ab75a">tgui::ChildWindow</a>.</p>
 
 </div>
 </div>
@@ -1098,7 +1244,7 @@ focusNextWidget </dd></dl>
 </div><!-- fragment --> 
 <p>Reimplemented from <a class="el" href="classtgui_1_1Transformable.html#aef14a1428f63eeb8bd820a1b4821a3d0">tgui::Transformable</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1ComboBox.html#a6fbe3736a19d961968a93f35a4ba8b32">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#a98770b4bc92f5e09f2c3d600263c346b">tgui::ListBox</a>, <a class="el" href="classtgui_1_1TextBox.html#a5a4c65bfb56db5d5f6b0fe4cd4455cd4">tgui::TextBox</a>, <a class="el" href="classtgui_1_1EditBox.html#ab58c8af9ec09f37ccb5dbf0ddfe55b93">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Picture.html#abb28fa8786eb5c2d9b4621306a686566">tgui::Picture</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a16589cf9240d0c940a27438f4c31b732">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1Tab.html#af51601a1692dce56e32490db53249427">tgui::Tab</a>, <a class="el" href="classtgui_1_1ChatBox.html#a1099cc60f26c9d8a48deaf7a4957d454">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ChildWindow.html#a4a7d5caf381281a794601d6811297c22">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Canvas.html#a6634f37c6c24f8c25ed123658c2f06fe">tgui::Canvas</a>, <a class="el" href="classtgui_1_1RadioButton.html#abaae2918e0ddc05a24563501ed28b276">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Button.html#ada790fc10403717184773792242379b1">tgui::Button</a>, <a class="el" href="classtgui_1_1MenuBar.html#a933d96def325503a80b23c6f849ab499">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1Knob.html#a2d5fbe13e06848ade9a2afa0ca203b33">tgui::Knob</a>, <a class="el" href="classtgui_1_1Label.html#a99c3e0fbbf853971a543cd5ab638b772">tgui::Label</a>, <a class="el" href="classtgui_1_1Scrollbar.html#af1d13ece47cc78f8e218255641521ff2">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1Slider.html#a4b05c2fdedf36b1e89291f178ad311cd">tgui::Slider</a>, and <a class="el" href="classtgui_1_1SpinButton.html#a9a9e7b9a2af188efd597b426f97f4146">tgui::SpinButton</a>.</p>
+<p>Reimplemented in <a class="el" href="classtgui_1_1Picture.html#abb28fa8786eb5c2d9b4621306a686566">tgui::Picture</a>, <a class="el" href="classtgui_1_1ComboBox.html#a6fbe3736a19d961968a93f35a4ba8b32">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#a98770b4bc92f5e09f2c3d600263c346b">tgui::ListBox</a>, <a class="el" href="classtgui_1_1TextBox.html#a5a4c65bfb56db5d5f6b0fe4cd4455cd4">tgui::TextBox</a>, <a class="el" href="classtgui_1_1EditBox.html#ab58c8af9ec09f37ccb5dbf0ddfe55b93">tgui::EditBox</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a16589cf9240d0c940a27438f4c31b732">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1Tab.html#af51601a1692dce56e32490db53249427">tgui::Tab</a>, <a class="el" href="classtgui_1_1ChatBox.html#a1099cc60f26c9d8a48deaf7a4957d454">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ChildWindow.html#a4a7d5caf381281a794601d6811297c22">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Canvas.html#a6634f37c6c24f8c25ed123658c2f06fe">tgui::Canvas</a>, <a class="el" href="classtgui_1_1RadioButton.html#abaae2918e0ddc05a24563501ed28b276">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Button.html#ada790fc10403717184773792242379b1">tgui::Button</a>, <a class="el" href="classtgui_1_1MenuBar.html#a933d96def325503a80b23c6f849ab499">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1Knob.html#a2d5fbe13e06848ade9a2afa0ca203b33">tgui::Knob</a>, <a class="el" href="classtgui_1_1Label.html#a99c3e0fbbf853971a543cd5ab638b772">tgui::Label</a>, <a class="el" href="classtgui_1_1Scrollbar.html#af1d13ece47cc78f8e218255641521ff2">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1Slider.html#a4b05c2fdedf36b1e89291f178ad311cd">tgui::Slider</a>, and <a class="el" href="classtgui_1_1SpinButton.html#a9a9e7b9a2af188efd597b426f97f4146">tgui::SpinButton</a>.</p>
 
 </div>
 </div>
@@ -1142,66 +1288,31 @@ focusNextWidget </dd></dl>
 </div><!-- fragment --> 
 <p>Reimplemented from <a class="el" href="classtgui_1_1Transformable.html#a66fe5d2a7b1477cab073984a9a3e13bc">tgui::Transformable</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classtgui_1_1ComboBox.html#a1ec641a5605129cad9ba2d15d48ce0e5">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1TextBox.html#a744eb583f7dcc2c4aa17eb50bbc819ad">tgui::TextBox</a>, <a class="el" href="classtgui_1_1ListBox.html#aa2696ce750ad4fd29418d6749547a5fa">tgui::ListBox</a>, <a class="el" href="classtgui_1_1Picture.html#a4fab9d212933870d1ff0e30fb5139871">tgui::Picture</a>, <a class="el" href="classtgui_1_1EditBox.html#adce8afe4ae78efd245f899034606bc85">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Tab.html#af18ffe805d49b6bda67268e4343f0bd4">tgui::Tab</a>, <a class="el" href="classtgui_1_1ProgressBar.html#aaf03ec209d41554dcd40028d555795e2">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1ChatBox.html#a9d9f808b82a3885ad8a17d9f6ab84833">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ChildWindow.html#aec967e7a4232d4159095de6b3bf511e0">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Canvas.html#a28e7ab2a0cbb4b12486ef4ef98502075">tgui::Canvas</a>, <a class="el" href="classtgui_1_1Label.html#a45842c5252974d8d04c9e9a320d756ff">tgui::Label</a>, <a class="el" href="classtgui_1_1Grid.html#adaaddc0070116fee2199e7cc68279aeb">tgui::Grid</a>, <a class="el" href="classtgui_1_1RadioButton.html#a5dfd52c9dd7e37418c089693d64220ac">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1MenuBar.html#acada075ee962a1063f4c1cbf2e270917">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1Button.html#a29164fc0555e584cda9724ae6085f36b">tgui::Button</a>, <a class="el" href="classtgui_1_1Knob.html#a9e5fc0db87197d34e45f0901610ffec0">tgui::Knob</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a5128688da870c4c6555a5ce4ac9f0328">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1Slider.html#ab34d767373e91988ebc658f4bf7231ca">tgui::Slider</a>, <a class="el" href="classtgui_1_1SpinButton.html#a2982d384d9c5d6caccc013faee8a8915">tgui::SpinButton</a>, and <a class="el" href="classtgui_1_1BoxLayout.html#aeb79b1eb5ce71084098af8cc789151f0">tgui::BoxLayout</a>.</p>
+<p>Reimplemented in <a class="el" href="classtgui_1_1Picture.html#a4fab9d212933870d1ff0e30fb5139871">tgui::Picture</a>, <a class="el" href="classtgui_1_1ComboBox.html#a1ec641a5605129cad9ba2d15d48ce0e5">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1TextBox.html#a744eb583f7dcc2c4aa17eb50bbc819ad">tgui::TextBox</a>, <a class="el" href="classtgui_1_1ListBox.html#aa2696ce750ad4fd29418d6749547a5fa">tgui::ListBox</a>, <a class="el" href="classtgui_1_1EditBox.html#adce8afe4ae78efd245f899034606bc85">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Tab.html#af18ffe805d49b6bda67268e4343f0bd4">tgui::Tab</a>, <a class="el" href="classtgui_1_1ProgressBar.html#aaf03ec209d41554dcd40028d555795e2">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1ChatBox.html#a9d9f808b82a3885ad8a17d9f6ab84833">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1ChildWindow.html#aec967e7a4232d4159095de6b3bf511e0">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Canvas.html#a28e7ab2a0cbb4b12486ef4ef98502075">tgui::Canvas</a>, <a class="el" href="classtgui_1_1Label.html#a45842c5252974d8d04c9e9a320d756ff">tgui::Label</a>, <a class="el" href="classtgui_1_1Grid.html#adaaddc0070116fee2199e7cc68279aeb">tgui::Grid</a>, <a class="el" href="classtgui_1_1RadioButton.html#a5dfd52c9dd7e37418c089693d64220ac">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1MenuBar.html#acada075ee962a1063f4c1cbf2e270917">tgui::MenuBar</a>, <a class="el" href="classtgui_1_1Button.html#a29164fc0555e584cda9724ae6085f36b">tgui::Button</a>, <a class="el" href="classtgui_1_1Knob.html#a9e5fc0db87197d34e45f0901610ffec0">tgui::Knob</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a5128688da870c4c6555a5ce4ac9f0328">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1Slider.html#ab34d767373e91988ebc658f4bf7231ca">tgui::Slider</a>, <a class="el" href="classtgui_1_1SpinButton.html#a2982d384d9c5d6caccc013faee8a8915">tgui::SpinButton</a>, and <a class="el" href="classtgui_1_1BoxLayout.html#aeb79b1eb5ce71084098af8cc789151f0">tgui::BoxLayout</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a126d1f733a08718cbfc2c193a610a256"></a>
+<a class="anchor" id="ae4f30ef364bf7594ec209688a9b43ec5"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void tgui::Widget::setToolTip </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classtgui_1_1ToolTip.html">ToolTip</a> &gt;&#160;</td>
-          <td class="paramname"><em>tooltip</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td>
+          <td class="paramname"><em>toolTip</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the tooltip that should be displayed when hovering over the widget. </p>
+<p>Sets the tool tip that should be displayed when hovering over the widget. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tooltip</td><td>The new tooltip </td></tr>
+    <tr><td class="paramname">toolTip</td><td>Any widget that you want to use as a tool tip (usually a <a class="el" href="classtgui_1_1Label.html" title="Label widget. ">Label</a>) </td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a class="anchor" id="a4d577707ade1f73003c502a36cbcc295"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setTransparency </td>
-          <td>(</td>
-          <td class="paramtype">unsigned char&#160;</td>
-          <td class="paramname"><em>transparency</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Changes the transparency of the widget. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">transparency</td><td>The transparency of the widget. 0 is completely transparent, while 255 (default) means fully opaque.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Note that this will only change the transparency of the images. The parts of the widgets that use a color will not be changed. You must change them yourself by setting the alpha channel of the color. </p>
-
-<p>Reimplemented in <a class="el" href="classtgui_1_1ComboBox.html#a559f1ceb7deb79878a486705a9b81a74">tgui::ComboBox</a>, <a class="el" href="classtgui_1_1ListBox.html#ae6536f55303be51a8abb5d9b1944dc4f">tgui::ListBox</a>, <a class="el" href="classtgui_1_1ChatBox.html#af3fee8b3c590cc91f41a0bd335061b29">tgui::ChatBox</a>, <a class="el" href="classtgui_1_1EditBox.html#a21906b82f6f91a9cb64014ef2390e7e8">tgui::EditBox</a>, <a class="el" href="classtgui_1_1Tab.html#afb5235834f9983433a9992e21b267121">tgui::Tab</a>, <a class="el" href="classtgui_1_1Container.html#aa15de9de6ccd431c0686b8b76e9bd057">tgui::Container</a>, <a class="el" href="classtgui_1_1TextBox.html#a64ced4bd719a97abbf72bfdbbf1ae713">tgui::TextBox</a>, <a class="el" href="classtgui_1_1ProgressBar.html#a65013bacbe5bd10d1216165be033fe42">tgui::ProgressBar</a>, <a class="el" href="classtgui_1_1Knob.html#aa3593a53ce52ffddcaedb24243aec5ca">tgui::Knob</a>, <a class="el" href="classtgui_1_1Scrollbar.html#a76920fbde940a8c85bda9d4ff4311553">tgui::Scrollbar</a>, <a class="el" href="classtgui_1_1SpinButton.html#a284fd2ce91fc6445b721f681f1812307">tgui::SpinButton</a>, <a class="el" href="classtgui_1_1RadioButton.html#a4d528710817089c4f93935b0a0db5478">tgui::RadioButton</a>, <a class="el" href="classtgui_1_1Slider.html#af131a3f0fb8744088d3124b2a0f59e79">tgui::Slider</a>, <a class="el" href="classtgui_1_1Picture.html#a2f4561d1df23f8a3b8f34841ba5c4ab4">tgui::Picture</a>, <a class="el" href="classtgui_1_1ChildWindow.html#ad899109f6f9b4ad2a271cd6e312d7ca0">tgui::ChildWindow</a>, <a class="el" href="classtgui_1_1Button.html#ad402265fac64fe7496c541bc1c710ef2">tgui::Button</a>, and <a class="el" href="classtgui_1_1Panel.html#ab8d150281620d46ba3c572da84fe59d4">tgui::Panel</a>.</p>
 
 </div>
 </div>
@@ -1227,7 +1338,54 @@ focusNextWidget </dd></dl>
 </div><div class="memdoc">
 
 <p>Shows the widget. </p>
-<p>The widget won't receive events nor will it be drawn when hidden. The widget is visible by default. </p>
+<p>The widget is visible by default.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Widget.html#a4234b30173259e7b5082a58a9f0e2ca6" title="Hides the widget. ">hide</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a71432e6c38c2110991cd3856cf74670b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::showWithEffect </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da">ShowAnimationType</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Time&#160;</td>
+          <td class="paramname"><em>duration</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Shows the widget by introducing it with an animation. </p>
+<p>The animation will also be played if the widget was already visible.</p>
+<p>During the animation the position, size and/or opacity may change. Once the animation is done the widget will be back in the state in which it was when this function was called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">type</td><td>Type of the animation </td></tr>
+    <tr><td class="paramname">duration</td><td>Duration of the animation</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Widget.html#a9bcb2d85d7e449ef7305771256ec79bf" title="Shows the widget by introducing it with an animation. ">hideWithEffect</a> </dd></dl>
 
 </div>
 </div>
@@ -1265,7 +1423,7 @@ focusNextWidget </dd></dl>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 31 2015 23:41:05 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Sep 20 2015 23:01:19 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7-alpha1</span>
+   &#160;<span id="projectnumber">v0.7-alpha2</span>
    </div>
   </td>
  </tr>
@@ -169,14 +169,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <span class="keyword">static</span> std::vector&lt;std::vector&lt;std::string&gt;&gt; <span class="keyword">get</span>()</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            {</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                <span class="keyword">auto</span> types = extractTypes&lt;OtherTypes...&gt;::get();</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                types.push_back({convertTypeToString&lt;Type&gt;()});</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                types.insert(types.begin(), {convertTypeToString&lt;Type&gt;()});</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                <span class="keywordflow">return</span> types;</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            }</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="keyword">static</span> std::vector&lt;std::string&gt; getRow()</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            {</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                <span class="keyword">auto</span> types = extractTypes&lt;OtherTypes...&gt;::getRow();</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                types.push_back(convertTypeToString&lt;Type&gt;());</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                types.insert(types.begin(), convertTypeToString&lt;Type&gt;());</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                <span class="keywordflow">return</span> types;</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            }</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        };</div>
@@ -228,7 +228,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func, <span class="keyword">typename</span>... Args&gt;</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">struct </span>connector&lt;TypeSet&lt;&gt;, Func, Args...&gt;</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        {</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            <span class="keyword">static</span> std::function&lt;void()&gt; connect(Func func, Args... args)</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            <span class="keyword">static</span> std::function&lt;void()&gt; connect(Func func, std::size_t, Args... args)</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            {</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                <span class="keywordflow">return</span> std::bind(func, args...);</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            }</div>
@@ -237,20 +237,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func, <span class="keyword">typename</span>... Args, <span class="keyword">typename</span> Type&gt;</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="keyword">struct </span>connector&lt;TypeSet&lt;Type&gt;, Func, Args...&gt;</div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        {</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            <span class="keyword">static</span> std::function&lt;void()&gt; connect(Func func, Args... args)</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            <span class="keyword">static</span> std::function&lt;void()&gt; connect(Func func, std::size_t argPos, Args... args)</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;            {</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                <span class="keywordflow">return</span> std::bind(func, args..., std::bind(dereference&lt;Type&gt;, std::cref(data[0])));</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                <span class="keywordflow">return</span> std::bind(func, args..., std::bind(dereference&lt;Type&gt;, std::cref(data[argPos])));</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            }</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        };</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func, <span class="keyword">typename</span>... Args, <span class="keyword">typename</span> TypeA, <span class="keyword">typename</span> TypeB&gt;</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        <span class="keyword">struct </span>connector&lt;TypeSet&lt;TypeA, TypeB&gt;, Func, Args...&gt;</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        {</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            <span class="keyword">static</span> std::function&lt;void()&gt; connect(Func func, Args... args)</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            <span class="keyword">static</span> std::function&lt;void()&gt; connect(Func func, std::size_t argPos, Args... args)</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            {</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                <span class="keywordflow">return</span> std::bind(func, args...,</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                                 std::bind(dereference&lt;TypeA&gt;, std::cref(data[0])),</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                                 std::bind(dereference&lt;TypeB&gt;, std::cref(data[1])));</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                                 std::bind(dereference&lt;TypeA&gt;, std::cref(data[argPos])),</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                                 std::bind(dereference&lt;TypeB&gt;, std::cref(data[argPos+1])));</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            }</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        };</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;</div>
@@ -310,8 +310,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;            <span class="keyword">using</span> type = <span class="keyword">typename</span> priv::isFunctionConvertible&lt;Func, decltype(priv::bindRemover&lt;Func, Args&gt;::remove(func, args))...&gt;::type;</div>
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;            static_assert(!std::is_same&lt;type, TypeSet&lt;void&gt;&gt;::value, <span class="stringliteral">&quot;Parameters passed to the connect function are wrong!&quot;</span>);</div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;            checkCompatibleParameterType&lt;type&gt;();</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;            m_functions[id] = priv::connector&lt;type, Func, Args...&gt;::connect(func, args...);</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;            <span class="keyword">auto</span> argPos = checkCompatibleParameterType&lt;type&gt;();</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;            m_functions[id] = priv::connector&lt;type, Func, Args...&gt;::connect(func, argPos, args...);</div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        }</div>
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func, <span class="keyword">typename</span>... Args&gt;</div>
@@ -338,160 +338,201 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    <span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;</div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Type&gt;</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        <span class="keywordtype">void</span> checkCompatibleParameterType()</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        std::size_t checkCompatibleParameterType()</div>
 <div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        {</div>
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            <span class="keywordflow">if</span> (std::is_same&lt;Type, TypeSet&lt;&gt;&gt;::value)</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;</div>
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;            <span class="keyword">auto</span> acceptedType = priv::extractTypes&lt;Type&gt;::get();</div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            assert(acceptedType.size() == 1);</div>
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; type : m_allowedTypes)</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            {</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                <span class="keywordflow">if</span> (acceptedType[0] == type)</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                    <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            }</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            std::size_t count = 0;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; m_allowedTypes.size(); ++i)</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            {</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                <span class="keywordflow">if</span> (acceptedType[0] == m_allowedTypes[i])</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                    <span class="keywordflow">return</span> count;</div>
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{<span class="stringliteral">&quot;Failed to bind parameter to callback function. Parameter is of wrong type.&quot;</span>};</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        }</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                count += m_allowedTypes[i].size();</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            }</div>
 <div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        std::map&lt;unsigned int, std::function&lt;void()&gt;&gt; m_functions;</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        std::map&lt;unsigned int, std::function&lt;void(const Callback&amp;)&gt;&gt; m_functionsEx;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{<span class="stringliteral">&quot;Failed to bind parameter to callback function. Parameter is of wrong type.&quot;</span>};</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        }</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;        std::vector&lt;std::vector&lt;std::string&gt;&gt; m_allowedTypes;</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>; <span class="comment">// Only needed for m_functionsEx</span></div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    };</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;        std::map&lt;unsigned int, std::function&lt;void()&gt;&gt; m_functions;</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;        std::map&lt;unsigned int, std::function&lt;void(const Callback&amp;)&gt;&gt; m_functionsEx;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;        std::vector&lt;std::vector&lt;std::string&gt;&gt; m_allowedTypes;</div>
 <div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;</div>
-<div class="line"><a name="l00298"></a><span class="lineno"><a class="line" href="classtgui_1_1SignalWidgetBase.html">  298</a></span>&#160;    <span class="keyword">class </span>TGUI_API <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a></div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    {</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>&amp; copy);</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;        <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>&amp; right);</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func, <span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00340"></a><span class="lineno"><a class="line" href="classtgui_1_1SignalWidgetBase.html#a3a310a997fdfb38e38688a6086832a95">  340</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classtgui_1_1SignalWidgetBase.html#a3a310a997fdfb38e38688a6086832a95">connect</a>(<span class="keyword">const</span> std::string&amp; signalNames, Func func, Args... args)</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        {</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; signalName : extractSignalNames(signalNames))</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;            {</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                <span class="keywordflow">if</span> (m_signals.find(toLower(signalName)) == m_signals.end())</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{<span class="stringliteral">&quot;Cannot connect to unknown signal &#39;&quot;</span> + signalName + <span class="stringliteral">&quot;&#39;.&quot;</span>};</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                <span class="keywordflow">try</span> {</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                    m_signals[toLower(signalName)]-&gt;connect(++m_lastId, func, args...);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                }</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                <span class="keywordflow">catch</span> (<span class="keyword">const</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>&amp; e) {</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{e.what() + (<span class="stringliteral">&quot; The parameters are not valid for the &#39;&quot;</span> + signalName + <span class="stringliteral">&quot;&#39; signal.&quot;</span>)};</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                }</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;            }</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;            <span class="keywordflow">return</span> m_lastId;</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        }</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func, <span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00372"></a><span class="lineno"><a class="line" href="classtgui_1_1SignalWidgetBase.html#a9b0187cd74457415140526ba788504d1">  372</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classtgui_1_1SignalWidgetBase.html#a9b0187cd74457415140526ba788504d1">connectEx</a>(<span class="keyword">const</span> std::string&amp; signalName, Func func, Args... args)</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        {</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; name : extractSignalNames(signalName))</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            {</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;                <span class="keywordflow">if</span> (m_signals.find(toLower(name)) == m_signals.end())</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{<span class="stringliteral">&quot;Cannot connect to unknown signal &#39;&quot;</span> + name + <span class="stringliteral">&quot;&#39;.&quot;</span>};</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                <span class="keywordflow">try</span> {</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                    m_signals[toLower(name)]-&gt;connectEx(++m_lastId, func, args...);</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                }</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                <span class="keywordflow">catch</span> (<span class="keyword">const</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>&amp; e) {</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{e.what() + (<span class="stringliteral">&quot; since it is not valid for the &#39;&quot;</span> + name + <span class="stringliteral">&quot;&#39; signal.&quot;</span>)};</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                }</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;            }</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;            <span class="keywordflow">return</span> m_lastId;</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        }</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        <span class="keywordtype">void</span> disconnect(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        <span class="keywordtype">void</span> disconnectAll(<span class="keyword">const</span> std::string&amp; signalName);</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;        <span class="keywordtype">void</span> disconnectAll();</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;        <span class="comment">// Add a new signal that people can bind.</span></div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="comment"></span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... T&gt;</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        <span class="keywordtype">void</span> addSignal(std::string&amp;&amp; name)</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        {</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;            assert(m_signals[toLower(name)] == <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;            m_signals[toLower(name)] = std::make_shared&lt;Signal&gt;(priv::extractTypes&lt;T...&gt;::get());</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;        }</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>; <span class="comment">// Only needed for m_functionsEx</span></div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    };</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;</div>
+<div class="line"><a name="l00301"></a><span class="lineno"><a class="line" href="classtgui_1_1SignalWidgetBase.html">  301</a></span>&#160;    <span class="keyword">class </span>TGUI_API <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    {</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>&amp; copy);</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classtgui_1_1SignalWidgetBase.html">SignalWidgetBase</a>&amp; right);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func, <span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00343"></a><span class="lineno"><a class="line" href="classtgui_1_1SignalWidgetBase.html#a3a310a997fdfb38e38688a6086832a95">  343</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classtgui_1_1SignalWidgetBase.html#a3a310a997fdfb38e38688a6086832a95">connect</a>(<span class="keyword">const</span> std::string&amp; signalNames, Func func, Args... args)</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        {</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; signalName : extractSignalNames(signalNames))</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;            {</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                <span class="keywordflow">if</span> (m_signals.find(toLower(signalName)) != m_signals.end())</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                {</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                    <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                        m_signals[toLower(signalName)]-&gt;connect(m_lastId, func, args...);</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                        m_lastId++;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                    }</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                    <span class="keywordflow">catch</span> (<span class="keyword">const</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>&amp; e) {</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                        <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{e.what() + (<span class="stringliteral">&quot; The parameters are not valid for the &#39;&quot;</span> + signalName + <span class="stringliteral">&quot;&#39; signal.&quot;</span>)};</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                    }</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                }</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                {</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                    <span class="keywordflow">if</span> (toLower(signalName) != <span class="stringliteral">&quot;all&quot;</span>)</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                        <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{<span class="stringliteral">&quot;Cannot connect to unknown signal &#39;&quot;</span> + signalName + <span class="stringliteral">&quot;&#39;.&quot;</span>};</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                    {</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; signal : m_signals)</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                        {</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                            <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                                signal.second-&gt;connect(m_lastId, func, args...);</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                                m_lastId++;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                            }</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                            <span class="keywordflow">catch</span> (<span class="keyword">const</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>&amp; e) {</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;                                <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{e.what() + (<span class="stringliteral">&quot; The parameters are not valid for the &#39;&quot;</span> + signalName + <span class="stringliteral">&quot;&#39; signal.&quot;</span>)};</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;                            }</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                        }</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;                    }</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                }</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            }</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;            <span class="keywordflow">return</span> m_lastId;</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        }</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Func, <span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00394"></a><span class="lineno"><a class="line" href="classtgui_1_1SignalWidgetBase.html#a9b0187cd74457415140526ba788504d1">  394</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classtgui_1_1SignalWidgetBase.html#a9b0187cd74457415140526ba788504d1">connectEx</a>(<span class="keyword">const</span> std::string&amp; signalName, Func func, Args... args)</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        {</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; name : extractSignalNames(signalName))</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;            {</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;                <span class="keywordflow">if</span> (m_signals.find(toLower(name)) != m_signals.end())</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                {</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;                    <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                        m_signals[toLower(name)]-&gt;connectEx(m_lastId, func, args...);</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                        m_lastId++;</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                    }</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                    <span class="keywordflow">catch</span> (<span class="keyword">const</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>&amp; e) {</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                        <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{e.what() + (<span class="stringliteral">&quot; since it is not valid for the &#39;&quot;</span> + name + <span class="stringliteral">&quot;&#39; signal.&quot;</span>)};</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                    }</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                }</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                <span class="keywordflow">else</span> <span class="comment">// Signal name does not exist</span></div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                {</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                    <span class="keywordflow">if</span> (toLower(name) != <span class="stringliteral">&quot;all&quot;</span>)</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                        <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{<span class="stringliteral">&quot;Cannot connect to unknown signal &#39;&quot;</span> + name + <span class="stringliteral">&quot;&#39;.&quot;</span>};</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                    {</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; signal : m_signals)</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                        {</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                            <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                                signal.second-&gt;connectEx(m_lastId, func, args...);</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                                m_lastId++;</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                            }</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;                            <span class="keywordflow">catch</span> (<span class="keyword">const</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>&amp; e) {</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                                <span class="keywordflow">throw</span> <a class="code" href="classtgui_1_1Exception.html">Exception</a>{e.what() + (<span class="stringliteral">&quot; since it is not valid for the &#39;&quot;</span> + name + <span class="stringliteral">&quot;&#39; signal.&quot;</span>)};</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                            }</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                        }</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                    }</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                }</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;            }</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;            <span class="keywordflow">return</span> m_lastId;</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;        }</div>
 <div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;        <span class="comment">// Check if some signal handler has been bound to the signal.</span></div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> isSignalBound(std::string&amp;&amp; name);</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;        <span class="comment">// Send a signal to all signal handlers that are connected with this signal.</span></div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;<span class="comment"></span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;        <span class="keywordtype">void</span> sendSignal(std::string&amp;&amp; name, Args... args)</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;        {</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;            assert(m_signals[toLower(name)] != <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            <span class="keyword">auto</span>&amp; signal = *m_signals[toLower(name)];</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            <span class="keywordflow">if</span> (!signal.isEmpty())</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                signal(0, args...);</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;            m_callback.trigger = name;</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;            <span class="keywordflow">if</span> (!signal.m_functionsEx.empty())</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;            {</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; <span class="keyword">function</span> : signal.m_functionsEx)</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                    <span class="keyword">function</span>.second(m_callback);</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;            }</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        }</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;        <span class="keywordtype">void</span> disconnect(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        <span class="keywordtype">void</span> disconnectAll(<span class="keyword">const</span> std::string&amp; signalName);</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        <span class="keywordtype">void</span> disconnectAll();</div>
 <div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;</div>
 <div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;</div>
 <div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    <span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        std::vector&lt;std::string&gt; extractSignalNames(std::string input);</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;    <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;        std::map&lt;std::string, std::shared_ptr&lt;Signal&gt;&gt; m_signals;</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_lastId;</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;        <a class="code" href="structtgui_1_1Callback.html">Callback</a> m_callback;</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        <span class="comment">// Add a new signal that people can bind.</span></div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;<span class="comment"></span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... T&gt;</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        <span class="keywordtype">void</span> addSignal(std::string&amp;&amp; name)</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;        {</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;            assert(m_signals[toLower(name)] == <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;            m_signals[toLower(name)] = std::make_shared&lt;Signal&gt;(priv::extractTypes&lt;T...&gt;::get());</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;        }</div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;</div>
 <div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;    };</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;}</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;<span class="preprocessor">#endif // TGUI_SIGNAL_HPP</span></div>
-<div class="ttc" id="namespacetgui_html"><div class="ttname"><a href="namespacetgui.html">tgui</a></div><div class="ttdoc">Namespace that contains all TGUI functions and classes. </div><div class="ttdef"><b>Definition:</b> Borders.hpp:33</div></div>
-<div class="ttc" id="classtgui_1_1SignalWidgetBase_html_a3a310a997fdfb38e38688a6086832a95"><div class="ttname"><a href="classtgui_1_1SignalWidgetBase.html#a3a310a997fdfb38e38688a6086832a95">tgui::SignalWidgetBase::connect</a></div><div class="ttdeci">unsigned int connect(const std::string &amp;signalNames, Func func, Args...args)</div><div class="ttdoc">Connects a signal handler function to one or more signals. </div><div class="ttdef"><b>Definition:</b> Signal.hpp:340</div></div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;        <span class="comment">// Check if some signal handler has been bound to the signal.</span></div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;<span class="comment"></span>        <span class="keywordtype">bool</span> isSignalBound(std::string&amp;&amp; name);</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        <span class="comment">// Send a signal to all signal handlers that are connected with this signal.</span></div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;<span class="comment"></span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;        <span class="keywordtype">void</span> sendSignal(std::string&amp;&amp; name, Args... args)</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        {</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;            assert(m_signals[toLower(name)] != <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;            <span class="keyword">auto</span>&amp; signal = *m_signals[toLower(name)];</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;            <span class="keywordflow">if</span> (!signal.isEmpty())</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;                signal(0, args...);</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;            m_callback.trigger = name;</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;            <span class="keywordflow">if</span> (!signal.m_functionsEx.empty())</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;            {</div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; <span class="keyword">function</span> : signal.m_functionsEx)</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;                    <span class="keyword">function</span>.second(m_callback);</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;            }</div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;        }</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;        std::vector&lt;std::string&gt; extractSignalNames(std::string input);</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;        std::map&lt;std::string, std::shared_ptr&lt;Signal&gt;&gt; m_signals;</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_lastId;</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;        <a class="code" href="structtgui_1_1Callback.html">Callback</a> m_callback;</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;    };</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;}</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;</div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;<span class="preprocessor">#endif // TGUI_SIGNAL_HPP</span></div>
+<div class="ttc" id="namespacetgui_html"><div class="ttname"><a href="namespacetgui.html">tgui</a></div><div class="ttdoc">Namespace that contains all TGUI functions and classes. </div><div class="ttdef"><b>Definition:</b> Animation.hpp:33</div></div>
+<div class="ttc" id="classtgui_1_1SignalWidgetBase_html_a3a310a997fdfb38e38688a6086832a95"><div class="ttname"><a href="classtgui_1_1SignalWidgetBase.html#a3a310a997fdfb38e38688a6086832a95">tgui::SignalWidgetBase::connect</a></div><div class="ttdeci">unsigned int connect(const std::string &amp;signalNames, Func func, Args...args)</div><div class="ttdoc">Connects a signal handler function to one or more signals. </div><div class="ttdef"><b>Definition:</b> Signal.hpp:343</div></div>
 <div class="ttc" id="structtgui_1_1Callback_html"><div class="ttname"><a href="structtgui_1_1Callback.html">tgui::Callback</a></div><div class="ttdef"><b>Definition:</b> Callback.hpp:44</div></div>
 <div class="ttc" id="classtgui_1_1Exception_html"><div class="ttname"><a href="classtgui_1_1Exception.html">tgui::Exception</a></div><div class="ttdef"><b>Definition:</b> Exception.hpp:40</div></div>
-<div class="ttc" id="classtgui_1_1SignalWidgetBase_html"><div class="ttname"><a href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></div><div class="ttdoc">Base class for widgets to enable signal handling. </div><div class="ttdef"><b>Definition:</b> Signal.hpp:298</div></div>
+<div class="ttc" id="classtgui_1_1SignalWidgetBase_html"><div class="ttname"><a href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></div><div class="ttdoc">Base class for widgets to enable signal handling. </div><div class="ttdef"><b>Definition:</b> Signal.hpp:301</div></div>
 <div class="ttc" id="classtgui_1_1Signal_html"><div class="ttname"><a href="classtgui_1_1Signal.html">tgui::Signal</a></div><div class="ttdef"><b>Definition:</b> Signal.hpp:227</div></div>
-<div class="ttc" id="classtgui_1_1SignalWidgetBase_html_a9b0187cd74457415140526ba788504d1"><div class="ttname"><a href="classtgui_1_1SignalWidgetBase.html#a9b0187cd74457415140526ba788504d1">tgui::SignalWidgetBase::connectEx</a></div><div class="ttdeci">unsigned int connectEx(const std::string &amp;signalName, Func func, Args...args)</div><div class="ttdoc">Connects a signal handler function to one or more signals. </div><div class="ttdef"><b>Definition:</b> Signal.hpp:372</div></div>
+<div class="ttc" id="classtgui_1_1SignalWidgetBase_html_a9b0187cd74457415140526ba788504d1"><div class="ttname"><a href="classtgui_1_1SignalWidgetBase.html#a9b0187cd74457415140526ba788504d1">tgui::SignalWidgetBase::connectEx</a></div><div class="ttdeci">unsigned int connectEx(const std::string &amp;signalName, Func func, Args...args)</div><div class="ttdoc">Connects a signal handler function to one or more signals. </div><div class="ttdef"><b>Definition:</b> Signal.hpp:394</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 31 2015 23:41:04 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Sep 20 2015 23:01:19 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

@@ -30,7 +30,7 @@ int main()
     sf::Sprite sprite(textureCursorNormal);
 
     tgui::Gui gui(window);
-    gui.setGlobalFont("TGUI/fonts/DejaVuSans.ttf");
+    gui.setFont("TGUI/fonts/DejaVuSans.ttf");
 
     auto play = std::make_shared<tgui::Button>();
     play->setPosition(tgui::bindWidth(gui)*0.15, tgui::bindHeight(gui)*0.125);

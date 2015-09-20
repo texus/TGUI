@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7-alpha1</span>
+   &#160;<span id="projectnumber">v0.7-alpha2</span>
    </div>
   </td>
  </tr>
@@ -82,6 +82,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">tgui Namespace Reference</div>  </div>
@@ -102,7 +103,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Borders.html">Borders</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BoxLayout.html">BoxLayout</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract class for layout container.  <a href="classtgui_1_1BoxLayout.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract class for box layout containers.  <a href="classtgui_1_1BoxLayout.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Button.html">Button</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtgui_1_1Button.html" title="Button widget. ">Button</a> widget.  <a href="classtgui_1_1Button.html#details">More...</a><br /></td></tr>
@@ -156,6 +157,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Exception.html">Exception</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html">Font</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Grid.html">Grid</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Gui.html">Gui</a></td></tr>
@@ -164,7 +167,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><b>GuiContainer</b></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1HorizontalLayout.html">HorizontalLayout</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtgui_1_1Container.html" title="Container widget. ">Container</a> that automatically resize children to fit the entire available space equally between children.  <a href="classtgui_1_1HorizontalLayout.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtgui_1_1Container.html" title="Container widget. ">Container</a> that automatically resizes children to fit the entire available space between children.  <a href="classtgui_1_1HorizontalLayout.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Knob.html">Knob</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtgui_1_1Knob.html" title="Knob widget. ">Knob</a> widget.  <a href="classtgui_1_1Knob.html#details">More...</a><br /></td></tr>
@@ -264,13 +267,14 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default <a class="el" href="classtgui_1_1Theme.html" title="Default Theme class. ">Theme</a> class.  <a href="classtgui_1_1Theme.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ToolTip.html">ToolTip</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface to set the settings for the tool tips.  <a href="classtgui_1_1ToolTip.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html">Transformable</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><b>TypeSet</b></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1VerticalLayout.html">VerticalLayout</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtgui_1_1Container.html" title="Container widget. ">Container</a> that automatically resize children to fit the entire available space equally between children.  <a href="classtgui_1_1VerticalLayout.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtgui_1_1Container.html" title="Container widget. ">Container</a> that automatically resizes children to fit the entire available space between children.  <a href="classtgui_1_1VerticalLayout.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html">Widget</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The parent class for every widget.  <a href="classtgui_1_1Widget.html#details">More...</a><br /></td></tr>
@@ -293,6 +297,25 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1WidgetSaver.html">WidgetSaver</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class to save widgets to a text file.  <a href="classtgui_1_1WidgetSaver.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ae5f90d6756ae21ba5dd08f84138437da"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da">ShowAnimationType</a> { <br />
+&#160;&#160;<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa04e0385c10aefee8e4681617d2f3ef40">ShowAnimationType::Fade</a>, 
+<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa85a7cd587d6142dbfc1a4de05af7b75d">ShowAnimationType::Scale</a>, 
+<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa32adbe5629238fc4f536d19aa387edde">ShowAnimationType::SlideToRight</a>, 
+<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa2fb2461981483dbe3d8cea762e4f6b4e">ShowAnimationType::SlideToLeft</a>, 
+<br />
+&#160;&#160;<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daaafd419511c5120bdc1ac7e54b4e81096">ShowAnimationType::SlideToBottom</a>, 
+<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daae646468517e881c8fba1b43c3439e9c4">ShowAnimationType::SlideToTop</a>, 
+<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa7eceaa1479b5b4cdea7c6d1cce219f77">ShowAnimationType::SlideFromLeft</a> = SlideToRight, 
+<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daaf744d5bd565fba1a73e8d920271ff752">ShowAnimationType::SlideFromRight</a> = SlideToLeft, 
+<br />
+&#160;&#160;<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daad0c0f4c9fa33f30a64ebc4b5513f0723">ShowAnimationType::SlideFromTop</a> = SlideToBottom, 
+<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa1798106aa3a86db45ce376cbe5de5875">ShowAnimationType::SlideFromBottom</a> = SlideToTop
+<br />
+ }<tr class="separator:ae5f90d6756ae21ba5dd08f84138437da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -470,7 +493,60 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace that contains all TGUI functions and classes. </p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437da"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da">tgui::ShowAnimationType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daa04e0385c10aefee8e4681617d2f3ef40"></a>Fade&#160;</td><td class="fielddoc">
+<p>Fade widget in or out. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daa85a7cd587d6142dbfc1a4de05af7b75d"></a>Scale&#160;</td><td class="fielddoc">
+<p>Shrink to the center of the widget to hide or grow from its center to show. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daa32adbe5629238fc4f536d19aa387edde"></a>SlideToRight&#160;</td><td class="fielddoc">
+<p>Slide to the right to hide or from left to show. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daa2fb2461981483dbe3d8cea762e4f6b4e"></a>SlideToLeft&#160;</td><td class="fielddoc">
+<p>Slide to the left to hide or from right to show. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daaafd419511c5120bdc1ac7e54b4e81096"></a>SlideToBottom&#160;</td><td class="fielddoc">
+<p>Slide to the bottom to hide or from top to show. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daae646468517e881c8fba1b43c3439e9c4"></a>SlideToTop&#160;</td><td class="fielddoc">
+<p>Slide to the top to hide or from bottom to show. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daa7eceaa1479b5b4cdea7c6d1cce219f77"></a>SlideFromLeft&#160;</td><td class="fielddoc">
+<p>Slide from left to show or to the right to hide. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daaf744d5bd565fba1a73e8d920271ff752"></a>SlideFromRight&#160;</td><td class="fielddoc">
+<p>Slide from right to show or to the left to hide. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daad0c0f4c9fa33f30a64ebc4b5513f0723"></a>SlideFromTop&#160;</td><td class="fielddoc">
+<p>Slide from top to show or to the bottom to hide. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae5f90d6756ae21ba5dd08f84138437daa1798106aa3a86db45ce376cbe5de5875"></a>SlideFromBottom&#160;</td><td class="fielddoc">
+<p>Slide from bottom to show or to the top to hide. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="adbaac1043a07a0095c3ee90d6070b70b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1679,7 +1755,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 31 2015 23:41:04 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Sep 20 2015 23:01:19 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

@@ -1,0 +1,34 @@
+---
+layout: page
+title: Tool Tips
+breadcrumb: tool tips
+---
+<div>
+  <h3 id="normal_tool_tip">Normal tool tip</h3>
+  <p class="SmallBottomMargin">Tool tips are usually just labels, which is exactly what you get if you create a tool tip with one of the themes shipped with TGUI.</p>
+{% highlight c++ %}
+tgui::Label::Ptr toolTip = theme->load("ToolTip");
+toolTip->setText("world");
+button->setToolTip(toolTip);
+{% endhighlight %}
+  <img src="{{site.url}}/resources/Tutorials/ToolTipLabel.jpg" alt="Tool Tip Label" width="181" height="77" />
+</div>
+
+<div>
+  <h3 id="special_tool_tip">Special tool tip</h3>
+  <p class="SmallBottomMargin">But the tool tip does not has to be a label, it can be any widget. Here I used a Picture but you could also use a Panel and make the tool tip as complex as you want.</p>
+{% highlight c++ %}
+tgui::Picture::Ptr toolTip = std::make_shared<tgui::Picture>("image.png");
+button->setToolTip(toolTip);
+{% endhighlight %}
+  <img src="{{site.url}}/resources/Tutorials/ToolTipPicture.jpg" alt="Tool Tip Picture" width="177" height="99" />
+</div>
+
+<div>
+  <h3 id="properies">Properties</h3>
+  <p class="SmallBottomMargin">There also exists a ToolTip class in which you find static function to change the time before the tool tip shows up and the distance between the mouse and the tool tip. Setting the display time to 0 will cause the tool tip to always be visible when the mouse is on top of the widget.</p>
+{% highlight c++ %}
+tgui::ToolTip::setTimeToDisplay(sf::milliseconds(300));
+tgui::ToolTip::setDistanceToMouse({4, 8});
+{% endhighlight %}
+</div>

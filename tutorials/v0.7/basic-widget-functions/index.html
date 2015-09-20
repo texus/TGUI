@@ -52,11 +52,9 @@ widget->moveToBack();
 </div>
 
 <div>
-<h3 id="tooltips">Tooltips</h3>
-<p class="SmallBottomMargin">Every widget can have a tooltip displayed next to your mouse when you rest the mouse on top of it. You don't even have to load a tooltip yourself, you can immediately set the text and it will work. However, if you want to use other colors than the one provided by the built-in White theme then you should still load your own theme.</p>
+<h3 id="transparency">Transparency</h3>
+<p class="SmallBottomMargin">You can make widgets semi-transparent with the setOpacity functions. It takes a float between 0 and 1 where 0 is completely transparent and 1 is fully opaque.</p>
 {% highlight c++ %}
-widget->getTooltip()->setText("Hello world");
-
-widget->setTooltip(theme->load("tooltip"));
+widget->setOpacity(0.8f);
 {% endhighlight %}
 </div>

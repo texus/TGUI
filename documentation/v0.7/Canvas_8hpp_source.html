@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7-alpha1</span>
+   &#160;<span id="projectnumber">v0.7-alpha2</span>
    </div>
   </td>
  </tr>
@@ -165,44 +165,47 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordtype">void</span> display();</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="comment">// Makes a copy of the widget</span></div>
-<div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="classtgui_1_1Canvas.html#ad2efbdfdd915795e5e477d11fecabb02">  173</a></span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <a class="code" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> <a class="code" href="classtgui_1_1Canvas.html#ad2efbdfdd915795e5e477d11fecabb02">clone</a>()<span class="keyword"> override</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            <span class="keywordflow">return</span> std::make_shared&lt;Canvas&gt;(*this);</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        }</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setOpacity(<span class="keywordtype">float</span> opacity) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="comment">// Draws the widget on the render target.</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw(sf::RenderTarget&amp; target, sf::RenderStates states) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="comment">// Makes a copy of the widget</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno"><a class="line" href="classtgui_1_1Canvas.html#ad2efbdfdd915795e5e477d11fecabb02">  182</a></span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <a class="code" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> <a class="code" href="classtgui_1_1Canvas.html#ad2efbdfdd915795e5e477d11fecabb02">clone</a>()<span class="keyword"> override</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            <span class="keywordflow">return</span> std::make_shared&lt;Canvas&gt;(*this);</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        }</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        sf::RenderTexture m_renderTexture;</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        sf::Sprite        m_sprite;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    };</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;}</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        <span class="comment">// Draws the widget on the render target.</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="comment"></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw(sf::RenderTarget&amp; target, sf::RenderStates states) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="preprocessor">#endif // TGUI_CANVAS_HPP</span></div>
-<div class="ttc" id="namespacetgui_html"><div class="ttname"><a href="namespacetgui.html">tgui</a></div><div class="ttdoc">Namespace that contains all TGUI functions and classes. </div><div class="ttdef"><b>Definition:</b> Borders.hpp:33</div></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        sf::RenderTexture m_renderTexture;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        sf::Sprite        m_sprite;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    };</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;}</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="preprocessor">#endif // TGUI_CANVAS_HPP</span></div>
+<div class="ttc" id="namespacetgui_html"><div class="ttname"><a href="namespacetgui.html">tgui</a></div><div class="ttdoc">Namespace that contains all TGUI functions and classes. </div><div class="ttdef"><b>Definition:</b> Animation.hpp:33</div></div>
 <div class="ttc" id="classtgui_1_1Layout2d_html"><div class="ttname"><a href="classtgui_1_1Layout2d.html">tgui::Layout2d</a></div><div class="ttdoc">Class to store the position or size of a widget. </div><div class="ttdef"><b>Definition:</b> Layout.hpp:241</div></div>
 <div class="ttc" id="classtgui_1_1Layout_html"><div class="ttname"><a href="classtgui_1_1Layout.html">tgui::Layout</a></div><div class="ttdoc">Class to store the left, top, width or height of a widget. </div><div class="ttdef"><b>Definition:</b> Layout.hpp:120</div></div>
 <div class="ttc" id="classtgui_1_1Transformable_html_a66fe5d2a7b1477cab073984a9a3e13bc"><div class="ttname"><a href="classtgui_1_1Transformable.html#a66fe5d2a7b1477cab073984a9a3e13bc">tgui::Transformable::setSize</a></div><div class="ttdeci">virtual void setSize(const Layout2d &amp;size)</div><div class="ttdoc">Changes the size of the widget. </div></div>
 <div class="ttc" id="classtgui_1_1Transformable_html_aef14a1428f63eeb8bd820a1b4821a3d0"><div class="ttname"><a href="classtgui_1_1Transformable.html#aef14a1428f63eeb8bd820a1b4821a3d0">tgui::Transformable::setPosition</a></div><div class="ttdeci">virtual void setPosition(const Layout2d &amp;position)</div><div class="ttdoc">set the position of the widget </div></div>
 <div class="ttc" id="classtgui_1_1ClickableWidget_html"><div class="ttname"><a href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></div><div class="ttdoc">Clickable widget. </div><div class="ttdef"><b>Definition:</b> ClickableWidget.hpp:55</div></div>
 <div class="ttc" id="classtgui_1_1Canvas_html_abfed009a388213216d66922d88f524f5"><div class="ttname"><a href="classtgui_1_1Canvas.html#abfed009a388213216d66922d88f524f5">tgui::Canvas::ConstPtr</a></div><div class="ttdeci">std::shared_ptr&lt; const Canvas &gt; ConstPtr</div><div class="ttdoc">Shared constant widget pointer. </div><div class="ttdef"><b>Definition:</b> Canvas.hpp:43</div></div>
-<div class="ttc" id="classtgui_1_1Widget_html_a388912f13898735531886bc676b14f81"><div class="ttname"><a href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">tgui::Widget::Ptr</a></div><div class="ttdeci">std::shared_ptr&lt; Widget &gt; Ptr</div><div class="ttdoc">Shared widget pointer. </div><div class="ttdef"><b>Definition:</b> Widget.hpp:68</div></div>
+<div class="ttc" id="classtgui_1_1Widget_html_a388912f13898735531886bc676b14f81"><div class="ttname"><a href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">tgui::Widget::Ptr</a></div><div class="ttdeci">std::shared_ptr&lt; Widget &gt; Ptr</div><div class="ttdoc">Shared widget pointer. </div><div class="ttdef"><b>Definition:</b> Widget.hpp:74</div></div>
 <div class="ttc" id="classtgui_1_1Canvas_html_ac12db2e44390c3b6974a556f6b2a88c3"><div class="ttname"><a href="classtgui_1_1Canvas.html#ac12db2e44390c3b6974a556f6b2a88c3">tgui::Canvas::Ptr</a></div><div class="ttdeci">std::shared_ptr&lt; Canvas &gt; Ptr</div><div class="ttdoc">Shared widget pointer. </div><div class="ttdef"><b>Definition:</b> Canvas.hpp:42</div></div>
-<div class="ttc" id="classtgui_1_1Canvas_html_ad2efbdfdd915795e5e477d11fecabb02"><div class="ttname"><a href="classtgui_1_1Canvas.html#ad2efbdfdd915795e5e477d11fecabb02">tgui::Canvas::clone</a></div><div class="ttdeci">virtual Widget::Ptr clone() override</div><div class="ttdoc">Makes a copy of the widget if you don&#39;t know its exact type. </div><div class="ttdef"><b>Definition:</b> Canvas.hpp:173</div></div>
+<div class="ttc" id="classtgui_1_1Canvas_html_ad2efbdfdd915795e5e477d11fecabb02"><div class="ttname"><a href="classtgui_1_1Canvas.html#ad2efbdfdd915795e5e477d11fecabb02">tgui::Canvas::clone</a></div><div class="ttdeci">virtual Widget::Ptr clone() override</div><div class="ttdoc">Makes a copy of the widget if you don&#39;t know its exact type. </div><div class="ttdef"><b>Definition:</b> Canvas.hpp:182</div></div>
 <div class="ttc" id="classtgui_1_1Canvas_html"><div class="ttname"><a href="classtgui_1_1Canvas.html">tgui::Canvas</a></div><div class="ttdef"><b>Definition:</b> Canvas.hpp:38</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 31 2015 23:41:04 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Sep 20 2015 23:01:19 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.10
 </small></address>

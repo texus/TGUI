@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vertical',['Vertical',['../classtgui_1_1Texture.html#aaba70370fcc0e5fe13508646d2300014a06ce2a25e5d12c166a36f654dbea6012',1,'tgui::Texture']]]
+  ['toptobottom',['TopToBottom',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85eaf2b1a19a8d0f523d042f9ede79a80804',1,'tgui::ProgressBar']]]
 ];
