@@ -241,16 +241,12 @@ namespace tgui
 
     void Label::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBackgroundColor(sf::Color::Transparent);
+        getRenderer()->setTextColor({60, 60, 60});
+        getRenderer()->setBorderColor({0, 0, 0});
+
         if (m_theme && primary != "")
-        {
             Widget::reload(primary, secondary, force);
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBackgroundColor(sf::Color::Transparent);
-            getRenderer()->setTextColor({60, 60, 60});
-            getRenderer()->setBorderColor({0, 0, 0});
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

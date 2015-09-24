@@ -273,6 +273,21 @@ namespace tgui
 
     void RadioButton::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setPadding({3, 3, 3, 3});
+        getRenderer()->setTextColorNormal({60, 60, 60});
+        getRenderer()->setTextColorHover({0, 0, 0});
+        getRenderer()->setBackgroundColorNormal({60,  60,  60});
+        getRenderer()->setBackgroundColorHover({0, 0, 0});
+        getRenderer()->setForegroundColorNormal({245, 245, 245});
+        getRenderer()->setForegroundColorHover({255, 255, 255});
+        getRenderer()->setCheckColorNormal({60,  60,  60});
+        getRenderer()->setCheckColorHover({0, 0, 0});
+        getRenderer()->setUncheckedTexture({});
+        getRenderer()->setCheckedTexture({});
+        getRenderer()->setUncheckedHoverTexture({});
+        getRenderer()->setCheckedHoverTexture({});
+        getRenderer()->setFocusedTexture({});
+
         if (m_theme && primary != "")
         {
             Widget::reload(primary, secondary, force);
@@ -286,23 +301,6 @@ namespace tgui
                 if (getRenderer()->m_textureUnchecked.isLoaded())
                     setSize(getRenderer()->m_textureUnchecked.getImageSize());
             }
-        }
-        else // Load white theme
-        {
-            getRenderer()->setPadding({3, 3, 3, 3});
-            getRenderer()->setTextColorNormal({60, 60, 60});
-            getRenderer()->setTextColorHover({0, 0, 0});
-            getRenderer()->setBackgroundColorNormal({60,  60,  60});
-            getRenderer()->setBackgroundColorHover({0, 0, 0});
-            getRenderer()->setForegroundColorNormal({245, 245, 245});
-            getRenderer()->setForegroundColorHover({255, 255, 255});
-            getRenderer()->setCheckColorNormal({60,  60,  60});
-            getRenderer()->setCheckColorHover({0, 0, 0});
-            getRenderer()->setUncheckedTexture({});
-            getRenderer()->setCheckedTexture({});
-            getRenderer()->setUncheckedHoverTexture({});
-            getRenderer()->setCheckedHoverTexture({});
-            getRenderer()->setFocusedTexture({});
         }
     }
 

@@ -941,6 +941,16 @@ namespace tgui
 
     void ListBox::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBorders({2, 2, 2, 2});
+        getRenderer()->setBackgroundColor({245, 245, 245});
+        getRenderer()->setTextColorNormal({60, 60, 60});
+        getRenderer()->setTextColorHover({0, 0, 0});
+        getRenderer()->setHoverBackgroundColor({255, 255, 255});
+        getRenderer()->setSelectedBackgroundColor({0, 110, 255});
+        getRenderer()->setSelectedTextColor({255, 255, 255});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setBackgroundTexture({});
+
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
@@ -955,18 +965,6 @@ namespace tgui
             }
             else
                 updateSize();
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBorders({2, 2, 2, 2});
-            getRenderer()->setBackgroundColor({245, 245, 245});
-            getRenderer()->setTextColorNormal({60, 60, 60});
-            getRenderer()->setTextColorHover({0, 0, 0});
-            getRenderer()->setHoverBackgroundColor({255, 255, 255});
-            getRenderer()->setSelectedBackgroundColor({0, 110, 255});
-            getRenderer()->setSelectedTextColor({255, 255, 255});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setBackgroundTexture({});
         }
     }
 

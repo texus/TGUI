@@ -214,9 +214,7 @@ namespace tgui
         ChildWindow::reload(primary, secondary, force);
 
         if (!m_theme || primary == "")
-        {
             getRenderer()->setTextColor({0, 0, 0});
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -468,6 +468,18 @@ namespace tgui
 
     void ChildWindow::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        m_closeButton->reload();
+        m_closeButton->getRenderer()->setBorders({1, 1, 1, 1});
+
+        getRenderer()->setTitleBarHeight(20);
+        getRenderer()->setDistanceToSide(3);
+        getRenderer()->setBorders({1, 1, 1, 1});
+        getRenderer()->setTitleBarColor({255, 255, 255});
+        getRenderer()->setTitleColor({0, 0, 0});
+        getRenderer()->setBackgroundColor({230, 230, 230});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setTitleBarTexture({});
+
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
@@ -484,20 +496,6 @@ namespace tgui
                         m_closeButton->setSize(m_closeButton->getRenderer()->m_textureNormal.getImageSize());
                 }
             }
-        }
-        else // Load white theme
-        {
-            m_closeButton->reload();
-            m_closeButton->getRenderer()->setBorders({1, 1, 1, 1});
-
-            getRenderer()->setTitleBarHeight(20);
-            getRenderer()->setDistanceToSide(3);
-            getRenderer()->setBorders({1, 1, 1, 1});
-            getRenderer()->setTitleBarColor({255, 255, 255});
-            getRenderer()->setTitleColor({0, 0, 0});
-            getRenderer()->setBackgroundColor({230, 230, 230});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setTitleBarTexture({});
         }
 
         if (!m_closeButton->getRenderer()->m_textureNormal.isLoaded())

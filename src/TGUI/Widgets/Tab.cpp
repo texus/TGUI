@@ -487,6 +487,15 @@ namespace tgui
 
     void Tab::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBorders({2, 2, 2, 2});
+        getRenderer()->setBackgroundColor({255, 255, 255});
+        getRenderer()->setSelectedBackgroundColor({0, 110, 255});
+        getRenderer()->setTextColor({0, 0, 0});
+        getRenderer()->setSelectedTextColor({255, 255, 255});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setNormalTexture({});
+        getRenderer()->setSelectedTexture({});
+
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
@@ -497,17 +506,6 @@ namespace tgui
                 if (getRenderer()->m_textureNormal.isLoaded() && getRenderer()->m_textureSelected.isLoaded())
                     setTabHeight(getRenderer()->m_textureNormal.getSize().y);
             }
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBorders({2, 2, 2, 2});
-            getRenderer()->setBackgroundColor({255, 255, 255});
-            getRenderer()->setSelectedBackgroundColor({0, 110, 255});
-            getRenderer()->setTextColor({0, 0, 0});
-            getRenderer()->setSelectedTextColor({255, 255, 255});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setNormalTexture({});
-            getRenderer()->setSelectedTexture({});
         }
     }
 

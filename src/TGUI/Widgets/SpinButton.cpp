@@ -299,6 +299,18 @@ namespace tgui
 
     void SpinButton::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBorders({2, 2, 2, 2});
+        getRenderer()->setBackgroundColorNormal({245, 245, 245});
+        getRenderer()->setBackgroundColorHover({255, 255, 255});
+        getRenderer()->setArrowColorNormal({60, 60, 60});
+        getRenderer()->setArrowColorHover({0, 0, 0});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setSpaceBetweenArrows(2);
+        getRenderer()->setArrowUpTexture({});
+        getRenderer()->setArrowDownTexture({});
+        getRenderer()->setArrowUpHoverTexture({});
+        getRenderer()->setArrowDownHoverTexture({});
+
         if (m_theme && primary != "")
         {
             getRenderer()->setSpaceBetweenArrows(0);
@@ -314,20 +326,6 @@ namespace tgui
                              getRenderer()->m_textureArrowUpNormal.getSize().y + getRenderer()->m_textureArrowDownNormal.getSize().y});
                 }
             }
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBorders({2, 2, 2, 2});
-            getRenderer()->setBackgroundColorNormal({245, 245, 245});
-            getRenderer()->setBackgroundColorHover({255, 255, 255});
-            getRenderer()->setArrowColorNormal({60, 60, 60});
-            getRenderer()->setArrowColorHover({0, 0, 0});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setSpaceBetweenArrows(2);
-            getRenderer()->setArrowUpTexture({});
-            getRenderer()->setArrowDownTexture({});
-            getRenderer()->setArrowUpHoverTexture({});
-            getRenderer()->setArrowDownHoverTexture({});
         }
     }
 

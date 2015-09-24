@@ -916,6 +916,22 @@ namespace tgui
 
     void EditBox::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        m_textBeforeSelection.setColor({0, 0, 0});
+        m_textSelection.setColor({255, 255, 255});
+        m_textAfterSelection.setColor({0, 0, 0});
+        m_defaultText.setColor({160, 160, 160});
+        m_caret.setFillColor({0, 0, 0});
+        m_selectedTextBackground.setFillColor({0, 110, 255});
+
+        getRenderer()->setBorders({2, 2, 2, 2});
+        getRenderer()->setPadding({4, 2, 4, 2});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setBackgroundColorNormal({245, 245, 245});
+        getRenderer()->setBackgroundColorHover({255, 255, 255});
+        getRenderer()->setNormalTexture({});
+        getRenderer()->setHoverTexture({});
+        getRenderer()->setFocusTexture({});
+
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
@@ -929,24 +945,6 @@ namespace tgui
 
             // Call setText to re-position the text
             setText(m_text);
-        }
-        else // Load white theme
-        {
-            m_textBeforeSelection.setColor({0, 0, 0});
-            m_textSelection.setColor({255, 255, 255});
-            m_textAfterSelection.setColor({0, 0, 0});
-            m_defaultText.setColor({160, 160, 160});
-            m_caret.setFillColor({0, 0, 0});
-            m_selectedTextBackground.setFillColor({0, 110, 255});
-
-            getRenderer()->setBorders({2, 2, 2, 2});
-            getRenderer()->setPadding({4, 2, 4, 2});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setBackgroundColorNormal({245, 245, 245});
-            getRenderer()->setBackgroundColorHover({255, 255, 255});
-            getRenderer()->setNormalTexture({});
-            getRenderer()->setHoverTexture({});
-            getRenderer()->setFocusTexture({});
         }
     }
 

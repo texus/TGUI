@@ -497,20 +497,18 @@ namespace tgui
 
     void MenuBar::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBackgroundColor({255, 255, 255});
+        getRenderer()->setTextColor({0, 0, 0});
+        getRenderer()->setSelectedBackgroundColor({0, 110, 255});
+        getRenderer()->setSelectedTextColor({255, 255, 255});
+        getRenderer()->setBackgroundTexture({});
+        getRenderer()->setItemBackgroundTexture({});
+        getRenderer()->setSelectedItemBackgroundTexture({});
+        getRenderer()->setDistanceToSide(4);
+
         if (m_theme && primary != "")
         {
             Widget::reload(primary, secondary, force);
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBackgroundColor({255, 255, 255});
-            getRenderer()->setTextColor({0, 0, 0});
-            getRenderer()->setSelectedBackgroundColor({0, 110, 255});
-            getRenderer()->setSelectedTextColor({255, 255, 255});
-            getRenderer()->setBackgroundTexture({});
-            getRenderer()->setItemBackgroundTexture({});
-            getRenderer()->setSelectedItemBackgroundTexture({});
-            getRenderer()->setDistanceToSide(4);
         }
     }
 

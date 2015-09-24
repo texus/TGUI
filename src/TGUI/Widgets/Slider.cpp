@@ -400,6 +400,17 @@ namespace tgui
 
     void Slider::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBorders({2, 2, 2, 2});
+        getRenderer()->setTrackColorNormal({245, 245, 245});
+        getRenderer()->setTrackColorHover({255, 255, 255});
+        getRenderer()->setThumbColorNormal({245, 245, 245});
+        getRenderer()->setThumbColorHover({255, 255, 255});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setTrackTexture({});
+        getRenderer()->setTrackHoverTexture({});
+        getRenderer()->setThumbTexture({});
+        getRenderer()->setThumbHoverTexture({});
+
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
@@ -418,19 +429,6 @@ namespace tgui
                     setSize(getRenderer()->m_textureTrackNormal.getImageSize());
                 }
             }
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBorders({2, 2, 2, 2});
-            getRenderer()->setTrackColorNormal({245, 245, 245});
-            getRenderer()->setTrackColorHover({255, 255, 255});
-            getRenderer()->setThumbColorNormal({245, 245, 245});
-            getRenderer()->setThumbColorHover({255, 255, 255});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setTrackTexture({});
-            getRenderer()->setTrackHoverTexture({});
-            getRenderer()->setThumbTexture({});
-            getRenderer()->setThumbHoverTexture({});
         }
     }
 

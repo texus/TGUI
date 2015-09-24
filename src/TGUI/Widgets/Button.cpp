@@ -243,6 +243,19 @@ namespace tgui
 
     void Button::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBorders({2, 2, 2, 2});
+        getRenderer()->setTextColorNormal({60, 60, 60});
+        getRenderer()->setTextColorHover({0, 0, 0});
+        getRenderer()->setTextColorDown({0, 0, 0});
+        getRenderer()->setBackgroundColorNormal({245, 245, 245});
+        getRenderer()->setBackgroundColorHover({255, 255, 255});
+        getRenderer()->setBackgroundColorDown({255, 255, 255});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setNormalTexture({});
+        getRenderer()->setHoverTexture({});
+        getRenderer()->setDownTexture({});
+        getRenderer()->setFocusTexture({});
+
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
@@ -257,21 +270,6 @@ namespace tgui
                 if (getRenderer()->m_textureNormal.isLoaded())
                     setSize(getRenderer()->m_textureNormal.getImageSize());
             }
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBorders({2, 2, 2, 2});
-            getRenderer()->setTextColorNormal({60, 60, 60});
-            getRenderer()->setTextColorHover({0, 0, 0});
-            getRenderer()->setTextColorDown({0, 0, 0});
-            getRenderer()->setBackgroundColorNormal({245, 245, 245});
-            getRenderer()->setBackgroundColorHover({255, 255, 255});
-            getRenderer()->setBackgroundColorDown({255, 255, 255});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setNormalTexture({});
-            getRenderer()->setHoverTexture({});
-            getRenderer()->setDownTexture({});
-            getRenderer()->setFocusTexture({});
         }
     }
 

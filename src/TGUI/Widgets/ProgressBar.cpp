@@ -327,6 +327,15 @@ namespace tgui
 
     void ProgressBar::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBorders({2, 2, 2, 2});
+        getRenderer()->setTextColorBack({0, 0, 0});
+        getRenderer()->setTextColorFront({255, 255, 255});
+        getRenderer()->setBackgroundColor({245, 245, 245});
+        getRenderer()->setForegroundColor({0, 110, 255});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setBackTexture({});
+        getRenderer()->setFrontTexture({});
+
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
@@ -346,17 +355,6 @@ namespace tgui
 
             // Calculate the size of the front image (the size of the part that will be drawn)
             recalculateSize();
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBorders({2, 2, 2, 2});
-            getRenderer()->setTextColorBack({0, 0, 0});
-            getRenderer()->setTextColorFront({255, 255, 255});
-            getRenderer()->setBackgroundColor({245, 245, 245});
-            getRenderer()->setForegroundColor({0, 110, 255});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setBackTexture({});
-            getRenderer()->setFrontTexture({});
         }
     }
 

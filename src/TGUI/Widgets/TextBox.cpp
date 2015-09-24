@@ -1744,22 +1744,20 @@ namespace tgui
 
     void TextBox::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBorders(2, 2, 2, 2);
+        getRenderer()->setTextColor({0, 0, 0});
+        getRenderer()->setSelectedTextColor({255, 255, 255});
+        getRenderer()->setCaretColor({0, 0, 0});
+        getRenderer()->setBackgroundColor({255, 255, 255});
+        getRenderer()->setSelectedTextBackgroundColor({0, 110, 255});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setBackgroundTexture({});
+        getRenderer()->setCaretWidth(2);
+
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
             Widget::reload(primary, secondary, force);
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBorders(2, 2, 2, 2);
-            getRenderer()->setTextColor({0, 0, 0});
-            getRenderer()->setSelectedTextColor({255, 255, 255});
-            getRenderer()->setCaretColor({0, 0, 0});
-            getRenderer()->setBackgroundColor({255, 255, 255});
-            getRenderer()->setSelectedTextBackgroundColor({0, 110, 255});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setBackgroundTexture({});
-            getRenderer()->setCaretWidth(2);
         }
     }
 

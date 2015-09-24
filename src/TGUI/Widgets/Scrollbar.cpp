@@ -674,6 +674,21 @@ namespace tgui
 
     void Scrollbar::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setTrackColorNormal({245, 245, 245});
+        getRenderer()->setTrackColorHover({255, 255, 255});
+        getRenderer()->setThumbColorNormal({220, 220, 220});
+        getRenderer()->setThumbColorHover({210, 210, 210});
+        getRenderer()->setArrowColorNormal({60, 60, 60});
+        getRenderer()->setArrowColorHover({0, 0, 0});
+        getRenderer()->setTrackTexture({});
+        getRenderer()->setTrackHoverTexture({});
+        getRenderer()->setThumbTexture({});
+        getRenderer()->setThumbHoverTexture({});
+        getRenderer()->setArrowUpTexture({});
+        getRenderer()->setArrowDownTexture({});
+        getRenderer()->setArrowUpHoverTexture({});
+        getRenderer()->setArrowDownHoverTexture({});
+
         if (m_theme && primary != "")
         {
             Widget::reload(primary, secondary, force);
@@ -702,23 +717,6 @@ namespace tgui
                         setSize({trackSize.x + arrowsHeight, trackSize.y});
                 }
             }
-        }
-        else // Load white theme
-        {
-            getRenderer()->setTrackColorNormal({245, 245, 245});
-            getRenderer()->setTrackColorHover({255, 255, 255});
-            getRenderer()->setThumbColorNormal({220, 220, 220});
-            getRenderer()->setThumbColorHover({210, 210, 210});
-            getRenderer()->setArrowColorNormal({60, 60, 60});
-            getRenderer()->setArrowColorHover({0, 0, 0});
-            getRenderer()->setTrackTexture({});
-            getRenderer()->setTrackHoverTexture({});
-            getRenderer()->setThumbTexture({});
-            getRenderer()->setThumbHoverTexture({});
-            getRenderer()->setArrowUpTexture({});
-            getRenderer()->setArrowDownTexture({});
-            getRenderer()->setArrowUpHoverTexture({});
-            getRenderer()->setArrowDownHoverTexture({});
         }
     }
 

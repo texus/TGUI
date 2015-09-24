@@ -435,6 +435,14 @@ namespace tgui
 
     void Knob::reload(const std::string& primary, const std::string& secondary, bool force)
     {
+        getRenderer()->setBorders(5, 5, 5, 5);
+        getRenderer()->setBackgroundColor({255, 255, 255});
+        getRenderer()->setThumbColor({0, 0, 0});
+        getRenderer()->setBorderColor({0, 0, 0});
+        getRenderer()->setImageRotation(0);
+        getRenderer()->setBackgroundTexture({});
+        getRenderer()->setForegroundTexture({});
+
         if (m_theme && primary != "")
         {
             getRenderer()->setBorders({0, 0, 0, 0});
@@ -450,16 +458,6 @@ namespace tgui
             }
 
             recalculateRotation();
-        }
-        else // Load white theme
-        {
-            getRenderer()->setBorders(5, 5, 5, 5);
-            getRenderer()->setBackgroundColor({255, 255, 255});
-            getRenderer()->setThumbColor({0, 0, 0});
-            getRenderer()->setBorderColor({0, 0, 0});
-            getRenderer()->setImageRotation(0);
-            getRenderer()->setBackgroundTexture({});
-            getRenderer()->setForegroundTexture({});
         }
     }
 
