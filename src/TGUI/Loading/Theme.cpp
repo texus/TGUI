@@ -35,6 +35,7 @@
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Widgets/MessageBox.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
@@ -63,6 +64,7 @@ namespace tgui
             {"listbox", std::make_shared<ListBox>},
             {"menubar", std::make_shared<MenuBar>},
             {"messagebox", std::make_shared<MessageBox>},
+            {"panel", std::make_shared<Panel>},
             {"progressbar", std::make_shared<ProgressBar>},
             {"radiobutton", std::make_shared<RadioButton>},
             {"scrollbar", std::make_shared<Scrollbar>},

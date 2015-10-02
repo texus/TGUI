@@ -69,11 +69,6 @@ ListBox {
     Scrollbar : "Scrollbar";
 }
 
-ProgressBar {
-    BackImage : "BabyBlue.png" Part(221, 2, 30, 30) Middle(10, 0, 10, 30);
-    FrontImage : "BabyBlue.png" Part(70, 2, 24, 24) Middle(7, 0, 7, 24);
-}
-
 MenuBar {
     BackgroundColor : (210, 210, 210);
     TextColor : (100, 100, 100);
@@ -86,6 +81,15 @@ MessageBox {
     ChildWindow : "ChildWindow";
     Button : "Button";
     TextColor : (100, 100, 100);
+}
+
+Panel {
+    BackgroundColor : rgb(230, 230, 230);
+}
+
+ProgressBar {
+    BackImage : "BabyBlue.png" Part(221, 2, 30, 30) Middle(10, 0, 10, 30);
+    FrontImage : "BabyBlue.png" Part(70, 2, 24, 24) Middle(7, 0, 7, 24);
 }
 
 RadioButton {

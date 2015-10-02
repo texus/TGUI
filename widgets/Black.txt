@@ -91,6 +91,10 @@ MessageBox {
     TextColor   : rgb(190, 190, 190);
 }
 
+Panel {
+    BackgroundColor : rgb(80, 80, 80);
+}
+
 ProgressBar {
     BackImage      : "Black.png" Part(180, 64, 90, 40) Middle(20, 0, 50, 40);
     FrontImage     : "Black.png" Part(180, 108, 90, 32) Middle(16, 0, 50, 32);

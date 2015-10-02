@@ -89,6 +89,10 @@ MessageBox {
     TextColor : rgb(255, 255, 255, 215);
 }
 
+Panel {
+    BackgroundColor : rgba(180, 180, 180, 215);
+}
+
 ProgressBar {
     BackgroundColor : rgba(180, 180, 180, 215);
     ForegroundColor : rgba(0, 110, 200, 130);

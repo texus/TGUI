@@ -47,6 +47,30 @@ TEST_CASE("[Panel]") {
         REQUIRE(panel->getBackgroundColor() == sf::Color(10, 20, 30));
     }
 
+    SECTION("Renderer") {
+        auto renderer = panel->getRenderer();
+
+        SECTION("set serialized property") {
+            REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
+        }
+
+        SECTION("set object property") {
+            REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
+        }
+
+        SECTION("functions") {
+            renderer->setBackgroundColor({10, 20, 30});
+
+            SECTION("getPropertyValuePairs") {
+                auto pairs = renderer->getPropertyValuePairs();
+                REQUIRE(pairs.size() == 1);
+                REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(10, 20, 30));
+            }
+        }
+
+        REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
+    }
+
     SECTION("Saving and loading from file") {
         panel = std::make_shared<tgui::Panel>(400.f, 300.f);
 
