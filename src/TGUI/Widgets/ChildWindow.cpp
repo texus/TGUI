@@ -753,8 +753,6 @@ namespace tgui
             return m_distanceToSide;
         else if (property == "titlebarheight")
             return m_titleBarHeight;
-        else if (property == "closebutton")
-            return m_closeButtonClassName;
         else
             return WidgetRenderer::getProperty(property);
     }
@@ -769,9 +767,6 @@ namespace tgui
             pairs["TitleBarImage"] = m_textureTitleBar;
         else
             pairs["TitleBarColor"] = m_titleBarColor;
-
-        if (!m_closeButtonClassName.isEmpty())
-            pairs["CloseButton"] = m_closeButtonClassName;
 
         pairs["BackgroundColor"] = m_backgroundColor;
         pairs["TitleColor"] = m_titleColor;
@@ -793,18 +788,16 @@ namespace tgui
 
     void ChildWindowRenderer::setTitleBarHeight(float height)
     {
+        m_titleBarHeight = height;
+
         // Set the size of the close button
-        if (m_titleBarHeight)
+        if (m_textureTitleBar.isLoaded() && m_childWindow->m_closeButton->getRenderer()->m_textureNormal.isLoaded())
         {
-            m_childWindow->m_closeButton->setSize({m_childWindow->m_closeButton->getSize().x * (height / m_titleBarHeight),
-                                                   m_childWindow->m_closeButton->getSize().y * (height / m_titleBarHeight)});
+            m_childWindow->m_closeButton->setSize(m_childWindow->m_closeButton->getRenderer()->m_textureNormal.getImageSize().x * (height / m_textureTitleBar.getImageSize().y),
+                                                  m_childWindow->m_closeButton->getRenderer()->m_textureNormal.getImageSize().y * (height / m_textureTitleBar.getImageSize().y));
         }
         else
-        {
             m_childWindow->m_closeButton->setSize({height * 0.8f, height * 0.8f});
-        }
-
-        m_titleBarHeight = height;
 
         // Set the size of the text in the title bar
         m_childWindow->m_titleText.setTextSize(findBestTextSize(m_childWindow->getFont(), m_titleBarHeight * 0.85f));
@@ -870,6 +863,8 @@ namespace tgui
             m_textureTitleBar.setSize({m_childWindow->getSize().x + m_borders.left + m_borders.right, m_titleBarHeight});
             m_textureTitleBar.setColor({255, 255, 255, static_cast<sf::Uint8>(m_childWindow->getOpacity() * 255)});
         }
+
+        setTitleBarHeight(m_titleBarHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -104,7 +104,7 @@ namespace tgui
         if (m_requestedTextSize == 0)
             setTextSize(0);
         else
-            updatePosition();
+            recalculateTabsWidth();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
