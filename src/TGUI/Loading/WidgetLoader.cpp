@@ -85,6 +85,10 @@ namespace tgui
 
     #define DESERIALIZE_STRING(property) Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[property]->value).getString()
 
+    #define REMOVE_CHILD(childName) auto it = std::remove_if(node->children.begin(), node->children.end(), [](std::shared_ptr<DataIO::Node> child){ return toLower(child->name) == childName; }); \
+                                    if (it != node->children.end()) \
+                                        node->children.erase(node->children.end());
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
@@ -124,6 +128,7 @@ namespace tgui
                     widget->getRenderer()->setProperty(pair.first, pair.second->value);
             }
         }
+        REMOVE_CHILD("renderer");
 
         return widget;
     }
@@ -137,28 +142,25 @@ namespace tgui
 
         for (auto& childNode : node->children)
         {
-            if (toLower(childNode->name) != "renderer")
+            auto nameSeparator = childNode->name.find('.');
+            auto widgetType = childNode->name.substr(0, nameSeparator);
+            auto& loadFunction = WidgetLoader::getLoadFunction(toLower(widgetType));
+            if (loadFunction)
             {
-                auto nameSeparator = childNode->name.find('.');
-                auto widgetType = childNode->name.substr(0, nameSeparator);
-                auto& loadFunction = WidgetLoader::getLoadFunction(toLower(widgetType));
-                if (loadFunction)
+                std::string className;
+                if (nameSeparator != std::string::npos)
                 {
-                    std::string className;
-                    if (nameSeparator != std::string::npos)
-                    {
-                        if ((childNode->name.size() >= nameSeparator + 2) && (childNode->name[nameSeparator+1] == '"') && (childNode->name.back() == '"'))
-                            className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
-                        else
-                            className = childNode->name.substr(nameSeparator + 1);
-                    }
-
-                    tgui::Widget::Ptr childWidget = loadFunction(childNode);
-                    container->add(childWidget, className);
+                    if ((childNode->name.size() >= nameSeparator + 2) && (childNode->name[nameSeparator+1] == '"') && (childNode->name.back() == '"'))
+                        className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
+                    else
+                        className = childNode->name.substr(nameSeparator + 1);
                 }
-                else
-                    throw Exception{"No load function exists for widget type '" + widgetType + "'."};
+
+                tgui::Widget::Ptr childWidget = loadFunction(childNode);
+                container->add(childWidget, className);
             }
+            else
+                throw Exception{"No load function exists for widget type '" + widgetType + "'."};
         }
 
         return container;
@@ -227,8 +229,6 @@ namespace tgui
         else
             childWindow = std::make_shared<ChildWindow>();
 
-        loadWidget(node, childWindow);
-
         if (node->propertyValuePairs["titlealignment"])
         {
             if (toLower(node->propertyValuePairs["titlealignment"]->value) == "left")
@@ -255,6 +255,9 @@ namespace tgui
             if (toLower(childNode->name) == "closebutton")
                 childWindow->setCloseButton(std::static_pointer_cast<Button>(WidgetLoader::getLoadFunction("button")(childNode)));
         }
+        REMOVE_CHILD("closebutton");
+
+        loadContainer(node, childWindow);
 
         return childWindow;
     }
@@ -284,6 +287,7 @@ namespace tgui
             if (toLower(childNode->name) == "listbox")
                 comboBox->setListBox(std::static_pointer_cast<ListBox>(WidgetLoader::getLoadFunction("listbox")(childNode)));
         }
+        REMOVE_CHILD("listbox");
 
         loadWidget(node, comboBox);
 
@@ -472,6 +476,7 @@ namespace tgui
             if (toLower(childNode->name) == "scrollbar")
                 listBox->setScrollbar(std::static_pointer_cast<Scrollbar>(WidgetLoader::getLoadFunction("scrollbar")(childNode)));
         }
+        REMOVE_CHILD("scrollbar");
 
         return listBox;
     }
@@ -697,6 +702,7 @@ namespace tgui
             if (toLower(childNode->name) == "scrollbar")
                 textBox->setScrollbar(std::static_pointer_cast<Scrollbar>(WidgetLoader::getLoadFunction("scrollbar")(childNode)));
         }
+        REMOVE_CHILD("scrollbar");
 
         return textBox;
     }

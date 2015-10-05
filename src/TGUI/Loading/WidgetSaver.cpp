@@ -106,23 +106,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API std::shared_ptr<DataIO::Node> saveGuiContainer(GuiContainer::Ptr container)
-    {
-        auto node = std::make_shared<DataIO::Node>();
-        for (auto& child : container->getWidgets())
-        {
-            auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));
-            if (saveFunction)
-                node->children.emplace_back(saveFunction(WidgetConverter{child}));
-            else
-                throw Exception{"No save function exists for widget type '" + child->getWidgetType() + "'."};
-        }
-
-        return node;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     TGUI_API std::shared_ptr<DataIO::Node> saveButton(Button::Ptr button)
     {
         auto node = saveWidget(button);
@@ -138,7 +121,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveChildWindow(ChildWindow::Ptr childWindow)
     {
-        auto node = saveWidget(childWindow);
+        auto node = saveContainer(childWindow);
 
         if (childWindow->getTitleAlignment() == ChildWindow::TitleAlignment::Left)
             SET_PROPERTY("TitleAlignment", "Left");
@@ -464,7 +447,6 @@ namespace tgui
         {
             {"widget", saveWidget},
             {"container", saveContainer},
-            {"guicontainer", saveGuiContainer},
             {"button", saveButton},
             {"canvas", saveWidget},
             {"checkbox", saveRadioButton},
@@ -490,11 +472,17 @@ namespace tgui
 
     void WidgetSaver::save(Container::Ptr widget, std::stringstream& stream)
     {
-        auto& saveFunction = m_saveFunctions[toLower(widget->getWidgetType())];
-        if (saveFunction)
-            DataIO::emit(saveFunction(WidgetConverter{widget}), stream);
-        else
-            throw Exception{"No save function exists for widget type '" + widget->getWidgetType() + "'."};
+        auto node = std::make_shared<DataIO::Node>();
+        for (auto& child : widget->getWidgets())
+        {
+            auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));
+            if (saveFunction)
+                node->children.emplace_back(saveFunction(WidgetConverter{child}));
+            else
+                throw Exception{"No save function exists for widget type '" + child->getWidgetType() + "'."};
+        }
+
+        DataIO::emit(node, stream);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -523,6 +523,7 @@ namespace tgui
 
         friend class Button;
         friend class ChildWindow;
+        friend class ChildWindowRenderer;
         friend class MessageBox;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

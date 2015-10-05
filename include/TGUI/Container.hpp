@@ -298,7 +298,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Load widgets from a text file
+        /// @brief Load the child widgets from a text file
         ///
         /// @param filename  Filename of the widget file
         ///
@@ -307,7 +307,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Save this container and its child widgets to a text file
+        /// @brief Save the child widgets to a text file
         ///
         /// @param filename  Filename of the widget file
         ///
@@ -316,7 +316,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Load widgets from a string stream
+        /// @brief Load the child widgets from a string stream
         ///
         /// @param stream  stringstream that contains the widget file
         ///
@@ -325,7 +325,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Save this container and its child widgets to a text file
+        /// @brief Save the child widgets to a text file
         ///
         /// @param stream  stringstream to which the widget file will be added
         ///

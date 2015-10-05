@@ -24,6 +24,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Button.hpp>
 
 TEST_CASE("[Panel]") {
     tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
@@ -79,7 +80,7 @@ TEST_CASE("[Panel]") {
             
             panel->setSize(200, 100);
             REQUIRE_NOTHROW(panel->loadWidgetsFromFile("WidgetFilePanel1.txt"));
-            REQUIRE(panel->getSize() == sf::Vector2f(400, 300));
+            REQUIRE(panel->getSize() == sf::Vector2f(200, 100)); // The Panel itself is not saved, only its children
 
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("WidgetFilePanel2.txt"));
             REQUIRE(compareFiles("WidgetFilePanel1.txt", "WidgetFilePanel2.txt"));
@@ -88,6 +89,10 @@ TEST_CASE("[Panel]") {
         SECTION("panel inside gui") {
             auto parent = std::make_shared<tgui::GuiContainer>();
             parent->add(panel);
+
+            tgui::Button::Ptr button = std::make_shared<tgui::Button>();
+            button->setPosition(40, 20);
+            panel->add(button);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel3.txt"));
 

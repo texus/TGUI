@@ -24,6 +24,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Widgets/Button.hpp>
 
 TEST_CASE("[ChildWindow]") {
     tgui::ChildWindow::Ptr childWindow = std::make_shared<tgui::ChildWindow>();
@@ -54,7 +55,6 @@ TEST_CASE("[ChildWindow]") {
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarHeight", "25"));
-                REQUIRE_NOTHROW(renderer->setProperty("CloseButton", "default"));
             }
             
             SECTION("set object property") {
@@ -65,7 +65,6 @@ TEST_CASE("[ChildWindow]") {
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarHeight", 25));
-                REQUIRE_NOTHROW(renderer->setProperty("CloseButton", tgui::ObjectConverter("")));
             }
 
             SECTION("functions") {
@@ -97,7 +96,6 @@ TEST_CASE("[ChildWindow]") {
             REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
             REQUIRE(renderer->getProperty("TitleBarHeight").getNumber() == 25);
-            REQUIRE(renderer->getProperty("CloseButton").getString() == "");
         }
 
         SECTION("textured") {
@@ -132,25 +130,43 @@ TEST_CASE("[ChildWindow]") {
     SECTION("Saving and loading from file") {
         REQUIRE_NOTHROW(childWindow = std::make_shared<tgui::Theme>()->load("ChildWindow"));
 
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(childWindow = theme->load("ChildWindow"));
-        REQUIRE(childWindow->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(childWindow->getSecondaryLoadingParameter() == "childwindow");
+        SECTION("independent ChildWindow") {
+            auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
+            REQUIRE_NOTHROW(childWindow = theme->load("ChildWindow"));
+            REQUIRE(childWindow->getPrimaryLoadingParameter() == "resources/Black.txt");
+            REQUIRE(childWindow->getSecondaryLoadingParameter() == "childwindow");
 
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(childWindow);
-        
-        childWindow->setTitle("Title");
-        childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
-        childWindow->setIcon({"resources/image.png"});
-        childWindow->keepInParent();
+            childWindow->setTitle("Title");
+            childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
+            childWindow->setIcon({"resources/image.png"});
+            childWindow->keepInParent();
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileChildWindow1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileChildWindow1.txt"));
+            childWindow->setSize(400, 300);
+            REQUIRE_NOTHROW(childWindow->saveWidgetsToFile("WidgetFileChildWindow1.txt"));
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileChildWindow2.txt"));
-        REQUIRE(compareFiles("WidgetFileChildWindow1.txt", "WidgetFileChildWindow2.txt"));
+            childWindow->setSize(200, 100);
+            REQUIRE_NOTHROW(childWindow->loadWidgetsFromFile("WidgetFileChildWindow1.txt"));
+            REQUIRE(childWindow->getSize() == sf::Vector2f(200, 100)); // The ChildWindow itself is not saved, only its children
+
+            REQUIRE_NOTHROW(childWindow->saveWidgetsToFile("WidgetFileChildWindow2.txt"));
+            REQUIRE(compareFiles("WidgetFileChildWindow1.txt", "WidgetFileChildWindow2.txt"));
+        }
+
+        SECTION("ChildWindow inside gui") {
+            auto parent = std::make_shared<tgui::GuiContainer>();
+            parent->add(childWindow);
+
+            tgui::Button::Ptr button = std::make_shared<tgui::Button>();
+            button->setPosition(40, 20);
+            childWindow->add(button);
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileChildWindow1.txt"));
+
+            parent->removeAllWidgets();
+            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileChildWindow1.txt"));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileChildWindow2.txt"));
+            REQUIRE(compareFiles("WidgetFileChildWindow1.txt", "WidgetFileChildWindow2.txt"));
+        }
     }
 }
