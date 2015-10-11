@@ -70,12 +70,15 @@ namespace tgui
         auto textureNormalIt = getRenderer()->m_texturesNormal.begin();
         auto textureSelectedIt = getRenderer()->m_texturesSelected.begin();
         auto tabTextIt = m_tabTexts.begin();
-        for (auto tabWidthIt = m_tabWidth.cbegin(); tabWidthIt != m_tabWidth.cend(); ++tabWidthIt, ++textureNormalIt, ++textureSelectedIt, ++tabTextIt)
+        for (auto tabWidthIt = m_tabWidth.cbegin(); tabWidthIt != m_tabWidth.cend(); ++tabWidthIt, ++tabTextIt)
         {
             if (getRenderer()->m_textureNormal.isLoaded() && getRenderer()->m_textureSelected.isLoaded())
             {
                 textureNormalIt->setPosition({positionX, getPosition().y});
                 textureSelectedIt->setPosition({positionX, getPosition().y});
+
+                textureNormalIt++;
+                textureSelectedIt++;
             }
 
             tabTextIt->setPosition({positionX + getRenderer()->m_distanceToSide + ((*tabWidthIt - (2 * getRenderer()->m_distanceToSide) - tabTextIt->getSize().x) / 2.0f),
@@ -462,7 +465,7 @@ namespace tgui
 
         auto textureNormalIt = getRenderer()->m_texturesNormal.begin();
         auto textureSelectedIt = getRenderer()->m_texturesSelected.begin();
-        for (unsigned int i = 0; i < m_tabWidth.size(); ++i, ++textureNormalIt, ++textureSelectedIt)
+        for (unsigned int i = 0; i < m_tabWidth.size(); ++i)
         {
             if (m_maximumTabWidth)
                 m_tabWidth[i] = std::min(m_tabTexts[i].getSize().x + (2 * getRenderer()->m_distanceToSide), m_maximumTabWidth);
@@ -473,6 +476,9 @@ namespace tgui
             {
                 textureNormalIt->setSize({m_tabWidth[i], m_tabHeight});
                 textureSelectedIt->setSize({m_tabWidth[i], m_tabHeight});
+
+                textureNormalIt++;
+                textureSelectedIt++;
             }
 
             m_width += m_tabWidth[i];
@@ -814,7 +820,7 @@ namespace tgui
         float positionX = m_tab->getPosition().x;
         auto textureNormalIt = m_texturesNormal.cbegin();
         auto textureSelectedIt = m_texturesSelected.cbegin();
-        for (unsigned int i = 0; i < m_tab->m_tabTexts.size(); ++i, ++textureNormalIt, ++textureSelectedIt)
+        for (unsigned int i = 0; i < m_tab->m_tabTexts.size(); ++i)
         {
             if (m_textureNormal.isLoaded() && m_textureSelected.isLoaded())
             {
@@ -822,6 +828,9 @@ namespace tgui
                     target.draw(*textureSelectedIt, states);
                 else
                     target.draw(*textureNormalIt, states);
+
+                textureNormalIt++;
+                textureSelectedIt++;
             }
             else // There are no textures
             {
