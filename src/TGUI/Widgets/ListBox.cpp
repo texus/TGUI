@@ -602,6 +602,8 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
+        getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+
         if (m_scroll != nullptr)
             m_scroll->setOpacity(m_opacity);
 

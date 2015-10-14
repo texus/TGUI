@@ -415,6 +415,7 @@ namespace tgui
 
         m_listBox->setOpacity(m_opacity);
 
+        getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
         getRenderer()->m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
         getRenderer()->m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
         getRenderer()->m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
