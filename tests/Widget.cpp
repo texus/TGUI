@@ -49,6 +49,7 @@ TEST_CASE("[Widget]") {
     SECTION("Parent") {
         tgui::Panel::Ptr panel1 = std::make_shared<tgui::Panel>();
         tgui::Panel::Ptr panel2 = std::make_shared<tgui::Panel>();
+        tgui::Panel::Ptr panel3 = std::make_shared<tgui::Panel>();
         
         REQUIRE(widget->getParent() == nullptr);
         panel1->add(widget);
@@ -56,6 +57,10 @@ TEST_CASE("[Widget]") {
         panel1->remove(widget);
         panel2->add(widget);
         REQUIRE(widget->getParent() == panel2.get());
+        widget->setParent(panel3.get());
+        REQUIRE(widget->getParent() == panel3.get());
+        widget->setParent(nullptr);
+        REQUIRE(widget->getParent() == nullptr);
     }
 
     SECTION("Opacity") {
