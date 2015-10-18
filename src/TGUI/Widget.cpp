@@ -408,6 +408,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Widget::setParent(Container* parent)
+    {
+        m_parent = parent;
+        if (m_parent)
+        {
+            m_position.x.getImpl()->recalculate();
+            m_position.y.getImpl()->recalculate();
+            m_size.x.getImpl()->recalculate();
+            m_size.y.getImpl()->recalculate();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Widget::update(sf::Time elapsedTime)
     {
         m_animationTimeElapsed += elapsedTime;
@@ -500,20 +514,6 @@ namespace tgui
             return getToolTip();
         else
             return nullptr;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::initialize(Container *const parent)
-    {
-        assert(parent);
-
-        m_parent = parent;
-
-        m_position.x.getImpl()->recalculate();
-        m_position.y.getImpl()->recalculate();
-        m_size.x.getImpl()->recalculate();
-        m_size.y.getImpl()->recalculate();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

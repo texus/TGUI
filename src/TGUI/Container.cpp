@@ -99,7 +99,7 @@ namespace tgui
         if (!widgetPtr->getFont() && getFont())
             widgetPtr->setFont(getFont());
 
-        widgetPtr->initialize(this);
+        widgetPtr->setParent(this);
         m_widgets.push_back(widgetPtr);
         m_objName.push_back(widgetName);
 
