@@ -291,7 +291,7 @@ namespace tgui
         /// @return Offset of the widgets in the container
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getWidgetsOffset() const
+        virtual sf::Vector2f getChildWidgetsOffset() const
         {
             return sf::Vector2f{0, 0};
         }

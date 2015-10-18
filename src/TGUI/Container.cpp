@@ -605,7 +605,7 @@ namespace tgui
         {
             Widget::Ptr toolTip = nullptr;
 
-            mousePos -= getPosition() + getWidgetsOffset();
+            mousePos -= getPosition() + getChildWidgetsOffset();
 
             Widget::Ptr widget = mouseOnWhichWidget(mousePos.x, mousePos.y);
             if (widget)

@@ -251,7 +251,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f ChildWindow::getWidgetsOffset() const
+    sf::Vector2f ChildWindow::getChildWidgetsOffset() const
     {
         return {getRenderer()->m_borders.left, getRenderer()->m_borders.top + getRenderer()->m_titleBarHeight};
     }

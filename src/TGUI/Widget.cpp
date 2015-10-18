@@ -171,7 +171,7 @@ namespace tgui
     sf::Vector2f Widget::getAbsolutePosition() const
     {
         if (m_parent)
-            return m_parent->getAbsolutePosition() + m_parent->getWidgetsOffset() + getPosition();
+            return m_parent->getAbsolutePosition() + m_parent->getChildWidgetsOffset() + getPosition();
         else
             return getPosition();
     }
