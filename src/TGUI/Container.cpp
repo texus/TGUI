@@ -147,11 +147,9 @@ namespace tgui
                     m_focusedWidget--;
 
                 // Remove the widget
+                widget->setParent(nullptr);
                 m_widgets.erase(m_widgets.begin() + i);
-
-                // Also emove the name it from the list
                 m_objName.erase(m_objName.begin() + i);
-
                 return true;
             }
         }
@@ -163,6 +161,9 @@ namespace tgui
 
     void Container::removeAllWidgets()
     {
+        for (auto& widget : m_widgets)
+            widget->setParent(nullptr);
+
         // Clear the lists
         m_widgets.clear();
         m_objName.clear();

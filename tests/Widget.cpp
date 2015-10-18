@@ -55,6 +55,7 @@ TEST_CASE("[Widget]") {
         panel1->add(widget);
         REQUIRE(widget->getParent() == panel1.get());
         panel1->remove(widget);
+        REQUIRE(widget->getParent() == nullptr);
         panel2->add(widget);
         REQUIRE(widget->getParent() == panel2.get());
         widget->setParent(panel3.get());
