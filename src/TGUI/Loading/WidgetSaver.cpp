@@ -42,6 +42,30 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace
+{
+    std::string emitLayout(tgui::Layout2d layout)
+    {
+        std::string str;
+        str += "(";
+
+        if (layout.x.getImpl()->operation == tgui::LayoutImpl::Operation::String)
+            str += "\"" + layout.x.getImpl()->stringExpression + "\"";
+        else
+            str += tgui::to_string(layout.x.getValue());
+
+        str += ", ";
+
+        if (layout.y.getImpl()->operation == tgui::LayoutImpl::Operation::String)
+            str += "\"" + layout.y.getImpl()->stringExpression + "\"";
+        else
+            str += tgui::to_string(layout.y.getValue());
+
+        str += ")";
+        return str;
+    }
+}
+
 // Hidden functions
 namespace tgui
 {
@@ -68,9 +92,9 @@ namespace tgui
         if (!widget->isEnabled())
             SET_PROPERTY("Enabled", "false");
         if (widget->getPosition() != sf::Vector2f{})
-            SET_PROPERTY("Position", "(" + tgui::to_string(widget->getPosition().x) + ", " + tgui::to_string(widget->getPosition().y) + ")");
+            SET_PROPERTY("Position", emitLayout(widget->getPositionLayout()));
         if (widget->getSize() != sf::Vector2f{})
-            SET_PROPERTY("Size", "(" + tgui::to_string(widget->getSize().x) + ", " + tgui::to_string(widget->getSize().y) + ")");
+            SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
         if (widget->getOpacity() != 255)
             SET_PROPERTY("Opacity", tgui::to_string(widget->getOpacity()));
 
