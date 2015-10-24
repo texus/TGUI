@@ -58,21 +58,68 @@ namespace
             throw tgui::Exception{"Failed to parse boolean in '" + str + "'"};
     }
 
-    sf::Vector2f parseVector2f(std::string str)
+    tgui::Layout2d parseLayout(std::string str)
     {
-        if (str.empty() || str.front() != '(' || str.back() != ')')
-            throw tgui::Exception{"Failed to parse position '" + str + "'. Expected brackets."};
+        if (str.empty())
+            throw tgui::Exception{"Failed to parse layout. String was empty."};
 
-        str = str.substr(1, str.length()-2);
+        // Check if the layout is an (x, y) vector or a quoted string
+        if ((str.front() == '(') && (str.back() == ')'))
+        {
+            str = str.substr(1, str.length() - 2);
+            if (str.empty())
+                return {0, 0};
 
-        auto commaPos = str.find(',');
-        if (commaPos == std::string::npos)
-            throw tgui::Exception{"Failed to parse position '" + str + "'. Expected numbers separated with a comma."};
+            tgui::Layout x;
+            tgui::Layout y;
 
-        if (str.find(',', commaPos + 1) != std::string::npos)
-            throw tgui::Exception{"Failed to parse position '" + str + "'. Expected only one comma."};
+            auto commaPos = str.find(',');
+            if (commaPos == std::string::npos)
+                throw tgui::Exception{"Failed to parse layout '" + str + "'. Expected numbers separated with a comma."};
 
-        return {tgui::stof(str.substr(0, commaPos)), tgui::stof(str.substr(commaPos + 1))};
+            // Check if the first part is quoted
+            auto openingQuotePos = str.find('"');
+            if (commaPos > openingQuotePos)
+            {
+                auto closingQuotePos = str.find('"', openingQuotePos + 1);
+                if (closingQuotePos == std::string::npos)
+                    throw tgui::Exception{"Failed to parse layout '" + str + "'. Expected closing quote."};
+
+                // Make sure we didn't select a quote inside the string
+                if (commaPos < closingQuotePos)
+                {
+                    commaPos = str.find(',', closingQuotePos + 1);
+                    if (commaPos == std::string::npos)
+                        throw tgui::Exception{"Failed to parse layout '" + str + "'. Expected numbers separated with a comma."};
+                }
+
+                x = {str.substr(openingQuotePos + 1, closingQuotePos - openingQuotePos - 1)};
+            }
+            else // Normal value
+                x = {tgui::stof(tgui::trim(str.substr(0, commaPos)))};
+
+            // Check if the second part is quoted
+            openingQuotePos = str.find('"', commaPos + 1);
+            if (openingQuotePos != std::string::npos)
+            {
+                auto closingQuotePos = str.find('"', openingQuotePos + 1);
+                if (closingQuotePos == std::string::npos)
+                    throw tgui::Exception{"Failed to parse layout '" + str + "'. Expected closing quote."};
+
+                y = {str.substr(openingQuotePos + 1, closingQuotePos - openingQuotePos - 1)};
+            }
+            else // Normal value
+                y = {tgui::stof(tgui::trim(str.substr(commaPos + 1)))};
+
+            return {x, y};
+        }
+        else if ((str.front() == '"') && (str.back() == '"'))
+        {
+            str = str.substr(1, str.length() - 2);
+            return {str};
+        }
+        else
+            throw tgui::Exception{"Failed to parse layout '" + str + "'. Expected (x,y) or a quoted layout string."};
     }
 }
 
@@ -112,9 +159,9 @@ namespace tgui
                 widget->disable();
         }
         if (node->propertyValuePairs["position"])
-            widget->setPosition(parseVector2f(node->propertyValuePairs["position"]->value));
+            widget->setPosition(parseLayout(node->propertyValuePairs["position"]->value));
         if (node->propertyValuePairs["size"])
-            widget->setSize(parseVector2f(node->propertyValuePairs["size"]->value));
+            widget->setSize(parseLayout(node->propertyValuePairs["size"]->value));
         if (node->propertyValuePairs["opacity"])
             widget->setOpacity(tgui::stof(node->propertyValuePairs["opacity"]->value));
 
@@ -501,9 +548,11 @@ namespace tgui
         else
             picture = std::make_shared<Picture>();
 
-        loadWidget(node, picture);
         if (node->propertyValuePairs["filename"])
             picture = std::make_shared<Picture>(DESERIALIZE_STRING("filename"));
+
+        loadWidget(node, picture);
+
         if (node->propertyValuePairs["smooth"])
             picture->setSmooth(parseBoolean(node->propertyValuePairs["smooth"]->value));
 

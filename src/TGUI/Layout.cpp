@@ -851,8 +851,8 @@ namespace tgui
         xExpr += expression.substr(currentPos);
         yExpr += expression.substr(currentPos);
 
-        x = {xExpr};
-        y = {yExpr};
+        x = {trim(xExpr)};
+        y = {trim(yExpr)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
