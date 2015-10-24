@@ -53,6 +53,15 @@ namespace tgui
     Widget::~Widget()
     {
         detachTheme();
+
+        if (m_position.x.getImpl()->parentWidget == this)
+            m_position.x.getImpl()->parentWidget = nullptr;
+        if (m_position.y.getImpl()->parentWidget == this)
+            m_position.y.getImpl()->parentWidget = nullptr;
+        if (m_size.x.getImpl()->parentWidget == this)
+            m_size.x.getImpl()->parentWidget = nullptr;
+        if (m_size.y.getImpl()->parentWidget == this)
+            m_size.y.getImpl()->parentWidget = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
