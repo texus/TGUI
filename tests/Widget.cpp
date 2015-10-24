@@ -92,4 +92,91 @@ TEST_CASE("[Widget]") {
         widget->setToolTip(nullptr);
         REQUIRE(widget->getToolTip() == nullptr);
     }
+
+    SECTION("Saving and loading widget with layouts from file") {
+        auto parent = std::make_shared<tgui::Panel>();
+        parent->add(widget, "Widget");
+
+        SECTION("Bind 2d non-string") {
+            widget->setPosition(tgui::bindPosition(parent));
+            widget->setSize(tgui::bindSize(parent));
+
+            parent->setSize(400, 300);
+            parent->setPosition(50, 50);
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget1.txt"));
+            parent->removeAllWidgets();
+            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
+            REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
+            widget = parent->get("Widget");
+
+            // Non-string layouts cannot be saved yet!
+            parent->setPosition(100, 100);
+            parent->setSize(800, 600);
+            REQUIRE(widget->getPosition() == sf::Vector2f(50, 50));
+            REQUIRE(widget->getSize() == sf::Vector2f(400, 300));
+        }
+
+        SECTION("Bind 1d non-strings and string combination") {
+            widget->setPosition(tgui::bindLeft(parent), {"parent.top"});
+            widget->setSize({"parent.width"}, tgui::bindHeight(parent));
+
+            parent->setSize(400, 300);
+            parent->setPosition(50, 50);
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget1.txt"));
+            parent->removeAllWidgets();
+            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
+            REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
+            widget = parent->get("Widget");
+
+            // Non-string layout cannot be saved yet, string layout will have been saved correctly!
+            parent->setPosition(100, 100);
+            parent->setSize(800, 600);
+            REQUIRE(widget->getPosition() == sf::Vector2f(50, 100));
+            REQUIRE(widget->getSize() == sf::Vector2f(800, 300));
+        }
+
+        SECTION("Bind 1d strings") {
+            widget->setPosition({"&.x"}, {"&.y"});
+            widget->setSize({"&.w"}, {"&.h"});
+
+            parent->setSize(400, 300);
+            parent->setPosition(50, 50);
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget1.txt"));
+            parent->removeAllWidgets();
+            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
+            REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
+            widget = parent->get("Widget");
+
+            parent->setPosition(100, 100);
+            parent->setSize(800, 600);
+            REQUIRE(widget->getPosition() == sf::Vector2f(100, 100));
+            REQUIRE(widget->getSize() == sf::Vector2f(800, 600));
+        }
+
+        SECTION("Bind 2d strings") {
+            widget->setPosition({"{&.x, &.y}"});
+            widget->setSize({"parent.size"});
+
+            parent->setSize(400, 300);
+            parent->setPosition(50, 50);
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget1.txt"));
+            parent->removeAllWidgets();
+            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
+            REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
+            widget = parent->get("Widget");
+
+            parent->setPosition(100, 100);
+            parent->setSize(800, 600);
+            REQUIRE(widget->getPosition() == sf::Vector2f(100, 100));
+            REQUIRE(widget->getSize() == sf::Vector2f(800, 600));
+        }
+    }
 }
