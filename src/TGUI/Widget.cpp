@@ -75,6 +75,7 @@ namespace tgui
         m_font           {copy.m_font}
     {
         m_callback.widget = this;
+        m_callback.widgetType = copy.m_callback.widgetType;
 
         if (copy.m_toolTip != nullptr)
             m_toolTip = copy.m_toolTip->clone();
@@ -94,18 +95,19 @@ namespace tgui
             SignalWidgetBase::operator=(right);
             enable_shared_from_this::operator=(right);
 
-            m_enabled         = right.m_enabled;
-            m_visible         = right.m_visible;
-            m_parent          = right.m_parent;
-            m_opacity         = right.m_opacity;
-            m_mouseHover      = false;
-            m_mouseDown       = false;
-            m_focused         = false;
-            m_allowFocus      = right.m_allowFocus;
-            m_draggableWidget = right.m_draggableWidget;
-            m_containerWidget = right.m_containerWidget;
-            m_font            = right.m_font;
-            m_callback.widget = this;
+            m_enabled             = right.m_enabled;
+            m_visible             = right.m_visible;
+            m_parent              = right.m_parent;
+            m_opacity             = right.m_opacity;
+            m_mouseHover          = false;
+            m_mouseDown           = false;
+            m_focused             = false;
+            m_allowFocus          = right.m_allowFocus;
+            m_draggableWidget     = right.m_draggableWidget;
+            m_containerWidget     = right.m_containerWidget;
+            m_font                = right.m_font;
+            m_callback.widget     = this;
+            m_callback.widgetType = right.m_callback.widgetType;
 
             if (right.m_toolTip != nullptr)
                 m_toolTip = right.m_toolTip->clone();
