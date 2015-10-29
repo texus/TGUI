@@ -378,10 +378,6 @@ namespace tgui
 
     void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // When there is no text then there is nothing to draw
-        if (m_text.getString().isEmpty())
-            return;
-
         if (m_autoSize)
         {
             // Draw the background
