@@ -217,7 +217,8 @@ namespace tgui
 
         ClickableWidget::leftMouseReleased(x, y);
 
-        m_text.setTextColor(getRenderer()->m_textColorHover);
+        if (m_mouseHover)
+            m_text.setTextColor(getRenderer()->m_textColorHover);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

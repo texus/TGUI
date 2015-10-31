@@ -506,7 +506,7 @@ namespace tgui
 
     void Widget::mouseNotOnWidget()
     {
-        if (m_mouseHover == true)
+        if (m_mouseHover)
             mouseLeftWidget();
     }
 
