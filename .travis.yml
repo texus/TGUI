@@ -43,4 +43,7 @@ script:
     fi
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -x gcov-5 -a "-s /home/travis/build/texus/TGUI -pr"
+  - >
+    if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
+      bash <(curl -s https://codecov.io/bash) -x gcov-5 -a "-s /home/travis/build/texus/TGUI -pr"
+    fi
