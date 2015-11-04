@@ -25,8 +25,6 @@ cd tests/
 ./tests
 cd ../..
 
-bash <(curl -s https://codecov.io/bash) -x gcov-5 -a "-s /home/travis/build/texus/TGUI -pr"
-
 mkdir build_gcc-4.7
 cd build_gcc-4.7
 export CXX="g++-4.7"

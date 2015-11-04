@@ -41,3 +41,6 @@ script:
       echo 'Invalid OS'
       exit 1
     fi
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -x gcov-5 -a "-s /home/travis/build/texus/TGUI -pr"
