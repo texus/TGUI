@@ -8,6 +8,14 @@ macro(tgui_set_option var default type docstring)
     set(${var} ${${var}} CACHE ${type} ${docstring} FORCE)
 endmacro()
 
+# Define a macro to add compiler flags
+macro(tgui_add_cxx_flag flag)
+    string(REGEX REPLACE "\\+" "\\\\+" escapedFlag ${flag})
+    if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*${escapedFlag}.*"))
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" CACHE STRING "C++ compiler flags" FORCE)
+    endif()
+endmacro()
+
 # Set a default build type and module path if none was provided
 tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
 tgui_set_option(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" STRING "The path to the cmake modules. This path must contain the FindSFML.cmake file.")
@@ -100,33 +108,24 @@ if (SFML_OS_ANDROID)
         endif()
     endforeach(flag)
 
-    # Add the "-std=c++11" flag if it wasn't there already
-    if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-std=c\\+\\+11.*"))
-        set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} -std=c++11")
-    endif()
-
-    # Add the "-fexceptions" flag if it wasn't there already
-    if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-fexceptions.*"))
-        set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} -fexceptions")
-    endif()
-
-    # Add the "-frtti" flag if it wasn't there already
-    if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-frtti.*"))
-        set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} -frtti")
-    endif()
-
     set(CMAKE_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS}")
 
+    # Add the "-std=c++11", "-fexceptions" and "-frtti" flags if they aren't there already
+    tgui_add_cxx_flag(-std=c++11)
+    tgui_add_cxx_flag(-fexceptions)
+    tgui_add_cxx_flag(-frtti)
+
 elseif(SFML_COMPILER_GCC OR SFML_COMPILER_CLANG)
+    tgui_add_cxx_flag(-Wall)
+    tgui_add_cxx_flag(-Wextra)
+    tgui_add_cxx_flag(-Wshadow)
+    tgui_add_cxx_flag(-Wno-long-long)
+    tgui_add_cxx_flag(-pedantic)
+    tgui_add_cxx_flag(-std=c++11)
 
-    if (NOT CMAKE_CXX_FLAGS)
-        set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic -std=c++11" CACHE STRING "C compiler flags" FORCE)
-        set(CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wno-long-long -pedantic" CACHE STRING "C compiler flags" FORCE)
-
-        # On mac, clang needs another parameter
-        if (SFML_COMPILER_CLANG AND SFML_OS_MACOSX)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++" CACHE STRING "C++ compiler flags" FORCE)
-        endif()
+    # On mac, clang needs another parameter
+    if (SFML_COMPILER_CLANG AND SFML_OS_MACOSX)
+        tgui_add_cxx_flag(-stdlib=libc++)
     endif()
 endif()
 
@@ -333,13 +332,8 @@ endif()
 
 # Generate .gcno files when requested
 if (TGUI_BUILD_TESTS AND TGUI_USE_GCOV)
-    if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-fprofile-arcs.*"))
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs")
-    endif()
-
-    if (NOT (${CMAKE_CXX_FLAGS} MATCHES ".*-ftest-coverage.*"))
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftest-coverage")
-    endif()
+    tgui_add_cxx_flag(-fprofile-arcs)
+    tgui_add_cxx_flag(-ftest-coverage)
 endif()
 
 # Jump to the CMakeLists.txt file in the source folder
