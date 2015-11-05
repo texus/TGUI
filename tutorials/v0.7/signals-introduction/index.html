@@ -6,7 +6,7 @@ redirect_from: "/tutorials/v07/signals-introduction/index.html"
 ---
 <div>
 <h3 id="connecting_to_signals">Connecting to signals</h3>
-<p>You use the 'connect' function to connect your signal handler function to a specific signal. The first parameter is the name of the signal. This name is case-insensitive, so it does not matter if you write "clicked" or "Clicked". The second parameter is the function that you want to be called when the signal is send.</p>
+<p>You use the 'connect' function to connect your signal handler function to a specific signal. The first parameter is the name of the signal, this is the trigger on which the callback should be send. This name is case-insensitive, so it does not matter if you write "clicked" or "Clicked". The second parameter is the function that you want to be called when the signal is send.</p>
 <p class="SmallBottomMargin">Here is an example of letting a function get called when a button has been pressed.</p>
 {% highlight c++ %}
 void function()
