@@ -22,7 +22,7 @@ export CXX="g++-5"
 cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_TESTS=TRUE -DTGUI_USE_GCOV=TRUE ..
 make -j2
 cd tests/
-./tests
+./tests 2>&1 | grep --invert-match "Failed to use the XRandR extension while trying to get the desktop video modes"
 cd ../..
 
 mkdir build_gcc-4.7
