@@ -573,10 +573,7 @@ namespace tgui
 
             // Reset the old clipping area when needed
             if (clippingRequired)
-            {
-                clippingRequired = false;
                 glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
-            }
 
             accumulatedTabWidth += m_tabWidth[i] + ((getRenderer()->getBorders().left + getRenderer()->getBorders().right) / 2.0f);
         }

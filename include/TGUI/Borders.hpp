@@ -41,11 +41,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Borders() :
-            left  (0),
-            top   (0),
-            right (0),
-            bottom(0)
+        Borders(float size = 0) :
+            left  (size),
+            top   (size),
+            right (size),
+            bottom(size)
         {
         }
 
@@ -80,21 +80,6 @@ namespace tgui
             top   (height),
             right (width),
             bottom(height)
-        {
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructor that initializes the borders
-        ///
-        /// @param size  Size of the borders on each side
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Borders(float size) :
-            left  (size),
-            top   (size),
-            right (size),
-            bottom(size)
         {
         }
 

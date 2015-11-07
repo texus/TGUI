@@ -191,12 +191,12 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
-        Type m_type;
+        Type m_type = Type::None;
 
         std::shared_ptr<sf::Font> m_font;
         sf::Color  m_color;
         sf::String m_string;
-        float      m_number;
+        float      m_number = 0;
         Borders    m_borders;
         Texture    m_texture;
     };

@@ -564,10 +564,7 @@ namespace tgui
                                 m_selStart.x = m_lines[m_selStart.y].getSize();
                             }
                             else
-                            {
-                                done = true;
                                 break;
-                            }
                         }
                     }
                     else
@@ -607,10 +604,7 @@ namespace tgui
                                 m_selEnd.x = 0;
                             }
                             else
-                            {
-                                done = true;
                                 break;
-                            }
                         }
                     }
                     else
@@ -1614,12 +1608,6 @@ namespace tgui
 
     void TextBox::updateSelectionTexts()
     {
-        Padding padding = getRenderer()->getScaledPadding();
-
-        float maxLineWidth = std::max(0.f, getSize().x - padding.left - padding.right);
-        if (m_scroll && (!m_scroll->getAutoHide() || (m_scroll->getMaximum() > m_scroll->getLowValue())))
-            maxLineWidth = std::max(0.f, maxLineWidth - m_scroll->getSize().x);
-
         // If there is no selection then just put the whole text in m_textBeforeSelection
         if (m_selStart == m_selEnd)
         {

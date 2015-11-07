@@ -165,7 +165,7 @@ void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_
     // With libname being the library name such as "jpeg".
 
     // Retrieve JNI environment and JVM instance
-    JavaVM* lJavaVM = activity->vm;
+    //JavaVM* lJavaVM = activity->vm;
     JNIEnv* lJNIEnv = activity->env;
 
     // Retrieve the NativeActivity

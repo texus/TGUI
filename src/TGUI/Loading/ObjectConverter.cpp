@@ -39,50 +39,50 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectConverter::ObjectConverter(const std::shared_ptr<sf::Font>& font)
+    ObjectConverter::ObjectConverter(const std::shared_ptr<sf::Font>& font) :
+        m_type(Type::Font),
+        m_font(font)
     {
-        m_type = Type::Font;
-        m_font = font;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectConverter::ObjectConverter(const sf::Color& color)
+    ObjectConverter::ObjectConverter(const sf::Color& color) :
+        m_type(Type::Color),
+        m_color(color)
     {
-        m_type = Type::Color;
-        m_color = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectConverter::ObjectConverter(const sf::String& string)
+    ObjectConverter::ObjectConverter(const sf::String& string) :
+        m_type(Type::String),
+        m_string(string)
     {
-        m_type = Type::String;
-        m_string = string;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectConverter::ObjectConverter(float number)
+    ObjectConverter::ObjectConverter(float number) :
+        m_type(Type::Number),
+        m_number(number)
     {
-        m_type = Type::Number;
-        m_number = number;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectConverter::ObjectConverter(const Borders& borders)
+    ObjectConverter::ObjectConverter(const Borders& borders) :
+        m_type(Type::Borders),
+        m_borders(borders)
     {
-        m_type = Type::Borders;
-        m_borders = borders;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectConverter::ObjectConverter(const Texture& texture)
+    ObjectConverter::ObjectConverter(const Texture& texture) :
+        m_type(Type::Texture),
+        m_texture(texture)
     {
-        m_type = Type::Texture;
-        m_texture = texture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
