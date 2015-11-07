@@ -7,7 +7,7 @@ TGUI - Texus's Graphical User Interface
 
 In one line: TGUI is an easy to use, cross-platform, c++ GUI for SFML.
 
-For more information, take a look at the website (http://tgui.eu).
+For more information, take a look at the website (https://tgui.eu).
 
 
 
