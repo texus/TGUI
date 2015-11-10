@@ -578,9 +578,9 @@ namespace tgui
             // Display the last lines when there is no scrollbar
             if (!m_scroll)
             {
-                if (positionY > getSize().y)
+                if (positionY > m_panel->getSize().y)
                 {
-                    float diff = positionY - getSize().y;
+                    float diff = positionY - m_panel->getSize().y;
                     for (auto it = m_panel->getWidgets().begin(); it != m_panel->getWidgets().end(); ++it)
                         (*it)->setPosition({(*it)->getPosition().x, (*it)->getPosition().y - diff});
                 }
