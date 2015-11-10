@@ -756,7 +756,7 @@ namespace tgui
         else
         {
             // Check if you are copying, pasting or cutting text
-            if (event.control)
+            if (event.control && !event.alt && !event.shift && !event.system)
             {
                 if (event.code == sf::Keyboard::C)
                 {
