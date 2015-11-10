@@ -287,7 +287,10 @@ TEST_CASE("[EditBox]") {
     SECTION("Bug #43 (https://github.com/texus/TGUI/issues/43)") {
         sf::Event::KeyEvent event;
         event.control = true;
-        event.code = sf::Keyboard::A;
+        event.alt     = false;
+        event.shift   = false;
+        event.system  = false;
+        event.code    = sf::Keyboard::A;
 
         editBox->setText("Test");
         editBox->keyPressed(event);
