@@ -28,6 +28,7 @@
 
 TEST_CASE("[TextBox]") {
     tgui::TextBox::Ptr textBox = std::make_shared<tgui::TextBox>();
+    textBox->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(textBox->connect("TextChanged", [](){}));
@@ -164,5 +165,23 @@ TEST_CASE("[TextBox]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTextBox2.txt"));
         REQUIRE(compareFiles("WidgetFileTextBox1.txt", "WidgetFileTextBox2.txt"));
+    }
+
+    SECTION("Bug #43 (https://github.com/texus/TGUI/issues/43)") {
+        sf::Event::KeyEvent event;
+        event.control = true;
+        event.code = sf::Keyboard::A;
+
+        textBox->setText("Test");
+        textBox->keyPressed(event);
+        REQUIRE(textBox->getSelectedText() == "Test");
+
+        textBox->setText("Test");
+        REQUIRE(textBox->getSelectedText() == "");
+
+        // ctrl+alt+A must not function as ctrl+A
+        event.alt = true;
+        textBox->keyPressed(event);
+        REQUIRE(textBox->getSelectedText() == "");
     }
 }

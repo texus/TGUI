@@ -27,6 +27,7 @@
 
 TEST_CASE("[EditBox]") {
     tgui::EditBox::Ptr editBox = std::make_shared<tgui::EditBox>();
+    editBox->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(editBox->connect("TextChanged", [](){}));
@@ -281,5 +282,23 @@ TEST_CASE("[EditBox]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileEditBox2.txt"));
         REQUIRE(compareFiles("WidgetFileEditBox1.txt", "WidgetFileEditBox2.txt"));
+    }
+
+    SECTION("Bug #43 (https://github.com/texus/TGUI/issues/43)") {
+        sf::Event::KeyEvent event;
+        event.control = true;
+        event.code = sf::Keyboard::A;
+
+        editBox->setText("Test");
+        editBox->keyPressed(event);
+        REQUIRE(editBox->getSelectedText() == "Test");
+
+        editBox->setText("Test");
+        REQUIRE(editBox->getSelectedText() == "");
+
+        // ctrl+alt+A must not function as ctrl+A
+        event.alt = true;
+        editBox->keyPressed(event);
+        REQUIRE(editBox->getSelectedText() == "");
     }
 }
