@@ -405,7 +405,7 @@ namespace tgui
         if (m_scroll && getFont())
         {
             // Only pass the event when the scrollbar still thinks the mouse is down
-            if (m_scroll->m_mouseDown == true)
+            if (m_scroll->m_mouseDown)
             {
                 // Remember the old scrollbar value
                 unsigned int oldValue = m_scroll->getValue();

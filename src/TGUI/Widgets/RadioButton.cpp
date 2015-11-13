@@ -130,7 +130,7 @@ namespace tgui
 
     void RadioButton::check()
     {
-        if (m_checked == false)
+        if (!m_checked)
         {
             // Tell our parent that all the radio buttons should be unchecked
             if (m_parent)
@@ -231,7 +231,7 @@ namespace tgui
                 return true;
         }
 
-        if (m_mouseHover == true)
+        if (m_mouseHover)
             mouseLeftWidget();
 
         return false;

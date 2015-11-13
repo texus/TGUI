@@ -254,7 +254,7 @@ namespace tgui
         for (std::size_t i = m_focusedWidget; i < m_widgets.size(); ++i)
         {
             // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i]->m_allowFocus == true)
+            if (m_widgets[i]->m_allowFocus)
             {
                 // Make sure that the widget is visible and enabled
                 if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
@@ -281,7 +281,7 @@ namespace tgui
             for (std::size_t i = 0; i < m_focusedWidget - 1; ++i)
             {
                 // If you are not allowed to focus the widget, then skip it
-                if (m_widgets[i]->m_allowFocus == true)
+                if (m_widgets[i]->m_allowFocus)
                 {
                     // Make sure that the widget is visible and enabled
                     if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
@@ -312,7 +312,7 @@ namespace tgui
             for (std::size_t i = m_focusedWidget - 1; i > 0; --i)
             {
                 // If you are not allowed to focus the widget, then skip it
-                if (m_widgets[i-1]->m_allowFocus == true)
+                if (m_widgets[i-1]->m_allowFocus)
                 {
                     // Make sure that the widget is visible and enabled
                     if ((m_widgets[i-1]->m_visible) && (m_widgets[i-1]->m_enabled))
@@ -336,7 +336,7 @@ namespace tgui
         for (std::size_t i = m_widgets.size(); i > m_focusedWidget; --i)
         {
             // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i-1]->m_allowFocus == true)
+            if (m_widgets[i-1]->m_allowFocus)
             {
                 // Make sure that the widget is visible and enabled
                 if ((m_widgets[i-1]->m_visible) && (m_widgets[i-1]->m_enabled))
@@ -576,7 +576,7 @@ namespace tgui
 
     void Container::mouseNotOnWidget()
     {
-        if (m_mouseHover == true)
+        if (m_mouseHover)
         {
             mouseLeftWidget();
 
@@ -822,14 +822,14 @@ namespace tgui
     bool Container::focusNextWidgetInContainer()
     {
         // Don't do anything when the tab key usage is disabled
-        if (TGUI_TabKeyUsageEnabled == false)
+        if (!TGUI_TabKeyUsageEnabled)
             return false;
 
         // Loop through all widgets
         for (std::size_t i = m_focusedWidget; i < m_widgets.size(); ++i)
         {
             // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i]->m_allowFocus == true)
+            if (m_widgets[i]->m_allowFocus)
             {
                 // Make sure that the widget is visible and enabled
                 if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
@@ -865,7 +865,7 @@ namespace tgui
     bool Container::tabKeyPressed()
     {
         // Don't do anything when the tab key usage is disabled
-        if (TGUI_TabKeyUsageEnabled == false)
+        if (!TGUI_TabKeyUsageEnabled)
             return false;
 
         // Check if a container is focused
@@ -883,7 +883,7 @@ namespace tgui
         for (std::size_t i = m_focusedWidget; i < m_widgets.size(); ++i)
         {
             // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i]->m_allowFocus == true)
+            if (m_widgets[i]->m_allowFocus)
             {
                 // Make sure that the widget is visible and enabled
                 if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
@@ -910,7 +910,7 @@ namespace tgui
             for (std::size_t i = 0; i < m_focusedWidget-1; ++i)
             {
                 // If you are not allowed to focus the widget, then skip it
-                if (m_widgets[i]->m_allowFocus == true)
+                if (m_widgets[i]->m_allowFocus)
                 {
                     // Make sure that the widget is visible and enabled
                     if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
@@ -952,7 +952,7 @@ namespace tgui
             // Check if the widget is visible and enabled
             if (((*it)->m_visible) && ((*it)->m_enabled))
             {
-                if (widgetFound == false)
+                if (!widgetFound)
                 {
                     // Return the widget if the mouse is on top of it
                     if ((*it)->mouseOnWidget(x, y))

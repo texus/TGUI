@@ -60,7 +60,7 @@ namespace tgui
 
     void CheckBox::check()
     {
-        if (m_checked == false)
+        if (!m_checked)
         {
             m_checked = true;
 

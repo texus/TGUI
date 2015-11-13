@@ -334,8 +334,8 @@ namespace tgui
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
                                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom + getRenderer()->m_titleBarHeight}.contains(x, y))
-             && (sf::FloatRect{getPosition().x + getRenderer()->getBorders().left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->getBorders().top,
-                               getSize().x, getSize().y}.contains(x, y) == false))
+             && (!sf::FloatRect{getPosition().x + getRenderer()->getBorders().left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->getBorders().top,
+                                getSize().x, getSize().y}.contains(x, y)))
             {
                 // Don't send the event to the widgets
                 return;
@@ -356,7 +356,7 @@ namespace tgui
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->m_titleBarHeight}.contains(x, y))
         {
             // Check if the close button was clicked
-            if (m_closeButton->m_mouseDown == true)
+            if (m_closeButton->m_mouseDown)
             {
                 m_closeButton->m_mouseDown = false;
 
@@ -390,8 +390,8 @@ namespace tgui
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
                                getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom + getRenderer()->m_titleBarHeight}.contains(x, y))
-             && (sf::FloatRect{getPosition().x + getRenderer()->m_borders.left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top,
-                               getSize().x, getSize().y}.contains(x, y) == false))
+             && (!sf::FloatRect{getPosition().x + getRenderer()->m_borders.left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top,
+                                getSize().x, getSize().y}.contains(x, y)))
             {
                 // Tell the widgets about that the mouse was released
                 for (unsigned int i = 0; i < m_widgets.size(); ++i)
@@ -436,8 +436,8 @@ namespace tgui
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
                                getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom + getRenderer()->m_titleBarHeight}.contains(x, y))
-             && (sf::FloatRect{getPosition().x + getRenderer()->m_borders.left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top,
-                               getSize().x, getSize().y}.contains(x, y) == false))
+             && (!sf::FloatRect{getPosition().x + getRenderer()->m_borders.left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top,
+                                getSize().x, getSize().y}.contains(x, y)))
             {
                 // Don't send the event to the widgets
                 return;
@@ -552,7 +552,7 @@ namespace tgui
         glGetIntegerv(GL_SCISSOR_BOX, scissor);
 
         // Check if there is a title
-        if (m_titleText.getText().isEmpty() == false)
+        if (!m_titleText.getText().isEmpty())
         {
             // Calculate the clipping area
             GLint scissorLeft = std::max(static_cast<GLint>(topLeftTitleBarPosition.x * scaleViewX), scissor[0]);

@@ -191,7 +191,7 @@ namespace ext
     void AnimatedPicture::update(sf::Time elapsedTime)
     {
         // Only continue when you are playing
-        if (m_playing == false)
+        if (!m_playing)
             return;
 
         Widget::update(elapsedTime);
@@ -211,7 +211,7 @@ namespace ext
                 else
                 {
                     // If looping is enabled then stat over
-                    if (m_looping == true)
+                    if (m_looping)
                         m_currentFrame = 0;
                     else
                     {

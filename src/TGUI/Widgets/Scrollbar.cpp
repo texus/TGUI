@@ -307,7 +307,7 @@ namespace tgui
     bool Scrollbar::mouseOnWidget(float x, float y)
     {
         // Don't make any calculations when no scrollbar is needed
-        if ((m_maximum <= m_lowValue) && (m_autoHide == true))
+        if ((m_maximum <= m_lowValue) && m_autoHide)
             return false;
 
         // Check if the mouse is on top of the scrollbar
@@ -368,7 +368,7 @@ namespace tgui
             m_mouseDownOnThumb = false;
 
         // Refresh the scrollbar value
-        if (m_mouseDownOnArrow == false)
+        if (!m_mouseDownOnArrow)
             mouseMoved(x, y);
     }
 

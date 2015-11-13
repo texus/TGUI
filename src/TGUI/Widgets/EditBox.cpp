@@ -300,7 +300,7 @@ namespace tgui
         m_limitTextWidth = limitWidth;
 
         // Check if the width is being limited
-        if (m_limitTextWidth == true)
+        if (m_limitTextWidth)
         {
             // Now check if the text fits into the EditBox
             float width = getVisibleEditBoxWidth();
@@ -344,7 +344,7 @@ namespace tgui
         m_textFull.setString(m_displayedText);
 
         // Check if scrolling is enabled
-        if (m_limitTextWidth == false)
+        if (!m_limitTextWidth)
         {
             // Find out the position of the caret
             float caretPosition = m_textFull.findCharacterPos(m_selEnd).x;

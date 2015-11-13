@@ -134,7 +134,7 @@ namespace tgui
                         }
 
                         // Erase the last column if no other row is using it
-                        if (rowFound == false)
+                        if (!rowFound)
                             m_columnWidth.erase(m_columnWidth.end()-1);
                     }
 

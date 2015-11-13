@@ -233,8 +233,8 @@ namespace tgui
             if (m_mouseDownOnTopArrow)
             {
                 // Check if the mouse went up on the same arrow
-                if (((m_verticalScroll == true)  && (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.f}.contains(x, y)))
-                 || ((m_verticalScroll == false) && (sf::FloatRect{getPosition().x, getPosition().y, getSize().x / 2.f, getSize().y}.contains(x, y) == false)))
+                if ((m_verticalScroll && (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.f}.contains(x, y)))
+                 || (!m_verticalScroll && (!sf::FloatRect{getPosition().x, getPosition().y, getSize().x / 2.f, getSize().y}.contains(x, y))))
                 {
                     // Increment the value
                     if (m_value < m_maximum)
@@ -248,8 +248,8 @@ namespace tgui
             else // The mouse went down on the bottom/left arrow
             {
                 // Check if the mouse went up on the same arrow
-                if (((m_verticalScroll == true)  && (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.f}.contains(x, y) == false))
-                 || ((m_verticalScroll == false) && (sf::FloatRect{getPosition().x, getPosition().y, getSize().x / 2.f, getSize().y}.contains(x, y))))
+                if ((m_verticalScroll && (!sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.f}.contains(x, y)))
+                 || (!m_verticalScroll && (sf::FloatRect{getPosition().x, getPosition().y, getSize().x / 2.f, getSize().y}.contains(x, y))))
                 {
                     // Decrement the value
                     if (m_value > m_minimum)

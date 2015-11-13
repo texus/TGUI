@@ -613,7 +613,7 @@ namespace tgui
 
     void ComboBox::listBoxUnfocusedCallbackFunction()
     {
-        if (m_mouseHover == false)
+        if (!m_mouseHover)
             hideListBox();
     }
 

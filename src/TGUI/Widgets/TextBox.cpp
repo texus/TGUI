@@ -653,7 +653,7 @@ namespace tgui
         if (m_scroll != nullptr)
         {
             // Only pass the event when the scrollbar still thinks the mouse is down
-            if (m_scroll->m_mouseDown == true)
+            if (m_scroll->m_mouseDown)
             {
                 // Don't continue when line height is 0
                 if (m_lineHeight == 0)
