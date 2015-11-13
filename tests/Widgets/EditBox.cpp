@@ -284,24 +284,26 @@ TEST_CASE("[EditBox]") {
         REQUIRE(compareFiles("WidgetFileEditBox1.txt", "WidgetFileEditBox2.txt"));
     }
 
-    SECTION("Bug #43 (https://github.com/texus/TGUI/issues/43)") {
-        sf::Event::KeyEvent event;
-        event.control = true;
-        event.alt     = false;
-        event.shift   = false;
-        event.system  = false;
-        event.code    = sf::Keyboard::A;
+    SECTION("Bug Fixes") {
+        SECTION("ctrl+alt+A should not act as ctrl+A (https://github.com/texus/TGUI/issues/43)") {
+            sf::Event::KeyEvent event;
+            event.control = true;
+            event.alt     = false;
+            event.shift   = false;
+            event.system  = false;
+            event.code    = sf::Keyboard::A;
 
-        editBox->setText("Test");
-        editBox->keyPressed(event);
-        REQUIRE(editBox->getSelectedText() == "Test");
+            editBox->setText("Test");
+            editBox->keyPressed(event);
+            REQUIRE(editBox->getSelectedText() == "Test");
 
-        editBox->setText("Test");
-        REQUIRE(editBox->getSelectedText() == "");
+            editBox->setText("Test");
+            REQUIRE(editBox->getSelectedText() == "");
 
-        // ctrl+alt+A must not function as ctrl+A
-        event.alt = true;
-        editBox->keyPressed(event);
-        REQUIRE(editBox->getSelectedText() == "");
+            // ctrl+alt+A must not function as ctrl+A
+            event.alt = true;
+            editBox->keyPressed(event);
+            REQUIRE(editBox->getSelectedText() == "");
+        }
     }
 }

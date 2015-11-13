@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/ToolTip.hpp>
 
@@ -177,6 +178,24 @@ TEST_CASE("[Widget]") {
             parent->setSize(800, 600);
             REQUIRE(widget->getPosition() == sf::Vector2f(100, 100));
             REQUIRE(widget->getSize() == sf::Vector2f(800, 600));
+        }
+    }
+
+    SECTION("Bug Fixes") {
+        SECTION("Disabled widgets should not be focusable (https://forum.tgui.eu/index.php?topic=384)") {
+            tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
+            tgui::EditBox::Ptr editBox = std::make_shared<tgui::EditBox>();
+            editBox->setFont("resources/DroidSansArmenian.ttf");
+            panel->add(editBox);
+
+            editBox->focus();
+            REQUIRE(editBox->isFocused());
+
+            editBox->disable();
+            REQUIRE(!editBox->isFocused());
+
+            editBox->focus();
+            REQUIRE(!editBox->isFocused());
         }
     }
 }
