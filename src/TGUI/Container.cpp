@@ -229,12 +229,16 @@ namespace tgui
                     {
                         m_widgets[m_focusedWidget-1]->m_focused = false;
                         m_widgets[m_focusedWidget-1]->widgetUnfocused();
+                        m_focusedWidget = 0;
                     }
 
                     // Focus the new widget
-                    m_focusedWidget = i+1;
-                    widget->m_focused = true;
-                    widget->widgetFocused();
+                    if (widget->isEnabled())
+                    {
+                        m_focusedWidget = i+1;
+                        widget->m_focused = true;
+                        widget->widgetFocused();
+                    }
                 }
 
                 break;
