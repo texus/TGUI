@@ -27,6 +27,7 @@
 
 TEST_CASE("[ProgressBar]") {
     tgui::ProgressBar::Ptr progressBar = std::make_shared<tgui::ProgressBar>();
+    progressBar->setFont("resources/DroidSansArmenian.ttf");
     progressBar->setMinimum(10);
     progressBar->setMaximum(20);
     progressBar->setValue(15);
@@ -252,5 +253,16 @@ TEST_CASE("[ProgressBar]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileProgressBar2.txt"));
         REQUIRE(compareFiles("WidgetFileProgressBar1.txt", "WidgetFileProgressBar2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::ProgressBar temp;
+            temp = *progressBar;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::ProgressBar::copy(std::make_shared<tgui::ProgressBar>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileProgressBar2.txt"));
+            REQUIRE(compareFiles("WidgetFileProgressBar1.txt", "WidgetFileProgressBar2.txt"));
+        }
     }
 }

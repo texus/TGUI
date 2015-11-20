@@ -165,6 +165,17 @@ TEST_CASE("[TextBox]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTextBox2.txt"));
         REQUIRE(compareFiles("WidgetFileTextBox1.txt", "WidgetFileTextBox2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::TextBox temp;
+            temp = *textBox;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::TextBox::copy(std::make_shared<tgui::TextBox>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTextBox2.txt"));
+            REQUIRE(compareFiles("WidgetFileTextBox1.txt", "WidgetFileTextBox2.txt"));
+        }
     }
 
     SECTION("Bug Fixes") {

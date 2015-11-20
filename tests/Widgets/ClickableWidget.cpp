@@ -27,6 +27,7 @@
 
 TEST_CASE("[ClickableWidget]") {
     tgui::ClickableWidget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
+    widget->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(widget->connect("MousePressed", [](){}));
@@ -58,5 +59,16 @@ TEST_CASE("[ClickableWidget]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
         REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::ClickableWidget temp;
+            temp = *widget;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::ClickableWidget::copy(std::make_shared<tgui::ClickableWidget>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
+            REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
+        }
     }
 }

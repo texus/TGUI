@@ -26,22 +26,23 @@
 #include <TGUI/Widgets/MessageBox.hpp>
 
 TEST_CASE("[MessageBox]") {
-    tgui::MessageBox::Ptr childWindow = std::make_shared<tgui::MessageBox>();
+    tgui::MessageBox::Ptr messageBox = std::make_shared<tgui::MessageBox>();
+    messageBox->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
-        REQUIRE_NOTHROW(childWindow->connect("ButtonPressed", [](){}));
-        REQUIRE_NOTHROW(childWindow->connect("ButtonPressed", [](sf::String){}));
+        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](){}));
+        REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](sf::String){}));
 
     }
 
     SECTION("WidgetType") {
-        REQUIRE(childWindow->getWidgetType() == "MessageBox");
+        REQUIRE(messageBox->getWidgetType() == "MessageBox");
     }
 
     /// TODO: Test the functions in the MessageBox class
 
     SECTION("Renderer") {
-        auto renderer = childWindow->getRenderer();
+        auto renderer = messageBox->getRenderer();
 
         SECTION("set serialized property") {
             REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(10, 20, 30)"));

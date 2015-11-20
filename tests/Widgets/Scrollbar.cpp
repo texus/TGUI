@@ -27,6 +27,7 @@
 
 TEST_CASE("[Scrollbar]") {
     tgui::Scrollbar::Ptr scrollbar = std::make_shared<tgui::Scrollbar>();
+    scrollbar->setFont("resources/DroidSansArmenian.ttf");
     scrollbar->setLowValue(5);
     scrollbar->setMaximum(20);
     scrollbar->setValue(10);
@@ -325,5 +326,16 @@ TEST_CASE("[Scrollbar]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileScrollbar2.txt"));
         REQUIRE(compareFiles("WidgetFileScrollbar1.txt", "WidgetFileScrollbar2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::Scrollbar temp;
+            temp = *scrollbar;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::Scrollbar::copy(std::make_shared<tgui::Scrollbar>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileScrollbar2.txt"));
+            REQUIRE(compareFiles("WidgetFileScrollbar1.txt", "WidgetFileScrollbar2.txt"));
+        }
     }
 }

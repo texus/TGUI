@@ -27,6 +27,7 @@
 
 TEST_CASE("[Button]") {
     tgui::Button::Ptr button = std::make_shared<tgui::Button>();
+    button->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(button->connect("Pressed", [](){}));
@@ -218,5 +219,16 @@ TEST_CASE("[Button]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileButton2.txt"));
         REQUIRE(compareFiles("WidgetFileButton1.txt", "WidgetFileButton2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::Button temp;
+            temp = *button;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::Button::copy(std::make_shared<tgui::Button>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileButton2.txt"));
+            REQUIRE(compareFiles("WidgetFileButton1.txt", "WidgetFileButton2.txt"));
+        }
     }
 }

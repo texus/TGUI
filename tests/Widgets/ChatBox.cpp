@@ -28,6 +28,7 @@
 
 TEST_CASE("[ChatBox]") {
     tgui::ChatBox::Ptr chatBox = std::make_shared<tgui::ChatBox>();
+    chatBox->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("WidgetType") {
         REQUIRE(chatBox->getWidgetType() == "ChatBox");

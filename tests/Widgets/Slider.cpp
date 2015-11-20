@@ -27,6 +27,7 @@
 
 TEST_CASE("[Slider]") {
     tgui::Slider::Ptr slider = std::make_shared<tgui::Slider>();
+    slider->setFont("resources/DroidSansArmenian.ttf");
     slider->setMinimum(10);
     slider->setMaximum(20);
     slider->setValue(15);
@@ -242,5 +243,16 @@ TEST_CASE("[Slider]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSlider2.txt"));
         REQUIRE(compareFiles("WidgetFileSlider1.txt", "WidgetFileSlider2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::Slider temp;
+            temp = *slider;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::Slider::copy(std::make_shared<tgui::Slider>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSlider2.txt"));
+            REQUIRE(compareFiles("WidgetFileSlider1.txt", "WidgetFileSlider2.txt"));
+        }
     }
 }

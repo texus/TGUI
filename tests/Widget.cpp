@@ -30,6 +30,7 @@
 
 TEST_CASE("[Widget]") {
     tgui::Widget::Ptr widget = std::make_shared<tgui::Button>();
+    widget->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Visibile") {
         REQUIRE(widget->isVisible());
@@ -92,6 +93,15 @@ TEST_CASE("[Widget]") {
         // ToolTip can be removed
         widget->setToolTip(nullptr);
         REQUIRE(widget->getToolTip() == nullptr);
+    }
+
+    SECTION("Font") {
+        widget = std::make_shared<tgui::Button>();
+        REQUIRE(widget->getFont() == nullptr);
+        widget->setFont("resources/DroidSansArmenian.ttf");
+        REQUIRE(widget->getFont() != nullptr);
+        widget->setFont(nullptr);
+        REQUIRE(widget->getFont() == nullptr);
     }
 
     SECTION("Saving and loading widget with layouts from file") {

@@ -27,6 +27,7 @@
 
 TEST_CASE("[SpinButton]") {
     tgui::SpinButton::Ptr spinButton = std::make_shared<tgui::SpinButton>();
+    spinButton->setFont("resources/DroidSansArmenian.ttf");
     spinButton->setMinimum(10);
     spinButton->setMaximum(20);
     spinButton->setValue(15);
@@ -254,5 +255,16 @@ TEST_CASE("[SpinButton]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSpinButton2.txt"));
         REQUIRE(compareFiles("WidgetFileSpinButton1.txt", "WidgetFileSpinButton2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::SpinButton temp;
+            temp = *spinButton;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::SpinButton::copy(std::make_shared<tgui::SpinButton>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSpinButton2.txt"));
+            REQUIRE(compareFiles("WidgetFileSpinButton1.txt", "WidgetFileSpinButton2.txt"));
+        }
     }
 }

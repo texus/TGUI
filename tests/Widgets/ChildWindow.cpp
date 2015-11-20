@@ -28,6 +28,7 @@
 
 TEST_CASE("[ChildWindow]") {
     tgui::ChildWindow::Ptr childWindow = std::make_shared<tgui::ChildWindow>();
+    childWindow->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](){}));
@@ -136,11 +137,6 @@ TEST_CASE("[ChildWindow]") {
             REQUIRE(childWindow->getPrimaryLoadingParameter() == "resources/Black.txt");
             REQUIRE(childWindow->getSecondaryLoadingParameter() == "childwindow");
 
-            childWindow->setTitle("Title");
-            childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
-            childWindow->setIcon({"resources/image.png"});
-            childWindow->keepInParent();
-
             childWindow->setSize(400, 300);
             REQUIRE_NOTHROW(childWindow->saveWidgetsToFile("WidgetFileChildWindow1.txt"));
 
@@ -160,13 +156,29 @@ TEST_CASE("[ChildWindow]") {
             button->setPosition(40, 20);
             childWindow->add(button);
 
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileChildWindow1.txt"));
+            childWindow->setTitle("Title");
+            childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
+            childWindow->setIcon({"resources/image.png"});
+            childWindow->keepInParent();
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileChildWindow3.txt"));
 
             parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileChildWindow1.txt"));
+            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileChildWindow3.txt"));
 
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileChildWindow2.txt"));
-            REQUIRE(compareFiles("WidgetFileChildWindow1.txt", "WidgetFileChildWindow2.txt"));
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileChildWindow4.txt"));
+            REQUIRE(compareFiles("WidgetFileChildWindow3.txt", "WidgetFileChildWindow4.txt"));
+
+            SECTION("Copying widget") {
+                tgui::ChildWindow temp;
+                temp = *childWindow;
+
+                parent->removeAllWidgets();
+                parent->add(tgui::ChildWindow::copy(std::make_shared<tgui::ChildWindow>(temp)));
+
+                REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileChildWindow4.txt"));
+                REQUIRE(compareFiles("WidgetFileChildWindow3.txt", "WidgetFileChildWindow4.txt"));
+            }
         }
     }
 }

@@ -26,42 +26,43 @@
 #include <TGUI/Widgets/CheckBox.hpp>
 
 TEST_CASE("[CheckBox]") {
-    tgui::CheckBox::Ptr checkbox = std::make_shared<tgui::CheckBox>();
+    tgui::CheckBox::Ptr checkBox = std::make_shared<tgui::CheckBox>();
+    checkBox->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
-        REQUIRE_NOTHROW(checkbox->connect("Checked", [](){}));
-        REQUIRE_NOTHROW(checkbox->connect("Unchecked", [](){}));
+        REQUIRE_NOTHROW(checkBox->connect("Checked", [](){}));
+        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](){}));
 
-        REQUIRE_NOTHROW(checkbox->connect("Checked", [](bool){}));
-        REQUIRE_NOTHROW(checkbox->connect("Unchecked", [](bool){}));
+        REQUIRE_NOTHROW(checkBox->connect("Checked", [](bool){}));
+        REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](bool){}));
     }
 
     SECTION("WidgetType") {
-        REQUIRE(checkbox->getWidgetType() == "CheckBox");
+        REQUIRE(checkBox->getWidgetType() == "CheckBox");
     }
 
     SECTION("Checked") {
-        REQUIRE(!checkbox->isChecked());
-        checkbox->check();
-        REQUIRE(checkbox->isChecked());
-        checkbox->uncheck();
-        REQUIRE(!checkbox->isChecked());
+        REQUIRE(!checkBox->isChecked());
+        checkBox->check();
+        REQUIRE(checkBox->isChecked());
+        checkBox->uncheck();
+        REQUIRE(!checkBox->isChecked());
     }
 
     SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(checkbox = std::make_shared<tgui::Theme>()->load("CheckBox"));
+        REQUIRE_NOTHROW(checkBox = std::make_shared<tgui::Theme>()->load("CheckBox"));
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(checkbox = theme->load("CheckBox"));
-        REQUIRE(checkbox->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(checkbox->getSecondaryLoadingParameter() == "checkbox");
+        REQUIRE_NOTHROW(checkBox = theme->load("CheckBox"));
+        REQUIRE(checkBox->getPrimaryLoadingParameter() == "resources/Black.txt");
+        REQUIRE(checkBox->getSecondaryLoadingParameter() == "checkbox");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(checkbox);
+        parent->add(checkBox);
         
-        checkbox->check();
-        checkbox->setText("SomeText");
-        checkbox->setTextSize(25);
+        checkBox->check();
+        checkBox->setText("SomeText");
+        checkBox->setTextSize(25);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox1.txt"));
         
@@ -70,5 +71,16 @@ TEST_CASE("[CheckBox]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox2.txt"));
         REQUIRE(compareFiles("WidgetFileCheckBox1.txt", "WidgetFileCheckBox2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::CheckBox temp;
+            temp = *checkBox;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::CheckBox::copy(std::make_shared<tgui::CheckBox>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox2.txt"));
+            REQUIRE(compareFiles("WidgetFileCheckBox1.txt", "WidgetFileCheckBox2.txt"));
+        }
     }
 }

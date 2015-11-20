@@ -28,6 +28,7 @@
 
 TEST_CASE("[ListBox]") {
     tgui::ListBox::Ptr listBox = std::make_shared<tgui::ListBox>();
+    listBox->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](){}));
@@ -348,5 +349,16 @@ TEST_CASE("[ListBox]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileListBox2.txt"));
         REQUIRE(compareFiles("WidgetFileListBox1.txt", "WidgetFileListBox2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::ListBox temp;
+            temp = *listBox;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::ListBox::copy(std::make_shared<tgui::ListBox>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileListBox2.txt"));
+            REQUIRE(compareFiles("WidgetFileListBox1.txt", "WidgetFileListBox2.txt"));
+        }
     }
 }

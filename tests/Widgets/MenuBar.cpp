@@ -27,6 +27,7 @@
 
 TEST_CASE("[MenuBar]") {
     tgui::MenuBar::Ptr menuBar = std::make_shared<tgui::MenuBar>();
+    menuBar->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](){}));
@@ -129,32 +130,6 @@ TEST_CASE("[MenuBar]") {
             REQUIRE(renderer->getProperty("SelectedItemBackgroundImage").getTexture().getData() == textureSelectedItemBackground.getData());
         }
     }
-/*
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(tab = std::make_shared<tgui::Theme>()->load("Tab"));
 
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(tab = theme->load("Tab"));
-        REQUIRE(tab->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(tab->getSecondaryLoadingParameter() == "tab");
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(tab);
-        
-        tab->add("1");
-        tab->add("2");
-        tab->add("3");
-        tab->select("2");
-        tab->setTextSize(20);
-        tab->setTabHeight(26);
-        tab->setMaximumTabWidth(100);
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTab1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileTab1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTab2.txt"));
-        REQUIRE(compareFiles("WidgetFileTab1.txt", "WidgetFileTab2.txt"));
-    }*/
+    // TODO: Saving and loading from file test
 }

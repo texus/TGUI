@@ -27,6 +27,7 @@
 
 TEST_CASE("[Tab]") {
     tgui::Tab::Ptr tab = std::make_shared<tgui::Tab>();
+    tab->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(tab->connect("TabSelected", [](){}));
@@ -157,5 +158,16 @@ TEST_CASE("[Tab]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTab2.txt"));
         REQUIRE(compareFiles("WidgetFileTab1.txt", "WidgetFileTab2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::Tab temp;
+            temp = *tab;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::Tab::copy(std::make_shared<tgui::Tab>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTab2.txt"));
+            REQUIRE(compareFiles("WidgetFileTab1.txt", "WidgetFileTab2.txt"));
+        }
     }
 }

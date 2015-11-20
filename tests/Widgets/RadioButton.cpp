@@ -27,6 +27,7 @@
 
 TEST_CASE("[RadioButton]") {
     tgui::RadioButton::Ptr radioButton = std::make_shared<tgui::RadioButton>();
+    radioButton->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(radioButton->connect("Checked", [](){}));
@@ -287,5 +288,16 @@ TEST_CASE("[RadioButton]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileRadioButton2.txt"));
         REQUIRE(compareFiles("WidgetFileRadioButton1.txt", "WidgetFileRadioButton2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::RadioButton temp;
+            temp = *radioButton;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::RadioButton::copy(std::make_shared<tgui::RadioButton>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileRadioButton2.txt"));
+            REQUIRE(compareFiles("WidgetFileRadioButton1.txt", "WidgetFileRadioButton2.txt"));
+        }
     }
 }

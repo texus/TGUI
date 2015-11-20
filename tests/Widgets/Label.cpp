@@ -27,6 +27,7 @@
 
 TEST_CASE("[Label]") {
     tgui::Label::Ptr label = std::make_shared<tgui::Label>();
+    label->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(label->connect("DoubleClicked", [](){}));
@@ -137,5 +138,16 @@ TEST_CASE("[Label]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel2.txt"));
         REQUIRE(compareFiles("WidgetFileLabel1.txt", "WidgetFileLabel2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::Label temp;
+            temp = *label;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::Label::copy(std::make_shared<tgui::Label>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel2.txt"));
+            REQUIRE(compareFiles("WidgetFileLabel1.txt", "WidgetFileLabel2.txt"));
+        }
     }
 }

@@ -27,6 +27,7 @@
 
 TEST_CASE("[Knob]") {
     tgui::Knob::Ptr knob = std::make_shared<tgui::Knob>();
+    knob->setFont("resources/DroidSansArmenian.ttf");
     knob->setMinimum(10);
     knob->setMaximum(20);
     knob->setValue(15);
@@ -221,5 +222,16 @@ TEST_CASE("[Knob]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileKnob2.txt"));
         REQUIRE(compareFiles("WidgetFileKnob1.txt", "WidgetFileKnob2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::Knob temp;
+            temp = *knob;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::Knob::copy(std::make_shared<tgui::Knob>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileKnob2.txt"));
+            REQUIRE(compareFiles("WidgetFileKnob1.txt", "WidgetFileKnob2.txt"));
+        }
     }
 }

@@ -28,6 +28,7 @@
 
 TEST_CASE("[ComboBox]") {
     tgui::ComboBox::Ptr comboBox = std::make_shared<tgui::ComboBox>();
+    comboBox->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](){}));
@@ -384,5 +385,16 @@ TEST_CASE("[ComboBox]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileComboBox2.txt"));
         REQUIRE(compareFiles("WidgetFileComboBox1.txt", "WidgetFileComboBox2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::ComboBox temp;
+            temp = *comboBox;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::ComboBox::copy(std::make_shared<tgui::ComboBox>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileComboBox2.txt"));
+            REQUIRE(compareFiles("WidgetFileComboBox1.txt", "WidgetFileComboBox2.txt"));
+        }
     }
 }

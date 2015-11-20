@@ -27,6 +27,7 @@
 
 TEST_CASE("[Canvas]") {
     tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>();
+    canvas->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("WidgetType") {
         REQUIRE(canvas->getWidgetType() == "Canvas");
@@ -50,5 +51,16 @@ TEST_CASE("[Canvas]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCanvas2.txt"));
         REQUIRE(compareFiles("WidgetFileCanvas1.txt", "WidgetFileCanvas2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::Canvas temp;
+            temp = *canvas;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::Canvas::copy(std::make_shared<tgui::Canvas>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCanvas2.txt"));
+            REQUIRE(compareFiles("WidgetFileCanvas1.txt", "WidgetFileCanvas2.txt"));
+        }
     }
 }

@@ -264,7 +264,7 @@ TEST_CASE("[EditBox]") {
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(editBox);
-        
+
         editBox->setText("SomeText");
         editBox->setDefaultText("SomeDefaultText");
         editBox->setTextSize(25);
@@ -282,6 +282,17 @@ TEST_CASE("[EditBox]") {
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileEditBox2.txt"));
         REQUIRE(compareFiles("WidgetFileEditBox1.txt", "WidgetFileEditBox2.txt"));
+
+        SECTION("Copying widget") {
+            tgui::EditBox temp;
+            temp = *editBox;
+
+            parent->removeAllWidgets();
+            parent->add(tgui::EditBox::copy(std::make_shared<tgui::EditBox>(temp)));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileEditBox2.txt"));
+            REQUIRE(compareFiles("WidgetFileEditBox1.txt", "WidgetFileEditBox2.txt"));
+        }
     }
 
     SECTION("Bug Fixes") {
