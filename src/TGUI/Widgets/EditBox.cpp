@@ -62,7 +62,7 @@ namespace tgui
     EditBox::Ptr EditBox::copy(EditBox::ConstPtr editBox)
     {
         if (editBox)
-            return std::make_shared<EditBox>(*editBox);
+            return std::static_pointer_cast<EditBox>(editBox->clone());
         else
             return nullptr;
     }

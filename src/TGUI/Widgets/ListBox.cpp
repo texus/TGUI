@@ -99,7 +99,7 @@ namespace tgui
     ListBox::Ptr ListBox::copy(ListBox::ConstPtr listBox)
     {
         if (listBox)
-            return std::make_shared<ListBox>(*listBox);
+            return std::static_pointer_cast<ListBox>(listBox->clone());
         else
             return nullptr;
     }

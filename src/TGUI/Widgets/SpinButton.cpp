@@ -50,7 +50,7 @@ namespace tgui
     SpinButton::Ptr SpinButton::copy(SpinButton::ConstPtr spinButton)
     {
         if (spinButton)
-            return std::make_shared<SpinButton>(*spinButton);
+            return std::static_pointer_cast<SpinButton>(spinButton->clone());
         else
             return nullptr;
     }

@@ -54,7 +54,7 @@ namespace tgui
     Tab::Ptr Tab::copy(Tab::ConstPtr tab)
     {
         if (tab)
-            return std::make_shared<Tab>(*tab);
+            return std::static_pointer_cast<Tab>(tab->clone());
         else
             return nullptr;
     }

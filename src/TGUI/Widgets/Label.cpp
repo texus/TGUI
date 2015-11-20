@@ -54,7 +54,7 @@ namespace tgui
     Label::Ptr Label::copy(Label::ConstPtr label)
     {
         if (label)
-            return std::make_shared<Label>(*label);
+            return std::static_pointer_cast<Label>(label->clone());
         else
             return nullptr;
     }

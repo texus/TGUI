@@ -52,7 +52,7 @@ namespace tgui
     MenuBar::Ptr MenuBar::copy(MenuBar::ConstPtr menuBar)
     {
         if (menuBar)
-            return std::make_shared<MenuBar>(*menuBar);
+            return std::static_pointer_cast<MenuBar>(menuBar->clone());
         else
             return nullptr;
     }

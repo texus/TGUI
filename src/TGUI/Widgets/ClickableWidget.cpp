@@ -54,7 +54,7 @@ namespace tgui
     ClickableWidget::Ptr ClickableWidget::copy(ClickableWidget::ConstPtr widget)
     {
         if (widget)
-            return std::make_shared<ClickableWidget>(*widget);
+            return std::static_pointer_cast<ClickableWidget>(widget->clone());
         else
             return nullptr;
     }

@@ -826,7 +826,7 @@ namespace tgui
                 xExpr += expression.substr(currentPos, bindPositionPos - currentPos) + "left";
                 yExpr += expression.substr(currentPos, bindPositionPos - currentPos) + "top";
 
-                if (expression.find("position", currentPos) == bindPositionPos)
+                if (expression.find("position", bindPositionPos) == bindPositionPos)
                     currentPos = bindPositionPos + 8;
                 else
                     currentPos = bindPositionPos + 3;

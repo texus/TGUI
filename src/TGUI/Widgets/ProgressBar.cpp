@@ -53,7 +53,7 @@ namespace tgui
     ProgressBar::Ptr ProgressBar::copy(ProgressBar::ConstPtr progressBar)
     {
         if (progressBar)
-            return std::make_shared<ProgressBar>(*progressBar);
+            return std::static_pointer_cast<ProgressBar>(progressBar->clone());
         else
             return nullptr;
     }

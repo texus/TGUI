@@ -59,7 +59,7 @@ namespace tgui
     Panel::Ptr Panel::copy(Panel::ConstPtr panel)
     {
         if (panel)
-            return std::make_shared<Panel>(*panel);
+            return std::static_pointer_cast<Panel>(panel->clone());
         else
             return nullptr;
     }

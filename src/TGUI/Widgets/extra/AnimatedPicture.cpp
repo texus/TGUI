@@ -45,7 +45,7 @@ namespace ext
     AnimatedPicture::Ptr AnimatedPicture::copy(AnimatedPicture::ConstPtr picture)
     {
         if (picture)
-            return std::make_shared<AnimatedPicture>(*picture);
+            return std::static_pointer_cast<AnimatedPicture>(picture->clone());
         else
             return nullptr;
     }

@@ -53,7 +53,7 @@ namespace tgui
     Knob::Ptr Knob::copy(Knob::ConstPtr knob)
     {
         if (knob)
-            return std::make_shared<Knob>(*knob);
+            return std::static_pointer_cast<Knob>(knob->clone());
         else
             return nullptr;
     }

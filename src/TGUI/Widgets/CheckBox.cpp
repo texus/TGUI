@@ -51,7 +51,7 @@ namespace tgui
     CheckBox::Ptr CheckBox::copy(CheckBox::ConstPtr checkbox)
     {
         if (checkbox)
-            return std::make_shared<CheckBox>(*checkbox);
+            return std::static_pointer_cast<CheckBox>(checkbox->clone());
         else
             return nullptr;
     }

@@ -72,7 +72,7 @@ namespace tgui
     Canvas::Ptr Canvas::copy(Canvas::ConstPtr canvas)
     {
         if (canvas)
-            return std::make_shared<Canvas>(*canvas);
+            return std::static_pointer_cast<Canvas>(canvas->clone());
         else
             return nullptr;
     }

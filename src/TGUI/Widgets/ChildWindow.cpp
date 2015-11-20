@@ -52,7 +52,7 @@ namespace tgui
     ChildWindow::Ptr ChildWindow::copy(ChildWindow::ConstPtr childWindow)
     {
         if (childWindow)
-            return std::make_shared<ChildWindow>(*childWindow);
+            return std::static_pointer_cast<ChildWindow>(childWindow->clone());
         else
             return nullptr;
     }

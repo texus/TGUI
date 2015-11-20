@@ -87,7 +87,7 @@ namespace tgui
     ComboBox::Ptr ComboBox::copy(ComboBox::ConstPtr comboBox)
     {
         if (comboBox)
-            return std::make_shared<ComboBox>(*comboBox);
+            return std::static_pointer_cast<ComboBox>(comboBox->clone());
         else
             return nullptr;
     }

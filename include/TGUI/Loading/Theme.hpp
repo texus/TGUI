@@ -140,7 +140,7 @@ namespace tgui
         ///
         /// @param filename  Filename of the theme file
         ///
-        /// @warning The theme has to be used as a std::make_shared
+        /// @warning The theme instance has to be created with std::make_shared
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Theme(const std::string& filename = "");

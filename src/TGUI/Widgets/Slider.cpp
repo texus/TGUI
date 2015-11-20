@@ -50,7 +50,7 @@ namespace tgui
     Slider::Ptr Slider::copy(Slider::ConstPtr slider)
     {
         if (slider)
-            return std::make_shared<Slider>(*slider);
+            return std::static_pointer_cast<Slider>(slider->clone());
         else
             return nullptr;
     }

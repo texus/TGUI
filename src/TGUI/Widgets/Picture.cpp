@@ -101,7 +101,7 @@ namespace tgui
     Picture::Ptr Picture::copy(Picture::ConstPtr picture)
     {
         if (picture)
-            return std::make_shared<Picture>(*picture);
+            return std::static_pointer_cast<Picture>(picture->clone());
         else
             return nullptr;
     }

@@ -14,10 +14,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    VerticalLayout::Ptr VerticalLayout::copy(ConstPtr layout)
+    VerticalLayout::Ptr VerticalLayout::copy(VerticalLayout::ConstPtr layout)
     {
         if (layout)
-            return std::make_shared<VerticalLayout>(*layout);
+            return std::static_pointer_cast<VerticalLayout>(layout->clone());
         else
             return nullptr;
     }
@@ -61,13 +61,6 @@ namespace tgui
                 }
             }
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    tgui::Widget::Ptr VerticalLayout::clone()
-    {
-        return std::make_shared<VerticalLayout>(*this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

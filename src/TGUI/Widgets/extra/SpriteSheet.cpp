@@ -48,7 +48,7 @@ namespace ext
     SpriteSheet::Ptr SpriteSheet::copy(SpriteSheet::ConstPtr spriteSheet)
     {
         if (spriteSheet)
-            return std::make_shared<SpriteSheet>(*spriteSheet);
+            return std::static_pointer_cast<SpriteSheet>(spriteSheet->clone());
         else
             return nullptr;
     }

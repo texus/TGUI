@@ -93,7 +93,7 @@ namespace tgui
     ChatBox::Ptr ChatBox::copy(ChatBox::ConstPtr chatBox)
     {
         if (chatBox)
-            return std::make_shared<ChatBox>(*chatBox);
+            return std::static_pointer_cast<ChatBox>(chatBox->clone());
         else
             return nullptr;
     }

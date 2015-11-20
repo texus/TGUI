@@ -56,7 +56,7 @@ namespace tgui
     RadioButton::Ptr RadioButton::copy(RadioButton::ConstPtr radioButton)
     {
         if (radioButton)
-            return std::make_shared<RadioButton>(*radioButton);
+            return std::static_pointer_cast<RadioButton>(radioButton->clone());
         else
             return nullptr;
     }

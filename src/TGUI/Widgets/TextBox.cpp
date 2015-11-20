@@ -119,7 +119,7 @@ namespace tgui
     TextBox::Ptr TextBox::copy(TextBox::ConstPtr textBox)
     {
         if (textBox)
-            return std::make_shared<TextBox>(*textBox);
+            return std::static_pointer_cast<TextBox>(textBox->clone());
         else
             return nullptr;
     }

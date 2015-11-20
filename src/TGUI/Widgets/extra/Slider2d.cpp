@@ -58,7 +58,7 @@ namespace ext
     Slider2d::Ptr Slider2d::copy(Slider2d::ConstPtr slider)
     {
         if (slider)
-            return std::make_shared<Slider2d>(*slider);
+            return std::static_pointer_cast<Slider2d>(slider->clone());
         else
             return nullptr;
     }

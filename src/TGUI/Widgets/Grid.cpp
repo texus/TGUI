@@ -85,7 +85,7 @@ namespace tgui
     Grid::Ptr Grid::copy(Grid::ConstPtr grid)
     {
         if (grid)
-            return std::make_shared<Grid>(*grid);
+            return std::static_pointer_cast<Grid>(grid->clone());
         else
             return nullptr;
     }
