@@ -23,10 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/ToolTip.hpp>
+#include <TGUI/TGUI.hpp>
 
 TEST_CASE("[Widget]") {
     tgui::Widget::Ptr widget = std::make_shared<tgui::Button>();
@@ -67,7 +64,7 @@ TEST_CASE("[Widget]") {
     }
 
     SECTION("Opacity") {
-        REQUIRE(widget->getOpacity() == 1.F);
+        REQUIRE(widget->getOpacity() == 1.f);
 
         widget->setOpacity(0.5f);
         REQUIRE(widget->getOpacity() == 0.5f);

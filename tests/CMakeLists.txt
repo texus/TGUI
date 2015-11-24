@@ -1,5 +1,6 @@
 set(TEST_SOURCES
     main.cpp
+    Animation.cpp
     Borders.cpp
     Clipboard.cpp
     Font.cpp
