@@ -218,7 +218,7 @@ namespace tgui
             case ShowAnimationType::SlideToRight:
             {
                 m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{-getFullSize().x, getPosition().y}, getPosition(), duration));
-                setPosition({-getSize().x, getPosition().y});
+                setPosition({-getFullSize().x, getPosition().y});
                 break;
             }
             case ShowAnimationType::SlideToLeft:
@@ -235,8 +235,8 @@ namespace tgui
             }
             case ShowAnimationType::SlideToBottom:
             {
-                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, -getFullSize().x}, getPosition(), duration));
-                setPosition({getPosition().x, -getSize().x});
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, -getFullSize().y}, getPosition(), duration));
+                setPosition({getPosition().x, -getFullSize().y});
                 break;
             }
             case ShowAnimationType::SlideToTop:
@@ -309,7 +309,7 @@ namespace tgui
             }
             case ShowAnimationType::SlideToTop:
             {
-                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, -getFullSize().x}, duration, [=](){ hide(); setPosition(position); }));
+                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, -getFullSize().y}, duration, [=](){ hide(); setPosition(position); }));
                 break;
             }
         }
