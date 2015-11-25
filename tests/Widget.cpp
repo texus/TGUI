@@ -101,6 +101,45 @@ TEST_CASE("[Widget]") {
         REQUIRE(widget->getFont() == nullptr);
     }
 
+    SECTION("Move to front/back") {
+        auto container = std::make_shared<tgui::Panel>();
+        auto widget1 = std::make_shared<tgui::Button>();
+        auto widget2 = std::make_shared<tgui::Button>();
+        auto widget3 = std::make_shared<tgui::Button>();
+        container->add(widget1);
+        container->add(widget2);
+        container->add(widget3);
+
+        REQUIRE(container->getWidgets().size() == 3);
+        REQUIRE(container->getWidgets()[0] == widget1);
+        REQUIRE(container->getWidgets()[1] == widget2);
+        REQUIRE(container->getWidgets()[2] == widget3);
+
+        widget1->moveToFront();
+        REQUIRE(container->getWidgets().size() == 3);
+        REQUIRE(container->getWidgets()[0] == widget2);
+        REQUIRE(container->getWidgets()[1] == widget3);
+        REQUIRE(container->getWidgets()[2] == widget1);
+
+        widget3->moveToFront();
+        REQUIRE(container->getWidgets().size() == 3);
+        REQUIRE(container->getWidgets()[0] == widget2);
+        REQUIRE(container->getWidgets()[1] == widget1);
+        REQUIRE(container->getWidgets()[2] == widget3);
+
+        widget1->moveToBack();
+        REQUIRE(container->getWidgets().size() == 3);
+        REQUIRE(container->getWidgets()[0] == widget1);
+        REQUIRE(container->getWidgets()[1] == widget2);
+        REQUIRE(container->getWidgets()[2] == widget3);
+
+        widget2->moveToBack();
+        REQUIRE(container->getWidgets().size() == 3);
+        REQUIRE(container->getWidgets()[0] == widget2);
+        REQUIRE(container->getWidgets()[1] == widget1);
+        REQUIRE(container->getWidgets()[2] == widget3);
+    }
+
     SECTION("Saving and loading widget with layouts from file") {
         auto parent = std::make_shared<tgui::Panel>();
         parent->add(widget, "Widget");
