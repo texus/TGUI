@@ -342,6 +342,7 @@ namespace tgui
     {
         if (m_parent)
             m_parent->focusWidget(this);
+            /// TODO: Use shared_from_this instead (forces all widgets, including internal ones to be shared pointers)
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

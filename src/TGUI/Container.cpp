@@ -210,6 +210,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /// TODO: Remove this function and remove its contents to the focusWidget function above (requires change in Widget::focus)
     void Container::focusWidget(Widget *const widget)
     {
         // Loop all the widgets
