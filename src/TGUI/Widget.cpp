@@ -349,7 +349,7 @@ namespace tgui
 
     void Widget::unfocus()
     {
-        if (m_focused)
+        if (m_focused && m_parent)
             m_parent->unfocusWidgets();
     }
 
@@ -369,14 +369,16 @@ namespace tgui
 
     void Widget::moveToFront()
     {
-        m_parent->moveWidgetToFront(this);
+        if (m_parent)
+            m_parent->moveWidgetToFront(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::moveToBack()
     {
-        m_parent->moveWidgetToBack(this);
+        if (m_parent)
+            m_parent->moveWidgetToBack(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
