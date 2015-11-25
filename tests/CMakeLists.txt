@@ -3,6 +3,7 @@ set(TEST_SOURCES
     Animation.cpp
     Borders.cpp
     Clipboard.cpp
+    Container.cpp
     Font.cpp
     FileCompare.cpp
     HorizontalLayout.cpp
