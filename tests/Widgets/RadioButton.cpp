@@ -73,6 +73,11 @@ TEST_CASE("[RadioButton]") {
         REQUIRE(!radioButton1->isChecked());
         REQUIRE(radioButton2->isChecked());
         REQUIRE(radioButton3->isChecked());
+
+        parent1->uncheckRadioButtons();
+        REQUIRE(!radioButton1->isChecked());
+        REQUIRE(!radioButton2->isChecked());
+        REQUIRE(radioButton3->isChecked());
     }
     
     SECTION("Text") {
