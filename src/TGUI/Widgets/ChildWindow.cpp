@@ -301,7 +301,7 @@ namespace tgui
         m_mouseDown = true;
 
         // Move the child window to the front
-        m_parent->moveWidgetToFront(this);
+        moveToFront();
 
         m_callback.mouse.x = static_cast<int>(x - getPosition().x);
         m_callback.mouse.y = static_cast<int>(y - getPosition().y);
