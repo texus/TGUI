@@ -79,7 +79,7 @@ namespace tgui
     {
         std::string widgetName;
         if (widget->getParent())
-            widget->getParent()->getWidgetName(widget, widgetName);
+            widgetName = widget->getParent()->getWidgetName(widget);
 
         auto node = std::make_shared<DataIO::Node>();
         if (widgetName.empty())

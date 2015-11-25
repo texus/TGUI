@@ -341,13 +341,11 @@ namespace tgui
         /// @brief Returns the name of a widget.
         ///
         /// @param widget  Widget of which the name should be retrieved
-        /// @param name    Name for the widget
         ///
-        /// @return False is returned when the widget wasn't part of this container.
-        ///         In this case the name parameter is left unchanged.
+        /// @return Name of the widget or an empty string when the widget didn't exist or wasn't given a name
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getWidgetName(const Widget::Ptr& widget, std::string& name) const;
+        std::string getWidgetName(const Widget::Ptr& widget) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

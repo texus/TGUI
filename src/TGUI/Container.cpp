@@ -190,18 +190,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::getWidgetName(const Widget::Ptr& widget, std::string& name) const
+    std::string Container::getWidgetName(const Widget::Ptr& widget) const
     {
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             if (m_widgets[i] == widget)
-            {
-                name = m_objName[i];
-                return true;
-            }
+                return m_objName[i];
         }
 
-        return false;
+        return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
