@@ -287,7 +287,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::focusWidget(Widget::Ptr& widget)
+    void Gui::focusWidget(const Widget::Ptr& widget)
     {
         m_container->focusWidget(widget.get());
     }
