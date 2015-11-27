@@ -364,6 +364,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the first lines start from the top or from the bottom of the chat box.
+        ///
+        /// Note that this only makes a difference when the lines don't fill the entire chat box.
+        /// This does not change the order of the lines, new lines will always be below older lines.
+        ///
+        /// @return Are the first lines displayed at the top of the chat box?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getLinesStartFromTop() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the opacity of the widget.
         ///
         /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
