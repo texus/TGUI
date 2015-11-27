@@ -205,7 +205,40 @@ namespace tgui
         ///         An empty string will be returned when the index is too high.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getLine(std::size_t lineIndex);
+        sf::String getLine(std::size_t lineIndex) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the color of the requested line.
+        ///
+        /// @param lineIndex  The index of the line of which you request the color. The first line has index 0.
+        ///
+        /// @return The color of the requested line. The default color (set with setTextColor) when the index is too high.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::Color getLineColor(std::size_t lineIndex) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the text size of the requested line.
+        ///
+        /// @param lineIndex  The index of the line of which you request the text size. The first line has index 0.
+        ///
+        /// @return The text size of the requested line. The default text size (set with setTextSize) when the index is too high.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getLineTextSize(std::size_t lineIndex) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the font of the requested line.
+        ///
+        /// @param lineIndex  The index of the line of which you request the font. The first line has index 0.
+        ///
+        /// @return The font of the requested line. The default font (set with setFont) when the index is too high.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::shared_ptr<sf::Font> getLineFont(std::size_t lineIndex) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

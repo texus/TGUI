@@ -177,7 +177,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ChatBox::getLine(std::size_t lineIndex)
+    sf::String ChatBox::getLine(std::size_t lineIndex) const
     {
         if (lineIndex < m_panel->getWidgets().size())
         {
@@ -185,6 +185,42 @@ namespace tgui
         }
         else // Index too high
             return "";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Color ChatBox::getLineColor(std::size_t lineIndex) const
+    {
+        if (lineIndex < m_panel->getWidgets().size())
+        {
+            return std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getTextColor();
+        }
+        else // Index too high
+            return m_textColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ChatBox::getLineTextSize(std::size_t lineIndex) const
+    {
+        if (lineIndex < m_panel->getWidgets().size())
+        {
+            return std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getTextSize();
+        }
+        else // Index too high
+            return m_textSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<sf::Font> ChatBox::getLineFont(std::size_t lineIndex) const
+    {
+        if (lineIndex < m_panel->getWidgets().size())
+        {
+            return std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getFont();
+        }
+        else // Index too high
+            return getFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
