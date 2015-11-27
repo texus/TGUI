@@ -63,6 +63,13 @@ TEST_CASE("[Animation]") {
             REQUIRE(!widget->isVisible());
         }
 
+        SECTION("Time can go past the animation end") {
+            widget->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, sf::milliseconds(250));
+            widget->update(sf::milliseconds(500));
+            REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
+            REQUIRE(widget->getSize() == sf::Vector2f(120, 30));
+        }
+
         SECTION("showWithEffect") {
             SECTION("Fade") {
                 widget->showWithEffect(tgui::ShowAnimationType::Fade, sf::milliseconds(300));
