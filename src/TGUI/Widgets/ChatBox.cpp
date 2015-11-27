@@ -55,7 +55,6 @@ namespace tgui
 
     ChatBox::ChatBox(const ChatBox& chatBoxToCopy) :
         Widget             {chatBoxToCopy},
-        m_lineSpacing      {chatBoxToCopy.m_lineSpacing},
         m_textSize         {chatBoxToCopy.m_textSize},
         m_textColor        {chatBoxToCopy.m_textColor},
         m_maxLines         {chatBoxToCopy.m_maxLines},
@@ -75,7 +74,6 @@ namespace tgui
             ChatBox temp{right};
             Widget::operator=(right);
 
-            std::swap(m_lineSpacing,       temp.m_lineSpacing);
             std::swap(m_textSize,          temp.m_textSize);
             std::swap(m_textColor,         temp.m_textColor);
             std::swap(m_maxLines,          temp.m_maxLines);
@@ -276,19 +274,6 @@ namespace tgui
     void ChatBox::setTextColor(const sf::Color& color)
     {
         m_textColor = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::setLineSpacing(unsigned int lineSpacing)
-    {
-        if (m_lineSpacing != lineSpacing)
-        {
-            m_lineSpacing = lineSpacing;
-
-            recalculateFullTextHeight();
-            updateDisplayedText();
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
