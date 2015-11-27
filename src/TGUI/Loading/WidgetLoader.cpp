@@ -27,6 +27,7 @@
 #include <TGUI/Loading/WidgetLoader.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Canvas.hpp>
+#include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/CheckBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
@@ -132,9 +133,8 @@ namespace tgui
 
     #define DESERIALIZE_STRING(property) Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[property]->value).getString()
 
-    #define REMOVE_CHILD(childName) auto it = std::remove_if(node->children.begin(), node->children.end(), [](std::shared_ptr<DataIO::Node> child){ return toLower(child->name) == childName; }); \
-                                    if (it != node->children.end()) \
-                                        node->children.erase(node->children.end());
+    #define REMOVE_CHILD(childName) node->children.erase(std::remove_if(node->children.begin(), node->children.end(), \
+                                        [](std::shared_ptr<DataIO::Node> child){ return toLower(child->name) == childName; }), node->children.end());
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -240,6 +240,63 @@ namespace tgui
             return loadWidget(node, widget);
         else
             return loadWidget(node, std::make_shared<Canvas>());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API Widget::Ptr loadChatBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        ChatBox::Ptr chatBox;
+        if (widget)
+            chatBox = std::static_pointer_cast<ChatBox>(widget);
+        else
+            chatBox = std::make_shared<ChatBox>();
+
+        loadWidget(node, chatBox);
+
+        if (node->propertyValuePairs["textsize"])
+            chatBox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["textcolor"])
+            chatBox->setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["textcolor"]->value).getColor());
+
+        if (node->propertyValuePairs["linesstartfromtop"])
+        {
+            if (parseBoolean(node->propertyValuePairs["linesstartfromtop"]->value))
+                chatBox->setLinesStartFromTop(true);
+            else
+                chatBox->setLinesStartFromTop(false);
+        }
+
+        for (auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "scrollbar")
+                chatBox->setScrollbar(std::static_pointer_cast<Scrollbar>(WidgetLoader::getLoadFunction("scrollbar")(childNode)));
+        }
+        REMOVE_CHILD("scrollbar");
+
+        for (auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "line")
+            {
+                unsigned int lineTextSize = chatBox->getTextSize();
+                sf::Color lineTextColor = chatBox->getTextColor();
+
+                if (childNode->propertyValuePairs["textsize"])
+                    lineTextSize = tgui::stoi(childNode->propertyValuePairs["textsize"]->value);
+                if (childNode->propertyValuePairs["color"])
+                    lineTextColor = Deserializer::deserialize(ObjectConverter::Type::Color, childNode->propertyValuePairs["color"]->value).getColor();
+
+                if (childNode->propertyValuePairs["text"])
+                {
+                    chatBox->addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString(),
+                                     lineTextColor,
+                                     lineTextSize);
+                }
+            }
+        }
+        REMOVE_CHILD("line");
+
+        return chatBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -772,6 +829,7 @@ namespace tgui
             {"container", std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
             {"button", std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
             {"canvas", std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
+            {"chatbox", std::bind(loadChatBox, std::placeholders::_1, std::shared_ptr<ChatBox>{})},
             {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},
             {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},
             {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},

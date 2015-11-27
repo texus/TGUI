@@ -26,6 +26,7 @@
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
@@ -138,6 +139,51 @@ namespace tgui
             SET_PROPERTY("Text", Serializer::serialize(button->getText()));
 
         SET_PROPERTY("TextSize", tgui::to_string(button->getTextSize()));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::shared_ptr<DataIO::Node> saveChatBox(ChatBox::Ptr chatBox)
+    {
+        auto node = saveWidget(chatBox);
+
+        unsigned int textSize = chatBox->getTextSize();
+        sf::Color textColor = chatBox->getTextColor();
+
+        SET_PROPERTY("TextSize", tgui::to_string(textSize));
+        SET_PROPERTY("TextColor", Serializer::serialize(textColor));
+
+        if (chatBox->getLinesStartFromTop())
+            SET_PROPERTY("LinesStartFromTop", "true");
+        else
+            SET_PROPERTY("LinesStartFromTop", "false");
+
+        for (std::size_t i = 0; i < chatBox->getLineAmount(); ++i)
+        {
+            unsigned int lineTextSize = chatBox->getLineTextSize(i);
+            sf::Color lineTextColor = chatBox->getLineColor(i);
+
+            auto lineNode = std::make_shared<DataIO::Node>();
+            lineNode->parent = node.get();
+            lineNode->name = "Line";
+
+            lineNode->propertyValuePairs["Text"] = std::make_shared<DataIO::ValueNode>(lineNode.get(), Serializer::serialize(chatBox->getLine(i)));
+            if (lineTextSize != textSize)
+                lineNode->propertyValuePairs["TextSize"] = std::make_shared<DataIO::ValueNode>(lineNode.get(), tgui::to_string(lineTextSize));
+            if (lineTextColor != textColor)
+                lineNode->propertyValuePairs["Color"] = std::make_shared<DataIO::ValueNode>(lineNode.get(), Serializer::serialize(lineTextColor));
+
+            node->children.push_back(lineNode);
+        }
+
+        if (chatBox->getScrollbar())
+        {
+            node->children.push_back(WidgetSaver::getSaveFunction("scrollbar")(tgui::WidgetConverter{chatBox->getScrollbar()}));
+            node->children.back()->parent = node.get();
+            node->children.back()->name = "Scrollbar";
+        }
+
         return node;
     }
 
@@ -473,6 +519,7 @@ namespace tgui
             {"container", saveContainer},
             {"button", saveButton},
             {"canvas", saveWidget},
+            {"chatbox", saveChatBox},
             {"checkbox", saveRadioButton},
             {"clickablewidget", saveWidget},
             {"childwindow", saveChildWindow},
