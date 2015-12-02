@@ -51,6 +51,9 @@ namespace tgui
         /// @param widget  The container to save
         /// @param stream  Stream to which the widget file will be written to
         ///
+        /// @note You should use the saveWidgetsToFile or saveWidgetsToSteam functions in Gui and Container
+        ///       instead of calling this function directly.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void save(Container::Ptr widget, std::stringstream& stream);
 

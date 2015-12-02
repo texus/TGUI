@@ -51,6 +51,9 @@ namespace tgui
         /// @param parent  The parent container for the child widget
         /// @param stream  Stream containing the widget file
         ///
+        /// @note You should use the loadWidgetsFromFile or loadWidgetsFromSteam functions in Gui and Container
+        ///       instead of calling this function directly.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void load(Container::Ptr parent, std::stringstream& stream);
 
