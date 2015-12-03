@@ -342,6 +342,8 @@ namespace tgui
         template <typename Func, typename... Args>
         unsigned int connect(const std::string& signalNames, Func func, Args... args)
         {
+            assert(!m_signals.empty());
+
             for (auto& signalName : extractSignalNames(signalNames))
             {
                 if (m_signals.find(toLower(signalName)) != m_signals.end())
@@ -374,7 +376,7 @@ namespace tgui
                 }
             }
 
-            return m_lastId;
+            return m_lastId - 1;
         }
 
 
@@ -393,6 +395,8 @@ namespace tgui
         template <typename Func, typename... Args>
         unsigned int connectEx(const std::string& signalName, Func func, Args... args)
         {
+            assert(!m_signals.empty());
+
             for (auto& name : extractSignalNames(signalName))
             {
                 if (m_signals.find(toLower(name)) != m_signals.end())
@@ -425,7 +429,7 @@ namespace tgui
                 }
             }
 
-            return m_lastId;
+            return m_lastId - 1;
         }
 
 

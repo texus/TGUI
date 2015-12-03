@@ -26,7 +26,7 @@
 #include <TGUI/Widgets/Button.hpp>
 
 TEST_CASE("[Signal]") {
-        tgui::Widget::Ptr widget = std::make_shared<tgui::Button>();
+    tgui::Widget::Ptr widget = std::make_shared<tgui::Button>();
 
     SECTION("connect") {
         unsigned int id = widget->connect("PositionChanged", [](){});
@@ -66,5 +66,31 @@ TEST_CASE("[Signal]") {
 
         REQUIRE(widget->connectEx("Focused Unfocused MouseEntered MouseLeft", [](const tgui::Callback&){}) == id+11);
         REQUIRE(widget->connectEx("All", [](const tgui::Callback&){}) > id+12);
+    }
+
+    SECTION("disconnect") {
+        unsigned int i = 0;
+        unsigned int id = widget->connect("PositionChanged", [&](){ i++; });
+
+        widget->setPosition(10, 10);
+        REQUIRE(i == 1);
+
+        widget->disconnect(id);
+        widget->setPosition(20, 20);
+        REQUIRE(i == 1);
+
+        widget->connect("PositionChanged", [&](){ i++; });
+        widget->connect("SizeChanged", [&](){ i++; });
+        widget->disconnectAll("PositionChanged");
+        widget->setPosition(30, 30);
+        widget->setSize(100, 25);
+        REQUIRE(i == 2);
+
+        widget->connect("PositionChanged", [&](){ i++; });
+        widget->connect("SizeChanged", [&](){ i++; });
+        widget->disconnectAll();
+        widget->setPosition(40, 40);
+        widget->setSize(200, 50);
+        REQUIRE(i == 2);
     }
 }
