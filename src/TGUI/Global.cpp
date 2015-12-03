@@ -97,21 +97,22 @@ namespace tgui
 
     int stoi(const std::string& value)
     {
-        return std::atoi(value.c_str());
+        int result;
+        std::istringstream iss(value);
+        iss.imbue(std::locale::classic());
+        iss >> result;
+        return result;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float stof(const std::string& value)
     {
-        return static_cast<float>(std::atof(value.c_str()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned long stoul(const std::string& value)
-    {
-        return static_cast<unsigned long>(std::atoi(value.c_str()));
+        float result;
+        std::istringstream iss(value);
+        iss.imbue(std::locale::classic());
+        iss >> result;
+        return result;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
