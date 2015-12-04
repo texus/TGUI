@@ -130,7 +130,7 @@ TEST_CASE("[Theme]") {
         }
 
         SECTION("wrong widget type") {
-            auto theme = std::make_shared<tgui::Theme>("resources/Black.conf");
+            auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
             REQUIRE_THROWS_AS(tgui::EditBox::Ptr widget = theme->load("Button"), tgui::Exception);
         }
     }
