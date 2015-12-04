@@ -247,7 +247,7 @@ namespace tgui
     std::shared_ptr<Theme> Theme::clone() const
     {
         auto theme = std::make_shared<Theme>(*this);
-        theme->m_widgets = {};
+        theme->m_widgets = std::map<Widget*, std::string>{};
         return theme;
     }
 
