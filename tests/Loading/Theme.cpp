@@ -323,6 +323,25 @@ TEST_CASE("[Theme]") {
         REQUIRE(button3->getRenderer()->getProperty("TextColor").getColor() == sf::Color(0, 0, 255));
     }
 
+    SECTION("clone") {
+        tgui::Theme::Ptr theme1 = std::make_shared<tgui::Theme>("resources/Black.txt");
+        tgui::Button::Ptr button1 = theme1->load("Button");
+        theme1->setProperty("Button", "TextColorNormal", sf::Color(255, 0, 0)); // TODO: Load entire file when theme is created so that it works when this line is moved before the theme1->load line
+
+        tgui::Theme::Ptr theme2 = theme1->clone();
+        tgui::Button::Ptr button2 = theme2->load("Button");
+        REQUIRE(button1->getRenderer()->getProperty("TextColorNormal").getColor() == sf::Color(255, 0, 0));
+        REQUIRE(button2->getRenderer()->getProperty("TextColorNormal").getColor() == sf::Color(255, 0, 0));
+
+        theme1->setProperty("Button", "TextColorNormal", sf::Color(0, 255, 0));
+        REQUIRE(button1->getRenderer()->getProperty("TextColorNormal").getColor() == sf::Color(0, 255, 0));
+        REQUIRE(button2->getRenderer()->getProperty("TextColorNormal").getColor() == sf::Color(255, 0, 0));
+
+        theme2->setProperty("Button", "TextColorNormal", sf::Color(0, 0, 255));
+        REQUIRE(button1->getRenderer()->getProperty("TextColorNormal").getColor() == sf::Color(0, 255, 0));
+        REQUIRE(button2->getRenderer()->getProperty("TextColorNormal").getColor() == sf::Color(0, 0, 255));
+    }
+
     SECTION("setConstructFunction") {
         tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>();
 
