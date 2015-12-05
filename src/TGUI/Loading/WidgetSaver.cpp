@@ -96,7 +96,7 @@ namespace tgui
             SET_PROPERTY("Position", emitLayout(widget->getPositionLayout()));
         if (widget->getSize() != sf::Vector2f{})
             SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
-        if (widget->getOpacity() != 255)
+        if (widget->getOpacity() != 1)
             SET_PROPERTY("Opacity", tgui::to_string(widget->getOpacity()));
 
         /// TODO: Font and ToolTip
