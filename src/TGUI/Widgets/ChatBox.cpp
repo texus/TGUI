@@ -320,8 +320,8 @@ namespace tgui
 
         if (m_scroll)
         {
-            m_scroll->setSize({m_scroll->getSize().x, getSize().y});
-            m_scroll->setLowValue(static_cast<unsigned int>(getSize().y));
+            m_scroll->setSize({m_scroll->getSize().x, m_panel->getSize().y});
+            m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
         }
 
         recalculateFullTextHeight();
