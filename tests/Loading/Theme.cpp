@@ -325,8 +325,8 @@ TEST_CASE("[Theme]") {
 
     SECTION("clone") {
         tgui::Theme::Ptr theme1 = std::make_shared<tgui::Theme>("resources/Black.txt");
+        theme1->setProperty("Button", "TextColorNormal", sf::Color(255, 0, 0));
         tgui::Button::Ptr button1 = theme1->load("Button");
-        theme1->setProperty("Button", "TextColorNormal", sf::Color(255, 0, 0)); // TODO: Load entire file when theme is created so that it works when this line is moved before the theme1->load line
 
         tgui::Theme::Ptr theme2 = theme1->clone();
         tgui::Button::Ptr button2 = theme2->load("Button");

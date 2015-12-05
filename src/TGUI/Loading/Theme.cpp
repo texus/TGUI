@@ -178,7 +178,10 @@ namespace tgui
                 if (m_widgetTypes.find(widget.second) != m_widgetTypes.end())
                     widgetType = m_widgetTypes[widget.second];
                 else
+                {
+                    m_widgetProperties[widget.second].clear();
                     widgetType = toLower(m_themeLoader->load(m_filename, widget.second, m_widgetProperties[widget.second]));
+                }
             }
             else
                 widgetType = widget.second;
@@ -199,7 +202,10 @@ namespace tgui
         if (m_filename != "")
         {
             if (m_widgetTypes.find(newClassName) == m_widgetTypes.end())
+            {
+                m_widgetProperties[newClassName].clear();
                 m_themeLoader->load(m_filename, newClassName, m_widgetProperties[newClassName]);
+            }
         }
 
         // Reload all the widget that match the old class name
@@ -226,7 +232,10 @@ namespace tgui
             if (m_widgetTypes.find(className) != m_widgetTypes.end())
                 widgetType = m_widgetTypes[className];
             else
+            {
+                m_widgetProperties[className].clear();
                 widgetType = toLower(m_themeLoader->load(m_filename, className, m_widgetProperties[className]));
+            }
         }
         else // Load the white theme
         {
@@ -247,7 +256,7 @@ namespace tgui
     std::shared_ptr<Theme> Theme::clone() const
     {
         auto theme = std::make_shared<Theme>(*this);
-        theme->m_widgets = std::map<Widget*, std::string>{};
+        theme->m_widgets.clear();
         return theme;
     }
 

@@ -118,7 +118,13 @@ namespace tgui
         if (m_propertiesCache[filename].find(lowercaseClassName) == m_propertiesCache[filename].end())
             throw Exception{"No class '" + className + "' was found in " + filename + "."};
 
-        propertyValuePair = m_propertiesCache[filename][lowercaseClassName];
+        // Copy the properties that were not already set
+        for (auto& pair : m_propertiesCache[filename][lowercaseClassName])
+        {
+            if (propertyValuePair.find(pair.first) == propertyValuePair.end())
+                propertyValuePair[pair.first] = pair.second;
+        }
+
         return m_widgetTypeCache[filename][lowercaseClassName];
     }
 

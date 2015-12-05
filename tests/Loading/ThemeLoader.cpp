@@ -74,10 +74,12 @@ TEST_CASE("[ThemeLoader]") {
         REQUIRE(properties.size() == 1);
         REQUIRE(properties["textcolor"] == "rgb(255, 0, 0)");
 
+        properties.clear();
         REQUIRE_NOTHROW(loader->load("resources/ThemeComments.txt", "Correct/*Comment*/Name", properties));
         REQUIRE(properties.size() == 1);
         REQUIRE(properties["textcolor"] == "rgb(0, 255, 0 )");
 
+        properties.clear();
         REQUIRE_NOTHROW(loader->load("resources/ThemeComments.txt", "CorrectName", properties));
         REQUIRE(properties.size() == 1);
         REQUIRE(properties["textcolor"] == "rgb(0, 0 , 255)");
