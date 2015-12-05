@@ -236,6 +236,11 @@ TEST_CASE("[Slider]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(slider);
 
+        slider->setOpacity(0.8f);
+        slider->setMinimum(10);
+        slider->setMaximum(50);
+        slider->setValue(20);
+
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSlider1.txt"));
         
         parent->removeAllWidgets();

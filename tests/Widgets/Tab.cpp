@@ -142,7 +142,8 @@ TEST_CASE("[Tab]") {
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(tab);
-        
+
+        tab->setOpacity(0.8f);
         tab->add("1");
         tab->add("2");
         tab->add("3");

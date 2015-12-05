@@ -74,6 +74,7 @@ TEST_CASE("[Picture]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(picture);
 
+        picture->setOpacity(0.8f);
         picture->setSmooth();
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePicture1.txt"));

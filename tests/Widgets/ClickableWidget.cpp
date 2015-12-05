@@ -52,6 +52,8 @@ TEST_CASE("[ClickableWidget]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(widget);
 
+        widget->setOpacity(0.8f);
+
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget1.txt"));
 
         parent->removeAllWidgets();

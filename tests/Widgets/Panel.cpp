@@ -95,6 +95,9 @@ TEST_CASE("[Panel]") {
             button->setPosition(40, 20);
             panel->add(button);
 
+            panel->setOpacity(0.8f);
+            panel->setBackgroundColor(sf::Color::Green);
+
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel3.txt"));
 
             parent->removeAllWidgets();

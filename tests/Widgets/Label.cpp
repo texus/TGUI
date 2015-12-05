@@ -125,7 +125,8 @@ TEST_CASE("[Label]") {
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(label);
-        
+
+        label->setOpacity(0.8f);
         label->setText("SomeText");
         label->setTextSize(25);
         label->setTextStyle(sf::Text::Bold | sf::Text::Italic);

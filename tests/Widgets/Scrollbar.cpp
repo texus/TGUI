@@ -319,6 +319,11 @@ TEST_CASE("[Scrollbar]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(scrollbar);
 
+        scrollbar->setOpacity(0.8f);
+        scrollbar->setLowValue(10);
+        scrollbar->setMaximum(50);
+        scrollbar->setValue(20);
+
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileScrollbar1.txt"));
         
         parent->removeAllWidgets();

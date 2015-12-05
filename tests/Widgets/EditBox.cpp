@@ -265,6 +265,7 @@ TEST_CASE("[EditBox]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(editBox);
 
+        editBox->setOpacity(0.8f);
         editBox->setText("SomeText");
         editBox->setDefaultText("SomeDefaultText");
         editBox->setTextSize(25);

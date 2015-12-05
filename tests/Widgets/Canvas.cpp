@@ -44,6 +44,8 @@ TEST_CASE("[Canvas]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(canvas);
 
+        canvas->setOpacity(0.8f);
+
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCanvas1.txt"));
         
         parent->removeAllWidgets();

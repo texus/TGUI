@@ -335,7 +335,8 @@ TEST_CASE("[ListBox]") {
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(listBox);
-        
+
+        listBox->setOpacity(0.8f);
         listBox->addItem("Item 1", "1");
         listBox->addItem("Item 2");
         listBox->addItem("Item 3", "3");

@@ -242,6 +242,7 @@ TEST_CASE("[ProgressBar]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(progressBar);
 
+        progressBar->setOpacity(0.8f);
         progressBar->setText("SomeText");
         progressBar->setTextSize(25);
         progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);

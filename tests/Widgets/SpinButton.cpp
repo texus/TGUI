@@ -248,6 +248,12 @@ TEST_CASE("[SpinButton]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(spinButton);
 
+        spinButton->setOpacity(0.8f);
+        spinButton->setMinimum(10);
+        spinButton->setMaximum(50);
+        spinButton->setValue(20);
+        spinButton->setVerticalScroll(false);
+
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSpinButton1.txt"));
         
         parent->removeAllWidgets();

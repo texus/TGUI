@@ -237,6 +237,7 @@ TEST_CASE("[ChatBox]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(chatBox);
 
+        chatBox->setOpacity(0.8f);
         chatBox->setTextColor(sf::Color::White);
         chatBox->setTextSize(34);
         chatBox->addLine("L4");

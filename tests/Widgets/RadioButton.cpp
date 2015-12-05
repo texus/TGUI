@@ -281,7 +281,8 @@ TEST_CASE("[RadioButton]") {
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(radioButton);
-        
+
+        radioButton->setOpacity(0.8f);
         radioButton->check();
         radioButton->setText("SomeText");
         radioButton->setTextSize(25);

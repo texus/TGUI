@@ -59,7 +59,8 @@ TEST_CASE("[CheckBox]") {
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(checkBox);
-        
+
+        checkBox->setOpacity(0.8f);
         checkBox->check();
         checkBox->setText("SomeText");
         checkBox->setTextSize(25);

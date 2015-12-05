@@ -156,6 +156,7 @@ TEST_CASE("[ChildWindow]") {
             button->setPosition(40, 20);
             childWindow->add(button);
 
+            childWindow->setOpacity(0.8f);
             childWindow->setTitle("Title");
             childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
             childWindow->setIcon({"resources/image.png"});

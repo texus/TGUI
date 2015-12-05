@@ -152,7 +152,8 @@ TEST_CASE("[TextBox]") {
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(textBox);
-        
+
+        textBox->setOpacity(0.8f);
         textBox->setText("This is the text in the text box!");
         textBox->setTextSize(25);
         textBox->setMaximumCharacters(16);

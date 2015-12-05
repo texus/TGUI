@@ -208,7 +208,8 @@ TEST_CASE("[Button]") {
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(button);
-        
+
+        button->setOpacity(0.8f);
         button->setText("SomeText");
         button->setTextSize(25);
 

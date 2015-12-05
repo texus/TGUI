@@ -215,6 +215,14 @@ TEST_CASE("[Knob]") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(knob);
 
+        knob->setOpacity(0.8f);
+        knob->setStartRotation(-180);
+        knob->setEndRotation(0);
+        knob->setClockwiseTurning(false);
+        knob->setMinimum(10);
+        knob->setMaximum(50);
+        knob->setValue(20);
+
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileKnob1.txt"));
         
         parent->removeAllWidgets();

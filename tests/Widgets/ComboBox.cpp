@@ -371,7 +371,8 @@ TEST_CASE("[ComboBox]") {
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(comboBox);
-        
+
+        comboBox->setOpacity(0.8f);
         comboBox->addItem("Item 1", "1");
         comboBox->addItem("Item 2");
         comboBox->addItem("Item 3", "3");
