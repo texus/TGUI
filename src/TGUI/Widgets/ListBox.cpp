@@ -366,6 +366,7 @@ namespace tgui
 
         // Unselect any selected item
         m_selectedItem = -1;
+        m_hoveringItem = -1;
 
         // If there is a scrollbar then tell it that all item were removed
         if (m_scroll != nullptr)
