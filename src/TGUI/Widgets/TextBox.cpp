@@ -455,6 +455,8 @@ namespace tgui
         if (m_scroll != nullptr)
             m_scroll->setOpacity(m_opacity);
 
+        getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+
         m_textBeforeSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         m_textAfterSelection1.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         m_textAfterSelection2.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
