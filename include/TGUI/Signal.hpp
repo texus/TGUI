@@ -342,9 +342,11 @@ namespace tgui
         template <typename Func, typename... Args>
         unsigned int connect(const std::string& signalNames, Func func, Args... args)
         {
-            assert(!m_signals.empty());
+            auto signalNameList = extractSignalNames(signalNames);
+            if (signalNameList.empty())
+                throw Exception{"connect function called with empty string"};
 
-            for (auto& signalName : extractSignalNames(signalNames))
+            for (auto& signalName : signalNameList)
             {
                 if (m_signals.find(toLower(signalName)) != m_signals.end())
                 {
@@ -362,6 +364,8 @@ namespace tgui
                         throw Exception{"Cannot connect to unknown signal '" + signalName + "'."};
                     else
                     {
+                        assert(!m_signals.empty());
+
                         for (auto& signal : m_signals)
                         {
                             try {
@@ -395,9 +399,11 @@ namespace tgui
         template <typename Func, typename... Args>
         unsigned int connectEx(const std::string& signalName, Func func, Args... args)
         {
-            assert(!m_signals.empty());
+            auto signalNameList = extractSignalNames(signalName);
+            if (signalNameList.empty())
+                throw Exception{"connect function called with empty string"};
 
-            for (auto& name : extractSignalNames(signalName))
+            for (auto& name : signalNameList)
             {
                 if (m_signals.find(toLower(name)) != m_signals.end())
                 {
@@ -415,6 +421,8 @@ namespace tgui
                         throw Exception{"Cannot connect to unknown signal '" + name + "'."};
                     else
                     {
+                        assert(!m_signals.empty());
+
                         for (auto& signal : m_signals)
                         {
                             try {

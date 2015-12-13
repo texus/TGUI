@@ -43,6 +43,8 @@ TEST_CASE("[Signal]") {
         REQUIRE(widget->connect("PositionChanged", [](sf::Vector2f, sf::Vector2f){}, widget2->getPosition()) == id+8);
         REQUIRE(widget->connect("SizeChanged", [](sf::Vector2f, sf::Vector2f){}, std::bind(&tgui::Widget::getSize, widget2)) == id+9);
 
+        REQUIRE_THROWS_AS(widget->connect("", [](){}), tgui::Exception);
+        REQUIRE_THROWS_AS(widget->connect("    ", [](){}), tgui::Exception);
         REQUIRE_THROWS_AS(widget->connect("SomeWrongSignal", [](){}), tgui::Exception);
         REQUIRE_THROWS_AS(widget->connect("PositionChanged", [](bool){}), tgui::Exception);
 
