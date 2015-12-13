@@ -50,4 +50,20 @@ TEST_CASE("[VerticalLayout]") {
     layout->setRatio(0, 3.5);
     REQUIRE(button1->getFullSize() == sf::Vector2f(1000, 350));
     REQUIRE(button2->getFullSize() == sf::Vector2f(1000, 300));
+
+    auto button3 = std::make_shared<tgui::Button>();
+    layout->add(button3);
+
+    REQUIRE(layout->getRatio(button1) == 3.5);
+    REQUIRE(layout->getRatio(button2) == 3);
+    REQUIRE(layout->getRatio(button3) == 1);
+    REQUIRE(layout->getRatio(nullptr) == 0);
+    REQUIRE(layout->getRatio(std::make_shared<tgui::Button>()) == 0);
+    REQUIRE(layout->getRatio(0) == 3.5);
+    REQUIRE(layout->getRatio(1) == 1.5);
+    REQUIRE(layout->getRatio(2) == 3);
+    REQUIRE(layout->getRatio(3) == 1);
+    REQUIRE(layout->getRatio(4) == 0);
+
+    // TODO: Add fixed size tests
 }

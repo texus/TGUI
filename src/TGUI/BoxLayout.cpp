@@ -141,6 +141,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    float BoxLayout::getRatio(const Widget::Ptr& widget)
+    {
+        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
+        {
+            if (m_layoutWidgets[i] == widget)
+                return getRatio(i);
+        }
+
+        return 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BoxLayout::getRatio(std::size_t index)
+    {
+        if (index >= m_layoutWidgets.size())
+            return 0;
+
+        return m_widgetsRatio[index];
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool BoxLayout::setFixedSize(const Widget::Ptr& widget, float size)
     {
         for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
@@ -162,6 +185,29 @@ namespace tgui
         m_widgetsFixedSizes[index] = size;
         updateWidgetPositions();
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BoxLayout::getFixedSize(const Widget::Ptr& widget)
+    {
+        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
+        {
+            if (m_layoutWidgets[i] == widget)
+                return getFixedSize(i);
+        }
+
+        return 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float BoxLayout::getFixedSize(std::size_t index)
+    {
+        if (index >= m_layoutWidgets.size())
+            return 0;
+
+        return m_widgetsFixedSizes[index];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

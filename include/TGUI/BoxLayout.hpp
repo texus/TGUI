@@ -189,6 +189,34 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the ratio of a widget.
+        ///
+        /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
+        /// So setting a ratio to 2 means that the widget will be 2 times larger than others.
+        ///
+        /// @param widget  Pointer to the widget
+        ///
+        /// @return Ratio given to the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getRatio(const Widget::Ptr& widget);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the ratio of a widget.
+        ///
+        /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
+        /// So setting a ratio to 2 means that the widget will be 2 times larger than others.
+        ///
+        /// @param index  Index of the widget in the layout
+        ///
+        /// @return Ratio given to the widget or 0 when when the index was too high
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getRatio(std::size_t index);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Set the size of a widget to a constant value.
         ///
         /// Setting a fixed size cancel the effect of the ratio.
@@ -216,6 +244,34 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setFixedSize(std::size_t index, float size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the size of a widget when it has a constant value.
+        ///
+        /// Having a fixed size cancel the effect of the ratio.
+        /// When 0 is returned then the size of the widget is variable and determined by the ratio.
+        ///
+        /// @param widget Pointer to the widget
+        ///
+        /// @return Fixed size of the widget or 0 when size is variable
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getFixedSize(const Widget::Ptr& widget);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the size of a widget when it has a constant value.
+        ///
+        /// Having a fixed size cancel the effect of the ratio.
+        /// When 0 is returned then the size of the widget is variable and determined by the ratio.
+        ///
+        /// @param index  Index of the widget in the layout
+        ///
+        /// @return Fixed size of the widget or 0 when size is variable or index is too high
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getFixedSize(std::size_t index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
