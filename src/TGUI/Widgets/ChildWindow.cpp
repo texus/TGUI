@@ -222,6 +222,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::setResizable(bool resizable)
+    {
+        m_resizable = resizable;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ChildWindow::isResizable() const
+    {
+        return m_resizable;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::keepInParent(bool enabled)
     {
         m_keepInParent = enabled;
@@ -337,6 +351,37 @@ namespace tgui
              && (!sf::FloatRect{getPosition().x + getRenderer()->getBorders().left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->getBorders().top,
                                 getSize().x, getSize().y}.contains(x, y)))
             {
+                // Check if you start resizing the child window
+                if (m_resizable)
+                {
+                    // Check on which border the mouse is standing
+                    if (sf::FloatRect{getPosition().x, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->getBorders().top + getSize().y,
+                                      getRenderer()->getBorders().left, getRenderer()->getBorders().bottom}.contains(x, y))
+                    {
+                        m_resizeDirection = ResizeLeft | ResizeBottom;
+                    }
+                    else if (sf::FloatRect{getPosition().x + getRenderer()->getBorders().left + getSize().x, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->getBorders().top + getSize().y,
+                                      getRenderer()->getBorders().right, getRenderer()->getBorders().bottom}.contains(x, y))
+                    {
+                        m_resizeDirection = ResizeRight | ResizeBottom;
+                    }
+                    else if (sf::FloatRect{getPosition().x, getPosition().y + getRenderer()->m_titleBarHeight,
+                                      getRenderer()->getBorders().left, getRenderer()->getBorders().top + getSize().y}.contains(x, y))
+                    {
+                        m_resizeDirection = ResizeLeft;
+                    }
+                    else if (sf::FloatRect{getPosition().x + getRenderer()->getBorders().left + getSize().x, getPosition().y + getRenderer()->m_titleBarHeight,
+                                      getRenderer()->getBorders().right, getRenderer()->getBorders().top + getSize().y}.contains(x, y))
+                    {
+                        m_resizeDirection = ResizeRight;
+                    }
+                    else if (sf::FloatRect{getPosition().x + getRenderer()->getBorders().left, getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->getBorders().top + getSize().y,
+                                           getSize().x, getRenderer()->getBorders().bottom}.contains(x, y))
+                    {
+                        m_resizeDirection = ResizeBottom;
+                    }
+                }
+
                 // Don't send the event to the widgets
                 return;
             }
@@ -351,6 +396,7 @@ namespace tgui
     {
         m_mouseDown = false;
         m_mouseDownOnTitleBar = false;
+        m_resizeDirection = ResizeNone;
 
         // Check if the mouse is on top of the title bar
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->m_titleBarHeight}.contains(x, y))
@@ -418,8 +464,36 @@ namespace tgui
             setPosition(sf::Vector2f{x, y} - m_draggingPosition);
         }
 
+        // Check if you are resizing the window
+        else if (m_mouseDown && m_resizeDirection != ResizeNone)
+        {
+            if ((m_resizeDirection & ResizeLeft) != 0)
+            {
+                float diff = x - getPosition().x;
+                if (getSize().x - diff >= 25)
+                {
+                    setPosition(getPosition().x + diff, getPosition().y);
+                    setSize(getSize().x - diff, getSize().y);
+                }
+                else
+                {
+                    setPosition(getPosition().x + getSize().x - 25, getPosition().y);
+                    setSize(25, getSize().y);
+                }
+            }
+            else if ((m_resizeDirection & ResizeRight) != 0)
+            {
+                setSize(std::max(25.0f, x - (getPosition().x + getRenderer()->m_borders.left)), getSize().y);
+            }
+
+            if ((m_resizeDirection & ResizeBottom) != 0)
+            {
+                setSize(getSize().x, std::max(0.f, y - (getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top)));
+            }
+        }
+
         // Check if the mouse is on top of the title bar
-        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right, getRenderer()->m_titleBarHeight}.contains(x, y))
+        else if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right, getRenderer()->m_titleBarHeight}.contains(x, y))
         {
             // Send the hover event to the close button
             if (m_closeButton->mouseOnWidget(x, y))

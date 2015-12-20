@@ -232,6 +232,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the child window can be resized by dragging its borders or not.
+        ///
+        /// @param resizable  Can the user change the size of the window by dragging one of the borders?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setResizable(bool resizable = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Check whether the child window can be resized by dragging its borders or not.
+        ///
+        /// @return Can the user change the size of the window by dragging one of the borders?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isResizable() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Set the child window to be kept inside its parent.
         ///
         /// @param enabled  When it's set to true, the child window will always be kept automatically inside its parent.
@@ -356,6 +374,18 @@ namespace tgui
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        enum ResizeDirection
+        {
+            ResizeNone   = 0,
+            ResizeLeft   = 1,
+            ResizeTop    = 2,
+            ResizeRight  = 4,
+            ResizeBottom = 8
+        };
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
@@ -369,6 +399,9 @@ namespace tgui
 
         bool m_mouseDownOnTitleBar = false;
         bool m_keepInParent = false;
+
+        bool m_resizable = false;
+        int m_resizeDirection = ResizeNone;
 
         friend class ChildWindowRenderer;
 
