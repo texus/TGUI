@@ -70,10 +70,7 @@ namespace tgui
     {
         // Check if the mouse is inside the panel
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
-        {
-            m_mouseHover = true;
             return true;
-        }
 
         if (m_mouseHover)
         {

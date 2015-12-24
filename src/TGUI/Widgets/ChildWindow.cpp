@@ -455,8 +455,6 @@ namespace tgui
 
     void ChildWindow::mouseMoved(float x, float y)
     {
-        m_mouseHover = true;
-
         // Check if you are dragging the child window
         if (m_mouseDown && m_mouseDownOnTitleBar)
         {
