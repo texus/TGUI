@@ -463,12 +463,12 @@ namespace tgui
 
     void Container::mouseMoved(float x, float y)
     {
+        Widget::mouseMoved(x, y);
+
         sf::Event event;
         event.type = sf::Event::MouseMoved;
         event.mouseMove.x = static_cast<int>(x - getPosition().x);
         event.mouseMove.y = static_cast<int>(y - getPosition().y);
-
-        // Let the event manager handle the event
         handleEvent(event);
     }
 
@@ -651,9 +651,6 @@ namespace tgui
         {
             float mouseX = (event.type == sf::Event::MouseMoved) ? static_cast<float>(event.mouseMove.x) : static_cast<float>(event.touch.x);
             float mouseY = (event.type == sf::Event::MouseMoved) ? static_cast<float>(event.mouseMove.y) : static_cast<float>(event.touch.y);
-
-            // Handle the mouse move event ourselves first
-            Widget::mouseMoved(mouseX, mouseY);
 
             // Loop through all widgets
             for (std::size_t i = 0; i < m_widgets.size(); ++i)
