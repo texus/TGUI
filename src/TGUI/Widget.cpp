@@ -225,8 +225,8 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getParent()->getSize().x, getPosition().y}, getPosition(), duration));
-                    setPosition({getParent()->getSize().x, getPosition().y});
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getParent()->getSize().x + getWidgetOffset().x, getPosition().y}, getPosition(), duration));
+                    setPosition({getParent()->getSize().x + getWidgetOffset().x, getPosition().y});
                 }
                 else
                     sf::err() << "TGUI Warning: showWithEffect(SlideToLeft) does not work before widget has a parent." << std::endl;
@@ -243,8 +243,8 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, getParent()->getSize().y}, getPosition(), duration));
-                    setPosition({getPosition().x, getParent()->getSize().y});
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, getParent()->getSize().y + getWidgetOffset().y}, getPosition(), duration));
+                    setPosition({getPosition().x, getParent()->getSize().y + getWidgetOffset().y});
                 }
                 else
                     sf::err() << "TGUI Warning: showWithEffect(SlideToTop) does not work before widget has a parent." << std::endl;
@@ -287,7 +287,7 @@ namespace tgui
             case ShowAnimationType::SlideToRight:
             {
                 if (getParent())
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{getParent()->getSize().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
                 else
                     sf::err() << "TGUI Warning: showWithEffect(SlideToRight) does not work before widget has a parent." << std::endl;
 
@@ -301,7 +301,7 @@ namespace tgui
             case ShowAnimationType::SlideToBottom:
             {
                 if (getParent())
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, getParent()->getSize().y}, duration, [=](){ hide(); setPosition(position); }));
+                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration, [=](){ hide(); setPosition(position); }));
                 else
                     sf::err() << "TGUI Warning: showWithEffect(SlideToBottom) does not work before widget has a parent." << std::endl;
 

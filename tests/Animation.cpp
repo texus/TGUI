@@ -32,7 +32,8 @@ bool compareVector2f(sf::Vector2f left, sf::Vector2f right)
 }
 
 TEST_CASE("[Animation]") {
-    tgui::Widget::Ptr widget = std::make_shared<tgui::Button>();
+    tgui::Button::Ptr widget = std::make_shared<tgui::Button>();
+    widget->getRenderer()->setBorders({2, 2, 2, 2});
     widget->setPosition(30, 15);
     widget->setSize(120, 30);
     widget->setOpacity(0.9f);
@@ -112,18 +113,18 @@ TEST_CASE("[Animation]") {
 
             SECTION("SlideFromRight") {
                 widget->showWithEffect(tgui::ShowAnimationType::SlideFromRight, sf::milliseconds(300));
-                REQUIRE(widget->getPosition() == sf::Vector2f(480, 15));
+                REQUIRE(widget->getPosition() == sf::Vector2f(482, 15));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {330, 15}));
+                REQUIRE(compareVector2f(widget->getPosition(), {482-((482-30)/3.f), 15}));
                 widget->update(sf::milliseconds(200));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             }
 
             SECTION("SlideFromBottom") {
                 widget->showWithEffect(tgui::ShowAnimationType::SlideFromBottom, sf::milliseconds(300));
-                REQUIRE(widget->getPosition() == sf::Vector2f(30, 360));
+                REQUIRE(widget->getPosition() == sf::Vector2f(30, 362));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {30, 245}));
+                REQUIRE(compareVector2f(widget->getPosition(), {30, 362-((362-15)/3.f)}));
                 widget->update(sf::milliseconds(200));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             }
@@ -156,14 +157,14 @@ TEST_CASE("[Animation]") {
                 widget->hideWithEffect(tgui::ShowAnimationType::SlideToRight, sf::milliseconds(300));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {180, 15}));
+                REQUIRE(compareVector2f(widget->getPosition(), {30+((482-30)/3.f), 15}));
             }
 
             SECTION("SlideToBottom") {
                 widget->hideWithEffect(tgui::ShowAnimationType::SlideToBottom, sf::milliseconds(300));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {30, 130}));
+                REQUIRE(compareVector2f(widget->getPosition(), {30, 15+((362-15)/3.f)}));
             }
 
             SECTION("SlideToLeft") {
