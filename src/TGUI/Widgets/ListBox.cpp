@@ -730,8 +730,6 @@ namespace tgui
 
         if (m_mouseDown)
         {
-            m_mouseDown = false;
-
             if (m_selectedItem >= 0)
             {
                 m_callback.text  = m_items[m_selectedItem].getText();
@@ -922,8 +920,9 @@ namespace tgui
 
     void ListBox::mouseNoLongerDown()
     {
+        Widget::mouseNoLongerDown();
         if (m_scroll != nullptr)
-            m_scroll->m_mouseDown = false;
+            m_scroll->mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

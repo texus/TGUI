@@ -727,18 +727,15 @@ namespace tgui
             if (event.mouseButton.button == sf::Mouse::Left)
             {
                 // Check if the mouse is on top of a widget
-                Widget::Ptr widget = mouseOnWhichWidget(mouseX, mouseY);
-                if (widget != nullptr)
-                    widget->leftMouseReleased(mouseX, mouseY);
+                Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mouseX, mouseY);
+                if (widgetBelowMouse != nullptr)
+                    widgetBelowMouse->leftMouseReleased(mouseX, mouseY);
 
-                // Tell all the other widgets that the mouse has gone up
-                for (std::vector<Widget::Ptr>::iterator it = m_widgets.begin(); it != m_widgets.end(); ++it)
-                {
-                    if (*it != widget)
-                        (*it)->mouseNoLongerDown();
-                }
+                // Tell all widgets that the mouse has gone up
+                for (auto& widget : m_widgets)
+                    widget->mouseNoLongerDown();
 
-                if (widget != nullptr)
+                if (widgetBelowMouse != nullptr)
                     return true;
             }
 

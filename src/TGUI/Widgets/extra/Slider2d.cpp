@@ -208,7 +208,7 @@ namespace ext
 
     void Slider2d::mouseNoLongerDown()
     {
-        m_mouseDown = false;
+        Widget::mouseNoLongerDown();
 
         if (m_returnThumbToCenter)
             centerThumb();

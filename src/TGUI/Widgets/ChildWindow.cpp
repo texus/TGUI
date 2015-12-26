@@ -394,7 +394,6 @@ namespace tgui
 
     void ChildWindow::leftMouseReleased(float x , float y)
     {
-        m_mouseDown = false;
         m_mouseDownOnTitleBar = false;
         m_resizeDirection = ResizeNone;
 
@@ -404,8 +403,6 @@ namespace tgui
             // Check if the close button was clicked
             if (m_closeButton->m_mouseDown)
             {
-                m_closeButton->m_mouseDown = false;
-
                 // Check if the mouse is still on the close button
                 if (m_closeButton->mouseOnWidget(x, y))
                 {
@@ -418,10 +415,6 @@ namespace tgui
                     }
                 }
             }
-
-            // Tell the widgets that the mouse is no longer down
-            for (unsigned int i = 0; i < m_widgets.size(); ++i)
-                m_widgets[i]->mouseNoLongerDown();
 
             return;
         }

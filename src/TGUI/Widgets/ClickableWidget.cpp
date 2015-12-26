@@ -94,10 +94,7 @@ namespace tgui
         sendSignal("MouseReleased", sf::Vector2f{x - getPosition().x, y - getPosition().y});
 
         if (m_mouseDown)
-        {
-            m_mouseDown = false;
             sendSignal("Clicked", sf::Vector2f{x - getPosition().x, y - getPosition().y});
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

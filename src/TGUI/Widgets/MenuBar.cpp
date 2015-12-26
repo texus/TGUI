@@ -457,6 +457,7 @@ namespace tgui
 
     void MenuBar::mouseNoLongerDown()
     {
+        Widget::mouseNoLongerDown();
         closeVisibleMenu();
     }
 

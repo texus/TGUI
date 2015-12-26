@@ -469,8 +469,6 @@ namespace tgui
                 }
             }
         }
-
-        m_mouseDown = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -520,7 +518,7 @@ namespace tgui
 
     void ChatBox::mouseNoLongerDown()
     {
-        m_mouseDown = false;
+        Widget::mouseNoLongerDown();
 
         if (m_scroll != nullptr)
             m_scroll->m_mouseDown = false;

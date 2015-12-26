@@ -451,9 +451,6 @@ namespace tgui
         // The thumb might have been dragged between two values
         if (m_mouseDown)
             updatePosition();
-
-        // The mouse is no longer down
-        m_mouseDown = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
