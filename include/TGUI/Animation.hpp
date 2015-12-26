@@ -56,13 +56,17 @@ namespace tgui
         public:
             enum class Type
             {
-                None,
-                Move,
-                Fade,
-                Scale
+                None = 0,
+                Move = 1,
+                Resize = 2,
+                Fade = 4
             };
 
-            bool update(sf::Time elapsedTime);
+            Type getType() const;
+
+            virtual bool update(sf::Time elapsedTime) = 0;
+
+            virtual void finish();
 
         protected:
             Type m_type = Type::None;
@@ -71,26 +75,9 @@ namespace tgui
             sf::Time m_totalDuration;
             sf::Time m_elapsedTime;
 
-            sf::Vector2f m_startPos;
-            sf::Vector2f m_endPos;
-
-            sf::Vector2f m_startSize;
-            sf::Vector2f m_endSize;
-
-            float m_startOpacity;
-            float m_endOpacity;
-
             std::function<void()> m_finishedCallback;
 
             friend class tgui::Widget;
-        };
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        class TGUI_API FadeAnimation : public Animation
-        {
-        public:
-            FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,14 +86,46 @@ namespace tgui
         {
         public:
             MoveAnimation(Widget::Ptr widget, sf::Vector2f start, sf::Vector2f end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
+
+            virtual bool update(sf::Time elapsedTime) override;
+
+            virtual void finish() override;
+
+        private:
+            sf::Vector2f m_startPos;
+            sf::Vector2f m_endPos;
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        class TGUI_API ScaleAnimation : public Animation
+        class TGUI_API ResizeAnimation : public Animation
         {
         public:
-            ScaleAnimation(Widget::Ptr widget, sf::Vector2f startPos, sf::Vector2f endPos, sf::Vector2f startSize, sf::Vector2f endSize, sf::Time duration, std::function<void()> finishedCallback = nullptr);
+            ResizeAnimation(Widget::Ptr widget, sf::Vector2f start, sf::Vector2f end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
+
+            virtual bool update(sf::Time elapsedTime) override;
+
+            virtual void finish() override;
+
+        private:
+            sf::Vector2f m_startSize;
+            sf::Vector2f m_endSize;
+        };
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        class TGUI_API FadeAnimation : public Animation
+        {
+        public:
+            FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
+
+            virtual bool update(sf::Time elapsedTime) override;
+
+            virtual void finish() override;
+
+        private:
+            float m_startOpacity;
+            float m_endOpacity;
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

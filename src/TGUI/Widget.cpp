@@ -32,6 +32,31 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace
+{
+    void addAnimation(std::vector<std::shared_ptr<tgui::priv::Animation>>& existingAnimations, std::shared_ptr<tgui::priv::Animation> newAnimation)
+    {
+        auto type = newAnimation->getType();
+
+        // If another animation is already running with the same type then instantly finish it
+        unsigned int i = 0;
+        while (i < existingAnimations.size())
+        {
+            if (existingAnimations[i]->getType() == type)
+            {
+                existingAnimations[i]->finish();
+                existingAnimations.erase(existingAnimations.begin() + i);
+            }
+            else
+                ++i;
+        }
+
+        existingAnimations.push_back(newAnimation);
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -204,50 +229,51 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, getOpacity(), duration));
+                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, getOpacity(), duration));
                 setOpacity(0);
                 break;
             }
             case ShowAnimationType::Scale:
             {
-                m_showAnimations.push_back(std::make_shared<priv::ScaleAnimation>(shared_from_this(), getPosition() + (getSize() / 2.f), getPosition(), sf::Vector2f{0, 0}, getSize(), duration));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition() + (getSize() / 2.f), getPosition(), duration));
+                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), sf::Vector2f{0, 0}, getSize(), duration));
                 setPosition(getPosition() + (getSize() / 2.f));
                 setSize(0, 0);
                 break;
             }
-            case ShowAnimationType::SlideToRight:
+            case ShowAnimationType::SlideFromLeft:
             {
-                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{-getFullSize().x, getPosition().y}, getPosition(), duration));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{-getFullSize().x, getPosition().y}, getPosition(), duration));
                 setPosition({-getFullSize().x, getPosition().y});
                 break;
             }
-            case ShowAnimationType::SlideToLeft:
+            case ShowAnimationType::SlideFromRight:
             {
                 if (getParent())
                 {
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getParent()->getSize().x + getWidgetOffset().x, getPosition().y}, getPosition(), duration));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getParent()->getSize().x + getWidgetOffset().x, getPosition().y}, getPosition(), duration));
                     setPosition({getParent()->getSize().x + getWidgetOffset().x, getPosition().y});
                 }
                 else
-                    sf::err() << "TGUI Warning: showWithEffect(SlideToLeft) does not work before widget has a parent." << std::endl;
+                    sf::err() << "TGUI Warning: showWithEffect(SlideFromRight) does not work before widget has a parent." << std::endl;
 
                 break;
             }
-            case ShowAnimationType::SlideToBottom:
+            case ShowAnimationType::SlideFromTop:
             {
-                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, -getFullSize().y}, getPosition(), duration));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, -getFullSize().y}, getPosition(), duration));
                 setPosition({getPosition().x, -getFullSize().y});
                 break;
             }
-            case ShowAnimationType::SlideToTop:
+            case ShowAnimationType::SlideFromBottom:
             {
                 if (getParent())
                 {
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, getParent()->getSize().y + getWidgetOffset().y}, getPosition(), duration));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, getParent()->getSize().y + getWidgetOffset().y}, getPosition(), duration));
                     setPosition({getPosition().x, getParent()->getSize().y + getWidgetOffset().y});
                 }
                 else
-                    sf::err() << "TGUI Warning: showWithEffect(SlideToTop) does not work before widget has a parent." << std::endl;
+                    sf::err() << "TGUI Warning: showWithEffect(SlideFromBottom) does not work before widget has a parent." << std::endl;
 
                 break;
             }
@@ -276,40 +302,41 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                m_showAnimations.push_back(std::make_shared<priv::FadeAnimation>(shared_from_this(), opacity, 0.f, duration, [=](){ hide(); setOpacity(opacity); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), opacity, 0.f, duration, [=](){ hide(); setOpacity(opacity); }));
                 break;
             }
             case ShowAnimationType::Scale:
             {
-                m_showAnimations.push_back(std::make_shared<priv::ScaleAnimation>(shared_from_this(), position, position + (size / 2.f), size, sf::Vector2f{0, 0}, duration, [=](){ hide(); setPosition(position); setSize(size); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, position + (size / 2.f), duration, [=](){ hide(); setPosition(position); setSize(size); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), size, sf::Vector2f{0, 0}, duration, [=](){ hide(); setPosition(position); setSize(size); }));
                 break;
             }
             case ShowAnimationType::SlideToRight:
             {
                 if (getParent())
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
                 else
-                    sf::err() << "TGUI Warning: showWithEffect(SlideToRight) does not work before widget has a parent." << std::endl;
+                    sf::err() << "TGUI Warning: hideWithEffect(SlideToRight) does not work before widget has a parent." << std::endl;
 
                 break;
             }
             case ShowAnimationType::SlideToLeft:
             {
-                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{-getFullSize().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{-getFullSize().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
                 break;
             }
             case ShowAnimationType::SlideToBottom:
             {
                 if (getParent())
-                    m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration, [=](){ hide(); setPosition(position); }));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration, [=](){ hide(); setPosition(position); }));
                 else
-                    sf::err() << "TGUI Warning: showWithEffect(SlideToBottom) does not work before widget has a parent." << std::endl;
+                    sf::err() << "TGUI Warning: hideWithEffect(SlideToBottom) does not work before widget has a parent." << std::endl;
 
                 break;
             }
             case ShowAnimationType::SlideToTop:
             {
-                m_showAnimations.push_back(std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, -getFullSize().y}, duration, [=](){ hide(); setPosition(position); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, -getFullSize().y}, duration, [=](){ hide(); setPosition(position); }));
                 break;
             }
         }

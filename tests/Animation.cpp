@@ -196,5 +196,7 @@ TEST_CASE("[Animation]") {
             REQUIRE(widget->getOpacity() == 0.9f);
             REQUIRE(!widget->isVisible());
         }
+
+        // TODO: Add tests for simultaneous animations (tests for both same type and different types)
     }
 }

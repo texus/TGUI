@@ -33,43 +33,17 @@ namespace tgui
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool Animation::update(sf::Time elapsedTime)
+        Animation::Type Animation::getType() const
         {
-            m_elapsedTime += elapsedTime;
-            if (m_elapsedTime > m_totalDuration)
-                m_elapsedTime = m_totalDuration;
-
-            if (m_type == Type::Fade)
-                m_widget->setOpacity(m_startOpacity + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endOpacity - m_startOpacity)));
-            else if (m_type == Type::Move)
-                m_widget->setPosition(m_startPos + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endPos - m_startPos)));
-            else if (m_type == Type::Scale)
-            {
-                m_widget->setPosition(m_startPos + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endPos - m_startPos)));
-                m_widget->setSize(m_startSize + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endSize - m_startSize)));
-            }
-
-            if (m_elapsedTime == m_totalDuration)
-            {
-                if (m_finishedCallback != nullptr)
-                    m_finishedCallback();
-
-                return true;
-            }
-
-            return false;
+            return m_type;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback)
+        void Animation::finish()
         {
-            m_type = Type::Fade;
-            m_widget = widget;
-            m_startOpacity = std::max(0.f, std::min(1.f, start));
-            m_endOpacity = std::max(0.f, std::min(1.f, end));
-            m_totalDuration = duration;
-            m_finishedCallback = finishedCallback;
+            if (m_finishedCallback != nullptr)
+                m_finishedCallback();
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,16 +60,95 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ScaleAnimation::ScaleAnimation(Widget::Ptr widget, sf::Vector2f startPos, sf::Vector2f endPos, sf::Vector2f startSize, sf::Vector2f endSize, sf::Time duration, std::function<void()> finishedCallback)
+        bool MoveAnimation::update(sf::Time elapsedTime)
         {
-            m_type = Type::Scale;
+            m_elapsedTime += elapsedTime;
+            if (m_elapsedTime >= m_totalDuration)
+            {
+                finish();
+                return true;
+            }
+
+            m_widget->setPosition(m_startPos + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endPos - m_startPos)));
+            return false;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void MoveAnimation::finish()
+        {
+            m_widget->setPosition(m_endPos);
+            Animation::finish();
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, sf::Vector2f start, sf::Vector2f end, sf::Time duration, std::function<void()> finishedCallback)
+        {
+            m_type = Type::Resize;
             m_widget = widget;
-            m_startPos = startPos;
-            m_endPos = endPos;
-            m_startSize = startSize;
-            m_endSize = endSize;
+            m_startSize = start;
+            m_endSize = end;
             m_totalDuration = duration;
             m_finishedCallback = finishedCallback;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        bool ResizeAnimation::update(sf::Time elapsedTime)
+        {
+            m_elapsedTime += elapsedTime;
+            if (m_elapsedTime >= m_totalDuration)
+            {
+                finish();
+                return true;
+            }
+
+            m_widget->setSize(m_startSize + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endSize - m_startSize)));
+            return false;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void ResizeAnimation::finish()
+        {
+            m_widget->setSize(m_endSize);
+            Animation::finish();
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback)
+        {
+            m_type = Type::Fade;
+            m_widget = widget;
+            m_startOpacity = std::max(0.f, std::min(1.f, start));
+            m_endOpacity = std::max(0.f, std::min(1.f, end));
+            m_totalDuration = duration;
+            m_finishedCallback = finishedCallback;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        bool FadeAnimation::update(sf::Time elapsedTime)
+        {
+            m_elapsedTime += elapsedTime;
+            if (m_elapsedTime >= m_totalDuration)
+            {
+                finish();
+                return true;
+            }
+
+            m_widget->setOpacity(m_startOpacity + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endOpacity - m_startOpacity)));
+            return false;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void FadeAnimation::finish()
+        {
+            m_widget->setOpacity(m_endOpacity);
+            Animation::finish();
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
