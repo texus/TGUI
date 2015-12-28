@@ -307,7 +307,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setTextColor(const sf::Color& color)
+    void ChatBox::setTextColor(const Color& color)
     {
         m_textColor = color;
     }
@@ -838,14 +838,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBoxRenderer::setBorderColor(const sf::Color& borderColor)
+    void ChatBoxRenderer::setBorderColor(const Color& borderColor)
     {
         m_borderColor = borderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBoxRenderer::setBackgroundColor(const sf::Color& backgroundColor)
+    void ChatBoxRenderer::setBackgroundColor(const Color& backgroundColor)
     {
         m_backgroundColor = backgroundColor;
     }

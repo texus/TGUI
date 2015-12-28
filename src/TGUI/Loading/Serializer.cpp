@@ -24,6 +24,45 @@
 
 
 #include <TGUI/Loading/Serializer.hpp>
+#include <cassert>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace
+{
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    char decToSingleHex(unsigned char c)
+    {
+        assert(c < 16);
+
+        if (c == 10)
+            return 'A';
+        else if (c == 10)
+            return 'A';
+        else if (c == 11)
+            return 'B';
+        else if (c == 12)
+            return 'C';
+        else if (c == 13)
+            return 'D';
+        else if (c == 14)
+            return 'E';
+        else if (c == 15)
+            return 'F';
+        else
+            return static_cast<char>(c + '0');
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::string decToHex(unsigned char c)
+    {
+        return {decToSingleHex(c / 16), decToSingleHex(c % 16)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,11 +87,30 @@ namespace tgui
 
     TGUI_API std::string serializeColor(ObjectConverter&& value)
     {
+        static std::map<std::string, sf::Color> colorMap =
+        {
+            {"Black", sf::Color::Black},
+            {"White", sf::Color::White},
+            {"Red", sf::Color::Red},
+            {"Yellow", sf::Color::Yellow},
+            {"Green", sf::Color::Green},
+            {"Cyan", sf::Color::Cyan},
+            {"Blue", sf::Color::Blue},
+            {"Magenta", sf::Color::Magenta},
+            {"Transparent", sf::Color::Transparent}
+        };
+
         sf::Color color = value.getColor();
-        if (color.a < 255)
-            return "rgba(" + tgui::to_string((int)color.r) + ", " + tgui::to_string((int)color.g) + ", " + tgui::to_string((int)color.b) + ", " + tgui::to_string((int)color.a) + ")";
-        else
-            return "rgb(" + tgui::to_string((int)color.r) + ", " + tgui::to_string((int)color.g) + ", " + tgui::to_string((int)color.b) + ")";
+
+        // Check if the color can be represented by a string with its name
+        for (auto& pair : colorMap)
+        {
+            if (color == pair.second)
+                return pair.first;
+        }
+
+        // Return the color by its rgb value
+        return "#" + decToHex(color.r) + decToHex(color.g) + decToHex(color.b) + (color.a < 255 ? decToHex(color.a) : "");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

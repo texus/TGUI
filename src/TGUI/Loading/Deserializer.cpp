@@ -91,12 +91,30 @@ namespace tgui
 
     TGUI_API ObjectConverter deserializeColor(const std::string& value)
     {
+        static std::map<std::string, sf::Color> colorMap =
+        {
+            {"black", sf::Color::Black},
+            {"white", sf::Color::White},
+            {"red", sf::Color::Red},
+            {"yellow", sf::Color::Yellow},
+            {"green", sf::Color::Green},
+            {"cyan", sf::Color::Cyan},
+            {"blue", sf::Color::Blue},
+            {"magenta", sf::Color::Magenta},
+            {"transparent", sf::Color::Transparent}
+        };
+
         std::string str = tgui::trim(value);
 
         // Make sure that the line isn't empty
         if (!str.empty())
         {
-            // The first way a color can be represented is with a hexadecimal number
+            // Check if the color is represented by a string with its name
+            auto it = colorMap.find(toLower(str));
+            if (it != colorMap.end())
+                return it->second;
+
+            // The color can be represented with a hexadecimal number
             if (str[0] == '#')
             {
                 // You can only have hex characters

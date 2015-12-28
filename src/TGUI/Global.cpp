@@ -180,7 +180,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color calcColorOpacity(sf::Color color, float alpha)
+    sf::Color calcColorOpacity(const sf::Color& color, float alpha)
     {
         if (alpha == 1)
             return color;

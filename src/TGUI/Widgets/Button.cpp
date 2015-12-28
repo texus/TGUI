@@ -469,7 +469,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setTextColor(const sf::Color& color)
+    void ButtonRenderer::setTextColor(const Color& color)
     {
         setTextColorNormal(color);
         setTextColorHover(color);
@@ -478,7 +478,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setTextColorNormal(const sf::Color& color)
+    void ButtonRenderer::setTextColorNormal(const Color& color)
     {
         m_textColorNormal = color;
 
@@ -488,7 +488,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setTextColorHover(const sf::Color& color)
+    void ButtonRenderer::setTextColorHover(const Color& color)
     {
         m_textColorHover = color;
 
@@ -498,7 +498,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setTextColorDown(const sf::Color& color)
+    void ButtonRenderer::setTextColorDown(const Color& color)
     {
         m_textColorDown = color;
 
@@ -508,7 +508,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setBackgroundColor(const sf::Color& color)
+    void ButtonRenderer::setBackgroundColor(const Color& color)
     {
         setBackgroundColorNormal(color);
         setBackgroundColorHover(color);
@@ -517,28 +517,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setBackgroundColorNormal(const sf::Color& color)
+    void ButtonRenderer::setBackgroundColorNormal(const Color& color)
     {
         m_backgroundColorNormal = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setBackgroundColorHover(const sf::Color& color)
+    void ButtonRenderer::setBackgroundColorHover(const Color& color)
     {
         m_backgroundColorHover = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setBackgroundColorDown(const sf::Color& color)
+    void ButtonRenderer::setBackgroundColorDown(const Color& color)
     {
         m_backgroundColorDown = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setBorderColor(const sf::Color& color)
+    void ButtonRenderer::setBorderColor(const Color& color)
     {
         m_borderColor = color;
     }

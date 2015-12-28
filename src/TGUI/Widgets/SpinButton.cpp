@@ -494,7 +494,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setBackgroundColor(const sf::Color& color)
+    void SpinButtonRenderer::setBackgroundColor(const Color& color)
     {
         setBackgroundColorNormal(color);
         setBackgroundColorHover(color);
@@ -502,21 +502,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setBackgroundColorNormal(const sf::Color& color)
+    void SpinButtonRenderer::setBackgroundColorNormal(const Color& color)
     {
         m_backgroundColorNormal = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setBackgroundColorHover(const sf::Color& color)
+    void SpinButtonRenderer::setBackgroundColorHover(const Color& color)
     {
         m_backgroundColorHover = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setArrowColor(const sf::Color& color)
+    void SpinButtonRenderer::setArrowColor(const Color& color)
     {
         setArrowColorNormal(color);
         setArrowColorHover(color);
@@ -524,21 +524,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setArrowColorNormal(const sf::Color& color)
+    void SpinButtonRenderer::setArrowColorNormal(const Color& color)
     {
         m_arrowColorNormal = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setArrowColorHover(const sf::Color& color)
+    void SpinButtonRenderer::setArrowColorHover(const Color& color)
     {
         m_arrowColorHover = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButtonRenderer::setBorderColor(const sf::Color& color)
+    void SpinButtonRenderer::setBorderColor(const Color& color)
     {
         m_borderColor = color;
     }

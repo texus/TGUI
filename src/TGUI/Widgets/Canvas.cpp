@@ -101,7 +101,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::clear(const sf::Color& color)
+    void Canvas::clear(const Color& color)
     {
         m_renderTexture.clear(color);
     }

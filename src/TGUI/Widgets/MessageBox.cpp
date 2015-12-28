@@ -302,7 +302,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBoxRenderer::setTextColor(const sf::Color& color)
+    void MessageBoxRenderer::setTextColor(const Color& color)
     {
         m_messageBox->m_label->setTextColor(color);
     }

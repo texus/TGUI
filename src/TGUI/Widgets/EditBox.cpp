@@ -1416,7 +1416,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setTextColor(const sf::Color& textColor)
+    void EditBoxRenderer::setTextColor(const Color& textColor)
     {
         m_textColor = textColor;
         m_editBox->m_textBeforeSelection.setColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
@@ -1425,7 +1425,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setSelectedTextColor(const sf::Color& selectedTextColor)
+    void EditBoxRenderer::setSelectedTextColor(const Color& selectedTextColor)
     {
         m_selectedTextColor = selectedTextColor;
         m_editBox->m_textSelection.setColor(calcColorOpacity(m_selectedTextColor, m_editBox->getOpacity()));
@@ -1433,7 +1433,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setSelectedTextBackgroundColor(const sf::Color& selectedTextBackgroundColor)
+    void EditBoxRenderer::setSelectedTextBackgroundColor(const Color& selectedTextBackgroundColor)
     {
         m_selectedTextBackgroundColor = selectedTextBackgroundColor;
         m_editBox->m_selectedTextBackground.setFillColor(calcColorOpacity(m_selectedTextBackgroundColor, m_editBox->getOpacity()));
@@ -1441,7 +1441,7 @@ namespace tgui
 
      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setDefaultTextColor(const sf::Color& defaultTextColor)
+    void EditBoxRenderer::setDefaultTextColor(const Color& defaultTextColor)
     {
         m_defaultTextColor = defaultTextColor;
         m_editBox->m_defaultText.setColor(calcColorOpacity(m_defaultTextColor, m_editBox->getOpacity()));
@@ -1449,7 +1449,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setBackgroundColor(const sf::Color& color)
+    void EditBoxRenderer::setBackgroundColor(const Color& color)
     {
         setBackgroundColorNormal(color);
         setBackgroundColorHover(color);
@@ -1457,21 +1457,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setBackgroundColorNormal(const sf::Color& color)
+    void EditBoxRenderer::setBackgroundColorNormal(const Color& color)
     {
         m_backgroundColorNormal = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setBackgroundColorHover(const sf::Color& color)
+    void EditBoxRenderer::setBackgroundColorHover(const Color& color)
     {
         m_backgroundColorHover = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setCaretColor(const sf::Color& caretColor)
+    void EditBoxRenderer::setCaretColor(const Color& caretColor)
     {
         m_caretColor = caretColor;
         m_editBox->m_caret.setFillColor(calcColorOpacity(m_caretColor, m_editBox->getOpacity()));
@@ -1479,7 +1479,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setBorderColor(const sf::Color& color)
+    void EditBoxRenderer::setBorderColor(const Color& color)
     {
         m_borderColor = color;
     }

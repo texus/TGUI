@@ -1,14 +1,12 @@
 // Comment
-# Another Comment
 Button.Button1 {
-    TextColor : rgb(255, 0, 0);
- #  SomeColor : rgb(0, 0, 0);
+    TextColor : Green;
  // AnotherColor : rgb(128, 128, 128);
  /* BackgroundColor : rgb(255, 255, 255); */
 } // Comment
 
 Button."Correct/*Comment*/Name" { // Comment
-    Text/*Comment*/Color : rgb(0, # Red
+    Text/*Comment*/Color : rgb(0,
                                255, // Green
                                0   /* Blue */);
 }
@@ -16,5 +14,5 @@ Button."Correct/*Comment*/Name" { // Comment
 /**/
 
 Button.Correct/*Comment*/Name {
-    TextColor : rgb(0, 0 /*100*/ , 255); # Comment
+    TextColor : #ABCDEF;
 }

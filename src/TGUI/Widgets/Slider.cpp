@@ -585,7 +585,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setTrackColor(const sf::Color& color)
+    void SliderRenderer::setTrackColor(const Color& color)
     {
         setTrackColorNormal(color);
         setTrackColorHover(color);
@@ -593,21 +593,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setTrackColorNormal(const sf::Color& color)
+    void SliderRenderer::setTrackColorNormal(const Color& color)
     {
         m_trackColorNormal = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setTrackColorHover(const sf::Color& color)
+    void SliderRenderer::setTrackColorHover(const Color& color)
     {
         m_trackColorHover = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setThumbColor(const sf::Color& color)
+    void SliderRenderer::setThumbColor(const Color& color)
     {
         setThumbColorNormal(color);
         setThumbColorHover(color);
@@ -615,21 +615,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setThumbColorNormal(const sf::Color& color)
+    void SliderRenderer::setThumbColorNormal(const Color& color)
     {
         m_thumbColorNormal = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setThumbColorHover(const sf::Color& color)
+    void SliderRenderer::setThumbColorHover(const Color& color)
     {
         m_thumbColorHover = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SliderRenderer::setBorderColor(const sf::Color& color)
+    void SliderRenderer::setBorderColor(const Color& color)
     {
         m_borderColor = color;
     }

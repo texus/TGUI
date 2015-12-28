@@ -27,6 +27,7 @@
 #define TGUI_OBJECT_CONVERTER_HPP
 
 
+#include <TGUI/Color.hpp>
 #include <TGUI/Borders.hpp>
 #include <TGUI/Texture.hpp>
 

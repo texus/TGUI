@@ -649,14 +649,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setBackgroundColor(const sf::Color& backgroundColor)
+    void MenuBarRenderer::setBackgroundColor(const Color& backgroundColor)
     {
         m_backgroundColor = backgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setTextColor(const sf::Color& textColor)
+    void MenuBarRenderer::setTextColor(const Color& textColor)
     {
         m_textColor = textColor;
 
@@ -674,14 +674,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setSelectedBackgroundColor(const sf::Color& selectedBackgroundColor)
+    void MenuBarRenderer::setSelectedBackgroundColor(const Color& selectedBackgroundColor)
     {
         m_selectedBackgroundColor = selectedBackgroundColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBarRenderer::setSelectedTextColor(const sf::Color& selectedTextColor)
+    void MenuBarRenderer::setSelectedTextColor(const Color& selectedTextColor)
     {
         m_selectedTextColor = selectedTextColor;
 

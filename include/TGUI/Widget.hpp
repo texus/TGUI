@@ -31,6 +31,7 @@
 #include <TGUI/Signal.hpp>
 #include <TGUI/Transformable.hpp>
 #include <TGUI/Texture.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Font.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 

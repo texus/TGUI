@@ -709,7 +709,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabRenderer::setTextColor(const sf::Color& color)
+    void TabRenderer::setTextColor(const Color& color)
     {
         m_textColor = color;
 
@@ -722,7 +722,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabRenderer::setSelectedTextColor(const sf::Color& color)
+    void TabRenderer::setSelectedTextColor(const Color& color)
     {
         m_selectedTextColor = color;
 
@@ -741,21 +741,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabRenderer::setBackgroundColor(const sf::Color& color)
+    void TabRenderer::setBackgroundColor(const Color& color)
     {
         m_backgroundColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabRenderer::setSelectedBackgroundColor(const sf::Color& color)
+    void TabRenderer::setSelectedBackgroundColor(const Color& color)
     {
         m_selectedBackgroundColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TabRenderer::setBorderColor(const sf::Color& color)
+    void TabRenderer::setBorderColor(const Color& color)
     {
         m_borderColor = color;
     }

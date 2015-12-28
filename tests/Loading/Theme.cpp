@@ -316,7 +316,7 @@ TEST_CASE("[Theme]") {
         theme->setProperty("button2", "textcolor", sf::Color(0, 0, 255));        
         REQUIRE(tgui::ThemeTest::getWidgetProperties(theme).size() == 3);
         REQUIRE(tgui::ThemeTest::getWidgetProperties(theme)["button1"]["textcolor"] == "rgb(0, 255, 0)");
-        REQUIRE(tgui::ThemeTest::getWidgetProperties(theme)["button2"]["textcolor"] == "rgb(0, 0, 255)");
+        REQUIRE(tgui::ThemeTest::getWidgetProperties(theme)["button2"]["textcolor"] == "Blue");
         REQUIRE(tgui::ThemeTest::getWidgetProperties(theme)["button3"]["textcolor"] == "rgb(0, 0, 255)");
         REQUIRE(button1->getRenderer()->getProperty("TextColor").getColor() == sf::Color(0, 255, 0));
         REQUIRE(button2->getRenderer()->getProperty("TextColor").getColor() == sf::Color(0, 0, 255));

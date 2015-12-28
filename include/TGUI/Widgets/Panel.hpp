@@ -113,7 +113,7 @@ namespace tgui
         /// @param backgroundColor  New background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& backgroundColor)
+        void setBackgroundColor(const Color& backgroundColor)
         {
             m_backgroundColor = backgroundColor;
         }
@@ -250,7 +250,7 @@ namespace tgui
         /// When a manual size is set, the background will fill this whole area.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(const sf::Color& color);
+        void setBackgroundColor(const Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

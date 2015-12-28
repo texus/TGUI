@@ -223,7 +223,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void PanelRenderer::setBackgroundColor(const sf::Color& color)
+    void PanelRenderer::setBackgroundColor(const Color& color)
     {
         m_panel->setBackgroundColor(color);
     }

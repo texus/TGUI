@@ -844,7 +844,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindowRenderer::setTitleBarColor(const sf::Color& color)
+    void ChildWindowRenderer::setTitleBarColor(const Color& color)
     {
         m_titleBarColor = color;
     }
@@ -875,7 +875,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindowRenderer::setTitleColor(const sf::Color& color)
+    void ChildWindowRenderer::setTitleColor(const Color& color)
     {
         m_titleColor = color;
         m_childWindow->m_titleText.setTextColor(calcColorOpacity(m_titleColor, m_childWindow->getOpacity()));
@@ -883,7 +883,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindowRenderer::setBorderColor(const sf::Color& borderColor)
+    void ChildWindowRenderer::setBorderColor(const Color& borderColor)
     {
         m_borderColor = borderColor;
     }
@@ -912,7 +912,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindowRenderer::setBackgroundColor(const sf::Color& backgroundColor)
+    void ChildWindowRenderer::setBackgroundColor(const Color& backgroundColor)
     {
         m_backgroundColor = backgroundColor;
     }

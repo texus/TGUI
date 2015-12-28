@@ -48,11 +48,22 @@ TEST_CASE("[Deserializer]") {
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#89ABCD").getColor() == sf::Color(137, 171, 205));
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "#FEDCBA98").getColor() == sf::Color(254, 220, 186, 152));
 
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "BLACK").getColor() == sf::Color::Black);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "White").getColor() == sf::Color::White);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "red").getColor() == sf::Color::Red);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "green").getColor() == sf::Color::Green);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "blue").getColor() == sf::Color::Blue);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "magenta").getColor() == sf::Color::Magenta);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "yellow").getColor() == sf::Color::Yellow);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Color, "cyan").getColor() == sf::Color::Cyan);
+
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, ""), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, "rgb(0,1)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, ",,,,"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, "#Hi"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, "#12345"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, "#123456789"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, "RandomString"), tgui::Exception);
     }
 
     SECTION("deserialize string") {

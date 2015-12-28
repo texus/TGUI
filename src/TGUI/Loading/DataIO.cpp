@@ -46,19 +46,7 @@ namespace tgui
             if (stream.peek() == EOF)
                 break;
 
-            if (stream.peek() == '#')
-            {
-                char c;
-                while (stream.peek() != EOF)
-                {
-                    if (stream.peek() != '\n')
-                        stream.read(&c, 1);
-                    else
-                        break;
-                }
-                continue;
-            }
-            else if (stream.peek() == '/')
+            if (stream.peek() == '/')
             {
                 char c;
                 stream.read(&c, 1);
@@ -209,18 +197,7 @@ namespace tgui
             if (stream.peek() == EOF)
                 break;
 
-            if (stream.peek() == '#')
-            {
-                while (stream.peek() != EOF)
-                {
-                    if (stream.peek() != '\n')
-                        stream.read(&c, 1);
-                    else
-                        break;
-                }
-                continue;
-            }
-            else if (stream.peek() == '/')
+            if (stream.peek() == '/')
             {
                 stream.read(&c, 1);
                 if (stream.peek() == '/')
@@ -385,7 +362,7 @@ namespace tgui
                 if (c == ':')
                     return "Found ':' while trying to read a value.";
                 else if (c == '{')
-                    return "Found 'c' while trying to read a value.";
+                    return "Found '{' while trying to read a value.";
                 else
                     return "Found empty value.";
             }
@@ -402,18 +379,7 @@ namespace tgui
         {
             char c = stream.peek();
 
-            if (stream.peek() == '#')
-            {
-                stream.read(&c, 1);
-                while (stream.peek() != EOF)
-                {
-                    stream.read(&c, 1);
-                    if (stream.peek() == '\n')
-                        break;
-                }
-                continue;
-            }
-            else if (stream.peek() == '/')
+            if (stream.peek() == '/')
             {
                 stream.read(&c, 1);
                 if (stream.peek() == '/')
@@ -488,7 +454,7 @@ namespace tgui
                 if (!whitespaceFound)
                 {
                     whitespaceFound = true;
-                    line.push_back(c);
+                    line.push_back(' ');
                 }
             }
             else
@@ -514,7 +480,7 @@ namespace tgui
             {
                 stream.read(&c, 1);
 
-                if ((c == '#') || ((c == '/') && (stream.peek() == '/')))
+                if ((c == '/') && (stream.peek() == '/'))
                 {
                     while (stream.peek() != EOF)
                     {

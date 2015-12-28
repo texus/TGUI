@@ -72,7 +72,7 @@ TEST_CASE("[ThemeLoader]") {
     SECTION("load theme with comments") {
         REQUIRE_NOTHROW(loader->load("resources/ThemeComments.txt", "Button1", properties));
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["textcolor"] == "rgb(255, 0, 0)");
+        REQUIRE(properties["textcolor"] == "Green");
 
         properties.clear();
         REQUIRE_NOTHROW(loader->load("resources/ThemeComments.txt", "Correct/*Comment*/Name", properties));
@@ -82,7 +82,7 @@ TEST_CASE("[ThemeLoader]") {
         properties.clear();
         REQUIRE_NOTHROW(loader->load("resources/ThemeComments.txt", "CorrectName", properties));
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["textcolor"] == "rgb(0, 0 , 255)");
+        REQUIRE(properties["textcolor"] == "#ABCDEF");
     }
 
     SECTION("cache") {

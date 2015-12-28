@@ -1986,14 +1986,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setBackgroundColor(const sf::Color& color)
+    void TextBoxRenderer::setBackgroundColor(const Color& color)
     {
         m_backgroundColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setTextColor(const sf::Color& color)
+    void TextBoxRenderer::setTextColor(const Color& color)
     {
         m_textColor = color;
         m_textBox->m_textBeforeSelection.setColor(calcColorOpacity(m_textColor, m_textBox->getOpacity()));
@@ -2003,7 +2003,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setSelectedTextColor(const sf::Color& color)
+    void TextBoxRenderer::setSelectedTextColor(const Color& color)
     {
         m_selectedTextColor = color;
         m_textBox->m_textSelection1.setColor(calcColorOpacity(m_selectedTextColor, m_textBox->getOpacity()));
@@ -2012,21 +2012,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setSelectedTextBackgroundColor(const sf::Color& color)
+    void TextBoxRenderer::setSelectedTextBackgroundColor(const Color& color)
     {
         m_selectedTextBgrColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setBorderColor(const sf::Color& borderColor)
+    void TextBoxRenderer::setBorderColor(const Color& borderColor)
     {
         m_borderColor = borderColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBoxRenderer::setCaretColor(const sf::Color& caretColor)
+    void TextBoxRenderer::setCaretColor(const Color& caretColor)
     {
         m_caretColor = caretColor;
     }

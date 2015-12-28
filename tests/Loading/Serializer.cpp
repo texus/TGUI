@@ -40,9 +40,20 @@ TEST_CASE("[Serializer]") {
     }
 
     SECTION("serialize color") {
-        REQUIRE(tgui::Serializer::serialize(sf::Color{100, 0, 50}) == "rgb(100, 0, 50)");
-        REQUIRE(tgui::Serializer::serialize(sf::Color{100, 0, 50, 200}) == "rgba(100, 0, 50, 200)");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Green) == "rgb(0, 255, 0)");
+        REQUIRE(tgui::Serializer::serialize(sf::Color{100, 0, 50}) == "#640032");
+
+        REQUIRE(tgui::Serializer::serialize(sf::Color{1, 35, 69, 103}) == "#01234567");
+        REQUIRE(tgui::Serializer::serialize(sf::Color{137, 171, 205, 239}) == "#89ABCDEF");
+
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Black) == "Black");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::White) == "White");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Red) == "Red");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Green) == "Green");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "Blue");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Magenta) == "Magenta");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Yellow) == "Yellow");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Cyan) == "Cyan");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Transparent) == "Transparent");
     }
 
     SECTION("serialize borders") {
@@ -90,7 +101,7 @@ TEST_CASE("[Serializer]") {
     }
 
     SECTION("custom serialize function") {
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "rgb(0, 0, 255)");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "Blue");
         auto oldFunc = tgui::Serializer::getFunction(tgui::ObjectConverter::Type::Color);
 
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, [](tgui::ObjectConverter&&){ return "STR"; });
@@ -98,6 +109,6 @@ TEST_CASE("[Serializer]") {
         REQUIRE(tgui::Serializer::serialize(tgui::Borders{10, 2, 50, 300}) == "(10, 2, 50, 300)");
         
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, oldFunc);
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "rgb(0, 0, 255)");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "Blue");
     }
 }

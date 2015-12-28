@@ -132,7 +132,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setTextColor(const sf::Color& color)
+    void Label::setTextColor(const Color& color)
     {
         getRenderer()->setTextColor(color);
     }
@@ -539,7 +539,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LabelRenderer::setTextColor(const sf::Color& color)
+    void LabelRenderer::setTextColor(const Color& color)
     {
         m_textColor = color;
         m_label->m_text.setColor(calcColorOpacity(m_textColor, m_label->getOpacity()));
@@ -547,7 +547,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LabelRenderer::setBackgroundColor(const sf::Color& color)
+    void LabelRenderer::setBackgroundColor(const Color& color)
     {
         m_backgroundColor = color;
         m_label->m_background.setFillColor(calcColorOpacity(m_backgroundColor, m_label->getOpacity()));
@@ -555,7 +555,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void LabelRenderer::setBorderColor(const sf::Color& color)
+    void LabelRenderer::setBorderColor(const Color& color)
     {
         m_borderColor = color;
     }

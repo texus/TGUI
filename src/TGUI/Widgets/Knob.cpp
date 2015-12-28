@@ -591,21 +591,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void KnobRenderer::setBackgroundColor(const sf::Color& color)
+    void KnobRenderer::setBackgroundColor(const Color& color)
     {
         m_backgroundColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void KnobRenderer::setThumbColor(const sf::Color& color)
+    void KnobRenderer::setThumbColor(const Color& color)
     {
         m_thumbColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void KnobRenderer::setBorderColor(const sf::Color& color)
+    void KnobRenderer::setBorderColor(const Color& color)
     {
         m_borderColor = color;
     }

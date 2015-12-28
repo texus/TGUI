@@ -3,6 +3,7 @@ set(TGUI_SRC
     Animation.cpp
     BoxLayout.cpp
     Clipboard.cpp
+    Color.cpp
     Container.cpp
     Font.cpp
     Global.cpp
