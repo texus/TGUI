@@ -787,7 +787,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> ProgressBarRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<ProgressBarRenderer>(new ProgressBarRenderer{*this});
+        auto renderer = std::make_shared<ProgressBarRenderer>(*this);
         renderer->m_progressBar = static_cast<ProgressBar*>(widget);
         return renderer;
     }

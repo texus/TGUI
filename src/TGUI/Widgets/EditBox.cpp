@@ -1626,7 +1626,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> EditBoxRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<EditBoxRenderer>(new EditBoxRenderer{*this});
+        auto renderer = std::make_shared<EditBoxRenderer>(*this);
         renderer->m_editBox = static_cast<EditBox*>(widget);
         return renderer;
     }

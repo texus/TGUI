@@ -669,7 +669,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> ButtonRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<ButtonRenderer>(new ButtonRenderer{*this});
+        auto renderer = std::make_shared<ButtonRenderer>(*this);
         renderer->m_button = static_cast<Button*>(widget);
         return renderer;
     }

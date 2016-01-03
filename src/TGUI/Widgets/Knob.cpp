@@ -675,7 +675,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> KnobRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<KnobRenderer>(new KnobRenderer{*this});
+        auto renderer = std::make_shared<KnobRenderer>(*this);
         renderer->m_knob = static_cast<Knob*>(widget);
         return renderer;
     }

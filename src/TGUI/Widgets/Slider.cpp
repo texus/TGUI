@@ -772,7 +772,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> SliderRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<SliderRenderer>(new SliderRenderer{*this});
+        auto renderer = std::make_shared<SliderRenderer>(*this);
         renderer->m_slider = static_cast<Slider*>(widget);
         return renderer;
     }

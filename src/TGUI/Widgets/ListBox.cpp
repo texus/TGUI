@@ -1420,7 +1420,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> ListBoxRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<ListBoxRenderer>(new ListBoxRenderer{*this});
+        auto renderer = std::make_shared<ListBoxRenderer>(*this);
         renderer->m_listBox = static_cast<ListBox*>(widget);
         return renderer;
     }

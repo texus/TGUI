@@ -286,7 +286,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> CheckBoxRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<CheckBoxRenderer>(new CheckBoxRenderer{*this});
+        auto renderer = std::make_shared<CheckBoxRenderer>(*this);
         renderer->m_radioButton = static_cast<RadioButton*>(widget);
         return renderer;
     }

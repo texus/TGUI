@@ -748,7 +748,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> RadioButtonRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<RadioButtonRenderer>(new RadioButtonRenderer{*this});
+        auto renderer = std::make_shared<RadioButtonRenderer>(*this);
         renderer->m_radioButton = static_cast<RadioButton*>(widget);
         return renderer;
     }

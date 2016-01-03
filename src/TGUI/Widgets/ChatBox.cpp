@@ -918,7 +918,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> ChatBoxRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<ChatBoxRenderer>(new ChatBoxRenderer{*this});
+        auto renderer = std::make_shared<ChatBoxRenderer>(*this);
         renderer->m_chatBox = static_cast<ChatBox*>(widget);
         return renderer;
     }

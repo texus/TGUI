@@ -597,7 +597,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> LabelRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<LabelRenderer>(new LabelRenderer{*this});
+        auto renderer = std::make_shared<LabelRenderer>(*this);
         renderer->m_label = static_cast<Label*>(widget);
         return renderer;
     }

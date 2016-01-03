@@ -2148,7 +2148,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> TextBoxRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<TextBoxRenderer>(new TextBoxRenderer{*this});
+        auto renderer = std::make_shared<TextBoxRenderer>(*this);
         renderer->m_textBox = static_cast<TextBox*>(widget);
         return renderer;
     }

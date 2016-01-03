@@ -990,7 +990,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> ChildWindowRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<ChildWindowRenderer>(new ChildWindowRenderer{*this});
+        auto renderer = std::make_shared<ChildWindowRenderer>(*this);
         renderer->m_childWindow = static_cast<ChildWindow*>(widget);
         return renderer;
     }

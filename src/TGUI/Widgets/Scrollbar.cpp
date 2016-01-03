@@ -1254,7 +1254,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> ScrollbarRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<ScrollbarRenderer>(new ScrollbarRenderer{*this});
+        auto renderer = std::make_shared<ScrollbarRenderer>(*this);
         renderer->m_scrollbar = static_cast<Scrollbar*>(widget);
         return renderer;
     }

@@ -746,7 +746,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> SpinButtonRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<SpinButtonRenderer>(new SpinButtonRenderer{*this});
+        auto renderer = std::make_shared<SpinButtonRenderer>(*this);
         renderer->m_spinButton = static_cast<SpinButton*>(widget);
         return renderer;
     }

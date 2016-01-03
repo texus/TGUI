@@ -888,7 +888,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> TabRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<TabRenderer>(new TabRenderer{*this});
+        auto renderer = std::make_shared<TabRenderer>(*this);
         renderer->m_tab = static_cast<Tab*>(widget);
         return renderer;
     }

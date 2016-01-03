@@ -232,7 +232,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> PanelRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<PanelRenderer>(new PanelRenderer{*this});
+        auto renderer = std::make_shared<PanelRenderer>(*this);
         renderer->m_panel = static_cast<Panel*>(widget);
         return renderer;
     }

@@ -846,7 +846,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> MenuBarRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<MenuBarRenderer>(new MenuBarRenderer{*this});
+        auto renderer = std::make_shared<MenuBarRenderer>(*this);
         renderer->m_menuBar = static_cast<MenuBar*>(widget);
         return renderer;
     }

@@ -1174,7 +1174,7 @@ namespace tgui
 
     std::shared_ptr<WidgetRenderer> ComboBoxRenderer::clone(Widget* widget)
     {
-        auto renderer = std::shared_ptr<ComboBoxRenderer>(new ComboBoxRenderer{*this});
+        auto renderer = std::make_shared<ComboBoxRenderer>(*this);
         renderer->m_comboBox = static_cast<ComboBox*>(widget);
         return renderer;
     }
