@@ -54,9 +54,6 @@ int main()
 
     try
     {
-        // Load the font
-        gui.setFont("../../fonts/DejaVuSans.ttf");
-
         // Load the widgets
         loadWidgets(gui);
     }

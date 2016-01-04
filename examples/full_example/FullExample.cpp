@@ -7,7 +7,6 @@ int main()
     window.setFramerateLimit(60);
 
     tgui::Gui gui(window);
-    gui.setFont("../../fonts/DejaVuSans.ttf");
 
     tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("../../widgets/Black.txt");
 

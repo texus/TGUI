@@ -23,7 +23,6 @@ int main(int argc, char *argv[])
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "");
     tgui::Gui gui(window);
 
-    gui.setFont("fonts/DejaVuSans.ttf");
     auto theme = std::make_shared<tgui::Theme>("widgets/Black.txt");
 
     auto picLandscape = std::make_shared<tgui::Picture>("Background-Landscape.png");
