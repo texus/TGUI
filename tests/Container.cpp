@@ -27,7 +27,6 @@
 
 TEST_CASE("[Container]") {
     auto container = std::make_shared<tgui::Gui>();
-    container->setFont("resources/DroidSansArmenian.ttf");
 
     auto widget1 = std::make_shared<tgui::EditBox>();
     auto widget2 = std::make_shared<tgui::Panel>();
@@ -39,6 +38,11 @@ TEST_CASE("[Container]") {
     container->add(widget3, "w3");
     widget2->add(widget4, "w4");
     widget2->add(widget5, "w5");
+
+    SECTION("default font in gui") {
+        REQUIRE(std::make_shared<tgui::Gui>()->getFont() != nullptr);
+        REQUIRE(std::make_shared<tgui::Panel>()->getFont() == nullptr);
+    }
 
     SECTION("add") {
         container->removeAllWidgets();

@@ -25,6 +25,7 @@
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Widgets/ToolTip.hpp>
 #include <TGUI/Gui.hpp>
+#include <TGUI/DefaultFont.hpp>
 
 #include <SFML/OpenGL.hpp>
 
@@ -41,6 +42,10 @@ namespace tgui
         m_accessToWindow(false)
     {
         m_container->m_focused = true;
+
+        sf::Font defaultFont;
+        if (defaultFont.loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
+            setFont(defaultFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +60,10 @@ namespace tgui
         Clipboard::setWindowHandle(window.getSystemHandle());
 
         setView(window.getDefaultView());
+
+        sf::Font defaultFont;
+        if (defaultFont.loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
+            setFont(defaultFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +76,10 @@ namespace tgui
         m_container->m_focused = true;
 
         setView(window.getDefaultView());
+
+        sf::Font defaultFont;
+        if (defaultFont.loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
+            setFont(defaultFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
