@@ -408,6 +408,20 @@ namespace tgui
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::selectText()
+    {
+        m_selStart = 0;
+        m_selEnd = m_text.getSize();
+        m_selChars = m_text.getSize();
+
+        m_textBeforeSelection.setString("");
+        m_textSelection.setString(m_displayedText);
+        m_textAfterSelection.setString("");
+
+        recalculateTextPositions();
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -791,15 +805,7 @@ namespace tgui
                 }
                 else if (event.code == sf::Keyboard::A)
                 {
-                    m_selStart = 0;
-                    m_selEnd = m_text.getSize();
-                    m_selChars = m_text.getSize();
-
-                    m_textBeforeSelection.setString("");
-                    m_textSelection.setString(m_displayedText);
-                    m_textAfterSelection.setString("");
-
-                    recalculateTextPositions();
+                    selectText();
                 }
             }
         }
