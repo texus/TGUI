@@ -14,6 +14,7 @@ redirect_from: "/example-code/v07/changing-mouse-cursor/index.html"
 int main()
 {
     sf::RenderWindow window{sf::VideoMode{300, 400}, "TGUI window"};
+    tgui::Gui gui{window};
 
     // Make the real cursor invisible inside the application
     window.setMouseCursorVisible(false);
@@ -28,9 +29,6 @@ int main()
 
     // Show the normal cursor by default
     sf::Sprite sprite(textureCursorNormal);
-
-    tgui::Gui gui(window);
-    gui.setFont("TGUI/fonts/DejaVuSans.ttf");
 
     auto play = std::make_shared<tgui::Button>();
     play->setPosition(tgui::bindWidth(gui)*0.15, tgui::bindHeight(gui)*0.125);
