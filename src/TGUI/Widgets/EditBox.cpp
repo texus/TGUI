@@ -1255,6 +1255,8 @@ namespace tgui
             setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
         else if (property == "borders")
             setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == "caretwidth")
+            m_editBox->setCaretWidth(Deserializer::deserialize(ObjectConverter::Type::Number, value).getNumber());
         else if (property == "textcolor")
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
         else if (property == "selectedtextcolor")
@@ -1332,6 +1334,11 @@ namespace tgui
             else
                 WidgetRenderer::setProperty(property, std::move(value));
         }
+        else if (value.getType() == ObjectConverter::Type::Number)
+        {
+            if (property == "caretwidth")
+                m_editBox->setCaretWidth(value.getNumber());
+        }
         else
             WidgetRenderer::setProperty(property, std::move(value));
     }
@@ -1346,6 +1353,8 @@ namespace tgui
             return m_padding;
         else if (property == "borders")
             return m_borders;
+        else if (property == "caretwidth")
+            return m_editBox->getCaretWidth();
         else if (property == "textcolor")
             return m_textColor;
         else if (property == "selectedtextcolor")
@@ -1394,6 +1403,7 @@ namespace tgui
             pairs["BackgroundColorHover"] = m_backgroundColorHover;
         }
 
+        pairs["CaretWidth"] = m_editBox->getCaretWidth();
         pairs["TextColor"] = m_textColor;
         pairs["SelectedTextColor"] = m_selectedTextColor;
         pairs["SelectedTextBackgroundColor"] = m_selectedTextBackgroundColor;
@@ -1422,6 +1432,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBoxRenderer::setCaretWidth(float width)
+    {
+        m_editBox->setCaretWidth(width);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBoxRenderer::setTextColor(const Color& textColor)
     {
         m_textColor = textColor;
@@ -1445,7 +1462,7 @@ namespace tgui
         m_editBox->m_selectedTextBackground.setFillColor(calcColorOpacity(m_selectedTextBackgroundColor, m_editBox->getOpacity()));
     }
 
-     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBoxRenderer::setDefaultTextColor(const Color& defaultTextColor)
     {

@@ -142,6 +142,7 @@ TEST_CASE("[EditBox]") {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorNormal", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(90, 100, 110)"));
+                REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
             }
@@ -160,6 +161,7 @@ TEST_CASE("[EditBox]") {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorNormal", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
             }
@@ -178,12 +180,13 @@ TEST_CASE("[EditBox]") {
                 renderer->setBackgroundColorNormal({70, 80, 90});
                 renderer->setBackgroundColorHover({80, 90, 100});
                 renderer->setBorderColor({90, 100, 110});
+                renderer->setCaretWidth(2);
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
 
                 SECTION("getPropertyValuePairs") {
                     auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 10);
+                    REQUIRE(pairs.size() == 11);
                     REQUIRE(pairs["TextColor"].getColor() == sf::Color(20, 30, 40));
                     REQUIRE(pairs["SelectedTextColor"].getColor() == sf::Color(30, 40, 50));
                     REQUIRE(pairs["SelectedTextBackgroundColor"].getColor() == sf::Color(40, 50, 60));
@@ -192,6 +195,7 @@ TEST_CASE("[EditBox]") {
                     REQUIRE(pairs["BackgroundColorNormal"].getColor() == sf::Color(70, 80, 90));
                     REQUIRE(pairs["BackgroundColorHover"].getColor() == sf::Color(80, 90, 100));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(90, 100, 110));
+                    REQUIRE(pairs["CaretWidth"].getNumber() == 2);
                     REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
                     REQUIRE(pairs["Padding"].getBorders() == tgui::Borders(5, 6, 7, 8));
                 }
@@ -205,6 +209,7 @@ TEST_CASE("[EditBox]") {
             REQUIRE(renderer->getProperty("BackgroundColorNormal").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("CaretWidth").getNumber() == 2);
             REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getBorders() == tgui::Borders(5, 6, 7, 8));
         }
@@ -237,7 +242,7 @@ TEST_CASE("[EditBox]") {
 
                 SECTION("getPropertyValuePairs") {
                     auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 11);
+                    REQUIRE(pairs.size() == 12);
                     REQUIRE(pairs["NormalImage"].getTexture().getData() == textureNormal.getData());
                     REQUIRE(pairs["HoverImage"].getTexture().getData() == textureHover.getData());
                     REQUIRE(pairs["FocusedImage"].getTexture().getData() == textureFocused.getData());
