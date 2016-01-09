@@ -509,6 +509,17 @@ namespace tgui
             label->setTextStyle(style);
         }
 
+        if (node->propertyValuePairs["alignment"])
+        {
+            std::string alignment = toLower(DESERIALIZE_STRING("alignment"));
+            if (alignment == "right")
+                label->setAlignment(Label::Alignment::Right);
+            else if (alignment == "center")
+                label->setAlignment(Label::Alignment::Center);
+            else if (alignment != "left")
+                throw Exception{"Failed to parse Alignment property, found unknown value."};
+        }
+
         if (node->propertyValuePairs["text"])
             label->setText(DESERIALIZE_STRING("text"));
         if (node->propertyValuePairs["textsize"])

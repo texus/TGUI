@@ -304,6 +304,11 @@ namespace tgui
                 SET_PROPERTY("TextStyle", style.substr(3));
         }
 
+        if (label->getAlignment() == Label::Alignment::Center)
+            SET_PROPERTY("Alignment", "Center");
+        else if (label->getAlignment() == Label::Alignment::Right)
+            SET_PROPERTY("Alignment", "Right");
+
         if (!label->getText().isEmpty())
             SET_PROPERTY("Text", Serializer::serialize(label->getText()));
         if (label->getMaximumTextWidth() > 0)

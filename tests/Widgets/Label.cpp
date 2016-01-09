@@ -130,6 +130,7 @@ TEST_CASE("[Label]") {
         label->setText("SomeText");
         label->setTextSize(25);
         label->setTextStyle(sf::Text::Bold | sf::Text::Italic);
+        label->setAlignment(tgui::Label::Alignment::Center);
         label->setMaximumTextWidth(300);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel1.txt"));
