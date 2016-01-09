@@ -60,20 +60,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The text alignment
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        struct Alignment
+        enum class Alignment
         {
-            /// @brief The text alignment
-            enum Alignments
-            {
-                /// Put the text on the left side (default)
-                Left,
+            /// Put the text on the left side (default)
+            Left,
 
-                /// Center the text
-                Center,
+            /// Center the text
+            Center,
 
-                /// Put the text on the right side (e.g. for numbers)
-                Right
-            };
+            /// Put the text on the right side (e.g. for numbers)
+            Right
         };
 
 
@@ -298,7 +294,7 @@ namespace tgui
         /// @param alignment  The new text alignment
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setAlignment(Alignment::Alignments alignment);
+        void setAlignment(Alignment alignment);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,7 +303,7 @@ namespace tgui
         /// @return Text alignment
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Alignment::Alignments getAlignment()
+        Alignment getAlignment()
         {
             return m_textAlignment;
         }
@@ -535,7 +531,7 @@ namespace tgui
         unsigned int  m_textSize = 0;
 
         // The text alignment
-        Alignment::Alignments m_textAlignment = Alignment::Left;
+        Alignment m_textAlignment = Alignment::Left;
 
         // The selection
         std::size_t   m_selChars = 0;

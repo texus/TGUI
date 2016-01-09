@@ -287,7 +287,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setAlignment(Alignment::Alignments alignment)
+    void EditBox::setAlignment(Alignment alignment)
     {
         m_textAlignment = alignment;
         setText(m_text);
