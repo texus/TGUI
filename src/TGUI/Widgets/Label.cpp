@@ -46,7 +46,7 @@ namespace tgui
         m_renderer = std::make_shared<LabelRenderer>(this);
         reload();
 
-        setTextSize(18);
+        setTextSize(m_textSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,8 +67,17 @@ namespace tgui
 
         m_background.setPosition(getPosition());
 
-        m_text.setPosition(std::round(getPosition().x + getRenderer()->getPadding().left),
-                           std::floor(getPosition().y + getRenderer()->getPadding().top - getTextVerticalCorrection(getFont(), getTextSize(), m_text.getStyle())));
+        if (getFont())
+        {
+            sf::Vector2f pos{std::round(getPosition().x + getRenderer()->getPadding().left),
+                             getPosition().y + getRenderer()->getPadding().top - getTextVerticalCorrection(getFont(), m_textSize, m_textStyle)};
+
+            for (auto& line : m_lines)
+            {
+                line.setPosition(pos.x, std::floor(pos.y));
+                pos.y += getFont()->getLineSpacing(m_textSize);
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,12 +107,7 @@ namespace tgui
     void Label::setFont(const Font& font)
     {
         Widget::setFont(font);
-
-        if (font.getFont())
-            m_text.setFont(*font.getFont());
-
         rearrangeText();
-        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,23 +115,25 @@ namespace tgui
     void Label::setText(const sf::String& string)
     {
         m_string = string;
-
         rearrangeText();
-        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Label::setTextSize(unsigned int size)
     {
-        if (size != m_text.getCharacterSize())
+        if (size != m_textSize)
         {
-            m_text.setCharacterSize(size);
-
-            updatePosition();
-
+            m_textSize = size;
             rearrangeText();
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Label::getTextSize() const
+    {
+        return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,14 +154,15 @@ namespace tgui
 
     void Label::setTextStyle(sf::Uint32 style)
     {
-        m_text.setStyle(style);
+        m_textStyle = style;
+        rearrangeText();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Uint32 Label::getTextStyle() const
     {
-        return m_text.getStyle();
+        return m_textStyle;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +172,6 @@ namespace tgui
         if (m_autoSize != autoSize)
         {
             m_autoSize = autoSize;
-
             rearrangeText();
         }
     }
@@ -177,7 +183,6 @@ namespace tgui
         if (m_maximumTextWidth != maximumWidth)
         {
             m_maximumTextWidth = maximumWidth;
-
             rearrangeText();
         }
     }
@@ -198,7 +203,10 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        m_text.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        sf::Color textColor = calcColorOpacity(getRenderer()->m_textColor, getOpacity());
+        for (auto& line : m_lines)
+            line.setColor(textColor);
+
         m_background.setFillColor(calcColorOpacity(getRenderer()->m_backgroundColor, getOpacity()));
     }
 
@@ -233,8 +241,8 @@ namespace tgui
             {
                 m_possibleDoubleClick = false;
 
-                m_callback.text = m_text.getString();
-                sendSignal("DoubleClicked", m_text.getString());
+                m_callback.text = m_string;
+                sendSignal("DoubleClicked", m_string);
             }
             else // This is the first click
             {
@@ -284,11 +292,11 @@ namespace tgui
         else if (getSize().x > getRenderer()->getPadding().left + getRenderer()->getPadding().right)
             maxWidth = getSize().x - getRenderer()->getPadding().left - getRenderer()->getPadding().right;
 
-        m_text.setString("");
+        m_lines.clear();
         unsigned int index = 0;
         unsigned int lineCount = 0;
         float calculatedLabelWidth = 0;
-        bool bold = (m_text.getStyle() & sf::Text::Bold) != 0;
+        bool bold = (m_textStyle & sf::Text::Bold) != 0;
         while (index < m_string.getSize())
         {
             lineCount++;
@@ -306,17 +314,17 @@ namespace tgui
                     break;
                 }
                 else if (curChar == '\t')
-                    charWidth = static_cast<float>(getFont()->getGlyph(' ', m_text.getCharacterSize(), bold).textureRect.width) * 4;
+                    charWidth = static_cast<float>(getFont()->getGlyph(' ', m_textSize, bold).textureRect.width) * 4;
                 else
-                    charWidth = static_cast<float>(getFont()->getGlyph(curChar, m_text.getCharacterSize(), bold).textureRect.width);
+                    charWidth = static_cast<float>(getFont()->getGlyph(curChar, m_textSize, bold).textureRect.width);
 
-                float kerning = static_cast<float>(getFont()->getKerning(prevChar, curChar, m_text.getCharacterSize()));
+                float kerning = static_cast<float>(getFont()->getKerning(prevChar, curChar, m_textSize));
                 if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
                 {
                     if (curChar == '\t')
-                        width += (static_cast<float>(getFont()->getGlyph(' ', m_text.getCharacterSize(), bold).advance) * 4) + kerning;
+                        width += (static_cast<float>(getFont()->getGlyph(' ', m_textSize, bold).advance) * 4) + kerning;
                     else
-                        width += static_cast<float>(getFont()->getGlyph(curChar, m_text.getCharacterSize(), bold).advance) + kerning;
+                        width += static_cast<float>(getFont()->getGlyph(curChar, m_textSize, bold).advance) + kerning;
 
                     index++;
                 }
@@ -352,10 +360,22 @@ namespace tgui
                 }
             }
 
+            // Add the next line
+            m_lines.emplace_back();
+            m_lines.back().setFont(*getFont());
+            m_lines.back().setCharacterSize(getTextSize());
+            m_lines.back().setStyle(getTextStyle());
+            m_lines.back().setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+            m_lines.back().setPosition(std::round(getPosition().x + getRenderer()->getPadding().left),
+                                       std::floor(getPosition().y
+                                                  + getRenderer()->getPadding().top
+                                                  + ((lineCount-1) * getFont()->getLineSpacing(m_textSize))
+                                                  - getTextVerticalCorrection(getFont(), m_textSize, m_textStyle)));
+
             if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
-                m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex) + "\n");
+                m_lines.back().setString(m_string.substring(oldIndex, index - oldIndex) + "\n");
             else
-                m_text.setString(m_text.getString() + m_string.substring(oldIndex, index - oldIndex));
+                m_lines.back().setString(m_string.substring(oldIndex, index - oldIndex));
 
             // If the next line starts with just a space, then the space need not be visible
             if ((index < m_string.getSize()) && (m_string[index] == ' '))
@@ -375,7 +395,7 @@ namespace tgui
         if (m_autoSize)
         {
             m_size = {std::max(calculatedLabelWidth, maxWidth) + getRenderer()->getPadding().left + getRenderer()->getPadding().right,
-                      (lineCount * getFont()->getLineSpacing(m_text.getCharacterSize())) + getRenderer()->getPadding().top + getRenderer()->getPadding().bottom};
+                      (lineCount * getFont()->getLineSpacing(m_textSize)) + getRenderer()->getPadding().top + getRenderer()->getPadding().bottom};
 
             m_background.setSize(getSize());
         }
@@ -392,7 +412,8 @@ namespace tgui
                 target.draw(m_background, states);
 
             // Draw the text
-            target.draw(m_text, states);
+            for (auto& line : m_lines)
+                target.draw(line, states);
         }
         else
         {
@@ -432,7 +453,8 @@ namespace tgui
             glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
 
             // Draw the text
-            target.draw(m_text, states);
+            for (auto& line : m_lines)
+                target.draw(line, states);
 
             // Reset the old clipping area
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
@@ -531,8 +553,6 @@ namespace tgui
         if (padding != getPadding())
         {
             WidgetPadding::setPadding(padding);
-
-            m_label->updatePosition();
             m_label->rearrangeText();
         }
     }
@@ -542,7 +562,10 @@ namespace tgui
     void LabelRenderer::setTextColor(const Color& color)
     {
         m_textColor = color;
-        m_label->m_text.setColor(calcColorOpacity(m_textColor, m_label->getOpacity()));
+
+        sf::Color textColor = calcColorOpacity(m_textColor, m_label->getOpacity());
+        for (auto& line : m_label->m_lines)
+            line.setColor(textColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

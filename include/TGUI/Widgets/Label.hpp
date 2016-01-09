@@ -202,10 +202,7 @@ namespace tgui
         /// @return The current text size.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getTextSize() const
-        {
-            return m_text.getCharacterSize();
-        }
+        unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,7 +360,10 @@ namespace tgui
         sf::RectangleShape m_background;
 
         sf::String m_string;
-        sf::Text   m_text;
+        std::vector<sf::Text> m_lines;
+
+        unsigned int m_textSize = 18;
+        sf::Uint32 m_textStyle = sf::Text::Style::Regular;
 
         bool m_autoSize = true;
 
