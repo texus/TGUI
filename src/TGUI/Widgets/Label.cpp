@@ -72,10 +72,35 @@ namespace tgui
             sf::Vector2f pos{std::round(getPosition().x + getRenderer()->getPadding().left),
                              getPosition().y + getRenderer()->getPadding().top - getTextVerticalCorrection(getFont(), m_textSize, m_textStyle)};
 
-            for (auto& line : m_lines)
+            if (m_alignment == Alignment::Left)
             {
-                line.setPosition(pos.x, std::floor(pos.y));
-                pos.y += getFont()->getLineSpacing(m_textSize);
+                for (auto& line : m_lines)
+                {
+                    line.setPosition(pos.x, std::floor(pos.y));
+                    pos.y += getFont()->getLineSpacing(m_textSize);
+                }
+            }
+            else // Center or Right alignment
+            {
+                float totalWidth = getSize().x - getRenderer()->getPadding().left - getRenderer()->getPadding().right;
+
+                for (auto& line : m_lines)
+                {
+                    line.setPosition(0, 0);
+
+                    std::size_t lastChar = line.getString().getSize();
+                    while (lastChar > 0 && isWhitespace(line.getString()[lastChar-1]))
+                        lastChar--;
+
+                    float width = line.findCharacterPos(lastChar).x;
+
+                    if (m_alignment == Alignment::Center)
+                        line.setPosition(pos.x + (totalWidth - width) / 2.f, std::floor(pos.y));
+                    else if (m_alignment == Alignment::Right)
+                        line.setPosition(pos.x + totalWidth - width, std::floor(pos.y));
+
+                    pos.y += getFont()->getLineSpacing(m_textSize);
+                }
             }
         }
     }
@@ -134,6 +159,14 @@ namespace tgui
     unsigned int Label::getTextSize() const
     {
         return m_textSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::setAlignment(Alignment alignment)
+    {
+        m_alignment = alignment;
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,11 +399,6 @@ namespace tgui
             m_lines.back().setCharacterSize(getTextSize());
             m_lines.back().setStyle(getTextStyle());
             m_lines.back().setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
-            m_lines.back().setPosition(std::round(getPosition().x + getRenderer()->getPadding().left),
-                                       std::floor(getPosition().y
-                                                  + getRenderer()->getPadding().top
-                                                  + ((lineCount-1) * getFont()->getLineSpacing(m_textSize))
-                                                  - getTextVerticalCorrection(getFont(), m_textSize, m_textStyle)));
 
             if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
                 m_lines.back().setString(m_string.substring(oldIndex, index - oldIndex) + "\n");
@@ -399,6 +427,8 @@ namespace tgui
 
             m_background.setSize(getSize());
         }
+
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
