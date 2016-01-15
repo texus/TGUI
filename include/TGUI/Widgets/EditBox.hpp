@@ -80,9 +80,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Validator
         {
-            static constexpr const char* Int   = "[+-]?[0-9]*";           ///< Accept negative and positive integers
-            static constexpr const char* UInt  = "[0-9]*";                ///< Accept only positive integers
-            static constexpr const char* Float = "[+-]?[0-9]*\\.?[0-9]*"; ///< Accept decimal numbers
+            static std::string Int;   ///< Accept negative and positive integers
+            static std::string UInt;  ///< Accept only positive integers
+            static std::string Float; ///< Accept decimal numbers
         };
 
 
