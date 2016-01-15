@@ -151,13 +151,15 @@ namespace tgui
             m_defaultText.setCharacterSize(m_textSize);
         }
 
-        // Change the text
-        m_text = text;
-        m_displayedText = text;
+        // Change the text if allowed
+        if (m_regexString == ".*")
+            m_text = text;
+        else if (std::regex_match(text.toAnsiString(), m_regex))
+            m_text = text.toAnsiString(); // Unicode is not supported when using regex because it can't be checked
+        else // Clear the text
+            m_text = "";
 
-        // If the edit box only accepts numbers then remove all other characters
-        if (m_numbersOnly)
-            setNumbersOnly(true);
+        m_displayedText = m_text;
 
         // If there is a character limit then check if it is exeeded
         if ((m_maxChars > 0) && (m_displayedText.getSize() > m_maxChars))
@@ -374,38 +376,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setNumbersOnly(bool numbersOnly)
+    void EditBox::setInputValidator(const std::string& regex)
     {
-        m_numbersOnly = numbersOnly;
+        m_regexString = regex;
+        m_regex = m_regexString;
 
-        // Remove all letters from the edit box if needed
-        if (numbersOnly && !m_text.isEmpty())
-        {
-            sf::String newText;
-            bool commaFound = false;
+        setText(m_text);
+    }
 
-            if ((m_text[0] == '+') || (m_text[0] == '-'))
-                newText += m_text[0];
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            for (std::size_t i = 0; i < m_text.getSize(); ++i)
-            {
-                if (!commaFound)
-                {
-                    if ((m_text[i] == ',') || (m_text[i] == '.'))
-                    {
-                        newText += m_text[i];
-                        commaFound = true;
-                    }
-                }
-
-                if ((m_text[i] >= '0') && (m_text[i] <= '9'))
-                    newText += m_text[i];
-            }
-
-            // When the text changed then reposition the text
-            if (newText != m_text)
-                setText(newText);
-        }
+    const std::string& EditBox::getInputValidator()
+    {
+        return m_regexString;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -815,37 +798,15 @@ namespace tgui
 
     void EditBox::textEntered(sf::Uint32 key)
     {
-        // If only numbers are supported then make sure the input is valid
-        if (m_numbersOnly)
+        // Only add the character when the regex matches
+        if (m_regexString != ".*")
         {
-            if ((key < '0') || (key > '9'))
-            {
-                if ((key == '-') || (key == '+'))
-                {
-                    if ((m_selStart == 0) || (m_selEnd == 0))
-                    {
-                        if (!m_text.isEmpty())
-                        {
-                            // You can't have multiple + and - characters after each other
-                            if ((m_text[0] == '-') || (m_text[0] == '+'))
-                                return;
-                        }
-                    }
-                    else // + and - symbols are only allowed at the beginning of the line
-                        return;
-                }
-                else if ((key == ',') || (key == '.'))
-                {
-                    // Only one comma is allowed
-                    for (auto it = m_text.begin(); it != m_text.end(); ++it)
-                    {
-                        if ((*it == ',') || (*it == '.'))
-                            return;
-                    }
-                }
-                else // Character not accepted
-                    return;
-            }
+            sf::String text = m_text;
+            text.insert(m_selEnd, key);
+
+            // The character has to match the regex
+            if (!std::regex_match(text.toAnsiString(), m_regex))
+                return;
         }
 
         // If there are selected characters then delete them first

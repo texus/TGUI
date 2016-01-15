@@ -425,8 +425,6 @@ namespace tgui
             editBox->limitTextWidth(parseBoolean(node->propertyValuePairs["textwidthlimited"]->value));
         if (node->propertyValuePairs["caretwidth"])
             editBox->setCaretWidth(tgui::stof(node->propertyValuePairs["caretwidth"]->value));
-        if (node->propertyValuePairs["numbersonly"])
-            editBox->setNumbersOnly(parseBoolean(node->propertyValuePairs["numbersonly"]->value));
         if (node->propertyValuePairs["passwordcharacter"])
         {
             std::string pass = DESERIALIZE_STRING("passwordcharacter");
@@ -443,6 +441,17 @@ namespace tgui
                 editBox->setAlignment(EditBox::Alignment::Right);
             else
                 throw Exception{"Failed to parse Alignment property. Only the values Left, Center and Right are correct."};
+        }
+        if (node->propertyValuePairs["inputvalidator"])
+        {
+            if (toLower(node->propertyValuePairs["inputvalidator"]->value) == "int")
+                editBox->setInputValidator(EditBox::Validator::Int);
+            else if (toLower(node->propertyValuePairs["inputvalidator"]->value) == "uint")
+                editBox->setInputValidator(EditBox::Validator::UInt);
+            else if (toLower(node->propertyValuePairs["inputvalidator"]->value) == "float")
+                editBox->setInputValidator(EditBox::Validator::Float);
+            else
+                editBox->setInputValidator(DESERIALIZE_STRING("inputvalidator"));
         }
 
         return editBox;

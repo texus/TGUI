@@ -108,20 +108,155 @@ TEST_CASE("[EditBox]") {
         REQUIRE(editBox->getCaretWidth() == 3);
     }
 
-    SECTION("NumbersOnly") {
-        REQUIRE(!editBox->isNumbersOnly());
-        editBox->setText("Some123Text456");
-        REQUIRE(editBox->getText() == "Some123Text456");
+    SECTION("Input Validator") {
+        editBox->setText(L"++Some123 Ê Text456--");
 
-        editBox->setNumbersOnly(true);
-        REQUIRE(editBox->isNumbersOnly());
-        REQUIRE(editBox->getText() == "123456");
+        SECTION("Default") {
+            REQUIRE(editBox->getInputValidator() == ".*");
+            REQUIRE(editBox->getText() == L"++Some123 Ê Text456--");
 
-        editBox->setText("098Some765Text");
-        REQUIRE(editBox->getText() == "098765");
+            editBox->setInputValidator(".*");
+            REQUIRE(editBox->getText() == L"++Some123 Ê Text456--");
 
-        editBox->setNumbersOnly(false);
-        REQUIRE(!editBox->isNumbersOnly());
+            SECTION("Adding characters") {
+                editBox->setText("Hello");
+
+                editBox->textEntered('-');
+                REQUIRE(editBox->getText() == "Hello-");
+
+                editBox->textEntered('0');
+                REQUIRE(editBox->getText() == "Hello-0");
+
+                editBox->textEntered('x');
+                REQUIRE(editBox->getText() == "Hello-0x");
+
+                editBox->setText("");
+                editBox->textEntered('-');
+                REQUIRE(editBox->getText() == "-");
+            }
+        }
+
+        SECTION("Int") {
+            editBox->setInputValidator(tgui::EditBox::Validator::Int);
+            REQUIRE(editBox->getText() == "");
+
+            editBox->setText("-5");
+            REQUIRE(editBox->getText() == "-5");
+
+            editBox->setText("642");
+            REQUIRE(editBox->getText() == "642");
+
+            editBox->setText("1.5");
+            REQUIRE(editBox->getText() == "");
+
+            editBox->setText("text");
+            REQUIRE(editBox->getText() == "");
+
+            editBox->setInputValidator(".*");
+            editBox->setText("+25");
+            editBox->setInputValidator(tgui::EditBox::Validator::Int);
+            REQUIRE(editBox->getText() == "+25");
+
+            SECTION("Adding characters") {
+                editBox->textEntered('-');
+                REQUIRE(editBox->getText() == "+25");
+
+                editBox->textEntered('0');
+                REQUIRE(editBox->getText() == "+250");
+
+                editBox->textEntered('x');
+                REQUIRE(editBox->getText() == "+250");
+
+                editBox->setText("");
+                editBox->textEntered('-');
+                REQUIRE(editBox->getText() == "-");
+            }
+        }
+
+        SECTION("UInt") {
+            editBox->setInputValidator(tgui::EditBox::Validator::UInt);
+            REQUIRE(editBox->getText() == "");
+
+            editBox->setText("-5");
+            REQUIRE(editBox->getText() == "");
+
+            editBox->setText("642");
+            REQUIRE(editBox->getText() == "642");
+
+            editBox->setText("1.5");
+            REQUIRE(editBox->getText() == "");
+
+            editBox->setText("text");
+            REQUIRE(editBox->getText() == "");
+
+            editBox->setInputValidator(".*");
+            editBox->setText("10");
+            editBox->setInputValidator(tgui::EditBox::Validator::UInt);
+            REQUIRE(editBox->getText() == "10");
+
+            SECTION("Adding characters") {
+                editBox->textEntered('-');
+                REQUIRE(editBox->getText() == "10");
+
+                editBox->textEntered('9');
+                REQUIRE(editBox->getText() == "109");
+
+                editBox->textEntered('x');
+                REQUIRE(editBox->getText() == "109");
+
+                editBox->setText("");
+                editBox->textEntered('-');
+                REQUIRE(editBox->getText() == "");
+            }
+        }
+
+        SECTION("Float") {
+            editBox->setInputValidator(tgui::EditBox::Validator::Float);
+            REQUIRE(editBox->getText() == "");
+
+            editBox->setText("-5");
+            REQUIRE(editBox->getText() == "-5");
+
+            editBox->setText("642");
+            REQUIRE(editBox->getText() == "642");
+
+            editBox->setText("1.5");
+            REQUIRE(editBox->getText() == "1.5");
+
+            editBox->setText("-6.");
+            REQUIRE(editBox->getText() == "-6.");
+
+            editBox->setText(".001");
+            REQUIRE(editBox->getText() == ".001");
+
+            editBox->setText("text");
+            REQUIRE(editBox->getText() == "");
+
+            editBox->setInputValidator(".*");
+            editBox->setText("-2.5");
+            editBox->setInputValidator(tgui::EditBox::Validator::Float);
+            REQUIRE(editBox->getText() == "-2.5");
+
+            SECTION("Adding characters") {
+                editBox->textEntered('-');
+                REQUIRE(editBox->getText() == "-2.5");
+
+                editBox->textEntered('0');
+                REQUIRE(editBox->getText() == "-2.50");
+
+                editBox->textEntered('x');
+                REQUIRE(editBox->getText() == "-2.50");
+
+                editBox->textEntered('.');
+                REQUIRE(editBox->getText() == "-2.50");
+
+                editBox->setText("");
+                editBox->textEntered('-');
+                REQUIRE(editBox->getText() == "-");
+                editBox->textEntered('.');
+                REQUIRE(editBox->getText() == "-.");
+            }
+        }
     }
 
     SECTION("Renderer") {
@@ -279,7 +414,7 @@ TEST_CASE("[EditBox]") {
         editBox->setAlignment(tgui::EditBox::Alignment::Right);
         editBox->limitTextWidth();
         editBox->setCaretWidth(3);
-        editBox->setNumbersOnly();
+        editBox->setInputValidator("[0-9a-zA-Z]*");
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileEditBox1.txt"));
 

@@ -245,6 +245,18 @@ namespace tgui
                 SET_PROPERTY("Alignment", "Right");
         }
 
+        if (editBox->getInputValidator() != ".*")
+        {
+            if (editBox->getInputValidator() == EditBox::Validator::Int)
+                SET_PROPERTY("InputValidator", "Int");
+            else if (editBox->getInputValidator() == EditBox::Validator::UInt)
+                SET_PROPERTY("InputValidator", "UInt");
+            else if (editBox->getInputValidator() == EditBox::Validator::Float)
+                SET_PROPERTY("InputValidator", "Float");
+            else
+                SET_PROPERTY("InputValidator", Serializer::serialize(sf::String{editBox->getInputValidator()}));
+        }
+
         if (!editBox->getText().isEmpty())
             SET_PROPERTY("Text", Serializer::serialize(editBox->getText()));
         if (!editBox->getDefaultText().isEmpty())
@@ -255,8 +267,6 @@ namespace tgui
             SET_PROPERTY("MaximumCharacters", tgui::to_string(editBox->getMaximumCharacters()));
         if (editBox->isTextWidthLimited())
             SET_PROPERTY("TextWidthLimited", "true");
-        if (editBox->isNumbersOnly())
-            SET_PROPERTY("NumbersOnly", "true");
 
         SET_PROPERTY("CaretWidth", tgui::to_string((int)editBox->getCaretWidth()));
         SET_PROPERTY("TextSize", tgui::to_string(editBox->getTextSize()));
