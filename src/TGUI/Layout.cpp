@@ -433,16 +433,16 @@ namespace tgui
                 return parseLayoutString(expression.substr(0, equalsPos)) == parseLayoutString(expression.substr(equalsPos + 2));
         }
 
-        auto lessThanPos = expression.rfind('>');
-        auto greaterThanPos = expression.rfind('<');
-        auto lessEqualPos = expression.rfind(">=");
-        auto greaterEqualPos = expression.rfind("<=");
+        auto lessThanPos = expression.rfind('<');
+        auto greaterThanPos = expression.rfind('>');
+        auto lessEqualPos = expression.rfind("<=");
+        auto greaterEqualPos = expression.rfind(">=");
         if ((lessThanPos != std::string::npos) || (greaterThanPos != std::string::npos))
         {
             if ((lessThanPos == 0) || (greaterThanPos == 0) || (lessEqualPos == 0) || (greaterEqualPos == 0))
                 return 0;
 
-            if ((greaterThanPos != std::string::npos) && ((lessThanPos == std::string::npos) || (lessThanPos < greaterThanPos)))
+            if ((greaterThanPos != std::string::npos) && ((lessThanPos == std::string::npos) || (greaterThanPos < lessThanPos)))
             {
                 if ((greaterEqualPos != std::string::npos) && (greaterEqualPos == greaterThanPos))
                     return parseLayoutString(expression.substr(0, greaterEqualPos)) >= parseLayoutString(expression.substr(greaterEqualPos + 2));
@@ -452,9 +452,9 @@ namespace tgui
             else // < or <=
             {
                 if ((lessEqualPos != std::string::npos) && (lessEqualPos == lessThanPos))
-                    return parseLayoutString(expression.substr(0, lessEqualPos)) >= parseLayoutString(expression.substr(lessEqualPos + 2));
+                    return parseLayoutString(expression.substr(0, lessEqualPos)) <= parseLayoutString(expression.substr(lessEqualPos + 2));
                 else
-                    return parseLayoutString(expression.substr(0, lessThanPos)) > parseLayoutString(expression.substr(lessThanPos + 1));
+                    return parseLayoutString(expression.substr(0, lessThanPos)) < parseLayoutString(expression.substr(lessThanPos + 1));
             }
         }
 

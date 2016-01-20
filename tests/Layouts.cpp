@@ -271,6 +271,25 @@ TEST_CASE("[Layouts]") {
             REQUIRE(Layout("2 and 2").getValue() == 1);
             REQUIRE(Layout("2 or 0").getValue() == 1);
 
+            REQUIRE(Layout("2 == 0").getValue() == 0);
+            REQUIRE(Layout("4 == 9").getValue() == 0);
+            REQUIRE(Layout("3 == 3").getValue() == 1);
+            REQUIRE(Layout("2 != 0").getValue() == 1);
+            REQUIRE(Layout("4 != 9").getValue() == 1);
+            REQUIRE(Layout("3 != 3").getValue() == 0);
+            REQUIRE(Layout("2 < 0").getValue() == 0);
+            REQUIRE(Layout("4 < 9").getValue() == 1);
+            REQUIRE(Layout("3 < 3").getValue() == 0);
+            REQUIRE(Layout("2 > 0").getValue() == 1);
+            REQUIRE(Layout("4 > 9").getValue() == 0);
+            REQUIRE(Layout("3 > 3").getValue() == 0);
+            REQUIRE(Layout("2 <= 0").getValue() == 0);
+            REQUIRE(Layout("4 <= 9").getValue() == 1);
+            REQUIRE(Layout("3 <= 3").getValue() == 1);
+            REQUIRE(Layout("2 >= 0").getValue() == 1);
+            REQUIRE(Layout("4 >= 9").getValue() == 0);
+            REQUIRE(Layout("3 >= 3").getValue() == 1);
+
             REQUIRE(Layout2d("{2, -1}").getValue() == sf::Vector2f(2, -1));
             REQUIRE(Layout2d("+{2, -1}").getValue() == sf::Vector2f(2, -1));
             REQUIRE(Layout2d("-{2, -1}").getValue() == sf::Vector2f(-2, 1));
@@ -394,6 +413,12 @@ TEST_CASE("[Layouts]") {
             REQUIRE(button3->getSize().x == 1800);
             button1->setSize(30, 10);
             REQUIRE(button3->getSize().x == 300);
+
+            button3->setSize({"(if b1.w <= b2.h then 2 * b1.w else b2.w / 4) * 3"});
+            REQUIRE(button3->getSize().x == 180);
+            button2->setSize(200, 50);
+            button1->setSize(300, 50);
+            REQUIRE(button3->getSize().x == 150);
 
             button3->setPosition(bindIf(bindLeft(button1) != bindTop(button2), bindPosition(button1), 1.5 * bindPosition(button2)));
             button3->setPosition({"b1.x != b2.y ? b1.pos : 1.5 * b2.position"});
