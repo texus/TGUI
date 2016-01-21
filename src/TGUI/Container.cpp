@@ -65,7 +65,7 @@ namespace tgui
         {
             Widget::operator=(right);
 
-            // Copy the font and the callback functions
+            m_widgetBelowMouse = nullptr;
             m_focusedWidget = 0;
 
             // Remove all the old widgets
@@ -138,6 +138,12 @@ namespace tgui
             // Check if the pointer matches
             if (m_widgets[i] == widget)
             {
+                if (m_widgetBelowMouse == widget)
+                {
+                    widget->mouseNoLongerOnWidget();
+                    m_widgetBelowMouse = nullptr;
+                }
+
                 // Unfocus the widget if it was focused
                 if (m_focusedWidget == i+1)
                     unfocusWidgets();
@@ -168,7 +174,7 @@ namespace tgui
         m_widgets.clear();
         m_objName.clear();
 
-        // There are no more widgets, so none of the widgets can be focused
+        m_widgetBelowMouse = nullptr;
         m_focusedWidget = 0;
     }
 
@@ -210,7 +216,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /// TODO: Remove this function and remove its contents to the focusWidget function above (requires change in Widget::focus)
+    /// TODO: Remove this function and move its contents to the focusWidget function above (requires change in Widget::focus)
     void Container::focusWidget(Widget *const widget)
     {
         // Loop all the widgets
@@ -255,7 +261,7 @@ namespace tgui
             if (m_widgets[i]->m_allowFocus)
             {
                 // Make sure that the widget is visible and enabled
-                if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
+                if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
                 {
                     if (m_focusedWidget)
                     {
@@ -282,7 +288,7 @@ namespace tgui
                 if (m_widgets[i]->m_allowFocus)
                 {
                     // Make sure that the widget is visible and enabled
-                    if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
+                    if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
                     {
                         // unfocus the current widget
                         m_widgets[m_focusedWidget-1]->m_focused = false;
@@ -313,7 +319,7 @@ namespace tgui
                 if (m_widgets[i-1]->m_allowFocus)
                 {
                     // Make sure that the widget is visible and enabled
-                    if ((m_widgets[i-1]->m_visible) && (m_widgets[i-1]->m_enabled))
+                    if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
                     {
                         // unfocus the current widget
                         m_widgets[m_focusedWidget-1]->m_focused = false;
@@ -337,7 +343,7 @@ namespace tgui
             if (m_widgets[i-1]->m_allowFocus)
             {
                 // Make sure that the widget is visible and enabled
-                if ((m_widgets[i-1]->m_visible) && (m_widgets[i-1]->m_enabled))
+                if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
                 {
                     if (m_focusedWidget)
                     {
@@ -512,14 +518,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::mouseNotOnWidget()
+    void Container::mouseNoLongerOnWidget()
     {
         if (m_mouseHover)
         {
             mouseLeftWidget();
 
-            for (std::size_t i = 0; i < m_widgets.size(); ++i)
-                m_widgets[i]->mouseNotOnWidget();
+            if (m_widgetBelowMouse)
+                m_widgetBelowMouse->mouseNoLongerOnWidget();
         }
     }
 
@@ -938,29 +944,27 @@ namespace tgui
 
     Widget::Ptr Container::mouseOnWhichWidget(float x, float y)
     {
-        bool widgetFound = false;
         Widget::Ptr widget = nullptr;
-
-        // Loop through all widgets
         for (std::vector<Widget::Ptr>::reverse_iterator it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
         {
-            // Check if the widget is visible and enabled
-            if (((*it)->m_visible) && ((*it)->m_enabled))
+            if ((*it)->isVisible())
             {
-                if (!widgetFound)
+                if ((*it)->mouseOnWidget(x, y))
                 {
-                    // Return the widget if the mouse is on top of it
-                    if ((*it)->mouseOnWidget(x, y))
-                    {
+                    // If the widget is disabled but the mouse is on top of it, nobody gets the event
+                    if ((*it)->isEnabled())
                         widget = *it;
-                        widgetFound = true;
-                    }
+
+                    break;
                 }
-                else // The widget was already found, so tell the other widgets that the mouse can't be on them
-                    (*it)->mouseNotOnWidget();
             }
         }
 
+        // If the mouse is on a different widget, tell the old widget that the mouse has left
+        if (m_widgetBelowMouse && (widget != m_widgetBelowMouse))
+            m_widgetBelowMouse->mouseNoLongerOnWidget();
+
+        m_widgetBelowMouse = widget;
         return widget;
     }
 
@@ -992,7 +996,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool GuiContainer::mouseOnWidget(float, float)
+    bool GuiContainer::mouseOnWidget(float, float) const
     {
         return true;
     }

@@ -272,40 +272,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChildWindow::mouseOnWidget(float x, float y)
+    bool ChildWindow::mouseOnWidget(float x, float y) const
     {
         // Check if the mouse is on top of the title bar
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right, getRenderer()->m_titleBarHeight}.contains(x, y))
         {
-            for (unsigned int i = 0; i < m_widgets.size(); ++i)
-                m_widgets[i]->mouseNotOnWidget();
+            if (m_widgetBelowMouse)
+                m_widgetBelowMouse->mouseNoLongerOnWidget();
 
             return true;
         }
-        else
-        {
-            // Check if the mouse is inside the child window
-            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
-                              getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom}.contains(x, y - getRenderer()->m_titleBarHeight))
-            {
-                return true;
-            }
-            else
-            {
-                if (m_mouseHover)
-                {
-                    mouseLeftWidget();
 
-                    // Tell the widgets inside the child window that the mouse is no longer on top of them
-                    for (unsigned int i = 0; i < m_widgets.size(); ++i)
-                        m_widgets[i]->mouseNotOnWidget();
-
-                    m_closeButton->mouseNotOnWidget();
-                }
-
-                return false;
-            }
-        }
+        // Check if the mouse is inside the child window
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
+                             getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom}.contains(x, y - getRenderer()->m_titleBarHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -343,7 +323,7 @@ namespace tgui
         {
             // When the mouse is not on the title bar, the mouse can't be on the close button
             if (m_closeButton->m_mouseHover)
-                m_closeButton->mouseNotOnWidget();
+                m_closeButton->mouseNoLongerOnWidget();
 
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
@@ -422,7 +402,7 @@ namespace tgui
         {
             // When the mouse is not on the title bar, the mouse can't be on the close button
             if (m_closeButton->m_mouseHover)
-                m_closeButton->mouseNotOnWidget();
+                m_closeButton->mouseNoLongerOnWidget();
 
             m_closeButton->mouseNoLongerDown();
 
@@ -489,6 +469,8 @@ namespace tgui
             // Send the hover event to the close button
             if (m_closeButton->mouseOnWidget(x, y))
                 m_closeButton->mouseMoved(x, y);
+            else
+                m_closeButton->mouseNoLongerOnWidget();
 
             return;
         }
@@ -496,7 +478,7 @@ namespace tgui
         {
             // When the mouse is not on the title bar, the mouse can't be on the close button
             if (m_closeButton->m_mouseHover)
-                m_closeButton->mouseNotOnWidget();
+                m_closeButton->mouseNoLongerOnWidget();
 
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
@@ -519,6 +501,14 @@ namespace tgui
         Container::mouseWheelMoved(delta,
                                    static_cast<int>(x - getRenderer()->m_borders.left),
                                    static_cast<int>(y - (getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top)));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::mouseNoLongerOnWidget()
+    {
+        Container::mouseNoLongerOnWidget();
+        m_closeButton->mouseNoLongerOnWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

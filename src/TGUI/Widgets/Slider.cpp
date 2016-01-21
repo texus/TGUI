@@ -257,25 +257,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::mouseOnWidget(float x, float y)
+    bool Slider::mouseOnWidget(float x, float y) const
     {
         // Check if the mouse is on top of the thumb
         if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(x, y))
-        {
-            m_mouseDownOnThumb = true;
-            m_mouseDownOnThumbPos.x = x - m_thumb.left;
-            m_mouseDownOnThumbPos.y = y - m_thumb.top;
             return true;
-        }
-        else // The mouse is not on top of the thumb
-            m_mouseDownOnThumb = false;
 
         // Check if the mouse is on top of the track
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
             return true;
-
-        if (m_mouseHover)
-            mouseLeftWidget();
 
         return false;
     }
@@ -362,6 +352,18 @@ namespace tgui
                 getRenderer()->m_textureThumbNormal.setPosition({m_thumb.left, m_thumb.top});
                 getRenderer()->m_textureThumbHover.setPosition({m_thumb.left, m_thumb.top});
             }
+        }
+        else // Normal mouse move
+        {
+            // Set some variables so that when the mouse goes down we know whether it is on the track or not
+            if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(x, y))
+            {
+                m_mouseDownOnThumb = true;
+                m_mouseDownOnThumbPos.x = x - m_thumb.left;
+                m_mouseDownOnThumbPos.y = y - m_thumb.top;
+            }
+            else // The mouse is not on top of the thumb
+                m_mouseDownOnThumb = false;
         }
     }
 

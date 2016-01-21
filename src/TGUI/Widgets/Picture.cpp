@@ -142,7 +142,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::mouseOnWidget(float x, float y)
+    bool Picture::mouseOnWidget(float x, float y) const
     {
         // Check if the mouse is on top of the picture
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
@@ -153,9 +153,6 @@ namespace tgui
             else
                 return true;
         }
-
-        if (m_mouseHover)
-            mouseLeftWidget();
 
         return false;
     }

@@ -304,20 +304,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::mouseOnWidget(float x, float y)
+    bool Scrollbar::mouseOnWidget(float x, float y) const
     {
         // Don't make any calculations when no scrollbar is needed
         if ((m_maximum <= m_lowValue) && m_autoHide)
             return false;
 
-        // Check if the mouse is on top of the scrollbar
-        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
-            return true;
-
-        if (m_mouseHover)
-            mouseLeftWidget();
-
-        return false;
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -433,19 +433,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::mouseOnWidget(float x, float y)
+    bool ComboBox::mouseOnWidget(float x, float y) const
     {
-        // Check if the mouse is on top of the combo box
-        if ((x > getPosition().x - getRenderer()->getBorders().left) && (x < getPosition().x + getSize().x + getRenderer()->getBorders().right)
-         && (y > getPosition().y - getRenderer()->getBorders().top) && (y < getPosition().y + getSize().y + getRenderer()->getBorders().bottom))
-        {
-            return true;
-        }
-
-        if (m_mouseHover)
-            mouseLeftWidget();
-
-        return false;
+        return sf::FloatRect{getPosition().x - getRenderer()->getBorders().left,
+                             getPosition().y - getRenderer()->getBorders().top,
+                             getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
+                             getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom}.contains(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -496,26 +496,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Grid::mouseOnWidget(float x, float y)
+    bool Grid::mouseOnWidget(float x, float y) const
     {
-        // Check if the mouse might be on top of the grid
-        if ((x > getPosition().x) && (y > getPosition().y))
-        {
-            // Check if the mouse is on the grid
-            if ((x < getPosition().x + m_realSize.x) && (y < getPosition().y + m_realSize.y))
-                return true;
-        }
-
-        if (m_mouseHover)
-        {
-            mouseLeftWidget();
-
-            // Tell the widgets inside the grid that the mouse is no longer on top of them
-            for (unsigned int i = 0; i < m_widgets.size(); ++i)
-                m_widgets[i]->mouseNotOnWidget();
-        }
-
-        return false;
+        return sf::FloatRect{getPosition().x, getPosition().y, m_realSize.x, m_realSize.y}.contains(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

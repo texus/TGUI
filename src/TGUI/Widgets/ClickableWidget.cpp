@@ -61,17 +61,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ClickableWidget::mouseOnWidget(float x, float y)
+    bool ClickableWidget::mouseOnWidget(float x, float y) const
     {
-        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
-            return true;
-        else
-        {
-            if (m_mouseHover)
-                mouseLeftWidget();
-
-            return false;
-        }
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

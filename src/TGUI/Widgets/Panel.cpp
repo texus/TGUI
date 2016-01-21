@@ -66,22 +66,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::mouseOnWidget(float x, float y)
+    bool Panel::mouseOnWidget(float x, float y) const
     {
-        // Check if the mouse is inside the panel
-        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
-            return true;
-
-        if (m_mouseHover)
-        {
-            mouseLeftWidget();
-
-            // Tell the widgets inside the panel that the mouse is no longer on top of them
-            for (unsigned int i = 0; i < m_widgets.size(); ++i)
-                m_widgets[i]->mouseNotOnWidget();
-        }
-
-        return false;
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

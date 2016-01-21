@@ -223,7 +223,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Knob::mouseOnWidget(float x, float y)
+    bool Knob::mouseOnWidget(float x, float y) const
     {
         // Check if the mouse is on top of the widget
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
@@ -242,9 +242,6 @@ namespace tgui
                 return (distance <= std::min(getSize().x, getSize().y));
             }
         }
-
-        if (m_mouseHover)
-            mouseLeftWidget();
 
         return false;
     }

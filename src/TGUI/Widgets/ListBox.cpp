@@ -620,20 +620,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::mouseOnWidget(float x, float y)
+    bool ListBox::mouseOnWidget(float x, float y) const
     {
-        // Pass the event to the scrollbar (if there is one)
-        if (m_scroll != nullptr)
-            m_scroll->mouseOnWidget(x, y);
-
-        // Check if the mouse is on top of the list box
-        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
-            return true;
-        else // The mouse is not on top of the list box
-        {
-            mouseNotOnWidget();
-            return false;
-        }
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -899,7 +888,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::mouseNotOnWidget()
+    void ListBox::mouseNoLongerOnWidget()
     {
         if (m_mouseHover)
             mouseLeftWidget();

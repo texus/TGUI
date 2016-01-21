@@ -284,7 +284,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::mouseOnWidget(float x, float y)
+    bool MenuBar::mouseOnWidget(float x, float y) const
     {
         // Check if the mouse is on top of the menu bar
         if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
@@ -312,9 +312,6 @@ namespace tgui
                     return true;
             }
         }
-
-        if (m_mouseHover)
-            mouseLeftWidget();
 
         return false;
     }
