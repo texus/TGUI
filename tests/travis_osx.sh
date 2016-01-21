@@ -4,6 +4,8 @@ mkdir build
 export SFML_ROOT=$HOME/SFML_OSX
 
 if [[ ! -d "$SFML_ROOT/lib" ]]; then
+  echo "$(tput setaf 3)Rebuilding SFML: no cache available$(tput sgr 0)"
+
   wget -O SFML.tar.gz https://github.com/SFML/SFML/archive/2.3.2.tar.gz
   tar -xzf SFML.tar.gz
   cd SFML-2.3.2
@@ -12,7 +14,7 @@ if [[ ! -d "$SFML_ROOT/lib" ]]; then
   make install
   cd ..
 else
-  echo 'Using cached SFML directory.'
+  echo "$(tput setaf 2)Using cached SFML directory$(tput sgr 0)"
 fi
 
 cd build

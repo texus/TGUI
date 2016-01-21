@@ -5,6 +5,8 @@ export DISPLAY=:99.0
 sh -e /etc/init.d/xvfb start
 
 if [[ ! -d "$SFML_ROOT/lib" ]]; then
+  echo "$(tput setaf 3)Rebuilding SFML: no cache available$(tput sgr 0)"
+
   wget -O SFML.tar.gz https://github.com/SFML/SFML/archive/2.2.tar.gz
   tar -xzf SFML.tar.gz
   cd SFML-2.2
@@ -13,7 +15,7 @@ if [[ ! -d "$SFML_ROOT/lib" ]]; then
   make install
   cd ..
 else
-  echo 'Using cached SFML directory.'
+  echo "$(tput setaf 2)Using cached SFML directory$(tput sgr 0)"
 fi
 
 mkdir build_gcc-5
