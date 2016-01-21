@@ -312,11 +312,55 @@ TEST_CASE("[Layouts]") {
 
             REQUIRE(Layout("{3, 2}").getValue() == 0);
             REQUIRE(Layout("(5").getValue() == 0);
+            REQUIRE(Layout("6)").getValue() == 0);
             REQUIRE(Layout("xyz").getValue() == 0);
             REQUIRE(Layout("width").getValue() == 0);
-            REQUIRE(Layout2d("[1, 2]").getValue() == sf::Vector2f(0, 0));
             REQUIRE(Layout2d("5").getValue() == sf::Vector2f(5, 5));
             REQUIRE(Layout2d("{1, 2} + 5").getValue() == sf::Vector2f(6, 7));
+            REQUIRE(Layout2d("[1, 2]").getValue() == sf::Vector2f(0, 0));
+            REQUIRE(Layout2d("{1").getValue() == sf::Vector2f(0, 0));
+            REQUIRE(Layout2d("2}").getValue() == sf::Vector2f(0, 0));
+            REQUIRE(Layout2d("{3}").getValue() == sf::Vector2f(0, 0));
+
+            REQUIRE(Layout("min()").getValue() == 0);
+            REQUIRE(Layout("min(2)").getValue() == 2);
+            REQUIRE(Layout("min(5, 3)").getValue() == 3);
+            REQUIRE(Layout("min(4, 2, 3)").getValue() == 2);
+            REQUIRE(Layout("max()").getValue() == 0);
+            REQUIRE(Layout("max(2)").getValue() == 2);
+            REQUIRE(Layout("max(5, 3)").getValue() == 5);
+            REQUIRE(Layout("max(2, 4, 3)").getValue() == 4);
+            REQUIRE(Layout("range()").getValue() == 0);
+            REQUIRE(Layout("range(5)").getValue() == 0);
+            REQUIRE(Layout("range(1, 3)").getValue() == 0);
+            REQUIRE(Layout("range(10, 20, 15)").getValue() == 15);
+            REQUIRE(Layout("range(10, 20, 25)").getValue() == 20);
+            REQUIRE(Layout("range(10, 20, 5)").getValue() == 10);
+            REQUIRE(Layout("range(1, 4, 2, 3)").getValue() == 0);
+            REQUIRE(Layout("min(5, 3) + range(10, 20, 12) * 2").getValue() == 27);
+
+            REQUIRE(Layout("1 < 2 ? 5 : 6").getValue() == 5);
+            REQUIRE(Layout("1 == 2 ? 5 : 6").getValue() == 6);
+            REQUIRE(Layout("1 <= 2 ? 3 ? 5 : 6 : 7").getValue() == 5);
+            REQUIRE(Layout("1 != 2 ? 0 ? 5 : 6 : 7").getValue() == 6);
+            REQUIRE(Layout("1 > 2 ? 0 ? 5 : 6 : 7").getValue() == 7);
+            REQUIRE(Layout("1 ? 2").getValue() == 0);
+            REQUIRE(Layout("1 : 2").getValue() == 0);
+
+            REQUIRE(Layout("if 1 < 2 then 5 else 6").getValue() == 5);
+            REQUIRE(Layout("if 1 == 2 then 5 else 6").getValue() == 6);
+            REQUIRE(Layout("if 1 <= 2 then if 3 then 5 else 6 else 7").getValue() == 5);
+            REQUIRE(Layout("if 1 != 2 then if 0 then 5 else 6 else 7").getValue() == 6);
+            REQUIRE(Layout("if 1 > 2 then if 0 then 5 else 6 else 7").getValue() == 7);
+            REQUIRE(Layout("if 0 then widgetif.x else widgetif.y + if 0 then widgetif.w else 2").getValue() == 2);
+            REQUIRE(Layout("if 0 then ifwidget.x else ifwidget.y + if 0 then ifwidget.w else 2").getValue() == 2);
+            REQUIRE(Layout("if 0 then widgetthen.x else widgetthen.y + if 0 then widgetthen.w else 2").getValue() == 2);
+            REQUIRE(Layout("if 0 then thenwidget.x else thenwidget.y + if 0 then thenwidget.w else 2").getValue() == 2);
+            REQUIRE(Layout("if 0 then widgetelse.x else widgetelse.y + if 0 then widgetelse.w else 2").getValue() == 2);
+            REQUIRE(Layout("if 0 then elsewidget.x else elsewidget.y + if 0 then elsewidget.w else 2").getValue() == 2);
+            REQUIRE(Layout("if 2 * if 1 then 2 else 3 < 5 then 8 else 9").getValue() == 8);
+            REQUIRE(Layout("if 1 then 2").getValue() == 0);
+            REQUIRE(Layout("if 0 else 2").getValue() == 0);
         }
 
         SECTION("bind functions") {
@@ -330,8 +374,8 @@ TEST_CASE("[Layouts]") {
             panel->add(button1, "b1");
             
             auto button2 = std::make_shared<tgui::Button>();
-            button2->setPosition({"b1.position"});
-            button2->setSize({"b1.size"});
+            button2->setPosition(bindStr2d("b1.position"));
+            button2->setSize(bindStr2d(std::string{"b1.size"}));
             REQUIRE(button2->getSize() == sf::Vector2f(0, 0));
             REQUIRE(button2->getPosition() == sf::Vector2f(0, 0));
 
@@ -345,7 +389,7 @@ TEST_CASE("[Layouts]") {
             button2->setPosition({"b1.pos"});
             REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
             
-            button2->setPosition({"b1.left"}, {"b1.top"});
+            button2->setPosition(bindStr("b1.left"), bindStr(std::string{"b1.top"}));
             REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
             
             button2->setPosition({"b1.x"}, {"b1.y"});
@@ -377,16 +421,6 @@ TEST_CASE("[Layouts]") {
             
             button2->setPosition({"parent.b1.parent.b1.x"}, {"&.b1.&.b1.y"});
             REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
-            
-            REQUIRE(Layout("min()").getValue() == 0);
-            REQUIRE(Layout("min(2)").getValue() == 2);
-            REQUIRE(Layout("min(5, 3)").getValue() == 3);
-            REQUIRE(Layout("min(4, 2, 3)").getValue() == 2);
-            REQUIRE(Layout("max(5, 2)").getValue() == 5);
-            REQUIRE(Layout("range(10, 20, 15)").getValue() == 15);
-            REQUIRE(Layout("range(10, 20, 25)").getValue() == 20);
-            REQUIRE(Layout("range(10, 20, 5)").getValue() == 10);
-            REQUIRE(Layout("min(5, 3) + range(10, 20, 12) * 2").getValue() == 27);
 
             button2->setPosition({"b1.position"});
             button2->setSize({"b1.size"});

@@ -319,7 +319,10 @@ namespace tgui
                 auto matchingColonPos = expression.find(':', questionMarkPos + 1);
                 auto nextQuestionMarkPos = expression.find('?', questionMarkPos + 1);
                 while ((matchingColonPos != std::string::npos) && (nextQuestionMarkPos < matchingColonPos))
+                {
                     matchingColonPos = expression.find(':', matchingColonPos + 1);
+                    nextQuestionMarkPos = expression.find('?', matchingColonPos + 1);
+                }
 
                 if (matchingColonPos == std::string::npos)
                     return 0; // '?' without matching ':'
@@ -346,8 +349,13 @@ namespace tgui
 
                 while ((thenPos != std::string::npos) && (nextifPos < thenPos))
                 {
-                    thenPos = expression.find("then", thenPos + 4);
+                    nextifPos = expression.find("if", thenPos + 4);
+                    while ((nextifPos != std::string::npos) && (nextifPos > 0) && !::isspace(expression[nextifPos-1]))
+                        nextifPos = expression.find("if", nextifPos + 2);
+                    while ((nextifPos < expression.size()-2) && !::isspace(expression[nextifPos+2]))
+                        nextifPos = expression.find("if", nextifPos + 2);
 
+                    thenPos = expression.find("then", thenPos + 4);
                     while ((thenPos != std::string::npos) && (thenPos > 0) && !::isspace(expression[thenPos-1]))
                         thenPos = expression.find("then", thenPos + 4);
                     while ((thenPos < expression.size()-4) && !::isspace(expression[thenPos+4]))
@@ -372,8 +380,13 @@ namespace tgui
 
                 while ((elsePos != std::string::npos) && (nextifPos < elsePos))
                 {
-                    elsePos = expression.find("else", elsePos + 4);
+                    nextifPos = expression.find("if", elsePos + 4);
+                    while ((nextifPos != std::string::npos) && (nextifPos > 0) && !::isspace(expression[nextifPos-1]))
+                        nextifPos = expression.find("if", nextifPos + 2);
+                    while ((nextifPos < expression.size()-2) && !::isspace(expression[nextifPos+2]))
+                        nextifPos = expression.find("if", nextifPos + 2);
 
+                    elsePos = expression.find("else", elsePos + 4);
                     while ((elsePos != std::string::npos) && (elsePos > 0) && !::isspace(expression[elsePos-1]))
                         elsePos = expression.find("else", elsePos + 4);
                     while ((elsePos < expression.size()-4) && !::isspace(expression[elsePos+4]))
@@ -398,9 +411,6 @@ namespace tgui
         auto orPos = expression.rfind("||");
         if ((andPos != std::string::npos) || (orPos != std::string::npos))
         {
-            if ((andPos == 0) || (orPos == 0))
-                return 0;
-
             if ((andPos == std::string::npos) || (orPos < andPos))
                 return parseLayoutString(expression.substr(0, orPos)) || parseLayoutString(expression.substr(orPos + 2));
             else
@@ -411,9 +421,6 @@ namespace tgui
         orPos = expression.rfind("or");
         if ((andPos != std::string::npos) || (orPos != std::string::npos))
         {
-            if ((andPos == 0) || (orPos == 0))
-                return 0;
-
             if ((andPos == std::string::npos) || (orPos < andPos))
                 return parseLayoutString(expression.substr(0, orPos)) || parseLayoutString(expression.substr(orPos + 2));
             else
@@ -424,9 +431,6 @@ namespace tgui
         auto notEqualsPos = expression.rfind("!=");
         if ((equalsPos != std::string::npos) || (notEqualsPos != std::string::npos))
         {
-            if ((equalsPos == 0) || (notEqualsPos == 0))
-                return 0;
-
             if ((equalsPos == std::string::npos) || (notEqualsPos < equalsPos))
                 return parseLayoutString(expression.substr(0, notEqualsPos)) != parseLayoutString(expression.substr(notEqualsPos + 2));
             else
@@ -439,9 +443,6 @@ namespace tgui
         auto greaterEqualPos = expression.rfind(">=");
         if ((lessThanPos != std::string::npos) || (greaterThanPos != std::string::npos))
         {
-            if ((lessThanPos == 0) || (greaterThanPos == 0) || (lessEqualPos == 0) || (greaterEqualPos == 0))
-                return 0;
-
             if ((greaterThanPos != std::string::npos) && ((lessThanPos == std::string::npos) || (greaterThanPos < lessThanPos)))
             {
                 if ((greaterEqualPos != std::string::npos) && (greaterEqualPos == greaterThanPos))
@@ -512,10 +513,8 @@ namespace tgui
             }
         }
 
-        if (expression.empty())
-            return 0;
-
         // The expression might reference to a widget instead of being a constant
+        assert(!expression.empty());
         expression = tgui::toLower(tgui::trim(expression));
         if ((expression.substr(expression.size()-1) == "x")
          || (expression.substr(expression.size()-1) == "y")
