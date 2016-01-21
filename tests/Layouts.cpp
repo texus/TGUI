@@ -25,6 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Gui.hpp>
 
 TGUI_IMPORT_LAYOUT_BIND_FUNCTIONS
 using tgui::Layout;
@@ -352,13 +353,19 @@ TEST_CASE("[Layouts]") {
             REQUIRE(Layout("if 1 <= 2 then if 3 then 5 else 6 else 7").getValue() == 5);
             REQUIRE(Layout("if 1 != 2 then if 0 then 5 else 6 else 7").getValue() == 6);
             REQUIRE(Layout("if 1 > 2 then if 0 then 5 else 6 else 7").getValue() == 7);
-            REQUIRE(Layout("if 0 then widgetif.x else widgetif.y + if 0 then widgetif.w else 2").getValue() == 2);
-            REQUIRE(Layout("if 0 then ifwidget.x else ifwidget.y + if 0 then ifwidget.w else 2").getValue() == 2);
-            REQUIRE(Layout("if 0 then widgetthen.x else widgetthen.y + if 0 then widgetthen.w else 2").getValue() == 2);
-            REQUIRE(Layout("if 0 then thenwidget.x else thenwidget.y + if 0 then thenwidget.w else 2").getValue() == 2);
-            REQUIRE(Layout("if 0 then widgetelse.x else widgetelse.y + if 0 then widgetelse.w else 2").getValue() == 2);
-            REQUIRE(Layout("if 0 then elsewidget.x else elsewidget.y + if 0 then elsewidget.w else 2").getValue() == 2);
+            REQUIRE(Layout("if widgetif.h then widgetif.x else widgetif.y + if 0 then widgetif.w else 2").getValue() == 2);
+            REQUIRE(Layout("if ifwidget.h then ifwidget.x else ifwidget.y + if 0 then ifwidget.w else 2").getValue() == 2);
+            REQUIRE(Layout("if widgetthen.h then widgetthen.x else widgetthen.y + if 0 then widgetthen.w else 2").getValue() == 2);
+            REQUIRE(Layout("if thenwidget.h then thenwidget.x else thenwidget.y + if 0 then thenwidget.w else 2").getValue() == 2);
+            REQUIRE(Layout("if widgetelse.h then widgetelse.x else widgetelse.y + if 0 then widgetelse.w else 2").getValue() == 2);
+            REQUIRE(Layout("if elsewidget.h then elsewidget.x else elsewidget.y + if 0 then elsewidget.w else 2").getValue() == 2);
             REQUIRE(Layout("if 2 * if 1 then 2 else 3 < 5 then 8 else 9").getValue() == 8);
+            REQUIRE(Layout("if if wif.x then wif.x.y + if wif.w then 5 else wif.h else 7 then 8 else 9").getValue() == 8);
+            REQUIRE(Layout("if if ifw.x then ifw.x.y + if ifw.w then 5 else ifw.h else 7 then 8 else 9").getValue() == 8);
+            REQUIRE(Layout("if if wthen.x then wthen.x.y + if wthen.w then 5 else wthen.h else 7 then 8 else 9").getValue() == 8);
+            REQUIRE(Layout("if if thenw.x then thenw.x.y + if thenw.w then 5 else thenw.h else 7 then 8 else 9").getValue() == 8);
+            REQUIRE(Layout("if if welse.x then welse.x.y + if welse.w then 5 else welse.h else 7 then 8 else 9").getValue() == 8);
+            REQUIRE(Layout("if if elsew.x then elsew.x.y + if elsew.w then 5 else elsew.h else 7 then 8 else 9").getValue() == 8);
             REQUIRE(Layout("if 1 then 2").getValue() == 0);
             REQUIRE(Layout("if 0 else 2").getValue() == 0);
         }
@@ -479,6 +486,41 @@ TEST_CASE("[Layouts]") {
             panel->add(button4, "then");
             button3->setSize({"then.size"});
             REQUIRE(button3->getSize() == sf::Vector2f(200, 50));
+
+            SECTION("Gui") {
+                sf::RenderTexture texture;
+                texture.create(20, 15);
+                tgui::Gui gui{texture};
+
+                auto left = bindLeft(gui);
+                auto top = bindTop(gui);
+                auto width = bindWidth(gui);
+                auto height = bindHeight(gui);
+                auto right = bindRight(gui);
+                auto bottom = bindBottom(gui);
+                auto position = bindPosition(gui);
+                auto size = bindSize(gui);
+
+                REQUIRE(left.getValue() == 0);
+                REQUIRE(top.getValue() == 0);
+                REQUIRE(width.getValue() == 20);
+                REQUIRE(height.getValue() == 15);
+                REQUIRE(right.getValue() == 20);
+                REQUIRE(bottom.getValue() == 15);
+                REQUIRE(position.getValue() == sf::Vector2f(0, 0));
+                REQUIRE(size.getValue() == sf::Vector2f(20, 15));
+
+                gui.setView(sf::View{{4, 3, 40, 30}});
+
+                REQUIRE(left.getValue() == 4);
+                REQUIRE(top.getValue() == 3);
+                REQUIRE(width.getValue() == 40);
+                REQUIRE(height.getValue() == 30);
+                REQUIRE(right.getValue() == 44);
+                REQUIRE(bottom.getValue() == 33);
+                REQUIRE(position.getValue() == sf::Vector2f(4, 3));
+                REQUIRE(size.getValue() == sf::Vector2f(40, 30));
+            }
         }
     }
 }
