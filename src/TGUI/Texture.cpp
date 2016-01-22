@@ -167,11 +167,10 @@ namespace tgui
 
     void Texture::setSize(const sf::Vector2f& size)
     {
-        assert(size.x >= 0 && size.y >= 0);
-
         if (m_loaded)
         {
-            m_size = size;
+            m_size.x = std::max(size.x, 0.f);
+            m_size.y = std::max(size.y, 0.f);
 
             setOrigin(std::min(m_size.x, m_size.y) / 2.0f, std::min(m_size.x, m_size.y) / 2.0f);
 
@@ -200,7 +199,7 @@ namespace tgui
 
     bool Texture::isTransparentPixel(float x, float y) const
     {
-        if (m_data->image == nullptr)
+        if (!m_data->image || (m_size.x == 0) || (m_size.y == 0))
             return false;
 
         x -= getPosition().x;

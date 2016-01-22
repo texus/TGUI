@@ -79,20 +79,11 @@ namespace tgui
 
     void Transformable::setSize(const Layout2d& size)
     {
-        if (size.getValue().x >= 0)
-            m_size.x = size.x;
-        else
-            m_size.x = size.x * -1;
-
-        if (size.getValue().y >= 0)
-            m_size.y = size.y;
-        else
-            m_size.y = size.y * -1;
+        m_size = size;
+        m_prevSize = m_size.getValue();
 
         m_size.x.connectUpdateCallback(std::bind(&Transformable::updateSize, this, false));
         m_size.y.connectUpdateCallback(std::bind(&Transformable::updateSize, this, false));
-
-        m_prevSize = m_size.getValue();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

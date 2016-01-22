@@ -523,4 +523,21 @@ TEST_CASE("[Layouts]") {
             }
         }
     }
+
+    SECTION("Bug Fixes") {
+        SECTION("Setting negative size and reverting back to positive (https://github.com/texus/TGUI/issues/54)") {
+            tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
+            tgui::Button::Ptr button = std::make_shared<tgui::Button>();
+            panel->add(button);
+
+            // Button width becomes -10
+            panel->setSize(10, 10);
+            button->setSize({"{&.w - 20, &.h}"});
+            REQUIRE(button->getSize() == sf::Vector2f(-10, 10));
+
+            // Button width will become positive again
+            panel->setSize(200, 100);
+            REQUIRE(button->getSize() == sf::Vector2f(180, 100));
+        }
+    }
 }
