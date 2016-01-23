@@ -1,4 +1,3 @@
-# TODO: Make sure all files are listed
 set(TGUI_SRC
     Animation.cpp
     BoxLayout.cpp
@@ -49,9 +48,6 @@ set(TGUI_SRC
     Widgets/Tab.cpp
     Widgets/TextBox.cpp
     Widgets/ToolTip.cpp
-    Widgets/extra/AnimatedPicture.cpp
-    Widgets/extra/Slider2d.cpp
-    Widgets/extra/SpriteSheet.cpp
 )
 
 # Determine library suffixes depending on static/shared configuration

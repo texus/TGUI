@@ -66,10 +66,6 @@
 #include <TGUI/Widgets/TextBox.hpp>
 #include <TGUI/Widgets/ToolTip.hpp>
 
-#include <TGUI/Widgets/extra/AnimatedPicture.hpp>
-#include <TGUI/Widgets/extra/Slider2d.hpp>
-#include <TGUI/Widgets/extra/SpriteSheet.hpp>
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif // TGUI_TGUI_HPP
