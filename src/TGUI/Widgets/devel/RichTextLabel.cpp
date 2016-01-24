@@ -29,46 +29,46 @@
 
 namespace
 {
-	struct Chunk
-	{
-		Chunk()
-		{
-			style = sf::Text::Regular;
-			color = sf::Color::White;
-			endsInNewline = false;
-		}
+    struct Chunk
+    {
+        Chunk()
+        {
+            style = sf::Text::Regular;
+            color = sf::Color::White;
+            endsInNewline = false;
+        }
 
-		sf::String text;
-		int style;
-		sf::Color color;
-		bool endsInNewline;
-	};
+        sf::String text;
+        unsigned int style;
+        sf::Color color;
+        bool endsInNewline;
+    };
 
-	void newChunk(std::vector<Chunk>& chunks, Chunk*& currentChunk, Chunk& lastChunk)
-	{
-		chunks.push_back(Chunk());
-		currentChunk = &(chunks[chunks.size() - 1]);
+    void newChunk(std::vector<Chunk>& chunks, Chunk*& currentChunk, Chunk& lastChunk)
+    {
+        chunks.push_back(Chunk());
+        currentChunk = &(chunks[chunks.size() - 1]);
 
-		//	only carry information over if currentChunk and lastChunk aren't the same
-		//	this only happens for the first chunk, but it causes random errors
-		if (chunks.size() > 2)
-		{
-			currentChunk->style = lastChunk.style;
-			currentChunk->color = lastChunk.color;
-		}
-	}
+        // only carry information over if currentChunk and lastChunk aren't the same
+        // this only happens for the first chunk, but it causes random errors
+        if (chunks.size() > 2)
+        {
+            currentChunk->style = lastChunk.style;
+            currentChunk->color = lastChunk.color;
+        }
+    }
 
-	void processFormatting(Chunk& lastChunk, Chunk* currentChunk, sf::Text::Style style)
-	{
-		if ((lastChunk.style & style) >= 0)
-		{
-			currentChunk->style ^= style;
-		}
-		else
-		{
-			currentChunk->style |= style;
-		}
-	}
+    void processFormatting(Chunk& lastChunk, Chunk* currentChunk, sf::Text::Style style)
+    {
+        if ((lastChunk.style & style) >= 0)
+        {
+            currentChunk->style ^= style;
+        }
+        else
+        {
+            currentChunk->style |= style;
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,14 +84,14 @@ namespace tgui
         m_background.setFillColor(sf::Color::Transparent);
 
         m_colors["default"] = sf::Color::White;
-		m_colors["black"] = sf::Color::Black;
-		m_colors["blue"] = sf::Color::Blue;
-		m_colors["cyan"] = sf::Color::Cyan;
-		m_colors["green"] = sf::Color::Green;
-		m_colors["magenta"] = sf::Color::Magenta;
-		m_colors["red"] = sf::Color::Red;
-		m_colors["white"] = sf::Color::White;
-		m_colors["yellow"] = sf::Color::Yellow;
+        m_colors["black"] = sf::Color::Black;
+        m_colors["blue"] = sf::Color::Blue;
+        m_colors["cyan"] = sf::Color::Cyan;
+        m_colors["green"] = sf::Color::Green;
+        m_colors["magenta"] = sf::Color::Magenta;
+        m_colors["red"] = sf::Color::Red;
+        m_colors["white"] = sf::Color::White;
+        m_colors["yellow"] = sf::Color::Yellow;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,179 +142,175 @@ namespace tgui
     {
         m_string = string;
 
-		if (!m_font)
-			return;
+        if (!m_font)
+            return;
 
-		m_texts.clear();
+        m_texts.clear();
 
-		std::vector<Chunk> chunks;
-		chunks.push_back(Chunk());
+        std::vector<Chunk> chunks;
+        chunks.push_back(Chunk());
 
-		Chunk* currentChunk = &(chunks[0]);
-		bool escaped = false;
+        Chunk* currentChunk = &(chunks[0]);
+        bool escaped = false;
 
-		for (unsigned int i = 0; i < m_string.getSize(); ++i)
-		{
-			Chunk& lastChunk = *currentChunk;
+        for (std::size_t i = 0; i < m_string.getSize(); ++i)
+        {
+            Chunk& lastChunk = *currentChunk;
 
-			switch (m_string[i])
-			{
-				case '~': //	italics
-				{
-					if (escaped)
-					{
-						currentChunk->text += m_string[i];
-						escaped = false;
-						break;
-					}
+            switch (m_string[i])
+            {
+                case '~': // italics
+                {
+                    if (escaped)
+                    {
+                        currentChunk->text += m_string[i];
+                        escaped = false;
+                        break;
+                    }
 
-					newChunk(chunks, currentChunk, lastChunk);
+                    newChunk(chunks, currentChunk, lastChunk);
 
-					processFormatting(lastChunk, currentChunk, sf::Text::Italic);
+                    processFormatting(lastChunk, currentChunk, sf::Text::Italic);
 
-					currentChunk->color = lastChunk.color;
-					break;
-				}
-				case '*': //	bold
-				{
-					if (escaped)
-					{
-						currentChunk->text += m_string[i];
-						escaped = false;
-						break;
-					}
+                    currentChunk->color = lastChunk.color;
+                    break;
+                }
+                case '*': // bold
+                {
+                    if (escaped)
+                    {
+                        currentChunk->text += m_string[i];
+                        escaped = false;
+                        break;
+                    }
 
-					newChunk(chunks, currentChunk, lastChunk);
+                    newChunk(chunks, currentChunk, lastChunk);
 
-					processFormatting(lastChunk, currentChunk, sf::Text::Bold);
+                    processFormatting(lastChunk, currentChunk, sf::Text::Bold);
 
-					currentChunk->color = lastChunk.color;
-					break;
-				}
-				case '_': 	//	underline
-				{
-					if (escaped)
-					{
-						currentChunk->text += m_string[i];
-						escaped = false;
-						break;
-					}
+                    currentChunk->color = lastChunk.color;
+                    break;
+                }
+                case '_': // underline
+                {
+                    if (escaped)
+                    {
+                        currentChunk->text += m_string[i];
+                        escaped = false;
+                        break;
+                    }
 
-					newChunk(chunks, currentChunk, lastChunk);
+                    newChunk(chunks, currentChunk, lastChunk);
 
 
-					processFormatting(lastChunk, currentChunk, sf::Text::Underlined);
+                    processFormatting(lastChunk, currentChunk, sf::Text::Underlined);
 
-					currentChunk->color = lastChunk.color;
-					break;
-				}
-				case '#':	//	color
-				{
-					if (escaped)
-					{
-						currentChunk->text += m_string[i];
-						escaped = false;
-						break;
-					}
+                    currentChunk->color = lastChunk.color;
+                    break;
+                }
+                case '#': // color
+                {
+                    if (escaped)
+                    {
+                        currentChunk->text += m_string[i];
+                        escaped = false;
+                        break;
+                    }
 
-					int length = 0;
-					int start = i + 1;
+                    // seek forward until the next whitespace
+                    std::size_t length = 0;
+                    while (!isspace(m_string[++i]))
+                        ++length;
 
-					//	seek forward until the next whitespace
-					while (!isspace(m_string[++i]))
-					{
-						++length;
-					}
+                    newChunk(chunks, currentChunk, lastChunk);
+                    currentChunk->color = getColor(m_string.substring(i + 1, length));;
+                    break;
 
-					newChunk(chunks, currentChunk, lastChunk);
-					currentChunk->color = getColor(m_string.substring(start, length));;
-					break;
+                }
+                case '\\': // escape sequence for escaping formatting characters
+                {
+                    if (i < m_string.getSize())
+                    {
+                        switch (m_string[i + 1])
+                        {
+                            case '~':
+                            case '*':
+                            case '_':
+                            case '#':
+                            {
+                                escaped = true;
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                    }
 
-				}
-				case '\\':	//	escape sequence for escaping formatting characters
-				{
-					if (i < m_string.getSize())
-					{
-						switch (m_string[i + 1])
-						{
-							case '~':
-							case '*':
-							case '_':
-							case '#':
-							{
-								escaped = true;
-								break;
-							}
-							default:
-								break;
-						}
-					}
+                    if (!escaped)
+                    {
+                        currentChunk->text += m_string[i];
+                    }
 
-					if (!escaped)
-					{
-						currentChunk->text += m_string[i];
-					}
+                    break;
+                }
+                case '\n': // make a new chunk in the case of a newline
+                {
+                    currentChunk->endsInNewline = true;
+                    newChunk(chunks, currentChunk, lastChunk);
+                    break;
+                }
+                default:
+                {
+                    escaped = false;
+                    currentChunk->text += m_string[i];
+                    break;
+                }
+            }
+        }
 
-					break;
-				}
-				case '\n':	// make a new chunk in the case of a newline
-				{
-					currentChunk->endsInNewline = true;
-					newChunk(chunks, currentChunk, lastChunk);
-					break;
-				}
-				default:
-				{
-					escaped = false;
-					currentChunk->text += m_string[i];
-					break;
-				}
-			}
-		}
+        sf::String totalString = "";
+        for (std::size_t i = 0; i < chunks.size(); ++i)
+        {
+            if (!chunks[i].endsInNewline && chunks[i].text.getSize() == 0)
+            {
+                continue;
+            }
 
-		sf::String totalString = "";
-		for (unsigned int i = 0; i < chunks.size(); ++i)
-		{
-			if (!chunks[i].endsInNewline && chunks[i].text.getSize() == 0)
-			{
-				continue;
-			}
+            totalString += chunks[i].text + (chunks[i].endsInNewline ? "\n" : "");
+        }
 
-			totalString += chunks[i].text + (chunks[i].endsInNewline ? "\n" : "");
-		}
-
-		sf::Text text;
-		text.setString(totalString);
-		text.setCharacterSize(m_textSize);
-		text.setPosition(getPosition());
+        sf::Text text;
+        text.setString(totalString);
+        text.setCharacterSize(m_textSize);
+        text.setPosition(getPosition());
         text.setFont(*m_font);
 
         m_size = {text.getLocalBounds().left + text.getLocalBounds().width, text.getLocalBounds().top + text.getLocalBounds().height};
         m_background.setSize(getSize());
 
-		int cursor = 0;
-		Chunk* lastChunk = nullptr;
-		for (unsigned int i = 0; i < chunks.size(); ++i)
-		{
-			sf::Text tempText;
-			tempText.setColor(chunks[i].color);
-			tempText.setString(chunks[i].text);
-			tempText.setStyle(chunks[i].style);
-			tempText.setCharacterSize(m_textSize);
+        std::size_t cursor = 0;
+        Chunk* lastChunk = nullptr;
+        for (std::size_t i = 0; i < chunks.size(); ++i)
+        {
+            sf::Text tempText;
+            tempText.setColor(chunks[i].color);
+            tempText.setString(chunks[i].text);
+            tempText.setStyle(chunks[i].style);
+            tempText.setCharacterSize(m_textSize);
             tempText.setFont(*m_font);
 
-			tempText.setPosition(text.findCharacterPos(cursor));
+            tempText.setPosition(text.findCharacterPos(cursor));
 
-			if (lastChunk != nullptr && lastChunk->endsInNewline)
-			{
-				tempText.setPosition(0, tempText.getPosition().y + m_font->getLineSpacing(m_textSize));
-				++cursor;
-			}
+            if (lastChunk != nullptr && lastChunk->endsInNewline)
+            {
+                tempText.setPosition(0, tempText.getPosition().y + m_font->getLineSpacing(m_textSize));
+                ++cursor;
+            }
 
-			m_texts.push_back(tempText);
-			cursor += chunks[i].text.getSize();
-			lastChunk = &chunks[i];
-		}
+            m_texts.push_back(tempText);
+            cursor += chunks[i].text.getSize();
+            lastChunk = &chunks[i];
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,54 +345,54 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RichTextLabel::addColor(const sf::String& name, const sf::Color& color)
-	{
-		m_colors[name] = color;
-	}
+    {
+        m_colors[name] = color;
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void RichTextLabel::addColor(const sf::String& name, unsigned int argbHex)
-	{
-		m_colors[name] = getColor(argbHex);
-	}
+    void RichTextLabel::addColor(const sf::String& name, unsigned int argbHex)
+    {
+        m_colors[name] = getColor(argbHex);
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Color RichTextLabel::getColor(const sf::String& source) const
-	{
-		std::map<sf::String, sf::Color>::const_iterator result = m_colors.find(source);
-		if (result == m_colors.end())
-		{
-			unsigned int hex = 0x0;
-			if (!(std::istringstream(source) >> std::hex >> hex))
-			{
-				//	Error parsing; return default
-				return sf::Color::White;
-			};
+    {
+        std::map<sf::String, sf::Color>::const_iterator result = m_colors.find(source);
+        if (result == m_colors.end())
+        {
+            unsigned int hex = 0x0;
+            if (!(std::istringstream(source) >> std::hex >> hex))
+            {
+                // Error parsing; return default
+                return sf::Color::White;
+            };
 
-			return getColor(hex);
-		}
+            return getColor(hex);
+        }
 
-		return result->second;
-	}
+        return result->second;
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	sf::Color RichTextLabel::getColor(unsigned int argbHex) const
-	{
-		argbHex |= 0xff000000;
-		return sf::Color(argbHex >> 16 & 0xFF, argbHex >> 8 & 0xFF, argbHex >> 0 & 0xFF, argbHex >> 24 & 0xFF);
-	}
+    sf::Color RichTextLabel::getColor(unsigned int argbHex) const
+    {
+        argbHex |= 0xff000000;
+        return sf::Color(argbHex >> 16 & 0xFF, argbHex >> 8 & 0xFF, argbHex >> 0 & 0xFF, argbHex >> 24 & 0xFF);
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RichTextLabel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         if (m_background.getFillColor() != sf::Color::Transparent)
             target.draw(m_background, states);
 
-        for(unsigned int i = 0; i < m_texts.size(); ++i)
-			target.draw(m_texts[i], states);
+        for(std::size_t i = 0; i < m_texts.size(); ++i)
+            target.draw(m_texts[i], states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
