@@ -61,7 +61,7 @@ namespace tgui
         // getHeader()
 
         void setFixedColumnWidth(std::size_t column, float size);
-        void setColumnRatio(std::size_t column, std::size_t ratio);
+        void setColumnRatio(std::size_t column, float ratio);
 
         // virtual void setFixedRowsHeight(float size);
 

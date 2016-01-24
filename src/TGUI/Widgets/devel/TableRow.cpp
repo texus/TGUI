@@ -50,7 +50,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TableRow::TableRow::addItem(const std::string& name)
+    void TableRow::addItem(const std::string& name)
     {
         BoxLayout::add(createItem(name, m_align, m_normalTextColor));
     }

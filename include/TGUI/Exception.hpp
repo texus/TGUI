@@ -37,6 +37,10 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
+    #pragma warning(disable:4275)
+#endif
+
     class TGUI_API Exception : public std::runtime_error {
     public:
         explicit Exception(const std::string& argument) :
@@ -44,6 +48,10 @@ namespace tgui
         {
         }
     };
+
+#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
+    #pragma warning(default:4275)
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

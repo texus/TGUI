@@ -174,7 +174,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Table::setColumnRatio(std::size_t column, std::size_t ratio)
+    void Table::setColumnRatio(std::size_t column, float ratio)
     {
         // TODO: What if the user use setFixedColumnWidth and setRatioColumnWidth on same column?
         m_header->setRatio(column, ratio);
