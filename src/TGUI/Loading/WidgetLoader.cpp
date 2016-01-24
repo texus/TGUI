@@ -566,7 +566,7 @@ namespace tgui
                 if (node->propertyValuePairs["items"]->valueList.size() != node->propertyValuePairs["itemids"]->valueList.size())
                     throw Exception{"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
 
-                for (unsigned int i = 0; i < node->propertyValuePairs["items"]->valueList.size(); ++i)
+                for (std::size_t i = 0; i < node->propertyValuePairs["items"]->valueList.size(); ++i)
                 {
                     listBox->addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["items"]->valueList[i]).getString(),
                                      Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["itemids"]->valueList[i]).getString());

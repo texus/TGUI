@@ -118,7 +118,7 @@ namespace tgui
             if (str[0] == '#')
             {
                 // You can only have hex characters
-                for (unsigned int i = 1; i < value.length(); ++i)
+                for (std::size_t i = 1; i < value.length(); ++i)
                 {
                     if (!((value[i] >= '0' && value[i] <= '9') || (value[i] >= 'A' && value[i] <= 'F')  || (value[i] >= 'a' && value[i] <= 'f')))
                         throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but contained an invalid character afterwards."};

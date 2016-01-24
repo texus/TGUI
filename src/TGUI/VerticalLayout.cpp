@@ -27,7 +27,7 @@ namespace tgui
     void VerticalLayout::updateWidgetPositions()
     {
         float sumRatio = 0;
-        for (unsigned int i = 0; i < m_widgetsRatio.size(); ++i)
+        for (std::size_t i = 0; i < m_widgetsRatio.size(); ++i)
         {
             if (m_widgetsFixedSizes[i] == 0)
                 sumRatio += m_widgetsRatio[i];
@@ -36,7 +36,7 @@ namespace tgui
         float currentRatio = 0;
         float currentOffset = 0;
         const float sumFixedSize = std::accumulate(m_widgetsFixedSizes.begin(), m_widgetsFixedSizes.end(), 0.f);
-        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
         {
             m_layoutWidgets[i]->setPosition(0.f, (getSize().y - sumFixedSize) * currentRatio + currentOffset);
             if (m_widgetsFixedSizes[i])

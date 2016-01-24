@@ -80,7 +80,7 @@ namespace tgui
 
     bool BoxLayout::remove(const tgui::Widget::Ptr& widget)
     {
-        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
         {
             if (m_layoutWidgets[i] == widget)
                 return remove(i);
@@ -118,7 +118,7 @@ namespace tgui
 
     bool BoxLayout::setRatio(const Widget::Ptr& widget, float ratio)
     {
-        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
         {
             if (m_layoutWidgets[i] == widget)
                 return setRatio(i, ratio);
@@ -143,7 +143,7 @@ namespace tgui
 
     float BoxLayout::getRatio(const Widget::Ptr& widget)
     {
-        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
         {
             if (m_layoutWidgets[i] == widget)
                 return getRatio(i);
@@ -166,7 +166,7 @@ namespace tgui
 
     bool BoxLayout::setFixedSize(const Widget::Ptr& widget, float size)
     {
-        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
         {
             if (m_layoutWidgets[i] == widget)
                 return setFixedSize(i, size);
@@ -191,7 +191,7 @@ namespace tgui
 
     float BoxLayout::getFixedSize(const Widget::Ptr& widget)
     {
-        for (unsigned int i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
         {
             if (m_layoutWidgets[i] == widget)
                 return getFixedSize(i);

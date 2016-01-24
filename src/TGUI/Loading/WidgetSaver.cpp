@@ -343,7 +343,7 @@ namespace tgui
 
             std::string itemList = "[" + Serializer::serialize(items[0]);
             std::string itemIdList = "[" + Serializer::serialize(ids[0]);
-            for (unsigned int i = 1; i < items.size(); ++i)
+            for (std::size_t i = 1; i < items.size(); ++i)
             {
                 itemList += ", " + Serializer::serialize(items[i]);
                 itemIdList += ", " + Serializer::serialize(ids[i]);
@@ -478,7 +478,7 @@ namespace tgui
         if (tab->getTabsCount() > 0)
         {
             std::string tabList = "[" + Serializer::serialize(tab->getText(0));
-            for (unsigned int i = 1; i < tab->getTabsCount(); ++i)
+            for (std::size_t i = 1; i < tab->getTabsCount(); ++i)
                 tabList += ", " + Serializer::serialize(tab->getText(i));
 
             tabList += "]";

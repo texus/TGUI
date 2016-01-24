@@ -127,7 +127,7 @@ namespace tgui
             stream << std::endl;
 
         std::vector<std::string> output;
-        for (unsigned int i = 0; i < rootNode->children.size(); ++i)
+        for (std::size_t i = 0; i < rootNode->children.size(); ++i)
         {
             for (auto& line : convertNodesToLines(rootNode->children[i]))
                 output.emplace_back(std::move(line));
@@ -161,12 +161,12 @@ namespace tgui
 
         if (node->children.size())
         {
-            for (unsigned int i = 0; i < node->children.size(); ++i)
+            for (std::size_t i = 0; i < node->children.size(); ++i)
             {
                 for (auto& line : convertNodesToLines(node->children[i]))
                     output.emplace_back("    " + line);
 
-                if (i < node->children.size()-1)
+                if (i < node->children.size() - 1)
                     output.emplace_back("");
             }
         }
@@ -306,7 +306,7 @@ namespace tgui
                 {
                     valueNode->valueList.push_back("");
 
-                    unsigned int i = 1;
+                    std::size_t i = 1;
                     while (i < line.size()-1)
                     {
                         if (line[i] == ',')
