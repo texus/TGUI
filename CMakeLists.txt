@@ -51,10 +51,6 @@ SET( PATCH_VERSION 0 )
 # Disable deprecated warnings from SFML
 add_definitions(-DSFML_NO_DEPRECATED_WARNINGS)
 
-# Fill in the version in the config file
-configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp.in"
-                "${CMAKE_CURRENT_SOURCE_DIR}/include/TGUI/Config.hpp")
-
 # Include the configuration file
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 

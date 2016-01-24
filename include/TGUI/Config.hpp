@@ -27,8 +27,6 @@
 
 #include <SFML/Config.hpp>
 
-#include <SFML/Config.hpp>
-
 #ifndef SFML_STATIC
 
     #ifdef SFML_SYSTEM_WINDOWS
@@ -38,11 +36,6 @@
             #define TGUI_API __declspec(dllexport)
         #else
             #define TGUI_API __declspec(dllimport)
-        #endif
-
-        // For Visual C++ compilers, we also need to turn off this annoying C4251 warning
-        #ifdef _MSC_VER
-            #pragma warning(disable: 4251)
         #endif
 
     #else // Linux, FreeBSD, Mac OS X
@@ -66,9 +59,9 @@
 
 
 // Version of the library
-#define TGUI_VERSION_MAJOR @MAJOR_VERSION@
-#define TGUI_VERSION_MINOR @MINOR_VERSION@
-#define TGUI_VERSION_PATCH @PATCH_VERSION@
+#define TGUI_VERSION_MAJOR 0
+#define TGUI_VERSION_MINOR 7
+#define TGUI_VERSION_PATCH 0
 
 
 #endif // TGUI_CONFIG_HPP
