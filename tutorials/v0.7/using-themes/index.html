@@ -20,7 +20,7 @@ tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("TGUI/widgets/Black.txt")
 tgui::EditBox::Ptr editBox = theme->load("EditBox");
 {% endhighlight %}
 
-  <p>In the line above there are two things that should be noted. First of all, the "EditBox" string is case-insensitive, you can just as well use "editbox". Secondly, the load function can return any widget. To do that it returns a WidgetConverter object which gets implicitly converted to any widget that you assign it to. If you would try to assign it to a wrong type then an exception will be thrown.</p>
+  <p>In the line above there are two things that should be noted. First of all, the "EditBox" string is case-insensitive, you can just as well use "editbox". Secondly, the load function can return any widget. To do that it returns a WidgetConverter object which gets implicitly converted to any widget type that you assign it to. If you would try to assign it to a wrong type then an exception will be thrown.</p>
 </div>
 
 <div>

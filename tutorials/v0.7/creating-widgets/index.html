@@ -14,15 +14,10 @@ tgui::Button::Ptr button = std::make_shared<tgui::Button>();
 
 <p>When creating a widget like that, they will make use of the build-in "White" theme. No external resources are needed for them and you have something on your screen immediately. Although you can customize the widgets by changing property by property, you probably want to <a href="../using-themes/">use themes</a> to give your widgets a different look. TGUI already ships with some theme files that you can load and use out of the box.</p>
 
-<p class="SmallBottomMargin">The second step is to add the widget to its parent widget. Usually this is the Gui object, but it could also be e.g. a child window.
+<p class="SmallBottomMargin">The second step is to add the widget to its parent widget. Usually this is the Gui object, but it could also be e.g. a child window.</p>
 {% highlight c++ %}
 gui.add(button1);
 gui.add(button2, "MyUniqueName");
-{% endhighlight %}
-
-<p class="SmallBottomMargin">After your widget is created, you can start making changes to it. The button should e.g. display some text on top of it.
-{% highlight c++ %}
-button->setText("Quit");
 {% endhighlight %}
 </div>
 
@@ -33,6 +28,12 @@ button->setText("Quit");
 {% highlight c++ %}
 tgui::Button::Ptr button = gui.get<tgui::Button>("MyUniqueName");
 tgui::Widget::Ptr widget = gui.get("MyWidgetName");
+{% endhighlight %}
+
+<p class="SmallBottomMargin">A common mistake is to call the get function on the wrong widget when you have a hierarchy. If you added the button to a child window, which was in turn added to the gui, then the gui will not know about the existence of the button. You should call the get function of the child window or you can alternatively do a recursive search from the gui if the name is unique:</p>
+{% highlight c++ %}
+widget = childWindow->get("SomeButton");
+widget = gui.get("SomeButton", true);
 {% endhighlight %}
 </div>
 
