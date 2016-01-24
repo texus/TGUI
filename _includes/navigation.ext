@@ -30,6 +30,7 @@
                 <li><a href="{{site.url}}/example-code/v0.6/">0.6</a></li>
             </ul>
         </li>
+        <li><a href="{{site.url}}/changelog/">Changelog</a></li>
         <li><a href="https://forum.tgui.eu/">Forum</a></li>
     </ul>
     </div>
