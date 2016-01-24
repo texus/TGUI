@@ -1,5 +1,5 @@
 {% if include.style != %}
 <a class="button{{include.style}}" href="{{include.link}}">{{include.text}}</a>
 {% else %}
-<a class="buttonGrey" href="{{include.link}}">{{include.text}}</a>
+<a class="buttonWhite" href="{{include.link}}">{{include.text}}</a>
 {% endif %}
