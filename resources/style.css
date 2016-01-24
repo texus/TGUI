@@ -5,6 +5,7 @@ html, body {
    margin: 0;
    padding: 0;
    height: 100%;
+   font-family: Roboto,sans-serif;
 }
 
 body {
@@ -26,7 +27,7 @@ body {
 #contents {
   padding: 10px;
   padding-top: 50px;
-  padding-bottom: 1.6em;
+  padding-bottom: 1.4em;
    
   margin-left: auto;
   margin-right: auto;
@@ -52,31 +53,6 @@ body {
 
 p, li {
   line-height: 1.4em;
-}
-
-@media only screen and (max-width: 859px) {
-  p, li, span {
-    font-size: 0.8em;
-    line-height: 1.3em;
-  }
-
-  h2 {
-    font-size: 1.2em;
-    margin-top: 0.664em;
-    margin-bottom: 0.664em;
-  }
-
-  h3 {
-    font-size: 0.936em;
-    margin-top: 0.8em;
-    margin-bottom: 0.8em;
-  }
-
-  h4 {
-    font-size: 0.8em;
-    margin-top: 1.064em;
-    margin-bottom: 1.064em;
-  }
 }
 
 span.Red {
@@ -220,6 +196,7 @@ a#navbar-title:hover h1 {
     list-style: none;
     position: relative;
     display: inline-table;
+    font-size: 18px;
   }
 
   #navbar ul::after {
@@ -659,6 +636,11 @@ p.SmallBottomMargin {
 
 div.highlight {
     margin-top: 0em;
+    margin-bottom: 1.2em;
+}
+
+figure.highlight {
+    margin: 0em;
     margin-bottom: 1.2em;
 }
 

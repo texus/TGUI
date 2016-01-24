@@ -4,5 +4,5 @@
   <a href="{{site.url}}/privacy-policy/">Privacy Policy</a>
   <a href="{{site.url}}/sitemap.xml">Sitemap</a>
 </p>
-<p class="FloatRight">Copyright &copy; {{ site.time | date: '%Y' }} <a href="https://texus.me">Bruno Van de Velde</a></p>
+<p class="FloatRight">Copyright &copy; 2013-{{ site.time | date: '%Y' }} <a href="https://texus.me">Bruno Van de Velde</a></p>
 </div>
