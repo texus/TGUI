@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['stringexpression',['stringExpression',['../classtgui_1_1LayoutImpl.html#a677b3ec727f8770e9e9d45b1f87c461d',1,'tgui::LayoutImpl']]]
+  ['uint',['UInt',['../structtgui_1_1EditBox_1_1Validator.html#a4b9b31469331170b13f4227c95e7bf68',1,'tgui::EditBox::Validator']]]
 ];

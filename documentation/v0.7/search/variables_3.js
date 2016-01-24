@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['right',['right',['../classtgui_1_1Borders.html#a96284882b2e34f7544876a2bd26edb33',1,'tgui::Borders']]]
+  ['left',['left',['../classtgui_1_1Borders.html#a0db2cedc6ef0b5488d604976ec65d2ca',1,'tgui::Borders']]]
 ];

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['horizontallayout',['HorizontalLayout',['../classtgui_1_1HorizontalLayout.html',1,'tgui']]]
+  ['knob',['Knob',['../classtgui_1_1Knob.html',1,'tgui']]],
+  ['knobrenderer',['KnobRenderer',['../classtgui_1_1KnobRenderer.html',1,'tgui']]]
 ];
