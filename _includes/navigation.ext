@@ -9,9 +9,27 @@
     <div id="navbar-list-div" class="NoMargin">
     <ul>
         <li><a href="{{site.url}}/download/">Download</a></li>
-        <li><a href="{{site.url}}/example-code/">Example code</a></li>
-        <li><a href="{{site.url}}/tutorials/">Tutorials</a></li>
-        <li><a href="{{site.url}}/documentation/">Documentation</a></li>
+        <li>
+            <a href="{{site.url}}/tutorials/">Tutorials</a>
+            <ul>
+                <li><a href="{{site.url}}/tutorials/v0.7/">0.7</a></li>
+                <li><a href="{{site.url}}/tutorials/v0.6/">0.6</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="{{site.url}}/documentation/">Documentation</a>
+            <ul>
+                <li><a href="{{site.url}}/documentation/v0.7/">0.7</a></li>
+                <li><a href="{{site.url}}/documentation/v0.6/">0.6</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="{{site.url}}/example-code/">Examples</a>
+            <ul>
+                <li><a href="{{site.url}}/example-code/v0.7/">0.7</a></li>
+                <li><a href="{{site.url}}/example-code/v0.6/">0.6</a></li>
+            </ul>
+        </li>
         <li><a href="https://forum.tgui.eu/">Forum</a></li>
     </ul>
     </div>

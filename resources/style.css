@@ -122,6 +122,7 @@ a#navbar-title h1 {
   font-size: 22px;
   color: #aaaaaa;
   padding: 0 20px 0 20px;
+  border-right: 1px solid #808080;
 }
 a#navbar-title:hover h1 {
   color: white;
@@ -219,7 +220,6 @@ a#navbar-title:hover h1 {
     list-style: none;
     position: relative;
     display: inline-table;
-    border-right: 1px solid #808080;
   }
 
   #navbar ul::after {
@@ -248,18 +248,15 @@ a#navbar-title:hover h1 {
       
     min-width: 80px;
     text-align: center;
-      
-    border-left: 1px solid #808080;
+
+    border-right: 1px solid #808080;
   }
   #navbar ul li a:hover {
     color: white;
   }
   
   #navbar ul ul {
-    position: absolute;
     display: none;
-    padding: 0;
-    top: 50px;
     left: inherit;
     background: #333333;
   }
@@ -325,7 +322,7 @@ div.SmallerMargin {
 a.img {
   display: inline-block;
   margin-top: 0em;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
   
   max-width: 100%;
 }
