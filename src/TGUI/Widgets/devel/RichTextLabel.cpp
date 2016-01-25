@@ -60,7 +60,7 @@ namespace
 
     void processFormatting(Chunk& lastChunk, Chunk* currentChunk, sf::Text::Style style)
     {
-        if ((lastChunk.style & style) >= 0)
+        if ((lastChunk.style & style) != 0)
         {
             currentChunk->style ^= style;
         }
