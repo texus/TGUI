@@ -59,7 +59,7 @@ find_path(TGUI_INCLUDE_DIR TGUI/Config.hpp
 
 # check the version number
 set(TGUI_VERSION_OK TRUE)
-if(TGUI_FIND_VERSION AND TGUI_INCLUDE_DIR)
+if(TGUI_INCLUDE_DIR)
     # extract the major and minor version numbers from TGUI/Config.hpp
     # we have to handle framework a little bit differently:
     if("${TGUI_INCLUDE_DIR}" MATCHES "TGUI.framework")
@@ -72,14 +72,17 @@ if(TGUI_FIND_VERSION AND TGUI_INCLUDE_DIR)
     STRING(REGEX REPLACE ".*#define TGUI_VERSION_MAJOR ([0-9]+).*" "\\1" TGUI_VERSION_MAJOR "${TGUI_CONFIG_HPP_CONTENTS}")
     STRING(REGEX REPLACE ".*#define TGUI_VERSION_MINOR ([0-9]+).*" "\\1" TGUI_VERSION_MINOR "${TGUI_CONFIG_HPP_CONTENTS}")
     STRING(REGEX REPLACE ".*#define TGUI_VERSION_PATCH ([0-9]+).*" "\\1" TGUI_VERSION_PATCH "${TGUI_CONFIG_HPP_CONTENTS}")
-    math(EXPR TGUI_REQUESTED_VERSION "${TGUI_FIND_VERSION_MAJOR} * 10000 + ${TGUI_FIND_VERSION_MINOR} * 100 + ${TGUI_FIND_VERSION_PATCH}")
 
-    # transform version numbers to an integer
-    math(EXPR TGUI_VERSION "${TGUI_VERSION_MAJOR} * 10000 + ${TGUI_VERSION_MINOR} * 100 + ${TGUI_VERSION_PATCH}")
+    if (TGUI_FIND_VERSION)
+        math(EXPR TGUI_REQUESTED_VERSION "${TGUI_FIND_VERSION_MAJOR} * 10000 + ${TGUI_FIND_VERSION_MINOR} * 100 + ${TGUI_FIND_VERSION_PATCH}")
 
-    # compare them
-    if(NOT TGUI_VERSION EQUAL TGUI_REQUESTED_VERSION)
-        set(TGUI_VERSION_OK FALSE)
+        # transform version numbers to an integer
+        math(EXPR TGUI_VERSION "${TGUI_VERSION_MAJOR} * 10000 + ${TGUI_VERSION_MINOR} * 100 + ${TGUI_VERSION_PATCH}")
+
+        # compare them
+        if(NOT TGUI_VERSION EQUAL TGUI_REQUESTED_VERSION)
+            set(TGUI_VERSION_OK FALSE)
+        endif()
     endif()
 endif()
 
