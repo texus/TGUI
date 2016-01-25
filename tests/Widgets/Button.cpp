@@ -207,7 +207,7 @@ TEST_CASE("[Button]") {
         REQUIRE(button->getSecondaryLoadingParameter() == "button");
 
         auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(button);
+        parent->add(button, "ButtonName");
 
         button->setOpacity(0.8f);
         button->setText("SomeText");
@@ -226,7 +226,7 @@ TEST_CASE("[Button]") {
             temp = *button;
 
             parent->removeAllWidgets();
-            parent->add(tgui::Button::copy(std::make_shared<tgui::Button>(temp)));
+            parent->add(tgui::Button::copy(std::make_shared<tgui::Button>(temp)), "ButtonName");
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileButton2.txt"));
             REQUIRE(compareFiles("WidgetFileButton1.txt", "WidgetFileButton2.txt"));

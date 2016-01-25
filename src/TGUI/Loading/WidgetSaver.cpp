@@ -78,15 +78,15 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveWidget(Widget::Ptr widget)
     {
-        std::string widgetName;
+        sf::String widgetName;
         if (widget->getParent())
             widgetName = widget->getParent()->getWidgetName(widget);
 
         auto node = std::make_shared<DataIO::Node>();
-        if (widgetName.empty())
+        if (widgetName.isEmpty())
             node->name = widget->getWidgetType();
         else
-            node->name = widget->getWidgetType() + "." + widgetName;
+            node->name = widget->getWidgetType() + "." + Serializer::serialize(widgetName);
 
         if (!widget->isVisible())
             SET_PROPERTY("Visible", "false");

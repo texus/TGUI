@@ -142,7 +142,7 @@ TEST_CASE("[Widget]") {
 
     SECTION("Saving and loading widget with layouts from file") {
         auto parent = std::make_shared<tgui::Panel>();
-        parent->add(widget, "Widget");
+        parent->add(widget, "Widget Name.With:Special{Chars}");
 
         SECTION("Bind 2d non-string") {
             widget->setPosition(tgui::bindPosition(parent));
@@ -156,7 +156,7 @@ TEST_CASE("[Widget]") {
             REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
             REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
-            widget = parent->get("Widget");
+            widget = parent->get("Widget Name.With:Special{Chars}");
 
             // Non-string layouts cannot be saved yet!
             parent->setPosition(100, 100);
@@ -177,7 +177,7 @@ TEST_CASE("[Widget]") {
             REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
             REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
-            widget = parent->get("Widget");
+            widget = parent->get("Widget Name.With:Special{Chars}");
 
             // Non-string layout cannot be saved yet, string layout will have been saved correctly!
             parent->setPosition(100, 100);
@@ -198,7 +198,7 @@ TEST_CASE("[Widget]") {
             REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
             REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
-            widget = parent->get("Widget");
+            widget = parent->get("Widget Name.With:Special{Chars}");
 
             parent->setPosition(100, 100);
             parent->setSize(800, 600);
@@ -218,7 +218,7 @@ TEST_CASE("[Widget]") {
             REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
             REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
-            widget = parent->get("Widget");
+            widget = parent->get("Widget Name.With:Special{Chars}");
 
             parent->setPosition(100, 100);
             parent->setSize(800, 600);
