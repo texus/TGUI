@@ -80,9 +80,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Validator
         {
-            static std::string Int;   ///< Accept negative and positive integers
-            static std::string UInt;  ///< Accept only positive integers
-            static std::string Float; ///< Accept decimal numbers
+            static TGUI_API std::string Int;   ///< Accept negative and positive integers
+            static TGUI_API std::string UInt;  ///< Accept only positive integers
+            static TGUI_API std::string Float; ///< Accept decimal numbers
         };
 
 

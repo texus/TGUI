@@ -38,9 +38,9 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API std::string EditBox::Validator::Int   = "[+-]?[0-9]*";
-    TGUI_API std::string EditBox::Validator::UInt  = "[0-9]*";
-    TGUI_API std::string EditBox::Validator::Float = "[+-]?[0-9]*\\.?[0-9]*";
+    std::string EditBox::Validator::Int   = "[+-]?[0-9]*";
+    std::string EditBox::Validator::UInt  = "[0-9]*";
+    std::string EditBox::Validator::Float = "[+-]?[0-9]*\\.?[0-9]*";
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
