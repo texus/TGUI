@@ -240,8 +240,10 @@ TEST_CASE("[ChatBox]") {
         chatBox->setOpacity(0.8f);
         chatBox->setTextColor(sf::Color::White);
         chatBox->setTextSize(34);
-        chatBox->addLine("L4");
-        chatBox->addLine("L2", 32);
+        chatBox->setLinesStartFromTop(true);
+        chatBox->setNewLinesBelowOthers(false);
+        chatBox->addLine("L2");
+        chatBox->addLine("L4", 32);
         chatBox->addLine("L3", sf::Color::Magenta);
         chatBox->addLine("L1", sf::Color::Cyan, 36);
 
@@ -254,10 +256,10 @@ TEST_CASE("[ChatBox]") {
         REQUIRE(compareFiles("WidgetFileChatBox1.txt", "WidgetFileChatBox2.txt"));
 
         // Make sure that the lines are still in the correct order
-        REQUIRE(chatBox->getLine(0) == "L4");
-        REQUIRE(chatBox->getLine(1) == "L2");
-        REQUIRE(chatBox->getLine(2) == "L3");
-        REQUIRE(chatBox->getLine(3) == "L1");
+        REQUIRE(chatBox->getLine(0) == "L1");
+        REQUIRE(chatBox->getLine(1) == "L3");
+        REQUIRE(chatBox->getLine(2) == "L4");
+        REQUIRE(chatBox->getLine(3) == "L2");
 
         SECTION("Copying widget") {
             tgui::ChatBox temp;

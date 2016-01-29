@@ -159,6 +159,11 @@ namespace tgui
         else
             SET_PROPERTY("LinesStartFromTop", "false");
 
+        if (chatBox->getNewLinesBelowOthers())
+            SET_PROPERTY("NewLinesBelowOthers", "true");
+        else
+            SET_PROPERTY("NewLinesBelowOthers", "false");
+
         for (std::size_t i = 0; i < chatBox->getLineAmount(); ++i)
         {
             unsigned int lineTextSize = chatBox->getLineTextSize(i);

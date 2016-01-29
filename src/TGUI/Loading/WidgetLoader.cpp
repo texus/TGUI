@@ -254,14 +254,6 @@ namespace tgui
         if (node->propertyValuePairs["textcolor"])
             chatBox->setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["textcolor"]->value).getColor());
 
-        if (node->propertyValuePairs["linesstartfromtop"])
-        {
-            if (parseBoolean(node->propertyValuePairs["linesstartfromtop"]->value))
-                chatBox->setLinesStartFromTop(true);
-            else
-                chatBox->setLinesStartFromTop(false);
-        }
-
         for (auto& childNode : node->children)
         {
             if (toLower(childNode->name) == "scrollbar")
@@ -290,6 +282,13 @@ namespace tgui
             }
         }
         REMOVE_CHILD("line");
+
+        if (node->propertyValuePairs["linesstartfromtop"])
+            chatBox->setLinesStartFromTop(parseBoolean(node->propertyValuePairs["linesstartfromtop"]->value));
+
+        // This has to be parsed after the lines have been added
+        if (node->propertyValuePairs["newlinesbelowothers"])
+            chatBox->setNewLinesBelowOthers(parseBoolean(node->propertyValuePairs["newlinesbelowothers"]->value));
 
         return chatBox;
     }
