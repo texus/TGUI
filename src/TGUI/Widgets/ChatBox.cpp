@@ -54,14 +54,15 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox(const ChatBox& chatBoxToCopy) :
-        Widget             {chatBoxToCopy},
-        m_textSize         {chatBoxToCopy.m_textSize},
-        m_textColor        {chatBoxToCopy.m_textColor},
-        m_maxLines         {chatBoxToCopy.m_maxLines},
-        m_fullTextHeight   {chatBoxToCopy.m_fullTextHeight},
-        m_linesStartFromTop{chatBoxToCopy.m_linesStartFromTop},
-        m_panel            {Panel::copy(chatBoxToCopy.m_panel)},
-        m_scroll           {Scrollbar::copy(chatBoxToCopy.m_scroll)}
+        Widget               {chatBoxToCopy},
+        m_textSize           {chatBoxToCopy.m_textSize},
+        m_textColor          {chatBoxToCopy.m_textColor},
+        m_maxLines           {chatBoxToCopy.m_maxLines},
+        m_fullTextHeight     {chatBoxToCopy.m_fullTextHeight},
+        m_linesStartFromTop  {chatBoxToCopy.m_linesStartFromTop},
+        m_newLinesBelowOthers{chatBoxToCopy.m_newLinesBelowOthers},
+        m_panel              {Panel::copy(chatBoxToCopy.m_panel)},
+        m_scroll             {Scrollbar::copy(chatBoxToCopy.m_scroll)}
     {
     }
 
@@ -74,13 +75,14 @@ namespace tgui
             ChatBox temp{right};
             Widget::operator=(right);
 
-            std::swap(m_textSize,          temp.m_textSize);
-            std::swap(m_textColor,         temp.m_textColor);
-            std::swap(m_maxLines,          temp.m_maxLines);
-            std::swap(m_fullTextHeight,    temp.m_fullTextHeight);
-            std::swap(m_linesStartFromTop, temp.m_linesStartFromTop);
-            std::swap(m_panel,             temp.m_panel);
-            std::swap(m_scroll,            temp.m_scroll);
+            std::swap(m_textSize,            temp.m_textSize);
+            std::swap(m_textColor,           temp.m_textColor);
+            std::swap(m_maxLines,            temp.m_maxLines);
+            std::swap(m_fullTextHeight,      temp.m_fullTextHeight);
+            std::swap(m_linesStartFromTop,   temp.m_linesStartFromTop);
+            std::swap(m_newLinesBelowOthers, temp.m_newLinesBelowOthers);
+            std::swap(m_panel,               temp.m_panel);
+            std::swap(m_scroll,              temp.m_scroll);
         }
 
         return *this;
