@@ -253,6 +253,8 @@ namespace tgui
             chatBox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["textcolor"])
             chatBox->setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["textcolor"]->value).getColor());
+        if (node->propertyValuePairs["linelimit"])
+            chatBox->setLineLimit(tgui::stoi(node->propertyValuePairs["linelimit"]->value));
 
         for (auto& childNode : node->children)
         {

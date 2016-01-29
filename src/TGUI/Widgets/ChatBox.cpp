@@ -154,9 +154,14 @@ namespace tgui
 
     void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const Font& font)
     {
-        // Remove the top line if you exceed the maximum
-        if ((m_maxLines > 0) && (m_maxLines < m_panel->getWidgets().size() + 1))
-            removeLine(0);
+        // Remove the oldest line if you exceed the maximum
+        if ((m_maxLines > 0) && (m_maxLines == m_panel->getWidgets().size()))
+        {
+            if (m_newLinesBelowOthers)
+                removeLine(0);
+            else
+                removeLine(m_maxLines-1);
+        }
 
         auto label = std::make_shared<Label>();
         label->getRenderer()->setTextColor(color);
@@ -234,7 +239,7 @@ namespace tgui
     {
         if (lineIndex < m_panel->getWidgets().size())
         {
-            m_panel->remove(std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex]));
+            m_panel->remove(m_panel->getWidgets()[lineIndex]);
 
             recalculateFullTextHeight();
             updateDisplayedText();
@@ -260,14 +265,27 @@ namespace tgui
     {
         m_maxLines = maxLines;
 
+        // Remove the oldest lines if there are too many lines
         if ((m_maxLines > 0) && (m_maxLines < m_panel->getWidgets().size()))
         {
             while (m_maxLines < m_panel->getWidgets().size())
-                m_panel->remove(m_panel->getWidgets()[0]);
+            {
+                if (m_newLinesBelowOthers)
+                    m_panel->remove(m_panel->getWidgets()[0]);
+                else
+                    m_panel->remove(m_panel->getWidgets().back());
+            }
 
             recalculateFullTextHeight();
             updateDisplayedText();
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t ChatBox::getLineLimit()
+    {
+        return m_maxLines;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

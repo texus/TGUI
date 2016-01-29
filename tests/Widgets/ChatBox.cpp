@@ -81,7 +81,9 @@ TEST_CASE("[ChatBox]") {
         chatBox->addLine("Line 1");
         chatBox->addLine("Line 2");
         chatBox->addLine("Line 3");
+
         REQUIRE(!chatBox->removeLine(5));
+        REQUIRE(chatBox->getLineAmount() == 3);
 
         REQUIRE(chatBox->removeLine(1));
         REQUIRE(chatBox->getLineAmount() == 2);
@@ -93,18 +95,43 @@ TEST_CASE("[ChatBox]") {
     }
 
     SECTION("line limit") {
-        chatBox->addLine("Line 1");
-        chatBox->addLine("Line 2");
-        chatBox->addLine("Line 3");
+        REQUIRE(chatBox->getLineLimit() == 0);
 
-        chatBox->setLineLimit(2);
-        REQUIRE(chatBox->getLineAmount() == 2);
-        REQUIRE(chatBox->getLine(0) == "Line 2");
-        REQUIRE(chatBox->getLine(1) == "Line 3");
+        SECTION("oldest on top") {
+            chatBox->addLine("Line 1");
+            chatBox->addLine("Line 2");
+            chatBox->addLine("Line 3");
 
-        chatBox->addLine("Line 4");
-        REQUIRE(chatBox->getLine(0) == "Line 3");
-        REQUIRE(chatBox->getLine(1) == "Line 4");
+            chatBox->setLineLimit(2);
+            REQUIRE(chatBox->getLineLimit() == 2);
+
+            REQUIRE(chatBox->getLineAmount() == 2);
+            REQUIRE(chatBox->getLine(0) == "Line 2");
+            REQUIRE(chatBox->getLine(1) == "Line 3");
+
+            chatBox->addLine("Line 4");
+            REQUIRE(chatBox->getLine(0) == "Line 3");
+            REQUIRE(chatBox->getLine(1) == "Line 4");
+        }
+
+        SECTION("oldest at the bottom") {
+            chatBox->setNewLinesBelowOthers(false);
+
+            chatBox->addLine("Line 1");
+            chatBox->addLine("Line 2");
+            chatBox->addLine("Line 3");
+
+            chatBox->setLineLimit(2);
+            REQUIRE(chatBox->getLineLimit() == 2);
+
+            REQUIRE(chatBox->getLineAmount() == 2);
+            REQUIRE(chatBox->getLine(0) == "Line 3");
+            REQUIRE(chatBox->getLine(1) == "Line 2");
+
+            chatBox->addLine("Line 4");
+            REQUIRE(chatBox->getLine(0) == "Line 4");
+            REQUIRE(chatBox->getLine(1) == "Line 3");
+        }
     }
 
     SECTION("default text size") {
@@ -240,6 +267,7 @@ TEST_CASE("[ChatBox]") {
         chatBox->setOpacity(0.8f);
         chatBox->setTextColor(sf::Color::White);
         chatBox->setTextSize(34);
+        chatBox->setLineLimit(5);
         chatBox->setLinesStartFromTop(true);
         chatBox->setNewLinesBelowOthers(false);
         chatBox->addLine("L2");
