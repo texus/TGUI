@@ -394,6 +394,26 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Set whether new lines are added below the other lines or above them.
+        ///
+        /// @param newLinesBelowOthers  Should the addLine function insert the line below the existing lines?
+        ///
+        /// By default the new lines are always added below the others.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setNewLinesBelowOthers(bool newLinesBelowOthers = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether new lines are added below the other lines or above them.
+        ///
+        /// @return Does the addLine function insert the line below the existing lines?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getNewLinesBelowOthers() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the opacity of the widget.
         ///
         /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
@@ -522,6 +542,7 @@ namespace tgui
         float m_fullTextHeight = 0;
 
         bool m_linesStartFromTop = false;
+        bool m_newLinesBelowOthers = true;
 
         // The panel containing the labels
         Panel::Ptr m_panel = std::make_shared<Panel>();

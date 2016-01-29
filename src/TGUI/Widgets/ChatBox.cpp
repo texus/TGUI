@@ -162,6 +162,9 @@ namespace tgui
         label->setText(text);
         m_panel->add(label);
 
+        if (!m_newLinesBelowOthers)
+            label->moveToBack();
+
         if (font.getFont())
             label->setFont(font.getFont());
         else
@@ -352,6 +355,20 @@ namespace tgui
     bool ChatBox::getLinesStartFromTop() const
     {
         return m_linesStartFromTop;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::setNewLinesBelowOthers(bool newLinesBelowOthers)
+    {
+        m_newLinesBelowOthers = newLinesBelowOthers;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ChatBox::getNewLinesBelowOthers() const
+    {
+        return m_newLinesBelowOthers;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
