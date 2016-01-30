@@ -319,10 +319,15 @@ namespace tgui
                 SET_PROPERTY("TextStyle", style.substr(3));
         }
 
-        if (label->getAlignment() == Label::Alignment::Center)
-            SET_PROPERTY("Alignment", "Center");
-        else if (label->getAlignment() == Label::Alignment::Right)
-            SET_PROPERTY("Alignment", "Right");
+        if (label->getHorizontalAlignment() == Label::HorizontalAlignment::Center)
+            SET_PROPERTY("HorizontalAlignment", "Center");
+        else if (label->getHorizontalAlignment() == Label::HorizontalAlignment::Right)
+            SET_PROPERTY("HorizontalAlignment", "Right");
+
+        if (label->getVerticalAlignment() == Label::VerticalAlignment::Center)
+            SET_PROPERTY("VerticalAlignment", "Center");
+        else if (label->getVerticalAlignment() == Label::VerticalAlignment::Bottom)
+            SET_PROPERTY("VerticalAlignment", "Bottom");
 
         if (!label->getText().isEmpty())
             SET_PROPERTY("Text", Serializer::serialize(label->getText()));

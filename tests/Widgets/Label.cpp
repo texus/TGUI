@@ -55,6 +55,31 @@ TEST_CASE("[Label]") {
         REQUIRE(label->getTextSize() == 25);
     }
 
+    SECTION("Alignment") {
+        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Left);
+        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Top);
+
+        label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
+        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Center);
+        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Top);
+
+        label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Right);
+        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Right);
+
+        label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Left);
+        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Left);
+
+        label->setVerticalAlignment(tgui::Label::VerticalAlignment::Center);
+        REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Left);
+        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Center);
+
+        label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
+        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Bottom);
+
+        label->setVerticalAlignment(tgui::Label::VerticalAlignment::Top);
+        REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Top);
+    }
+
     SECTION("AutoSize") {
         REQUIRE(label->getAutoSize());
         label->setAutoSize(false);
@@ -130,7 +155,8 @@ TEST_CASE("[Label]") {
         label->setText("SomeText");
         label->setTextSize(25);
         label->setTextStyle(sf::Text::Bold | sf::Text::Italic);
-        label->setAlignment(tgui::Label::Alignment::Center);
+        label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
+        label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
         label->setMaximumTextWidth(300);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel1.txt"));

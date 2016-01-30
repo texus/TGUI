@@ -55,18 +55,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief The text alignment
+        /// @brief The horizontal text alignment
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum class Alignment
+        enum class HorizontalAlignment
         {
-            /// Put the text on the left side (default)
-            Left,
+            Left,   ///< Put the text on the left side (default)
+            Center, ///< Center the text horizontally
+            Right   ///< Put the text on the right side (e.g. for numbers)
+        };
 
-            /// Center the text
-            Center,
 
-            /// Put the text on the right side (e.g. for numbers)
-            Right
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief The vertical text alignment
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        enum class VerticalAlignment
+        {
+            Top ,   ///< Put the text at the top (default)
+            Center, ///< Center the text vertically
+            Bottom  ///< Put the text at the bottom
         };
 
 
@@ -222,24 +228,43 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the text alignment
+        /// @brief Change the horizontal text alignment
         ///
-        /// @param alignment  The new text alignment
+        /// @param alignment  The new horizontal text alignment
+        ///
+        /// By default the text is aligned to the left.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setAlignment(Alignment alignment);
+        void setHorizontalAlignment(HorizontalAlignment alignment);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the current text alignment
+        /// @brief Get the current horizontal text alignment
         ///
-        /// @return Text alignment
+        /// @return Horizontal text alignment
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Alignment getAlignment()
-        {
-            return m_alignment;
-        }
+        HorizontalAlignment getHorizontalAlignment() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the vertical text alignment
+        ///
+        /// @param alignment  The new vertical text alignment
+        ///
+        /// By default the text is aligned to the top.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setVerticalAlignment(VerticalAlignment alignment);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Get the current vertical text alignment
+        ///
+        /// @return Vertical text alignment
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VerticalAlignment getVerticalAlignment() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -401,7 +426,8 @@ namespace tgui
 
         unsigned int m_textSize = 18;
         sf::Uint32 m_textStyle = sf::Text::Style::Regular;
-        Alignment m_alignment = Alignment::Left;
+        HorizontalAlignment m_horizontalAlignment = HorizontalAlignment::Left;
+        VerticalAlignment m_verticalAlignment = VerticalAlignment::Top;
 
         bool m_autoSize = true;
 

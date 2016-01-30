@@ -72,7 +72,18 @@ namespace tgui
             sf::Vector2f pos{std::round(getPosition().x + getRenderer()->getPadding().left),
                              getPosition().y + getRenderer()->getPadding().top - getTextVerticalCorrection(getFont(), m_textSize, m_textStyle)};
 
-            if (m_alignment == Alignment::Left)
+            if (m_verticalAlignment != VerticalAlignment::Top)
+            {
+                float totalHeight = getSize().y - getRenderer()->getPadding().top - getRenderer()->getPadding().bottom;
+                float totalTextHeight = m_lines.size() * getFont()->getLineSpacing(m_textSize);
+
+                if (m_verticalAlignment == VerticalAlignment::Center)
+                    pos.y += (totalHeight - totalTextHeight) / 2.f;
+                else if (m_verticalAlignment == VerticalAlignment::Bottom)
+                    pos.y += totalHeight - totalTextHeight;
+            }
+
+            if (m_horizontalAlignment == HorizontalAlignment::Left)
             {
                 for (auto& line : m_lines)
                 {
@@ -92,12 +103,12 @@ namespace tgui
                     while (lastChar > 0 && isWhitespace(line.getString()[lastChar-1]))
                         lastChar--;
 
-                    float width = line.findCharacterPos(lastChar).x;
+                    float textWidth = line.findCharacterPos(lastChar).x;
 
-                    if (m_alignment == Alignment::Center)
-                        line.setPosition(pos.x + (totalWidth - width) / 2.f, std::floor(pos.y));
-                    else if (m_alignment == Alignment::Right)
-                        line.setPosition(pos.x + totalWidth - width, std::floor(pos.y));
+                    if (m_horizontalAlignment == HorizontalAlignment::Center)
+                        line.setPosition(std::round(pos.x + (totalWidth - textWidth) / 2.f), std::floor(pos.y));
+                    else if (m_horizontalAlignment == HorizontalAlignment::Right)
+                        line.setPosition(std::round(pos.x + totalWidth - textWidth), std::floor(pos.y));
 
                     pos.y += getFont()->getLineSpacing(m_textSize);
                 }
@@ -163,10 +174,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setAlignment(Alignment alignment)
+    void Label::setHorizontalAlignment(HorizontalAlignment alignment)
     {
-        m_alignment = alignment;
+        m_horizontalAlignment = alignment;
         updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Label::HorizontalAlignment Label::getHorizontalAlignment() const
+    {
+        return m_horizontalAlignment;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::setVerticalAlignment(VerticalAlignment alignment)
+    {
+        m_verticalAlignment = alignment;
+        updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Label::VerticalAlignment Label::getVerticalAlignment() const
+    {
+        return m_verticalAlignment;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
