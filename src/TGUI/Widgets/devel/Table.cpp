@@ -79,7 +79,7 @@ namespace tgui
 
         updateColumnsDelimitatorsSize();
 
-        for (auto& widget : m_layoutWidgets)
+        for (auto& widget : m_widgets)
             widget->setSize(getSize().x, widget->getSize().y);
     }
 
@@ -94,12 +94,10 @@ namespace tgui
             row->add(widget);
         }
 
-        for (std::size_t i = 0; i < m_columnsFixedWidth.size(); ++i)
+        for (std::size_t i = 0; i < m_header->getWidgets().size(); ++i)
         {
-            if (m_columnsFixedWidth[i] != 0)
-                row->setFixedSize(i, m_columnsFixedWidth[i]);
-            else
-                row->setRatio(i, m_header->getRatio(i));
+            row->setFixedSize(i, m_header->getFixedSize(i));
+            row->setRatio(i, m_header->getRatio(i));
         }
 
         if (m_rowsEvenColor == sf::Color::Transparent)
@@ -119,7 +117,7 @@ namespace tgui
 
     void Table::add(const tgui::Widget::Ptr& widget, const sf::String& widgetName)
     {
-        insert(m_layoutWidgets.size(), widget, widgetName);
+        insert(m_widgets.size(), widget, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +128,7 @@ namespace tgui
         for (const std::string& column : columns)
             row->addItem(column, m_normalTextColor);
 
-        insert(m_layoutWidgets.size(), row, "");
+        insert(m_widgets.size(), row, "");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,18 +136,16 @@ namespace tgui
     void Table::setHeader(const tgui::TableRow::Ptr& row)
     {
         m_header = row;
+        m_header->setParent(this);
 
         m_columnsDelimitators.resize(row->getWidgets().size() - 1);
-        m_columnsFixedWidth.resize(m_columnsDelimitators.size() + 1);
-
-        Panel::add(m_header);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Table::setHeaderColumns(const std::vector<std::string>& columns)
     {
-        m_header = std::make_shared<tgui::TableRow>();
+        m_header->removeAllWidgets();
 
         for (const std::string& column : columns)
             m_header->addItem(column, sf::Color::White);
@@ -162,12 +158,9 @@ namespace tgui
 
     void Table::setFixedColumnWidth(std::size_t column, float size)
     {
-        // TODO: What if the user use setFixedColumnWidth and setRatioColumnWidth on same column?
-        m_columnsFixedWidth[column] = size;
-
         m_header->setFixedSize(column, size);
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
-            std::dynamic_pointer_cast<HorizontalLayout>(m_layoutWidgets[i])->setFixedSize(column, size);
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+            std::dynamic_pointer_cast<HorizontalLayout>(m_widgets[i])->setFixedSize(column, size);
 
         updateColumnsDelimitatorsPosition();
     }
@@ -176,10 +169,9 @@ namespace tgui
 
     void Table::setColumnRatio(std::size_t column, float ratio)
     {
-        // TODO: What if the user use setFixedColumnWidth and setRatioColumnWidth on same column?
         m_header->setRatio(column, ratio);
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
-            std::dynamic_pointer_cast<HorizontalLayout>(m_layoutWidgets[i])->setRatio(column, ratio);
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+            std::dynamic_pointer_cast<HorizontalLayout>(m_widgets[i])->setRatio(column, ratio);
 
         updateColumnsDelimitatorsPosition();
     }
@@ -199,14 +191,14 @@ namespace tgui
         m_rowsOddColor = oddColor;
         m_rowsEvenColor = evenColor;
 
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             if (i % 2 == 0)
-                std::dynamic_pointer_cast<TableRow>(m_layoutWidgets[i])->setNormalBackgroundColor(evenColor);
+                std::dynamic_pointer_cast<TableRow>(m_widgets[i])->setNormalBackgroundColor(evenColor);
             else
-                std::dynamic_pointer_cast<TableRow>(m_layoutWidgets[i])->setNormalBackgroundColor(oddColor);
+                std::dynamic_pointer_cast<TableRow>(m_widgets[i])->setNormalBackgroundColor(oddColor);
 
-            std::dynamic_pointer_cast<TableRow>(m_layoutWidgets[i])->setHoverBackgroundColor({255,255,0});
+            std::dynamic_pointer_cast<TableRow>(m_widgets[i])->setHoverBackgroundColor({255,255,0});
         }
     }
 
@@ -229,20 +221,20 @@ namespace tgui
             m_headerSeparator.setPosition(0, m_rowHeight);
         }
 
-        if (m_layoutWidgets.empty())
+        if (m_widgets.empty())
             return;
 
-        m_layoutWidgets[0]->setPosition(0, m_header->getSize().y + m_header->getPosition().y + 1.f);
+        m_widgets[0]->setPosition(0, m_header->getSize().y + m_header->getPosition().y + 1.f);
 
-        auto row = std::dynamic_pointer_cast<TableRow>(m_layoutWidgets[0]);
+        auto row = std::dynamic_pointer_cast<TableRow>(m_widgets[0]);
         float customHeight = row->getCustomHeight();
         row->setSize(getSize().x, (customHeight > m_rowHeight) ? customHeight : m_rowHeight);
 
-        for (std::size_t i = 1; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 1; i < m_widgets.size(); ++i)
         {
-            m_layoutWidgets[i]->setPosition(0, m_layoutWidgets[i-1]->getSize().y + m_layoutWidgets[i-1]->getPosition().y + 1.f);
+            m_widgets[i]->setPosition(0, m_widgets[i-1]->getSize().y + m_widgets[i-1]->getPosition().y + 1.f);
 
-            row = std::dynamic_pointer_cast<TableRow>(m_layoutWidgets[i]);
+            row = std::dynamic_pointer_cast<TableRow>(m_widgets[i]);
             customHeight = row->getCustomHeight();
             row->setSize(getSize().x, (customHeight > m_rowHeight) ? customHeight : m_rowHeight);
         }

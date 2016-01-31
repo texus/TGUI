@@ -299,7 +299,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::vector<tgui::Widget::Ptr> m_layoutWidgets; ///< The widgets, stored in the same order as displayed.
         std::vector<float> m_widgetsRatio;              ///< The ratio of each widget.
         std::vector<float> m_widgetsFixedSizes;         ///< The fixed size for each widget. 0 means a variable size.
 

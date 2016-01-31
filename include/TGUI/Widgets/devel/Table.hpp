@@ -86,11 +86,9 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
-        tgui::TableRow::Ptr m_header = nullptr;
+        tgui::TableRow::Ptr m_header = std::make_shared<tgui::TableRow>();
 
         float m_rowHeight = 20;
-
-        std::vector<float> m_columnsFixedWidth;
 
         sf::RectangleShape m_tableBorder;
         sf::RectangleShape m_headerSeparator;

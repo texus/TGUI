@@ -36,28 +36,28 @@ namespace tgui
         float currentRatio = 0;
         float currentOffset = 0;
         const float sumFixedSize = std::accumulate(m_widgetsFixedSizes.begin(), m_widgetsFixedSizes.end(), 0.f);
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            m_layoutWidgets[i]->setPosition((getSize().x - sumFixedSize) * currentRatio + currentOffset, 0.f);
+            m_widgets[i]->setPosition((getSize().x - sumFixedSize) * currentRatio + currentOffset, 0.f);
             if (m_widgetsFixedSizes[i])
             {
-                m_layoutWidgets[i]->setSize(m_widgetsFixedSizes[i], getSize().y);
+                m_widgets[i]->setSize(m_widgetsFixedSizes[i], getSize().y);
                 currentOffset += m_widgetsFixedSizes[i];
             }
             else
             {
-                m_layoutWidgets[i]->setSize((getSize().x - sumFixedSize) * m_widgetsRatio[i] / sumRatio, getSize().y);
+                m_widgets[i]->setSize((getSize().x - sumFixedSize) * m_widgetsRatio[i] / sumRatio, getSize().y);
                 currentRatio += m_widgetsRatio[i] / sumRatio;
             }
 
             // Correct the size for widgets that have borders around it or a text next to them
-            if (m_layoutWidgets[i]->getFullSize() != m_layoutWidgets[i]->getSize())
+            if (m_widgets[i]->getFullSize() != m_widgets[i]->getSize())
             {
-                sf::Vector2f newSize = m_layoutWidgets[i]->getSize() - (m_layoutWidgets[i]->getFullSize() - m_layoutWidgets[i]->getSize());
+                sf::Vector2f newSize = m_widgets[i]->getSize() - (m_widgets[i]->getFullSize() - m_widgets[i]->getSize());
                 if (newSize.x > 0 && newSize.y > 0)
                 {
-                    m_layoutWidgets[i]->setSize(newSize);
-                    m_layoutWidgets[i]->setPosition(m_layoutWidgets[i]->getPosition() + m_layoutWidgets[i]->getWidgetOffset());
+                    m_widgets[i]->setSize(newSize);
+                    m_widgets[i]->setPosition(m_widgets[i]->getPosition() + m_widgets[i]->getWidgetOffset());
                 }
             }
         }

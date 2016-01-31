@@ -81,21 +81,21 @@ namespace tgui
 
     void TableRow::add(const tgui::Widget::Ptr& widget, const sf::String& widgetName)
     {
-        HorizontalLayout::insert(m_layoutWidgets.size(), createItem(widget, m_align), widgetName);
+        HorizontalLayout::insert(m_widgets.size(), createItem(widget, m_align), widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TableRow::add(const tgui::Widget::Ptr& widget, TableItem::HorizontalAlign align, const sf::String& widgetName)
     {
-        HorizontalLayout::insert(m_layoutWidgets.size(), createItem(widget, align), widgetName);
+        HorizontalLayout::insert(m_widgets.size(), createItem(widget, align), widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TableRow::add(const tgui::Widget::Ptr& widget, bool fixedHeight, TableItem::HorizontalAlign align, const sf::String& widgetName)
     {
-        HorizontalLayout::insert(m_layoutWidgets.size(),
+        HorizontalLayout::insert(m_widgets.size(),
                                  createItem(widget, (align == TableItem::None) ? m_align : align, fixedHeight),
                                  widgetName);
     }
@@ -128,8 +128,8 @@ namespace tgui
     {
         m_align = align;
 
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
-            std::dynamic_pointer_cast<TableItem>(m_layoutWidgets[i])->setHorizontalAlign(align);
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+            std::dynamic_pointer_cast<TableItem>(m_widgets[i])->setHorizontalAlign(align);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

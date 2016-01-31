@@ -34,9 +34,8 @@ namespace tgui
     {
         Container::add(widget, widgetName);
 
-        if (index > m_layoutWidgets.size())
+        if (index >= m_widgets.size())
         {
-            m_layoutWidgets.emplace_back(widget);
             m_widgetsRatio.emplace_back(1.f);
             m_widgetsFixedSizes.emplace_back(0.f);
             updateWidgetPositions();
@@ -44,7 +43,9 @@ namespace tgui
         }
         else
         {
-            m_layoutWidgets.insert(m_layoutWidgets.begin() + index, widget);
+            m_widgets.insert(m_widgets.begin() + index, widget);
+            m_widgets.pop_back(); // The widget was added at the back with Container::add
+
             m_widgetsRatio.insert(m_widgetsRatio.begin() + index, 1.f);
             m_widgetsFixedSizes.insert(m_widgetsFixedSizes.begin() + index, 0.f);
             updateWidgetPositions();
@@ -56,7 +57,7 @@ namespace tgui
 
     void BoxLayout::add(const tgui::Widget::Ptr& widget, const sf::String& widgetName)
     {
-        insert(m_layoutWidgets.size(), widget, widgetName);
+        insert(m_widgets.size(), widget, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +65,7 @@ namespace tgui
     void BoxLayout::addSpace(float ratio)
     {
         add(std::make_shared<ClickableWidget>(), "");
-        setRatio(m_layoutWidgets.size()-1, ratio);
+        setRatio(m_widgets.size()-1, ratio);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,9 +81,9 @@ namespace tgui
 
     bool BoxLayout::remove(const tgui::Widget::Ptr& widget)
     {
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_layoutWidgets[i] == widget)
+            if (m_widgets[i] == widget)
                 return remove(i);
         }
 
@@ -93,11 +94,10 @@ namespace tgui
 
     bool BoxLayout::remove(std::size_t index)
     {
-        if (index >= m_layoutWidgets.size())
+        if (index >= m_widgets.size())
             return false;
 
-        Container::remove(m_layoutWidgets[index]);
-        m_layoutWidgets.erase(m_layoutWidgets.begin() + index);
+        Container::remove(m_widgets[index]);
         m_widgetsRatio.erase(m_widgetsRatio.begin() + index);
         m_widgetsFixedSizes.erase(m_widgetsFixedSizes.begin() + index);
         updateWidgetPositions();
@@ -108,8 +108,8 @@ namespace tgui
 
     Widget::Ptr BoxLayout::get(std::size_t index)
     {
-        if (index < m_layoutWidgets.size())
-            return m_layoutWidgets[index];
+        if (index < m_widgets.size())
+            return m_widgets[index];
         else
             return nullptr;
     }
@@ -118,9 +118,9 @@ namespace tgui
 
     bool BoxLayout::setRatio(const Widget::Ptr& widget, float ratio)
     {
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_layoutWidgets[i] == widget)
+            if (m_widgets[i] == widget)
                 return setRatio(i, ratio);
         }
 
@@ -131,7 +131,7 @@ namespace tgui
 
     bool BoxLayout::setRatio(std::size_t index, float ratio)
     {
-        if (index >= m_layoutWidgets.size())
+        if (index >= m_widgets.size())
             return false;
 
         m_widgetsRatio[index] = ratio;
@@ -143,9 +143,9 @@ namespace tgui
 
     float BoxLayout::getRatio(const Widget::Ptr& widget)
     {
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_layoutWidgets[i] == widget)
+            if (m_widgets[i] == widget)
                 return getRatio(i);
         }
 
@@ -156,7 +156,7 @@ namespace tgui
 
     float BoxLayout::getRatio(std::size_t index)
     {
-        if (index >= m_layoutWidgets.size())
+        if (index >= m_widgets.size())
             return 0;
 
         return m_widgetsRatio[index];
@@ -166,9 +166,9 @@ namespace tgui
 
     bool BoxLayout::setFixedSize(const Widget::Ptr& widget, float size)
     {
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_layoutWidgets[i] == widget)
+            if (m_widgets[i] == widget)
                 return setFixedSize(i, size);
         }
 
@@ -179,7 +179,7 @@ namespace tgui
 
     bool BoxLayout::setFixedSize(std::size_t index, float size)
     {
-        if (index >= m_layoutWidgets.size())
+        if (index >= m_widgets.size())
             return false;
 
         m_widgetsFixedSizes[index] = size;
@@ -191,9 +191,9 @@ namespace tgui
 
     float BoxLayout::getFixedSize(const Widget::Ptr& widget)
     {
-        for (std::size_t i = 0; i < m_layoutWidgets.size(); ++i)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_layoutWidgets[i] == widget)
+            if (m_widgets[i] == widget)
                 return getFixedSize(i);
         }
 
@@ -204,7 +204,7 @@ namespace tgui
 
     float BoxLayout::getFixedSize(std::size_t index)
     {
-        if (index >= m_layoutWidgets.size())
+        if (index >= m_widgets.size())
             return 0;
 
         return m_widgetsFixedSizes[index];
@@ -215,7 +215,6 @@ namespace tgui
     void BoxLayout::removeAllWidgets()
     {
         Container::removeAllWidgets();
-        m_layoutWidgets.clear();
         m_widgetsRatio.clear();
         m_widgetsFixedSizes.clear();
     }
