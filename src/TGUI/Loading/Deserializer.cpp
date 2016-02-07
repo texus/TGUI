@@ -285,7 +285,6 @@ namespace tgui
         // There may be optional parameters
         sf::IntRect partRect;
         sf::IntRect middleRect;
-        bool repeat = false;
 
         while (tgui::removeWhitespace(value, c))
         {
@@ -296,52 +295,38 @@ namespace tgui
             else
                 word = value.substr(c - value.begin(), value.length() - (c - value.begin()));
 
-            if (toLower(word) == "stretch")
+            sf::IntRect* rect = nullptr;
+            if ((word == "Part") || (word == "part"))
             {
-                repeat = false;
-                std::advance(c, 7);
+                rect = &partRect;
+                std::advance(c, 4);
             }
-            else if (toLower(word) == "repeat")
+            else if ((word == "Middle") || (word == "middle"))
             {
-                repeat = true;
+                rect = &middleRect;
                 std::advance(c, 6);
             }
             else
             {
-                sf::IntRect* rect = nullptr;
-
-                if ((word == "Part") || (word == "part"))
-                {
-                    rect = &partRect;
-                    std::advance(c, 4);
-                }
-                else if ((word == "Middle") || (word == "middle"))
-                {
-                    rect = &middleRect;
-                    std::advance(c, 6);
-                }
+                if (word.empty())
+                    throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Expected 'Part' or 'Middle' in front of opening bracket."};
                 else
-                {
-                    if (word.empty())
-                        throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Expected 'Part' or 'Middle' in front of opening bracket."};
-                    else
-                        throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket. Expected 'Part' or 'Middle'."};
-                }
-
-                auto closeBracketPos = value.find(')', c - value.begin());
-                if (closeBracketPos != std::string::npos)
-                {
-                    if (!readIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect))
-                        throw tgui::Exception{"Failed to parse " + word + " rectangle while deserializing texture '" + value + "'."};
-                }
-                else
-                    throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Failed to find closing bracket for " + word + " rectangle."};
-
-                std::advance(c, closeBracketPos - (c - value.begin()) + 1);
+                    throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Unexpected word '" + word + "' in front of opening bracket. Expected 'Part' or 'Middle'."};
             }
+
+            auto closeBracketPos = value.find(')', c - value.begin());
+            if (closeBracketPos != std::string::npos)
+            {
+                if (!readIntRect(value.substr(c - value.begin(), closeBracketPos - (c - value.begin()) + 1), *rect))
+                    throw tgui::Exception{"Failed to parse " + word + " rectangle while deserializing texture '" + value + "'."};
+            }
+            else
+                throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Failed to find closing bracket for " + word + " rectangle."};
+
+            std::advance(c, closeBracketPos - (c - value.begin()) + 1);
         }
 
-        return tgui::Texture{getResourcePath() + filename, partRect, middleRect, repeat};
+        return tgui::Texture{getResourcePath() + filename, partRect, middleRect};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1397,7 +1397,7 @@ namespace tgui
                 }
                 break;
 
-            case Texture::ScalingType::NineSliceScaling:
+            case Texture::ScalingType::NineSlice:
                 break;
             }
         }

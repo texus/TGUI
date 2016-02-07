@@ -55,10 +55,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class ScalingType
         {
-            Normal,           ///< The image is not split and scaled normally
-            Horizontal,       ///< Image is split in Left, Middle and Right parts. Left and Right keep ratio, Middle gets stretched
-            Vertical,         ///< Image is split in Top, Middle and Bottom parts. Top and Bottom keep ratio, Middle gets stretched
-            NineSliceScaling  ///< Image is split in 9 parts. Corners keep size, sides are stretched in one direction, middle is stretched in both directions
+            Normal,     ///< The image is not split and scaled normally
+            Horizontal, ///< Image is split in Left, Middle and Right parts. Left and Right keep ratio, Middle gets stretched
+            Vertical,   ///< Image is split in Top, Middle and Bottom parts. Top and Bottom keep ratio, Middle gets stretched
+            NineSlice   ///< Image is split in 9 parts. Corners keep size, sides are stretched in one direction, middle is stretched in both directions
         };
 
 
@@ -76,17 +76,15 @@ namespace tgui
         /// @brief Constructor that created the texture.
         ///
         /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image.
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
         ///
         /// This constructor just calls the load function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture(const std::string& filename,
                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
-                bool repeated = false);
+                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,13 +119,11 @@ namespace tgui
         /// @param id         Id for the the image to load (for the default loader, the id is the filename).
         /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
         /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
-        /// @param repeated   Should the image be repeated or stretched when the size is bigger than the image?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const sf::String& id,
                   const sf::IntRect& partRect = {},
-                  const sf::IntRect& middleRect = {},
-                  bool repeated = false);
+                  const sf::IntRect& middleRect = {});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +148,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the texture data.
+        /// @brief Returns a reference to the texture data.
         ///
         /// @return Data of the texture
         ///
@@ -210,10 +206,24 @@ namespace tgui
         ///
         /// By default, the sprite's color is opaque white.
         ///
-        /// @param color New color of the sprite
+        /// @param color  New color of the sprite
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setColor(const sf::Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the global color of the sprite
+        ///
+        /// This color is modulated (multiplied) with the sprite's texture. It can be used to colorize the sprite,
+        /// or change its global opacity.
+        ///
+        /// By default, the sprite's color is opaque white.
+        ///
+        /// @return Current color of the sprite
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const sf::Color& getColor();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,7 +363,7 @@ namespace tgui
         /// @see setImageLoader
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static const ImageLoaderFunc& getImageLoader();
+        static ImageLoaderFunc getImageLoader();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -364,7 +374,7 @@ namespace tgui
         /// @see setTextureLoader
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static const TextureLoaderFunc& getTextureLoader();
+        static TextureLoaderFunc getTextureLoader();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,7 +385,7 @@ namespace tgui
         /// This function can be useful when implementing a resource manager.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCopyCallback(const std::function<void(std::shared_ptr<TextureData>)>& func);
+        void setCopyCallback(const std::function<void(std::shared_ptr<TextureData>)> func);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,7 +396,7 @@ namespace tgui
         /// This function can be useful when implementing a resource manager.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setDestructCallback(const std::function<void(std::shared_ptr<TextureData>)>& func);
+        void setDestructCallback(const std::function<void(std::shared_ptr<TextureData>)> func);
 
 
 
@@ -419,7 +429,6 @@ namespace tgui
         ScalingType   m_scalingType = ScalingType::Normal;
 
         bool m_loaded = false;
-        float m_rotation = 0;
         std::string m_id;
 
         std::function<void(std::shared_ptr<TextureData>)> m_copyCallback;

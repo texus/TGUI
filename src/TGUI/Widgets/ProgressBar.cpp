@@ -103,7 +103,7 @@ namespace tgui
                 frontSize.y = getSize().y - ((getRenderer()->m_textureBack.getImageSize().y - getRenderer()->m_textureFront.getImageSize().y) * (getSize().x / getRenderer()->m_textureBack.getImageSize().x));
                 break;
 
-            case Texture::ScalingType::NineSliceScaling:
+            case Texture::ScalingType::NineSlice:
                 frontSize.x = getSize().x - (getRenderer()->m_textureBack.getImageSize().x - getRenderer()->m_textureFront.getImageSize().x);
                 frontSize.y = getSize().y - (getRenderer()->m_textureBack.getImageSize().y - getRenderer()->m_textureFront.getImageSize().y);
                 break;

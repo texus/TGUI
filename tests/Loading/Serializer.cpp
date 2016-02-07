@@ -75,12 +75,6 @@ TEST_CASE("[Serializer]") {
 
         texture.load("resources/image.png", {0, 0, 40, 40}, {10, 10, 20, 20});
         REQUIRE(tgui::Serializer::serialize(texture) == "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20)");
-
-        texture.load("resources/image.png", {}, {}, true);
-        REQUIRE(tgui::Serializer::serialize(texture) == "\"resources/image.png\" Repeat");
-
-        texture.load("resources/image.png", {0, 0, 40, 40}, {10, 10, 20, 20}, true);
-        REQUIRE(tgui::Serializer::serialize(texture) == "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20) Repeat");
     }
 
     SECTION("serialize string") {

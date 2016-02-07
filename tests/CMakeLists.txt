@@ -10,6 +10,7 @@ set(TEST_SOURCES
     HorizontalLayout.cpp
     Layouts.cpp
     Signal.cpp
+    Texture.cpp
     TextureManager.cpp
     VerticalLayout.cpp
     Widget.cpp

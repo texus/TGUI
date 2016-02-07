@@ -1604,7 +1604,7 @@ namespace tgui
                 scaledPadding.bottom = padding.bottom * (texture.getSize().x / texture.getImageSize().x);
                 break;
 
-            case Texture::ScalingType::NineSliceScaling:
+            case Texture::ScalingType::NineSlice:
                 break;
             }
         }

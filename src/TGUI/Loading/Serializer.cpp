@@ -173,8 +173,6 @@ namespace tgui
             result += " Middle(" + tgui::to_string(texture.getMiddleRect().left) + ", " + tgui::to_string(texture.getMiddleRect().top)
                           + ", " + tgui::to_string(texture.getMiddleRect().width) + ", " + tgui::to_string(texture.getMiddleRect().height) + ")";
         }
-        if (texture.getData()->texture.isRepeated())
-            result += " Repeat";
 
         return result;
     }
