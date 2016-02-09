@@ -11,7 +11,7 @@ redirect_from: "/tutorials/v07/android/index.html"
 
 <div>
   <h3 id="requirements">Requirements</h3>
-  <p>You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly.</p>
+  <p>You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly. Especially make sure that the ANDROID_NDK variable is set so that the installed SFML files in it can be found automatically.</p>
 
   <p>You will need to use CMake in order to build TGUI. You can download the latest version <a href="http://www.cmake.org/download/">here</a>.</p>
 
@@ -39,6 +39,9 @@ make install
 <div>
   <h3 id="running_the_demo">Running the demo</h3>
   <p>To test if everything is working, you can build the example code.</p>
+
+  <p>If you have build TGUI with a different ABI (e.g. you used x86 instead of armeabi-v7a to run it in a simulator), then make sure to edit APP_ABI in jni/Application.mk inside the android example folder, otherwise you can get the error that TGUI.hpp is not found.</p>
+
   <p class="SmallBottomMargin">First you have to run ndk-build. You can do this by opening your console inside the TGUI/example/android folder and running the following.</p>
 {% highlight bash %}
 $ANDROID_NDK/ndk-build
@@ -51,7 +54,7 @@ ant debug
 cp bin/TGUI-debug.apk TGUI-example.apk
 {% endhighlight %}
 
-  <p class="SmallBottomMargin">You can now install the .apk file to your android device with adb. Note that the adb server might have to run as root to have permissions to access the android device.</p>
+  <p class="SmallBottomMargin">You can now install the .apk file to your android device (or a running simulator) with adb. Note that the adb server might have to run as root to have permissions to access the android device.</p>
 {% highlight bash %}
 adb install TGUI-example.apk
 {% endhighlight %}
@@ -71,7 +74,7 @@ LOCAL_SHARED_LIBRARIES += tgui
 $(call import-module,tgui)
 {% endhighlight %}
 
-  <p class="SmallBottomMargin">In Application.mk you must enable exceptions and rtti and add the tgui activity</p>
+  <p class="SmallBottomMargin">In Application.mk you must enable exceptions and RTTI and add the tgui-activity module</p>
 {% highlight bash %}
 APP_CPPFLAGS += -fexceptions -frtti
 {% endhighlight %}
