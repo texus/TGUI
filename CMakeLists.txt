@@ -87,8 +87,6 @@ tgui_set_option( TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentati
 
 # Set compile flags for gcc and clang
 if (SFML_OS_ANDROID)
-    set(TGUI_ACTIVITY_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-
     # Remove "-fno-exceptions" from the CMAKE_CXX_FLAGS
     string(REPLACE " " ";" TGUI_CXX_FLAGS_LIST ${CMAKE_CXX_FLAGS})
     set(TGUI_TEMP_CXX_FLAGS "")
@@ -113,6 +111,8 @@ if (SFML_OS_ANDROID)
     tgui_add_cxx_flag(-std=c++11)
     tgui_add_cxx_flag(-fexceptions)
     tgui_add_cxx_flag(-frtti)
+
+    set(TGUI_ACTIVITY_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 elseif(SFML_COMPILER_GCC OR SFML_COMPILER_CLANG)
     tgui_add_cxx_flag(-Wall)
