@@ -10,7 +10,7 @@ version: 0.7-dev.{build}
 #---------------------------------#
 
 environment:
-  SFML_VERSION: 2.3
+  SFML_VERSION: master
 
 clone_depth: 3
 
