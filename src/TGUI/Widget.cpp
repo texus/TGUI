@@ -98,7 +98,7 @@ namespace tgui
         enable_shared_from_this<Widget>{copy},
         m_enabled        {copy.m_enabled},
         m_visible        {copy.m_visible},
-        m_parent         {copy.m_parent},
+        m_parent         {nullptr},
         m_opacity        {copy.m_opacity},
         m_mouseHover     {false},
         m_mouseDown      {false},
@@ -116,6 +116,18 @@ namespace tgui
 
         if (copy.m_renderer != nullptr)
             m_renderer = copy.m_renderer->clone(this);
+
+        m_position.x.getImpl()->parentWidget = this;
+        m_position.x.getImpl()->recalculate();
+
+        m_position.y.getImpl()->parentWidget = this;
+        m_position.y.getImpl()->recalculate();
+
+        m_size.x.getImpl()->parentWidget = this;
+        m_size.x.getImpl()->recalculate();
+
+        m_size.y.getImpl()->parentWidget = this;
+        m_size.y.getImpl()->recalculate();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +143,7 @@ namespace tgui
 
             m_enabled             = right.m_enabled;
             m_visible             = right.m_visible;
-            m_parent              = right.m_parent;
+            m_parent              = nullptr;
             m_opacity             = right.m_opacity;
             m_mouseHover          = false;
             m_mouseDown           = false;
@@ -155,6 +167,18 @@ namespace tgui
 
             // Animations can't be copied
             m_showAnimations = {};
+
+            m_position.x.getImpl()->parentWidget = this;
+            m_position.x.getImpl()->recalculate();
+
+            m_position.y.getImpl()->parentWidget = this;
+            m_position.y.getImpl()->recalculate();
+
+            m_size.x.getImpl()->parentWidget = this;
+            m_size.x.getImpl()->recalculate();
+
+            m_size.y.getImpl()->parentWidget = this;
+            m_size.y.getImpl()->recalculate();
         }
 
         return *this;

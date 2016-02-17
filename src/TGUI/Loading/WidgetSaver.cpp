@@ -95,7 +95,13 @@ namespace tgui
         if (widget->getPosition() != sf::Vector2f{})
             SET_PROPERTY("Position", emitLayout(widget->getPositionLayout()));
         if (widget->getSize() != sf::Vector2f{})
-            SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
+        {
+            /// TODO: Fix Grid and Tab to no longer override the getSize function
+            if (widget->getSize() != widget->getSizeLayout().getValue())
+                SET_PROPERTY("Size", emitLayout({widget->getSize()}));
+            else
+                SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
+        }
         if (widget->getOpacity() != 1)
             SET_PROPERTY("Opacity", tgui::to_string(widget->getOpacity()));
 
