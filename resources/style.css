@@ -671,21 +671,22 @@ pre {
 
 /* HOMEPAGE */
 
-.HomePageLeftColumn, .HomePageRightColumn {
+.HomePageSmallerColumn, .HomePageLargerColumn {
   display: inline-block;
   height: auto;
   margin-left: 0.5%;
   margin-right: 0.5%;
   vertical-align: middle;
 }
-.HomePageLeftColumn {
+
+.HomePageLargerColumn {
   width: 53%;
 }
-.HomePageRightColumn {
+.HomePageSmallerColumn {
   width: 43%;
 }
 
-.HomePageLeftColumn img, .HomePageRightColumn img {
+.HomePageSmallerColumn img, .HomePageLargerColumn img {
   display: block;
   margin-left: auto;
   margin-right: auto;
