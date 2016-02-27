@@ -34,15 +34,11 @@ button2->setPosition(bindPosition(button1));
 </div>
 
 <div>
-<h3 id="binding_range_and_conditions">Binding range and conditions</h3>
-<p>Oh look, more bind functions! There are also bind functions to combine those simple bind functions that were mentioned above. They are called bindMin, bindMax, bindRange and bindIf.</p>
+<h3 id="binding_limits_and_conditions">Binding limits and conditions</h3>
+<p>Oh look, more bind functions! There are also bind functions to combine those simple bind functions that were mentioned above. They are called bindMin, bindMax and bindIf.</p>
 <p class="SmallBottomMargin">The bindMin and bindMax functions are self explaining, you give them two layouts as parameter and the lowest or highest one will be used. Remember that when any of the bound widgets changes the entire expression will be recalculated so which one is the minimum or maximum will be automatically re-evaluated on changes.</p>
 {% highlight c++ %}
 button2->setSize(bindMin(bindWidth(button1), bindHeight(button1)), bindMax(bindWidth(button1).x, bindHeight(button1)));
-{% endhighlight %}
-<p class="SmallBottomMargin">The bindRange function is a combination of the two. The first two parameters are min and max and the third argument is the value that has to remain between the two values. So the following code will try to give button3 the same top position as button2, but it will be at least 100 and maximum the top position of button1.</p>
-{% highlight c++ %}
-button3->setPosition(0, bindRange(100, bindTop(button1), bindTop(button2));
 {% endhighlight %}
 <p class="SmallBottomMargin">Finally there is the bindIf function which can use any bound condition to determine which layout to use. The parameters are in the same order as the operands of the ?: operator: first the condition, then the true value and finally the false value. The following code will keep a square image centered in the window while filling the window and keeping the square ratio.</p>
 {% highlight c++ %}
@@ -69,7 +65,10 @@ button2->setSize({"button1.size"});
 button2->setPosition({"parent.parent.parent.MyButton.position"});
 {% endhighlight %}
 
-<p>There are also the max, min and range functions. The min and max are even more powerful than the c++ version as they can take an arbitrary amount of parameters.</p>
+<p class="SmallBottomMargin">There are also the min and max functions. The min and max are even more powerful than the c++ version as they can take an arbitrary amount of parameters.</p>
+{% highlight c++ %}
+widget->setPosition({"min(a.x, b.x, c.x, d.x)"}, {"max(a.y, b.y)"});
+{% endhighlight %}
 
 <p class="SmallBottomMargin">Finally there is the if-then-else statement. Let's use it in the example with the picture:</p>
 {% highlight c++ %}
