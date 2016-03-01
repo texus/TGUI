@@ -5,6 +5,8 @@ git:
   depth: 1
 
 os: linux
+compiler: g++-5
+env: COMPILER=g++-5
 cache:
   directories:
     - $HOME/SFML_LINUX
@@ -40,6 +42,7 @@ addons:
     - libudev-dev
 
 script:
+  - CXX=$COMPILER;
   - chmod +x tests/travis_linux_tests.sh
   - tests/travis_linux_tests.sh
 
