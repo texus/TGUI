@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-///TODO: FIX BORDERS in calculations
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Loading/Theme.hpp>
@@ -56,70 +55,6 @@ namespace tgui
             return std::static_pointer_cast<Label>(label->clone());
         else
             return nullptr;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    LabelRenderer* Label::getRenderer() const
-    {
-        return aurora::downcast<LabelRenderer*>(m_renderer.get());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Label::setPosition(const Layout2d& position)
-    {
-        Widget::setPosition(position);
-
-        m_background.setPosition(getPosition());
-
-        if (getFont())
-        {
-            sf::Vector2f pos{std::round(getPosition().x + getRenderer()->getPadding().left),
-                             getPosition().y + getRenderer()->getPadding().top - getTextVerticalCorrection(getFont(), m_textSize, m_textStyle)};
-
-            if (m_verticalAlignment != VerticalAlignment::Top)
-            {
-                float totalHeight = getSize().y - getRenderer()->getPadding().top - getRenderer()->getPadding().bottom;
-                float totalTextHeight = m_lines.size() * getFont()->getLineSpacing(m_textSize);
-
-                if (m_verticalAlignment == VerticalAlignment::Center)
-                    pos.y += (totalHeight - totalTextHeight) / 2.f;
-                else if (m_verticalAlignment == VerticalAlignment::Bottom)
-                    pos.y += totalHeight - totalTextHeight;
-            }
-
-            if (m_horizontalAlignment == HorizontalAlignment::Left)
-            {
-                for (auto& line : m_lines)
-                {
-                    line.setPosition(pos.x, std::floor(pos.y));
-                    pos.y += getFont()->getLineSpacing(m_textSize);
-                }
-            }
-            else // Center or Right alignment
-            {
-                float totalWidth = getSize().x - getRenderer()->getPadding().left - getRenderer()->getPadding().right;
-
-                for (auto& line : m_lines)
-                {
-                    line.setPosition(0, 0);
-
-                    std::size_t lastChar = line.getString().getSize();
-                    while (lastChar > 0 && isWhitespace(line.getString()[lastChar-1]))
-                        lastChar--;
-
-                    float textWidth = line.findCharacterPos(lastChar).x;
-
-                    if (m_horizontalAlignment == HorizontalAlignment::Center)
-                        line.setPosition(std::round(pos.x + (totalWidth - textWidth) / 2.f), std::floor(pos.y));
-                    else if (m_horizontalAlignment == HorizontalAlignment::Right)
-                        line.setPosition(std::round(pos.x + totalWidth - textWidth), std::floor(pos.y));
-
-                    pos.y += getFont()->getLineSpacing(m_textSize);
-                }
-            }
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,7 +110,7 @@ namespace tgui
     void Label::setHorizontalAlignment(HorizontalAlignment alignment)
     {
         m_horizontalAlignment = alignment;
-        updatePosition();
+        rearrangeText();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +125,7 @@ namespace tgui
     void Label::setVerticalAlignment(VerticalAlignment alignment)
     {
         m_verticalAlignment = alignment;
-        updatePosition();
+        rearrangeText();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -328,6 +263,75 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        states.transform.translate(std::round(getPosition().x), std::round(getPosition().y));
+
+        // Draw the background
+        if (m_background.getFillColor() != sf::Color::Transparent)
+            target.draw(m_background, states);
+
+        // Draw the borders
+        Borders borders = getRenderer()->getBorders();
+        if (borders != Borders{0, 0, 0, 0})
+        {
+            drawBorders(target, states, borders, getPosition(), getSize(), calcColorOpacity(getRenderer()->getBorderColor(), getRenderer()->getOpacity()));
+
+            // Don't try to draw the text when there is no space left for it
+            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
+                return;
+        }
+
+        if (m_autoSize)
+        {
+            // Draw the text
+            for (auto& line : m_lines)
+                target.draw(line, states);
+        }
+        else
+        {
+            const sf::View& view = target.getView();
+
+            // Calculate the scale factor of the view
+            float scaleViewX = target.getSize().x / view.getSize().x;
+            float scaleViewY = target.getSize().y / view.getSize().y;
+
+            // Get the global position
+            sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + getRenderer()->getPadding().left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                            ((getAbsolutePosition().y + getRenderer()->getPadding().top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
+            sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - getRenderer()->getPadding().right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                (getAbsolutePosition().y + getSize().y - getRenderer()->getPadding().bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
+
+            // Get the old clipping area
+            GLint scissor[4];
+            glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+            // Calculate the clipping area
+            GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
+            GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
+            GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
+            GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
+
+            // If the object outside the window then don't draw anything
+            if (scissorRight < scissorLeft)
+                scissorRight = scissorLeft;
+            else if (scissorBottom < scissorTop)
+                scissorTop = scissorBottom;
+
+            // Set the clipping area
+            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
+
+            // Draw the text
+            for (auto& line : m_lines)
+                target.draw(line, states);
+
+            // Reset the old clipping area
+            glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::rearrangeText()
     {
         if (!getFont())
@@ -337,8 +341,14 @@ namespace tgui
         float maxWidth = 0;
         if (m_autoSize)
             maxWidth = m_maximumTextWidth;
-        else if (getSize().x > getRenderer()->getPadding().left + getRenderer()->getPadding().right)
-            maxWidth = getSize().x - getRenderer()->getPadding().left - getRenderer()->getPadding().right;
+        else
+        {
+            Borders borders = getRenderer()->getPadding() + getRenderer()->getBorders();
+            if (getSize().x > borders.left + borders.right)
+                maxWidth = getSize().x - getRenderer()->getPadding().left - getRenderer()->getPadding().right;
+            else // There is no room for text
+                return;
+        }
 
         m_lines.clear();
         unsigned int index = 0;
@@ -437,78 +447,63 @@ namespace tgui
 
         if (m_autoSize)
         {
-            m_size = {std::max(calculatedLabelWidth, maxWidth) + getRenderer()->getPadding().left + getRenderer()->getPadding().right,
-                      (lineCount * getFont()->getLineSpacing(m_textSize)) + getRenderer()->getPadding().top + getRenderer()->getPadding().bottom};
+            Borders borders = getRenderer()->getPadding() + getRenderer()->getBorders();
+            m_size = {std::max(calculatedLabelWidth, maxWidth) + borders.left + borders.right,
+                      (lineCount * getFont()->getLineSpacing(m_textSize)) + borders.top + borders.bottom};
 
             m_background.setSize(getSize());
         }
 
-        updatePosition();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        if (m_autoSize)
+        // Update the line positions
         {
-            // Draw the background
-            if (m_background.getFillColor() != sf::Color::Transparent)
-                target.draw(m_background, states);
+            Borders borders = getRenderer()->getPadding() + getRenderer()->getBorders();
+            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
+                return;
 
-            // Draw the text
-            for (auto& line : m_lines)
-                target.draw(line, states);
+            sf::Vector2f pos{borders.left, borders.top - getTextVerticalCorrection(getFont(), m_textSize, m_textStyle)};
+
+            if (m_verticalAlignment != VerticalAlignment::Top)
+            {
+                float totalHeight = getSize().y - borders.top - borders.bottom;
+                float totalTextHeight = m_lines.size() * getFont()->getLineSpacing(m_textSize);
+
+                if (m_verticalAlignment == VerticalAlignment::Center)
+                    pos.y += (totalHeight - totalTextHeight) / 2.f;
+                else if (m_verticalAlignment == VerticalAlignment::Bottom)
+                    pos.y += totalHeight - totalTextHeight;
+            }
+
+            if (m_horizontalAlignment == HorizontalAlignment::Left)
+            {
+                for (auto& line : m_lines)
+                {
+                    line.setPosition(pos.x, std::floor(pos.y));
+                    pos.y += getFont()->getLineSpacing(m_textSize);
+                }
+            }
+            else // Center or Right alignment
+            {
+                float totalWidth = getSize().x - borders.left - borders.right;
+
+                for (auto& line : m_lines)
+                {
+                    line.setPosition(0, 0);
+
+                    std::size_t lastChar = line.getString().getSize();
+                    while (lastChar > 0 && isWhitespace(line.getString()[lastChar-1]))
+                        lastChar--;
+
+                    float textWidth = line.findCharacterPos(lastChar).x;
+
+                    if (m_horizontalAlignment == HorizontalAlignment::Center)
+                        line.setPosition(std::round(pos.x + (totalWidth - textWidth) / 2.f), std::floor(pos.y));
+                    else if (m_horizontalAlignment == HorizontalAlignment::Right)
+                        line.setPosition(std::round(pos.x + totalWidth - textWidth), std::floor(pos.y));
+
+                    pos.y += getFont()->getLineSpacing(m_textSize);
+                }
+            }
         }
-        else
-        {
-            const sf::View& view = target.getView();
-
-            // Calculate the scale factor of the view
-            float scaleViewX = target.getSize().x / view.getSize().x;
-            float scaleViewY = target.getSize().y / view.getSize().y;
-
-            // Get the global position
-            sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + getRenderer()->getPadding().left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                            ((getAbsolutePosition().y + getRenderer()->getPadding().top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-            sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - getRenderer()->getPadding().right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                (getAbsolutePosition().y + getSize().y - getRenderer()->getPadding().bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
-
-            // Get the old clipping area
-            GLint scissor[4];
-            glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-            // Calculate the clipping area
-            GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-            GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-            GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-            GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-            // If the object outside the window then don't draw anything
-            if (scissorRight < scissorLeft)
-                scissorRight = scissorLeft;
-            else if (scissorBottom < scissorTop)
-                scissorTop = scissorBottom;
-
-            // Draw the background
-            if (m_background.getFillColor() != sf::Color::Transparent)
-                target.draw(m_background, states);
-
-            // Set the clipping area
-            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
-            // Draw the text
-            for (auto& line : m_lines)
-                target.draw(line, states);
-
-            // Reset the old clipping area
-            glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
-        }
-
-        // Draw the borders around the button
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0, 0, 0, 0})
-            drawBorders(target, states, borders, getPosition(), getSize(), calcColorOpacity(getRenderer()->getBorderColor(), getRenderer()->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

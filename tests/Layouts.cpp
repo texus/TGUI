@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Gui.hpp>
 
@@ -177,23 +177,23 @@ TEST_CASE("[Layouts]") {
         }
 
         SECTION("bind functions") {
-            auto button1 = std::make_shared<tgui::Button>();
-            button1->setSize(300, 50);
-            button1->setPosition(40, 60);
+            auto widget1 = std::make_shared<tgui::ClickableWidget>();
+            widget1->setSize(300, 50);
+            widget1->setPosition(40, 60);
 
-            auto button2 = std::make_shared<tgui::Button>();
-            button2->setPosition(bindLeft(button1), bindTop(button1));
-            button2->setSize(bindWidth(button1), bindHeight(button1));
-            REQUIRE(button2->getSize() == sf::Vector2f(300, 50));
-            REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
+            auto widget2 = std::make_shared<tgui::ClickableWidget>();
+            widget2->setPosition(bindLeft(widget1), bindTop(widget1));
+            widget2->setSize(bindWidth(widget1), bindHeight(widget1));
+            REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
+            REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
 
-            button2->setPosition(bindRight(button1), bindBottom(button1));
-            REQUIRE(button2->getPosition() == sf::Vector2f(340, 110));
+            widget2->setPosition(bindRight(widget1), bindBottom(widget1));
+            REQUIRE(widget2->getPosition() == sf::Vector2f(340, 110));
 
-            button2->setPosition(bindPosition(button1));
-            button2->setSize(bindSize(button1));
-            REQUIRE(button2->getSize() == sf::Vector2f(300, 50));
-            REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
+            widget2->setPosition(bindPosition(widget1));
+            widget2->setSize(bindSize(widget1));
+            REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
+            REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
             
             REQUIRE(bindMin(10, 20).getValue() == 10);
             REQUIRE(bindMin(-50, 5).getValue() == -50);
@@ -203,48 +203,48 @@ TEST_CASE("[Layouts]") {
             REQUIRE(bindRange(10, 20, 25).getValue() == 20);
             REQUIRE(bindRange(10, 20, 5).getValue() == 10);
 
-            button1->setSize(400, 40);
-            button1->setPosition(60, 75);
-            REQUIRE(button2->getSize() == sf::Vector2f(400, 40));
-            REQUIRE(button2->getPosition() == sf::Vector2f(60, 75));
+            widget1->setSize(400, 40);
+            widget1->setPosition(60, 75);
+            REQUIRE(widget2->getSize() == sf::Vector2f(400, 40));
+            REQUIRE(widget2->getPosition() == sf::Vector2f(60, 75));
             
-            button1->setSize(bindSize(button2)); // Binding each other only works when value is cached
-            REQUIRE(button1->getSize() == sf::Vector2f(400, 40));
-            REQUIRE(button2->getSize() == sf::Vector2f(400, 40));
+            widget1->setSize(bindSize(widget2)); // Binding each other only works when value is cached
+            REQUIRE(widget1->getSize() == sf::Vector2f(400, 40));
+            REQUIRE(widget2->getSize() == sf::Vector2f(400, 40));
 
-            auto button3 = std::make_shared<tgui::Button>();
+            auto widget3 = std::make_shared<tgui::ClickableWidget>();
             auto panel = std::make_shared<tgui::Panel>();
             panel->setSize(200, 180);
             panel->setPosition(10, 25);
-            button1->setSize(300, 50);
-            button1->setPosition(40, 60);
-            button2->setSize(400, 40);
-            button2->setPosition(60, 75);
-            panel->add(button1);
-            panel->add(button2);
-            panel->add(button3);
+            widget1->setSize(300, 50);
+            widget1->setPosition(40, 60);
+            widget2->setSize(400, 40);
+            widget2->setPosition(60, 75);
+            panel->add(widget1);
+            panel->add(widget2);
+            panel->add(widget3);
 
-            button3->setSize(2.5 * bindPosition(button1) + bindSize(button2) / 4 + sf::Vector2f(100, 50));
-            REQUIRE(button3->getSize() == sf::Vector2f(300, 210));
+            widget3->setSize(2.5 * bindPosition(widget1) + bindSize(widget2) / 4 + sf::Vector2f(100, 50));
+            REQUIRE(widget3->getSize() == sf::Vector2f(300, 210));
 
-            button3->setPosition(2 * bindRight(button1) + bindLeft(button2) / 4 + bindWidth(button1), 50 + bindBottom(button2) % 75 * bindTop(button2));
-            REQUIRE(button3->getPosition() == sf::Vector2f(995, 3050));
-            REQUIRE(button3->getAbsolutePosition() == sf::Vector2f(1005, 3075));
+            widget3->setPosition(2 * bindRight(widget1) + bindLeft(widget2) / 4 + bindWidth(widget1), 50 + bindBottom(widget2) % 75 * bindTop(widget2));
+            REQUIRE(widget3->getPosition() == sf::Vector2f(995, 3050));
+            REQUIRE(widget3->getAbsolutePosition() == sf::Vector2f(1005, 3075));
 
-            button3->setSize(bindIf(bindWidth(button1) > bindHeight(button2), 2 * bindWidth(button1), bindWidth(button2) / 4) * 3, 0);
-            REQUIRE(button3->getSize().x == 1800);
-            button1->setSize(30, 10);
-            REQUIRE(button3->getSize().x == 300);
+            widget3->setSize(bindIf(bindWidth(widget1) > bindHeight(widget2), 2 * bindWidth(widget1), bindWidth(widget2) / 4) * 3, 0);
+            REQUIRE(widget3->getSize().x == 1800);
+            widget1->setSize(30, 10);
+            REQUIRE(widget3->getSize().x == 300);
 
-            button3->setPosition(bindIf(bindLeft(button1) != bindTop(button2), bindPosition(button1), 1.5 * bindPosition(button2)));
-            REQUIRE(button3->getPosition() == sf::Vector2f(40, 60));
-            button1->setPosition(75, 20);
-            REQUIRE(button3->getPosition() == sf::Vector2f(90, 112.5f));
+            widget3->setPosition(bindIf(bindLeft(widget1) != bindTop(widget2), bindPosition(widget1), 1.5 * bindPosition(widget2)));
+            REQUIRE(widget3->getPosition() == sf::Vector2f(40, 60));
+            widget1->setPosition(75, 20);
+            REQUIRE(widget3->getPosition() == sf::Vector2f(90, 112.5f));
 
-            button3->setPosition(bindIf(bindPosition(button1) == bindPosition(button2), bindPosition(button1) * 1.5, bindPosition(button2)));
-            REQUIRE(button3->getPosition() == sf::Vector2f(60, 75));
-            button1->setPosition(60, 75);
-            REQUIRE(button3->getPosition() == sf::Vector2f(90, 112.5f));
+            widget3->setPosition(bindIf(bindPosition(widget1) == bindPosition(widget2), bindPosition(widget1) * 1.5, bindPosition(widget2)));
+            REQUIRE(widget3->getPosition() == sf::Vector2f(60, 75));
+            widget1->setPosition(60, 75);
+            REQUIRE(widget3->getPosition() == sf::Vector2f(90, 112.5f));
         }
     }
 
@@ -375,117 +375,117 @@ TEST_CASE("[Layouts]") {
             panel->setSize(200, 180);
             panel->setPosition(10, 25);
         
-            auto button1 = std::make_shared<tgui::Button>();
-            button1->setSize(300, 50);
-            button1->setPosition(40, 60);
-            panel->add(button1, "b1");
+            auto widget1 = std::make_shared<tgui::ClickableWidget>();
+            widget1->setSize(300, 50);
+            widget1->setPosition(40, 60);
+            panel->add(widget1, "b1");
             
-            auto button2 = std::make_shared<tgui::Button>();
-            button2->setPosition(bindStr2d("b1.position"));
-            button2->setSize(bindStr2d(std::string{"b1.size"}));
-            REQUIRE(button2->getSize() == sf::Vector2f(0, 0));
-            REQUIRE(button2->getPosition() == sf::Vector2f(0, 0));
+            auto widget2 = std::make_shared<tgui::ClickableWidget>();
+            widget2->setPosition(bindStr2d("b1.position"));
+            widget2->setSize(bindStr2d(std::string{"b1.size"}));
+            REQUIRE(widget2->getSize() == sf::Vector2f(0, 0));
+            REQUIRE(widget2->getPosition() == sf::Vector2f(0, 0));
 
-            panel->add(button2, "b2");
-            REQUIRE(button2->getSize() == sf::Vector2f(300, 50));
-            REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
+            panel->add(widget2, "b2");
+            REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
+            REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
             
-            button2->setPosition({"b1.p"});
-            REQUIRE(button2->getPosition() == sf::Vector2f(0, 0));
+            widget2->setPosition({"b1.p"});
+            REQUIRE(widget2->getPosition() == sf::Vector2f(0, 0));
             
-            button2->setPosition({"b1.pos"});
-            REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
+            widget2->setPosition({"b1.pos"});
+            REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
             
-            button2->setPosition(bindStr("b1.left"), bindStr(std::string{"b1.top"}));
-            REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
+            widget2->setPosition(bindStr("b1.left"), bindStr(std::string{"b1.top"}));
+            REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
             
-            button2->setPosition({"b1.x"}, {"b1.y"});
-            REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
+            widget2->setPosition({"b1.x"}, {"b1.y"});
+            REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
 
-            button2->setSize({"{b1.width, b1.height}"});
-            REQUIRE(button2->getSize() == sf::Vector2f(300, 50));
+            widget2->setSize({"{b1.width, b1.height}"});
+            REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
             
-            button2->setSize({"{b1.wi, b1.he}"});
-            REQUIRE(button2->getSize() == sf::Vector2f(0, 0));
+            widget2->setSize({"{b1.wi, b1.he}"});
+            REQUIRE(widget2->getSize() == sf::Vector2f(0, 0));
             
-            button2->setSize({"{b1.w, b1.h}"});
-            REQUIRE(button2->getSize() == sf::Vector2f(300, 50));
+            widget2->setSize({"{b1.w, b1.h}"});
+            REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
             
-            button2->setSize({"{b1.right, b1.bottom}"});
-            REQUIRE(button2->getSize() == sf::Vector2f(340, 110));
+            widget2->setSize({"{b1.right, b1.bottom}"});
+            REQUIRE(widget2->getSize() == sf::Vector2f(340, 110));
             
-            button2->setSize({"{b1.r, b1.b}"});
-            REQUIRE(button2->getSize() == sf::Vector2f(0, 0));
+            widget2->setSize({"{b1.r, b1.b}"});
+            REQUIRE(widget2->getSize() == sf::Vector2f(0, 0));
             
-            button2->setSize({{"b1.right"}, {"b1.bottom"}});
-            REQUIRE(button2->getSize() == sf::Vector2f(340, 110));
+            widget2->setSize({{"b1.right"}, {"b1.bottom"}});
+            REQUIRE(widget2->getSize() == sf::Vector2f(340, 110));
             
-            button2->setSize({"{@, #}"});
-            REQUIRE(button2->getSize() == sf::Vector2f(0, 0));
+            widget2->setSize({"{@, #}"});
+            REQUIRE(widget2->getSize() == sf::Vector2f(0, 0));
             
-            button2->setPosition({"parent.x"}, {"&.y"});
-            REQUIRE(button2->getPosition() == sf::Vector2f(10, 25));
+            widget2->setPosition({"parent.x"}, {"&.y"});
+            REQUIRE(widget2->getPosition() == sf::Vector2f(10, 25));
             
-            button2->setPosition({"parent.b1.parent.b1.x"}, {"&.b1.&.b1.y"});
-            REQUIRE(button2->getPosition() == sf::Vector2f(40, 60));
+            widget2->setPosition({"parent.b1.parent.b1.x"}, {"&.b1.&.b1.y"});
+            REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
 
-            button2->setPosition({"b1.position"});
-            button2->setSize({"b1.size"});
-            button1->setSize(400, 40);
-            button1->setPosition(60, 75);
-            REQUIRE(button2->getSize() == sf::Vector2f(400, 40));
-            REQUIRE(button2->getPosition() == sf::Vector2f(60, 75));
+            widget2->setPosition({"b1.position"});
+            widget2->setSize({"b1.size"});
+            widget1->setSize(400, 40);
+            widget1->setPosition(60, 75);
+            REQUIRE(widget2->getSize() == sf::Vector2f(400, 40));
+            REQUIRE(widget2->getPosition() == sf::Vector2f(60, 75));
             
-            auto button3 = std::make_shared<tgui::Button>();
-            button1->setSize(300, 50);
-            button1->setPosition(40, 60);
-            button2->setSize(400, 40);
-            button2->setPosition(60, 75);
-            panel->add(button3);
+            auto widget3 = std::make_shared<tgui::ClickableWidget>();
+            widget1->setSize(300, 50);
+            widget1->setPosition(40, 60);
+            widget2->setSize(400, 40);
+            widget2->setPosition(60, 75);
+            panel->add(widget3);
 
-            button3->setSize({"2.5 * b1.pos + b2.size / 4 + {100, 50}"});
-            REQUIRE(button3->getSize() == sf::Vector2f(300, 210));
+            widget3->setSize({"2.5 * b1.pos + b2.size / 4 + {100, 50}"});
+            REQUIRE(widget3->getSize() == sf::Vector2f(300, 210));
 
-            button3->setPosition({"2 * b1.right + b2.x / 4 + b1.w"}, {"50 + b2.bottom % 75 * b2.y"});
-            REQUIRE(button3->getPosition() == sf::Vector2f(995, 3050));
-            REQUIRE(button3->getAbsolutePosition() == sf::Vector2f(1005, 3075));
+            widget3->setPosition({"2 * b1.right + b2.x / 4 + b1.w"}, {"50 + b2.bottom % 75 * b2.y"});
+            REQUIRE(widget3->getPosition() == sf::Vector2f(995, 3050));
+            REQUIRE(widget3->getAbsolutePosition() == sf::Vector2f(1005, 3075));
             
-            button3->setSize({"(if b1.w > b2.h then 2 * b1.w else b2.w / 4) * 3"});
-            REQUIRE(button3->getSize().x == 1800);
-            button1->setSize(30, 10);
-            REQUIRE(button3->getSize().x == 300);
+            widget3->setSize({"(if b1.w > b2.h then 2 * b1.w else b2.w / 4) * 3"});
+            REQUIRE(widget3->getSize().x == 1800);
+            widget1->setSize(30, 10);
+            REQUIRE(widget3->getSize().x == 300);
 
-            button3->setSize({"(if b1.w <= b2.h then 2 * b1.w else b2.w / 4) * 3"});
-            REQUIRE(button3->getSize().x == 180);
-            button2->setSize(200, 50);
-            button1->setSize(300, 50);
-            REQUIRE(button3->getSize().x == 150);
+            widget3->setSize({"(if b1.w <= b2.h then 2 * b1.w else b2.w / 4) * 3"});
+            REQUIRE(widget3->getSize().x == 180);
+            widget2->setSize(200, 50);
+            widget1->setSize(300, 50);
+            REQUIRE(widget3->getSize().x == 150);
 
-            button3->setPosition(bindIf(bindLeft(button1) != bindTop(button2), bindPosition(button1), 1.5 * bindPosition(button2)));
-            button3->setPosition({"b1.x != b2.y ? b1.pos : 1.5 * b2.position"});
-            REQUIRE(button3->getPosition() == sf::Vector2f(40, 60));
-            button1->setPosition(75, 20);
-            REQUIRE(button3->getPosition() == sf::Vector2f(90, 112.5f));
+            widget3->setPosition(bindIf(bindLeft(widget1) != bindTop(widget2), bindPosition(widget1), 1.5 * bindPosition(widget2)));
+            widget3->setPosition({"b1.x != b2.y ? b1.pos : 1.5 * b2.position"});
+            REQUIRE(widget3->getPosition() == sf::Vector2f(40, 60));
+            widget1->setPosition(75, 20);
+            REQUIRE(widget3->getPosition() == sf::Vector2f(90, 112.5f));
 
-            button3->setPosition({"if b1.pos == b2.pos then b1.pos * 1.5 else b2.pos"});
-            REQUIRE(button3->getPosition() == sf::Vector2f(60, 75));
-            button1->setPosition(60, 75);
-            REQUIRE(button3->getPosition() == sf::Vector2f(90, 112.5f));
+            widget3->setPosition({"if b1.pos == b2.pos then b1.pos * 1.5 else b2.pos"});
+            REQUIRE(widget3->getPosition() == sf::Vector2f(60, 75));
+            widget1->setPosition(60, 75);
+            REQUIRE(widget3->getPosition() == sf::Vector2f(90, 112.5f));
 
-            auto button4 = std::make_shared<tgui::Button>();
-            button4->setSize(200, 50);
+            auto widget4 = std::make_shared<tgui::ClickableWidget>();
+            widget4->setSize(200, 50);
 
-            panel->add(button4, "xyzifxyz");
-            button3->setSize({"xyzifxyz.size"});
-            REQUIRE(button3->getSize() == sf::Vector2f(200, 50));
+            panel->add(widget4, "xyzifxyz");
+            widget3->setSize({"xyzifxyz.size"});
+            REQUIRE(widget3->getSize() == sf::Vector2f(200, 50));
 
-            panel->add(button4, "ifthenelse");
-            button3->setSize({"ifthenelse.size"});
-            REQUIRE(button3->getSize() == sf::Vector2f(200, 50));
+            panel->add(widget4, "ifthenelse");
+            widget3->setSize({"ifthenelse.size"});
+            REQUIRE(widget3->getSize() == sf::Vector2f(200, 50));
 
-            panel->add(button4, "then");
-            button3->setSize({"then.size"});
-            REQUIRE(button3->getSize() == sf::Vector2f(200, 50));
+            panel->add(widget4, "then");
+            widget3->setSize({"then.size"});
+            REQUIRE(widget3->getSize() == sf::Vector2f(200, 50));
 
             SECTION("Gui") {
                 sf::RenderTexture texture;
@@ -527,17 +527,17 @@ TEST_CASE("[Layouts]") {
     SECTION("Bug Fixes") {
         SECTION("Setting negative size and reverting back to positive (https://github.com/texus/TGUI/issues/54)") {
             tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
-            tgui::Button::Ptr button = std::make_shared<tgui::Button>();
-            panel->add(button);
+            tgui::ClickableWidget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
+            panel->add(widget);
 
-            // Button width becomes -10
+            // widget width becomes -10
             panel->setSize(10, 10);
-            button->setSize({"{&.w - 20, &.h}"});
-            REQUIRE(button->getSize() == sf::Vector2f(-10, 10));
+            widget->setSize({"{&.w - 20, &.h}"});
+            REQUIRE(widget->getSize() == sf::Vector2f(-10, 10));
 
-            // Button width will become positive again
+            // widget width will become positive again
             panel->setSize(200, 100);
-            REQUIRE(button->getSize() == sf::Vector2f(180, 100));
+            REQUIRE(widget->getSize() == sf::Vector2f(180, 100));
         }
     }
 }
