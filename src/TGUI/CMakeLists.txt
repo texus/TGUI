@@ -1,19 +1,19 @@
 set(TGUI_SRC
     Animation.cpp
-    BoxLayout.cpp
+    #BoxLayout.cpp
     Clipboard.cpp
     Color.cpp
     Container.cpp
     Font.cpp
     Global.cpp
     Gui.cpp
-    HorizontalLayout.cpp
+    #HorizontalLayout.cpp
     Layout.cpp
     Signal.cpp
     Texture.cpp
     TextureManager.cpp
     Transformable.cpp
-    VerticalLayout.cpp
+    #VerticalLayout.cpp
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
@@ -24,34 +24,34 @@ set(TGUI_SRC
     Loading/WidgetConverter.cpp
     Loading/WidgetLoader.cpp
     Loading/WidgetSaver.cpp
-    Widgets/Button.cpp
-    Widgets/Canvas.cpp
-    Widgets/ChatBox.cpp
-    Widgets/CheckBox.cpp
-    Widgets/ChildWindow.cpp
+    #Widgets/Button.cpp
+    #Widgets/Canvas.cpp
+    #Widgets/ChatBox.cpp
+    #Widgets/CheckBox.cpp
+    #Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
-    Widgets/ComboBox.cpp
-    Widgets/EditBox.cpp
-    Widgets/Grid.cpp
-    Widgets/Knob.cpp
+    #Widgets/ComboBox.cpp
+    #Widgets/EditBox.cpp
+    #Widgets/Grid.cpp
+    #Widgets/Knob.cpp
     Widgets/Label.cpp
-    Widgets/ListBox.cpp
-    Widgets/MenuBar.cpp
-    Widgets/MessageBox.cpp
-    Widgets/Panel.cpp
+    #Widgets/ListBox.cpp
+    #Widgets/MenuBar.cpp
+    #Widgets/MessageBox.cpp
+    #Widgets/Panel.cpp
     Widgets/Picture.cpp
-    Widgets/ProgressBar.cpp
-    Widgets/RadioButton.cpp
-    Widgets/Scrollbar.cpp
-    Widgets/Slider.cpp
-    Widgets/SpinButton.cpp
-    Widgets/Tab.cpp
-    Widgets/TextBox.cpp
-    Widgets/ToolTip.cpp
-    Widgets/devel/RichTextLabel.cpp
-    Widgets/devel/TableItem.cpp
-    Widgets/devel/TableRow.cpp
-    Widgets/devel/Table.cpp
+    #Widgets/ProgressBar.cpp
+    #Widgets/RadioButton.cpp
+    #Widgets/Scrollbar.cpp
+    #Widgets/Slider.cpp
+    #Widgets/SpinButton.cpp
+    #Widgets/Tab.cpp
+    #Widgets/TextBox.cpp
+    #Widgets/ToolTip.cpp
+    #Widgets/devel/RichTextLabel.cpp
+    #Widgets/devel/TableItem.cpp
+    #Widgets/devel/TableRow.cpp
+    #Widgets/devel/Table.cpp
 )
 
 # Determine library suffixes depending on static/shared configuration

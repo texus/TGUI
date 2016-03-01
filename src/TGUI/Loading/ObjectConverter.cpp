@@ -24,6 +24,8 @@
 
 
 #include <TGUI/Loading/ObjectConverter.hpp>
+#include <TGUI/Loading/Serializer.hpp>
+#include <TGUI/Loading/Deserializer.hpp>
 #include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,104 +34,100 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectConverter::ObjectConverter() :
-        m_type{Type::None}
+    const sf::String& ObjectConverter::getString()
     {
-    }
+        assert(m_type != Type::None);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if (m_serialized || (m_type == Type::String))
+            return m_string;
 
-    ObjectConverter::ObjectConverter(const std::shared_ptr<sf::Font>& font) :
-        m_type(Type::Font),
-        m_font(font)
-    {
-    }
+        if (m_type == Type::Font)
+            m_string = Serializer::serialize(m_font);
+        else if (m_type == Type::Color)
+            m_string = Serializer::serialize(m_color);
+        else if (m_type == Type::Number)
+            m_string = Serializer::serialize(m_number);
+        else if (m_type == Type::Borders)
+            m_string = Serializer::serialize(m_borders);
+        else if (m_type == Type::Texture)
+            m_string = Serializer::serialize(m_texture);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter::ObjectConverter(const sf::Color& color) :
-        m_type(Type::Color),
-        m_color(color)
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter::ObjectConverter(const sf::String& string) :
-        m_type(Type::String),
-        m_string(string)
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter::ObjectConverter(float number) :
-        m_type(Type::Number),
-        m_number(number)
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter::ObjectConverter(const Borders& borders) :
-        m_type(Type::Borders),
-        m_borders(borders)
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter::ObjectConverter(const Texture& texture) :
-        m_type(Type::Texture),
-        m_texture(texture)
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const std::shared_ptr<sf::Font>& ObjectConverter::getFont() const
-    {
-        assert(m_type == Type::Font);
-        return m_font;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& ObjectConverter::getColor() const
-    {
-        assert(m_type == Type::Color);
-        return m_color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::String& ObjectConverter::getString() const
-    {
-        assert(m_type == Type::String);
+        m_serialized = true;
         return m_string;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float ObjectConverter::getNumber() const
+    const std::shared_ptr<sf::Font>& ObjectConverter::getFont()
     {
-        assert(m_type == Type::Number);
+        assert(m_type == Type::Font || m_type == Type::String);
+
+        if (m_type == Type::String)
+        {
+            m_font = Deserializer::deserialize(ObjectConverter::Type::Font, m_string).getFont();
+            m_type = Type::Font;
+        }
+
+        return m_font;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::Color& ObjectConverter::getColor()
+    {
+        assert(m_type == Type::Color || m_type == Type::String);
+
+        if (m_type == Type::String)
+        {
+            m_color = Deserializer::deserialize(ObjectConverter::Type::Color, m_string).getColor();
+            m_type = Type::Color;
+        }
+
+        return m_color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float ObjectConverter::getNumber()
+    {
+        assert(m_type == Type::Number || m_type == Type::String);
+
+        if (m_type == Type::String)
+        {
+            m_number = Deserializer::deserialize(ObjectConverter::Type::Number, m_string).getNumber();
+            m_type = Type::Number;
+        }
+
         return m_number;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const Borders& ObjectConverter::getBorders() const
+    const Borders& ObjectConverter::getBorders()
     {
-        assert(m_type == Type::Borders);
+        assert(m_type == Type::Borders || m_type == Type::String);
+
+        if (m_type == Type::String)
+        {
+            m_borders = Deserializer::deserialize(ObjectConverter::Type::Borders, m_string).getBorders();
+            m_type = Type::Borders;
+        }
+
         return m_borders;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const Texture& ObjectConverter::getTexture() const
+    const Texture& ObjectConverter::getTexture()
     {
-        assert(m_type == Type::Texture);
+        assert(m_type == Type::Texture || m_type == Type::String);
+
+        if (m_type == Type::String)
+        {
+            m_texture = Deserializer::deserialize(ObjectConverter::Type::Texture, m_string).getTexture();
+            m_type = Type::Texture;
+        }
+
         return m_texture;
     }
 

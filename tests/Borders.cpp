@@ -51,32 +51,4 @@ TEST_CASE("[Borders]") {
         REQUIRE(borders.right == 3);
         REQUIRE(borders.bottom == 4);
     }
-
-    SECTION("WidgetBorders") {
-        tgui::WidgetBorders widgetBorders;
-        REQUIRE(widgetBorders.getBorders().left == 0);
-        REQUIRE(widgetBorders.getBorders().top == 0);
-        REQUIRE(widgetBorders.getBorders().right == 0);
-        REQUIRE(widgetBorders.getBorders().bottom == 0);
-        
-        widgetBorders.setBorders({1, 2, 3, 4});
-        REQUIRE(widgetBorders.getBorders().left == 1);
-        REQUIRE(widgetBorders.getBorders().top == 2);
-        REQUIRE(widgetBorders.getBorders().right == 3);
-        REQUIRE(widgetBorders.getBorders().bottom == 4);
-    }
-    
-    SECTION("WidgetPadding") {
-        tgui::WidgetPadding widgetPadding;
-        REQUIRE(widgetPadding.getPadding().left == 0);
-        REQUIRE(widgetPadding.getPadding().top == 0);
-        REQUIRE(widgetPadding.getPadding().right == 0);
-        REQUIRE(widgetPadding.getPadding().bottom == 0);
-        
-        widgetPadding.setPadding({1, 2, 3, 4});
-        REQUIRE(widgetPadding.getPadding().left == 1);
-        REQUIRE(widgetPadding.getPadding().top == 2);
-        REQUIRE(widgetPadding.getPadding().right == 3);
-        REQUIRE(widgetPadding.getPadding().bottom == 4);
-    }
 }

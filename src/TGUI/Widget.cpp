@@ -71,13 +71,16 @@ namespace tgui
         addSignal("Unfocused");
         addSignal("MouseEntered");
         addSignal("MouseLeft");
+
+        m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::~Widget()
     {
-        detachTheme();
+        if (m_renderer)
+            m_renderer->unsubscribe(this);
 
         if (m_position.x.getImpl()->parentWidget == this)
             m_position.x.getImpl()->parentWidget = nullptr;
@@ -91,73 +94,155 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Widget(const Widget& copy) :
-        sf::Drawable     {copy},
-        Transformable    {copy},
-        SignalWidgetBase {copy},
-        enable_shared_from_this<Widget>{copy},
-        m_enabled        {copy.m_enabled},
-        m_visible        {copy.m_visible},
-        m_parent         {copy.m_parent},
-        m_opacity        {copy.m_opacity},
-        m_mouseHover     {false},
-        m_mouseDown      {false},
-        m_focused        {false},
-        m_allowFocus     {copy.m_allowFocus},
-        m_draggableWidget{copy.m_draggableWidget},
-        m_containerWidget{copy.m_containerWidget},
-        m_font           {copy.m_font}
+    Widget::Widget(const Widget& other) :
+        sf::Drawable     {other},
+        Transformable    {other},
+        SignalWidgetBase {other},
+        enable_shared_from_this<Widget>{other},
+        m_enabled        {other.m_enabled},
+        m_visible        {other.m_visible},
+        m_parent         {other.m_parent},
+        m_allowFocus     {other.m_allowFocus},
+        m_draggableWidget{other.m_draggableWidget},
+        m_containerWidget{other.m_containerWidget},
+        m_toolTip        {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
+        m_font           {other.m_font},
+        m_renderer       {other.m_renderer}
     {
         m_callback.widget = this;
-        m_callback.widgetType = copy.m_callback.widgetType;
 
-        if (copy.m_toolTip != nullptr)
-            m_toolTip = copy.m_toolTip->clone();
-
-        if (copy.m_renderer != nullptr)
-            m_renderer = copy.m_renderer->clone(this);
+        if (m_renderer)
+            m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget& Widget::operator= (const Widget& right)
+    Widget::Widget(Widget&& other) :
+        sf::Drawable                   {std::move(other)},
+        Transformable                  {std::move(other)},
+        SignalWidgetBase               {std::move(other)},
+        enable_shared_from_this<Widget>{std::move(other)},
+        m_enabled                      {std::move(other.m_enabled)},
+        m_visible                      {std::move(other.m_visible)},
+        m_parent                       {std::move(other.m_parent)},
+        m_mouseHover                   {std::move(other.m_mouseHover)},
+        m_mouseDown                    {std::move(other.m_mouseDown)},
+        m_focused                      {std::move(other.m_focused)},
+        m_allowFocus                   {std::move(other.m_allowFocus)},
+        m_animationTimeElapsed         {std::move(other.m_animationTimeElapsed)},
+        m_draggableWidget              {std::move(other.m_draggableWidget)},
+        m_containerWidget              {std::move(other.m_containerWidget)},
+        m_toolTip                      {std::move(other.m_toolTip)},
+        m_font                         {std::move(other.m_font)},
+        m_renderer                     {std::move(other.m_renderer)},
+        m_showAnimations               {std::move(other.m_showAnimations)}
     {
-        if (this != &right)
+        m_callback.widget = this;
+
+        if (m_renderer)
         {
-            sf::Drawable::operator=(right);
-            Transformable::operator=(right);
-            SignalWidgetBase::operator=(right);
-            enable_shared_from_this::operator=(right);
+            other.m_renderer->unsubscribe(&other);
+            m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
+        }
+    }
 
-            m_enabled             = right.m_enabled;
-            m_visible             = right.m_visible;
-            m_parent              = right.m_parent;
-            m_opacity             = right.m_opacity;
-            m_mouseHover          = false;
-            m_mouseDown           = false;
-            m_focused             = false;
-            m_allowFocus          = right.m_allowFocus;
-            m_draggableWidget     = right.m_draggableWidget;
-            m_containerWidget     = right.m_containerWidget;
-            m_font                = right.m_font;
-            m_callback.widget     = this;
-            m_callback.widgetType = right.m_callback.widgetType;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            if (right.m_toolTip != nullptr)
-                m_toolTip = right.m_toolTip->clone();
-            else
-                m_toolTip = nullptr;
+    Widget& Widget::operator=(const Widget& other)
+    {
+        if (this != &other)
+        {
+            if (m_renderer)
+                m_renderer->unsubscribe(this);
 
-            if (right.m_renderer != nullptr)
-                m_renderer = right.m_renderer->clone(this);
-            else
-                m_renderer = nullptr;
+            sf::Drawable::operator=(other);
+            Transformable::operator=(other);
+            SignalWidgetBase::operator=(other);
+            enable_shared_from_this::operator=(other);
 
-            // Animations can't be copied
-            m_showAnimations = {};
+            m_callback.widget           = this;
+            m_enabled                   = other.m_enabled;
+            m_visible                   = other.m_visible;
+            m_parent                    = other.m_parent;
+            m_mouseHover                = false;
+            m_mouseDown                 = false;
+            m_focused                   = false;
+            m_allowFocus                = other.m_allowFocus;
+            m_animationTimeElapsed      = {};
+            m_draggableWidget           = other.m_draggableWidget;
+            m_containerWidget           = other.m_containerWidget;
+            m_toolTip                   = other.m_toolTip ? other.m_toolTip->clone() : nullptr;
+            m_font                      = other.m_font;
+            m_renderer                  = other.m_renderer;
+            m_showAnimations            = {};
+
+            if (m_renderer)
+                m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
         }
 
         return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Widget& Widget::operator=(Widget&& other)
+    {
+        if (this != &other)
+        {
+            if (m_renderer)
+                m_renderer->unsubscribe(this);
+            if (other.m_renderer)
+                other.m_renderer->unsubscribe(&other);
+
+            sf::Drawable::operator=(std::move(other));
+            Transformable::operator=(std::move(other));
+            SignalWidgetBase::operator=(std::move(other));
+            enable_shared_from_this::operator=(std::move(other));
+
+            m_callback.widget           = this;
+            m_enabled                   = std::move(other.m_enabled);
+            m_visible                   = std::move(other.m_visible);
+            m_parent                    = std::move(other.m_parent);
+            m_mouseHover                = std::move(other.m_mouseHover);
+            m_mouseDown                 = std::move(other.m_mouseDown);
+            m_focused                   = std::move(other.m_focused);
+            m_animationTimeElapsed      = std::move(other.m_animationTimeElapsed);
+            m_allowFocus                = std::move(other.m_allowFocus);
+            m_draggableWidget           = std::move(other.m_draggableWidget);
+            m_containerWidget           = std::move(other.m_containerWidget);
+            m_toolTip                   = std::move(other.m_toolTip);
+            m_font                      = std::move(other.m_font);
+            m_renderer                  = std::move(other.m_renderer);
+            m_showAnimations            = std::move(other.m_showAnimations);
+
+            if (m_renderer)
+                m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setRenderer(std::shared_ptr<RendererData> rendererData)
+    {
+        if (m_renderer)
+            m_renderer->unsubscribe(this);
+
+        m_renderer->m_data = rendererData;
+
+        if (m_renderer)
+            m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
+
+        for (auto& pair : rendererData->propertyValuePairs)
+            rendererChanged(pair.first, ObjectConverter{pair.second});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    WidgetRenderer* Widget::getRenderer() const
+    {
+        return m_renderer.get();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,8 +314,8 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, getOpacity(), duration));
-                setOpacity(0);
+                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, getRenderer()->getOpacity(), duration));
+                getRenderer()->setOpacity(0);
                 break;
             }
             case ShowAnimationType::Scale:
@@ -294,7 +379,6 @@ namespace tgui
 
     void Widget::hideWithEffect(ShowAnimationType type, sf::Time duration)
     {
-        auto opacity = getOpacity();
         auto position = getPosition();
         auto size = getSize();
 
@@ -302,7 +386,8 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), opacity, 0.f, duration, [=](){ hide(); setOpacity(opacity); }));
+                float opacity = getRenderer()->getOpacity();
+                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), getRenderer()->getOpacity(), 0.f, duration, [=](){ hide(); getRenderer()->setOpacity(opacity); }));
                 break;
             }
             case ShowAnimationType::Scale:
@@ -368,8 +453,7 @@ namespace tgui
     void Widget::focus()
     {
         if (m_parent)
-            m_parent->focusWidget(this);
-            /// TODO: Use shared_from_this instead (forces all widgets, including internal ones to be shared pointers)
+            m_parent->focusWidget(shared_from_this());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,14 +466,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::setOpacity(float opacity)
+    const std::string& Widget::getWidgetType() const
     {
-        if (opacity < 0)
-            m_opacity = 0;
-        else if (opacity > 1)
-            m_opacity = 1;
-        else
-            m_opacity = opacity;
+        return m_callback.widgetType;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,7 +476,7 @@ namespace tgui
     void Widget::moveToFront()
     {
         if (m_parent)
-            m_parent->moveWidgetToFront(this);
+            m_parent->moveWidgetToFront(shared_from_this());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,7 +484,7 @@ namespace tgui
     void Widget::moveToBack()
     {
         if (m_parent)
-            m_parent->moveWidgetToBack(this);
+            m_parent->moveWidgetToBack(shared_from_this());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -438,13 +517,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::detachTheme()
+    sf::Vector2f Widget::getWidgetOffset() const
     {
-        if (m_theme)
-        {
-            m_theme->widgetDetached(this);
-            m_theme = nullptr;
-        }
+        return sf::Vector2f{0, 0};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -559,21 +634,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::attachTheme(std::shared_ptr<BaseTheme> theme)
+    void Widget::rendererChanged(const std::string& property, ObjectConverter&&)
     {
-        detachTheme();
-        m_theme = theme;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::reload(const std::string& primary, const std::string& secondary, bool)
-    {
-        m_primaryLoadingParameter = primary;
-        m_secondaryLoadingParameter = secondary;
-
-        if (m_theme && primary != "")
-            m_theme->initWidget(this, primary, secondary);
+        if (property != "opacity")
+            throw Exception{"Could not set property '" + property + "', widget of type '" + getWidgetType() + "' does not has this property."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -593,32 +657,115 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::setProperty(std::string property, const std::string&)
+    void Widget::rendererChangedCallback(const std::string& property, ObjectConverter&& value)
     {
-        throw Exception{"Could not set property '" + property + "', widget does not has this property."};
+        rendererChanged(property, std::move(value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::setProperty(std::string property, ObjectConverter&&)
+    void Widget::drawBorders(sf::RenderTarget& target, const sf::RenderStates& states, const Borders& borders,
+                             const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color) const
     {
-        throw Exception{"Could not set property '" + property + "', widget does not has this property."};
+        sf::RectangleShape border;
+        border.setFillColor(color);
+
+        // If size is too small then draw entire size as border
+        if ((size.x <= borders.left + borders.right) || (size.y <= borders.top + borders.bottom))
+        {
+            border.setSize({size.x, size.y});
+            border.setPosition(position.x, position.y);
+            target.draw(border, states);
+        }
+        else // Draw borders in the normal way
+        {
+            // Draw left border
+            border.setSize({borders.left, size.y - borders.bottom});
+            border.setPosition(position.x, position.y);
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({size.x - borders.left, borders.top});
+            border.setPosition(position.x + borders.left, position.y);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({borders.right, size.y - borders.top});
+            border.setPosition(position.x + size.x - borders.right, position.y + borders.top);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({size.x - borders.right, borders.bottom});
+            border.setPosition(position.x, position.y + size.y - borders.bottom);
+            target.draw(border, states);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void WidgetRenderer::setOpacity(float opacity)
+    {
+        if (opacity < 0)
+            opacity = 0;
+        else if (opacity > 1)
+            opacity = 1;
+
+        setProperty("opacity", ObjectConverter{opacity});
+    }
+
+    TGUI_RENDERER_PROPERTY_GET_NUMBER(WidgetRenderer, Opacity, 1)
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void WidgetRenderer::setProperty(const std::string& property, ObjectConverter&& value)
+    {
+        std::string lowercaseProperty = toLower(property);
+
+        m_data->propertyValuePairs[lowercaseProperty] = value;
+
+        for (auto& observer : m_data->observers)
+            observer.second(lowercaseProperty, ObjectConverter{value});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ObjectConverter WidgetRenderer::getProperty(std::string) const
+    ObjectConverter WidgetRenderer::getProperty(const std::string& property) const
     {
-        return {};
+        auto it = m_data->propertyValuePairs.find(toLower(property));
+        if (it != m_data->propertyValuePairs.end())
+            return it->second;
+        else
+            return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::map<std::string, ObjectConverter> WidgetRenderer::getPropertyValuePairs() const
+    const std::map<std::string, ObjectConverter>& WidgetRenderer::getPropertyValuePairs() const
     {
-        return std::map<std::string, ObjectConverter>{};
+        return m_data->propertyValuePairs;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void WidgetRenderer::subscribe(void* id, const std::function<void(const std::string& property, ObjectConverter&& value)>& function)
+    {
+        m_data->observers[id] = function;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void WidgetRenderer::unsubscribe(void* id)
+    {
+        m_data->observers.erase(id);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<RendererData> WidgetRenderer::getData() const
+    {
+        return m_data;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

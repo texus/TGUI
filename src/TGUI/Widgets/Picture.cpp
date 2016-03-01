@@ -133,15 +133,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setOpacity(float opacity)
-    {
-        Widget::setOpacity(opacity);
-
-        m_texture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool Picture::mouseOnWidget(float x, float y) const
     {
         // Check if the mouse is on top of the picture
@@ -182,6 +173,16 @@ namespace tgui
                 m_possibleDoubleClick = true;
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Picture::rendererChanged(const std::string& property, ObjectConverter&& value)
+    {
+        if (property == "opacity")
+            m_texture.setColor({255, 255, 255, static_cast<sf::Uint8>(value.getNumber() * 255)});
+        else
+            Widget::rendererChanged(property, std::move(value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

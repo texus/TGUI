@@ -80,32 +80,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SignalWidgetBase::SignalWidgetBase(const SignalWidgetBase& copy)
-    {
-        for (auto& signal : copy.m_signals)
-            m_signals[signal.first] = std::make_shared<Signal>(*signal.second);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    SignalWidgetBase& SignalWidgetBase::operator=(const SignalWidgetBase& right)
-    {
-        if (this != &right)
-        {
-            for (auto& signal : right.m_signals)
-                m_signals[signal.first] = std::make_shared<Signal>(*signal.second);
-        }
-
-        return *this;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void SignalWidgetBase::disconnect(unsigned int id)
     {
         for (auto& signal : m_signals)
         {
-            if (signal.second->disconnect(id))
+            if (signal.second.disconnect(id))
                 return;
         }
 
@@ -117,7 +96,7 @@ namespace tgui
     void SignalWidgetBase::disconnectAll(const std::string& signalName)
     {
         for (auto& name : extractSignalNames(signalName))
-            m_signals.at(toLower(name))->disconnectAll();
+            m_signals.at(toLower(name)).disconnectAll();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,15 +104,15 @@ namespace tgui
     void SignalWidgetBase::disconnectAll()
     {
         for (auto& signal : m_signals)
-            signal.second->disconnectAll();
+            signal.second.disconnectAll();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool SignalWidgetBase::isSignalBound(std::string&& name)
     {
-        assert(m_signals[toLower(name)]);
-        return !m_signals[toLower(name)]->isEmpty() || !m_signals[toLower(name)]->m_functionsEx.empty();
+        assert(m_signals.find(toLower(name)) != m_signals.end());
+        return !m_signals[toLower(name)].isEmpty() || !m_signals[toLower(name)].m_functionsEx.empty();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

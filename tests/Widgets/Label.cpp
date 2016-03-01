@@ -27,7 +27,6 @@
 
 TEST_CASE("[Label]") {
     tgui::Label::Ptr label = std::make_shared<tgui::Label>();
-    label->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(label->connect("DoubleClicked", [](){}));
@@ -95,7 +94,7 @@ TEST_CASE("[Label]") {
         label->setMaximumTextWidth(300);
         REQUIRE(label->getMaximumTextWidth() == 300);
     }
-
+/**
     SECTION("Renderer") {
         auto renderer = label->getRenderer();
 
@@ -139,19 +138,14 @@ TEST_CASE("[Label]") {
         REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getBorders() == tgui::Borders(5, 6, 7, 8));
     }
-
+*//*
     SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(label = std::make_shared<tgui::Theme>()->load("Label"));
-
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(label = theme->load("Label"));
-        REQUIRE(label->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(label->getSecondaryLoadingParameter() == "label");
+        tgui::Theme theme{"resources/Black.txt"};
+        label->setRenderer(theme.getRenderer("label"));
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(label);
 
-        label->setOpacity(0.8f);
         label->setText("SomeText");
         label->setTextSize(25);
         label->setTextStyle(sf::Text::Bold | sf::Text::Italic);
@@ -177,5 +171,5 @@ TEST_CASE("[Label]") {
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel2.txt"));
             REQUIRE(compareFiles("WidgetFileLabel1.txt", "WidgetFileLabel2.txt"));
         }
-    }
+    }*/
 }

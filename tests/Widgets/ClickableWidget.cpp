@@ -27,7 +27,6 @@
 
 TEST_CASE("[ClickableWidget]") {
     tgui::ClickableWidget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
-    widget->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(widget->connect("MousePressed", [](){}));
@@ -47,12 +46,10 @@ TEST_CASE("[ClickableWidget]") {
         widget = std::make_shared<tgui::ClickableWidget>(200.f, 100.f);
         REQUIRE(widget->getSize() == sf::Vector2f(200, 100));
     }
-
+/*
     SECTION("Saving and loading from file") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(widget);
-
-        widget->setOpacity(0.8f);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget1.txt"));
 
@@ -72,5 +69,5 @@ TEST_CASE("[ClickableWidget]") {
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
             REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
         }
-    }
+    }*/
 }

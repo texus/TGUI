@@ -103,8 +103,8 @@ namespace tgui
         m_widgets.push_back(widgetPtr);
         m_objName.push_back(widgetName);
 
-        if (m_opacity < 1)
-            widgetPtr->setOpacity(m_opacity);
+        if (getRenderer()->getOpacity() < 1)
+            widgetPtr->getRenderer()->setOpacity(getRenderer()->getOpacity());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,19 +211,11 @@ namespace tgui
 
     void Container::focusWidget(const Widget::Ptr& widget)
     {
-        focusWidget(widget.get());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /// TODO: Remove this function and move its contents to the focusWidget function above (requires change in Widget::focus)
-    void Container::focusWidget(Widget *const widget)
-    {
         // Loop all the widgets
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             // Search for the widget that has to be focused
-            if (m_widgets[i].get() == widget)
+            if (m_widgets[i] == widget)
             {
                 // Only continue when the widget wasn't already focused
                 if (m_focusedWidget != i+1)
@@ -387,7 +379,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Container::setOpacity(float opacity)
     {
         Widget::setOpacity(opacity);
@@ -436,7 +428,7 @@ namespace tgui
     {
         WidgetSaver::save(std::static_pointer_cast<Container>(shared_from_this()), stream);
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::leftMousePressed(float x, float y)
@@ -573,13 +565,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::moveWidgetToFront(Widget *const widget)
+    void Container::moveWidgetToFront(const Widget::Ptr& widget)
     {
         // Loop through all widgets
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             // Check if the widget is found
-            if (m_widgets[i].get() == widget)
+            if (m_widgets[i] == widget)
             {
                 // Copy the widget
                 m_widgets.push_back(m_widgets[i]);
@@ -602,13 +594,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::moveWidgetToBack(Widget *const widget)
+    void Container::moveWidgetToBack(const Widget::Ptr& widget)
     {
         // Loop through all widgets
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             // Check if the widget is found
-            if (m_widgets[i].get() == widget)
+            if (m_widgets[i] == widget)
             {
                 // Copy the widget
                 Widget::Ptr obj = m_widgets[i];
@@ -699,7 +691,7 @@ namespace tgui
                 if (widget != nullptr)
                 {
                     // Focus the widget
-                    focusWidget(widget.get());
+                    focusWidget(widget);
 
                     // Check if the widget is a container
                     if (widget->m_containerWidget)

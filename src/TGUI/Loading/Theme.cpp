@@ -24,14 +24,14 @@
 
 
 #include <TGUI/Loading/Theme.hpp>
-#include <TGUI/Loading/Serializer.hpp>
+#include <TGUI/Loading/Serializer.hpp>/**
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/CheckBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Widgets/Knob.hpp>
-#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/Knob.hpp>*/
+#include <TGUI/Widgets/Label.hpp>/**
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Widgets/MessageBox.hpp>
@@ -43,7 +43,7 @@
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
-#include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/TextBox.hpp>*/
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,78 +51,90 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::map<std::string, std::function<Widget::Ptr()>> BaseTheme::m_constructors =
+    std::shared_ptr<BaseThemeLoader> Theme::m_themeLoader = std::make_shared<DefaultThemeLoader>();
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Theme::Theme(const std::string& primary) :
+        m_primary(primary)
+    {
+        if (!primary.empty())
+            m_themeLoader->preload(primary);
+
+        /** TODO: m_resourcePath?
+        std::string::size_type slashPos = m_primary.find_last_of("/\\");
+        if (slashPos != std::string::npos)
+            m_resourcePath = m_primary.substr(0, slashPos+1);
+        */
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Theme::load(const std::string& primary)
+    {
+        m_primary = primary;
+        if (!primary.empty())
+            m_themeLoader->preload(primary);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<RendererData> Theme::getRenderer(const std::string& secondary)
+    {
+        // If we already have this renderer in cache then just return it
+        auto it = m_renderers.find(secondary);
+        if (it != m_renderers.end())
+            return it->second;
+
+        m_renderers[secondary] = std::make_shared<RendererData>();
+        if (!m_primary.empty())
         {
-            {"button", std::make_shared<Button>},
-            {"chatbox", std::make_shared<ChatBox>},
-            {"checkbox", std::make_shared<CheckBox>},
-            {"childwindow", std::make_shared<ChildWindow>},
-            {"combobox", std::make_shared<ComboBox>},
-            {"editbox", std::make_shared<EditBox>},
-            {"knob", std::make_shared<Knob>},
-            {"label", std::make_shared<Label>},
-            {"listbox", std::make_shared<ListBox>},
-            {"menubar", std::make_shared<MenuBar>},
-            {"messagebox", std::make_shared<MessageBox>},
-            {"panel", std::make_shared<Panel>},
-            {"progressbar", std::make_shared<ProgressBar>},
-            {"radiobutton", std::make_shared<RadioButton>},
-            {"scrollbar", std::make_shared<Scrollbar>},
-            {"slider", std::make_shared<Slider>},
-            {"spinbutton", std::make_shared<SpinButton>},
-            {"tab", std::make_shared<Tab>},
-            {"textbox", std::make_shared<TextBox>}
-        };
+            auto& properties = m_themeLoader->load(m_primary, secondary);
+            for (auto& property : properties)
+                m_renderers[secondary]->propertyValuePairs[property.first] = {property.second};
+        }
 
-    std::shared_ptr<BaseThemeLoader> BaseTheme::m_themeLoader = std::make_shared<DefaultThemeLoader>();
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BaseTheme::widgetAttached(Widget* widget)
-    {
-        widget->attachTheme(shared_from_this());
+        return m_renderers[secondary];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BaseTheme::widgetDetached(Widget*)
+    void Theme::addRenderer(const std::string& id, std::shared_ptr<RendererData> renderer)
     {
+        m_renderers[id] = renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BaseTheme::setConstructFunction(const std::string& type, const std::function<Widget::Ptr()>& constructor)
+    bool Theme::removeRenderer(const std::string& id)
     {
-        m_constructors[toLower(type)] = constructor;
+        auto it = m_renderers.find(id);
+        if (it != m_renderers.end())
+        {
+            m_renderers.erase(it);
+            return true;
+        }
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BaseTheme::setThemeLoader(const std::shared_ptr<BaseThemeLoader>& themeLoader)
+    void Theme::setThemeLoader(std::shared_ptr<BaseThemeLoader> themeLoader)
     {
         m_themeLoader = themeLoader;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BaseTheme::widgetReload(Widget* widget, const std::string& primary, const std::string& secondary, bool force)
+    std::shared_ptr<BaseThemeLoader> Theme::getThemeLoader()
     {
-        widget->reload(primary, secondary, force);
+        return m_themeLoader;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Theme::Theme(const std::string& filename) :
-        m_filename(filename)
-    {
-        std::string::size_type slashPos = m_filename.find_last_of("/\\");
-        if (slashPos != std::string::npos)
-            m_resourcePath = m_filename.substr(0, slashPos+1);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     WidgetConverter Theme::load(std::string className)
     {
         className = toLower(className);
@@ -298,12 +310,12 @@ namespace tgui
     void Theme::setProperty(std::string className, const std::string& property, ObjectConverter&& value)
     {
         className = toLower(className);
-        m_widgetProperties[className][toLower(property)] = Serializer::serialize(std::move(value));
+        m_widgetProperties[className][toLower(property)] = Serializer::serialize(value);
 
         for (auto& pair : m_widgets)
         {
             if (pair.second == className)
-                pair.first->getRenderer()->setProperty(property, std::move(value));
+                pair.first->getRenderer()->setProperty(property, value);
         }
     }
 
@@ -374,7 +386,7 @@ namespace tgui
             m_resourcePathLock = false;
         }
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

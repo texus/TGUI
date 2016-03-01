@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+///TODO: FIX BORDERS in calculations
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Loading/Theme.hpp>
@@ -40,13 +41,11 @@ namespace tgui
     Label::Label()
     {
         m_callback.widgetType = "Label";
-
         addSignal<sf::String>("DoubleClicked");
 
-        m_renderer = std::make_shared<LabelRenderer>(this);
-        reload();
-
-        setTextSize(m_textSize);
+        m_renderer = aurora::makeCopied<tgui::LabelRenderer>();
+        setRenderer(m_renderer->getData());
+        m_background.setFillColor(getRenderer()->getBackgroundColor());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +56,13 @@ namespace tgui
             return std::static_pointer_cast<Label>(label->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    LabelRenderer* Label::getRenderer() const
+    {
+        return aurora::downcast<LabelRenderer*>(m_renderer.get());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,14 +138,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Label::getFullSize() const
-    {
-        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
-                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Label::setFont(const Font& font)
     {
         Widget::setFont(font);
@@ -204,20 +202,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setTextColor(const Color& color)
-    {
-        getRenderer()->setTextColor(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const sf::Color& Label::getTextColor() const
-    {
-        return getRenderer()->m_textColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Label::setTextStyle(sf::Uint32 style)
     {
         m_textStyle = style;
@@ -265,26 +249,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setOpacity(float opacity)
-    {
-        Widget::setOpacity(opacity);
-
-        sf::Color textColor = calcColorOpacity(getRenderer()->m_textColor, getOpacity());
-        for (auto& line : m_lines)
-            line.setColor(textColor);
-
-        m_background.setFillColor(calcColorOpacity(getRenderer()->m_backgroundColor, getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Label::getWidgetOffset() const
-    {
-        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Label::setParent(Container* parent)
     {
         bool autoSize = getAutoSize();
@@ -320,14 +284,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::reload(const std::string& primary, const std::string& secondary, bool force)
+    void Label::rendererChanged(const std::string& property, ObjectConverter&& value)
     {
-        getRenderer()->setBackgroundColor(sf::Color::Transparent);
-        getRenderer()->setTextColor({60, 60, 60});
-        getRenderer()->setBorderColor({0, 0, 0});
+        if (property == "textcolor")
+        {
+            sf::Color textColor = calcColorOpacity(value.getColor(), getRenderer()->getOpacity());
+            for (auto& line : m_lines)
+                line.setFillColor(textColor);
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_background.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
+        }
+        else if ((property == "borders") || (property == "padding"))
+        {
+            rearrangeText();
+        }
+        else if (property == "opacity")
+        {
+            sf::Color textColor = calcColorOpacity(getRenderer()->getTextColor(), value.getNumber());
+            for (auto& line : m_lines)
+                line.setFillColor(textColor);
 
-        if (m_theme && primary != "")
-            Widget::reload(primary, secondary, force);
+            m_background.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColor(), value.getNumber()));
+        }
+        else if (property != "bordercolor")
+            Widget::rendererChanged(property, std::move(value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -431,7 +413,7 @@ namespace tgui
             m_lines.back().setFont(*getFont());
             m_lines.back().setCharacterSize(getTextSize());
             m_lines.back().setStyle(getTextStyle());
-            m_lines.back().setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+            m_lines.back().setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
 
             if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
                 m_lines.back().setString(m_string.substring(oldIndex, index - oldIndex) + "\n");
@@ -523,170 +505,20 @@ namespace tgui
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
         }
 
-        getRenderer()->draw(target, states);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void LabelRenderer::setProperty(std::string property, const std::string& value)
-    {
-        property = toLower(property);
-        if (property == "textcolor")
-            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolor")
-            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "bordercolor")
-            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "borders")
-            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "padding")
-            setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else
-            WidgetRenderer::setProperty(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void LabelRenderer::setProperty(std::string property, ObjectConverter&& value)
-    {
-        property = toLower(property);
-
-        if (value.getType() == ObjectConverter::Type::Borders)
-        {
-            if (property == "borders")
-                setBorders(value.getBorders());
-            else if (property == "padding")
-                setPadding(value.getBorders());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Color)
-        {
-            if (property == "textcolor")
-                setTextColor(value.getColor());
-            else if (property == "backgroundcolor")
-                setBackgroundColor(value.getColor());
-            else if (property == "bordercolor")
-                setBorderColor(value.getColor());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else
-            WidgetRenderer::setProperty(property, std::move(value));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter LabelRenderer::getProperty(std::string property) const
-    {
-        property = toLower(property);
-
-        if (property == "borders")
-            return m_borders;
-        else if (property == "padding")
-            return m_padding;
-        else if (property == "textcolor")
-            return m_textColor;
-        else if (property == "backgroundcolor")
-            return m_backgroundColor;
-        else if (property == "bordercolor")
-            return m_borderColor;
-        else
-            return WidgetRenderer::getProperty(property);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::map<std::string, ObjectConverter> LabelRenderer::getPropertyValuePairs() const
-    {
-        auto pairs = WidgetRenderer::getPropertyValuePairs();
-        pairs["TextColor"] = m_textColor;
-        pairs["BackgroundColor"] = m_backgroundColor;
-        pairs["BorderColor"] = m_borderColor;
-        pairs["Borders"] = m_borders;
-        pairs["Padding"] = m_padding;
-        return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void LabelRenderer::setPadding(const Padding& padding)
-    {
-        if (padding != getPadding())
-        {
-            WidgetPadding::setPadding(padding);
-            m_label->rearrangeText();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void LabelRenderer::setTextColor(const Color& color)
-    {
-        m_textColor = color;
-
-        sf::Color textColor = calcColorOpacity(m_textColor, m_label->getOpacity());
-        for (auto& line : m_label->m_lines)
-            line.setColor(textColor);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void LabelRenderer::setBackgroundColor(const Color& color)
-    {
-        m_backgroundColor = color;
-        m_label->m_background.setFillColor(calcColorOpacity(m_backgroundColor, m_label->getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void LabelRenderer::setBorderColor(const Color& color)
-    {
-        m_borderColor = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void LabelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
         // Draw the borders around the button
-        if (m_borders != Borders{0, 0, 0, 0})
-        {
-            sf::Vector2f position = m_label->getPosition();
-            sf::Vector2f size = m_label->getSize();
-
-            // Draw left border
-            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
-            border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(calcColorOpacity(m_borderColor, m_label->getOpacity()));
-            target.draw(border, states);
-
-            // Draw top border
-            border.setSize({size.x + m_borders.right, m_borders.top});
-            border.setPosition(position.x, position.y - m_borders.top);
-            target.draw(border, states);
-
-            // Draw right border
-            border.setSize({m_borders.right, size.y + m_borders.bottom});
-            border.setPosition(position.x + size.x, position.y);
-            target.draw(border, states);
-
-            // Draw bottom border
-            border.setSize({size.x + m_borders.left, m_borders.bottom});
-            border.setPosition(position.x - m_borders.left, position.y + size.y);
-            target.draw(border, states);
-        }
+        Borders borders = getRenderer()->getBorders();
+        if (borders != Borders{0, 0, 0, 0})
+            drawBorders(target, states, borders, getPosition(), getSize(), calcColorOpacity(getRenderer()->getBorderColor(), getRenderer()->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<WidgetRenderer> LabelRenderer::clone(Widget* widget)
-    {
-        auto renderer = std::make_shared<LabelRenderer>(*this);
-        renderer->m_label = static_cast<Label*>(widget);
-        return renderer;
-    }
+    TGUI_RENDERER_PROPERTY_BORDERS(LabelRenderer, Borders, Borders(0))
+    TGUI_RENDERER_PROPERTY_BORDERS(LabelRenderer, Padding, Padding(0))
+    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, TextColor, Color(60, 60, 60))
+    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BackgroundColor, sf::Color::Transparent)
+    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BorderColor, Color(0, 0, 0))
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

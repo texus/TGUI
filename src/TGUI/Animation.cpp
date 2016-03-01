@@ -139,7 +139,7 @@ namespace tgui
                 return true;
             }
 
-            m_widget->setOpacity(m_startOpacity + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endOpacity - m_startOpacity)));
+            m_widget->getRenderer()->setOpacity(m_startOpacity + ((m_elapsedTime.asSeconds() / m_totalDuration.asSeconds()) * (m_endOpacity - m_startOpacity)));
             return false;
         }
 
@@ -147,7 +147,7 @@ namespace tgui
 
         void FadeAnimation::finish()
         {
-            m_widget->setOpacity(m_endOpacity);
+            m_widget->getRenderer()->setOpacity(m_endOpacity);
             Animation::finish();
         }
 

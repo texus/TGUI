@@ -30,9 +30,9 @@
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Animation.hpp>
 #include <TGUI/Widget.hpp>
-#include <TGUI/Container.hpp>
+#include <TGUI/Container.hpp>/**
 #include <TGUI/HorizontalLayout.hpp>
-#include <TGUI/VerticalLayout.hpp>
+#include <TGUI/VerticalLayout.hpp>*/
 #include <TGUI/Gui.hpp>
 
 #include <TGUI/Loading/Deserializer.hpp>
@@ -40,7 +40,7 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/WidgetLoader.hpp>
 #include <TGUI/Loading/WidgetSaver.hpp>
-
+/**
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Canvas.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
@@ -50,8 +50,8 @@
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Grid.hpp>
-#include <TGUI/Widgets/Knob.hpp>
-#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/Knob.hpp>*/
+#include <TGUI/Widgets/Label.hpp>/**
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Widgets/MessageBox.hpp>
@@ -64,7 +64,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Widgets/ToolTip.hpp>
+#include <TGUI/Widgets/ToolTip.hpp>*/
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

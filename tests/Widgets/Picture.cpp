@@ -27,7 +27,6 @@
 
 TEST_CASE("[Picture]") {
     tgui::Picture::Ptr picture = std::make_shared<tgui::Picture>();
-    picture->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](){}));
@@ -67,14 +66,13 @@ TEST_CASE("[Picture]") {
         picture->setSmooth(false);
         REQUIRE(!picture->isSmooth());
     }
-
+/*
     SECTION("Saving and loading from file") {
         REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>("resources/Black.png"));
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(picture);
 
-        picture->setOpacity(0.8f);
         picture->setSmooth();
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePicture1.txt"));
@@ -95,5 +93,5 @@ TEST_CASE("[Picture]") {
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePicture2.txt"));
             REQUIRE(compareFiles("WidgetFilePicture1.txt", "WidgetFilePicture2.txt"));
         }
-    }
+    }*/
 }

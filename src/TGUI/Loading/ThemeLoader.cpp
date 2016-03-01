@@ -47,8 +47,13 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::map<std::string, std::map<std::string, std::map<std::string, std::string>>> DefaultThemeLoader::m_propertiesCache;
-    std::map<std::string, std::map<std::string, std::string>> DefaultThemeLoader::m_widgetTypeCache;
+    std::map<std::string, std::map<std::string, std::map<sf::String, sf::String>>> DefaultThemeLoader::m_propertiesCache;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BaseThemeLoader::preload(const std::string&)
+    {
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,25 +64,18 @@ namespace tgui
             auto propertiesCacheIt = m_propertiesCache.find(filename);
             if (propertiesCacheIt != m_propertiesCache.end())
                 m_propertiesCache.erase(propertiesCacheIt);
-
-            auto widgetTypeCacheIt = m_widgetTypeCache.find(filename);
-            if (widgetTypeCacheIt != m_widgetTypeCache.end())
-                m_widgetTypeCache.erase(widgetTypeCacheIt);
         }
         else
         {
             m_propertiesCache.clear();
-            m_widgetTypeCache.clear();
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string DefaultThemeLoader::load(const std::string& filename, const std::string& className, std::map<std::string, std::string>& propertyValuePair)
+    void DefaultThemeLoader::preload(const std::string& filename)
     {
-        std::string lowercaseClassName = toLower(className);
-
-        // The file may be cached
+        // Load the file when not already in cache
         if (m_propertiesCache.find(filename) == m_propertiesCache.end())
         {
             std::stringstream fileContents;
@@ -93,39 +91,23 @@ namespace tgui
                 if (child->children.size() != 0)
                     throw Exception{"Unexpected result while loading theme file '" + filename + "'. Nested section encountered."};
 
-                auto pos = child->name.find('.');
-                std::string parsedClassName;
-                std::string widgetType = toLower(child->name.substr(0, pos));
-                if (pos != std::string::npos)
-                {
-                    if ((child->name.size() >= pos + 2) && (child->name[pos+1] == '"') && (child->name.back() == '"'))
-                        parsedClassName = toLower(Deserializer::deserialize(ObjectConverter::Type::String, child->name.substr(pos + 1)).getString());
-                    else
-                        parsedClassName = toLower(child->name.substr(pos + 1));
-                }
-                else
-                    parsedClassName = widgetType;
-
                 for (auto& pair : child->propertyValuePairs)
-                {
-                    m_propertiesCache[filename][parsedClassName][toLower(pair.first)] = pair.second->value;
-                    m_widgetTypeCache[filename][parsedClassName] = widgetType;
-                }
+                    m_propertiesCache[filename][child->name][toLower(pair.first)] = pair.second->value;
             }
         }
+    }
 
-        // The class name should be in the cache now
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::map<sf::String, sf::String>& DefaultThemeLoader::load(const std::string& filename, const std::string& section)
+    {
+        preload(filename);
+
+        std::string lowercaseClassName = toLower(section);
         if (m_propertiesCache[filename].find(lowercaseClassName) == m_propertiesCache[filename].end())
-            throw Exception{"No class '" + className + "' was found in " + filename + "."};
+            throw Exception{"No section '" + section + "' was found in " + filename + "."};
 
-        // Copy the properties that were not already set
-        for (auto& pair : m_propertiesCache[filename][lowercaseClassName])
-        {
-            if (propertyValuePair.find(pair.first) == propertyValuePair.end())
-                propertyValuePair[pair.first] = pair.second;
-        }
-
-        return m_widgetTypeCache[filename][lowercaseClassName];
+        return m_propertiesCache[filename][lowercaseClassName];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

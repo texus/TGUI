@@ -228,6 +228,8 @@ namespace tgui
     {
     public:
 
+        Signal() {};
+
         Signal(std::vector<std::vector<std::string>>&& types);
 
         template <typename Func, typename... Args>
@@ -303,30 +305,9 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor
-        ///
+        /// @brief Virtual destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalWidgetBase() = default;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Copy constructor
-        ///
-        /// @param copy  Instance to copy
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalWidgetBase(const SignalWidgetBase& copy);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Overload of assignment operator
-        ///
-        /// @param right  Instance to assign
-        ///
-        /// @return Reference to itself
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SignalWidgetBase& operator=(const SignalWidgetBase& right);
+        virtual ~SignalWidgetBase() {};
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -351,7 +332,7 @@ namespace tgui
                 if (m_signals.find(toLower(signalName)) != m_signals.end())
                 {
                     try {
-                        m_signals[toLower(signalName)]->connect(m_lastId, func, args...);
+                        m_signals[toLower(signalName)].connect(m_lastId, func, args...);
                         m_lastId++;
                     }
                     catch (const Exception& e) {
@@ -369,7 +350,7 @@ namespace tgui
                         for (auto& signal : m_signals)
                         {
                             try {
-                                signal.second->connect(m_lastId, func, args...);
+                                signal.second.connect(m_lastId, func, args...);
                                 m_lastId++;
                             }
                             catch (const Exception& e) {
@@ -408,7 +389,7 @@ namespace tgui
                 if (m_signals.find(toLower(name)) != m_signals.end())
                 {
                     try {
-                        m_signals[toLower(name)]->connectEx(m_lastId, func, args...);
+                        m_signals[toLower(name)].connectEx(m_lastId, func, args...);
                         m_lastId++;
                     }
                     catch (const Exception& e) {
@@ -426,7 +407,7 @@ namespace tgui
                         for (auto& signal : m_signals)
                         {
                             try {
-                                signal.second->connectEx(m_lastId, func, args...);
+                                signal.second.connectEx(m_lastId, func, args...);
                                 m_lastId++;
                             }
                             catch (const Exception& e) {
@@ -476,8 +457,7 @@ namespace tgui
         template <typename... T>
         void addSignal(std::string&& name)
         {
-            assert(m_signals[toLower(name)] == nullptr);
-            m_signals[toLower(name)] = std::make_shared<Signal>(priv::extractTypes<T...>::get());
+            m_signals[toLower(name)] = {priv::extractTypes<T...>::get()};
         }
 
 
@@ -493,9 +473,9 @@ namespace tgui
         template <typename... Args>
         void sendSignal(std::string&& name, Args... args)
         {
-            assert(m_signals[toLower(name)] != nullptr);
+            assert(m_signals.find(toLower(name)) != m_signals.end());
 
-            auto& signal = *m_signals[toLower(name)];
+            auto& signal = m_signals[toLower(name)];
             if (!signal.isEmpty())
                 signal(0, args...);
 
@@ -516,7 +496,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::map<std::string, std::shared_ptr<Signal>> m_signals;
+        std::map<std::string, Signal> m_signals;
 
         static unsigned int m_lastId;
 

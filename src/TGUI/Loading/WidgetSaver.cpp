@@ -22,7 +22,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+/**
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Widgets/Button.hpp>
@@ -101,13 +101,10 @@ namespace tgui
 
         /// TODO: Font and ToolTip
 
-        if (widget->getRenderer())
-        {
-            node->children.emplace_back(std::make_shared<DataIO::Node>());
-            node->children.back()->name = "Renderer";
-            for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
-                node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(node->children.back().get(), Serializer::serialize(std::move(pair.second)));
-        }
+        node->children.emplace_back(std::make_shared<DataIO::Node>());
+        node->children.back()->name = "Renderer";
+        for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
+            node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(node->children.back().get(), Serializer::serialize(std::move(pair.second)));
 
         return node;
     }
@@ -597,5 +594,5 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-
+*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

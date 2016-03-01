@@ -70,7 +70,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructor
+        /// @brief Constructor to immediately set the size of the widget
         ///
         /// @param width   Width of the widget
         /// @param height  Height of the widget

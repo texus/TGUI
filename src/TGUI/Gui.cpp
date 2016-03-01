@@ -43,8 +43,8 @@ namespace tgui
     {
         m_container->m_focused = true;
 
-        sf::Font defaultFont;
-        if (defaultFont.loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
+        auto defaultFont = std::make_shared<sf::Font>();
+        if (defaultFont->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
             setFont(defaultFont);
     }
 
@@ -171,7 +171,7 @@ namespace tgui
                 default:
                     break;
             }
-
+/**
             // If a tooltip is visible then hide it now
             if (m_visibleToolTip != nullptr)
             {
@@ -181,7 +181,7 @@ namespace tgui
                 remove(m_visibleToolTip);
                 m_visibleToolTip = nullptr;
             }
-
+*/
             // Reset the data for the tooltip since the mouse has moved
             m_tooltipTime = {};
             m_tooltipPossible = true;
@@ -311,7 +311,7 @@ namespace tgui
 
     void Gui::focusWidget(const Widget::Ptr& widget)
     {
-        m_container->focusWidget(widget.get());
+        m_container->focusWidget(widget);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -346,18 +346,18 @@ namespace tgui
 
     void Gui::setOpacity(float opacity)
     {
-        m_container->setOpacity(opacity);
+        m_container->getRenderer()->setOpacity(opacity);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float Gui::getOpacity() const
     {
-        return m_container->getOpacity();
+        return m_container->getRenderer()->getOpacity();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     void Gui::loadWidgetsFromFile(const std::string& filename)
     {
         m_container->loadWidgetsFromFile(filename);
@@ -383,14 +383,14 @@ namespace tgui
     {
         m_container->saveWidgetsToStream(stream);
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Gui::updateTime(const sf::Time& elapsedTime)
     {
         m_container->m_animationTimeElapsed = elapsedTime;
         m_container->update(elapsedTime);
-
+/**
         if (m_tooltipPossible)
         {
             m_tooltipTime += elapsedTime;
@@ -408,7 +408,7 @@ namespace tgui
 
                 m_tooltipPossible = false;
             }
-        }
+        }*/
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

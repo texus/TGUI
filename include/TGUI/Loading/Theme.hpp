@@ -26,9 +26,7 @@
 #ifndef TGUI_THEME_HPP
 #define TGUI_THEME_HPP
 
-
 #include <TGUI/Widget.hpp>
-#include <TGUI/Loading/WidgetConverter.hpp>
 #include <TGUI/Loading/ThemeLoader.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,67 +34,65 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Base class for the Theme classes
+    /// @brief This class can be used to manage the widget renderers
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API BaseTheme : public std::enable_shared_from_this<BaseTheme>
+    class TGUI_API Theme
     {
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Virtual destructor
+        /// @brief Construct the theme class, with an optional theme file to load
+        ///
+        /// @param primary  Primary parameter for the theme loader (filename of the theme file in DefaultThemeLoader)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~BaseTheme() = default;
+        Theme(const std::string& primary = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Virtual function that gets called when a widget is connected to this theme
+        /// @brief Change the primary theme loader parameter
         ///
-        /// @param widget  The widget that was attached to this theme
+        /// @param primary  Primary parameter for the theme loader (filename of the theme file in DefaultThemeLoader)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void widgetAttached(Widget* widget);
+        void load(const std::string& primary = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Virtual function that gets called when a widget is disconnected from this theme
+        /// @brief Get data for the renderers
         ///
-        /// @param widget  The widget that was detached from this theme
+        /// @param secondary  The secondary parameter for the theme loader (name of section in theme file in DefaultThemeLoader)
+        ///
+        /// @return Shared renderer data
+        ///
+        /// The secondary parameter will be used as id of the renderer data
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void widgetDetached(Widget* widget);
+        std::shared_ptr<RendererData> getRenderer(const std::string& secondary);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief This function can be used inside a widget to load other widgets without access to the derived theme class
+        /// @brief Manually add a renderer data to the theme
         ///
-        /// @param primary  Primary parameter of the loader
-        /// @param secondary Secondary parameter of the loader
+        /// @param id       Identifier of the renderer
+        /// @param renderer The renderer to add
+        ///
+        /// If a renderer with the same id already exists then it will be replaced by this one.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual WidgetConverter internalLoad(const std::string& primary, const std::string& secondary) = 0;
+        void addRenderer(const std::string& id, std::shared_ptr<RendererData> renderer);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Virtual function called by the widget to finish its initialization
+        /// @brief Manually remove a renderer to the theme
         ///
-        /// @param widget    The widget that needs to be initialized
-        /// @param primary   Primary parameter of the loader
-        /// @param secondary Secondary parameter of the loader
+        /// @param id  Identifier of the renderer
         ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void initWidget(Widget* widget, std::string primary, std::string secondary) = 0;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the construct function of a specific widget type
-        ///
-        /// @param type        Type of the widget which will cause this construct function to be used
-        /// @param constructor New function to be called when this type of widget is being loaded
+        /// @return True when removed, false when the identifier did not match any renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void setConstructFunction(const std::string& type, const std::function<Widget::Ptr()>& constructor);
+        bool removeRenderer(const std::string& id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,25 +101,26 @@ namespace tgui
         /// @param themeLoader  Pointer to the new loader
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void setThemeLoader(const std::shared_ptr<BaseThemeLoader>& themeLoader);
+        static void setThemeLoader(std::shared_ptr<BaseThemeLoader> themeLoader);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the function that is currently being used to load the widget theme data
+        ///
+        /// @return  Theme loader
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static std::shared_ptr<BaseThemeLoader> getThemeLoader();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Calls the protected widget->reload(primary, secondary, force) function
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void widgetReload(Widget* widget, const std::string& primary = "", const std::string& secondary = "", bool force = false);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
-        static std::map<std::string, std::function<Widget::Ptr()>> m_constructors; ///< Widget creator functions
-        static std::shared_ptr<BaseThemeLoader> m_themeLoader;  ///< Theme loading functions, they read the theme file
+        static std::shared_ptr<BaseThemeLoader> m_themeLoader;  ///< Theme loader which will do the actual loading
+        std::map<std::string, std::shared_ptr<RendererData>> m_renderers; ///< Maps ids to renderer datas
+        std::string m_primary;
     };
 
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Default Theme class
     ///
@@ -131,20 +128,6 @@ namespace tgui
     class TGUI_API Theme : public BaseTheme
     {
     public:
-
-        typedef std::shared_ptr<Theme> Ptr; ///< Shared theme pointer
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Construct the theme class, with an optional theme file to load
-        ///
-        /// @param filename  Filename of the theme file
-        ///
-        /// @warning The theme instance has to be created with std::make_shared
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Theme(const std::string& filename = "");
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Load the widget from the theme
@@ -292,13 +275,13 @@ namespace tgui
         std::string m_filename;
         std::string m_resourcePath;
         bool m_resourcePathLock = false;
-        std::map<Widget*, std::string> m_widgets; // Map widget to class name
-        std::map<std::string, std::string> m_widgetTypes; // Map class name to type
-        std::map<std::string, std::map<std::string, std::string>> m_widgetProperties; // Map class name to property-value pairs
+
+        // Map the section name to the type of the renderer and the renderer
+        std::map<std::string, std::pair<std::string, std::shared_ptr<WidgetRenderer>>> m_renderers;
 
         friend class ThemeTest;
     };
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

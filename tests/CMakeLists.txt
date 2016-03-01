@@ -1,46 +1,46 @@
 set(TEST_SOURCES
     main.cpp
-    Animation.cpp
+    #Animation.cpp
     Borders.cpp
     Clipboard.cpp
     Color.cpp
-    Container.cpp
+    #Container.cpp
     Font.cpp
     FileCompare.cpp
-    HorizontalLayout.cpp
-    Layouts.cpp
-    Signal.cpp
+    #HorizontalLayout.cpp
+    #Layouts.cpp
+    #Signal.cpp
     Texture.cpp
     TextureManager.cpp
-    VerticalLayout.cpp
-    Widget.cpp
+    #VerticalLayout.cpp
+    #Widget.cpp
     Loading/Serializer.cpp
     Loading/Deserializer.cpp
-    Loading/Theme.cpp
-    Loading/ThemeLoader.cpp
-    Widgets/Button.cpp
-    Widgets/Canvas.cpp
-    Widgets/ChatBox.cpp
-    Widgets/CheckBox.cpp
-    Widgets/ChildWindow.cpp
+    #Loading/Theme.cpp
+    #Loading/ThemeLoader.cpp
+    #Widgets/Button.cpp
+    #Widgets/Canvas.cpp
+    #Widgets/ChatBox.cpp
+    #Widgets/CheckBox.cpp
+    #Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
-    Widgets/ComboBox.cpp
-    Widgets/EditBox.cpp
-    Widgets/Knob.cpp
+    #Widgets/ComboBox.cpp
+    #Widgets/EditBox.cpp
+    #Widgets/Knob.cpp
     Widgets/Label.cpp
-    Widgets/ListBox.cpp
-    Widgets/MenuBar.cpp
-    Widgets/MessageBox.cpp
-    Widgets/Panel.cpp
+    #Widgets/ListBox.cpp
+    #Widgets/MenuBar.cpp
+    #Widgets/MessageBox.cpp
+    #Widgets/Panel.cpp
     Widgets/Picture.cpp
-    Widgets/ProgressBar.cpp
-    Widgets/RadioButton.cpp
-    Widgets/Scrollbar.cpp
-    Widgets/Slider.cpp
-    Widgets/SpinButton.cpp
-    Widgets/Tab.cpp
-    Widgets/TextBox.cpp
-    Widgets/ToolTip.cpp
+    #Widgets/ProgressBar.cpp
+    #Widgets/RadioButton.cpp
+    #Widgets/Scrollbar.cpp
+    #Widgets/Slider.cpp
+    #Widgets/SpinButton.cpp
+    #Widgets/Tab.cpp
+    #Widgets/TextBox.cpp
+    #Widgets/ToolTip.cpp
 )
 
 # The tests require c++14
