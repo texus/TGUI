@@ -4,26 +4,10 @@ language: cpp
 git:
   depth: 1
 
-matrix:
-  include:
-  - os: linux
-    compiler: g++-4.7
-    env: COMPILER=g++-4.7
-    cache:
-      directories:
-      - $HOME/SFML_LINUX
-
-  - os: linux
-    compiler: g++-5
-    env: COMPILER=g++-5
-    cache:
-      directories:
-      - $HOME/SFML-2.2_LINUX
-
-  - os: osx
-    cache:
-      directories:
-      - $HOME/SFML_OSX
+os: linux
+cache:
+  directories:
+    - $HOME/SFML_LINUX
 
 addons:
   apt:
@@ -56,26 +40,8 @@ addons:
     - libudev-dev
 
 script:
-  - >
-    CXX=$COMPILER;
-    if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
-      if [[ $CXX == g++-4.7 ]]; then
-        chmod +x tests/travis_linux.sh
-        tests/travis_linux.sh
-      elif [[ $CXX == g++-5 ]]; then
-        chmod +x tests/travis_linux_tests.sh
-        tests/travis_linux_tests.sh
-      else
-        echo 'Invalid compiler'
-        exit 1
-      fi
-    elif [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-      chmod +x tests/travis_osx.sh
-      tests/travis_osx.sh
-    else
-      echo 'Invalid OS'
-      exit 1
-    fi
+  - chmod +x tests/travis_linux_tests.sh
+  - tests/travis_linux_tests.sh
 
 after_success:
   - >
