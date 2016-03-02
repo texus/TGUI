@@ -92,7 +92,7 @@ namespace tgui
                     throw Exception{"Unexpected result while loading theme file '" + filename + "'. Nested section encountered."};
 
                 for (auto& pair : child->propertyValuePairs)
-                    m_propertiesCache[filename][child->name][toLower(pair.first)] = pair.second->value;
+                    m_propertiesCache[filename][toLower(child->name)][toLower(pair.first)] = pair.second->value;
             }
         }
     }

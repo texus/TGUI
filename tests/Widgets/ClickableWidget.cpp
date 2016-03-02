@@ -46,7 +46,7 @@ TEST_CASE("[ClickableWidget]") {
         widget = std::make_shared<tgui::ClickableWidget>(200.f, 100.f);
         REQUIRE(widget->getSize() == sf::Vector2f(200, 100));
     }
-/*
+
     SECTION("Saving and loading from file") {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(widget);
@@ -69,5 +69,5 @@ TEST_CASE("[ClickableWidget]") {
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
             REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
         }
-    }*/
+    }
 }

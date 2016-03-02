@@ -32,7 +32,7 @@ ChildWindow {
     CloseButton     : "ChildWindowCloseButton";
 }
 
-Button.ChildWindowCloseButton {
+ChildWindowCloseButton {
     NormalImage : "Black.png" Part(48, 179, 15, 15);
     HoverImage  : "Black.png" Part(63, 179, 15, 15);
     DownImage   : "Black.png" Part(78, 179, 15, 15);
@@ -150,7 +150,7 @@ TextBox {
     Scrollbar                   : "Scrollbar";
 }
 
-Label.Tooltip {
+Tooltip {
     TextColor       : rgb(190, 190, 190);
     BackgroundColor : rgb( 80,  80,  80);
     BorderColor     : rgb(  0,   0,   0);

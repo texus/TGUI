@@ -1,19 +1,19 @@
 set(TEST_SOURCES
     main.cpp
-    #Animation.cpp
+    Animation.cpp
     Borders.cpp
     Clipboard.cpp
     Color.cpp
-    #Container.cpp
+    Container.cpp
     Font.cpp
     FileCompare.cpp
     #HorizontalLayout.cpp
-    #Layouts.cpp
-    #Signal.cpp
+    Layouts.cpp
+    Signal.cpp
     Texture.cpp
     TextureManager.cpp
     #VerticalLayout.cpp
-    #Widget.cpp
+    Widget.cpp
     Loading/Serializer.cpp
     Loading/Deserializer.cpp
     #Loading/Theme.cpp
@@ -31,7 +31,7 @@ set(TEST_SOURCES
     #Widgets/ListBox.cpp
     #Widgets/MenuBar.cpp
     #Widgets/MessageBox.cpp
-    #Widgets/Panel.cpp
+    Widgets/Panel.cpp
     Widgets/Picture.cpp
     #Widgets/ProgressBar.cpp
     #Widgets/RadioButton.cpp

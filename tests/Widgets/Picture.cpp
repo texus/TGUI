@@ -66,7 +66,7 @@ TEST_CASE("[Picture]") {
         picture->setSmooth(false);
         REQUIRE(!picture->isSmooth());
     }
-/*
+
     SECTION("Saving and loading from file") {
         REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>("resources/Black.png"));
 
@@ -93,5 +93,5 @@ TEST_CASE("[Picture]") {
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePicture2.txt"));
             REQUIRE(compareFiles("WidgetFilePicture1.txt", "WidgetFilePicture2.txt"));
         }
-    }*/
+    }
 }

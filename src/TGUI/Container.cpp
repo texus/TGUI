@@ -379,16 +379,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void Container::setOpacity(float opacity)
-    {
-        Widget::setOpacity(opacity);
-
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-            m_widgets[i]->setOpacity(opacity);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::loadWidgetsFromFile(const std::string& filename)
     {
@@ -428,7 +418,7 @@ namespace tgui
     {
         WidgetSaver::save(std::static_pointer_cast<Container>(shared_from_this()), stream);
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::leftMousePressed(float x, float y)
@@ -561,6 +551,19 @@ namespace tgui
         }
 
         return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::rendererChanged(const std::string& property, ObjectConverter&& value)
+    {
+        if (property == "opacity")
+        {
+            for (std::size_t i = 0; i < m_widgets.size(); ++i)
+                m_widgets[i]->getRenderer()->setOpacity(value.getNumber());
+        }
+
+        Widget::rendererChanged(property, std::move(value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

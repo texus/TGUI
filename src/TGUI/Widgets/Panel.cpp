@@ -23,9 +23,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <SFML/OpenGL.hpp>
-
 #include <TGUI/Widgets/Panel.hpp>
+
+#include <SFML/OpenGL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,8 +41,8 @@ namespace tgui
         addSignal<sf::Vector2f>("MouseReleased");
         addSignal<sf::Vector2f>("Clicked");
 
-        m_renderer = std::make_shared<PanelRenderer>(this);
-        reload();
+        m_renderer = aurora::makeCopied<tgui::PanelRenderer>();
+        setRenderer(m_renderer->getData());
 
         setSize(size);
     }
@@ -108,6 +108,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Panel::rendererChanged(const std::string& property, ObjectConverter&& value)
+    {
+        if (property != "backgroundcolor")
+            Container::rendererChanged(property, std::move(value));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Panel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         const sf::View& view = target.getView();
@@ -144,10 +152,10 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the background
-        if (m_backgroundColor != sf::Color::Transparent)
+        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
         {
             sf::RectangleShape background(getSize());
-            background.setFillColor(calcColorOpacity(m_backgroundColor, getOpacity()));
+            background.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
             target.draw(background, states);
         }
 
@@ -161,68 +169,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void PanelRenderer::setProperty(std::string property, const std::string& value)
-    {
-        property = toLower(property);
-        if (property == "backgroundcolor")
-            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else
-            WidgetRenderer::setProperty(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void PanelRenderer::setProperty(std::string property, ObjectConverter&& value)
-    {
-        property = toLower(property);
-
-        if (value.getType() == ObjectConverter::Type::Color)
-        {
-            if (property == "backgroundcolor")
-                setBackgroundColor(value.getColor());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else
-            WidgetRenderer::setProperty(property, std::move(value));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter PanelRenderer::getProperty(std::string property) const
-    {
-        property = toLower(property);
-
-        if (property == "backgroundcolor")
-            return m_panel->m_backgroundColor;
-        else
-            return WidgetRenderer::getProperty(property);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::map<std::string, ObjectConverter> PanelRenderer::getPropertyValuePairs() const
-    {
-        auto pairs = WidgetRenderer::getPropertyValuePairs();
-        pairs["BackgroundColor"] = m_panel->m_backgroundColor;
-        return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void PanelRenderer::setBackgroundColor(const Color& color)
-    {
-        m_panel->setBackgroundColor(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<WidgetRenderer> PanelRenderer::clone(Widget* widget)
-    {
-        auto renderer = std::make_shared<PanelRenderer>(*this);
-        renderer->m_panel = static_cast<Panel*>(widget);
-        return renderer;
-    }
+    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BackgroundColor, Color(220, 220, 220))
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

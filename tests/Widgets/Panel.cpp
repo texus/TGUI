@@ -24,7 +24,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 
 TEST_CASE("[Panel]") {
     tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
@@ -44,11 +44,6 @@ TEST_CASE("[Panel]") {
         REQUIRE(panel->getWidgetType() == "Panel");
     }
 
-    SECTION("BackgroundColor") {
-        panel->setBackgroundColor(sf::Color(10, 20, 30));
-        REQUIRE(panel->getBackgroundColor() == sf::Color(10, 20, 30));
-    }
-
     SECTION("Renderer") {
         auto renderer = panel->getRenderer();
 
@@ -66,7 +61,7 @@ TEST_CASE("[Panel]") {
             SECTION("getPropertyValuePairs") {
                 auto pairs = renderer->getPropertyValuePairs();
                 REQUIRE(pairs.size() == 1);
-                REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(10, 20, 30));
+                REQUIRE(pairs["backgroundcolor"].getColor() == sf::Color(10, 20, 30));
             }
         }
 
@@ -91,12 +86,12 @@ TEST_CASE("[Panel]") {
             auto parent = std::make_shared<tgui::GuiContainer>();
             parent->add(panel);
 
-            tgui::Button::Ptr button = std::make_shared<tgui::Button>();
-            button->setPosition(40, 20);
-            panel->add(button);
+            auto widget = std::make_shared<tgui::ClickableWidget>();
+            widget->setPosition(40, 20);
+            panel->add(widget);
 
-            panel->setOpacity(0.8f);
-            panel->setBackgroundColor(sf::Color::Green);
+            panel->getRenderer()->setOpacity(0.8f);
+            panel->getRenderer()->setBackgroundColor(sf::Color::Green);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel3.txt"));
 

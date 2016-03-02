@@ -38,7 +38,7 @@ set(TGUI_SRC
     #Widgets/ListBox.cpp
     #Widgets/MenuBar.cpp
     #Widgets/MessageBox.cpp
-    #Widgets/Panel.cpp
+    Widgets/Panel.cpp
     Widgets/Picture.cpp
     #Widgets/ProgressBar.cpp
     #Widgets/RadioButton.cpp

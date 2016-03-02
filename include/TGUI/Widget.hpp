@@ -647,6 +647,19 @@ namespace tgui
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
+        ///                  The value can either be a string value or a serialized string.
+        ///
+        /// @throw Exception for unknown properties or when value was of a wrong type.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setProperty(const std::string& property, const std::string& value);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change a property of the renderer
+        ///
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
         ///                  The ObjectConverter is implicitly constructed from the possible value types.
         ///
         /// @throw Exception for unknown properties or when value was of a wrong type.

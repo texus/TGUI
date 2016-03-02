@@ -27,6 +27,7 @@
 
 TEST_CASE("[Label]") {
     tgui::Label::Ptr label = std::make_shared<tgui::Label>();
+    label->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals") {
         REQUIRE_NOTHROW(label->connect("DoubleClicked", [](){}));
@@ -94,7 +95,7 @@ TEST_CASE("[Label]") {
         label->setMaximumTextWidth(300);
         REQUIRE(label->getMaximumTextWidth() == 300);
     }
-/**
+
     SECTION("Renderer") {
         auto renderer = label->getRenderer();
 
@@ -104,6 +105,7 @@ TEST_CASE("[Label]") {
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(50, 150, 100)"));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+            REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
         }
         
         SECTION("set object property") {
@@ -112,6 +114,7 @@ TEST_CASE("[Label]") {
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{50, 150, 100}));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
+            REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
         }
         
         SECTION("functions") {
@@ -120,15 +123,17 @@ TEST_CASE("[Label]") {
             renderer->setBorderColor({50, 150, 100});
             renderer->setBorders({1, 2, 3, 4});
             renderer->setPadding({5, 6, 7, 8});
+            renderer->setOpacity(0.8f);
             
             SECTION("getPropertyValuePairs") {
                 auto pairs = renderer->getPropertyValuePairs();
-                REQUIRE(pairs.size() == 5);
-                REQUIRE(pairs["TextColor"].getColor() == sf::Color(100, 50, 150));
-                REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(150, 100, 50));
-                REQUIRE(pairs["BorderColor"].getColor() == sf::Color(50, 150, 100));
-                REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
-                REQUIRE(pairs["Padding"].getBorders() == tgui::Borders(5, 6, 7, 8));
+                REQUIRE(pairs.size() == 6);
+                REQUIRE(pairs["textcolor"].getColor() == sf::Color(100, 50, 150));
+                REQUIRE(pairs["backgroundcolor"].getColor() == sf::Color(150, 100, 50));
+                REQUIRE(pairs["bordercolor"].getColor() == sf::Color(50, 150, 100));
+                REQUIRE(pairs["borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
+                REQUIRE(pairs["padding"].getBorders() == tgui::Borders(5, 6, 7, 8));
+                REQUIRE(pairs["opacity"].getNumber() == 0.8f);
             }
         }
 
@@ -137,8 +142,9 @@ TEST_CASE("[Label]") {
         REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(50, 150, 100));
         REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getBorders() == tgui::Borders(5, 6, 7, 8));
+        REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
     }
-*//*
+
     SECTION("Saving and loading from file") {
         tgui::Theme theme{"resources/Black.txt"};
         label->setRenderer(theme.getRenderer("label"));
@@ -152,6 +158,12 @@ TEST_CASE("[Label]") {
         label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
         label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
         label->setMaximumTextWidth(300);
+        label->getRenderer()->setTextColor({100, 50, 150});
+        label->getRenderer()->setBackgroundColor({150, 100, 50});
+        label->getRenderer()->setBorderColor({50, 150, 100});
+        label->getRenderer()->setBorders({1, 2, 3, 4});
+        label->getRenderer()->setPadding({5, 6, 7, 8});
+        label->getRenderer()->setOpacity(0.8f);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel1.txt"));
 
@@ -171,5 +183,5 @@ TEST_CASE("[Label]") {
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel2.txt"));
             REQUIRE(compareFiles("WidgetFileLabel1.txt", "WidgetFileLabel2.txt"));
         }
-    }*/
+    }
 }

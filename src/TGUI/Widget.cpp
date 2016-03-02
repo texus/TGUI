@@ -719,6 +719,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void WidgetRenderer::setProperty(const std::string& property, const std::string& value)
+    {
+        setProperty(property, ObjectConverter{sf::String{value}});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void WidgetRenderer::setProperty(const std::string& property, ObjectConverter&& value)
     {
         std::string lowercaseProperty = toLower(property);

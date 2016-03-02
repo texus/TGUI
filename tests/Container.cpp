@@ -28,11 +28,11 @@
 TEST_CASE("[Container]") {
     auto container = std::make_shared<tgui::Gui>();
 
-    auto widget1 = std::make_shared<tgui::EditBox>();
+    auto widget1 = std::make_shared<tgui::Label>();
     auto widget2 = std::make_shared<tgui::Panel>();
-    auto widget3 = std::make_shared<tgui::EditBox>();
-    auto widget4 = std::make_shared<tgui::EditBox>();
-    auto widget5 = std::make_shared<tgui::EditBox>();
+    auto widget3 = std::make_shared<tgui::Label>();
+    auto widget4 = std::make_shared<tgui::Label>();
+    auto widget5 = std::make_shared<tgui::Label>();
     container->add(widget1, "w1");
     container->add(widget2, "w2");
     container->add(widget3, "w3");
@@ -47,9 +47,9 @@ TEST_CASE("[Container]") {
     SECTION("add") {
         container->removeAllWidgets();
 
-        auto w1 = std::make_shared<tgui::Button>();
-        auto w2 = std::make_shared<tgui::Button>();
-        auto w3 = std::make_shared<tgui::Button>();
+        auto w1 = std::make_shared<tgui::ClickableWidget>();
+        auto w2 = std::make_shared<tgui::ClickableWidget>();
+        auto w3 = std::make_shared<tgui::ClickableWidget>();
 
         REQUIRE(container->getWidgets().empty());
         REQUIRE(container->getWidgetNames().empty());
@@ -93,20 +93,20 @@ TEST_CASE("[Container]") {
         SECTION("templated function") {
             SECTION("default non-recursive") {
                 REQUIRE(container->get<tgui::Picture>("w0") == nullptr);
-                REQUIRE(container->get<tgui::EditBox>("w1") == widget1);
+                REQUIRE(container->get<tgui::Label>("w1") == widget1);
                 REQUIRE(container->get<tgui::Panel>("w2") == widget2);
-                REQUIRE(container->get<tgui::EditBox>("w3") == widget3);
-                REQUIRE(container->get<tgui::EditBox>("w4") == nullptr);
-                REQUIRE(container->get<tgui::EditBox>("w5") == nullptr);
+                REQUIRE(container->get<tgui::Label>("w3") == widget3);
+                REQUIRE(container->get<tgui::Label>("w4") == nullptr);
+                REQUIRE(container->get<tgui::Label>("w5") == nullptr);
             }
 
             SECTION("recursive") {
                 REQUIRE(container->get<tgui::Picture>("w0", true) == nullptr);
-                REQUIRE(container->get<tgui::EditBox>("w1", true) == widget1);
+                REQUIRE(container->get<tgui::Label>("w1", true) == widget1);
                 REQUIRE(container->get<tgui::Panel>("w2", true) == widget2);
-                REQUIRE(container->get<tgui::EditBox>("w3", true) == widget3);
-                REQUIRE(container->get<tgui::EditBox>("w4", true) == widget4);
-                REQUIRE(container->get<tgui::EditBox>("w5", true) == widget5);
+                REQUIRE(container->get<tgui::Label>("w3", true) == widget3);
+                REQUIRE(container->get<tgui::Label>("w4", true) == widget4);
+                REQUIRE(container->get<tgui::Label>("w5", true) == widget5);
             }
         }
     }
@@ -142,7 +142,7 @@ TEST_CASE("[Container]") {
         SECTION("remove with wrong parameter") {
             REQUIRE(!container->remove(widget5));
             REQUIRE(!container->remove(nullptr));
-            REQUIRE(!container->remove(std::make_shared<tgui::Button>()));
+            REQUIRE(!container->remove(std::make_shared<tgui::ClickableWidget>()));
         }
 
         SECTION("remove all widgets") {
@@ -166,14 +166,14 @@ TEST_CASE("[Container]") {
         REQUIRE(container->getWidgetName(widget3) == "w3");
 
         REQUIRE(container->getWidgetName(widget4) == "");
-        REQUIRE(container->getWidgetName(std::make_shared<tgui::Button>()) == "");
+        REQUIRE(container->getWidgetName(std::make_shared<tgui::ClickableWidget>()) == "");
         REQUIRE(container->getWidgetName(nullptr) == "");
 
         REQUIRE(container->setWidgetName(widget1, "w001"));
         REQUIRE(container->setWidgetName(widget3, "w003"));
 
         REQUIRE(!container->setWidgetName(widget4, "Hello"));
-        REQUIRE(!container->setWidgetName(std::make_shared<tgui::Button>(), "Hello"));
+        REQUIRE(!container->setWidgetName(std::make_shared<tgui::ClickableWidget>(), "Hello"));
         REQUIRE(!container->setWidgetName(nullptr, "Hello"));
 
         REQUIRE(container->getWidgetNames()[0] == container->getWidgetName(widget1));
@@ -183,7 +183,7 @@ TEST_CASE("[Container]") {
         REQUIRE(container->getWidgetName(widget2) == "w2");
         REQUIRE(container->getWidgetName(widget3) == "w003");
     }
-
+/**
     SECTION("focus") {
         auto editBox1 = std::make_shared<tgui::EditBox>();
         tgui::EditBox::Ptr editBox2 = std::make_shared<tgui::EditBox>();
@@ -224,16 +224,16 @@ TEST_CASE("[Container]") {
         REQUIRE(!editBox2->isFocused());
         REQUIRE(!editBox3->isFocused());
     }
-
+*/
     SECTION("setOpacity") {
         REQUIRE(container->getOpacity() == 1);
 
         container->setOpacity(0.7f);
         REQUIRE(container->getOpacity() == 0.7f);
-        REQUIRE(widget1->getOpacity() == 0.7f);
-        REQUIRE(widget2->getOpacity() == 0.7f);
-        REQUIRE(widget3->getOpacity() == 0.7f);
-        REQUIRE(widget4->getOpacity() == 0.7f);
-        REQUIRE(widget5->getOpacity() == 0.7f);
+        REQUIRE(widget1->getRenderer()->getOpacity() == 0.7f);
+        REQUIRE(widget2->getRenderer()->getOpacity() == 0.7f);
+        REQUIRE(widget3->getRenderer()->getOpacity() == 0.7f);
+        REQUIRE(widget4->getRenderer()->getOpacity() == 0.7f);
+        REQUIRE(widget5->getRenderer()->getOpacity() == 0.7f);
     }
 }

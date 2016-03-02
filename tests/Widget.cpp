@@ -26,8 +26,7 @@
 #include <TGUI/TGUI.hpp>
 
 TEST_CASE("[Widget]") {
-    tgui::Widget::Ptr widget = std::make_shared<tgui::Button>();
-    widget->setFont("resources/DroidSansArmenian.ttf");
+    tgui::Widget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
 
     SECTION("Visibile") {
         REQUIRE(widget->isVisible());
@@ -62,7 +61,8 @@ TEST_CASE("[Widget]") {
         widget->setParent(nullptr);
         REQUIRE(widget->getParent() == nullptr);
     }
-
+/**
+// TODO: Move to Renderer section
     SECTION("Opacity") {
         REQUIRE(widget->getOpacity() == 1.f);
 
@@ -75,7 +75,7 @@ TEST_CASE("[Widget]") {
         widget->setOpacity(-2.f);
         REQUIRE(widget->getOpacity() == 0.f);
     }
-
+*/
     SECTION("Tooltip") {
         auto tooltip1 = std::make_shared<tgui::Label>();
         tooltip1->setText("some text");
@@ -93,19 +93,23 @@ TEST_CASE("[Widget]") {
     }
 
     SECTION("Font") {
-        widget = std::make_shared<tgui::Button>();
+        widget = std::make_shared<tgui::ClickableWidget>();
         REQUIRE(widget->getFont() == nullptr);
         widget->setFont("resources/DroidSansArmenian.ttf");
         REQUIRE(widget->getFont() != nullptr);
         widget->setFont(nullptr);
         REQUIRE(widget->getFont() == nullptr);
+
+        tgui::Gui gui;
+        gui.add(widget);
+        REQUIRE(widget->getFont() != nullptr);
     }
 
     SECTION("Move to front/back") {
         auto container = std::make_shared<tgui::Panel>();
-        auto widget1 = std::make_shared<tgui::Button>();
-        auto widget2 = std::make_shared<tgui::Button>();
-        auto widget3 = std::make_shared<tgui::Button>();
+        auto widget1 = std::make_shared<tgui::ClickableWidget>();
+        auto widget2 = std::make_shared<tgui::ClickableWidget>();
+        auto widget3 = std::make_shared<tgui::ClickableWidget>();
         container->add(widget1);
         container->add(widget2);
         container->add(widget3);
@@ -226,12 +230,11 @@ TEST_CASE("[Widget]") {
             REQUIRE(widget->getSize() == sf::Vector2f(800, 600));
         }
     }
-
+/**
     SECTION("Bug Fixes") {
         SECTION("Disabled widgets should not be focusable (https://forum.tgui.eu/index.php?topic=384)") {
             tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
             tgui::EditBox::Ptr editBox = std::make_shared<tgui::EditBox>();
-            editBox->setFont("resources/DroidSansArmenian.ttf");
             panel->add(editBox);
 
             editBox->focus();
@@ -244,4 +247,5 @@ TEST_CASE("[Widget]") {
             REQUIRE(!editBox->isFocused());
         }
     }
+*/
 }

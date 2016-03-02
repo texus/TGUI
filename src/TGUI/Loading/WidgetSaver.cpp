@@ -22,24 +22,25 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/**
-#include <TGUI/Loading/Serializer.hpp>
+
 #include <TGUI/Loading/WidgetSaver.hpp>
+#include <TGUI/Loading/Serializer.hpp>/**
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/Knob.hpp>
-#include <TGUI/Widgets/ListBox.hpp>
-#include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Widgets/Knob.hpp>*/
+#include <TGUI/Widgets/Label.hpp>/**
+#include <TGUI/Widgets/ListBox.hpp>*/
+#include <TGUI/Widgets/Picture.hpp>/**
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
-#include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/TextBox.hpp>*/
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -96,15 +97,13 @@ namespace tgui
             SET_PROPERTY("Position", emitLayout(widget->getPositionLayout()));
         if (widget->getSize() != sf::Vector2f{})
             SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
-        if (widget->getOpacity() != 1)
-            SET_PROPERTY("Opacity", tgui::to_string(widget->getOpacity()));
 
         /// TODO: Font and ToolTip
 
         node->children.emplace_back(std::make_shared<DataIO::Node>());
         node->children.back()->name = "Renderer";
         for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
-            node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(node->children.back().get(), Serializer::serialize(std::move(pair.second)));
+            node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(node->children.back().get(), ObjectConverter{pair.second}.getString());
 
         return node;
     }
@@ -125,7 +124,7 @@ namespace tgui
 
         return node;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveButton(Button::Ptr button)
@@ -293,7 +292,7 @@ namespace tgui
         SET_PROPERTY("Value", tgui::to_string(knob->getValue()));
         return node;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveLabel(Label::Ptr label)
@@ -338,7 +337,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     TGUI_API std::shared_ptr<DataIO::Node> saveListBox(ListBox::Ptr listBox)
     {
         auto node = saveWidget(listBox);
@@ -374,7 +373,7 @@ namespace tgui
 
         return node;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> savePicture(Picture::Ptr picture)
@@ -388,7 +387,7 @@ namespace tgui
 
         return node;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveProgressBar(ProgressBar::Ptr progressBar)
@@ -525,7 +524,7 @@ namespace tgui
 
         return node;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -538,27 +537,27 @@ namespace tgui
     std::map<std::string, WidgetSaver::SaveFunction> WidgetSaver::m_saveFunctions =
         {
             {"widget", saveWidget},
-            {"container", saveContainer},
+            {"container", saveContainer},/**
             {"button", saveButton},
             {"canvas", saveWidget},
             {"chatbox", saveChatBox},
-            {"checkbox", saveRadioButton},
-            {"clickablewidget", saveWidget},
+            {"checkbox", saveRadioButton},*/
+            {"clickablewidget", saveWidget},/**
             {"childwindow", saveChildWindow},
             {"combobox", saveComboBox},
             {"editbox", saveEditBox},
-            {"knob", saveKnob},
-            {"label", saveLabel},
-            {"listbox", saveListBox},
+            {"knob", saveKnob},*/
+            {"label", saveLabel},/**
+            {"listbox", saveListBox},*/
             {"panel", saveContainer},
-            {"picture", savePicture},
+            {"picture", savePicture}/**,
             {"progressbar", saveProgressBar},
             {"radiobutton", saveRadioButton},
             {"scrollbar", saveScrollbar},
             {"slider", saveSlider},
             {"spinbutton", saveSpinButton},
             {"tab", saveTab},
-            {"textbox", saveTextBox}
+            {"textbox", saveTextBox}*/
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -594,5 +593,5 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-*/
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

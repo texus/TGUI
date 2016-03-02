@@ -22,9 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/**
-#include <TGUI/Loading/Deserializer.hpp>
-#include <TGUI/Loading/WidgetLoader.hpp>
+
+#include <TGUI/Loading/WidgetLoader.hpp>/**
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Canvas.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
@@ -32,17 +31,18 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/Knob.hpp>
-#include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/Knob.hpp>*/
+#include <TGUI/Widgets/Label.hpp>/**
+#include <TGUI/Widgets/ListBox.hpp>*/
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Widgets/Picture.hpp>/**
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tab.hpp>
-#include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/TextBox.hpp>*/
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -162,8 +162,6 @@ namespace tgui
             widget->setPosition(parseLayout(node->propertyValuePairs["position"]->value));
         if (node->propertyValuePairs["size"])
             widget->setSize(parseLayout(node->propertyValuePairs["size"]->value));
-        if (node->propertyValuePairs["opacity"])
-            widget->setOpacity(tgui::stof(node->propertyValuePairs["opacity"]->value));
 
         /// TODO: Font and ToolTip (and Theme?)
 
@@ -209,7 +207,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     TGUI_API Widget::Ptr loadButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         Button::Ptr button;
@@ -363,7 +361,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+*/
     TGUI_API Widget::Ptr loadClickableWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         if (widget)
@@ -373,7 +371,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     TGUI_API Widget::Ptr loadComboBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         ComboBox::Ptr comboBox;
@@ -481,7 +479,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+*/
     TGUI_API Widget::Ptr loadLabel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         Label::Ptr label;
@@ -549,7 +547,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     TGUI_API Widget::Ptr loadListBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         ListBox::Ptr listBox;
@@ -611,7 +609,7 @@ namespace tgui
 
         return listBox;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadPanel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -642,7 +640,7 @@ namespace tgui
 
         return picture;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadProgressBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -839,7 +837,7 @@ namespace tgui
 
         return textBox;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -853,27 +851,27 @@ namespace tgui
         {
             // Using "std::shared_ptr<Widget>{}" instead of "nullptr" to work around internal compiler error with MinGW 4.7.1 TDM
             {"widget", std::bind(loadWidget, std::placeholders::_1, std::shared_ptr<Widget>{})},
-            {"container", std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
+            {"container", std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},/**
             {"button", std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
             {"canvas", std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
             {"chatbox", std::bind(loadChatBox, std::placeholders::_1, std::shared_ptr<ChatBox>{})},
             {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},
-            {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},
-            {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},
+            {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},*/
+            {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},/**
             {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},
             {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},
             {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},
-            {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},
+            {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},*/
             {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
             {"panel", std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},
-            {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},
+            {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})}/**,
             {"progressbar", std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},
             {"radiobutton", std::bind(loadRadioButton, std::placeholders::_1, std::shared_ptr<RadioButton>{})},
             {"scrollbar", std::bind(loadScrollbar, std::placeholders::_1, std::shared_ptr<Scrollbar>{})},
             {"slider", std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},
             {"spinbutton", std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},
             {"tab", std::bind(loadTab, std::placeholders::_1, std::shared_ptr<Tab>{})},
-            {"textbox", std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})}
+            {"textbox", std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})}*/
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -920,5 +918,5 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-*/
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

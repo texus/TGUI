@@ -32,11 +32,10 @@ bool compareVector2f(sf::Vector2f left, sf::Vector2f right)
 }
 
 TEST_CASE("[Animation]") {
-    tgui::Button::Ptr widget = std::make_shared<tgui::Button>();
-    widget->getRenderer()->setBorders({2, 2, 2, 2});
+    tgui::Widget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
     widget->setPosition(30, 15);
     widget->setSize(120, 30);
-    widget->setOpacity(0.9f);
+    widget->getRenderer()->setOpacity(0.9f);
 
     tgui::Panel::Ptr parent = std::make_shared<tgui::Panel>();
     parent->setSize(480, 360);
@@ -74,11 +73,11 @@ TEST_CASE("[Animation]") {
         SECTION("showWithEffect") {
             SECTION("Fade") {
                 widget->showWithEffect(tgui::ShowAnimationType::Fade, sf::milliseconds(300));
-                REQUIRE(widget->getOpacity() == 0);
+                REQUIRE(widget->getRenderer()->getOpacity() == 0);
                 widget->update(sf::milliseconds(100));
-                REQUIRE(tgui::compareFloats(widget->getOpacity(), 0.3f));
+                REQUIRE(tgui::compareFloats(widget->getRenderer()->getOpacity(), 0.3f));
                 widget->update(sf::milliseconds(200));
-                REQUIRE(widget->getOpacity() == 0.9f);
+                REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
             }
 
             SECTION("Scale") {
@@ -95,36 +94,36 @@ TEST_CASE("[Animation]") {
 
             SECTION("SlideFromLeft") {
                 widget->showWithEffect(tgui::ShowAnimationType::SlideFromLeft, sf::milliseconds(300));
-                REQUIRE(widget->getPosition() == sf::Vector2f(-124, 15));
+                REQUIRE(widget->getPosition() == sf::Vector2f(-120, 15));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {-124.f+((124.f+30.f)/3.f), 15}));
+                REQUIRE(compareVector2f(widget->getPosition(), {-120.f+((120.f+30.f)/3.f), 15}));
                 widget->update(sf::milliseconds(200));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             }
 
             SECTION("SlideFromTop") {
                 widget->showWithEffect(tgui::ShowAnimationType::SlideFromTop, sf::milliseconds(300));
-                REQUIRE(widget->getPosition() == sf::Vector2f(30, -34));
+                REQUIRE(widget->getPosition() == sf::Vector2f(30, -30));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {30, -34.f+((34.f+15.f)/3.f)}));
+                REQUIRE(compareVector2f(widget->getPosition(), {30, -30.f+((30.f+15.f)/3.f)}));
                 widget->update(sf::milliseconds(200));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             }
 
             SECTION("SlideFromRight") {
                 widget->showWithEffect(tgui::ShowAnimationType::SlideFromRight, sf::milliseconds(300));
-                REQUIRE(widget->getPosition() == sf::Vector2f(482, 15));
+                REQUIRE(widget->getPosition() == sf::Vector2f(480, 15));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {482-((482-30)/3.f), 15}));
+                REQUIRE(compareVector2f(widget->getPosition(), {480-((480-30)/3.f), 15}));
                 widget->update(sf::milliseconds(200));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             }
 
             SECTION("SlideFromBottom") {
                 widget->showWithEffect(tgui::ShowAnimationType::SlideFromBottom, sf::milliseconds(300));
-                REQUIRE(widget->getPosition() == sf::Vector2f(30, 362));
+                REQUIRE(widget->getPosition() == sf::Vector2f(30, 360));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {30, 362-((362-15)/3.f)}));
+                REQUIRE(compareVector2f(widget->getPosition(), {30, 360-((360-15)/3.f)}));
                 widget->update(sf::milliseconds(200));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             }
@@ -133,15 +132,15 @@ TEST_CASE("[Animation]") {
             widget->update(sf::milliseconds(100));
             REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             REQUIRE(widget->getSize() == sf::Vector2f(120, 30));
-            REQUIRE(widget->getOpacity() == 0.9f);
+            REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
         }
 
         SECTION("hideWithEffect") {
             SECTION("Fade") {
                 widget->hideWithEffect(tgui::ShowAnimationType::Fade, sf::milliseconds(300));
-                REQUIRE(widget->getOpacity() == 0.9f);
+                REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
                 widget->update(sf::milliseconds(100));
-                REQUIRE(tgui::compareFloats(widget->getOpacity(), 0.6f));
+                REQUIRE(tgui::compareFloats(widget->getRenderer()->getOpacity(), 0.6f));
             }
 
             SECTION("Scale") {
@@ -157,28 +156,28 @@ TEST_CASE("[Animation]") {
                 widget->hideWithEffect(tgui::ShowAnimationType::SlideToRight, sf::milliseconds(300));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {30+((482-30)/3.f), 15}));
+                REQUIRE(compareVector2f(widget->getPosition(), {30+((480-30)/3.f), 15}));
             }
 
             SECTION("SlideToBottom") {
                 widget->hideWithEffect(tgui::ShowAnimationType::SlideToBottom, sf::milliseconds(300));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {30, 15+((362-15)/3.f)}));
+                REQUIRE(compareVector2f(widget->getPosition(), {30, 15+((360-15)/3.f)}));
             }
 
             SECTION("SlideToLeft") {
                 widget->hideWithEffect(tgui::ShowAnimationType::SlideToLeft, sf::milliseconds(300));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {30.f-((124.f+30.f)/3.f), 15}));
+                REQUIRE(compareVector2f(widget->getPosition(), {30.f-((120.f+30.f)/3.f), 15}));
             }
 
             SECTION("SlideToTop") {
                 widget->hideWithEffect(tgui::ShowAnimationType::SlideToTop, sf::milliseconds(300));
                 REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
                 widget->update(sf::milliseconds(100));
-                REQUIRE(compareVector2f(widget->getPosition(), {30, 15.f-((34.f+15.f)/3.f)}));
+                REQUIRE(compareVector2f(widget->getPosition(), {30, 15.f-((30.f+15.f)/3.f)}));
             }
 
             // The widget is hidden but reset to its original values at the end of the animation
@@ -186,14 +185,14 @@ TEST_CASE("[Animation]") {
             widget->update(sf::milliseconds(200));
             REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             REQUIRE(widget->getSize() == sf::Vector2f(120, 30));
-            REQUIRE(widget->getOpacity() == 0.9f);
+            REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
             REQUIRE(!widget->isVisible());
 
             // The widget no longer changes after the animation is over
             widget->update(sf::milliseconds(100));
             REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             REQUIRE(widget->getSize() == sf::Vector2f(120, 30));
-            REQUIRE(widget->getOpacity() == 0.9f);
+            REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
             REQUIRE(!widget->isVisible());
         }
 
