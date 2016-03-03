@@ -31,20 +31,20 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Transformable::Transformable(const Transformable& copy)
+    Transformable::Transformable(const Transformable& other)
     {
-        setPosition(copy.m_position);
-        setSize(copy.m_size);
+        setPosition(other.m_position);
+        setSize(other.m_size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Transformable& Transformable::operator=(const Transformable& right)
+    Transformable& Transformable::operator=(const Transformable& other)
     {
-        if (this != &right)
+        if (this != &other)
         {
-            setPosition(right.m_position);
-            setSize(right.m_size);
+            Transformable::setPosition(other.m_position);
+            Transformable::setSize(other.m_size);
         }
 
         return *this;
