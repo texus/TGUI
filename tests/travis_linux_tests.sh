@@ -1,4 +1,4 @@
-set -e
+set -eo pipefail
 
 export SFML_ROOT=$HOME/SFML_LINUX
 export DISPLAY=:99.0
