@@ -1,11 +1,11 @@
-Button.Button1 {
+Button1 {
     TextColor : rgb(255, 0, 0);
 }
 
-Button.Button2 {
+Button2 {
     TextColor : rgb(0, 255, 0);
 }
 
-Button.Button3 {
+Button3 {
     TextColor : rgb(0, 0, 255);
 }

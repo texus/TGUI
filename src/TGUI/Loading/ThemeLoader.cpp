@@ -88,11 +88,13 @@ namespace tgui
 
             for (auto& child : root->children)
             {
+                std::string name = Deserializer::deserialize(ObjectConverter::Type::String, toLower(child->name)).getString();
+
                 if (child->children.size() != 0)
                     throw Exception{"Unexpected result while loading theme file '" + filename + "'. Nested section encountered."};
 
                 for (auto& pair : child->propertyValuePairs)
-                    m_propertiesCache[filename][toLower(child->name)][toLower(pair.first)] = pair.second->value;
+                    m_propertiesCache[filename][name][toLower(pair.first)] = pair.second->value;
             }
         }
     }

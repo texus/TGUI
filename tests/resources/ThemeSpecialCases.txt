@@ -1,11 +1,11 @@
-Button.Button1 { TextColor : rgb(255, 0, 0); }
+Button1 { TextColor : rgb(255, 0, 0); }
 
-Checkbox.Name.With.Dots {
+Name.With.Dots {
     TextColor : rgb(0, 255, 0);
     BackgroundColor : rgb(255, 255, 255);
 }
 
-EditBox."SpecialChars.{}:;/*#//\t\\\"" {
+"SpecialChars.{}:;/*#//\t\\\"" {
     TextColor : rgba(,,,);
 }
 

@@ -81,20 +81,22 @@ namespace tgui
 
     std::shared_ptr<RendererData> Theme::getRenderer(const std::string& secondary)
     {
+        std::string lowercaseSecondart = toLower(secondary);
+
         // If we already have this renderer in cache then just return it
-        auto it = m_renderers.find(secondary);
+        auto it = m_renderers.find(lowercaseSecondart);
         if (it != m_renderers.end())
             return it->second;
 
-        m_renderers[secondary] = std::make_shared<RendererData>();
+        m_renderers[lowercaseSecondart] = std::make_shared<RendererData>();
         if (!m_primary.empty())
         {
-            auto& properties = m_themeLoader->load(m_primary, secondary);
+            auto& properties = m_themeLoader->load(m_primary, lowercaseSecondart);
             for (auto& property : properties)
-                m_renderers[secondary]->propertyValuePairs[property.first] = {property.second};
+                m_renderers[lowercaseSecondart]->propertyValuePairs[property.first] = {property.second};
         }
 
-        return m_renderers[secondary];
+        return m_renderers[lowercaseSecondart];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
