@@ -28,5 +28,5 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_TESTS=TRUE -DTGUI_USE_GCOV=TRUE ..
 make -j2
 cd tests/
-./tests 2>&1 | grep --invert-match "Failed to use the XRandR extension while trying to get the desktop video modes"
+./tests
 cd ../..

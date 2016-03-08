@@ -97,7 +97,7 @@ namespace tgui
 
     int stoi(const std::string& value)
     {
-        int result;
+        int result = 0;
         std::istringstream iss(value);
         iss.imbue(std::locale::classic());
         iss >> result;
@@ -108,7 +108,7 @@ namespace tgui
 
     float stof(const std::string& value)
     {
-        float result;
+        float result = 0;
         std::istringstream iss(value);
         iss.imbue(std::locale::classic());
         iss >> result;

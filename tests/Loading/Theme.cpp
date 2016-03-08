@@ -89,7 +89,7 @@ TEST_CASE("[Theme]")
 
         label1->setRenderer(theme.getRenderer("label"));
         REQUIRE(label1->getRenderer()->getTextColor() != sf::Color::Red);
-        
+
         label1->getRenderer()->setTextColor("green");
         REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Green);
 
@@ -112,7 +112,7 @@ TEST_CASE("[Theme]")
                 REQUIRE(one == "resources/Black.txt");
                 preloadCount++;
             }
-            
+
             const std::map<sf::String, sf::String>& load(const std::string& one, const std::string& two) override
             {
                 REQUIRE(one == "resources/Black.txt");
