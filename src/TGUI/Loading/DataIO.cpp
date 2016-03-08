@@ -83,30 +83,30 @@ namespace tgui
             }
 
             std::string word = readWord(stream);
-            if (word != "")
+            if (word == "")
             {
                 stream >> std::ws;
-                if (stream.peek() == '{')
-                    error = parseSection(stream, node, word);
-                else if (stream.peek() == ':')
-                    error = parseKeyValue(stream, node, word);
-                else if (stream.peek() == '}')
+                if (stream.peek() != '{')
                 {
-                    char c;
-                    stream.read(&c, 1);
+                    // Something went wrong while reading the word
+                    if (stream.peek() == EOF)
+                        error = "Found EOF while trying to read new section.";
+                    else
+                        error = "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
+
+                    break;
                 }
-                else if (stream.peek() == EOF)
-                    error = "Found EOF while trying to read new section.";
-                else
-                    error = "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
             }
-            else // Something went wrong while reading the word
-            {
-                if (stream.peek() == EOF)
-                    error = "Found EOF while trying to read new section.";
-                else
-                    error = "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
-            }
+
+            stream >> std::ws;
+            if (stream.peek() == '{')
+                error = parseSection(stream, node, word);
+            else if (stream.peek() == ':')
+                error = parseKeyValue(stream, node, word);
+            else if (stream.peek() == EOF)
+                error = "Found EOF while trying to read new section.";
+            else
+                error = "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
         }
 
         if (!error.empty()) {
@@ -227,49 +227,42 @@ namespace tgui
                     continue;
                 }
                 else
-                    return "Found '/' while trying to read new section.";
+                    return "Found '/' while trying to parse section.";
 
                 continue;
             }
 
             std::string word = readWord(stream);
-            if (word != "")
-            {
-                stream >> std::ws;
-                if (stream.peek() == '{')
-                {
-                    std::string error = parseSection(stream, node, word);
-                    if (!error.empty())
-                        return error;
-                }
-                else if (stream.peek() == ':')
-                {
-                    std::string error = parseKeyValue(stream, node, word);
-                    if (!error.empty())
-                        return error;
-                }
-                else if (stream.peek() == '}')
-                {
-                    stream.read(&c, 1);
-                    return "";
-                }
-                else if (stream.peek() == EOF)
-                    return "Found EOF while trying to read new section.";
-                else
-                    return "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
-            }
-            else // Something went wrong while reading the word
+            if (word == "")
             {
                 if (stream.peek() == EOF)
-                    return "Found EOF while trying to read new section.";
+                    return "Found EOF while trying to read property or nested section name.";
                 else if (stream.peek() == '}')
                 {
                     stream.read(&c, 1);
                     return "";
                 }
-                else
-                    return "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
+                else if (stream.peek() != '{')
+                    return "Expected property or nested section name, found '" + std::string(1, stream.peek()) + "' instead.";
             }
+
+            stream >> std::ws;
+            if (stream.peek() == '{')
+            {
+                std::string error = parseSection(stream, node, word);
+                if (!error.empty())
+                    return error;
+            }
+            else if (stream.peek() == ':')
+            {
+                std::string error = parseKeyValue(stream, node, word);
+                if (!error.empty())
+                    return error;
+            }
+            else if (stream.peek() == EOF)
+                return "Found EOF while trying to read property or nested section name.";
+            else
+                return "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
         }
 
         return "Found EOF while reading section.";
@@ -294,7 +287,6 @@ namespace tgui
 
             // Create a value node to store the value
             auto valueNode = std::make_shared<ValueNode>();
-            valueNode->parent = node.get();
             valueNode->value = line;
             node->propertyValuePairs[toLower(key)] = valueNode;
 

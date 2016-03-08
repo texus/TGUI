@@ -18,6 +18,7 @@ addons:
     packages:
     - g++-4.7
     - g++-5
+    - valgrind
 
     - libfreetype6-dev
     - libjpeg-dev

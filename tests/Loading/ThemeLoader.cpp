@@ -22,7 +22,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "../catch.hpp"
+#include "../Tests.hpp"
 #include <TGUI/Loading/ThemeLoader.hpp>
 
 namespace tgui
@@ -52,26 +52,6 @@ TEST_CASE("[ThemeLoader]")
     SECTION("load nonexistent class name")
     {
         REQUIRE_THROWS_AS(loader->load("resources/Black.txt", "NonexistentClassName"), tgui::Exception);
-    }
-
-    SECTION("load theme with missing opening brace")
-    {
-        REQUIRE_THROWS_AS(loader->load("resources/ThemeMissingOpeningBrace.txt", "button1"), tgui::Exception);
-    }
-
-    SECTION("load theme with missing closing brace")
-    {
-        REQUIRE_THROWS_AS(loader->load("resources/ThemeMissingClosingBrace.txt", "button1"), tgui::Exception);
-    }
-
-    SECTION("load theme with missing semi-colon")
-    {
-        REQUIRE_THROWS_AS(loader->load("resources/ThemeMissingSemiColon.txt", "button1"), tgui::Exception);
-    }
-
-    SECTION("load theme with special cases")
-    {
-        REQUIRE_NOTHROW(loader->load("resources/ThemeSpecialCases.txt", "name.WITH.dots"));
     }
 
     SECTION("load theme with comments")

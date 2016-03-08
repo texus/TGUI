@@ -14,6 +14,7 @@ set(TEST_SOURCES
     TextureManager.cpp
     #VerticalLayout.cpp
     Widget.cpp
+    Loading/DataIO.cpp
     Loading/Serializer.cpp
     Loading/Deserializer.cpp
     Loading/Theme.cpp

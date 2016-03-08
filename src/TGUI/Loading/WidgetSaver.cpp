@@ -73,7 +73,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    #define SET_PROPERTY(property, value) node->propertyValuePairs[property] = std::make_shared<DataIO::ValueNode>(node.get(), value)
+    #define SET_PROPERTY(property, value) node->propertyValuePairs[property] = std::make_shared<DataIO::ValueNode>(value)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -103,7 +103,7 @@ namespace tgui
         node->children.emplace_back(std::make_shared<DataIO::Node>());
         node->children.back()->name = "Renderer";
         for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
-            node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(node->children.back().get(), ObjectConverter{pair.second}.getString());
+            node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(ObjectConverter{pair.second}.getString());
 
         return node;
     }
@@ -169,11 +169,11 @@ namespace tgui
             lineNode->parent = node.get();
             lineNode->name = "Line";
 
-            lineNode->propertyValuePairs["Text"] = std::make_shared<DataIO::ValueNode>(lineNode.get(), Serializer::serialize(chatBox->getLine(i)));
+            lineNode->propertyValuePairs["Text"] = std::make_shared<DataIO::ValueNode>(Serializer::serialize(chatBox->getLine(i)));
             if (lineTextSize != chatBox->getTextSize())
-                lineNode->propertyValuePairs["TextSize"] = std::make_shared<DataIO::ValueNode>(lineNode.get(), tgui::to_string(lineTextSize));
+                lineNode->propertyValuePairs["TextSize"] = std::make_shared<DataIO::ValueNode>(tgui::to_string(lineTextSize));
             if (lineTextColor != chatBox->getTextColor())
-                lineNode->propertyValuePairs["Color"] = std::make_shared<DataIO::ValueNode>(lineNode.get(), Serializer::serialize(lineTextColor));
+                lineNode->propertyValuePairs["Color"] = std::make_shared<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
 
             node->children.push_back(lineNode);
         }

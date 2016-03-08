@@ -65,11 +65,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct ValueNode
         {
-            ValueNode(Node* p = nullptr, const std::string& v = "") : parent(p), value(v) {}
+            ValueNode(const std::string& v = "") : value(v) {}
 
-            Node* parent;
             std::string value;
-
             bool listNode = false;
             std::vector<std::string> valueList;
         };
