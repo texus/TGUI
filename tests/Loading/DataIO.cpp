@@ -29,6 +29,12 @@ TEST_CASE("[DataIO]")
 {
     SECTION("parse")
     {
+        SECTION("Empty input")
+        {
+            std::stringstream input("");
+            REQUIRE_NOTHROW(tgui::DataIO::parse(input));
+        }
+
         SECTION("Global properties")
         {
             std::stringstream input("Property: Value;");
@@ -45,20 +51,23 @@ TEST_CASE("[DataIO]")
         {
             std::stringstream input("Property: [a,b,c,d];");
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
-
-            std::stringstream input2("Property: [\"a\", \"\\\"b\\\"\", \"\\\\c\\\\\"];");
-            REQUIRE_NOTHROW(tgui::DataIO::parse(input2));
         }
 
         SECTION("Section without name")
         {
-            std::stringstream input("{}");
+            std::stringstream input("{ Property: [\"a\", \"\\\"b\\\"\", \"\\\\c\\\\\"]; }");
+            REQUIRE_NOTHROW(tgui::DataIO::parse(input));
+        }
+
+        SECTION("Empty section")
+        {
+            std::stringstream input("name{}");
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
         }
 
         SECTION("Name with special characters")
         {
-            std::stringstream input("\"SpecialChars.{}:;/*#//\\t\\\"\\\\\" { Property : \"\\\\\\\"Value\\\"\\\\\"; }");
+            std::stringstream input("\"SpecialChars.{}:;/*#//\\t\\\"\\\\\" { Property\r\n//txt\n : \"\\\\\\\"Value\\\"\\\\\"; }");
 
             std::shared_ptr<tgui::DataIO::Node> rootNode;
             REQUIRE_NOTHROW(rootNode = tgui::DataIO::parse(input));
@@ -133,6 +142,9 @@ TEST_CASE("[DataIO]")
 
             std::stringstream input3("{ name{");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input3), tgui::Exception);
+
+            std::stringstream input4("{ /**/ ");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input4), tgui::Exception);
         }
 
         SECTION("Found EOF while trying to read property or nested section name")
@@ -157,6 +169,9 @@ TEST_CASE("[DataIO]")
 
             std::stringstream input2("{ { Property : Value /");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input2), tgui::Exception);
+
+            std::stringstream input3("{ Property: \"");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input3), tgui::Exception);
         }
 
         SECTION("Found ':' while trying to read a value")

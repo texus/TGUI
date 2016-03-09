@@ -27,6 +27,62 @@
 #include <TGUI/Global.hpp>
 
 #include <cctype>
+#include <cassert>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define REMOVE_WHITESPACE_AND_COMMENTS(ReturnErrorOnEOF) \
+    for (;;) \
+    { \
+        stream >> std::ws; \
+        if (stream.peek() == EOF) \
+            break; \
+        \
+        if (stream.peek() == '/') \
+        { \
+            char c; \
+            stream.read(&c, 1); \
+            if (stream.peek() == '/') \
+            { \
+                while (stream.peek() != EOF) \
+                { \
+                    stream.read(&c, 1); \
+                    if (c == '\n') \
+                        break; \
+                } \
+            } \
+            else if (stream.peek() == '*') \
+            { \
+                while (stream.peek() != EOF) \
+                { \
+                    stream.read(&c, 1); \
+                    if (stream.peek() == '*') \
+                    { \
+                        stream.read(&c, 1); \
+                        if (stream.peek() == '/') \
+                        { \
+                            stream.read(&c, 1); \
+                            break; \
+                        } \
+                    } \
+                } \
+                continue; \
+            } \
+            else \
+                return "Unexpected '/' found."; \
+            \
+            continue; \
+        } \
+        break; \
+    } \
+    \
+    if (stream.peek() == EOF) \
+    { \
+        if (ReturnErrorOnEOF) \
+            return "Unexpected EOF while parsing."; \
+        else \
+            return ""; \
+    }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,80 +93,13 @@ namespace tgui
     std::shared_ptr<DataIO::Node> DataIO::parse(std::stringstream& stream)
     {
         auto root = std::make_shared<Node>();
-        auto node = root;
 
         std::string error;
-        while (error.empty())
+        while (stream.peek() != EOF)
         {
-            stream >> std::ws;
-            if (stream.peek() == EOF)
-                break;
-
-            if (stream.peek() == '/')
-            {
-                char c;
-                stream.read(&c, 1);
-                if (stream.peek() == '/')
-                {
-                    while (stream.peek() != EOF)
-                    {
-                        stream.read(&c, 1);
-                        if (c == '\n')
-                            break;
-                    }
-                }
-                else if (stream.peek() == '*')
-                {
-                    while (stream.peek() != EOF)
-                    {
-                        stream.read(&c, 1);
-                        if (stream.peek() == '*')
-                        {
-                            stream.read(&c, 1);
-                            if (stream.peek() == '/')
-                            {
-                                stream.read(&c, 1);
-                                break;
-                            }
-                        }
-                    }
-                    continue;
-                }
-                else
-                    error = "Found '/' while trying to read new section.";
-
-                continue;
-            }
-
-            std::string word = readWord(stream);
-            if (word == "")
-            {
-                stream >> std::ws;
-                if (stream.peek() != '{')
-                {
-                    // Something went wrong while reading the word
-                    if (stream.peek() == EOF)
-                        error = "Found EOF while trying to read new section.";
-                    else
-                        error = "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
-
-                    break;
-                }
-            }
-
-            stream >> std::ws;
-            if (stream.peek() == '{')
-                error = parseSection(stream, node, word);
-            else if (stream.peek() == ':')
-                error = parseKeyValue(stream, node, word);
-            else if (stream.peek() == EOF)
-                error = "Found EOF while trying to read new section.";
-            else
-                error = "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
-        }
-
-        if (!error.empty()) {
-            throw Exception{"Error while parsing input. " + error};
+            error = parseRootSection(stream, root);
+            if (!error.empty())
+                throw Exception{"Error while parsing input. " + error};
         }
 
         return root;
@@ -177,13 +166,39 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::string DataIO::parseRootSection(std::stringstream& stream, std::shared_ptr<Node> root)
+    {
+        REMOVE_WHITESPACE_AND_COMMENTS(false)
+
+        std::string word = readWord(stream);
+        if (word == "")
+        {
+            REMOVE_WHITESPACE_AND_COMMENTS(true)
+            if (stream.peek() != '{')
+            {
+                // Something went wrong while reading the word
+                if (stream.peek() == EOF)
+                    return "Found EOF while trying to read new section.";
+                else
+                    return "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
+            }
+        }
+
+        REMOVE_WHITESPACE_AND_COMMENTS(true)
+        if (stream.peek() == '{')
+            return parseSection(stream, root, word);
+        else if (stream.peek() == ':')
+            return parseKeyValue(stream, root, word);
+        else if (stream.peek() == EOF)
+            return "Found EOF while trying to read new section.";
+        else
+            return "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::string DataIO::parseSection(std::stringstream& stream, std::shared_ptr<Node> node, const std::string& sectionName)
     {
-        // Read the brace from the stream and remove the whitespace behind it
-        char c;
-        stream.read(&c, 1);
-        stream >> std::ws;
-
         // Create a new node for this section
         auto sectionNode = std::make_shared<Node>();
         sectionNode->parent = node.get();
@@ -191,46 +206,13 @@ namespace tgui
         node->children.push_back(sectionNode);
         node = sectionNode;
 
+        // Read the brace from the stream
+        char chr;
+        stream.read(&chr, 1);
+
         while (stream.peek() != EOF)
         {
-            stream >> std::ws;
-            if (stream.peek() == EOF)
-                break;
-
-            if (stream.peek() == '/')
-            {
-                stream.read(&c, 1);
-                if (stream.peek() == '/')
-                {
-                    while (stream.peek() != EOF)
-                    {
-                        stream.read(&c, 1);
-                        if (c == '\n')
-                            break;
-                    }
-                }
-                else if (stream.peek() == '*')
-                {
-                    while (stream.peek() != EOF)
-                    {
-                        stream.read(&c, 1);
-                        if (stream.peek() == '*')
-                        {
-                            stream.read(&c, 1);
-                            if (stream.peek() == '/')
-                            {
-                                stream.read(&c, 1);
-                                break;
-                            }
-                        }
-                    }
-                    continue;
-                }
-                else
-                    return "Found '/' while trying to parse section.";
-
-                continue;
-            }
+            REMOVE_WHITESPACE_AND_COMMENTS(true)
 
             std::string word = readWord(stream);
             if (word == "")
@@ -239,14 +221,14 @@ namespace tgui
                     return "Found EOF while trying to read property or nested section name.";
                 else if (stream.peek() == '}')
                 {
-                    stream.read(&c, 1);
+                    stream.read(&chr, 1);
                     return "";
                 }
                 else if (stream.peek() != '{')
                     return "Expected property or nested section name, found '" + std::string(1, stream.peek()) + "' instead.";
             }
 
-            stream >> std::ws;
+            REMOVE_WHITESPACE_AND_COMMENTS(true)
             if (stream.peek() == '{')
             {
                 std::string error = parseSection(stream, node, word);
@@ -273,9 +255,10 @@ namespace tgui
     std::string DataIO::parseKeyValue(std::stringstream& stream, std::shared_ptr<Node> node, const std::string& key)
     {
         // Read the colon from the stream and remove the whitespace behind it
-        char c;
-        stream.read(&c, 1);
-        stream >> std::ws;
+        char chr;
+        stream.read(&chr, 1);
+
+        REMOVE_WHITESPACE_AND_COMMENTS(true)
 
         // Read the value
         std::string line = trim(readLine(stream));
@@ -283,7 +266,7 @@ namespace tgui
         {
             // Remove the ';' if it is there
             if (stream.peek() == ';')
-                stream.read(&c, 1);
+                stream.read(&chr, 1);
 
             // Create a value node to store the value
             auto valueNode = std::make_shared<ValueNode>();
@@ -350,10 +333,10 @@ namespace tgui
                 return "Found EOF while trying to read a value.";
             else
             {
-                c = stream.peek();
-                if (c == ':')
+                chr = stream.peek();
+                if (chr == ':')
                     return "Found ':' while trying to read a value.";
-                else if (c == '{')
+                else if (chr == '{')
                     return "Found '{' while trying to read a value.";
                 else
                     return "Found empty value.";
@@ -468,7 +451,12 @@ namespace tgui
         while (stream.peek() != EOF)
         {
             char c = stream.peek();
-            if (!::isspace(c) && (c != ':') && (c != ';') && (c != '{') && (c != '}'))
+            if (c == '\r')
+            {
+                stream.read(&c, 1);
+                return word;
+            }
+            else if (!::isspace(c) && (c != ':') && (c != ';') && (c != '{') && (c != '}'))
             {
                 stream.read(&c, 1);
 
@@ -479,10 +467,8 @@ namespace tgui
                         stream.read(&c, 1);
                         if (c == '\n')
                         {
-                            if (!word.empty())
-                                return word;
-                            else
-                                break;
+                            assert(!word.empty()); // No known case in which you can pass here with an empty word
+                            return word;
                         }
                     }
                 }
@@ -523,12 +509,7 @@ namespace tgui
                     word.push_back(c);
             }
             else
-            {
-                if (c == '\r')
-                    stream.read(&c, 1);
-
                 return word;
-            }
         }
 
         return "";
