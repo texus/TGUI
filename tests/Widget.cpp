@@ -25,10 +25,12 @@
 #include "Tests.hpp"
 #include <TGUI/TGUI.hpp>
 
-TEST_CASE("[Widget]") {
+TEST_CASE("[Widget]")
+{
     tgui::Widget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
 
-    SECTION("Visibile") {
+    SECTION("Visibile")
+    {
         REQUIRE(widget->isVisible());
         widget->hide();
         REQUIRE(!widget->isVisible());
@@ -36,7 +38,8 @@ TEST_CASE("[Widget]") {
         REQUIRE(widget->isVisible());
     }
 
-    SECTION("Enabled") {
+    SECTION("Enabled")
+    {
         REQUIRE(widget->isEnabled());
         widget->disable();
         REQUIRE(!widget->isEnabled());
@@ -44,7 +47,8 @@ TEST_CASE("[Widget]") {
         REQUIRE(widget->isEnabled());
     }
 
-    SECTION("Parent") {
+    SECTION("Parent")
+    {
         tgui::Panel::Ptr panel1 = std::make_shared<tgui::Panel>();
         tgui::Panel::Ptr panel2 = std::make_shared<tgui::Panel>();
         tgui::Panel::Ptr panel3 = std::make_shared<tgui::Panel>();
@@ -61,22 +65,9 @@ TEST_CASE("[Widget]") {
         widget->setParent(nullptr);
         REQUIRE(widget->getParent() == nullptr);
     }
-/**
-// TODO: Move to Renderer section
-    SECTION("Opacity") {
-        REQUIRE(widget->getOpacity() == 1.f);
 
-        widget->setOpacity(0.5f);
-        REQUIRE(widget->getOpacity() == 0.5f);
-
-        widget->setOpacity(2.f);
-        REQUIRE(widget->getOpacity() == 1.f);
-
-        widget->setOpacity(-2.f);
-        REQUIRE(widget->getOpacity() == 0.f);
-    }
-*/
-    SECTION("Tooltip") {
+    SECTION("Tooltip")
+    {
         auto tooltip1 = std::make_shared<tgui::Label>();
         tooltip1->setText("some text");
         widget->setToolTip(tooltip1);
@@ -92,7 +83,8 @@ TEST_CASE("[Widget]") {
         REQUIRE(widget->getToolTip() == nullptr);
     }
 
-    SECTION("Font") {
+    SECTION("Font")
+    {
         widget = std::make_shared<tgui::ClickableWidget>();
         REQUIRE(widget->getFont() == nullptr);
         widget->setFont("resources/DroidSansArmenian.ttf");
@@ -105,7 +97,8 @@ TEST_CASE("[Widget]") {
         REQUIRE(widget->getFont() != nullptr);
     }
 
-    SECTION("Move to front/back") {
+    SECTION("Move to front/back")
+    {
         auto container = std::make_shared<tgui::Panel>();
         auto widget1 = std::make_shared<tgui::ClickableWidget>();
         auto widget2 = std::make_shared<tgui::ClickableWidget>();
@@ -144,7 +137,24 @@ TEST_CASE("[Widget]") {
         REQUIRE(container->getWidgets()[2] == widget3);
     }
 
-    SECTION("Saving and loading widget with layouts from file") {
+    SECTION("Renderer")
+    {
+        // TODO: Other tests with the renderer class (e.g. sharing and copying)
+
+        REQUIRE(widget->getRenderer()->getOpacity() == 1.f);
+
+        widget->getRenderer()->setOpacity(0.5f);
+        REQUIRE(widget->getRenderer()->getOpacity() == 0.5f);
+
+        widget->getRenderer()->setOpacity(2.f);
+        REQUIRE(widget->getRenderer()->getOpacity() == 1.f);
+
+        widget->getRenderer()->setOpacity(-2.f);
+        REQUIRE(widget->getRenderer()->getOpacity() == 0.f);
+    }
+
+    SECTION("Saving and loading widget with layouts from file")
+    {
         auto parent = std::make_shared<tgui::Panel>();
         parent->add(widget, "Widget Name.With:Special{Chars}");
 

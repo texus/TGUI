@@ -194,6 +194,35 @@ TEST_CASE("[Picture]")
         }
     }
 
+    SECTION("Renderer")
+    {
+        auto renderer = picture->getRenderer();
+
+        SECTION("set serialized property")
+        {
+            REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
+        }
+
+        SECTION("set object property")
+        {
+            REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
+        }
+
+        SECTION("functions")
+        {
+            renderer->setOpacity(0.8f);
+
+            SECTION("getPropertyValuePairs")
+            {
+                auto pairs = renderer->getPropertyValuePairs();
+                REQUIRE(pairs.size() == 1);
+                REQUIRE(pairs["opacity"].getNumber() == 0.8f);
+            }
+        }
+
+        REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
+    }
+
     SECTION("Saving and loading from file")
     {
         REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>("resources/Black.png"));

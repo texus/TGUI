@@ -26,11 +26,13 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 
-TEST_CASE("[Panel]") {
+TEST_CASE("[Panel]")
+{
     tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
     panel->setFont("resources/DroidSansArmenian.ttf");
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(panel->connect("MousePressed", [](){}));
         REQUIRE_NOTHROW(panel->connect("MouseReleased", [](){}));
         REQUIRE_NOTHROW(panel->connect("Clicked", [](){}));
@@ -40,25 +42,81 @@ TEST_CASE("[Panel]") {
         REQUIRE_NOTHROW(panel->connect("Clicked", [](sf::Vector2f){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(panel->getWidgetType() == "Panel");
     }
 
-    SECTION("Renderer") {
+    SECTION("events")
+    {
+        unsigned int mousePressedCount = 0;
+        unsigned int mouseReleasedCount = 0;
+        unsigned int clickedCount = 0;
+
+        panel->setPosition(40, 30);
+        panel->setSize(150, 100);
+
+        panel->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
+        panel->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
+        panel->connect("Clicked", mouseClicked, std::ref(clickedCount));
+
+        SECTION("mouseOnWidget")
+        {
+            REQUIRE(!panel->mouseOnWidget(10, 15));
+            REQUIRE(panel->mouseOnWidget(40, 30));
+            REQUIRE(panel->mouseOnWidget(115, 80));
+            REQUIRE(panel->mouseOnWidget(189, 129));
+            REQUIRE(!panel->mouseOnWidget(190, 130));
+
+            REQUIRE(mousePressedCount == 0);
+            REQUIRE(mouseReleasedCount == 0);
+            REQUIRE(clickedCount == 0);
+        }
+
+        SECTION("mouse click")
+        {
+            panel->leftMouseReleased(115, 80);
+
+            REQUIRE(mouseReleasedCount == 1);
+            REQUIRE(clickedCount == 0);
+
+            SECTION("mouse press")
+            {
+                panel->leftMousePressed(115, 80);
+
+                REQUIRE(mousePressedCount == 1);
+                REQUIRE(mouseReleasedCount == 1);
+                REQUIRE(clickedCount == 0);
+            }
+
+            panel->leftMouseReleased(115, 80);
+
+            REQUIRE(mousePressedCount == 1);
+            REQUIRE(mouseReleasedCount == 2);
+            REQUIRE(clickedCount == 1);
+        }
+    }
+
+    SECTION("Renderer")
+    {
         auto renderer = panel->getRenderer();
 
-        SECTION("set serialized property") {
+        SECTION("set serialized property")
+        {
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
         }
 
-        SECTION("set object property") {
+        SECTION("set object property")
+        {
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
         }
 
-        SECTION("functions") {
+        SECTION("functions")
+        {
             renderer->setBackgroundColor({10, 20, 30});
 
-            SECTION("getPropertyValuePairs") {
+            SECTION("getPropertyValuePairs")
+            {
                 auto pairs = renderer->getPropertyValuePairs();
                 REQUIRE(pairs.size() == 1);
                 REQUIRE(pairs["backgroundcolor"].getColor() == sf::Color(10, 20, 30));
@@ -68,10 +126,12 @@ TEST_CASE("[Panel]") {
         REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
     }
 
-    SECTION("Saving and loading from file") {
+    SECTION("Saving and loading from file")
+    {
         panel = std::make_shared<tgui::Panel>(400.f, 300.f);
 
-        SECTION("independent panel") {
+        SECTION("independent panel")
+        {
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("WidgetFilePanel1.txt"));
             
             panel->setSize(200, 100);
@@ -82,7 +142,8 @@ TEST_CASE("[Panel]") {
             REQUIRE(compareFiles("WidgetFilePanel1.txt", "WidgetFilePanel2.txt"));
         }
 
-        SECTION("panel inside gui") {
+        SECTION("panel inside gui")
+        {
             auto parent = std::make_shared<tgui::GuiContainer>();
             parent->add(panel);
 
@@ -101,7 +162,8 @@ TEST_CASE("[Panel]") {
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel4.txt"));
             REQUIRE(compareFiles("WidgetFilePanel3.txt", "WidgetFilePanel4.txt"));
 
-            SECTION("Copying widget") {
+            SECTION("Copying widget")
+            {
                 copy(parent, panel);
 
                 REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel4.txt"));

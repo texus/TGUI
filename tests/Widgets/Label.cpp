@@ -24,38 +24,45 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Gui.hpp>
 
 TEST_CASE("[Label]") {
     tgui::Label::Ptr label = std::make_shared<tgui::Label>();
     label->setFont("resources/DroidSansArmenian.ttf");
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(label->connect("DoubleClicked", [](){}));
         REQUIRE_NOTHROW(label->connect("DoubleClicked", [](sf::String){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(label->getWidgetType() == "Label");
     }
 
-    SECTION("Text") {
+    SECTION("Text")
+    {
         REQUIRE(label->getText() == "");
         label->setText("SomeText");
         REQUIRE(label->getText() == "SomeText");
     }
 
-    SECTION("TextStyle") {
+    SECTION("TextStyle")
+    {
         REQUIRE(label->getTextStyle() == sf::Text::Regular);
         label->setTextStyle(sf::Text::Bold | sf::Text::Italic);
         REQUIRE(label->getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
     }
 
-    SECTION("TextSize") {
+    SECTION("TextSize")
+    {
         label->setTextSize(25);
         REQUIRE(label->getTextSize() == 25);
     }
 
-    SECTION("Alignment") {
+    SECTION("Alignment")
+    {
         REQUIRE(label->getHorizontalAlignment() == tgui::Label::HorizontalAlignment::Left);
         REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Top);
 
@@ -80,7 +87,8 @@ TEST_CASE("[Label]") {
         REQUIRE(label->getVerticalAlignment() == tgui::Label::VerticalAlignment::Top);
     }
 
-    SECTION("AutoSize") {
+    SECTION("AutoSize")
+    {
         REQUIRE(label->getAutoSize());
         label->setAutoSize(false);
         REQUIRE(!label->getAutoSize());
@@ -90,16 +98,110 @@ TEST_CASE("[Label]") {
         REQUIRE(!label->getAutoSize());
     }
 
-    SECTION("MaximumTextWidth") {
+    SECTION("MaximumTextWidth")
+    {
         REQUIRE(label->getMaximumTextWidth() == 0);
         label->setMaximumTextWidth(300);
         REQUIRE(label->getMaximumTextWidth() == 300);
+
+        label->setSize(200, 50);
+        REQUIRE(label->getMaximumTextWidth() == 200);
+
+        label->setSize(400, 50);
+        REQUIRE(label->getMaximumTextWidth() == 400);
+
+        label->setMaximumTextWidth(500);
+        REQUIRE(label->getMaximumTextWidth() == 400);
+
+        label->setAutoSize(true);
+        REQUIRE(label->getMaximumTextWidth() == 500);
     }
 
-    SECTION("Renderer") {
+    SECTION("events")
+    {
+        unsigned int mousePressedCount = 0;
+        unsigned int mouseReleasedCount = 0;
+        unsigned int clickedCount = 0;
+        unsigned int doubleClickedCount = 0;
+
+        label->setPosition(40, 30);
+        label->setSize(150, 100);
+
+        label->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
+        label->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
+        label->connect("Clicked", mouseClicked, std::ref(clickedCount));
+        label->connect("DoubleClicked", doubleClicked, std::ref(doubleClickedCount));
+
+        SECTION("mouseOnWidget")
+        {
+            REQUIRE(!label->mouseOnWidget(10, 15));
+            REQUIRE(label->mouseOnWidget(40, 30));
+            REQUIRE(label->mouseOnWidget(115, 80));
+            REQUIRE(label->mouseOnWidget(189, 129));
+            REQUIRE(!label->mouseOnWidget(190, 130));
+
+            REQUIRE(mousePressedCount == 0);
+            REQUIRE(mouseReleasedCount == 0);
+            REQUIRE(clickedCount == 0);
+            REQUIRE(doubleClickedCount == 0);
+        }
+
+        SECTION("mouse click")
+        {
+            label->leftMouseReleased(115, 80);
+
+            REQUIRE(mouseReleasedCount == 1);
+            REQUIRE(clickedCount == 0);
+
+            SECTION("mouse press")
+            {
+                label->leftMousePressed(115, 80);
+
+                REQUIRE(mousePressedCount == 1);
+                REQUIRE(mouseReleasedCount == 1);
+                REQUIRE(clickedCount == 0);
+            }
+
+            label->leftMouseReleased(115, 80);
+
+            REQUIRE(mousePressedCount == 1);
+            REQUIRE(mouseReleasedCount == 2);
+            REQUIRE(clickedCount == 1);
+            REQUIRE(doubleClickedCount == 0);
+        }
+
+        SECTION("double click")
+        {
+            label->leftMousePressed(115, 80);
+            label->leftMouseReleased(115, 80);
+
+            tgui::Gui gui;
+            gui.add(label);
+            gui.updateTime(doubleClickTimeout);
+
+            label->leftMousePressed(115, 80);
+            label->leftMouseReleased(115, 80);
+
+            REQUIRE(mousePressedCount == 2);
+            REQUIRE(mouseReleasedCount == 2);
+            REQUIRE(clickedCount == 2);
+            REQUIRE(doubleClickedCount == 0);
+
+            gui.updateTime(doubleClickTimeout / 2.f);
+
+            label->leftMousePressed(115, 80);
+            label->leftMouseReleased(115, 80);
+
+            REQUIRE(doubleClickedCount == 1);
+        }
+    }
+
+    SECTION("Renderer")
+    {
         auto renderer = label->getRenderer();
 
-        SECTION("set serialized property") {
+        SECTION("set serialized property")
+        {
             REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(100, 50, 150)"));
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(150, 100, 50)"));
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(50, 150, 100)"));
@@ -107,8 +209,9 @@ TEST_CASE("[Label]") {
             REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
         }
-        
-        SECTION("set object property") {
+
+        SECTION("set object property")
+        {
             REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{100, 50, 150}));
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{150, 100, 50}));
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{50, 150, 100}));
@@ -116,16 +219,18 @@ TEST_CASE("[Label]") {
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
         }
-        
-        SECTION("functions") {
+
+        SECTION("functions")
+        {
             renderer->setTextColor({100, 50, 150});
             renderer->setBackgroundColor({150, 100, 50});
             renderer->setBorderColor({50, 150, 100});
             renderer->setBorders({1, 2, 3, 4});
             renderer->setPadding({5, 6, 7, 8});
             renderer->setOpacity(0.8f);
-            
-            SECTION("getPropertyValuePairs") {
+
+            SECTION("getPropertyValuePairs")
+            {
                 auto pairs = renderer->getPropertyValuePairs();
                 REQUIRE(pairs.size() == 6);
                 REQUIRE(pairs["textcolor"].getColor() == sf::Color(100, 50, 150));
@@ -145,7 +250,8 @@ TEST_CASE("[Label]") {
         REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
     }
 
-    SECTION("Saving and loading from file") {
+    SECTION("Saving and loading from file")
+    {
         tgui::Theme theme{"resources/Black.txt"};
         label->setRenderer(theme.getRenderer("label"));
 
@@ -173,7 +279,8 @@ TEST_CASE("[Label]") {
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel2.txt"));
         REQUIRE(compareFiles("WidgetFileLabel1.txt", "WidgetFileLabel2.txt"));
 
-        SECTION("Copying widget") {
+        SECTION("Copying widget")
+        {
             copy(parent, label);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel2.txt"));
