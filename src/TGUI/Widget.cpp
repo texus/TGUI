@@ -134,7 +134,7 @@ namespace tgui
         m_containerWidget              {std::move(other.m_containerWidget)},
         m_toolTip                      {std::move(other.m_toolTip)},
         m_font                         {std::move(other.m_font)},
-        m_renderer                     {std::move(other.m_renderer)},
+        m_renderer                     {other.m_renderer},
         m_showAnimations               {std::move(other.m_showAnimations)}
     {
         m_callback.widget = this;

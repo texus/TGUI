@@ -60,11 +60,7 @@ TEST_CASE("[ClickableWidget]") {
         REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
 
         SECTION("Copying widget") {
-            tgui::ClickableWidget temp;
-            temp = *widget;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::ClickableWidget::copy(std::make_shared<tgui::ClickableWidget>(temp)));
+            copy(parent, widget);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
             REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));

@@ -84,11 +84,7 @@ TEST_CASE("[Picture]") {
         REQUIRE(compareFiles("WidgetFilePicture1.txt", "WidgetFilePicture2.txt"));
 
         SECTION("Copying widget") {
-            tgui::Picture temp;
-            temp = *picture;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::Picture::copy(std::make_shared<tgui::Picture>(temp)));
+            copy(parent, picture);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePicture2.txt"));
             REQUIRE(compareFiles("WidgetFilePicture1.txt", "WidgetFilePicture2.txt"));

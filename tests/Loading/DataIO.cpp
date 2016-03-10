@@ -55,7 +55,7 @@ TEST_CASE("[DataIO]")
 
         SECTION("Section without name")
         {
-            std::stringstream input("{ Property: [\"a\", \"\\\"b\\\"\", \"\\\\c\\\\\"]; }");
+            std::stringstream input("{ Property//\n: [\"a\", \"\\\"b\\\"\", \"\\\\c\\\\\"]; }");
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
         }
 
@@ -67,7 +67,7 @@ TEST_CASE("[DataIO]")
 
         SECTION("Name with special characters")
         {
-            std::stringstream input("\"SpecialChars.{}:;/*#//\\t\\\"\\\\\" { Property//\r\n//txt\n : \"\\\\\\\"Value\\\"\\\\\"; }");
+            std::stringstream input("\"SpecialChars.{}:;/*#//\\t\\\"\\\\\" { Property\r\n//txt\n : \"\\\\\\\"Value\\\"\\\\\"; }");
 
             std::shared_ptr<tgui::DataIO::Node> rootNode;
             REQUIRE_NOTHROW(rootNode = tgui::DataIO::parse(input));

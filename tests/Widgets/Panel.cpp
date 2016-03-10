@@ -102,11 +102,7 @@ TEST_CASE("[Panel]") {
             REQUIRE(compareFiles("WidgetFilePanel3.txt", "WidgetFilePanel4.txt"));
 
             SECTION("Copying widget") {
-                tgui::Panel temp;
-                temp = *panel;
-
-                parent->removeAllWidgets();
-                parent->add(tgui::Panel::copy(std::make_shared<tgui::Panel>(temp)));
+                copy(parent, panel);
 
                 REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel4.txt"));
                 REQUIRE(compareFiles("WidgetFilePanel3.txt", "WidgetFilePanel4.txt"));

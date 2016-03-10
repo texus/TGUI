@@ -28,3 +28,25 @@
 #include <TGUI/Loading/Serializer.hpp>
 
 bool compareFiles(const std::string& leftFileName, const std::string& rightFileName);
+
+template <typename WidgetType>
+void copy(std::shared_ptr<tgui::Container> parent, std::shared_ptr<WidgetType> widget)
+{
+    parent->removeAllWidgets();
+
+    // Copy constructor
+    WidgetType temp1(*widget);
+
+    // Assignment operator
+    WidgetType temp2;
+    temp2 = temp1;
+
+    // Move constructor
+    WidgetType temp3 = std::move(temp2);
+
+    // Move assignment operator
+    WidgetType temp4;
+    temp4 = std::move(temp3);
+
+    parent->add(WidgetType::copy(std::make_shared<WidgetType>(temp4)));
+}

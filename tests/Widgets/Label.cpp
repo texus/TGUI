@@ -174,11 +174,7 @@ TEST_CASE("[Label]") {
         REQUIRE(compareFiles("WidgetFileLabel1.txt", "WidgetFileLabel2.txt"));
 
         SECTION("Copying widget") {
-            tgui::Label temp;
-            temp = *label;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::Label::copy(std::make_shared<tgui::Label>(temp)));
+            copy(parent, label);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel2.txt"));
             REQUIRE(compareFiles("WidgetFileLabel1.txt", "WidgetFileLabel2.txt"));
