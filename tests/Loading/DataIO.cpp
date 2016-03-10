@@ -67,7 +67,7 @@ TEST_CASE("[DataIO]")
 
         SECTION("Name with special characters")
         {
-            std::stringstream input("\"SpecialChars.{}:;/*#//\\t\\\"\\\\\" { Property\r\n//txt\n : \"\\\\\\\"Value\\\"\\\\\"; }");
+            std::stringstream input("\"SpecialChars.{}:;/*#//\\t\\\"\\\\\" { Property//\r\n//txt\n : \"\\\\\\\"Value\\\"\\\\\"; }");
 
             std::shared_ptr<tgui::DataIO::Node> rootNode;
             REQUIRE_NOTHROW(rootNode = tgui::DataIO::parse(input));
@@ -86,23 +86,38 @@ TEST_CASE("[DataIO]")
                     == "\\\"Value\"\\");
         }
 
-        SECTION("Found '/' while trying to read new section")
+        SECTION("Unexpected '/' found")
         {
             std::stringstream input("/ {}");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
 
+            std::stringstream input2("{ / }");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input2), tgui::Exception);
+
             // Slash is allowed in name when serialized
-            std::stringstream input2("\"/\" {}");
-            REQUIRE_NOTHROW(tgui::DataIO::parse(input2));
+            std::stringstream input3("\"/\" {}");
+            REQUIRE_NOTHROW(tgui::DataIO::parse(input3));
         }
 
-        SECTION("Found EOF while trying to read new section")
+        SECTION("Unexpected EOF while parsing")
         {
             std::stringstream input("name");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
 
             std::stringstream input2("name ");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input2), tgui::Exception);
+
+            std::stringstream input3("{");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input3), tgui::Exception);
+
+            std::stringstream input4("{{");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input4), tgui::Exception);
+
+            std::stringstream input5("{ name{");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input5), tgui::Exception);
+
+            std::stringstream input6("{ /**/ ");
+            REQUIRE_THROWS_AS(tgui::DataIO::parse(input6), tgui::Exception);
         }
 
         SECTION("Expected section name, found ';' instead")
@@ -123,27 +138,6 @@ TEST_CASE("[DataIO]")
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input3), tgui::Exception);
 
             std::stringstream input4("{ Property }");
-            REQUIRE_THROWS_AS(tgui::DataIO::parse(input4), tgui::Exception);
-        }
-
-        SECTION("Found '/' while trying to parse section")
-        {
-            std::stringstream input("{ / }");
-            REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
-        }
-
-        SECTION("Found EOF while reading section")
-        {
-            std::stringstream input("{");
-            REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
-
-            std::stringstream input2("{{");
-            REQUIRE_THROWS_AS(tgui::DataIO::parse(input2), tgui::Exception);
-
-            std::stringstream input3("{ name{");
-            REQUIRE_THROWS_AS(tgui::DataIO::parse(input3), tgui::Exception);
-
-            std::stringstream input4("{ /**/ ");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input4), tgui::Exception);
         }
 

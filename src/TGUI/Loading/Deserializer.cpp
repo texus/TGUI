@@ -293,7 +293,7 @@ namespace tgui
             if (openingBracketPos != std::string::npos)
                 word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
             else
-                word = value.substr(c - value.begin(), value.length() - (c - value.begin()));
+                throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Invalid text found behind filename."};
 
             sf::IntRect* rect = nullptr;
             if ((word == "Part") || (word == "part"))

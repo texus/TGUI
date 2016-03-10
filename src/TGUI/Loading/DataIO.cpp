@@ -175,13 +175,7 @@ namespace tgui
         {
             REMOVE_WHITESPACE_AND_COMMENTS(true)
             if (stream.peek() != '{')
-            {
-                // Something went wrong while reading the word
-                if (stream.peek() == EOF)
-                    return "Found EOF while trying to read new section.";
-                else
-                    return "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
-            }
+                return "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
         }
 
         REMOVE_WHITESPACE_AND_COMMENTS(true)
@@ -189,8 +183,6 @@ namespace tgui
             return parseSection(stream, root, word);
         else if (stream.peek() == ':')
             return parseKeyValue(stream, root, word);
-        else if (stream.peek() == EOF)
-            return "Found EOF while trying to read new section.";
         else
             return "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
     }
@@ -241,8 +233,6 @@ namespace tgui
                 if (!error.empty())
                     return error;
             }
-            else if (stream.peek() == EOF)
-                return "Found EOF while trying to read property or nested section name.";
             else
                 return "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
         }
