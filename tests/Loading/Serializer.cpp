@@ -26,11 +26,13 @@
 #include <TGUI/Loading/Serializer.hpp>
 
 TEST_CASE("[Serializer]") {
-    SECTION("serialize uninitialized object") {
+    SECTION("serialize uninitialized object")
+    {
         REQUIRE_THROWS_AS(tgui::Serializer::serialize({}), tgui::Exception);
     }
 
-    SECTION("serialize font") {
+    SECTION("serialize font")
+    {
         auto font = std::make_shared<sf::Font>();
         font->loadFromFile("resources/DroidSansArmenian.ttf");
         REQUIRE(tgui::Serializer::serialize(font) == "null"); // Serializing fonts is not supported yet
@@ -39,7 +41,8 @@ TEST_CASE("[Serializer]") {
         REQUIRE(tgui::Serializer::serialize(font) == "null");
     }
 
-    SECTION("serialize color") {
+    SECTION("serialize color")
+    {
         REQUIRE(tgui::Serializer::serialize(sf::Color{100, 0, 50}) == "#640032");
 
         REQUIRE(tgui::Serializer::serialize(sf::Color{1, 35, 69, 103}) == "#01234567");
@@ -56,12 +59,14 @@ TEST_CASE("[Serializer]") {
         REQUIRE(tgui::Serializer::serialize(sf::Color::Transparent) == "Transparent");
     }
 
-    SECTION("serialize borders") {
+    SECTION("serialize borders")
+    {
         REQUIRE(tgui::Serializer::serialize(tgui::Borders{}) == "(0, 0, 0, 0)");
         REQUIRE(tgui::Serializer::serialize(tgui::Borders{10, 2, 50, 300}) == "(10, 2, 50, 300)");
     }
 
-    SECTION("serialize texture") {
+    SECTION("serialize texture")
+    {
         tgui::Texture texture;
 
         texture.load("resources/image.png");
@@ -77,7 +82,8 @@ TEST_CASE("[Serializer]") {
         REQUIRE(tgui::Serializer::serialize(texture) == "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20)");
     }
 
-    SECTION("serialize string") {
+    SECTION("serialize string")
+    {
         REQUIRE(tgui::Serializer::serialize({""}) == "\"\"");
         REQUIRE(tgui::Serializer::serialize({"Just a string."}) == "\"Just a string.\"");
         REQUIRE(tgui::Serializer::serialize({"\\"}) == "\"\\\\\"");
@@ -88,13 +94,15 @@ TEST_CASE("[Serializer]") {
         REQUIRE(tgui::Serializer::serialize({"a\t\"string\"?\nYES!"}) == "\"a\\t\\\"string\\\"?\\nYES!\"");
     }
 
-    SECTION("serialize number") {
+    SECTION("serialize number")
+    {
         REQUIRE(tgui::Serializer::serialize({0}) == "0");
         REQUIRE(tgui::Serializer::serialize({1}) == "1");
         REQUIRE(tgui::Serializer::serialize({2.15f}) == "2.15");
     }
 
-    SECTION("custom serialize function") {
+    SECTION("custom serialize function")
+    {
         REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "Blue");
         auto oldFunc = tgui::Serializer::getFunction(tgui::ObjectConverter::Type::Color);
 

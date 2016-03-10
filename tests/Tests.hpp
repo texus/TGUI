@@ -27,11 +27,15 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 
+static const sf::Time doubleClickTimeout = sf::milliseconds(500);
+
 bool compareFiles(const std::string& leftFileName, const std::string& rightFileName);
 
 template <typename WidgetType>
 void copy(std::shared_ptr<tgui::Container> parent, std::shared_ptr<WidgetType> widget)
 {
+    REQUIRE(WidgetType::copy(nullptr) == nullptr);
+
     parent->removeAllWidgets();
 
     // Copy constructor
@@ -49,4 +53,27 @@ void copy(std::shared_ptr<tgui::Container> parent, std::shared_ptr<WidgetType> w
     temp4 = std::move(temp3);
 
     parent->add(WidgetType::copy(std::make_shared<WidgetType>(temp4)));
+}
+
+inline void mousePressed(unsigned int& count, sf::Vector2f pos)
+{
+    count++;
+    REQUIRE(pos == sf::Vector2f(75, 50));
+}
+
+inline void mouseReleased(unsigned int& count, sf::Vector2f pos)
+{
+    count++;
+    REQUIRE(pos == sf::Vector2f(75, 50));
+}
+
+inline void mouseClicked(unsigned int& count, sf::Vector2f pos)
+{
+    count++;
+    REQUIRE(pos == sf::Vector2f(75, 50));
+}
+
+inline void doubleClicked(unsigned int& count)
+{
+    count++;
 }

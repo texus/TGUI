@@ -28,14 +28,16 @@
 using Type = tgui::ObjectConverter::Type;
 
 TEST_CASE("[Deserializer]") {
-    SECTION("deserialize font") {
+    SECTION("deserialize font")
+    {
         REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "resources/DroidSansArmenian.ttf").getFont() != nullptr);
         REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "\"resources/DroidSansArmenian.ttf\"").getFont() != nullptr);
         REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "nullptr").getFont() == nullptr);
         REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "null").getFont() == nullptr);
     }
 
-    SECTION("deserialize color") {
+    SECTION("deserialize color")
+    {
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, ",,").getColor() == sf::Color(0, 0, 0));
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "10, 20, 30").getColor() == sf::Color(10, 20, 30));
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "40, 50, 60, 70").getColor() == sf::Color(40, 50, 60, 70));
@@ -66,7 +68,8 @@ TEST_CASE("[Deserializer]") {
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Color, "RandomString"), tgui::Exception);
     }
 
-    SECTION("deserialize string") {
+    SECTION("deserialize string")
+    {
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\"").getString() == "");
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"Just a string.\"").getString() == "Just a string.");
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\\\\"").getString() == "\\");
@@ -84,13 +87,15 @@ TEST_CASE("[Deserializer]") {
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\n\"").getString() == "\n");
     }
 
-    SECTION("deserialize number") {
+    SECTION("deserialize number")
+    {
         REQUIRE(tgui::Deserializer::deserialize(Type::Number, "0").getNumber() == 0);
         REQUIRE(tgui::Deserializer::deserialize(Type::Number, "1").getNumber() == 1);
         REQUIRE(tgui::Deserializer::deserialize(Type::Number, "2.25").getNumber() == 2.25);
     }
 
-    SECTION("deserialize borders") {
+    SECTION("deserialize borders")
+    {
         REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "1, 2, 3, 4").getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "(5, 6, 7, 8)").getBorders() == tgui::Borders(5, 6, 7, 8));
         REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "9, 10").getBorders() == tgui::Borders(9, 10, 9, 10));
@@ -102,7 +107,8 @@ TEST_CASE("[Deserializer]") {
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Borders, ",,,,"), tgui::Exception);
     }
 
-    SECTION("deserialize texture") {
+    SECTION("deserialize texture")
+    {
         tgui::Texture texture;
 
         texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\"").getTexture();
@@ -142,7 +148,8 @@ TEST_CASE("[Deserializer]") {
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 20, 20"), tgui::Exception);
     }
 
-    SECTION("custom deserialize function") {
+    SECTION("custom deserialize function")
+    {
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == sf::Color(10, 20, 30));
         auto oldFunc = tgui::Deserializer::getFunction(tgui::ObjectConverter::Type::Color);
         

@@ -25,10 +25,12 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/ClickableWidget.hpp>
 
-TEST_CASE("[ClickableWidget]") {
+TEST_CASE("[ClickableWidget]")
+{
     tgui::ClickableWidget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(widget->connect("MousePressed", [](){}));
         REQUIRE_NOTHROW(widget->connect("MouseReleased", [](){}));
         REQUIRE_NOTHROW(widget->connect("Clicked", [](){}));
@@ -38,16 +40,69 @@ TEST_CASE("[ClickableWidget]") {
         REQUIRE_NOTHROW(widget->connect("Clicked", [](sf::Vector2f){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(widget->getWidgetType() == "ClickableWidget");
     }
 
-    SECTION("constructor") {
+    SECTION("constructor")
+    {
         widget = std::make_shared<tgui::ClickableWidget>(200.f, 100.f);
         REQUIRE(widget->getSize() == sf::Vector2f(200, 100));
     }
 
-    SECTION("Saving and loading from file") {
+    SECTION("events")
+    {
+        unsigned int mousePressedCount = 0;
+        unsigned int mouseReleasedCount = 0;
+        unsigned int clickedCount = 0;
+
+        widget->setPosition(40, 30);
+        widget->setSize(150, 100);
+
+        widget->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
+        widget->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
+        widget->connect("Clicked", mouseClicked, std::ref(clickedCount));
+
+        SECTION("mouseOnWidget")
+        {
+            REQUIRE(!widget->mouseOnWidget(10, 15));
+            REQUIRE(widget->mouseOnWidget(40, 30));
+            REQUIRE(widget->mouseOnWidget(115, 80));
+            REQUIRE(widget->mouseOnWidget(189, 129));
+            REQUIRE(!widget->mouseOnWidget(190, 130));
+
+            REQUIRE(mousePressedCount == 0);
+            REQUIRE(mouseReleasedCount == 0);
+            REQUIRE(clickedCount == 0);
+        }
+
+        SECTION("mouse click")
+        {
+            widget->leftMouseReleased(115, 80);
+
+            REQUIRE(mouseReleasedCount == 1);
+            REQUIRE(clickedCount == 0);
+
+            SECTION("mouse press")
+            {
+                widget->leftMousePressed(115, 80);
+
+                REQUIRE(mousePressedCount == 1);
+                REQUIRE(mouseReleasedCount == 1);
+                REQUIRE(clickedCount == 0);
+            }
+
+            widget->leftMouseReleased(115, 80);
+
+            REQUIRE(mousePressedCount == 1);
+            REQUIRE(mouseReleasedCount == 2);
+            REQUIRE(clickedCount == 1);
+        }
+    }
+
+    SECTION("Saving and loading from file")
+    {
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(widget);
 
@@ -59,7 +114,8 @@ TEST_CASE("[ClickableWidget]") {
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
         REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
 
-        SECTION("Copying widget") {
+        SECTION("Copying widget")
+        {
             copy(parent, widget);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));

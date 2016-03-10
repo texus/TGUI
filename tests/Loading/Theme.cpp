@@ -104,7 +104,8 @@ TEST_CASE("[Theme]")
         REQUIRE(label2->getRenderer()->getTextColor() == sf::Color::Yellow);
     }
 
-    SECTION("setThemeLoader") {
+    SECTION("setThemeLoader")
+    {
         struct CustomThemeLoader : public tgui::BaseThemeLoader
         {
             void preload(const std::string& one) override

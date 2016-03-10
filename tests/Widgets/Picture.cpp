@@ -24,28 +24,41 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Gui.hpp>
 
-TEST_CASE("[Picture]") {
+TEST_CASE("[Picture]")
+{
     tgui::Picture::Ptr picture = std::make_shared<tgui::Picture>();
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(picture->getWidgetType() == "Picture");
     }
 
-    SECTION("constructor") {
+    SECTION("constructor")
+    {
         sf::Texture texture;
-        texture.loadFromFile("resources/Black.png");
+        texture.loadFromFile("resources/image.png");
 
-        SECTION("from file") {
-            REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>("resources/Black.png"));
-            REQUIRE(picture->getLoadedFilename() == "resources/Black.png");
+        SECTION("from file")
+        {
+            REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>("resources/image.png"));
+            REQUIRE(picture->getLoadedFilename() == "resources/image.png");
         }
 
-        SECTION("from texture") {
+        SECTION("from texture")
+        {
+            REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>(tgui::Texture{"resources/image.png"}));
+            REQUIRE(picture->getLoadedFilename() == "");
+        }
+
+        SECTION("from sf::Texture")
+        {
             REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>(texture));
             REQUIRE(picture->getLoadedFilename() == "");
         }
@@ -53,13 +66,42 @@ TEST_CASE("[Picture]") {
         REQUIRE(picture->getSize() == sf::Vector2f(texture.getSize()));
     }
 
-    SECTION("Smooth") {
-        // No effect when not loaded
+    SECTION("setTexture")
+    {
+        picture->setSize(50, 50);
+
+        sf::Texture texture;
+        texture.loadFromFile("resources/image.png");
+
+        SECTION("from file")
+        {
+            REQUIRE_NOTHROW(picture->setTexture("resources/image.png"));
+            REQUIRE(picture->getLoadedFilename() == "resources/image.png");
+        }
+
+        SECTION("from texture")
+        {
+            REQUIRE_NOTHROW(picture->setTexture(tgui::Texture{"resources/image.png"}));
+            REQUIRE(picture->getLoadedFilename() == "");
+        }
+
+        SECTION("from sf::Texture")
+        {
+            REQUIRE_NOTHROW(picture->setTexture(texture));
+            REQUIRE(picture->getLoadedFilename() == "");
+        }
+
+        REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
+    }
+
+    SECTION("Smooth")
+    {
+        // Calling isSmooth has no effect when not loaded
         REQUIRE(!picture->isSmooth());
         picture->setSmooth(true);
         REQUIRE(!picture->isSmooth());
 
-        picture = std::make_shared<tgui::Picture>("resources/Black.png");
+        picture = std::make_shared<tgui::Picture>("resources/image.png");
         REQUIRE(!picture->isSmooth());
         picture->setSmooth(true);
         REQUIRE(picture->isSmooth());
@@ -67,13 +109,100 @@ TEST_CASE("[Picture]") {
         REQUIRE(!picture->isSmooth());
     }
 
-    SECTION("Saving and loading from file") {
+    SECTION("events")
+    {
+        unsigned int mousePressedCount = 0;
+        unsigned int mouseReleasedCount = 0;
+        unsigned int clickedCount = 0;
+        unsigned int doubleClickedCount = 0;
+
+        picture->setTexture("resources/image.png");
+        picture->setPosition(40, 30);
+        picture->setSize(150, 100);
+
+        picture->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
+        picture->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
+        picture->connect("Clicked", mouseClicked, std::ref(clickedCount));
+        picture->connect("DoubleClicked", doubleClicked, std::ref(doubleClickedCount));
+
+        SECTION("mouseOnWidget")
+        {
+            picture->setTexture("resources/TransparentParts.png", true);
+
+            REQUIRE(!picture->mouseOnWidget(10, 15));
+            REQUIRE(picture->mouseOnWidget(40, 30));
+            REQUIRE(picture->mouseOnWidget(115, 80));
+            REQUIRE(picture->mouseOnWidget(189, 129));
+            REQUIRE(!picture->mouseOnWidget(190, 130));
+
+            picture->setTexture("resources/TransparentParts.png", false);
+            REQUIRE(!picture->mouseOnWidget(115, 80));
+
+            REQUIRE(mousePressedCount == 0);
+            REQUIRE(mouseReleasedCount == 0);
+            REQUIRE(clickedCount == 0);
+            REQUIRE(doubleClickedCount == 0);
+        }
+
+        SECTION("mouse click")
+        {
+            picture->leftMouseReleased(115, 80);
+
+            REQUIRE(mouseReleasedCount == 1);
+            REQUIRE(clickedCount == 0);
+
+            SECTION("mouse press")
+            {
+                picture->leftMousePressed(115, 80);
+
+                REQUIRE(mousePressedCount == 1);
+                REQUIRE(mouseReleasedCount == 1);
+                REQUIRE(clickedCount == 0);
+            }
+
+            picture->leftMouseReleased(115, 80);
+
+            REQUIRE(mousePressedCount == 1);
+            REQUIRE(mouseReleasedCount == 2);
+            REQUIRE(clickedCount == 1);
+            REQUIRE(doubleClickedCount == 0);
+        }
+
+        SECTION("double click")
+        {
+            picture->leftMousePressed(115, 80);
+            picture->leftMouseReleased(115, 80);
+
+            tgui::Gui gui;
+            gui.add(picture);
+            gui.updateTime(doubleClickTimeout);
+
+            picture->leftMousePressed(115, 80);
+            picture->leftMouseReleased(115, 80);
+
+            REQUIRE(mousePressedCount == 2);
+            REQUIRE(mouseReleasedCount == 2);
+            REQUIRE(clickedCount == 2);
+            REQUIRE(doubleClickedCount == 0);
+
+            gui.updateTime(doubleClickTimeout / 2.f);
+
+            picture->leftMousePressed(115, 80);
+            picture->leftMouseReleased(115, 80);
+
+            REQUIRE(doubleClickedCount == 1);
+        }
+    }
+
+    SECTION("Saving and loading from file")
+    {
         REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>("resources/Black.png"));
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(picture);
 
         picture->setSmooth();
+        picture->getRenderer()->setOpacity(0.8f);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePicture1.txt"));
         
@@ -83,7 +212,8 @@ TEST_CASE("[Picture]") {
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePicture2.txt"));
         REQUIRE(compareFiles("WidgetFilePicture1.txt", "WidgetFilePicture2.txt"));
 
-        SECTION("Copying widget") {
+        SECTION("Copying widget")
+        {
             copy(parent, picture);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePicture2.txt"));

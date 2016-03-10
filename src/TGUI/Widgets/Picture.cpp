@@ -61,9 +61,8 @@ namespace tgui
     Picture::Picture(const Texture& texture, bool fullyClickable) :
         Picture{}
     {
-        auto size = m_texture.getSize();
         setTexture(texture, fullyClickable);
-        setSize(size);
+        setSize(texture.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,20 +78,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setTexture(const sf::Texture& texture)
+    void Picture::setTexture(const Texture& texture, bool fullyClickable)
     {
-        auto data = std::make_shared<TextureData>();
-        data->texture = texture;
-        m_texture.setTexture(data);
+        m_fullyClickable = fullyClickable;
+        m_texture = texture;
         m_texture.setSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setTexture(const Texture& texture, bool fullyClickable)
+    void Picture::setTexture(const sf::Texture& texture)
     {
-        m_fullyClickable = fullyClickable;
-        m_texture = texture;
+        auto data = std::make_shared<TextureData>();
+        data->texture = texture;
+        m_texture.setTexture(data);
         m_texture.setSize(getSize());
     }
 
