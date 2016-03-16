@@ -40,7 +40,7 @@ TEST_CASE("[Picture]")
         REQUIRE(picture->getWidgetType() == "Picture");
     }
 
-    SECTION("constructor")
+    SECTION("Constructor")
     {
         sf::Texture texture;
         texture.loadFromFile("resources/image.png");
@@ -64,6 +64,17 @@ TEST_CASE("[Picture]")
         }
 
         REQUIRE(picture->getSize() == sf::Vector2f(texture.getSize()));
+    }
+
+    SECTION("Position and Size")
+    {
+        picture->setPosition(40, 30);
+        picture->setSize(150, 100);
+
+        REQUIRE(picture->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(picture->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(picture->getFullSize() == picture->getSize());
+        REQUIRE(picture->getWidgetOffset() == sf::Vector2f(0, 0));
     }
 
     SECTION("setTexture")
@@ -109,7 +120,7 @@ TEST_CASE("[Picture]")
         REQUIRE(!picture->isSmooth());
     }
 
-    SECTION("events")
+    SECTION("Events")
     {
         unsigned int mousePressedCount = 0;
         unsigned int mouseReleasedCount = 0;

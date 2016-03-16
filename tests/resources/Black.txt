@@ -1,7 +1,7 @@
 Button {
-    NormalImage     : "Black.png" Part( 0, 64, 45, 50) Middle(10, 0, 25, 50);
-    HoverImage      : "Black.png" Part(45, 64, 45, 50) Middle(10, 0, 25, 50);
-    DownImage       : "Black.png" Part(90, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureNormal   : "Black.png" Part( 0, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureHover    : "Black.png" Part(45, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureDown     : "Black.png" Part(90, 64, 45, 50) Middle(10, 0, 25, 50);
     TextColorNormal : rgb(190, 190, 190);
     TextColorHover  : rgb(250, 250, 250);
     TextColorDown   : rgb(250, 250, 250);
@@ -89,6 +89,10 @@ MessageBox {
     ChildWindow : "ChildWindow";
     Button      : "Button";
     TextColor   : rgb(190, 190, 190);
+}
+
+Panel {
+    BackgroundColor : rgb(80, 80, 80);
 }
 
 ProgressBar {

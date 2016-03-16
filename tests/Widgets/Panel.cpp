@@ -47,7 +47,18 @@ TEST_CASE("[Panel]")
         REQUIRE(panel->getWidgetType() == "Panel");
     }
 
-    SECTION("events")
+    SECTION("Position and Size")
+    {
+        panel->setPosition(40, 30);
+        panel->setSize(150, 100);
+
+        REQUIRE(panel->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(panel->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(panel->getFullSize() == panel->getSize());
+        REQUIRE(panel->getWidgetOffset() == sf::Vector2f(0, 0));
+    }
+
+    SECTION("Events")
     {
         unsigned int mousePressedCount = 0;
         unsigned int mouseReleasedCount = 0;

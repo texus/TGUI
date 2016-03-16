@@ -95,4 +95,26 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define TGUI_RENDERER_PROPERTY_GET_TEXTURE(CLASS, NAME) \
+    Texture& CLASS::get##NAME() const \
+    { \
+        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        if (it != m_data->propertyValuePairs.end()) \
+            return it->second.getTexture(); \
+        else \
+        { \
+            m_data->propertyValuePairs[toLower(#NAME)] = {Texture{}}; \
+            return m_data->propertyValuePairs[toLower(#NAME)].getTexture(); \
+        } \
+    }
+
+#define TGUI_RENDERER_PROPERTY_TEXTURE(CLASS, NAME) \
+    TGUI_RENDERER_PROPERTY_GET_TEXTURE(CLASS, NAME) \
+    void CLASS::set##NAME(const Texture& texture) \
+    { \
+        setProperty(toLower(#NAME), {texture}); \
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #endif // TGUI_RENDERER_DEFINES_HPP

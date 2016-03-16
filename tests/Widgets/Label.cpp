@@ -41,6 +41,18 @@ TEST_CASE("[Label]") {
         REQUIRE(label->getWidgetType() == "Label");
     }
 
+    SECTION("Position and Size")
+    {
+        label->setPosition(40, 30);
+        label->setSize(150, 100);
+        label->getRenderer()->setBorders(2);
+
+        REQUIRE(label->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(label->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(label->getFullSize() == label->getSize());
+        REQUIRE(label->getWidgetOffset() == sf::Vector2f(0, 0));
+    }
+
     SECTION("Text")
     {
         REQUIRE(label->getText() == "");
@@ -117,7 +129,7 @@ TEST_CASE("[Label]") {
         REQUIRE(label->getMaximumTextWidth() == 500);
     }
 
-    SECTION("events")
+    SECTION("Events")
     {
         unsigned int mousePressedCount = 0;
         unsigned int mouseReleasedCount = 0;

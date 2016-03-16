@@ -24,7 +24,7 @@ set(TGUI_SRC
     Loading/WidgetConverter.cpp
     Loading/WidgetLoader.cpp
     Loading/WidgetSaver.cpp
-    #Widgets/Button.cpp
+    Widgets/Button.cpp
     #Widgets/Canvas.cpp
     #Widgets/ChatBox.cpp
     #Widgets/CheckBox.cpp

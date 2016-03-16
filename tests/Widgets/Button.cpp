@@ -25,35 +25,43 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
 
-TEST_CASE("[Button]") {
+TEST_CASE("[Button]")
+{
     tgui::Button::Ptr button = std::make_shared<tgui::Button>();
     button->setFont("resources/DroidSansArmenian.ttf");
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(button->connect("Pressed", [](){}));
         REQUIRE_NOTHROW(button->connect("Pressed", [](sf::String){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(button->getWidgetType() == "Button");
     }
 
-    SECTION("Text") {
+    SECTION("Text")
+    {
         REQUIRE(button->getText() == "");
         button->setText("SomeText");
         REQUIRE(button->getText() == "SomeText");
     }
 
-    SECTION("TextSize") {
+    SECTION("TextSize")
+    {
         button->setTextSize(25);
         REQUIRE(button->getTextSize() == 25);
     }
 
-    SECTION("Renderer") {
+    SECTION("Renderer")
+    {
         auto renderer = button->getRenderer();
 
-        SECTION("colored") {
-            SECTION("set serialized property") {
+        SECTION("colored")
+        {
+            SECTION("set serialized property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(10, 20, 30)"));
                 REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
                 REQUIRE(renderer->getProperty("TextColorNormal").getColor() == sf::Color(10, 20, 30));
@@ -76,7 +84,8 @@ TEST_CASE("[Button]") {
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
             }
             
-            SECTION("set object property") {
+            SECTION("set object property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{10, 20, 30}));
                 REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
                 REQUIRE(renderer->getProperty("TextColorNormal").getColor() == sf::Color(10, 20, 30));
@@ -99,7 +108,8 @@ TEST_CASE("[Button]") {
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
 
-            SECTION("functions") {
+            SECTION("functions")
+            {
                 renderer->setTextColor({10, 20, 30});
                 REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
                 REQUIRE(renderer->getProperty("TextColorNormal").getColor() == sf::Color(10, 20, 30));
@@ -121,7 +131,8 @@ TEST_CASE("[Button]") {
                 renderer->setBorderColor({80, 90, 100});
                 renderer->setBorders({1, 2, 3, 4});
 
-                SECTION("getPropertyValuePairs") {
+                SECTION("getPropertyValuePairs")
+                {
                     auto pairs = renderer->getPropertyValuePairs();
                     REQUIRE(pairs.size() == 8);
                     REQUIRE(pairs["TextColorNormal"].getColor() == sf::Color(20, 30, 40));
@@ -145,7 +156,8 @@ TEST_CASE("[Button]") {
             REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
         }
 
-        SECTION("textured") {
+        SECTION("textured")
+        {
             tgui::Texture textureNormal("resources/Black.png", {0, 64, 45, 50}, {10, 0, 25, 50});
             tgui::Texture textureHover("resources/Black.png", {45, 64, 45, 50}, {10, 0, 25, 50});
             tgui::Texture textureDown("resources/Black.png", {90, 64, 45, 50}, {10, 0, 25, 50});
@@ -156,27 +168,31 @@ TEST_CASE("[Button]") {
             REQUIRE(!renderer->getProperty("DownImage").getTexture().isLoaded());
             REQUIRE(!renderer->getProperty("FocusedImage").getTexture().isLoaded());
 
-            SECTION("set serialized property") {
+            SECTION("set serialized property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("NormalImage", tgui::Serializer::serialize(textureNormal)));
                 REQUIRE_NOTHROW(renderer->setProperty("HoverImage", tgui::Serializer::serialize(textureHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("DownImage", tgui::Serializer::serialize(textureDown)));
                 REQUIRE_NOTHROW(renderer->setProperty("FocusedImage", tgui::Serializer::serialize(textureFocused)));
             }
 
-            SECTION("set object property") {
+            SECTION("set object property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("NormalImage", textureNormal));
                 REQUIRE_NOTHROW(renderer->setProperty("HoverImage", textureHover));
                 REQUIRE_NOTHROW(renderer->setProperty("DownImage", textureDown));
                 REQUIRE_NOTHROW(renderer->setProperty("FocusedImage", textureFocused));
             }
 
-            SECTION("functions") {
+            SECTION("functions")
+            {
                 renderer->setNormalTexture(textureNormal);
                 renderer->setHoverTexture(textureHover);
                 renderer->setDownTexture(textureDown);
                 renderer->setFocusTexture(textureFocused);
 
-                SECTION("getPropertyValuePairs") {
+                SECTION("getPropertyValuePairs")
+                {
                     auto pairs = renderer->getPropertyValuePairs();
                     REQUIRE(pairs.size() == 9);
                     REQUIRE(pairs["NormalImage"].getTexture().getData() == textureNormal.getData());
@@ -198,7 +214,8 @@ TEST_CASE("[Button]") {
         }
     }
 
-    SECTION("Saving and loading from file") {
+    SECTION("Saving and loading from file")
+    {
         REQUIRE_NOTHROW(button = std::make_shared<tgui::Theme>()->load("Button"));
 
         auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
@@ -221,12 +238,9 @@ TEST_CASE("[Button]") {
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileButton2.txt"));
         REQUIRE(compareFiles("WidgetFileButton1.txt", "WidgetFileButton2.txt"));
 
-        SECTION("Copying widget") {
-            tgui::Button temp;
-            temp = *button;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::Button::copy(std::make_shared<tgui::Button>(temp)), "ButtonName");
+        SECTION("Copying widget")
+        {
+            copy(parent, button);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileButton2.txt"));
             REQUIRE(compareFiles("WidgetFileButton1.txt", "WidgetFileButton2.txt"));

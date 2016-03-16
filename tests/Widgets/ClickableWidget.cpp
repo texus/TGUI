@@ -45,13 +45,24 @@ TEST_CASE("[ClickableWidget]")
         REQUIRE(widget->getWidgetType() == "ClickableWidget");
     }
 
-    SECTION("constructor")
+    SECTION("Constructor")
     {
         widget = std::make_shared<tgui::ClickableWidget>(200.f, 100.f);
         REQUIRE(widget->getSize() == sf::Vector2f(200, 100));
     }
 
-    SECTION("events")
+    SECTION("Position and Size")
+    {
+        widget->setPosition(40, 30);
+        widget->setSize(150, 100);
+
+        REQUIRE(widget->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(widget->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(widget->getFullSize() == widget->getSize());
+        REQUIRE(widget->getWidgetOffset() == sf::Vector2f(0, 0));
+    }
+
+    SECTION("Events")
     {
         unsigned int mousePressedCount = 0;
         unsigned int mouseReleasedCount = 0;

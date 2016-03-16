@@ -78,6 +78,11 @@ namespace tgui
         // Load the file when not already in cache
         if (m_propertiesCache.find(filename) == m_propertiesCache.end())
         {
+            std::string resourcePath;
+            auto slashPos = filename.find_last_of("/\\");
+            if (slashPos != std::string::npos)
+                resourcePath = filename.substr(0, slashPos+1);
+
             std::stringstream fileContents;
             readFile(filename, fileContents);
 
@@ -94,7 +99,21 @@ namespace tgui
                     throw Exception{"Unexpected result while loading theme file '" + filename + "'. Nested section encountered."};
 
                 for (auto& pair : child->propertyValuePairs)
+                {
+                    // Inject relative path to the theme file into texture filenames
+                    if (!resourcePath.empty() && (pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture"))
+                    {
+                        auto quotePos = pair.second->value.find('"');
+                        if (quotePos != std::string::npos)
+                        {
+                            ///TODO: Detect absolute pathname on windows
+                            if ((pair.second->value.size() > quotePos + 1) && (pair.second->value[quotePos+1] != '/'))
+                                pair.second->value = pair.second->value.substr(0, quotePos+1) + resourcePath + pair.second->value.substr(quotePos+1);
+                        }
+                    }
+
                     m_propertiesCache[filename][name][toLower(pair.first)] = pair.second->value;
+                }
             }
         }
     }

@@ -60,12 +60,6 @@ namespace tgui
     {
         if (!primary.empty())
             m_themeLoader->preload(primary);
-
-        /** TODO: m_resourcePath?
-        std::string::size_type slashPos = m_primary.find_last_of("/\\");
-        if (slashPos != std::string::npos)
-            m_resourcePath = m_primary.substr(0, slashPos+1);
-        */
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
