@@ -54,3 +54,10 @@ build_script:
   - cmake -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DSFML_ROOT=C:\SFML\build-VS2015-Win64 -DSFML_INCLUDE_DIR=C:\SFML\include ..
   - msbuild tgui.sln /p:Configuration=Release /m
   - cd ..
+
+notifications:
+  - provider: Webhook
+    url: https://webhooks.gitter.im/e/1feed1f155b2a41e6a62
+    on_build_success: true
+    on_build_failure: true
+    on_build_status_changed: true

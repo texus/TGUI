@@ -82,3 +82,11 @@ after_success:
     if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == g++-5 ]]; then
       bash <(curl -s https://codecov.io/bash) -x gcov-5 -a "-s /home/travis/build/texus/TGUI -pr"
     fi
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/66857e210e9200bcb6b7
+    on_success: always
+    on_failure: always
+    on_start: never

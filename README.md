@@ -1,6 +1,7 @@
 TGUI - Texus's Graphical User Interface
 =======================================
 
+[![Chat on Gitter](https://badges.gitter.im/texus/TGUI.png)](https://gitter.im/texus/TGUI)
 [![Build Status](https://travis-ci.org/texus/TGUI.svg?branch=master)](https://travis-ci.org/texus/TGUI)
 [![Build status](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/master?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/master)
 [![codecov.io](https://codecov.io/github/texus/TGUI/coverage.svg?branch=master)](https://codecov.io/github/texus/TGUI?branch=master)
