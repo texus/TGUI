@@ -55,19 +55,7 @@ void copy(std::shared_ptr<tgui::Container> parent, std::shared_ptr<WidgetType> w
     parent->add(WidgetType::copy(std::make_shared<WidgetType>(temp4)));
 }
 
-inline void mousePressed(unsigned int& count, sf::Vector2f pos)
-{
-    count++;
-    REQUIRE(pos == sf::Vector2f(75, 50));
-}
-
-inline void mouseReleased(unsigned int& count, sf::Vector2f pos)
-{
-    count++;
-    REQUIRE(pos == sf::Vector2f(75, 50));
-}
-
-inline void mouseClicked(unsigned int& count, sf::Vector2f pos)
+inline void mouseCallback(unsigned int& count, sf::Vector2f pos)
 {
     count++;
     REQUIRE(pos == sf::Vector2f(75, 50));

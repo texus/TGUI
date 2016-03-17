@@ -24,6 +24,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Gui.hpp>
 
 TEST_CASE("[Label]") {
@@ -139,9 +140,9 @@ TEST_CASE("[Label]") {
         label->setPosition(40, 30);
         label->setSize(150, 100);
 
-        label->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
-        label->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
-        label->connect("Clicked", mouseClicked, std::ref(clickedCount));
+        label->connect("MousePressed", mouseCallback, std::ref(mousePressedCount));
+        label->connect("MouseReleased", mouseCallback, std::ref(mouseReleasedCount));
+        label->connect("Clicked", mouseCallback, std::ref(clickedCount));
         label->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
 
         SECTION("mouseOnWidget")
@@ -156,6 +157,34 @@ TEST_CASE("[Label]") {
             REQUIRE(mouseReleasedCount == 0);
             REQUIRE(clickedCount == 0);
             REQUIRE(doubleClickedCount == 0);
+        }
+
+        SECTION("mouse move")
+        {
+            unsigned int mouseEnteredCount = 0;
+            unsigned int mouseLeftCount = 0;
+
+            label->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
+            label->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
+
+            auto parent = std::make_shared<tgui::Panel>(300, 200);
+            parent->add(label);
+
+            parent->mouseMoved(10, 15);
+            REQUIRE(mouseEnteredCount == 0);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(40, 30);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(189, 129);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(190, 130);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 1);
         }
 
         SECTION("mouse click")
@@ -260,6 +289,8 @@ TEST_CASE("[Label]") {
         REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getBorders() == tgui::Borders(5, 6, 7, 8));
         REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
+
+        REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }
 
     SECTION("Saving and loading from file")

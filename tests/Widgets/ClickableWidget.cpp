@@ -24,6 +24,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/ClickableWidget.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 
 TEST_CASE("[ClickableWidget]")
 {
@@ -71,9 +72,9 @@ TEST_CASE("[ClickableWidget]")
         widget->setPosition(40, 30);
         widget->setSize(150, 100);
 
-        widget->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
-        widget->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
-        widget->connect("Clicked", mouseClicked, std::ref(clickedCount));
+        widget->connect("MousePressed", mouseCallback, std::ref(mousePressedCount));
+        widget->connect("MouseReleased", mouseCallback, std::ref(mouseReleasedCount));
+        widget->connect("Clicked", mouseCallback, std::ref(clickedCount));
 
         SECTION("mouseOnWidget")
         {
@@ -86,6 +87,34 @@ TEST_CASE("[ClickableWidget]")
             REQUIRE(mousePressedCount == 0);
             REQUIRE(mouseReleasedCount == 0);
             REQUIRE(clickedCount == 0);
+        }
+
+        SECTION("mouse move")
+        {
+            unsigned int mouseEnteredCount = 0;
+            unsigned int mouseLeftCount = 0;
+
+            widget->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
+            widget->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
+
+            auto parent = std::make_shared<tgui::Panel>(300, 200);
+            parent->add(widget);
+
+            parent->mouseMoved(10, 15);
+            REQUIRE(mouseEnteredCount == 0);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(40, 30);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(189, 129);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(190, 130);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 1);
         }
 
         SECTION("mouse click")
@@ -139,6 +168,8 @@ TEST_CASE("[ClickableWidget]")
         }
 
         REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
+
+        REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }
 
     SECTION("Saving and loading from file")

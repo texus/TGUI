@@ -67,9 +67,9 @@ TEST_CASE("[Panel]")
         panel->setPosition(40, 30);
         panel->setSize(150, 100);
 
-        panel->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
-        panel->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
-        panel->connect("Clicked", mouseClicked, std::ref(clickedCount));
+        panel->connect("MousePressed", mouseCallback, std::ref(mousePressedCount));
+        panel->connect("MouseReleased", mouseCallback, std::ref(mouseReleasedCount));
+        panel->connect("Clicked", mouseCallback, std::ref(clickedCount));
 
         SECTION("mouseOnWidget")
         {
@@ -82,6 +82,34 @@ TEST_CASE("[Panel]")
             REQUIRE(mousePressedCount == 0);
             REQUIRE(mouseReleasedCount == 0);
             REQUIRE(clickedCount == 0);
+        }
+
+        SECTION("mouse move")
+        {
+            unsigned int mouseEnteredCount = 0;
+            unsigned int mouseLeftCount = 0;
+
+            panel->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
+            panel->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
+
+            auto parent = std::make_shared<tgui::Panel>(300, 200);
+            parent->add(panel);
+
+            parent->mouseMoved(10, 15);
+            REQUIRE(mouseEnteredCount == 0);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(40, 30);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(189, 129);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(190, 130);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 1);
         }
 
         SECTION("mouse click")
@@ -135,6 +163,8 @@ TEST_CASE("[Panel]")
         }
 
         REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
+
+        REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }
 
     SECTION("Saving and loading from file")

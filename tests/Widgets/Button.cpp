@@ -24,6 +24,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 
 TEST_CASE("[Button]")
 {
@@ -76,9 +77,9 @@ TEST_CASE("[Button]")
         button->setPosition(40, 30);
         button->setSize(150, 100);
 
-        button->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
-        button->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
-        button->connect("Clicked", mouseClicked, std::ref(clickedCount));
+        button->connect("MousePressed", mouseCallback, std::ref(mousePressedCount));
+        button->connect("MouseReleased", mouseCallback, std::ref(mouseReleasedCount));
+        button->connect("Clicked", mouseCallback, std::ref(clickedCount));
         button->connect("Pressed", genericCallback, std::ref(pressedCount));
 
         SECTION("mouseOnWidget")
@@ -93,6 +94,34 @@ TEST_CASE("[Button]")
             REQUIRE(mouseReleasedCount == 0);
             REQUIRE(clickedCount == 0);
             REQUIRE(pressedCount == clickedCount);
+        }
+
+        SECTION("mouse move")
+        {
+            unsigned int mouseEnteredCount = 0;
+            unsigned int mouseLeftCount = 0;
+
+            button->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
+            button->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
+
+            auto parent = std::make_shared<tgui::Panel>(300, 200);
+            parent->add(button);
+
+            parent->mouseMoved(10, 15);
+            REQUIRE(mouseEnteredCount == 0);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(40, 30);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(189, 129);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 0);
+
+            parent->mouseMoved(190, 130);
+            REQUIRE(mouseEnteredCount == 1);
+            REQUIRE(mouseLeftCount == 1);
         }
 
         SECTION("mouse click")
@@ -119,6 +148,23 @@ TEST_CASE("[Button]")
             REQUIRE(mouseReleasedCount == 2);
             REQUIRE(clickedCount == 1);
             REQUIRE(pressedCount == clickedCount);
+        }
+
+        SECTION("key pressed")
+        {
+            sf::Event::KeyEvent keyEvent;
+            keyEvent.alt = false;
+            keyEvent.control = false;
+            keyEvent.shift = false;
+            keyEvent.system = false;
+
+            keyEvent.code = sf::Keyboard::Space;
+            button->keyPressed(keyEvent);
+            REQUIRE(pressedCount == 1);
+
+            keyEvent.code = sf::Keyboard::Return;
+            button->keyPressed(keyEvent);
+            REQUIRE(pressedCount == 2);
         }
     }
 
@@ -263,6 +309,8 @@ TEST_CASE("[Button]")
             REQUIRE(renderer->getProperty("TextureDown").getTexture().getData() == textureDown.getData());
             REQUIRE(renderer->getProperty("TextureFocused").getTexture().getData() == textureFocused.getData());
         }
+
+        REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }
 
     SECTION("Saving and loading from file")
