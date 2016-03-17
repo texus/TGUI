@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012-2015 Bruno Van de Velde (vdv_b@tgui.eu)
+// Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -35,14 +35,14 @@ namespace tgui
     Scrollbar::Scrollbar()
     {
         m_callback.widgetType = "Scrollbar";
+        addSignal<int>("ValueChanged");
         m_draggableWidget = true;
 
-        addSignal<int>("ValueChanged");
-
-        m_renderer = std::make_shared<ScrollbarRenderer>(this);
-        reload();
+        m_renderer = aurora::makeCopied<tgui::ButtonRenderer>();
+        setRenderer(m_renderer->getData());
 
         setSize(16, 160);
+        m_sizeDefined = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

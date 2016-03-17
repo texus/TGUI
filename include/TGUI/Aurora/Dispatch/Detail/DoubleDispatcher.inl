@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 //
 // Aurora C++ Library
-// Copyright (c) 2012-2015 Jan Haller
+// Copyright (c) 2012-2016 Jan Haller
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages

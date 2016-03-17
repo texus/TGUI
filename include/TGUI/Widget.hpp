@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012-2015 Bruno Van de Velde (vdv_b@tgui.eu)
+// Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -589,6 +589,9 @@ namespace tgui
 
         // Show animations
         std::vector<std::shared_ptr<priv::Animation>> m_showAnimations;
+
+        // Keeps track of when setSize is called
+        bool m_sizeDefined = false;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
