@@ -159,6 +159,9 @@ namespace tgui
     TGUI_API std::string serializeTexture(ObjectConverter&& value)
     {
         Texture texture = value.getTexture();
+        if (texture.getId().empty())
+            return "None";
+
         std::string result = "\"" + texture.getId() + "\"";
 
         if (texture.getData()->rect != sf::IntRect{})

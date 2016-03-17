@@ -134,7 +134,7 @@ TEST_CASE("[Picture]")
         picture->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
         picture->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
         picture->connect("Clicked", mouseClicked, std::ref(clickedCount));
-        picture->connect("DoubleClicked", doubleClicked, std::ref(doubleClickedCount));
+        picture->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
 
         SECTION("mouseOnWidget")
         {

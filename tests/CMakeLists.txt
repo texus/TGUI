@@ -19,7 +19,7 @@ set(TEST_SOURCES
     Loading/Deserializer.cpp
     Loading/Theme.cpp
     Loading/ThemeLoader.cpp
-    #Widgets/Button.cpp
+    Widgets/Button.cpp
     #Widgets/Canvas.cpp
     #Widgets/ChatBox.cpp
     #Widgets/CheckBox.cpp

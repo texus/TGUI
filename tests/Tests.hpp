@@ -73,7 +73,7 @@ inline void mouseClicked(unsigned int& count, sf::Vector2f pos)
     REQUIRE(pos == sf::Vector2f(75, 50));
 }
 
-inline void doubleClicked(unsigned int& count)
+inline void genericCallback(unsigned int& count)
 {
     count++;
 }

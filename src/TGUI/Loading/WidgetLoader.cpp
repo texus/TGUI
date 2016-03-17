@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Loading/WidgetLoader.hpp>/**
-#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Loading/WidgetLoader.hpp>
+#include <TGUI/Widgets/Button.hpp>/**
 #include <TGUI/Widgets/Canvas.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/CheckBox.hpp>
@@ -207,7 +207,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
+
     TGUI_API Widget::Ptr loadButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         Button::Ptr button;
@@ -224,7 +224,7 @@ namespace tgui
 
         return button;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadCanvas(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -851,8 +851,8 @@ namespace tgui
         {
             // Using "std::shared_ptr<Widget>{}" instead of "nullptr" to work around internal compiler error with MinGW 4.7.1 TDM
             {"widget", std::bind(loadWidget, std::placeholders::_1, std::shared_ptr<Widget>{})},
-            {"container", std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},/**
-            {"button", std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
+            {"container", std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
+            {"button", std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},/**
             {"canvas", std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
             {"chatbox", std::bind(loadChatBox, std::placeholders::_1, std::shared_ptr<ChatBox>{})},
             {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},

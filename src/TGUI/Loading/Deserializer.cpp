@@ -250,6 +250,9 @@ namespace tgui
         if (!tgui::removeWhitespace(value, c))
             throw tgui::Exception{"Failed to deserialize texture '" + value + "'. Value is empty."};
 
+        if (tgui::toLower(value) == "none")
+            return tgui::Texture{};
+
         // There has to be a quote
         if (*c == '"')
             ++c;

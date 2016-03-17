@@ -142,7 +142,7 @@ TEST_CASE("[Label]") {
         label->connect("MousePressed", mousePressed, std::ref(mousePressedCount));
         label->connect("MouseReleased", mouseReleased, std::ref(mouseReleasedCount));
         label->connect("Clicked", mouseClicked, std::ref(clickedCount));
-        label->connect("DoubleClicked", doubleClicked, std::ref(doubleClickedCount));
+        label->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
 
         SECTION("mouseOnWidget")
         {

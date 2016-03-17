@@ -24,8 +24,8 @@
 
 
 #include <TGUI/Loading/WidgetSaver.hpp>
-#include <TGUI/Loading/Serializer.hpp>/**
-#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Loading/Serializer.hpp>
+#include <TGUI/Widgets/Button.hpp>/**
 #include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
@@ -124,7 +124,7 @@ namespace tgui
 
         return node;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveButton(Button::Ptr button)
@@ -137,7 +137,7 @@ namespace tgui
         SET_PROPERTY("TextSize", tgui::to_string(button->getTextSize()));
         return node;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveChatBox(ChatBox::Ptr chatBox)
@@ -537,8 +537,8 @@ namespace tgui
     std::map<std::string, WidgetSaver::SaveFunction> WidgetSaver::m_saveFunctions =
         {
             {"widget", saveWidget},
-            {"container", saveContainer},/**
-            {"button", saveButton},
+            {"container", saveContainer},
+            {"button", saveButton},/**
             {"canvas", saveWidget},
             {"chatbox", saveChatBox},
             {"checkbox", saveRadioButton},*/
