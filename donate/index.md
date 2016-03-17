@@ -2,11 +2,9 @@
 layout: page
 title: Donate
 ---
-<div>
-<p>If you really like this library then feel free to donate a bit of money, no matter how little.</p>
+If you really like this library then feel free to donate.
 
-<p>My yearly cost on domain names and hosting is just over 25 euros and I have no problem paying this with my own money. But if you want to help paying some of the costs, you are welcome.</p>
-</div>
+My yearly cost on domain names and hosting is less than 30 euros and I have no problem paying this with my own money. But if you want to help paying part of the cost, you are welcome.
 
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick">
