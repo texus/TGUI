@@ -158,7 +158,25 @@ TEST_CASE("[Widget]")
         auto parent = std::make_shared<tgui::Panel>();
         parent->add(widget, "Widget Name.With:Special{Chars}");
 
-        SECTION("Bind 2d non-string") {
+        SECTION("Without layout bindings")
+        {
+            widget->hide();
+            widget->disable();
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget1.txt"));
+
+            parent->removeAllWidgets();
+            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt"));
+
+            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
+            REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
+
+            REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isVisible());
+            REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isEnabled());
+        }
+
+        SECTION("Bind 2d non-string")
+        {
             widget->setPosition(tgui::bindPosition(parent));
             widget->setSize(tgui::bindSize(parent));
 
@@ -179,7 +197,8 @@ TEST_CASE("[Widget]")
             REQUIRE(widget->getSize() == sf::Vector2f(400, 300));
         }
 
-        SECTION("Bind 1d non-strings and string combination") {
+        SECTION("Bind 1d non-strings and string combination")
+        {
             widget->setPosition(tgui::bindLeft(parent), {"parent.top"});
             widget->setSize({"parent.width"}, tgui::bindHeight(parent));
 
@@ -200,7 +219,8 @@ TEST_CASE("[Widget]")
             REQUIRE(widget->getSize() == sf::Vector2f(800, 300));
         }
 
-        SECTION("Bind 1d strings") {
+        SECTION("Bind 1d strings")
+        {
             widget->setPosition({"&.x"}, {"&.y"});
             widget->setSize({"&.w"}, {"&.h"});
 
@@ -220,7 +240,8 @@ TEST_CASE("[Widget]")
             REQUIRE(widget->getSize() == sf::Vector2f(800, 600));
         }
 
-        SECTION("Bind 2d strings") {
+        SECTION("Bind 2d strings")
+        {
             widget->setPosition({"{&.x, &.y}"});
             widget->setSize({"parent.size"});
 
