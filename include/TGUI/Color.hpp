@@ -41,7 +41,7 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the object from an sf::Color
+        /// @brief Creates the object from an sf::Color
         ///
         /// @param color  Color to copy
         ///
@@ -50,7 +50,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the object from an the RGB or RGBA values
+        /// @brief Creates the object from an the RGB or RGBA values
         ///
         /// @param red   Red component
         /// @param green Green component
@@ -62,7 +62,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the object from a string
+        /// @brief Creates the object from a string
         ///
         /// @param string  String to be deserialized as color
         ///
@@ -73,7 +73,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the object from a string
+        /// @brief Creates the object from a string
         ///
         /// @param string  String to be deserialized as color
         ///
@@ -84,7 +84,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Convert this object into an sf::Color object
+        /// @brief Converts this object into an sf::Color object
         ///
         /// @return The color stored in this object
         ///

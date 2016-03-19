@@ -46,7 +46,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Save a container and its child widgets to a stream
+        /// @brief Saves a container and its child widgets to a stream
         ///
         /// @param widget  The container to save
         /// @param stream  Stream to which the widget file will be written to
@@ -59,7 +59,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the save function for a certain widget type
+        /// @brief Changes the save function for a certain widget type
         ///
         /// @param type         Type of the widget
         /// @param saveFunction New save function
@@ -69,7 +69,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the save function of a certain widget type
+        /// @brief Retrieves the save function of a certain widget type
         ///
         /// @param type  Type of the widget
         ///

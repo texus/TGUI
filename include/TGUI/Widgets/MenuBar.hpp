@@ -85,7 +85,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -101,9 +101,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the menu bar.
+        /// @brief Changes the size of the menu bar
         ///
-        /// @param size  The new size of the menu bar.
+        /// @param size  The new size of the menu bar
         ///
         /// By default, the menu bar has the same width as the window and the height is 20 pixels.
         ///
@@ -113,9 +113,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -124,7 +124,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a new menu.
+        /// @brief Adds a new menu
         ///
         /// @param text  The text written on the menu
         ///
@@ -133,12 +133,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a new menu item.
+        /// @brief Adds a new menu item
         ///
         /// @param menu  The name of the menu to which the menu item will be added
         /// @param text  The text written on this menu item
         ///
-        /// @return True when the item was added, false when menu was not found.
+        /// @return True when the item was added, false when menu was not found
         ///
         /// @code
         /// menuBar->addMenu("File");
@@ -151,51 +151,51 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes a menu.
+        /// @brief Removes a menu
         ///
         /// Any menu items that belong to this menu will be removed as well.
         ///
         /// @param menu  The name of the menu to remove
         ///
-        /// @return True when the menu was removed, false when menu was not found.
+        /// @return True when the menu was removed, false when menu was not found
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeMenu(const sf::String& menu);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all menus.
+        /// @brief Removes all menus
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllMenus();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes a menu item.
+        /// @brief Removes a menu item
         ///
         /// @param menu      The name of the menu in which the menu item is located
         /// @param menuItem  The name of the menu item to remove
         ///
-        /// @return True when the item was removed, false when menu or menuItem was not found.
+        /// @return True when the item was removed, false when menu or menuItem was not found
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeMenuItem(const sf::String& menu, const sf::String& menuItem);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the character size of the text.
+        /// @brief Changes the character size of the text
         ///
         /// @param size  The new size of the text.
-        ///              If the size is 0 (default) then the text will be scaled to fit in the menu bar.
+        ///              If the size is 0 (default) then the text will be scaled to fit in the menu bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the character size of the text.
+        /// @brief Returns the character size of the text
         ///
-        /// @return The text size.
+        /// @return The text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -205,7 +205,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the minimum width of the submenus.
+        /// @brief Changes the minimum width of the submenus
         ///
         /// When a submenu is displayed, the width will be either this or the width of the longest text in the submenu.
         /// The default minimum width is 125 pixels.
@@ -217,7 +217,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the distance between the text and the side of the menu item.
+        /// @brief Returns the distance between the text and the side of the menu item
         ///
         /// @return minimum width of the submenus
         ///
@@ -231,9 +231,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -302,7 +302,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -362,12 +362,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,11 +375,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
         /// @throw Exception for unknown properties or when value was of a wrong type.
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
@@ -389,7 +389,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -401,7 +401,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -410,7 +410,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color that will be used inside the menu bar.
+        /// @brief Sets the background color that will be used inside the menu bar
         ///
         /// @param backgroundColor  The color of the background of the menu bar
         ///
@@ -419,7 +419,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the menu bar.
+        /// @brief Sets the text color that will be used inside the menu bar
         ///
         /// @param textColor  The color of the text
         ///
@@ -428,7 +428,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the selected text that will be used inside the menu bar.
+        /// @brief Sets the background color of the selected text that will be used inside the menu bar
         ///
         /// @param selectedBackgroundColor  The color of the background of the selected item
         ///
@@ -437,7 +437,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color of the selected text that will be used inside the menu bar.
+        /// @brief Sets the text color of the selected text that will be used inside the menu bar
         ///
         /// @param selectedTextColor  The color of the text when it is selected
         ///
@@ -446,19 +446,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font used in the menu bar.
+        /// @brief Changes the font used in the menu bar
         ///
         /// When you don't call this function then the global font will be use.
         /// This global font can be changed with the setGlobalFont function from the parent.
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextFont(std::shared_ptr<sf::Font> font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the distance between the text and the side of the menu item.
+        /// @brief Changes the distance between the text and the side of the menu item
         ///
         /// @param distanceToSide  distance between the text and the side of the menu item
         ///
@@ -467,7 +467,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the borders that are optionally drawn around the menu items.
+        /// @brief Changes the color of the borders that are optionally drawn around the menu items
         ///
         /// @param color  New border color
         ///
@@ -476,7 +476,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used to fill the entire menu bar
+        /// @brief Changes the image that is used to fill the entire menu bar
         ///
         /// @param texture  New item background texture
         ///
@@ -487,7 +487,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the tab is not selected
+        /// @brief Changes the image that is displayed when the tab is not selected
         ///
         /// @param texture  New item background texture
         ///
@@ -498,7 +498,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as background of the selected menu item
+        /// @brief Changes the image that is used as background of the selected menu item
         ///
         /// @param texture  New selected item background texture
         ///

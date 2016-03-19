@@ -94,7 +94,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -110,7 +110,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the widget.
+        /// @brief Changes the size of the widget
         ///
         /// @param size  The new size of the widget
         ///
@@ -120,7 +120,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Clear the entire canvas with a single color
+        /// @brief Clears the entire canvas with a single color
         ///
         /// This function is usually called once every frame, to clear the previous contents of the canvas.
         ///
@@ -131,7 +131,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draw a drawable object to the canvas
+        /// @brief Draws a drawable object to the canvas
         ///
         /// @param drawable Object to draw
         /// @param states   Render states to use for drawing
@@ -141,7 +141,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draw primitives defined by an array of vertices
+        /// @brief Draws primitives defined by an array of vertices
         ///
         /// @param vertices    Pointer to the vertices
         /// @param vertexCount Number of vertices in the array
@@ -154,7 +154,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Update the contents of the canvas
+        /// @brief Updates the contents of the canvas
         ///
         /// This function updates the canvas with what has been drawn so far. Like for windows, calling this
         /// function is mandatory at the end of rendering. Not calling
@@ -165,9 +165,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;

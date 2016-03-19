@@ -83,14 +83,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the combo box
+        /// @brief Creates the combo box
         ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
+        /// @param themeFileFilename  Filename of the theme file
+        /// @param section            The section in the theme file to read
         ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        /// @throw Exception when the theme file could not be opened
+        /// @throw Exception when the theme file did not contain the requested section with the needed information
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded
         ///
         /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
@@ -122,7 +122,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -138,7 +138,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the combo box.
+        /// @brief Changes the size of the combo box
         ///
         /// This size does not include the borders.
         ///
@@ -150,7 +150,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the full size of the combo box.
+        /// @brief Returns the full size of the combo box
         ///
         /// The size returned by this function includes the borders.
         ///
@@ -161,9 +161,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -172,9 +172,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the number of items that are displayed in the list.
+        /// @brief Changes the number of items that are displayed in the list
         ///
-        /// @param nrOfItemsInListToDisplay  The maximum number of items to display when the list of items is shown.
+        /// @param nrOfItemsInListToDisplay  The maximum number of items to display when the list of items is shown
         ///
         /// When there is no scrollbar then this is the maximum number of items.
         /// If there is one, then it will only become visible when there are more items than this number.
@@ -186,9 +186,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the number of items that are displayed in the list.
+        /// @brief Returns the number of items that are displayed in the list
         ///
-        /// @return The maximum number of items to display when the list of items is shown.
+        /// @return The maximum number of items to display when the list of items is shown
         ///
         /// When there is no scrollbar then this is the maximum number of items.
         /// If there is one, then it will only become visible when there are more items than this number.
@@ -203,10 +203,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds an item to the list, so that it can be selected later.
+        /// @brief Adds an item to the list, so that it can be selected later
         ///
         /// @param itemName  The name of the item you want to add (this is the text that will be displayed inside the combo box)
-        /// @param id        Optional unique id given to this item for the purpose to later identifying this item.
+        /// @param id        Optional unique id given to this item for the purpose to later identifying this item
         ///
         /// @return
         ///         - true when the item when it was successfully added
@@ -222,7 +222,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Selects an item from the list.
+        /// @brief Selects an item from the list
         ///
         /// When adding items to the combo box with the addItem function, none of them will be selected.
         /// If you don't want the combo box to stay empty until the user selects something, but you want a default item instead,
@@ -243,7 +243,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Selects an item from the list.
+        /// @brief Selects an item from the list
         ///
         /// When adding items to the combo box with the addItem function, none of them will be selected.
         /// If you don't want the combo box to stay empty until the user selects something, but you want a default item instead,
@@ -264,7 +264,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Selects an item in the list.
+        /// @brief Selects an item in the list
         ///
         /// @param index  Index of the item in the list
         ///
@@ -280,7 +280,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Deselects the selected item.
+        /// @brief Deselects the selected item
         ///
         /// The combo box will be empty after this function is called.
         ///
@@ -289,7 +289,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the item from the list with the given name.
+        /// @brief Removes the item from the list with the given name
         ///
         /// @param itemName  The item to remove
         ///
@@ -304,9 +304,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the item that were added with the given id.
+        /// @brief Removes the item that were added with the given id
         ///
-        /// @param id  Id that was given to the addItem function.
+        /// @param id  Id that was given to the addItem function
         ///
         /// In case the id is not unique, only the first item with that id will be removed.
         ///
@@ -319,7 +319,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the item from the list.
+        /// @brief Removes the item from the list
         ///
         /// @param index  Index of the item in the list
         ///
@@ -335,14 +335,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all items from the list.
+        /// @brief Removes all items from the list
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllItems();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the item name of the item with the given id.
+        /// @brief Returns the item name of the item with the given id
         ///
         /// @param id  The id of the item that was given to it when it was added
         ///
@@ -358,10 +358,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the currently selected item.
+        /// @brief Returns the currently selected item
         ///
         /// @return The selected item.
-        ///         When no item was selected then this function will return an empty string.
+        ///         When no item was selected then this function will return an empty string
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getSelectedItem() const
@@ -371,10 +371,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the id of the selected item.
+        /// @brief Gets the id of the selected item
         ///
         /// @return The id of the selected item, which was the optional id passed to the addItem function.
-        ///         When no item was selected then this function returns 0.
+        ///         When no item was selected then this function returns 0
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getSelectedItemId() const
@@ -384,7 +384,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the index of the selected item.
+        /// @brief Gets the index of the selected item
         ///
         /// @return The index of the selected item, or -1 when no item was selected
         ///
@@ -396,7 +396,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes an item with name originalValue to newValue.
+        /// @brief Changes an item with name originalValue to newValue
         ///
         /// @param originalValue The name of the item which you want to change
         /// @param newValue      The new name for that item
@@ -412,7 +412,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the name of an item with the given id to newValue.
+        /// @brief Changes the name of an item with the given id to newValue
         ///
         /// @param id       The unique id of the item which you want to change
         /// @param newValue The new name for that item
@@ -428,7 +428,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the name of an item at the given index to newValue.
+        /// @brief Changes the name of an item at the given index to newValue
         ///
         /// @param index    The index of the item which you want to change
         /// @param newValue The new name for that item
@@ -454,7 +454,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Return a copy of the items in the combo box
+        /// @brief Returns a copy of the items in the combo box
         ///
         /// @return items
         ///
@@ -463,7 +463,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Return a copy of the item ids in the combo box
+        /// @brief Returns a copy of the item ids in the combo box
         ///
         /// @return item ids
         ///
@@ -474,7 +474,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar.
+        /// @brief Changes the scrollbar
         ///
         /// @param scrollbar The new scrollbar to use
         ///
@@ -503,7 +503,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the internal list box
+        /// @brief Changes the internal list box
         ///
         /// @return listBox  The new list box used to display all the items
         ///
@@ -529,10 +529,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the maximum items that the combo box can contain.
+        /// @brief Changes the maximum items that the combo box can contain
         ///
         /// @param maximumItems  The maximum items inside the combo box.
-        ///                      When the maximum is set to 0 then the limit will be disabled.
+        ///                      When the maximum is set to 0 then the limit will be disabled
         ///
         /// If no scrollbar was loaded then there is always a limitation because there will be a limited space for the items.
         ///
@@ -541,10 +541,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum items that the combo box can contain.
+        /// @brief Returns the maximum items that the combo box can contain
         ///
         /// @return The maximum items inside the list.
-        ///         If the function returns 0 then there is no limit.
+        ///         If the function returns 0 then there is no limit
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::size_t getMaximumItems() const;
@@ -571,9 +571,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -610,7 +610,7 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -703,12 +703,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -716,11 +716,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
         /// @throw Exception for unknown properties or when value was of a wrong type.
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
@@ -730,7 +730,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -742,7 +742,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -751,7 +751,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color that will be used inside the combo box.
+        /// @brief Sets the background color that will be used inside the combo box
         ///
         /// @param backgroundColor  The color of the background of the combo box
         ///
@@ -762,7 +762,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the arrow that will be used inside the combo box.
+        /// @brief Sets the background color of the arrow that will be used inside the combo box
         ///
         /// @param color  The color of the arrow background of the combo box
         ///
@@ -778,7 +778,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the arrow when the mouse is not on top of the combo box
+        /// @brief Sets the background color of the arrow when the mouse is not on top of the combo box
         ///
         /// @param color  The color of the arrow background in normal state
         ///
@@ -789,7 +789,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the arrow when the mouse is standing on top of the combo box
+        /// @brief Sets the background color of the arrow when the mouse is standing on top of the combo box
         ///
         /// @param color  The color of the arrow background in hover state
         ///
@@ -800,7 +800,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the color of the arrow that will be used inside the combo box.
+        /// @brief Sets the color of the arrow that will be used inside the combo box
         ///
         /// @param color  The color of the arrow of the combo box
         ///
@@ -816,7 +816,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the color of the arrow when the mouse is not on top of the combo box
+        /// @brief Sets the color of the arrow when the mouse is not on top of the combo box
         ///
         /// @param color  The color of the arrow in normal state
         ///
@@ -827,7 +827,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the color of the arrow when the mouse is standing on top of the combo box
+        /// @brief Sets the color of the arrow when the mouse is standing on top of the combo box
         ///
         /// @param color  The color of the arrow in hover state
         ///
@@ -838,7 +838,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the combo box.
+        /// @brief Sets the text color that will be used inside the combo box
         ///
         /// @param textColor  The color of the text
         ///
@@ -847,7 +847,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the border color text that will be used inside the combo box.
+        /// @brief Sets the border color text that will be used inside the combo box
         ///
         /// @param borderColor  The color of the borders
         ///
@@ -914,7 +914,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the borders.
+        /// @brief Changes the size of the borders
         ///
         /// @param borders  The size of the borders
         ///
@@ -924,7 +924,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the padding of the list box.
+        /// @brief Changes the padding of the list box
         ///
         /// This padding will be scaled together with the background image.
         /// If there is no background image, or when 9-slice scaling is used, the padding will be exactly what you pass here.

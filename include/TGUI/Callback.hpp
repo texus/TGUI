@@ -39,11 +39,11 @@ namespace tgui
     class Widget;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Struct that tells more about the callback that happened.
+    // @brief Struct that tells more about the callback that happened
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API Callback
     {
-        // The callback id that was passed to the widget. It is used to identify from what widget the callback came from.
+        // The callback id that was passed to the widget. It is used to identify from what widget the callback came from
         unsigned int id = 0;
 
         // How did the callback occur?

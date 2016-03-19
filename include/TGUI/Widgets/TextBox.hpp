@@ -82,14 +82,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the text box
+        /// @brief Creates the text box
         ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
+        /// @param themeFileFilename  Filename of the theme file
+        /// @param section            The section in the theme file to read
         ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        /// @throw Exception when the theme file could not be opened
+        /// @throw Exception when the theme file did not contain the requested section with the needed information
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded
         ///
         /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
@@ -121,7 +121,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -137,7 +137,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the text box.
+        /// @brief Changes the size of the text box
         ///
         /// This size does not include the borders.
         ///
@@ -149,7 +149,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the full size of the text box.
+        /// @brief Returns the full size of the text box
         ///
         /// This is the size including the borders.
         ///
@@ -160,9 +160,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -171,7 +171,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text of the text box.
+        /// @brief Changes the text of the text box
         ///
         /// @param text  New text
         ///
@@ -180,7 +180,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Appends some text to the text that was already in the text box.
+        /// @brief Appends some text to the text that was already in the text box
         ///
         /// @param text  Text that will be added to the text that is already in the text box
         ///
@@ -189,7 +189,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text of the text box.
+        /// @brief Returns the text of the text box
         ///
         /// @return  The text that is currently inside the text box
         ///
@@ -201,28 +201,28 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text that you currently have selected.
+        /// @brief Returns the text that you currently have selected
         ///
-        /// @return The selected text of the text box.
+        /// @return The selected text of the text box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getSelectedText() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the character size of the text.
+        /// @brief Changes the character size of the text
         ///
         /// @param size  The new text size.
-        ///              The minimum text size is 8.
+        ///              The minimum text size is 8
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the character size of the text.
+        /// @brief Returns the character size of the text
         ///
-        /// @return The current text size.
+        /// @return The current text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -232,10 +232,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the maximum character limit.
+        /// @brief Changes the maximum character limit
         ///
         /// @param maxChars  The new character limit.
-        ///                  Set it to 0 to disable the limit.
+        ///                  Set it to 0 to disable the limit
         ///
         /// This character limit is disabled by default.
         ///
@@ -244,9 +244,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum character limit.
+        /// @brief Returns the maximum character limit
         ///
-        /// @return The character limit.
+        /// @return The character limit
         ///         The function will return 0 when there is no limit.
         ///
         /// There is no character limit by default.
@@ -259,7 +259,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar of the text box.
+        /// @brief Changes the scrollbar of the text box
         ///
         /// @param scrollbar The new scrollbar to use in the text box
         ///
@@ -288,7 +288,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Make the text box read-only or make it writable again
+        /// @brief Makes the text box read-only or make it writable again
         ///
         /// @param readOnly  Should the text box be read-only?
         ///
@@ -300,7 +300,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Check if the text box read-only or writable
+        /// @brief Checks if the text box read-only or writable
         ///
         /// @return Is the text box read-only?
         ///
@@ -312,9 +312,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -439,7 +439,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -530,12 +530,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -543,11 +543,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
         /// @throw Exception for unknown properties or when value was of a wrong type.
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
@@ -557,7 +557,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -569,7 +569,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -578,43 +578,43 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color that will be used inside the text box.
+        /// @brief Sets the background color that will be used inside the text box
         ///
-        /// @param backgroundColor  The new background color.
+        /// @param backgroundColor  The new background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundColor(const Color& backgroundColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the text box.
+        /// @brief Sets the text color that will be used inside the text box
         ///
-        /// @param textColor  The new text color.
+        /// @param textColor  The new text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const Color& textColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color of the selected text that will be used inside the text box.
+        /// @brief Sets the text color of the selected text that will be used inside the text box
         ///
-        /// @param selectedTextColor  The new text color.
+        /// @param selectedTextColor  The new text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextColor(const Color& selectedTextColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the selected text that will be used inside the text box.
+        /// @brief Sets the background color of the selected text that will be used inside the text box
         ///
-        /// @param selectedTextBackgroundColor  The new background color.
+        /// @param selectedTextBackgroundColor  The new background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextBackgroundColor(const Color& selectedTextBackgroundColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the border color that will be used inside the text box.
+        /// @brief Sets the border color that will be used inside the text box
         ///
         /// @param borderColor  The color of the borders
         ///
@@ -623,7 +623,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the color that will be used inside the text box for the blinking caret.
+        /// @brief Sets the color that will be used inside the text box for the blinking caret
         ///
         /// @param caretColor  The color of the blinking caret
         ///
@@ -632,7 +632,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief This will change the width of the blinking caret.
+        /// @brief This will change the width of the blinking caret
         ///
         /// @param width  New width of the caret
         ///
@@ -653,7 +653,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the padding of the text box.
+        /// @brief Changes the padding of the text box
         ///
         /// This padding will be scaled together with the background image.
         /// If there is no background image, or when 9-slice scaling is used, the padding will be exactly what you pass here.
@@ -666,14 +666,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar of the text box.
+        /// @brief Changes the scrollbar of the text box
         ///
-        /// @param scrollbarThemeFileFilename  Filename of the theme file.
-        /// @param section  The section to look for inside the theme file.
+        /// @param scrollbarThemeFileFilename  Filename of the theme file
+        /// @param section  The section to look for inside the theme file
         ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        /// @throw Exception when the theme file could not be opened
+        /// @throw Exception when the theme file did not contain the requested section with the needed information
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded
         ///
         /// When an empty string is passed as filename, the built-in white theme will be used.
         ///

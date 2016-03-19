@@ -102,7 +102,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -118,7 +118,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the button.
+        /// @brief Changes the size of the button
         ///
         /// @param size  The new size of the button
         ///
@@ -139,9 +139,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -150,18 +150,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the caption of the button.
+        /// @brief Changes the caption of the button
         ///
-        /// @param text  New text to draw on top of the button.
+        /// @param text  New text to draw on top of the button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the caption of the button.
+        /// @brief Returns the caption of the button
         ///
-        /// @return Text that is drawn on top of the button.
+        /// @return Text that is drawn on top of the button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::String& getText() const
@@ -171,9 +171,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the character size of the text.
+        /// @brief Changes the character size of the text
         ///
-        /// @param size  The new text size.
+        /// @param size  The new text size
         ///              If the size is set to 0 then the text will be auto-sized to fit inside the button.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,9 +181,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the character size of the text.
+        /// @brief Returns the character size of the text
         ///
-        /// @return The current text size.
+        /// @return The current text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -193,9 +193,9 @@ namespace tgui
 
 /**
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -237,7 +237,7 @@ namespace tgui
     protected:
 /**
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -307,32 +307,32 @@ namespace tgui
 
 /**
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property.
+        /// @param value     The new value that you like to assign to the property
         ///                  The ObjectConverter is implicitly constructed from the possible value types.
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, ObjectConverter&& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -344,7 +344,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -353,7 +353,7 @@ namespace tgui
 */
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text.
+        /// @brief Changes the color of the text
         ///
         /// @param color  New text color
         ///
@@ -368,7 +368,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in the normal state (mouse not on button).
+        /// @brief Changes the color of the text in the normal state (mouse not on button)
         ///
         /// @param color  New text color
         ///
@@ -377,7 +377,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in the hover state (mouse on button, but not pressed).
+        /// @brief Changes the color of the text in the hover state (mouse on button, but not pressed)
         ///
         /// @param color  New text color
         ///
@@ -386,7 +386,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in the down state (mouse on button and left mouse button being held down).
+        /// @brief Changes the color of the text in the down state (mouse on button and left mouse button being held down)
         ///
         /// @param color  New text color
         ///
@@ -395,7 +395,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the background.
+        /// @brief Changes the color of the background
         ///
         /// @param color  New background color
         ///
@@ -412,7 +412,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the background in the normal state (mouse not on button).
+        /// @brief Changes the color of the background in the normal state (mouse not on button)
         ///
         /// @param color  New background color
         ///
@@ -423,7 +423,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the background in the hover state (mouse on button, but not pressed).
+        /// @brief Changes the color of the background in the hover state (mouse on button, but not pressed)
         ///
         /// @param color  New background color
         ///
@@ -434,7 +434,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the background in the down state (mouse on button and left mouse button being held down).
+        /// @brief Changes the color of the background in the down state (mouse on button and left mouse button being held down)
         ///
         /// @param color  New background color
         ///
@@ -445,7 +445,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the borders.
+        /// @brief Changes the color of the borders
         ///
         /// @param color  New border color
         ///
@@ -454,7 +454,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the mouse is not on the button
+        /// @brief Changes the image that is displayed when the mouse is not on the button
         ///
         /// @param texture  The new normal texture
         ///
@@ -466,7 +466,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the mouse is located on top of the button
+        /// @brief Changes the image that is displayed when the mouse is located on top of the button
         ///
         /// @param texture  The new hover texture
         ///
@@ -477,7 +477,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the mouse is held down on top of the button
+        /// @brief Changes the image that is displayed when the mouse is held down on top of the button
         ///
         /// @param texture  The new down texture
         ///
@@ -488,7 +488,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is drawn on top of the button image when the button is focused
+        /// @brief Changes the image that is drawn on top of the button image when the button is focused
         ///
         /// @param texture  The new focus texture
         ///

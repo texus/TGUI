@@ -42,7 +42,7 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Construct the theme class, with an optional theme file to load
+        /// @brief Constructs the theme class, with an optional theme file to load
         ///
         /// @param primary  Primary parameter for the theme loader (filename of the theme file in DefaultThemeLoader)
         ///
@@ -51,7 +51,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the primary theme loader parameter
+        /// @brief Changes the primary theme loader parameter
         ///
         /// @param primary  Primary parameter for the theme loader (filename of the theme file in DefaultThemeLoader)
         ///
@@ -60,7 +60,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get data for the renderers
+        /// @brief Gets data for the renderers
         ///
         /// @param secondary  The secondary parameter for the theme loader (name of section in theme file in DefaultThemeLoader)
         ///
@@ -73,7 +73,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Manually add a renderer data to the theme
+        /// @brief Manually adds a renderer data to the theme
         ///
         /// @param id       Identifier of the renderer
         /// @param renderer The renderer to add
@@ -85,7 +85,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Manually remove a renderer to the theme
+        /// @brief Manually removes a renderer to the theme
         ///
         /// @param id  Identifier of the renderer
         ///
@@ -96,7 +96,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the function that will load the widget theme data
+        /// @brief Changes the function that will load the widget theme data
         ///
         /// @param themeLoader  Pointer to the new loader
         ///
@@ -130,7 +130,7 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Load the widget from the theme
+        /// @brief Loads the widget from the theme
         ///
         /// @param className  Name of the class inside the theme file (equals widget type when no class is given)
         ///
@@ -142,7 +142,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the theme with a different filename
+        /// @brief Reloads the theme with a different filename
         ///
         /// @param filename  Filename of the new theme file
         ///
@@ -156,7 +156,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload all widgets that were loaded with a certain class name
+        /// @brief Reloads all widgets that were loaded with a certain class name
         ///
         /// @param oldClassName  Class name that was used to load the widget
         /// @param newClassName  Class name to load the widget with
@@ -169,7 +169,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload a specific widget
+        /// @brief Reloads a specific widget
         ///
         /// @param widget     The widget to reload
         /// @param className  Class name to load the widget with
@@ -182,7 +182,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer of all widgets that were loaded with a certain class name
+        /// @brief Changes a property of the renderer of all widgets that were loaded with a certain class name
         ///
         /// @param className The class name of the widgets
         /// @param property  The property that you would like to change
@@ -195,7 +195,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer of all widgets that were loaded with a certain class name
+        /// @brief Changes a property of the renderer of all widgets that were loaded with a certain class name
         ///
         /// @param className The class name of the widgets
         /// @param property  The property that you would like to change
@@ -209,7 +209,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the serialized value of a certain property of widgets that use a certain class name
+        /// @brief Retrieves the serialized value of a certain property of widgets that use a certain class name
         ///
         /// @param className The class name of the widgets
         /// @param property  The property that you would like to retrieve
@@ -221,7 +221,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values from widgets loaded with a certain class name
+        /// @brief Gets a map with all properties and their values from widgets loaded with a certain class name
         ///
         /// @param className The class name of the widgets
         ///
@@ -232,7 +232,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Clone the theme without its connected widgets.
+        /// @brief Clones the theme without its connected widgets.
         ///
         /// Any changes made on the returned theme will not have any impact on this theme and vice versa.
         ///

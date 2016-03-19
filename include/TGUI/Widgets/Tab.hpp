@@ -61,14 +61,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the tab
+        /// @brief Creates the tab
         ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
+        /// @param themeFileFilename  Filename of the theme file
+        /// @param section            The section in the theme file to read
         ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
+        /// @throw Exception when the theme file could not be opened
+        /// @throw Exception when the theme file did not contain the requested section with the needed information
+        /// @throw Exception when one of the images, described in the theme file, could not be loaded
         ///
         /// When an empty string is passed as filename, the built-in white theme will be used.
         ///
@@ -100,7 +100,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -116,7 +116,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief This function currently does nothing.
+        /// @brief This function currently does nothing
         ///
         /// @param size  Currently ignored
         ///
@@ -132,7 +132,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the tabs.
+        /// @brief Returns the size of the tabs
         ///
         /// @return Size of the tabs
         ///
@@ -144,9 +144,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -155,24 +155,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a new tab.
+        /// @brief Adds a new tab
         ///
-        /// @param text    The text of the tab that will be drawn on top of it.
+        /// @param text    The text of the tab that will be drawn on top of it
         /// @param select  Do you want the new tab to be selected immediately?
         ///
-        /// @return  The index of the tab in the list.
+        /// @return  The index of the tab in the list
         ///
-        /// @warning The index returned by this function may no longer be correct when a tab is removed.
+        /// @warning The index returned by this function may no longer be correct when a tab is removed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::size_t add(const sf::String& text, bool select = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Insert a new tab somewhere between the other tabs.
+        /// @brief Inserts a new tab somewhere between the other tabs
         ///
-        /// @param index   The index where the tab gets inserted. 0 means before the first tab, 1 means behind the first tab.
-        /// @param text    The text of the tab that will be drawn on top of it.
+        /// @param index   The index where the tab gets inserted. 0 means before the first tab, 1 means behind the first tab
+        /// @param text    The text of the tab that will be drawn on top of it
         /// @param select  Do you want the new tab to be selected immediately?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,9 +180,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text of one of the tabs
+        /// @brief Gets the text of one of the tabs
         ///
-        /// @param index  The index of the tab. The first tab has index 0.
+        /// @param index  The index of the tab. The first tab has index 0
         ///
         /// @return The text on the tab or an empty string when index was too high
         ///
@@ -191,10 +191,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the text of one of the tabs
+        /// @brief Changes the text of one of the tabs
         ///
-        /// @param index  The index of the tab to be changed. The first tab has index 0.
-        /// @param text   The new text of the tab that will be drawn on top of it.
+        /// @param index  The index of the tab to be changed. The first tab has index 0
+        /// @param text   The new text of the tab that will be drawn on top of it
         ///
         /// @return True when text was successfully changed, false when index was too high
         ///
@@ -203,9 +203,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Selects the tab with a given text.
+        /// @brief Selects the tab with a given text
         ///
-        /// @param text  The text of the tab to select.
+        /// @param text  The text of the tab to select
         ///
         /// When the text doen't match any tab then nothing will be changed.
         /// If there are multiple tabs with the same text then the first one will be selected.
@@ -217,9 +217,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Selects the tab with a given index.
+        /// @brief Selects the tab with a given index
         ///
-        /// @param index  The index of the tab to select.
+        /// @param index  The index of the tab to select
         ///
         /// When the index is too high then nothing will happen.
         ///
@@ -230,16 +230,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Deselects the selected tab.
+        /// @brief Deselects the selected tab
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void deselect();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes a tab with a given text.
+        /// @brief Removes a tab with a given text
         ///
-        /// @param text  The text on the tab to remove.
+        /// @param text  The text on the tab to remove
         ///
         /// When multiple tabs have the same text, only the first will be removed.
         ///
@@ -250,9 +250,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes a tab with a given index.
+        /// @brief Removes a tab with a given index
         ///
-        /// @param index  The index of the tab to remove.
+        /// @param index  The index of the tab to remove
         ///
         /// When the index is too high then nothing will happen.
         ///
@@ -263,17 +263,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all tabs.
+        /// @brief Removes all tabs
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAll();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the text that is drawn on the currently selected tab.
+        /// @brief Gets the text that is drawn on the currently selected tab
         ///
         /// @return The text on the tab.
-        ///         When no tab is selected then this function returns an empty string.
+        ///         When no tab is selected then this function returns an empty string
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getSelected() const
@@ -283,12 +283,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the index of the currently selected tab.
+        /// @brief Gets the index of the currently selected tab
         ///
         /// @return The index of the tab.
-        ///         When no tab is selected then this function returns -1.
+        ///         When no tab is selected then this function returns -1
         ///
-        /// @warning The index returned by this function may no longer be correct when a tab is removed.
+        /// @warning The index returned by this function may no longer be correct when a tab is removed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int getSelectedIndex() const
@@ -298,9 +298,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the character size of the text.
+        /// @brief Changes the character size of the text
         ///
-        /// @param size  The new size of the text.
+        /// @param size  The new size of the text
         ///              If the size is 0 (default) then the text will be scaled to fit in the tab.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -308,16 +308,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the character size of the text.
+        /// @brief Returns the character size of the text
         ///
-        /// @return The text size.
+        /// @return The text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the height of the tabs.
+        /// @brief Changes the height of the tabs
         ///
         /// @param height  Height of the tabs
         ///
@@ -328,7 +328,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the height of the tabs.
+        /// @brief Returns the height of the tabs
         ///
         /// @return Tab height
         ///
@@ -340,7 +340,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the maximum tab width of the tabs.
+        /// @brief Changes the maximum tab width of the tabs
         ///
         /// @param maximumWidth  Maximum width of a single tab
         ///
@@ -352,7 +352,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum tab width of the tabs.
+        /// @brief Returns the maximum tab width of the tabs
         ///
         /// @return Maximum tab width
         ///
@@ -379,9 +379,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -420,7 +420,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -485,12 +485,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -498,13 +498,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property.
+        /// @param value     The new value that you like to assign to the property
         ///                  The ObjectConverter is implicitly constructed from the possible value types.
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -512,7 +512,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -524,7 +524,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -533,25 +533,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used inside the tabs.
+        /// @brief Sets the text color that will be used inside the tabs
         ///
-        /// @param color  The new text color.
+        /// @param color  The new text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the text color that will be used for the selected tab.
+        /// @brief Sets the text color that will be used for the selected tab
         ///
-        /// @param color  The new text color.
+        /// @param color  The new text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextColor(const Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the distance between the text and the side of the tab.
+        /// @brief Changes the distance between the text and the side of the tab
         ///
         /// @param distanceToSide  distance between the text and the side of the tab
         ///
@@ -560,9 +560,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the tabs
+        /// @brief Sets the background color of the tabs
         ///
-        /// @param color  The new background color.
+        /// @param color  The new background color
         ///
         /// Note that this color is ignored when a normal and selected image were set.
         ///
@@ -571,9 +571,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color of the selected tab.
+        /// @brief Sets the background color of the selected tab
         ///
-        /// @param color  The new background color.
+        /// @param color  The new background color
         ///
         /// Note that this color is ignored when a normal and selected image were set.
         ///
@@ -582,16 +582,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the color of the borders
+        /// @brief Sets the color of the borders
         ///
-        /// @param color  The new border color.
+        /// @param color  The new border color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBorderColor(const Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the tab is not selected
+        /// @brief Changes the image that is displayed when the tab is not selected
         ///
         /// @param texture  New normal tab texture
         ///
@@ -603,7 +603,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the tab is selected
+        /// @brief Changes the image that is displayed when the tab is selected
         ///
         /// @param texture  New selected tab texture
         ///

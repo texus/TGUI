@@ -33,7 +33,7 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Abstract class for box layout containers.
+    /// @brief Abstract class for box layout containers
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API BoxLayout : public Panel
@@ -52,7 +52,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the layout.
+        /// @brief Changes the size of the layout
         ///
         /// @param size  The new size of the layout
         ///
@@ -62,18 +62,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font the child widgets.
+        /// @brief Changes the font the child widgets
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
-        /// When you don't call this function then the font from the parent widget will be used.
+        /// When you don't call this function then the font from the parent widget will be used
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setFont(const Font& font) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Insert a widget to the layout.
+        /// @brief Inserts a widget to the layout
         ///
         /// @param widget      Pointer to the widget you would like to add
         /// @param index       Index of the widget in the container
@@ -90,7 +90,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a widget at the end of the layout.
+        /// @brief Adds a widget at the end of the layout
         ///
         /// @param widget      Pointer to the widget you would like to add
         /// @param widgetName  An identifier to access to the widget later
@@ -102,7 +102,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a space at the end of the layout and immediately set its ratio.
+        /// @brief Adds a space at the end of the layout and immediately set its ratio
         ///
         /// @param ratio  Ratio for the space
         ///
@@ -111,7 +111,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Insert a space to the layout and immediately set its ratio.
+        /// @brief Inserts a space to the layout and immediately set its ratio
         ///
         /// @param index  Index of the space in the container
         /// @param ratio  Ratio for the space
@@ -125,7 +125,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes a single widget that was added to the container.
+        /// @brief Removes a single widget that was added to the container
         ///
         /// @param widget  Pointer to the widget to remove
         ///
@@ -136,7 +136,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes a single widget that was added to the container.
+        /// @brief Removes a single widget that was added to the container
         ///
         /// @param index  Index in the layout of the widget to remove
         ///
@@ -147,7 +147,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the widget at the given index in the layout.
+        /// @brief Returns the widget at the given index in the layout
         ///
         /// @param index  Index of the widget in the layout
         ///
@@ -158,7 +158,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the ratio of a widget.
+        /// @brief Changes the ratio of a widget
         ///
         /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
         /// So setting a ratio to 2 means that the widget will be 2 times larger than others.
@@ -173,7 +173,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the ratio of a widget.
+        /// @brief Changes the ratio of a widget
         /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
         /// So setting a ratio to 2 means that the widget will be 2 times larger than others.
         ///
@@ -189,7 +189,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the ratio of a widget.
+        /// @brief Returns the ratio of a widget
         ///
         /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
         /// So setting a ratio to 2 means that the widget will be 2 times larger than others.
@@ -203,7 +203,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the ratio of a widget.
+        /// @brief Returns the ratio of a widget
         ///
         /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
         /// So setting a ratio to 2 means that the widget will be 2 times larger than others.
@@ -217,7 +217,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the size of a widget to a constant value.
+        /// @brief Sets the size of a widget to a constant value
         ///
         /// Setting a fixed size cancel the effect of the ratio.
         /// If you want to get a variable size again for a widget, set the fixed size to 0.
@@ -232,7 +232,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the size of a widget to a constant value.
+        /// @brief Sets the size of a widget to a constant value
         ///
         /// Setting a fixed size cancel the effect of the ratio.
         /// If you want to get a variable size again for a widget, set the fixed size to 0.
@@ -247,7 +247,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of a widget when it has a constant value.
+        /// @brief Returns the size of a widget when it has a constant value
         ///
         /// Having a fixed size cancel the effect of the ratio.
         /// When 0 is returned then the size of the widget is variable and determined by the ratio.
@@ -261,7 +261,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of a widget when it has a constant value.
+        /// @brief Returns the size of a widget when it has a constant value
         ///
         /// Having a fixed size cancel the effect of the ratio.
         /// When 0 is returned then the size of the widget is variable and determined by the ratio.
@@ -275,7 +275,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all widgets that were added to the container.
+        /// @brief Removes all widgets that were added to the container
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllWidgets() override;
@@ -285,7 +285,7 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Reposition all the widgets.
+        // Repositions all the widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void updateWidgetPositions() = 0;
 
@@ -299,8 +299,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::vector<float> m_widgetsRatio;              ///< The ratio of each widget.
-        std::vector<float> m_widgetsFixedSizes;         ///< The fixed size for each widget. 0 means a variable size.
+        std::vector<float> m_widgetsRatio;              ///< The ratio of each widget
+        std::vector<float> m_widgetsFixedSizes;         ///< The fixed size for each widget. 0 means a variable size
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

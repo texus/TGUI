@@ -84,7 +84,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the knob
+        /// @brief Sets the position of the knob
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -100,7 +100,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the knob.
+        /// @brief Changes the size of the knob
         ///
         /// @param size  The new size of the knob
         ///
@@ -121,9 +121,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the start rotation, which is the place where the value should be minimal.
+        /// @brief Sets the start rotation, which is the place where the value should be minimal
         ///
-        /// @param startRotation  New start rotation.
+        /// @param startRotation  New start rotation
         ///
         /// The rotation is a number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise.
         ///
@@ -132,9 +132,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the end rotation, which is the place where the value should be maximal.
+        /// @brief Sets the end rotation, which is the place where the value should be maximal
         ///
-        /// @param endRotation  New end rotation.
+        /// @param endRotation  New end rotation
         ///
         /// The rotation is a number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise.
         ///
@@ -143,7 +143,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the start rotation, which is the place where the value should be minimal.
+        /// @brief Returns the start rotation, which is the place where the value should be minimal
         ///
         /// @return number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise
         ///
@@ -155,9 +155,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the end rotation, which is the place where the value should be maximal.
+        /// @brief Sets the end rotation, which is the place where the value should be maximal
         ///
-        /// @return number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise.
+        /// @return number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         float getEndRotation()
@@ -167,7 +167,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the value for when the knob would be rotated in the direction of StartRotation.
+        /// @brief Sets the value for when the knob would be rotated in the direction of StartRotation
         ///
         /// @param minimum  The new minimum value
         ///
@@ -184,7 +184,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the value for when the knob would be rotated in the direction of EndRotation.
+        /// @brief Sets the value for when the knob would be rotated in the direction of EndRotation
         ///
         /// @param maximum  The new maximum value
         ///
@@ -201,7 +201,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the current value.
+        /// @brief Changes the current value
         ///
         /// @param value  The new value
         ///
@@ -215,7 +215,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the value when the knob would be rotated in the direction of StartRotation.
+        /// @brief Returns the value when the knob would be rotated in the direction of StartRotation
         ///
         /// @return The current minimum value
         ///
@@ -231,7 +231,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the value when the knob would be rotated in the direction of EndRotation.
+        /// @brief Returns the value when the knob would be rotated in the direction of EndRotation
         ///
         /// @return The current maximum value
         ///
@@ -247,7 +247,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the current value.
+        /// @brief Returns the current value
         ///
         /// @return The current value, determined by the Minimum, Maximum, StartRotation and EndRotation
         ///
@@ -282,9 +282,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -337,7 +337,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -399,32 +399,32 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, ObjectConverter&& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -436,7 +436,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -445,19 +445,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the default rotation of the foreground image.
+        /// @brief Changes the default rotation of the foreground image
         ///
         /// This property defines in which direction is the foreground image pointing.
         /// The rotation is in degrees, starts from the right side and increases when going counter-clockwise.
         ///
-        /// @param rotation  Default rotation of the foreground image, which is a value between 0 and 360.
+        /// @param rotation  Default rotation of the foreground image, which is a value between 0 and 360
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setImageRotation(float rotation);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the background.
+        /// @brief Changes the color of the background
         ///
         /// @param color  New background color
         ///
@@ -468,7 +468,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the thumb which you can move around the circle.
+        /// @brief Changes the color of the thumb which you can move around the circle
         ///
         /// @param color  New thumb color
         ///
@@ -479,7 +479,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the borders that are optionally drawn around the knob.
+        /// @brief Changes the color of the borders that are optionally drawn around the knob
         ///
         /// @param color  New border color
         ///
@@ -490,7 +490,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the background image of the knob
+        /// @brief Changes the background image of the knob
         ///
         /// @param texture  The new background texture
         ///
@@ -502,7 +502,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the foreground image of the knob
+        /// @brief Changes the foreground image of the knob
         ///
         /// @param texture  The new foreground texture
         ///

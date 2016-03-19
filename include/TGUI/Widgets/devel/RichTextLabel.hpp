@@ -72,7 +72,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -90,7 +90,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Empty setSize function
         ///
-        /// @warning Setting a size will not do anything for this widget, the size it determined by the contents of this widget.
+        /// @warning Setting a size will not do anything for this widget, the size it determined by the contents of this widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(const Layout2d& size) override;
@@ -98,9 +98,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -109,7 +109,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text.
+        /// @brief Changes the text
         ///
         /// @param text  The new text
         ///
@@ -122,7 +122,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text.
+        /// @brief Returns the text
         ///
         /// @return Text that is currently used
         ///
@@ -134,7 +134,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the character size of the text.
+        /// @brief Changes the character size of the text
         ///
         /// @param size  The new text size
         ///
@@ -143,16 +143,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the character size of the text.
+        /// @brief Returns the character size of the text
         ///
-        /// @return The current text size.
+        /// @return The current text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the label.
+        /// @brief Changes the background color of the label
         ///
         /// @param color  New background color
         ///
@@ -163,7 +163,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color of the label.
+        /// @brief Returns the background color of the label
         ///
         /// @return Background color
         ///
@@ -171,10 +171,10 @@ namespace tgui
         const sf::Color& getBackgroundColor() const;
 
 
-        /// @brief Set names for color substitutions (for example, ff0000 would be substituted for "red")
+        /// @brief Sets names for color substitutions (for example, ff0000 would be substituted for "red")
         void addColor(const sf::String& name, const sf::Color& color);
 
-        /// @brief Set names for color substitutions (for example, ff0000 would be substituted for "red")
+        /// @brief Sets names for color substitutions (for example, ff0000 would be substituted for "red")
         void addColor(const sf::String& name, unsigned int argbHex);
 
 

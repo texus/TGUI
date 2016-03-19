@@ -55,7 +55,7 @@ namespace tgui
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief The parent class for every widget.
+    /// @brief The parent class for every widget
     ///
     /// Signals
     ///     - PositionChanged (Position of the widget has changed)
@@ -113,7 +113,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set a new renderer for the widget. The renderer determines how the widget looks.
+        /// @brief Sets a new renderer for the widget. The renderer determines how the widget looks
         ///
         /// @param rendererData  new renderer data
         ///
@@ -131,7 +131,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief set the position of the widget
+        /// @brief sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -159,7 +159,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the widget.
+        /// @brief Changes the size of the widget
         ///
         /// @param size  Size of the widget
         ///
@@ -181,7 +181,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the absolute position of the widget on the screen
+        /// @brief Gets the absolute position of the widget on the screen
         ///
         /// @return Position of the widget
         ///
@@ -190,7 +190,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Shows the widget.
+        /// @brief Shows the widget
         ///
         /// The widget is visible by default.
         ///
@@ -201,7 +201,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Shows the widget by introducing it with an animation.
+        /// @brief Shows the widget by introducing it with an animation
         ///
         /// The animation will also be played if the widget was already visible.
         ///
@@ -218,7 +218,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Hides the widget.
+        /// @brief Hides the widget
         ///
         /// The widget won't receive events nor will it be drawn when hidden. The widget is visible by default.
         ///
@@ -227,7 +227,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Shows the widget by introducing it with an animation.
+        /// @brief Shows the widget by introducing it with an animation
         ///
         /// If the widget is already hidden then the animation will still play but you will not see it until you show the widget.
         ///
@@ -242,7 +242,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns true when the widget is visible.
+        /// @brief Returns true when the widget is visible
         ///
         /// @return Is the widget visible?
         ///
@@ -257,7 +257,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Enables the widget.
+        /// @brief Enables the widget
         ///
         /// The widget will receive events and send callbacks again.
         /// All widgets are enabled by default.
@@ -267,7 +267,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Disables the widget.
+        /// @brief Disables the widget
         ///
         /// The widget will no longer receive events and it will thus no longer send callbacks.
         /// All widgets are enabled by default.
@@ -277,7 +277,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns true when the widget is enabled.
+        /// @brief Returns true when the widget is enabled
         ///
         /// @return Is the widget enabled?
         ///
@@ -292,7 +292,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Focus the widget.
+        /// @brief Focus the widget
         ///
         /// The previously focused widget will be unfocused.
         ///
@@ -304,7 +304,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Unfocus the widget.
+        /// @brief Unfocus the widget
         ///
         /// @see focus
         /// @see focusNextWidget
@@ -314,7 +314,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns true when the widget is focused and false otherwise.
+        /// @brief Returns true when the widget is focused and false otherwise
         ///
         /// @return Is the widget focused?
         ///
@@ -326,7 +326,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the type of the widget.
+        /// @brief Returns the type of the widget
         ///
         /// @return Type of the widget
         ///
@@ -335,9 +335,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a pointer to the parent widget.
+        /// @brief Returns a pointer to the parent widget
         ///
-        /// @return Pointer to the parent.
+        /// @return Pointer to the parent
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Container* getParent() const
@@ -347,14 +347,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Places the widget before all other widgets.
+        /// @brief Places the widget before all other widgets
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void moveToFront();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Places the widget behind all other widgets.
+        /// @brief Places the widget behind all other widgets
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void moveToBack();
@@ -379,9 +379,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -517,14 +517,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief This function is called when the mouse enters the widget.
+        /// @brief This function is called when the mouse enters the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseEnteredWidget();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief This function is called when the mouse leaves the widget.
+        /// @brief This function is called when the mouse leaves the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseLeftWidget();
@@ -624,51 +624,51 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the opacity of the widget.
+        /// @brief Returns the opacity of the widget
         ///
-        /// @return The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @return The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         float getOpacity() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The value can either be a string value or a serialized string.
+        ///                  The value can either be a string value or a serialized string
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setProperty(const std::string& property, const std::string& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setProperty(const std::string& property, ObjectConverter&& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -680,7 +680,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -689,7 +689,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Subscribe a callback function to changes in the renderer
+        /// @brief Subscribes a callback function to changes in the renderer
         ///
         /// @param id       Unique identifier for this callback function so that you can unsubscribe it later
         /// @param function Callback function to call when the renderer changes
@@ -699,7 +699,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Subscribe a callback function to changes in the renderer
+        /// @brief Subscribes a callback function to changes in the renderer
         ///
         /// @param id  Unique identifier used when subscribing the callback function
         ///
@@ -708,18 +708,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the renderer data.
+        /// @brief Returns the renderer data
         ///
-        /// @return Data that is shared between the renderers.
+        /// @return Data that is shared between the renderers
         ///
-        /// @warning You should not make changed to this data directly. Instead, use the function from the renderer classes.
+        /// @warning You should not make changed to this data directly. Instead, use the function from the renderer classes
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::shared_ptr<RendererData> getData() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a clone of the renderer data
+        /// @brief Gets a clone of the renderer data
         ///
         /// You can pass this to a widget with the setRenderer function to have a separate non-shared copy of this renderer.
         ///

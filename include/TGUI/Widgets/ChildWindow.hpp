@@ -98,7 +98,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -114,7 +114,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the child window.
+        /// @brief Changes the size of the child window
         ///
         /// @param size   Sets the new size of the child window
         ///
@@ -126,7 +126,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the full child window.
+        /// @brief Returns the size of the full child window
         ///
         /// @return Size of the child window
         ///
@@ -137,9 +137,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget and its children.
+        /// @brief Changes the font of the text in the widget and its children
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -148,16 +148,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the title that is displayed in the title bar of the child window.
+        /// @brief Changes the title that is displayed in the title bar of the child window
         ///
         /// @param title  New title for the child window
         ///
@@ -166,7 +166,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the title that is displayed in the title bar of the child window.
+        /// @brief Returns the title that is displayed in the title bar of the child window
         ///
         /// @return Title of the child window
         ///
@@ -178,7 +178,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the title alignment.
+        /// @brief Changes the title alignment
         ///
         /// @param alignment  How should the title be aligned in the title bar?
         ///
@@ -187,7 +187,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the title alignment.
+        /// @brief Returns the title alignment
         ///
         /// @return How the title is aligned in the title bar
         ///
@@ -199,7 +199,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the icon in the top left corner of the child window.
+        /// @brief Changes the icon in the top left corner of the child window
         ///
         /// @param icon  the icon image
         ///
@@ -211,7 +211,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the icon in the top left corner of the child window.
+        /// @brief Returns the icon in the top left corner of the child window
         ///
         /// @return the icon image
         ///
@@ -220,7 +220,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Destroys the window.
+        /// @brief Destroys the window
         ///
         /// When no callback is requested when closing the window, this function will be called automatically.
         ///
@@ -232,7 +232,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes whether the child window can be resized by dragging its borders or not.
+        /// @brief Changes whether the child window can be resized by dragging its borders or not
         ///
         /// @param resizable  Can the user change the size of the window by dragging one of the borders?
         ///
@@ -241,7 +241,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Check whether the child window can be resized by dragging its borders or not.
+        /// @brief Checks whether the child window can be resized by dragging its borders or not
         ///
         /// @return Can the user change the size of the window by dragging one of the borders?
         ///
@@ -250,31 +250,31 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the child window to be kept inside its parent.
+        /// @brief Sets the child window to be kept inside its parent
         ///
         /// @param enabled  When it's set to true, the child window will always be kept automatically inside its parent.
         ///                 It will be fully kept on left, right and top.
         ///                 At the bottom of the parent only the title bar will be kept inside.
-        ///                 It's set to false by default.
+        ///                 It's set to false by default
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void keepInParent(bool enabled = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Tells whether the child window is kept inside its parent.
+        /// @brief Tells whether the child window is kept inside its parent
         ///
         /// @return  When it's set to true, the child window will always be kept automatically inside its parent.
         ///          It will be fully kept on left, right and top.
         ///          At the bottom of the parent only the title bar will be kept inside.
-        ///          It's set to false by default.
+        ///          It's set to false by default
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isKeptInParent() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the close button
+        /// @brief Changes the close button
         ///
         /// @return closeButton  The new close button
         ///
@@ -349,7 +349,7 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -430,12 +430,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,13 +443,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -457,7 +457,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -469,7 +469,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -489,7 +489,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the height of the title bar.
+        /// @brief Changes the height of the title bar
         ///
         /// @param height  New height of the title bar
         ///
@@ -498,7 +498,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the title that is displayed in the title bar of the child window.
+        /// @brief Changes the color of the title that is displayed in the title bar of the child window
         ///
         /// @param color  New title color for the child window
         ///
@@ -507,7 +507,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the border color.
+        /// @brief Sets the border color
         ///
         /// @param borderColor  The color of the borders
         ///
@@ -516,7 +516,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the borders.
+        /// @brief Changes the size of the borders
         ///
         /// @param borders  The size of the borders
         ///
@@ -526,7 +526,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the distance between the title and the side of the title bar.
+        /// @brief Changes the distance between the title and the side of the title bar
         ///
         /// @param distanceToSide  distance between the title and the side of the title bar
         ///
@@ -535,7 +535,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the child window.
+        /// @brief Changes the background color of the child window
         ///
         /// @param backgroundColor  New background color
         ///
@@ -544,7 +544,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the title bar
+        /// @brief Changes the image of the title bar
         ///
         /// @param texture  New title bar texture
         ///
