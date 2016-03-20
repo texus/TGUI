@@ -104,7 +104,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image
+        /// @brief Changes the image
         ///
         /// @param filename       The absolute or relative filename of the image that should be loaded
         /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
@@ -117,7 +117,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image
+        /// @brief Changes the image
         ///
         /// @param texture  The texture to load the picture from
         ///
@@ -134,7 +134,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image
+        /// @brief Changes the image
         ///
         /// @param texture  The texture to load the picture from
         /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
@@ -160,9 +160,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the image that was used to load the widget.
+        /// @brief Returns the filename of the image that was used to load the widget
         ///
-        /// @return Filename of loaded image.
+        /// @return Filename of loaded image
         ///         Empty string when no image was loaded yet or when it was loaded directly from a texture.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -189,7 +189,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the picture.
+        /// @brief Changes the size of the picture
         ///
         /// @param size  The new size of the picture
         ///
@@ -201,7 +201,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Enable or disable the smooth filter.
+        /// @brief Enables or disable the smooth filter
         ///
         /// When the filter is activated, the texture appears smoother so that pixels are less noticeable.
         /// However if you want the texture to look exactly the same as its source file, you should leave it disabled.
@@ -216,7 +216,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Tell whether the smooth filter is enabled or not.
+        /// @brief Tells whether the smooth filter is enabled or not
         ///
         /// @return True if smoothing is enabled, false if it is disabled
         ///

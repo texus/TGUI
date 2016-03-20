@@ -85,7 +85,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the button.
+        /// @brief Changes the size of the button
         ///
         /// @param size  The new size of the button
         ///
@@ -95,9 +95,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -106,27 +106,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the caption of the button.
+        /// @brief Changes the caption of the button
         ///
-        /// @param text  New text to draw on top of the button.
+        /// @param text  New text to draw on top of the button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the caption of the button.
+        /// @brief Returns the caption of the button
         ///
-        /// @return Text that is drawn on top of the button.
+        /// @return Text that is drawn on top of the button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::String& getText() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the character size of the text.
+        /// @brief Changes the character size of the text
         ///
-        /// @param size  The new text size.
+        /// @param size  The new text size
         ///              If the size is set to 0 then the text will be auto-sized to fit inside the button.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,9 +134,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the character size of the text.
+        /// @brief Returns the character size of the text
         ///
-        /// @return The current text size.
+        /// @return The current text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const;
@@ -226,7 +226,7 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text.
+        /// @brief Changes the color of the text
         ///
         /// @param color  New text color
         ///
@@ -241,7 +241,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the background.
+        /// @brief Changes the color of the background
         ///
         /// @param color  New background color
         ///
@@ -258,7 +258,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the borders.
+        /// @brief Changes the size of the borders
         ///
         /// @param borders  Size of the borders
         ///
@@ -267,7 +267,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the borders.
+        /// @brief Returns the size of the borders
         ///
         /// @return border size
         ///
@@ -276,7 +276,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in the normal state (mouse not on button).
+        /// @brief Changes the color of the text in the normal state (mouse not on button)
         ///
         /// @param color  New text color
         ///
@@ -285,7 +285,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text color in the normal state (mouse not on button).
+        /// @brief Returns the text color in the normal state (mouse not on button)
         ///
         /// @return text color
         ///
@@ -294,7 +294,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in the hover state (mouse on button, but not pressed).
+        /// @brief Changes the color of the text in the hover state (mouse on button, but not pressed)
         ///
         /// @param color  New text color
         ///
@@ -303,7 +303,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text color in the hover state (mouse on button, but not pressed).
+        /// @brief Returns the text color in the hover state (mouse on button, but not pressed)
         ///
         /// @return text color
         ///
@@ -312,7 +312,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in the down state (mouse on button and left mouse button being held down).
+        /// @brief Changes the color of the text in the down state (mouse on button and left mouse button being held down)
         ///
         /// @param color  New text color
         ///
@@ -321,7 +321,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text color in the down state (mouse on button and left mouse button being held down).
+        /// @brief Returns the text color in the down state (mouse on button and left mouse button being held down)
         ///
         /// @return text color
         ///
@@ -330,7 +330,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the background in the normal state (mouse not on button).
+        /// @brief Changes the color of the background in the normal state (mouse not on button)
         ///
         /// @param color  New background color
         ///
@@ -341,7 +341,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color in the normal state (mouse not on button).
+        /// @brief Returns the background color in the normal state (mouse not on button)
         ///
         /// @return background color
         ///
@@ -350,7 +350,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the background in the hover state (mouse on button, but not pressed).
+        /// @brief Changes the color of the background in the hover state (mouse on button, but not pressed)
         ///
         /// @param color  New background color
         ///
@@ -361,7 +361,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color in the hover state (mouse on button, but not pressed).
+        /// @brief Returns the background color in the hover state (mouse on button, but not pressed)
         ///
         /// @return background color
         ///
@@ -370,7 +370,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the background in the down state (mouse on button and left mouse button being held down).
+        /// @brief Changes the color of the background in the down state (mouse on button and left mouse button being held down)
         ///
         /// @param color  New background color
         ///
@@ -381,7 +381,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color in the down state (mouse on button and left mouse button being held down).
+        /// @brief Returns the background color in the down state (mouse on button and left mouse button being held down)
         ///
         /// @return background color
         ///
@@ -390,7 +390,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the borders.
+        /// @brief Changes the color of the borders
         ///
         /// @param color  New border color
         ///
@@ -399,7 +399,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the color of the borders.
+        /// @brief Returns the color of the borders
         ///
         /// @return Border color
         ///
@@ -420,7 +420,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Return the image that is displayed when the mouse is not on the button
+        /// @brief Returns the image that is displayed when the mouse is not on the button
         ///
         /// @param normal texture
         ///
@@ -429,7 +429,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the mouse is located on top of the button
+        /// @brief Changes the image that is displayed when the mouse is located on top of the button
         ///
         /// @param texture  The new hover texture
         ///
@@ -440,7 +440,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Return the image that is displayed when the mouse is located on top of the button
+        /// @brief Returns the image that is displayed when the mouse is located on top of the button
         ///
         /// @param hover texture
         ///
@@ -449,7 +449,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the mouse is held down on top of the button
+        /// @brief Changes the image that is displayed when the mouse is held down on top of the button
         ///
         /// @param texture  The new down texture
         ///
@@ -460,7 +460,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Return the image that is displayed when the mouse is held down on top of the button
+        /// @brief Returns the image that is displayed when the mouse is held down on top of the button
         ///
         /// @param hover texture
         ///
@@ -480,7 +480,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Return the image that is drawn on top of the button image when the button is focused
+        /// @brief Returns the image that is drawn on top of the button image when the button is focused
         ///
         /// @param focused texture
         ///

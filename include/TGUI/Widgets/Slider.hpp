@@ -84,7 +84,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -100,7 +100,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the slider.
+        /// @brief Changes the size of the slider
         ///
         /// @param size  The new size of the slider
         ///
@@ -121,7 +121,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets a minimum value.
+        /// @brief Sets a minimum value
         ///
         /// @param minimum  The new minimum value
         ///
@@ -134,7 +134,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets a maximum value.
+        /// @brief Sets a maximum value
         ///
         /// @param maximum  The new maximum value
         ///
@@ -147,7 +147,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the current value.
+        /// @brief Changes the current value
         ///
         /// @param value  The new value
         ///
@@ -159,7 +159,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the minimum value.
+        /// @brief Returns the minimum value
         ///
         /// @return The current minimum value
         ///
@@ -173,7 +173,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum value.
+        /// @brief Returns the maximum value
         ///
         /// @return The current maximum value
         ///
@@ -187,7 +187,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the current value.
+        /// @brief Returns the current value
         ///
         /// @return The current value
         ///
@@ -201,9 +201,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -260,7 +260,7 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -329,32 +329,32 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, ObjectConverter&& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -366,7 +366,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -375,7 +375,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the track.
+        /// @brief Changes the color of the track
         ///
         /// @param color  New track color
         ///
@@ -391,7 +391,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the track in the normal state (mouse not on slider).
+        /// @brief Changes the color of the track in the normal state (mouse not on slider)
         ///
         /// @param color  New track color
         ///
@@ -402,7 +402,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the track in hover state (mouse on slider).
+        /// @brief Changes the color of the track in hover state (mouse on slider)
         ///
         /// @param color  New track color
         ///
@@ -413,7 +413,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the thumb.
+        /// @brief Changes the color of the thumb
         ///
         /// @param color  New thumb color
         ///
@@ -429,7 +429,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the thumb in the normal state (mouse not on slider).
+        /// @brief Changes the color of the thumb in the normal state (mouse not on slider)
         ///
         /// @param color  New thumb color
         ///
@@ -440,7 +440,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the thumb in hover state (mouse on slider).
+        /// @brief Changes the color of the thumb in hover state (mouse on slider)
         ///
         /// @param color  New thumb color
         ///
@@ -451,7 +451,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the borders.
+        /// @brief Changes the color of the borders
         ///
         /// @param color  New border color
         ///
@@ -460,7 +460,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the track that is displayed when the mouse is not on top of the slider
+        /// @brief Changes the image of the track that is displayed when the mouse is not on top of the slider
         ///
         /// @param texture  The new track texture
         ///
@@ -472,7 +472,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the track that is displayed when the mouse is on top of the slider
+        /// @brief Changes the image of the track that is displayed when the mouse is on top of the slider
         ///
         /// @param texture  The new hover track texture
         ///
@@ -484,7 +484,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the thumb that is displayed when the mouse is not on top of the slider
+        /// @brief Changes the image of the thumb that is displayed when the mouse is not on top of the slider
         ///
         /// @param texture  The new thumb texture
         ///
@@ -496,7 +496,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the thumb that is displayed when the mouse is on top of the slider
+        /// @brief Changes the image of the thumb that is displayed when the mouse is on top of the slider
         ///
         /// @param texture  The new hover thumb texture
         ///

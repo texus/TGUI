@@ -85,7 +85,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -101,7 +101,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the radio button.
+        /// @brief Changes the size of the radio button
         ///
         /// @param size  The new size of the radio button
         ///
@@ -111,7 +111,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the full size of the radio button.
+        /// @brief Returns the full size of the radio button
         ///
         /// @return Full size of the radio button
         ///
@@ -122,9 +122,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -133,7 +133,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Checks the radio button.
+        /// @brief Checks the radio button
         ///
         /// It will tell its parent to uncheck all the other radio buttons.
         ///
@@ -149,7 +149,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the radio button is checked or not.
+        /// @brief Returns whether the radio button is checked or not
         ///
         /// @return Is the radio button checked?
         ///
@@ -161,18 +161,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text of the radio button.
+        /// @brief Changes the text of the radio button
         ///
-        /// @param text  The new text to draw next to the radio button.
+        /// @param text  The new text to draw next to the radio button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setText(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text of the radio button.
+        /// @brief Returns the text of the radio button
         ///
-        /// @return The text that is drawn next to the radio button.
+        /// @return The text that is drawn next to the radio button
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getText() const
@@ -182,17 +182,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the character size of the text.
+        /// @brief Changes the character size of the text
         ///
         /// @param size  The new text size.
-        ///              When the size is set to 0 then the text is auto-sized.
+        ///              When the size is set to 0 then the text is auto-sized
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the character size of the text.
+        /// @brief Returns the character size of the text
         ///
         /// @return Character size of the text
         ///
@@ -204,7 +204,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Allow (or disallow) the radio button to be checked/unchecked by clicking on the text next to the radio button.
+        /// @brief Allows (or disallows) the radio button to be checked/unchecked by clicking on the text next to the radio button
         ///
         /// @param acceptTextClick  Will clicking on the text trigger a checked/unchecked event?
         ///
@@ -213,9 +213,9 @@ namespace tgui
 
 /**
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -246,7 +246,7 @@ namespace tgui
     protected:
 /**
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -325,32 +325,32 @@ namespace tgui
 
 /**
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, ObjectConverter&& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -362,7 +362,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -371,7 +371,7 @@ namespace tgui
 */
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text.
+        /// @brief Changes the color of the text
         ///
         /// @param color  New text color
         ///
@@ -385,7 +385,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in normal state (mouse not on top of the radio button).
+        /// @brief Changes the color of the text in normal state (mouse not on top of the radio button)
         ///
         /// @param color  New text color
         ///
@@ -394,7 +394,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in hover state (mouse is standing on top of the radio button).
+        /// @brief Changes the color of the text in hover state (mouse is standing on top of the radio button)
         ///
         /// @param color  New text color
         ///
@@ -403,7 +403,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color.
+        /// @brief Changes the background color
         ///
         /// This color is ignored when checked and unchecked images are set.
         ///
@@ -421,7 +421,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color in normal state (mouse is not on top of the radio button).
+        /// @brief Changes the background color in normal state (mouse is not on top of the radio button)
         ///
         /// This color is ignored when checked and unchecked images are set.
         ///
@@ -434,7 +434,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color in hover state (mouse is standing on top of the radio button).
+        /// @brief Changes the background color in hover state (mouse is standing on top of the radio button)
         ///
         /// This color is ignored when checked and unchecked images are set.
         ///
@@ -447,7 +447,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the foreground color.
+        /// @brief Changes the foreground color
         ///
         /// This color is ignored when checked and unchecked images are set.
         ///
@@ -466,7 +466,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the foreground color in normal state (mouse is not on top of the radio button).
+        /// @brief Changes the foreground color in normal state (mouse is not on top of the radio button)
         ///
         /// This color is ignored when checked and unchecked images are set.
         ///
@@ -482,7 +482,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the foreground color in hover state (mouse is standing on top of the radio button).
+        /// @brief Changes the foreground color in hover state (mouse is standing on top of the radio button)
         ///
         /// This color is ignored when checked and unchecked images are set.
         ///
@@ -496,7 +496,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color that is used to fill the radio button when it is checked.
+        /// @brief Changes the color that is used to fill the radio button when it is checked
         ///
         /// This color is ignored when checked and unchecked images are set.
         ///
@@ -512,7 +512,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color that is used to fill the radio button when it is checked (mouse is not on radio button).
+        /// @brief Changes the color that is used to fill the radio button when it is checked (mouse is not on radio button)
         ///
         /// This color is ignored when checked and unchecked images are set.
         ///
@@ -523,7 +523,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color that is used to fill the radio button when it is checked (mouse is on top of radio button).
+        /// @brief Changes the color that is used to fill the radio button when it is checked (mouse is on top of radio button)
         ///
         /// This color is ignored when checked and unchecked images are set.
         ///
@@ -534,7 +534,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the checkbox is not checked.
+        /// @brief Changes the image that is displayed when the checkbox is not checked
         ///
         /// @param texture  The new unchecked texture
         ///
@@ -546,7 +546,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the checkbox is checked.
+        /// @brief Changes the image that is displayed when the checkbox is checked
         ///
         /// @param texture  The new checked texture
         ///
@@ -558,7 +558,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the checkbox is not checked and the mouse is on top of the checkbox.
+        /// @brief Changes the image that is displayed when the checkbox is not checked and the mouse is on top of the checkbox
         ///
         /// @param texture  The new unchecked hover texture
         ///
@@ -570,7 +570,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed when the checkbox is checked and the mouse is on top of the checkbox.
+        /// @brief Changes the image that is displayed when the checkbox is checked and the mouse is on top of the checkbox
         ///
         /// @param texture  The new checked hover texture
         ///
@@ -582,7 +582,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is displayed on top of the checkbox when it is focused.
+        /// @brief Changes the image that is displayed on top of the checkbox when it is focused
         ///
         /// @param texture  The new checked hover texture
         ///

@@ -73,10 +73,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructor that created the texture.
+        /// @brief Constructor that created the texture
         ///
-        /// @param filename   Filename of the image to load.
-        /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image.
+        /// @param filename   Filename of the image to load
+        /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         ///
         /// This constructor just calls the load function.
@@ -114,10 +114,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates the texture.
+        /// @brief Creates the texture
         ///
-        /// @param id         Id for the the image to load (for the default loader, the id is the filename).
-        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image.
+        /// @param id         Id for the the image to load (for the default loader, the id is the filename)
+        /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image
         /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +148,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a reference to the texture data.
+        /// @brief Returns a reference to the texture data
         ///
         /// @return Data of the texture
         ///
@@ -157,7 +157,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the constant texture data.
+        /// @brief Returns the constant texture data
         ///
         /// @return Read-only data of the texture
         ///
@@ -199,7 +199,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the global color of the sprite
+        /// @brief Sets the global color of the sprite
         ///
         /// This color is modulated (multiplied) with the sprite's texture. It can be used to colorize the sprite,
         /// or change its global opacity.
@@ -265,7 +265,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Enable or disable the smooth filter.
+        /// @brief Enables or disable the smooth filter
         ///
         /// When the filter is activated, the texture appears smoother so that pixels are less noticeable.
         /// However if you want the texture to look exactly the same as its source file, you should leave it disabled.
@@ -280,7 +280,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Tell whether the smooth filter is enabled or not.
+        /// @brief Tells whether the smooth filter is enabled or not
         ///
         /// @return True if smoothing is enabled, false if it is disabled
         ///
@@ -294,7 +294,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Check if a certain pixel is transparent.
+        /// @brief Checks if a certain pixel is transparent
         ///
         /// @param x  global X coordinate of the pixel
         /// @param y  global Y coordinate of the pixel
@@ -306,7 +306,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the way in which the image is being scaled.
+        /// @brief Returns the way in which the image is being scaled
         ///
         /// @return Scaling type
         ///
@@ -318,7 +318,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Check if the texture has been correctly loaded
+        /// @brief Checks if the texture has been correctly loaded
         ///
         /// @return True if texture was initialized
         ///
@@ -404,13 +404,13 @@ namespace tgui
     private:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Update the vertices of the internal vertex array
+        // @brief Updates the vertices of the internal vertex array
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateVertices();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the texture
+        // @brief Draws the texture
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

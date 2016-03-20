@@ -66,7 +66,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Store a string for later retrieval
+        /// @brief Stores a string for later retrieval
         ///
         /// @param string  String to store
         ///
@@ -80,7 +80,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Store a font object for later retrieval
+        /// @brief Stores a font object for later retrieval
         ///
         /// @param font  Font to store
         ///
@@ -93,7 +93,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Store a color object for later retrieval
+        /// @brief Stores a color object for later retrieval
         ///
         /// @param color  Color to store
         ///
@@ -106,7 +106,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Store a number for later retrieval
+        /// @brief Stores a number for later retrieval
         ///
         /// @param number  Number to store
         ///
@@ -119,7 +119,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Store a borders object for later retrieval
+        /// @brief Stores a borders object for later retrieval
         ///
         /// @param borders  Borders to store
         ///
@@ -132,7 +132,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Store a texture object for later retrieval
+        /// @brief Stores a texture object for later retrieval
         ///
         /// @param texture  Texture to store
         ///
@@ -145,7 +145,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the saved string
+        /// @brief Retrieves the saved string
         ///
         /// @return The saved string or a serialized string
         ///
@@ -154,7 +154,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the saved font
+        /// @brief Retrieves the saved font
         ///
         /// @return The saved font
         ///
@@ -165,7 +165,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the saved color
+        /// @brief Retrieves the saved color
         ///
         /// @return The saved color
         ///
@@ -176,7 +176,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the saved borders
+        /// @brief Retrieves the saved borders
         ///
         /// @return The saved borders
         ///
@@ -187,7 +187,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the saved number
+        /// @brief Retrieves the saved number
         ///
         /// @return The saved number
         ///
@@ -198,7 +198,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the saved texture
+        /// @brief Retrieves the saved texture
         ///
         /// @return The saved texture
         ///
@@ -209,7 +209,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the type of the object that has been stored
+        /// @brief Retrieves the type of the object that has been stored
         ///
         /// @return The stored object type
         ///

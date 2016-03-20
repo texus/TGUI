@@ -84,7 +84,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -100,7 +100,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the scrollbar.
+        /// @brief Changes the size of the scrollbar
         ///
         /// @param size  The new size of the scrollbar
         ///
@@ -110,7 +110,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets a maximum value.
+        /// @brief Sets a maximum value
         ///
         /// @param maximum  The new maximum value
         ///
@@ -122,7 +122,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the current value.
+        /// @brief Changes the current value
         ///
         /// @param value  The new value
         ///
@@ -133,10 +133,10 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the 'low value'.
+        /// @brief Changes the 'low value'
         ///
         /// @param lowValue  The new low value.
-        ///                  In e.g. a list box, this value is the amount of items that fit inside the list box.
+        ///                  In e.g. a list box, this value is the amount of items that fit inside the list box
         ///
         /// Until the maximum is bigger than this value, no scrollbar will be drawn.
         /// You can however choose to always draw the scrollbar by calling setAutoHide(false).
@@ -147,7 +147,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum value.
+        /// @brief Returns the maximum value
         ///
         /// @return The current maximum value
         ///
@@ -161,7 +161,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the current value.
+        /// @brief Returns the current value
         ///
         /// @return The current value
         ///
@@ -175,7 +175,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the low value.
+        /// @brief Returns the low value
         ///
         /// @see setLowValue
         ///
@@ -211,7 +211,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes whether the scrollbar should hide automatically or not.
+        /// @brief Changes whether the scrollbar should hide automatically or not
         ///
         /// When true (default), the scrollbar will not be drawn when the maximum is smaller than the low value.
         ///
@@ -225,7 +225,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the scrollbar is hiding automatically or not.
+        /// @brief Returns whether the scrollbar is hiding automatically or not
         ///
         /// When true (default), the scrollbar will not be drawn when the maximum is smaller than the low value.
         /// So when you can't scroll, the scrollbar won't be drawn.
@@ -238,9 +238,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -286,7 +286,7 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -388,32 +388,32 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, const std::string& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setProperty(std::string property, ObjectConverter&& value) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -425,7 +425,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -434,7 +434,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the track.
+        /// @brief Changes the color of the track
         ///
         /// @param color  New track color
         ///
@@ -450,7 +450,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the track in the normal state (mouse not on the track).
+        /// @brief Changes the color of the track in the normal state (mouse not on the track)
         ///
         /// @param color  New track color
         ///
@@ -461,7 +461,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the track in hover state (mouse on top of the track).
+        /// @brief Changes the color of the track in hover state (mouse on top of the track)
         ///
         /// @param color  New track color
         ///
@@ -472,7 +472,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the thumb.
+        /// @brief Changes the color of the thumb
         ///
         /// @param color  New thumb color
         ///
@@ -488,7 +488,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the thumb in the normal state (mouse not on the thumb).
+        /// @brief Changes the color of the thumb in the normal state (mouse not on the thumb)
         ///
         /// @param color  New thumb color
         ///
@@ -499,7 +499,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the thumb in hover state (mouse on top of the thumb).
+        /// @brief Changes the color of the thumb in hover state (mouse on top of the thumb)
         ///
         /// @param color  New thumb color
         ///
@@ -510,7 +510,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the arrows.
+        /// @brief Changes the background color of the arrows
         ///
         /// @param color  New arrow background color
         ///
@@ -526,7 +526,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the arrows in the normal state (mouse not on arrow).
+        /// @brief Changes the background color of the arrows in the normal state (mouse not on arrow)
         ///
         /// @param color  New background color
         ///
@@ -537,7 +537,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the arrows in the hover state (mouse standing on top of the arrow).
+        /// @brief Changes the background color of the arrows in the hover state (mouse standing on top of the arrow)
         ///
         /// @param color  New arrow background color
         ///
@@ -548,7 +548,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the arrows.
+        /// @brief Changes the color of the arrows
         ///
         /// @param color  New arrow color
         ///
@@ -564,7 +564,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the arrows in the normal state (mouse not on arrow).
+        /// @brief Changes the color of the arrows in the normal state (mouse not on arrow)
         ///
         /// @param color  New arrow color
         ///
@@ -575,7 +575,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the arrows in the hover state (mouse standing on top of the arrow).
+        /// @brief Changes the color of the arrows in the hover state (mouse standing on top of the arrow)
         ///
         /// @param color  New arrow color
         ///
@@ -586,7 +586,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the track that is displayed when the mouse is not on top of the scrollbar
+        /// @brief Changes the image of the track that is displayed when the mouse is not on top of the scrollbar
         ///
         /// @param texture  The new track texture
         ///
@@ -598,7 +598,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the track that is displayed when the mouse is on top of the slider
+        /// @brief Changes the image of the track that is displayed when the mouse is on top of the slider
         ///
         /// @param texture  The new hover track texture
         ///
@@ -610,7 +610,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the thumb that is displayed when the mouse is not on top of the slider
+        /// @brief Changes the image of the thumb that is displayed when the mouse is not on top of the slider
         ///
         /// @param texture  The new thumb texture
         ///
@@ -622,7 +622,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image of the thumb that is displayed when the mouse is on top of the slider
+        /// @brief Changes the image of the thumb that is displayed when the mouse is on top of the slider
         ///
         /// @param texture  The new hover thumb texture
         ///
@@ -634,7 +634,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as the up arrow
+        /// @brief Changes the image that is used as the up arrow
         ///
         /// @param texture  The new arrow texture
         ///
@@ -646,7 +646,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as the down arrow
+        /// @brief Changes the image that is used as the down arrow
         ///
         /// @param texture  The new arrow texture
         ///
@@ -658,7 +658,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as the up arrow when the mouse is on top of this arrow
+        /// @brief Changes the image that is used as the up arrow when the mouse is on top of this arrow
         ///
         /// @param texture  The new hover arrow texture
         ///
@@ -670,7 +670,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the image that is used as the up arrow when the mouse is on top of this arrow
+        /// @brief Changes the image that is used as the up arrow when the mouse is on top of this arrow
         ///
         /// @param texture  The new hover arrow texture
         ///

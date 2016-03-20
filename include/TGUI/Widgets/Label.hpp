@@ -106,7 +106,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the area of the text that will be drawn.
+        /// @brief Changes the area of the text that will be drawn
         ///
         /// @param size  Size of the part to draw
         ///
@@ -125,9 +125,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget.
+        /// @brief Changes the font of the text in the widget
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -136,7 +136,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text.
+        /// @brief Changes the text
         ///
         /// @param text  The new text
         ///
@@ -149,7 +149,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text.
+        /// @brief Returns the text
         ///
         /// @return Text that is currently used
         ///
@@ -180,7 +180,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the character size of the text.
+        /// @brief Changes the character size of the text
         ///
         /// @param size  The new text size
         ///
@@ -189,16 +189,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the character size of the text.
+        /// @brief Returns the character size of the text
         ///
-        /// @return The current text size.
+        /// @return The current text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the horizontal text alignment
+        /// @brief Changes the horizontal text alignment
         ///
         /// @param alignment  The new horizontal text alignment
         ///
@@ -209,7 +209,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the current horizontal text alignment
+        /// @brief Gets the current horizontal text alignment
         ///
         /// @return Horizontal text alignment
         ///
@@ -218,7 +218,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the vertical text alignment
+        /// @brief Changes the vertical text alignment
         ///
         /// @param alignment  The new vertical text alignment
         ///
@@ -229,7 +229,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the current vertical text alignment
+        /// @brief Gets the current vertical text alignment
         ///
         /// @return Vertical text alignment
         ///
@@ -238,7 +238,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes whether the label is auto-sized or not.
+        /// @brief Changes whether the label is auto-sized or not
         ///
         /// @param autoSize  Should the size of the label be changed when the text changes?
         ///
@@ -252,7 +252,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the label is auto-sized or not.
+        /// @brief Returns whether the label is auto-sized or not
         ///
         /// @return Is the size of the label changed when the text changes?
         ///
@@ -261,7 +261,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the maximum width that the text will have when auto-sizing.
+        /// @brief Changes the maximum width that the text will have when auto-sizing
         ///
         /// @param maximumWidth The new maximum text width
         ///
@@ -276,7 +276,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum width that the text will have.
+        /// @brief Returns the maximum width that the text will have
         ///
         /// @return
         ///        - The width of the label minus the padding when a specific size was set.
@@ -376,7 +376,7 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the borders.
+        /// @brief Changes the size of the borders
         ///
         /// @param borders  Size of the borders
         ///
@@ -385,7 +385,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the borders.
+        /// @brief Returns the size of the borders
         ///
         /// @return border size
         ///
@@ -394,7 +394,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the padding.
+        /// @brief Changes the size of the padding
         ///
         /// @param padding  Size of the padding
         ///
@@ -405,7 +405,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the padding.
+        /// @brief Returns the size of the padding
         ///
         /// @return padding size
         ///
@@ -414,7 +414,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text.
+        /// @brief Changes the color of the text
         ///
         /// @param color  New text color
         ///
@@ -423,7 +423,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the color of the text.
+        /// @brief Returns the color of the text
         ///
         /// @return text color
         ///
@@ -432,7 +432,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the label.
+        /// @brief Changes the background color of the label
         ///
         /// @param color  New background color
         ///
@@ -446,7 +446,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color of the label.
+        /// @brief Returns the background color of the label
         ///
         /// @return background color
         ///
@@ -455,7 +455,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the borders.
+        /// @brief Changes the color of the borders
         ///
         /// @param color  New border color
         ///
@@ -464,7 +464,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the color of the borders.
+        /// @brief Returns the color of the borders
         ///
         /// @return Border color
         ///

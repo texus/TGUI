@@ -33,7 +33,7 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Abstract class for box layout containers.
+    /// @brief Abstract class for box layout containers
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API BoxLayout : public Panel
@@ -66,7 +66,7 @@ namespace tgui
         ///
         /// @param font  The new font
         ///
-        /// When you don't call this function then the font from the parent widget will be used.
+        /// When you don't call this function then the font from the parent widget will be used
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setFont(const Font& font) override;
@@ -174,7 +174,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the ratio of a widget.
+        /// @brief Changes the ratio of a widget
         /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
         ///
         /// So setting a ratio to 2 means that the widget will be 2 times larger than widgets with a ratio equal to 1.
@@ -221,7 +221,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the size of a widget to a constant value
+        /// @brief Sets the size of a widget to a constant value
         ///
         /// Setting a fixed size cancels the effect of the ratio.
         /// If you want to get a variable size again for a widget, set the fixed size to 0.
@@ -236,7 +236,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the size of a widget to a constant value
+        /// @brief Sets the size of a widget to a constant value
         ///
         /// Setting a fixed size cancels the effect of the ratio.
         /// If you want to get a variable size again for a widget, set the fixed size to 0.
@@ -279,7 +279,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all widgets that were added to the container.
+        /// @brief Removes all widgets that were added to the container
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllWidgets() override;
@@ -289,7 +289,7 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Reposition all the widgets.
+        // Repositions all the widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void updateWidgetPositions() = 0;
 
@@ -303,8 +303,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::vector<float> m_widgetsRatio;              ///< The ratio of each widget.
-        std::vector<float> m_widgetsFixedSizes;         ///< The fixed size of each widget. 0 means a variable size.
+        std::vector<float> m_widgetsRatio;              ///< The ratio of each widget
+        std::vector<float> m_widgetsFixedSizes;         ///< The fixed size for each widget. 0 means a variable size
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

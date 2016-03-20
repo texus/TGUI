@@ -79,18 +79,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget and its children.
+        /// @brief Changes the font of the text in the widget and its children
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
-        /// When you don't call this function then the font from the parent widget will be used.
+        /// When you don't call this function then the font from the parent widget will be used
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setFont(const Font& font) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a list of all the widgets.
+        /// @brief Returns a list of all the widgets
         ///
         /// @return Vector of all widget pointers
         ///
@@ -102,7 +102,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a list of the names of all the widgets.
+        /// @brief Returns a list of the names of all the widgets
         ///
         /// @return Vector of all widget names
         ///
@@ -114,41 +114,41 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a widget to the container.
+        /// @brief Adds a widget to the container
         ///
         /// @param widgetPtr   Pointer to the widget you would like to add
         /// @param widgetName  If you want to access the widget later then you must do this with this name
         ///
-        /// @warning The widget name should not contain whitespace.
+        /// @warning The widget name should not contain whitespace
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void add(const Widget::Ptr& widgetPtr, const sf::String& widgetName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a pointer to an earlier created widget.
+        /// @brief Returns a pointer to an earlier created widget
         ///
-        /// @param widgetName The name that was given to the widget when it was added to the container.
+        /// @param widgetName The name that was given to the widget when it was added to the container
         /// @param recursive  Should the function also search for widgets inside containers that are inside this container?
         ///
         /// @return Pointer to the earlier created widget
         ///
-        /// @warning This function will return nullptr when an unknown widget name was passed.
+        /// @warning This function will return nullptr when an unknown widget name was passed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr get(const sf::String& widgetName, bool recursive = false) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a pointer to an earlier created widget.
+        /// @brief Returns a pointer to an earlier created widget
         ///
-        /// @param widgetName The name that was given to the widget when it was added to the container.
+        /// @param widgetName The name that was given to the widget when it was added to the container
         /// @param recursive  Should the function also search for widgets inside containers that are inside this container?
         ///
         /// @return Pointer to the earlier created widget.
-        ///         The pointer will already be casted to the desired type.
+        ///         The pointer will already be casted to the desired type
         ///
-        /// @warning This function will return nullptr when an unknown widget name was passed.
+        /// @warning This function will return nullptr when an unknown widget name was passed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class T>
@@ -159,7 +159,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes a single widget that was added to the container.
+        /// @brief Removes a single widget that was added to the container
         ///
         /// @param widget  Pointer to the widget to remove
         ///
@@ -170,14 +170,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all widgets that were added to the container.
+        /// @brief Removes all widgets that were added to the container
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void removeAllWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the name of a widget.
+        /// @brief Changes the name of a widget
         ///
         /// @param widget  Widget of which the name should be changed
         /// @param name    New name for the widget
@@ -189,7 +189,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the name of a widget.
+        /// @brief Returns the name of a widget
         ///
         /// @param widget  Widget of which the name should be retrieved
         ///
@@ -200,18 +200,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Focuses a widget.
+        /// @brief Focuses a widget
         ///
         /// The previously focused widget will be unfocused.
         ///
-        /// @param widget  The widget that has to be focused.
+        /// @param widget  The widget that has to be focused
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void focusWidget(const Widget::Ptr& widget);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Focuses the next widget.
+        /// @brief Focuses the next widget
         ///
         /// The currently focused widget will be unfocused, even if it was the only widget.
         /// When no widget was focused, the first widget in the container will be focused.
@@ -221,7 +221,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Focuses the previous widget.
+        /// @brief Focuses the previous widget
         ///
         /// The currently focused widget will be unfocused, even if it was the only widget.
         /// When no widget was focused, the last widget in the container will be focused.
@@ -231,23 +231,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Unfocus all the widgets.
+        /// @brief Unfocuses all the widgets
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void unfocusWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Uncheck all the radio buttons.
+        /// @brief Unchecks all the radio buttons
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void uncheckRadioButtons();
 
 /**
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the container and all its child widgets.
+        /// @brief Changes the opacity of the container and all its child widgets
         ///
-        /// @param opacity  The opacity of the widgets. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widgets. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -255,7 +255,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position of the container and a widget that would be drawn inside
-        ///        this container on relative position (0,0).
+        ///        this container on relative position (0,0)
         ///
         /// @return Offset of the widgets in the container
         ///
@@ -267,7 +267,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Load the child widgets from a text file
+        /// @brief Loads the child widgets from a text file
         ///
         /// @param filename  Filename of the widget file
         ///
@@ -276,7 +276,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Save the child widgets to a text file
+        /// @brief Saves the child widgets to a text file
         ///
         /// @param filename  Filename of the widget file
         ///
@@ -285,7 +285,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Load the child widgets from a string stream
+        /// @brief Loads the child widgets from a string stream
         ///
         /// @param stream  stringstream that contains the widget file
         ///
@@ -294,7 +294,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Save the child widgets to a text file
+        /// @brief Saves the child widgets to a text file
         ///
         /// @param stream  stringstream to which the widget file will be added
         ///
@@ -350,7 +350,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
-        // Show the tool tip when the widget is located below the mouse.
+        // Shows the tool tip when the widget is located below the mouse.
         // Returns its tool tip or the tool tip from a child widget if the mouse is on top of the widget.
         // A nullptr is returned when the mouse is not on top of the widget or when the tool tip is empty.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,7 +371,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Places a widget before all other widgets.
+        /// @brief Places a widget before all other widgets
         ///
         /// @param widget  The widget that should be moved to the front
         ///
@@ -380,7 +380,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Places a widget behind all other widgets.
+        /// @brief Places a widget behind all other widgets
         ///
         /// @param widget  The widget that should be moved to the back
         ///
@@ -466,7 +466,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Doesn't has any effect.
+        /// @brief Doesn't has any effect
         ///
         /// @param size  Ignored
         ///

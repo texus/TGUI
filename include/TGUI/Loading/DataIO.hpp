@@ -74,7 +74,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Parse a widget file
+        /// @brief Parses a widget file
         ///
         /// @param stream  Stream containing the widget file
         ///
@@ -85,7 +85,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Emit the widget file
+        /// @brief Emits the widget file
         ///
         /// @param rootNode Root node of the tree of nodes that is to be converted to a string stream
         /// @param stream   Stream to which the widget file will be added

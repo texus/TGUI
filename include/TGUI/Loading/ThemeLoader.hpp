@@ -64,7 +64,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Load the property-value pairs from the theme
+        /// @brief Loads the property-value pairs from the theme
         ///
         /// @param primary    Primary parameter of the loader
         /// @param secondary  Secondary parameter of the loader
@@ -95,7 +95,7 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Load the theme file in cache
+        /// @brief Loads the theme file in cache
         ///
         /// @param filename  Filename of the theme file to load
         ///
@@ -106,7 +106,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Load the property-value pairs from the theme file
+        /// @brief Loads the property-value pairs from the theme file
         ///
         /// @param filename   Filename of the theme file
         /// @param section    Name of the section inside the theme file
@@ -121,7 +121,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Empty the caches and force files to be reloaded.
+        /// @brief Empties the caches and force files to be reloaded.
         ///
         /// @param filename  File to remove from cache.
         ///                  If no filename is given, the entire cache is cleared.

@@ -161,7 +161,7 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the panel.
+        /// @brief Changes the background color of the panel
         ///
         /// @param color  New background color
         ///
@@ -175,7 +175,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color of the panel.
+        /// @brief Returns the background color of the panel
         ///
         /// @return Background color
         ///

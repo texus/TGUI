@@ -60,7 +60,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -87,7 +87,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -118,7 +118,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief get the position of the widget
+        /// @brief Gets the position of the widget
         ///
         /// @return Current position
         ///
@@ -132,7 +132,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Move the widget by a given offset
+        /// @brief Moves the widget by a given offset
         ///
         /// This function adds to the current position of the widget, unlike setPosition which overwrites it.
         /// Thus, it is equivalent to the following code:
@@ -149,7 +149,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Move the widget by a given offset
+        /// @brief Moves the widget by a given offset
         ///
         /// This function adds to the current position of the widget, unlike setPosition which overwrites it.
         /// Thus, it is equivalent to the following code:
@@ -167,7 +167,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the widget.
+        /// @brief Changes the size of the widget
         ///
         /// @param size  Size of the widget
         ///
@@ -188,7 +188,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the widget.
+        /// @brief Changes the size of the widget
         ///
         /// @param width   Width of the widget
         /// @param height  Height of the widget
@@ -213,7 +213,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the widget.
+        /// @brief Returns the size of the widget
         ///
         /// @return Size of the widget
         ///
@@ -225,7 +225,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the entire size that the widget is using.
+        /// @brief Returns the entire size that the widget is using
         ///
         /// This function will return a value equal or greater than what getSize returns.
         /// If the widget would e.g. have borders around it then this function will return the size, including these borders.
@@ -240,7 +240,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Scale the widget
+        /// @brief Scales the widget
         ///
         /// @param factors  Scale factors
         ///
@@ -255,7 +255,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Scale the widget
+        /// @brief Scales the widget
         ///
         /// @param x  horizontal scale factor
         /// @param y  vertical scale factor
@@ -296,13 +296,13 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Updates the position
+        // @brief Updates the position
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updatePosition(bool forceUpdate = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Updates the size
+        // @brief Updates the size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateSize(bool forceUpdate = true);
 

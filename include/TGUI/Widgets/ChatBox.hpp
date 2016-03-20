@@ -98,7 +98,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the position of the widget
+        /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
         /// See the move function to apply an offset based on the previous position instead.
@@ -114,7 +114,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the chat box.
+        /// @brief Changes the size of the chat box
         ///
         /// This size does not include the borders.
         ///
@@ -126,7 +126,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the full size of the chat box.
+        /// @brief Returns the full size of the chat box
         ///
         /// This is the size including the borders.
         ///
@@ -137,7 +137,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Add a new line of text to the chat box.
+        /// @brief Adds a new line of text to the chat box
         ///
         /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
@@ -151,7 +151,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Add a new line of text to the chat box.
+        /// @brief Adds a new line of text to the chat box
         ///
         /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
@@ -166,7 +166,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Add a new line of text to the chat box.
+        /// @brief Adds a new line of text to the chat box
         ///
         /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
@@ -181,7 +181,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Add a new line of text to the chat box.
+        /// @brief Adds a new line of text to the chat box
         ///
         /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
@@ -196,72 +196,72 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the contents of the requested line.
+        /// @brief Returns the contents of the requested line
         ///
-        /// @param lineIndex  The index of the line of which you request the contents.
-        ///                   The first line has index 0.
+        /// @param lineIndex  The index of the line of which you request the contents
+        ///                   The first line has index 0
         ///
-        /// @return The contents of the requested line.
-        ///         An empty string will be returned when the index is too high.
+        /// @return The contents of the requested line
+        ///         An empty string will be returned when the index is too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::String getLine(std::size_t lineIndex) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the color of the requested line.
+        /// @brief Returns the color of the requested line
         ///
-        /// @param lineIndex  The index of the line of which you request the color. The first line has index 0.
+        /// @param lineIndex  The index of the line of which you request the color. The first line has index 0
         ///
-        /// @return The color of the requested line. The default color (set with setTextColor) when the index is too high.
+        /// @return The color of the requested line. The default color (set with setTextColor) when the index is too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         sf::Color getLineColor(std::size_t lineIndex) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text size of the requested line.
+        /// @brief Returns the text size of the requested line
         ///
-        /// @param lineIndex  The index of the line of which you request the text size. The first line has index 0.
+        /// @param lineIndex  The index of the line of which you request the text size. The first line has index 0
         ///
-        /// @return The text size of the requested line. The default text size (set with setTextSize) when the index is too high.
+        /// @return The text size of the requested line. The default text size (set with setTextSize) when the index is too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getLineTextSize(std::size_t lineIndex) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the font of the requested line.
+        /// @brief Returns the font of the requested line
         ///
-        /// @param lineIndex  The index of the line of which you request the font. The first line has index 0.
+        /// @param lineIndex  The index of the line of which you request the font. The first line has index 0
         ///
-        /// @return The font of the requested line. The default font (set with setFont) when the index is too high.
+        /// @return The font of the requested line. The default font (set with setFont) when the index is too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::shared_ptr<sf::Font> getLineFont(std::size_t lineIndex) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the requested line.
+        /// @brief Removes the requested line
         ///
-        /// @param lineIndex  The index of the line that should be removed.
-        ///                   The first line has index 0.
+        /// @param lineIndex  The index of the line that should be removed
+        ///                   The first line has index 0
         ///
-        /// @return True if the line was removed, false if no such line existed (index too high).
+        /// @return True if the line was removed, false if no such line existed (index too high)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeLine(std::size_t lineIndex);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all lines from the chat box.
+        /// @brief Removes all lines from the chat box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllLines();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the amount of lines in the chat box.
+        /// @brief Returns the amount of lines in the chat box
         ///
         /// @return Number of lines in the chat box
         ///
@@ -273,33 +273,33 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set a maximum amount of lines in the chat box.
+        /// @brief Sets a maximum amount of lines in the chat box
         ///
         /// Only the last maxLines lines will be kept. Lines above those will be removed.
         /// Set to 0 to disable the line limit (default).
         ///
-        /// @param maxLines  The maximum amount of lines that the chat box can contain.
+        /// @param maxLines  The maximum amount of lines that the chat box can contain
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setLineLimit(std::size_t maxLines);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum amount of lines in the chat box.
+        /// @brief Returns the maximum amount of lines in the chat box
         ///
         /// Only the last maxLines lines will be kept. Lines above those will be removed.
         /// Disabled when set to 0 (default).
         ///
-        /// @return The maximum amount of lines that the chat box can contain.
+        /// @return The maximum amount of lines that the chat box can contain
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::size_t getLineLimit();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the default font of the text.
+        /// @brief Changes the default font of the text
         ///
-        /// @param font  The new font.
+        /// @param font  The new font
         ///
         /// When you don't call this function then the font from the parent widget will be used.
         ///
@@ -308,19 +308,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the default character size of the text.
+        /// @brief Changes the default character size of the text
         ///
-        /// @param size  The new default text size.
-        ///              The minimum text size is 8.
+        /// @param size  The new default text size
+        ///              The minimum text size is 8
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the default character size of the text.
+        /// @brief Returns the default character size of the text
         ///
-        /// @return The currently used default text size.
+        /// @return The currently used default text size
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const
@@ -330,18 +330,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the default color of the text.
+        /// @brief Changes the default color of the text
         ///
-        /// @param color  The new default text color.
+        /// @param color  The new default text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(const Color& color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the default color of the text.
+        /// @brief Returns the default color of the text
         ///
-        /// @return The currently used default text color.
+        /// @return The currently used default text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const sf::Color& getTextColor() const
@@ -351,7 +351,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar of the chat box.
+        /// @brief Changes the scrollbar of the chat box
         ///
         /// @param scrollbar The new scrollbar to use in the chat box
         ///
@@ -380,7 +380,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Let the first lines start from the top or from the bottom of the chat box.
+        /// @brief Lets the first lines start from the top or from the bottom of the chat box
         ///
         /// Note that this only makes a difference when the lines don't fill the entire chat box.
         /// This does not change the order of the lines, new lines will always be below older lines.
@@ -394,7 +394,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the first lines start from the top or from the bottom of the chat box.
+        /// @brief Returns whether the first lines start from the top or from the bottom of the chat box
         ///
         /// Note that this only makes a difference when the lines don't fill the entire chat box.
         /// This does not change the order of the lines, new lines will always be below older lines.
@@ -406,7 +406,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set whether new lines are added below the other lines or above them.
+        /// @brief Sets whether new lines are added below the other lines or above them
         ///
         /// @param newLinesBelowOthers  Should the addLine function insert the line below the existing lines?
         ///
@@ -417,7 +417,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether new lines are added below the other lines or above them.
+        /// @brief Returns whether new lines are added below the other lines or above them
         ///
         /// @return Does the addLine function insert the line below the existing lines?
         ///
@@ -426,9 +426,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget.
+        /// @brief Changes the opacity of the widget
         ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque.
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setOpacity(float opacity) override;
@@ -514,7 +514,7 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reload the widget
+        /// @brief Reloads the widget
         ///
         /// @param primary    Primary parameter for the loader
         /// @param secondary  Secondary parameter for the loader
@@ -584,12 +584,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
         /// @param value     The new serialized value that you like to assign to the property
         ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property.
+        /// @throw Exception when deserialization fails or when the widget does not have this property
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -597,13 +597,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change a property of the renderer
+        /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property.
+        /// @param value     The new value that you like to assign to the property
         ///                  The ObjectConverter is implicitly constructed from the possible value types.
         ///
-        /// @throw Exception for unknown properties or when value was of a wrong type.
+        /// @throw Exception for unknown properties or when value was of a wrong type
         /// @throw Exception when loading scrollbar fails with the theme connected to the list box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -611,7 +611,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the value of a certain property
+        /// @brief Retrieves the value of a certain property
         ///
         /// @param property  The property that you would like to retrieve
         ///
@@ -623,7 +623,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get a map with all properties and their values
+        /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ///
@@ -632,7 +632,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the border color that will be used inside the chat box.
+        /// @brief Sets the border color that will be used inside the chat box
         ///
         /// @param borderColor  The color of the borders
         ///
@@ -641,9 +641,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Set the background color that will be used inside the chat box.
+        /// @brief Sets the background color that will be used inside the chat box
         ///
-        /// @param backgroundColor  The new background color.
+        /// @param backgroundColor  The new background color
         ///
         /// Note that this color is ignored when you set a background image.
         ///
@@ -664,7 +664,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the padding.
+        /// @brief Changes the size of the padding
         ///
         /// @param padding  Size of the padding
         ///

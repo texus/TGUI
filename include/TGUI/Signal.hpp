@@ -298,7 +298,7 @@ namespace tgui
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Base class for widgets to enable signal handling.
+    /// @brief Base class for widgets to enable signal handling
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API SignalWidgetBase
     {
@@ -370,9 +370,9 @@ namespace tgui
         ///
         /// @param signalName Name of the signal, or multiple names split by spaces
         /// @param func       The function to connect.
-        ///                   This last parameter of the function must be of type "const tgui::Callback&".
+        ///                   This last parameter of the function must be of type "const tgui::Callback&"
         /// @param args       The arguments that should be bound to the function.
-        ///                   The amount of arguments should be exactly one less than the function needs.
+        ///                   The amount of arguments should be exactly one less than the function needs
         ///
         /// @return Id of this connection, which you need if you want to disconnect it later
         ///
@@ -432,7 +432,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Disconnect all connections from a certain signal
+        /// @brief Disconnects all connections from a certain signal
         ///
         /// @param signalName  Name of the signal, or multiple names split by spaces,
         ///                    from which you want to disconnect all function handlers
@@ -442,7 +442,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Disconnect all connections from a all signals
+        /// @brief Disconnects all connections from a all signals
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void disconnectAll();
@@ -452,7 +452,7 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Add a new signal that people can bind.
+        // @brief Adds a new signal that people can bind
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename... T>
         void addSignal(std::string&& name)
@@ -461,14 +461,14 @@ namespace tgui
         }
 
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Check if some signal handler has been bound to the signal.
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // @brief Checks if some signal handler has been bound to the signal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isSignalBound(std::string&& name);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Send a signal to all signal handlers that are connected with this signal.
+        // @brief Sends a signal to all signal handlers that are connected with this signal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename... Args>
         void sendSignal(std::string&& name, Args... args)

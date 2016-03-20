@@ -46,7 +46,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Load a container and its child widgets from a stream containing a widget file
+        /// @brief Loads a container and its child widgets from a stream containing a widget file
         ///
         /// @param parent  The parent container for the child widget
         /// @param stream  Stream containing the widget file
@@ -59,7 +59,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Change the load function for a certain widget type
+        /// @brief Changes the load function for a certain widget type
         ///
         /// @param type         Type of the widget
         /// @param loadFunction New load function
@@ -69,7 +69,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieve the load function of a certain widget type
+        /// @brief Retrieves the load function of a certain widget type
         ///
         /// @param type  Type of the widget
         ///

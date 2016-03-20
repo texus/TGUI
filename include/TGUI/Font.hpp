@@ -89,7 +89,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the underlying SFML font
+        /// @brief Gets the underlying SFML font
         ///
         /// @return Font stored in this object
         ///

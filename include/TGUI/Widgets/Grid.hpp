@@ -44,7 +44,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief The alignment of the widget in its cell.
+        /// @brief The alignment of the widget in its cell
         ///
         /// Where in the cell is the widget located?
         /// The widget is centered by default.
@@ -102,7 +102,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the grid.
+        /// @brief Changes the size of the grid
         ///
         /// @param size   New size of the grid
         ///
@@ -116,7 +116,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the grid.
+        /// @brief Returns the size of the grid
         ///
         /// @return Size of the grid
         ///
@@ -128,7 +128,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes a single widget that was added to the container.
+        /// @brief Removes a single widget that was added to the container
         ///
         /// @param widget  Pointer to the widget to remove
         ///
@@ -139,14 +139,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all widgets that were added to the container.
+        /// @brief Removes all widgets that were added to the container
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void removeAllWidgets() override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Add a widget to the grid.
+        /// @brief Adds a widget to the grid
         ///
         /// @param widget    Pointer to a fully created widget that will be added to the grid
         /// @param row       The row in which the widget should be placed
@@ -163,7 +163,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the widget in a specific square of the grid.
+        /// @brief Returns the widget in a specific square of the grid
         ///
         /// @param row     The row that the widget is in
         /// @param column  The column that the widget is in
@@ -175,7 +175,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Updates the position and size of the widget.
+        /// @brief Updates the position and size of the widget
         ///
         /// You should no longer have to call this function manually as widgets are supposed to call this function themselves
         /// when their position or size is changed.
@@ -185,7 +185,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes borders of a given widget.
+        /// @brief Changes borders of a given widget
         ///
         /// @param widget  The widget to which borders should be added
         /// @param borders The new borders around the widget
@@ -195,7 +195,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the alignment of a given widget in its cell.
+        /// @brief Changes the alignment of a given widget in its cell
         ///
         /// @param widget    The widget for which the alignment should be changed
         /// @param alignment The new alignment
