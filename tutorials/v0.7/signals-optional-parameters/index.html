@@ -7,13 +7,14 @@ redirect_from: "/tutorials/v07/signals-optional-parameters/index.html"
 
 <p>In the <a href="../signals-introduction/">introduction to signals</a> you have seen how to bind parameters to the functions. However, sometimes you want your function to have parameters which are filled with information about the widget (e.g. on which coordinate the click occured). You can do this with what I call the "optional parameter system".</p>
 
-<p>How this system works is explained below, but it has one big downside that you should first know about: only compilers with good c++11/14 support can use it. Only the following compilers are currently supported:</p>
+<p>How this system works is explained below, but it has one big downside that you should first know about: only compilers with good c++11/14 support can use it. Only the following compilers are supported:</p>
 <ul>
     <li>gcc 4.8 or higher</li>
     <li>clang 3.4 or higher</li>
+    <li>VS2015 Update 2 or higher</li>
 </ul>
 
-<p>So if you are using Visual Studio or an older version of these compilers, then you must use the <a href="../signals-connectEx/">alternative connectEx function</a>. This connectEx function will use the Callback class like the old callback system did and will work on all compilers that TGUI supports. It is however slightly limited compared to the optional parameter system.</p>
+<p>So if you are using an older version of these compilers, then you must use the <a href="../signals-connectEx/">alternative connectEx function</a>. This connectEx function will use the Callback class like the old callback system did and will work on all compilers that TGUI supports. It is however slightly limited compared to the optional parameter system.</p>
 
 <div>
 <h3 id="the_optional_parameter_system">The optional parameter system</h3>
