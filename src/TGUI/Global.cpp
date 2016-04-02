@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus's Graphical User Interface
-// Copyright (C) 2012-2015 Bruno Van de Velde (vdv_b@tgui.eu)
+// Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -97,10 +97,15 @@ namespace tgui
 
     int stoi(const std::string& value)
     {
-        int result;
+        int result = 0;
+
         std::istringstream iss(value);
         iss.imbue(std::locale::classic());
         iss >> result;
+
+        if (iss.fail())
+            result = 0;
+
         return result;
     }
 
@@ -108,10 +113,15 @@ namespace tgui
 
     float stof(const std::string& value)
     {
-        float result;
+        float result = 0;
+
         std::istringstream iss(value);
         iss.imbue(std::locale::classic());
         iss >> result;
+
+        if (iss.fail())
+            result = 0;
+
         return result;
     }
 
