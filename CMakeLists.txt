@@ -247,19 +247,21 @@ if(NOT TGUI_SHARED_LIBS)
     if (SFML_ROOT)
         if (SFML_OS_WINDOWS)
             set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${SFML_ROOT}/extlibs/headers")
-            if(SFML_COMPILER_GCC)
-                if(ARCH_32BITS)
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x86")
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/bin/x86")
-                elseif(ARCH_64BITS)
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x64")
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/bin/x64")
-                endif()
-            elseif(SFML_COMPILER_MSVC)
-                if(ARCH_32BITS)
+            if(ARCH_32BITS)
+                if(SFML_COMPILER_MSVC AND MSVC_VERSION LESS 1900) # older than VC++14
                     set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc/x86")
-                elseif(ARCH_64BITS)
+                elseif(SFML_COMPILER_MSVC) # VC++14 or newer
+                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc-universal/x86")
+                else() # gcc
+                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x86")
+                endif()
+            elseif(ARCH_64BITS)
+                if(SFML_COMPILER_MSVC AND MSVC_VERSION LESS 1900) # older than VC++14
                     set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc/x64")
+                elseif(SFML_COMPILER_MSVC) # VC++14 or newer
+                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc-universal/x64")
+                else() # gcc
+                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x64")
                 endif()
             endif()
         elseif(SFML_OS_MACOSX)
@@ -324,9 +326,10 @@ if(SFML_OS_ANDROID)
     set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
 endif()
 
-# Add SFML_STATIC define when linking statically
+# Add SFML_STATIC define when linking statically and link to SFML dependencies
 if(NOT TGUI_SHARED_LIBS)
     add_definitions(-DSFML_STATIC)
+    set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} ${SFML_DEPENDENCIES})
 endif()
 
 # Generate .gcno files when requested
