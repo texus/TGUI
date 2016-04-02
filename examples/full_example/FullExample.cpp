@@ -21,7 +21,7 @@ int main()
     gui.add(tab);
 
     tgui::MenuBar::Ptr menu = theme->load("MenuBar");
-    menu->setSize(window.getSize().x, 22);
+    menu->setSize((float)window.getSize().x, 22.f);
     menu->addMenu("MenuOption-1");
     menu->addMenuItem("MenuOption-1", "Load");
     menu->addMenuItem("MenuOption-1", "Save");
@@ -189,7 +189,7 @@ int main()
     text.setPosition(25, 100);
     text.setColor({200, 200, 200});
 
-    tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>(200, 140);
+    tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>(200.f, 140.f);
     canvas->setPosition(420, 430);
     canvas->clear();
     canvas->draw(sprite);
@@ -198,7 +198,7 @@ int main()
     gui.add(canvas);
    
     button = theme->load("button");
-    button->setPosition(window.getSize().x - 115, window.getSize().y - 50);
+    button->setPosition(window.getSize().x - 115.f, window.getSize().y - 50.f);
     button->setText("Exit");
     button->setSize(100, 40);
     button->connect("pressed", [&](){ window.close(); });

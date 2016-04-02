@@ -19,8 +19,8 @@ int main()
     // Width:  80% of window width
     // Height: 25% of window height
     tgui::Button::Ptr play = std::make_shared<tgui::Button>();
-    play->setPosition(windowWidth*0.1, windowHeight*0.2);
-    play->setSize(windowWidth*0.8, windowHeight*0.25);
+    play->setPosition(windowWidth*0.1f, windowHeight*0.2f);
+    play->setSize(windowWidth*0.8f, windowHeight*0.25f);
     play->setText("Play");
     gui.add(play);
 
@@ -28,7 +28,7 @@ int main()
     // Left:   10% of window width
     // Top:    60% of window height
     tgui::Button::Ptr exit = tgui::Button::copy(play);
-    exit->setPosition(windowWidth*0.1, windowHeight*0.6);
+    exit->setPosition(windowWidth*0.1f, windowHeight*0.6f);
     exit->setText("Exit");
     gui.add(exit);
 
