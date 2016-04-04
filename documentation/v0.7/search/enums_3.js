@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['titlealignment',['TitleAlignment',['../classtgui_1_1ChildWindow.html#a247720248700e8ddbbb4af19bbfad5b8',1,'tgui::ChildWindow']]]
+  ['scalingtype',['ScalingType',['../classtgui_1_1Texture.html#aaba70370fcc0e5fe13508646d2300014',1,'tgui::Texture']]],
+  ['showanimationtype',['ShowAnimationType',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da',1,'tgui']]]
 ];

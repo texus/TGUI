@@ -9,7 +9,7 @@ var searchData=
   ['addspace',['addSpace',['../classtgui_1_1BoxLayout.html#ada9db30453caa2c93707f1bbc35ea62e',1,'tgui::BoxLayout']]],
   ['addtext',['addText',['../classtgui_1_1TextBox.html#ae393071b37327d8a4df03c18f8bd0f84',1,'tgui::TextBox']]],
   ['addwidget',['addWidget',['../classtgui_1_1Grid.html#a4c5e821ead9caade84e7c6fd0678d2d3',1,'tgui::Grid']]],
-  ['alignment',['Alignment',['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393',1,'tgui::EditBox::Alignment()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9',1,'tgui::Grid::Alignment()'],['../classtgui_1_1Label.html#aa41b26cb8a66fb6a87395d2f50b14cba',1,'tgui::Label::Alignment()']]],
+  ['alignment',['Alignment',['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393',1,'tgui::EditBox::Alignment()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9',1,'tgui::Grid::Alignment()']]],
   ['allowtextclick',['allowTextClick',['../classtgui_1_1RadioButton.html#ab2aac253766bc22642127e92bf4f73fb',1,'tgui::RadioButton']]],
   ['attachtheme',['attachTheme',['../classtgui_1_1Widget.html#a05545f21decd950ac0bfee2d9b26e9e2',1,'tgui::Widget']]]
 ];

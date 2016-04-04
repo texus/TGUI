@@ -9,14 +9,14 @@ var searchData=
   ['textboxrenderer',['TextBoxRenderer',['../classtgui_1_1TextBoxRenderer.html',1,'tgui']]],
   ['textboxrenderer',['TextBoxRenderer',['../classtgui_1_1TextBoxRenderer.html#aecfb309d128b54fcb18a89753d33d2bb',1,'tgui::TextBoxRenderer']]],
   ['texture',['Texture',['../classtgui_1_1Texture.html',1,'tgui']]],
-  ['texture',['Texture',['../classtgui_1_1Texture.html#aa62ae5c1e87888eee4f52cc9622e813b',1,'tgui::Texture::Texture()'],['../classtgui_1_1Texture.html#ac2e8da5ead2fa002c60a10f0f6be1030',1,'tgui::Texture::Texture(const std::string &amp;filename, const sf::IntRect &amp;partRect=sf::IntRect(0, 0, 0, 0), const sf::IntRect &amp;middlePart=sf::IntRect(0, 0, 0, 0), bool repeated=false)'],['../classtgui_1_1Texture.html#a6cdac82b7914f87ff150de577206981b',1,'tgui::Texture::Texture(const Texture &amp;texture)']]],
+  ['texture',['Texture',['../classtgui_1_1Texture.html#aa62ae5c1e87888eee4f52cc9622e813b',1,'tgui::Texture::Texture()'],['../classtgui_1_1Texture.html#a3bd85f5938f4eceff10979fafaeddfb1',1,'tgui::Texture::Texture(const std::string &amp;filename, const sf::IntRect &amp;partRect=sf::IntRect(0, 0, 0, 0), const sf::IntRect &amp;middlePart=sf::IntRect(0, 0, 0, 0))'],['../classtgui_1_1Texture.html#a6cdac82b7914f87ff150de577206981b',1,'tgui::Texture::Texture(const Texture &amp;texture)']]],
   ['texturemanager',['TextureManager',['../classtgui_1_1TextureManager.html',1,'tgui']]],
   ['tgui',['tgui',['../namespacetgui.html',1,'']]],
   ['theme',['Theme',['../classtgui_1_1Theme.html#a030fa19678bb9f8a5844ce6b4e17c767',1,'tgui::Theme']]],
   ['theme',['Theme',['../classtgui_1_1Theme.html',1,'tgui']]],
   ['titlealignment',['TitleAlignment',['../classtgui_1_1ChildWindow.html#a247720248700e8ddbbb4af19bbfad5b8',1,'tgui::ChildWindow']]],
   ['tooltip',['ToolTip',['../classtgui_1_1ToolTip.html',1,'tgui']]],
-  ['top',['top',['../classtgui_1_1Borders.html#a590a94ae1512a72027b8f2f6a0a43b88',1,'tgui::Borders']]],
+  ['top',['Top',['../classtgui_1_1Label.html#a2974ef71da25253342a8b3660b6d094caa4ffdcf0dc1f31b9acaf295d75b51d00',1,'tgui::Label::Top()'],['../classtgui_1_1Borders.html#a590a94ae1512a72027b8f2f6a0a43b88',1,'tgui::Borders::top()']]],
   ['toptobottom',['TopToBottom',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85eaf2b1a19a8d0f523d042f9ede79a80804',1,'tgui::ProgressBar']]],
   ['transformable',['Transformable',['../classtgui_1_1Transformable.html',1,'tgui']]]
 ];

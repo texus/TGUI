@@ -2,7 +2,7 @@ var searchData=
 [
   ['fade',['Fade',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa04e0385c10aefee8e4681617d2f3ef40',1,'tgui']]],
   ['filldirection',['FillDirection',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85e',1,'tgui::ProgressBar']]],
-  ['float',['Float',['../structtgui_1_1EditBox_1_1Validator.html#a46c30c8161219a62c7e27685fdc1aae5',1,'tgui::EditBox::Validator']]],
+  ['float',['Float',['../structtgui_1_1EditBox_1_1Validator.html#a09bea6c7677de1f673e682ca9eb41c07',1,'tgui::EditBox::Validator']]],
   ['flushcache',['flushCache',['../classtgui_1_1DefaultThemeLoader.html#a9ca655747fb6516a5400e3200fbdc2e9',1,'tgui::DefaultThemeLoader']]],
   ['focus',['focus',['../classtgui_1_1Widget.html#a826330401141b9946307a5f4e3d1e988',1,'tgui::Widget']]],
   ['focusnextwidget',['focusNextWidget',['../classtgui_1_1Container.html#ae8b87961c278278d5cc8f666d5c2d9a7',1,'tgui::Container::focusNextWidget()'],['../classtgui_1_1Gui.html#aae7143950d0a28701f52a837a3377686',1,'tgui::Gui::focusNextWidget()']]],

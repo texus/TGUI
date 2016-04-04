@@ -4,7 +4,7 @@ var searchData=
   ['initwidget',['initWidget',['../classtgui_1_1BaseTheme.html#a33384e4f4f47b8110e7d487049a41405',1,'tgui::BaseTheme::initWidget()'],['../classtgui_1_1Theme.html#a0799e83b9c999ce798c5e79c847ec990',1,'tgui::Theme::initWidget()']]],
   ['insert',['insert',['../classtgui_1_1BoxLayout.html#a525eeff4bb35fd1b466d4cb6c24a3b87',1,'tgui::BoxLayout::insert()'],['../classtgui_1_1Tab.html#a080aba34cae9fe00b2cc484e812090ce',1,'tgui::Tab::insert()']]],
   ['insertspace',['insertSpace',['../classtgui_1_1BoxLayout.html#a1e890475ac21562461e3c789e3d1d510',1,'tgui::BoxLayout']]],
-  ['int',['Int',['../structtgui_1_1EditBox_1_1Validator.html#a90228e97d89fdb1a67442cb4c6bb896d',1,'tgui::EditBox::Validator']]],
+  ['int',['Int',['../structtgui_1_1EditBox_1_1Validator.html#addae7bebf202d82437de4be2d06aec66',1,'tgui::EditBox::Validator']]],
   ['internalload',['internalLoad',['../classtgui_1_1BaseTheme.html#a57595e4c45be4574b70d006fb2acf3b3',1,'tgui::BaseTheme::internalLoad()'],['../classtgui_1_1Theme.html#af1d7c0bd769f542fdcbf133f7358ea93',1,'tgui::Theme::internalLoad()']]],
   ['ischecked',['isChecked',['../classtgui_1_1RadioButton.html#a1adc6c060edf4f2dc575d26df180b7f1',1,'tgui::RadioButton']]],
   ['isenabled',['isEnabled',['../classtgui_1_1Widget.html#af6770fc71c644b645bf28f31c4efd2d1',1,'tgui::Widget']]],
