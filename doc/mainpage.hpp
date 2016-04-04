@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \mainpage TGUI Documentation
 ///
-/// These pages contain the description of all usable functions and members in TGUI v0.7-dev.\n
+/// These pages contain the description of all usable functions and members in TGUI v0.7.\n
 ///
 /// Make sure to also check the tutorials (https://tgui.eu/tutorials/v0.7/) and example codes (https://tgui.eu/example-code/v0.7/).
 ///
