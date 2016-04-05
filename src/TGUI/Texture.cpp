@@ -46,9 +46,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture::Texture(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart)
+    Texture::Texture(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middlePart)
     {
-        load(filename, partRect, middlePart);
+        load(id, partRect, middlePart);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Texture::Texture(const sf::Texture& texture, const sf::IntRect& partRect, const sf::IntRect& middlePart)
+    {
+        load(texture, partRect, middlePart);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,6 +126,26 @@ namespace tgui
 
         m_id = id;
         setTexture(m_data, middleRect);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::load(const sf::Texture& texture, const sf::IntRect& partRect, const sf::IntRect& middleRect)
+    {
+        if (m_loaded && (m_destructCallback != nullptr))
+            m_destructCallback(getData());
+
+        m_loaded = false;
+
+        auto data = std::make_shared<TextureData>();
+
+        if (partRect == sf::IntRect{})
+            data->texture = texture;
+        else
+            data->texture.loadFromImage(texture.copyToImage(), partRect);
+
+        m_id = "";
+        setTexture(data, middleRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

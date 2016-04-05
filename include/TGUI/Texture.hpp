@@ -75,14 +75,31 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor that created the texture.
         ///
-        /// @param filename   Filename of the image to load.
+        /// @param id         Id for the the image to load (for the default loader, the id is the filename).
         /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image.
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         ///
-        /// This constructor just calls the load function.
+        /// This constructor just calls the corresponding load function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture(const std::string& filename,
+        Texture(const sf::String& id,
+                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0));
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor that created the texture from an existing sf::Texture.
+        ///
+        /// @param texture    Existing texture to copy.
+        /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image.
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        ///
+        /// The texture will be copied, you do not have to keep the sf::Texture alive after calling this function.
+        ///
+        /// This constructor just calls the corresponding load function.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Texture(const sf::Texture& texture,
                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0));
 
@@ -111,6 +128,21 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture& operator=(const Texture& right);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Creates the texture from an existing sf::Texture.
+        ///
+        /// @param texture    Existing texture to copy.
+        /// @param partRect   Load only part of the texture. Don't pass this parameter if you want to load the full image.
+        /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        ///
+        /// The texture will be copied, you do not have to keep the sf::Texture alive after calling this function.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void load(const sf::Texture& texture,
+                  const sf::IntRect& partRect = {},
+                  const sf::IntRect& middleRect = {});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

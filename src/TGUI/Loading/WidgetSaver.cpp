@@ -390,7 +390,7 @@ namespace tgui
     {
         auto node = saveWidget(picture);
 
-        if (!picture->getLoadedFilename().empty())
+        if (!picture->getLoadedFilename().isEmpty())
             SET_PROPERTY("Filename", Serializer::serialize(sf::String{picture->getLoadedFilename()}));
         if (picture->isSmooth())
             SET_PROPERTY("Smooth", "true");

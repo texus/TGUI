@@ -40,7 +40,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture(const std::string& filename, bool fullyClickable) :
+    Picture::Picture(const sf::String& filename, bool fullyClickable) :
         Picture{}
     {
         setTexture(filename, fullyClickable);
@@ -49,41 +49,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture(const sf::Texture& texture) :
-        Picture{}
-    {
-        setTexture(texture);
-        setSize(m_texture.getImageSize());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Picture::Picture(const Texture& texture, bool fullyClickable) :
         Picture{}
     {
-        auto size = m_texture.getSize();
+        auto size = texture.getSize();
         setTexture(texture, fullyClickable);
         setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setTexture(const std::string& filename, bool fullyClickable)
+    void Picture::setTexture(const sf::String& filename, bool fullyClickable)
     {
         m_fullyClickable = fullyClickable;
         m_loadedFilename = getResourcePath() + filename;
 
         m_texture.load(m_loadedFilename);
-        m_texture.setSize(getSize());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Picture::setTexture(const sf::Texture& texture)
-    {
-        auto data = std::make_shared<TextureData>();
-        data->texture = texture;
-        m_texture.setTexture(data);
         m_texture.setSize(getSize());
     }
 
