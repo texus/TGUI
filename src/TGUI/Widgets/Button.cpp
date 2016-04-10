@@ -604,7 +604,7 @@ namespace tgui
         {
             if (m_button->m_mouseHover)
             {
-                if (m_button->m_mouseDown && m_button->m_mouseHover && m_textureDown.isLoaded())
+                if (m_button->m_mouseDown && m_textureDown.isLoaded())
                     target.draw(m_textureDown, states);
                 else if (m_textureHover.isLoaded())
                     target.draw(m_textureHover, states);
