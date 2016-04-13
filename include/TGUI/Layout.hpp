@@ -137,7 +137,7 @@ namespace tgui
         template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
         Layout(T constant)
         {
-            m_impl->value = constant;
+            m_impl->value = static_cast<float>(constant);
             m_impl->attachedLayouts.insert(this);
         }
 
