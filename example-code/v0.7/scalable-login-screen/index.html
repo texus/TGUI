@@ -40,8 +40,9 @@ void loadWidgets( tgui::Gui& gui )
     editBoxUsername->setDefaultText("Username");
     gui.add(editBoxUsername, "Username");
 
-    // Create the password edit box (we will copy the previously created edit box)
-    tgui::EditBox::Ptr editBoxPassword = tgui::EditBox::copy(editBoxUsername);
+    // Create the password edit box
+    tgui::EditBox::Ptr editBoxPassword = theme->load("EditBox");
+    editBoxPassword->setSize(windowWidth * 2/3, windowHeight / 8);
     editBoxPassword->setPosition(windowWidth / 6, windowHeight * 5/12);
     editBoxPassword->setPasswordCharacter('*');
     editBoxPassword->setDefaultText("Password");
