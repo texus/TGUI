@@ -522,6 +522,16 @@ TEST_CASE("[Layouts]") {
                 REQUIRE(size.getValue() == sf::Vector2f(40, 30));
             }
         }
+
+        SECTION("No ambiguity with 0") {
+            auto widget = std::make_shared<tgui::ClickableWidget>();
+            widget->setPosition({0, 0});
+            widget->setPosition(0,0);
+            widget->setPosition({"0","0"});
+            widget->setPosition({"0"},{"0"});
+            widget->setPosition("{0,0}");
+            widget->setPosition("0","0");
+        }
     }
 
     SECTION("Bug Fixes") {
