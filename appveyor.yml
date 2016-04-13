@@ -2,7 +2,7 @@
 #      general configuration      #
 #---------------------------------#
  
-version: 0.7-dev.{build}
+version: 0.7-{build}
 
 
 #---------------------------------#
@@ -12,31 +12,47 @@ version: 0.7-dev.{build}
 environment:
   SFML_VERSION: master
 
+  matrix:
+    - SFML_ROOT:    C:\SFML-VS2015
+      GENERATOR:    Visual Studio 14 2015 Win64
+      BUILD_TYPE:   Debug
+      SHARED_LIBS:  FALSE
+      BUILD_TESTS:  TRUE
+      BUILD_FOLDER: build-VS2015-Win64
+
+    - SFML_ROOT:    C:\SFML-VS2013
+      GENERATOR:    Visual Studio 12 2013
+      BUILD_TYPE:   Release
+      SHARED_LIBS:  TRUE
+      BUILD_TESTS:  FALSE
+      BUILD_FOLDER: build-VS2013-Win32
+
 clone_depth: 3
 
 cache:
-  - C:\SFML -> appveyor.yml
+  - C:\SFML-VS2013 -> appveyor.yml
+  - C:\SFML-VS2015 -> appveyor.yml
 
 install:
-  - IF NOT EXIST C:\SFML (
+  - IF NOT EXIST %SFML_ROOT% (
       cd C:\ &&
       appveyor DownloadFile https://github.com/SFML/SFML/archive/%SFML_VERSION%.zip -FileName C:\SFML.zip &&
       7z x C:\SFML.zip &&
-      move SFML-%SFML_VERSION% SFML &&
-      mkdir C:\SFML\lib &&
-      mkdir C:\SFML\build-VS2013-Win32 &&
-      cd C:\SFML\build-VS2013-Win32 &&
-      cmake -G"Visual Studio 12 2013" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=TRUE .. &&
-      msbuild SFML.sln /p:Configuration=Debug /m &&
-      xcopy lib\Debug lib\ &&
-      cd .. &&
-      mkdir C:\SFML\build-VS2015-Win64 &&
-      cd C:\SFML\build-VS2015-Win64 &&
-      cmake -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=FALSE .. &&
-      msbuild SFML.sln /p:Configuration=Release /m &&
-      xcopy lib\Release lib\ &&
+      move SFML-%SFML_VERSION% %SFML_ROOT% &&
+      cd %SFML_ROOT%
+      mkdir lib &&
+      mkdir %BUILD_FOLDER% &&
+      cd %BUILD_FOLDER% &&
+      cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% .. &&
+      msbuild SFML.sln /p:Configuration=%BUILD_TYPE% /m &&
+      xcopy lib\%BUILD_TYPE% %SFML_ROOT%\lib\ &&
       cd ..
     )
+
+# immediately finish build once one of the jobs fails
+matrix:
+  fast_finish: true
+
 
 #---------------------------------#
 #       build configuration       #
@@ -44,18 +60,21 @@ install:
 
 build_script:
   - cd C:\projects\tgui
-  - mkdir build-VS2013-Win32
-  - cd build-VS2013-Win32
-  - cmake -G"Visual Studio 12 2013" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=C:\SFML\build-VS2013-Win32 -DSFML_INCLUDE_DIR=C:\SFML\include ..
-  - msbuild tgui.sln /p:Configuration=Debug /m
+  - mkdir %BUILD_FOLDER%
+  - cd %BUILD_FOLDER%
+  - cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% ..
+  - msbuild tgui.sln /p:Configuration=%BUILD_TYPE% /m
   - cd ..
-  - mkdir build-VS2015-Win64
-  - cd build-VS2015-Win64
-  - cmake -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DTGUI_BUILD_TESTS=TRUE -DSFML_ROOT=C:\SFML\build-VS2015-Win64 -DSFML_INCLUDE_DIR=C:\SFML\include ..
-  - msbuild tgui.sln /p:Configuration=Release /m
-  - cd tests\Debug
-  - tests.exe
-  - cd ..\..\..
+  - IF %BUILD_TESTS%==TRUE (
+      cd %BUILD_FOLDER%\tests\%BUILD_TYPE% &&
+      tests.exe &&
+      cd ..\..\..
+    )
+
+
+#---------------------------------#
+#         notifications           #
+#---------------------------------#
 
 notifications:
   - provider: Webhook
