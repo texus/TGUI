@@ -39,7 +39,7 @@ install:
       appveyor DownloadFile https://github.com/SFML/SFML/archive/%SFML_VERSION%.zip -FileName C:\SFML.zip &&
       7z x C:\SFML.zip &&
       move SFML-%SFML_VERSION% %SFML_ROOT% &&
-      cd %SFML_ROOT%
+      cd %SFML_ROOT% &&
       mkdir lib &&
       mkdir %BUILD_FOLDER% &&
       cd %BUILD_FOLDER% &&
