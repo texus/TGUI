@@ -2,7 +2,7 @@
 #      general configuration      #
 #---------------------------------#
  
-version: 0.7-{build}
+version: 0.7-build-{build}
 
 
 #---------------------------------#
@@ -49,10 +49,6 @@ install:
       cd ..
     )
 
-# immediately finish build once one of the jobs fails
-matrix:
-  fast_finish: true
-
 
 #---------------------------------#
 #       build configuration       #
@@ -62,7 +58,7 @@ build_script:
   - cd C:\projects\tgui
   - mkdir %BUILD_FOLDER%
   - cd %BUILD_FOLDER%
-  - cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% ..
+  - cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DSFML_ROOT=%SFML_ROOT% ..
   - msbuild tgui.sln /p:Configuration=%BUILD_TYPE% /m
   - cd ..
   - IF %BUILD_TESTS%==TRUE (
