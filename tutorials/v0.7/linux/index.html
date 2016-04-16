@@ -1,25 +1,35 @@
 ---
 layout: page
-title: Linux
+title: Linux / FreeBSD
 breadcrumb: linux
 redirect_from: "/tutorials/v07/linux/index.html"
 ---
 <div>
-    <h3 id="preparation">Preparation</h3>
-    <ul>
-      <li>You will need to use CMake in order to build TGUI.<br>
-          Depenging on your distro, you can download it as easily as typing the following in the terminal:<br>
-          “sudo apt-get install cmake” (Ubuntu) or “sudo pacman -S cmake” (ArchLinux).<br>
-          Otherwise, you can download the latest version <a href="http://www.cmake.org/download/">here</a>.</li>
-      <li>Also make sure that you already have sfml on your computer.
-          It would be even better to make sure you have sfml working before trying to use TGUI.
-          If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.</li>
-    </ul>
-</div>
+  <h3 id="installing">Installing</h3>
+  <h4>Ubuntu 15.10 / Ubuntu 16.04</h4>
+  <p class="SmallBottomMargin">You can install tgui by adding the <a href="https://launchpad.net/~texus/+archive/ubuntu/tgui/">PPA</a> to your system and install the "tgui-dev" package:</p>
+{% highlight bash %}
+sudo add-apt-repository ppa:texus/tgui
+sudo apt-get update
+sudo apt-get install tgui-dev
+{% endhighlight %}
+  <h4>Arch Linux</h4>
+  <p class="SmallBottomMargin">You can download, build and install the latest tgui version with the "tgui-git" packet from the <a href="https://aur.archlinux.org/packages/tgui-git/">AUR</a>. There are multiple ways to do this, here is one:</p>
+{% highlight bash %}
+yaourt -S tgui-git
+{% endhighlight %}
+  <h4>Other distros / FreeBSD</h4>
+  <p>Download the source code from the <a href="https://tgui.eu/download/">download page</a>.</p>
 
-<div>
-    <h3 id="installing">Installing</h3>
-    <p class="SmallBottomMargin">Type the following in the terminal in order to install tgui. Of course you will have to be inside the downloaded tgui directory. You can change the 2 in -j2 to a higher number if you have more cores.</p>
+  <p>You will need to use CMake in order to build TGUI.
+     How you do this depends on your distro, but it will be similar to “sudo apt-get install cmake” (Ubuntu)
+     or “sudo pacman -S cmake” (ArchLinux).</p>
+
+  <p>Also make sure that you already have sfml on your computer.
+     It would be even better to make sure you have sfml working before trying to use TGUI.
+     If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.</p>
+
+  <p class="SmallBottomMargin">Type the following in the terminal in order to install tgui. Of course you will have to be inside the downloaded tgui directory. You can change the 2 in -j2 to a higher number if you have more cores.</p>
 {% highlight bash %}
 cmake .
 make -j2
@@ -28,42 +38,42 @@ sudo make install
 </div>
 
 <div>
-    <h3 id="using_tgui_terminal">Using TGUI (Terminal)</h3>
+  <h3 id="using_tgui_terminal">Using TGUI (Terminal)</h3>
 
-    <p class="SmallBottomMargin">The two things to add is linking to tgui and tell the compiler that it uses c++11.</p>
+  <p class="SmallBottomMargin">The two things to add is linking to tgui and tell the compiler that it uses c++11.</p>
 {% highlight bash %}
 g++ -std=c++11 main.cpp -ltgui -lsfml-graphics -lsfml-window -lsfml-system -o program
 {% endhighlight %}
 </div>
 
 <div>
-    <h3 id="using_tgui_codeBlocks">Using TGUI (CodeBlocks)</h3>
+  <h3 id="using_tgui_codeBlocks">Using TGUI (CodeBlocks)</h3>
 
-    <p class="SmallBottomMargin">Open the “Project build options” and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.</p>
-    <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg"><img alt="CodeBlocks Project Build Options" src="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg" width="641" height="355" /></a>
+  <p class="SmallBottomMargin">Open the “Project build options” and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.</p>
+  <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg"><img alt="CodeBlocks Project Build Options" src="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg" width="641" height="355" /></a>
 
-    <p class="SmallBottomMargin">
-        Add ‘-ltgui’ to the “Linker settings” under “Other linker options”. The order should be as follows: first tgui, then the libraries from sfml. (you might also need to add -lGL at the end of the list)
-    </p>
-    <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg"><img alt="CodeBlocks Linker Settings" src="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg" width="736" height="324" /></a>
+  <p class="SmallBottomMargin">
+    Add ‘-ltgui’ to the “Linker settings” under “Other linker options”. The order should be as follows: first tgui, then the libraries from sfml. (you might also need to add -lGL at the end of the list)
+  </p>
+  <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg"><img alt="CodeBlocks Linker Settings" src="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg" width="736" height="324" /></a>
 
-    <p class="SmallBottomMargin">You must also enable c++11.</p>
-    <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectCompilerFlags.png"><img alt="CodeBlocks Compiler Flags" src="{{site.url}}/resources/LinuxCodeBlocksProjectCompilerFlags.png" width="839" height="741" /></a>
+  <p class="SmallBottomMargin">You must also enable c++11.</p>
+  <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectCompilerFlags.png"><img alt="CodeBlocks Compiler Flags" src="{{site.url}}/resources/LinuxCodeBlocksProjectCompilerFlags.png" width="839" height="741" /></a>
 
-    <p>You should now be able to use TGUI.</p>
+  <p>You should now be able to use TGUI.</p>
 </div>
 
 <div>
-    <h3 id="possible_error">Possible error</h3>
-    <p>It is possible to get the following error when running your program:<br>
-       “/pathname/of/program: error while loading shared libraries: libtgui.so: cannot open shared object file: no such file or directory”
-    </p>
+  <h3 id="possible_error">Possible error</h3>
+  <p>It is possible to get the following error when running your program:<br>
+     “/pathname/of/program: error while loading shared libraries: libtgui.so: cannot open shared object file: no such file or directory”
+  </p>
 
-    <p>If you get this then you did install tgui correctly, but it is not in the shared library cache.<br>
-       All you have to do is open the terminal, type “sudo ldconfig”, hit enter and type your password.
-    </p>
+  <p>If you get this then you did install tgui correctly, but it is not in the shared library cache.<br>
+     All you have to do is open the terminal, type “sudo ldconfig”, hit enter and type your password.
+  </p>
 
-    <p>If that doesn’t solve it then make sure the library was installed to a place where your distro searches for it.<br>
-       The easiest solution is probably to add the line “/usr/local/lib/” (without the quotes) at the end of /etc/ld.so.conf and then run “sudo ldconfig” again.
-    </p>
+  <p>If that doesn’t solve it then make sure the library was installed to a place where your distro searches for it.<br>
+     The easiest solution is probably to add the line “/usr/local/lib/” (without the quotes) at the end of /etc/ld.so.conf and then run “sudo ldconfig” again.
+  </p>
 </div>
