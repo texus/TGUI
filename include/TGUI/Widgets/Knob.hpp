@@ -535,7 +535,7 @@ namespace tgui
 
         Knob*     m_knob;
 
-        float     m_imageRotation;
+        float     m_imageRotation = 0;
         Texture   m_backgroundTexture;
         Texture   m_foregroundTexture;
 

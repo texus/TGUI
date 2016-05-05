@@ -73,7 +73,7 @@ namespace tgui
     private:
         Widget::Ptr m_widget;
 
-        HorizontalAlign m_align;
+        HorizontalAlign m_align = Left;
     };
 }
 

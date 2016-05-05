@@ -368,10 +368,12 @@ namespace tgui
             getRenderer()->m_textureNormal.setSize({getRenderer()->m_textureNormal.getSize().x, height});
             getRenderer()->m_textureSelected.setSize({getRenderer()->m_textureSelected.getSize().x, height});
 
-            for (auto it = getRenderer()->m_texturesNormal.begin(); it != getRenderer()->m_texturesNormal.end(); ++it)
+            auto& texturesNormal = getRenderer()->m_texturesNormal;
+            for (auto it = texturesNormal.begin(); it != texturesNormal.end(); ++it)
                 it->setSize({it->getSize().x, height});
 
-            for (auto it = getRenderer()->m_texturesSelected.begin(); it != getRenderer()->m_texturesSelected.end(); ++it)
+            auto& texturesSelected = getRenderer()->m_texturesSelected;
+            for (auto it = texturesSelected.begin(); it != texturesSelected.end(); ++it)
                 it->setSize({it->getSize().x, height});
         }
 
@@ -400,10 +402,12 @@ namespace tgui
             getRenderer()->m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
             getRenderer()->m_textureSelected.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
-            for (auto it = getRenderer()->m_texturesNormal.begin(); it != getRenderer()->m_texturesNormal.end(); ++it)
+            auto& texturesNormal = getRenderer()->m_texturesNormal;
+            for (auto it = texturesNormal.begin(); it != texturesNormal.end(); ++it)
                 it->setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
 
-            for (auto it = getRenderer()->m_texturesSelected.begin(); it != getRenderer()->m_texturesSelected.end(); ++it)
+            auto& texturesSelected = getRenderer()->m_texturesSelected;
+            for (auto it = texturesSelected.begin(); it != texturesSelected.end(); ++it)
                 it->setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
         }
 

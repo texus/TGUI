@@ -38,8 +38,6 @@ namespace
 
         if (c == 10)
             return 'A';
-        else if (c == 10)
-            return 'A';
         else if (c == 11)
             return 'B';
         else if (c == 12)

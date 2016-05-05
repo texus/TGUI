@@ -66,7 +66,7 @@ namespace tgui
 
         getRenderer()->m_backgroundTexture.setPosition(getPosition());
         getRenderer()->m_foregroundTexture.setPosition(getPosition().x + ((getSize().x - getRenderer()->m_foregroundTexture.getSize().x) / 2.0f),
-                                                       getPosition().y + ((getSize().y - getRenderer()->m_foregroundTexture.getSize().x) / 2.0f));
+                                                       getPosition().y + ((getSize().y - getRenderer()->m_foregroundTexture.getSize().y) / 2.0f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
