@@ -18,8 +18,8 @@ else
   echo "$(tput setaf 2)Using cached SFML directory$(tput sgr 0)"
 fi
 
-mkdir build_$CXX
-cd build_$CXX
+mkdir build_gcc-5
+cd build_gcc-5
 cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_TESTS=TRUE -DTGUI_USE_GCOV=TRUE ..
 make -j2
 cd tests/

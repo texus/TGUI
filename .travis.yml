@@ -14,8 +14,8 @@ matrix:
       - $HOME/SFML_LINUX
 
   - os: linux
-    compiler: g++-6
-    env: COMPILER=g++-6
+    compiler: g++-5
+    env: COMPILER=g++-5
     cache:
       directories:
       - $HOME/SFML-2.2_LINUX
@@ -31,7 +31,7 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.7
-    - g++-6
+    - g++-5
 
     - libfreetype6-dev
     - libjpeg-dev
@@ -62,7 +62,7 @@ script:
       if [[ $CXX == g++-4.7 ]]; then
         chmod +x tests/travis_linux.sh
         tests/travis_linux.sh
-      elif [[ $CXX == g++-6 ]]; then
+      elif [[ $CXX == g++-5 ]]; then
         chmod +x tests/travis_linux_tests.sh
         tests/travis_linux_tests.sh
       else
@@ -79,8 +79,8 @@ script:
 
 after_success:
   - >
-    if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == g++-6 ]]; then
-      bash <(curl -s https://codecov.io/bash) -x gcov-6 -a "-s /home/travis/build/texus/TGUI -pr"
+    if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == g++-5 ]]; then
+      bash <(curl -s https://codecov.io/bash) -x gcov-5 -a "-s /home/travis/build/texus/TGUI -pr"
     fi
 
 notifications:
