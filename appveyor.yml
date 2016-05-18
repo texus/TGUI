@@ -13,19 +13,21 @@ environment:
   SFML_VERSION: master
 
   matrix:
-    - SFML_ROOT:    C:\SFML-VS2015
-      GENERATOR:    Visual Studio 14 2015 Win64
-      BUILD_TYPE:   Debug
-      SHARED_LIBS:  FALSE
-      BUILD_TESTS:  TRUE
-      BUILD_FOLDER: build-VS2015-Win64
+    - SFML_ROOT:      C:\SFML-VS2015
+      GENERATOR:      Visual Studio 14 2015 Win64
+      BUILD_TYPE:     Debug
+      SHARED_LIBS:    FALSE
+      BUILD_TESTS:    TRUE
+      BUILD_EXAMPLES: FALSE
+      BUILD_FOLDER:   build-VS2015-Win64
 
-    - SFML_ROOT:    C:\SFML-VS2013
-      GENERATOR:    Visual Studio 12 2013
-      BUILD_TYPE:   Release
-      SHARED_LIBS:  TRUE
-      BUILD_TESTS:  FALSE
-      BUILD_FOLDER: build-VS2013-Win32
+    - SFML_ROOT:      C:\SFML-VS2013
+      GENERATOR:      Visual Studio 12 2013
+      BUILD_TYPE:     Release
+      SHARED_LIBS:    TRUE
+      BUILD_TESTS:    FALSE
+      BUILD_EXAMPLES: TRUE
+      BUILD_FOLDER:   build-VS2013-Win32
 
 clone_depth: 3
 
@@ -58,7 +60,7 @@ build_script:
   - cd C:\projects\tgui
   - mkdir %BUILD_FOLDER%
   - cd %BUILD_FOLDER%
-  - cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DSFML_ROOT=%SFML_ROOT% ..
+  - cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DSFML_ROOT=%SFML_ROOT% ..
   - msbuild tgui.sln /p:Configuration=%BUILD_TYPE% /m
   - cd ..
   - IF %BUILD_TESTS%==TRUE (
