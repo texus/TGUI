@@ -13,6 +13,7 @@ Note that the 32bit and 64bit refer to the compiler you use, not your Windows.
   {% include button.ext text="Visual C++12 (2013) - 64bit" link="https://www.dropbox.com/s/g19syvufpxw1ugb/TGUI-0.7.0%20Visual%20C%2B%2B12%20%282013%29%20-%2064bit.zip?dl=1" style="Green" %}<br><br>
   {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://www.dropbox.com/s/ynset67m692cz18/TGUI-0.7.0%20Visual%20C%2B%2B14%20%282015%29%20-%2032bit.zip?dl=1" style="Green" %}
   {% include button.ext text="Visual C++14 (2015) - 64bit" link="https://www.dropbox.com/s/bhkfi3vqq2gux3u/TGUI-0.7.0%20Visual%20C%2B%2B14%20%282015%29%20-%2064bit.zip?dl=1" style="Green" %}<br><br>
+  {% include button.ext text="Conan.io" link="https://www.conan.io/source/tgui/2016.4.4/texus/stable" style="Green" %}
   {% include button.ext text="Arch Linux (AUR)" link="https://aur.archlinux.org/packages/tgui-git/" style="Green" %}
   {% include button.ext text="Ubuntu (PPA)" link="https://launchpad.net/~texus/+archive/ubuntu/tgui/" style="Green" %}<br><br>
   {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/v0.7.0.zip" style="Green" %}
