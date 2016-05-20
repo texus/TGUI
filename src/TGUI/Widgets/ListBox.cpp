@@ -603,7 +603,7 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_backgroundTexture.setColor({getRenderer()->m_backgroundTexture.getColor().r, getRenderer()->m_backgroundTexture.getColor().g, getRenderer()->m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
         if (m_scroll != nullptr)
             m_scroll->setOpacity(m_opacity);
@@ -1298,7 +1298,7 @@ namespace tgui
         {
             m_backgroundTexture.setPosition(m_listBox->getPosition());
             m_backgroundTexture.setSize(m_listBox->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_listBox->getOpacity() * 255)});
+            m_backgroundTexture.setColor({m_backgroundTexture.getColor().r, m_backgroundTexture.getColor().g, m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_listBox->getOpacity() * 255)});
         }
     }
 

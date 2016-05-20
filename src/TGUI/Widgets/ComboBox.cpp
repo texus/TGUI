@@ -415,11 +415,11 @@ namespace tgui
 
         m_listBox->setOpacity(m_opacity);
 
-        getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_backgroundTexture.setColor({getRenderer()->m_backgroundTexture.getColor().r, getRenderer()->m_backgroundTexture.getColor().g, getRenderer()->m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowUpNormal.setColor({getRenderer()->m_textureArrowUpNormal.getColor().r, getRenderer()->m_textureArrowUpNormal.getColor().g, getRenderer()->m_textureArrowUpNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowDownNormal.setColor({getRenderer()->m_textureArrowDownNormal.getColor().r, getRenderer()->m_textureArrowDownNormal.getColor().g, getRenderer()->m_textureArrowDownNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowUpHover.setColor({getRenderer()->m_textureArrowUpHover.getColor().r, getRenderer()->m_textureArrowUpHover.getColor().g, getRenderer()->m_textureArrowUpHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowDownHover.setColor({getRenderer()->m_textureArrowDownHover.getColor().r, getRenderer()->m_textureArrowDownHover.getColor().g, getRenderer()->m_textureArrowDownHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
         m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
     }
@@ -932,7 +932,7 @@ namespace tgui
         {
             m_backgroundTexture.setPosition(m_comboBox->getPosition());
             m_backgroundTexture.setSize(m_comboBox->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
+            m_backgroundTexture.setColor({m_backgroundTexture.getColor().r, m_backgroundTexture.getColor().g, m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 
@@ -948,7 +948,7 @@ namespace tgui
 
             m_textureArrowUpNormal.setSize({m_textureArrowUpNormal.getImageSize().x * (height / m_textureArrowUpNormal.getImageSize().y), height});
             m_textureArrowUpNormal.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowUpNormal.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
-            m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
+            m_textureArrowUpNormal.setColor({m_textureArrowUpNormal.getColor().r, m_textureArrowUpNormal.getColor().g, m_textureArrowUpNormal.getColor().b, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 
@@ -964,7 +964,7 @@ namespace tgui
 
             m_textureArrowDownNormal.setSize({m_textureArrowDownNormal.getImageSize().x * (height / m_textureArrowDownNormal.getImageSize().y), height});
             m_textureArrowDownNormal.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowDownNormal.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
-            m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
+            m_textureArrowDownNormal.setColor({m_textureArrowDownNormal.getColor().r, m_textureArrowDownNormal.getColor().g, m_textureArrowDownNormal.getColor().b, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 
@@ -980,7 +980,7 @@ namespace tgui
 
             m_textureArrowUpHover.setSize({m_textureArrowUpHover.getImageSize().x * (height / m_textureArrowUpHover.getImageSize().y), height});
             m_textureArrowUpHover.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowUpHover.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
-            m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
+            m_textureArrowUpHover.setColor({m_textureArrowUpHover.getColor().r, m_textureArrowUpHover.getColor().g, m_textureArrowUpHover.getColor().b, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 
@@ -996,7 +996,7 @@ namespace tgui
 
             m_textureArrowDownHover.setSize({m_textureArrowDownHover.getImageSize().x * (height / m_textureArrowDownHover.getImageSize().y), height});
             m_textureArrowDownHover.setPosition({m_comboBox->getPosition().x + m_comboBox->getSize().x - m_textureArrowDownHover.getSize().x - padding.right, m_comboBox->getPosition().y + padding.top});
-            m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
+            m_textureArrowDownHover.setColor({m_textureArrowDownHover.getColor().r, m_textureArrowDownHover.getColor().g, m_textureArrowDownHover.getColor().b, static_cast<sf::Uint8>(m_comboBox->getOpacity() * 255)});
         }
     }
 

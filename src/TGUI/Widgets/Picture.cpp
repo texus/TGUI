@@ -118,7 +118,7 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        m_texture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        m_texture.setColor({m_texture.getColor().r, m_texture.getColor().g, m_texture.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

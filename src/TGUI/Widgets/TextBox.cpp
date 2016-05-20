@@ -455,7 +455,7 @@ namespace tgui
         if (m_scroll != nullptr)
             m_scroll->setOpacity(m_opacity);
 
-        getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_backgroundTexture.setColor({getRenderer()->m_backgroundTexture.getColor().r, getRenderer()->m_backgroundTexture.getColor().g, getRenderer()->m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
         m_textBeforeSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         m_textAfterSelection1.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
@@ -2034,7 +2034,7 @@ namespace tgui
         {
             m_backgroundTexture.setPosition(m_textBox->getPosition());
             m_backgroundTexture.setSize(m_textBox->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_textBox->getOpacity() * 255)});
+            m_backgroundTexture.setColor({m_backgroundTexture.getColor().r, m_backgroundTexture.getColor().g, m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_textBox->getOpacity() * 255)});
         }
     }
 

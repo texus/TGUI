@@ -399,16 +399,16 @@ namespace tgui
 
         if (getRenderer()->m_textureNormal.isLoaded() && getRenderer()->m_textureSelected.isLoaded())
         {
-            getRenderer()->m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-            getRenderer()->m_textureSelected.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+            getRenderer()->m_textureNormal.setColor({getRenderer()->m_textureNormal.getColor().r, getRenderer()->m_textureNormal.getColor().g, getRenderer()->m_textureNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+            getRenderer()->m_textureSelected.setColor({getRenderer()->m_textureSelected.getColor().r, getRenderer()->m_textureSelected.getColor().g, getRenderer()->m_textureSelected.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
             auto& texturesNormal = getRenderer()->m_texturesNormal;
             for (auto it = texturesNormal.begin(); it != texturesNormal.end(); ++it)
-                it->setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+                it->setColor({it->getColor().r, it->getColor().g, it->getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
             auto& texturesSelected = getRenderer()->m_texturesSelected;
             for (auto it = texturesSelected.begin(); it != texturesSelected.end(); ++it)
-                it->setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+                it->setColor({it->getColor().r, it->getColor().g, it->getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
         }
 
         for (auto& tabText : m_tabTexts)
@@ -765,7 +765,7 @@ namespace tgui
         m_textureNormal = texture;
         if (m_textureNormal.isLoaded())
         {
-            m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_tab->getOpacity() * 255)});
+            m_textureNormal.setColor({m_textureNormal.getColor().r, m_textureNormal.getColor().g, m_textureNormal.getColor().b, static_cast<sf::Uint8>(m_tab->getOpacity() * 255)});
 
             if (m_textureSelected.isLoaded())
             {
@@ -790,7 +790,7 @@ namespace tgui
         m_textureSelected = texture;
         if (m_textureSelected.isLoaded())
         {
-            m_textureSelected.setColor({255, 255, 255, static_cast<sf::Uint8>(m_tab->getOpacity() * 255)});
+            m_textureSelected.setColor({m_textureSelected.getColor().r, m_textureSelected.getColor().g, m_textureSelected.getColor().b, static_cast<sf::Uint8>(m_tab->getOpacity() * 255)});
 
             if (m_textureNormal.isLoaded())
             {

@@ -198,11 +198,11 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        getRenderer()->m_textureUnchecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureChecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureUncheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureCheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureUnchecked.setColor({getRenderer()->m_textureUnchecked.getColor().r, getRenderer()->m_textureUnchecked.getColor().g, getRenderer()->m_textureUnchecked.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureChecked.setColor({getRenderer()->m_textureChecked.getColor().r, getRenderer()->m_textureChecked.getColor().g, getRenderer()->m_textureChecked.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureUncheckedHover.setColor({getRenderer()->m_textureUncheckedHover.getColor().r, getRenderer()->m_textureUncheckedHover.getColor().g, getRenderer()->m_textureUncheckedHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureCheckedHover.setColor({getRenderer()->m_textureCheckedHover.getColor().r, getRenderer()->m_textureCheckedHover.getColor().g, getRenderer()->m_textureCheckedHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureFocused.setColor({getRenderer()->m_textureFocused.getColor().r, getRenderer()->m_textureFocused.getColor().g, getRenderer()->m_textureFocused.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
         if (m_mouseHover)
             m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorHover, getOpacity()));
@@ -615,7 +615,7 @@ namespace tgui
         m_textureUnchecked = texture;
         if (m_textureUnchecked.isLoaded())
         {
-            m_textureUnchecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
+            m_textureUnchecked.setColor({m_textureUnchecked.getColor().r, m_textureUnchecked.getColor().g, m_textureUnchecked.getColor().b, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
 
             if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
                 m_radioButton->updateSize();
@@ -629,7 +629,7 @@ namespace tgui
         m_textureChecked = texture;
         if (m_textureChecked.isLoaded())
         {
-            m_textureChecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
+            m_textureChecked.setColor({m_textureChecked.getColor().r, m_textureChecked.getColor().g, m_textureChecked.getColor().b, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
 
             if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
                 m_radioButton->updateSize();
@@ -643,7 +643,7 @@ namespace tgui
         m_textureUncheckedHover = texture;
         if (m_textureUncheckedHover.isLoaded())
         {
-            m_textureUncheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
+            m_textureUncheckedHover.setColor({m_textureUncheckedHover.getColor().r, m_textureUncheckedHover.getColor().g, m_textureUncheckedHover.getColor().b, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
 
             if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
                 m_radioButton->updateSize();
@@ -657,7 +657,7 @@ namespace tgui
         m_textureCheckedHover = texture;
         if (m_textureCheckedHover.isLoaded())
         {
-            m_textureCheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
+            m_textureCheckedHover.setColor({m_textureCheckedHover.getColor().r, m_textureCheckedHover.getColor().g, m_textureCheckedHover.getColor().b, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
 
             if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
                 m_radioButton->updateSize();
@@ -673,7 +673,7 @@ namespace tgui
         {
             m_textureFocused.setSize(m_radioButton->getSize());
             m_textureFocused.setPosition(m_radioButton->getPosition());
-            m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
+            m_textureFocused.setColor({m_textureFocused.getColor().r, m_textureFocused.getColor().g, m_textureFocused.getColor().b, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
         }
     }
 

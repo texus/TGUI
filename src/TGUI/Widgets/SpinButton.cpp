@@ -184,10 +184,10 @@ namespace tgui
     {
         ClickableWidget::setOpacity(opacity);
 
-        getRenderer()->m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowUpNormal.setColor({getRenderer()->m_textureArrowUpNormal.getColor().r, getRenderer()->m_textureArrowUpNormal.getColor().g, getRenderer()->m_textureArrowUpNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowUpHover.setColor({getRenderer()->m_textureArrowUpHover.getColor().r, getRenderer()->m_textureArrowUpHover.getColor().g, getRenderer()->m_textureArrowUpHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowDownNormal.setColor({getRenderer()->m_textureArrowDownNormal.getColor().r, getRenderer()->m_textureArrowDownNormal.getColor().g, getRenderer()->m_textureArrowDownNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowDownHover.setColor({getRenderer()->m_textureArrowDownHover.getColor().r, getRenderer()->m_textureArrowDownHover.getColor().g, getRenderer()->m_textureArrowDownHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -550,7 +550,7 @@ namespace tgui
         m_textureArrowUpNormal = texture;
         if (m_textureArrowUpNormal.isLoaded())
         {
-            m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
+            m_textureArrowUpNormal.setColor({m_textureArrowUpNormal.getColor().r, m_textureArrowUpNormal.getColor().g, m_textureArrowUpNormal.getColor().b, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
 
             if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_spinButton->updateSize();
@@ -564,7 +564,7 @@ namespace tgui
         m_textureArrowDownNormal = texture;
         if (m_textureArrowDownNormal.isLoaded())
         {
-            m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
+            m_textureArrowDownNormal.setColor({m_textureArrowDownNormal.getColor().r, m_textureArrowDownNormal.getColor().g, m_textureArrowDownNormal.getColor().b, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
 
             if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_spinButton->updateSize();
@@ -578,7 +578,7 @@ namespace tgui
         m_textureArrowUpHover = texture;
         if (m_textureArrowUpHover.isLoaded())
         {
-            m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
+            m_textureArrowUpHover.setColor({m_textureArrowUpHover.getColor().r, m_textureArrowUpHover.getColor().g, m_textureArrowUpHover.getColor().b, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
 
             if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_spinButton->updateSize();
@@ -592,7 +592,7 @@ namespace tgui
         m_textureArrowDownHover = texture;
         if (m_textureArrowDownHover.isLoaded())
         {
-            m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
+            m_textureArrowDownHover.setColor({m_textureArrowDownHover.getColor().r, m_textureArrowDownHover.getColor().g, m_textureArrowDownHover.getColor().b, static_cast<sf::Uint8>(m_spinButton->getOpacity() * 255)});
 
             if (m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_spinButton->updateSize();

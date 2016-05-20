@@ -210,8 +210,8 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_foregroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_backgroundTexture.setColor({getRenderer()->m_backgroundTexture.getColor().r, getRenderer()->m_backgroundTexture.getColor().g, getRenderer()->m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_foregroundTexture.setColor({getRenderer()->m_foregroundTexture.getColor().r, getRenderer()->m_foregroundTexture.getColor().g, getRenderer()->m_foregroundTexture.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -614,7 +614,7 @@ namespace tgui
         m_backgroundTexture = texture;
         if (m_backgroundTexture.isLoaded())
         {
-            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_knob->getOpacity() * 255)});
+            m_backgroundTexture.setColor({m_backgroundTexture.getColor().r, m_backgroundTexture.getColor().g, m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_knob->getOpacity() * 255)});
 
             if (m_foregroundTexture.isLoaded())
                 m_knob->updateSize();
@@ -628,7 +628,7 @@ namespace tgui
         m_foregroundTexture = texture;
         if (m_foregroundTexture.isLoaded())
         {
-            m_foregroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_knob->getOpacity() * 255)});
+            m_foregroundTexture.setColor({m_foregroundTexture.getColor().r, m_foregroundTexture.getColor().g, m_foregroundTexture.getColor().b, static_cast<sf::Uint8>(m_knob->getOpacity() * 255)});
 
             if (m_backgroundTexture.isLoaded())
                 m_knob->updateSize();

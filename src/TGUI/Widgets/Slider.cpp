@@ -242,10 +242,10 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        getRenderer()->m_textureTrackNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureTrackHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureThumbNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureThumbHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureTrackNormal.setColor({getRenderer()->m_textureTrackNormal.getColor().r, getRenderer()->m_textureTrackNormal.getColor().g, getRenderer()->m_textureTrackNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureTrackHover.setColor({getRenderer()->m_textureTrackHover.getColor().r, getRenderer()->m_textureTrackHover.getColor().g, getRenderer()->m_textureTrackHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureThumbNormal.setColor({getRenderer()->m_textureThumbNormal.getColor().r, getRenderer()->m_textureThumbNormal.getColor().g, getRenderer()->m_textureThumbNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureThumbHover.setColor({getRenderer()->m_textureThumbHover.getColor().r, getRenderer()->m_textureThumbHover.getColor().g, getRenderer()->m_textureThumbHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -643,7 +643,7 @@ namespace tgui
         m_textureTrackNormal = texture;
         if (m_textureTrackNormal.isLoaded())
         {
-            m_textureTrackNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
+            m_textureTrackNormal.setColor({m_textureTrackNormal.getColor().r, m_textureTrackNormal.getColor().g, m_textureTrackNormal.getColor().b, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
 
             if (m_textureTrackNormal.getImageSize().x < m_textureTrackNormal.getImageSize().y)
                 m_slider->m_verticalImage = true;
@@ -662,7 +662,7 @@ namespace tgui
         m_textureTrackHover = texture;
         if (m_textureTrackHover.isLoaded())
         {
-            m_textureTrackHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
+            m_textureTrackHover.setColor({m_textureTrackHover.getColor().r, m_textureTrackHover.getColor().g, m_textureTrackHover.getColor().b, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
                 m_slider->updateSize();
@@ -676,7 +676,7 @@ namespace tgui
         m_textureThumbNormal = texture;
         if (m_textureThumbNormal.isLoaded())
         {
-            m_textureThumbNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
+            m_textureThumbNormal.setColor({m_textureThumbNormal.getColor().r, m_textureThumbNormal.getColor().g, m_textureThumbNormal.getColor().b, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
                 m_slider->updateSize();
@@ -690,7 +690,7 @@ namespace tgui
         m_textureThumbHover = texture;
         if (m_textureThumbHover.isLoaded())
         {
-            m_textureThumbHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
+            m_textureThumbHover.setColor({m_textureThumbHover.getColor().r, m_textureThumbHover.getColor().g, m_textureThumbHover.getColor().b, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
                 m_slider->updateSize();

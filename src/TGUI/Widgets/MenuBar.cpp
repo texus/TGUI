@@ -707,7 +707,7 @@ namespace tgui
         {
             m_backgroundTexture.setPosition(m_menuBar->getPosition());
             m_backgroundTexture.setSize(m_menuBar->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_menuBar->getOpacity() * 255)});
+            m_backgroundTexture.setColor({m_backgroundTexture.getColor().r, m_backgroundTexture.getColor().g, m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_menuBar->getOpacity() * 255)});
         }
     }
 
@@ -720,7 +720,7 @@ namespace tgui
         {
             m_itemBackgroundTexture.setPosition(m_menuBar->getPosition());
             m_itemBackgroundTexture.setSize(m_menuBar->getSize());
-            m_itemBackgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_menuBar->getOpacity() * 255)});
+            m_itemBackgroundTexture.setColor({m_itemBackgroundTexture.getColor().r, m_itemBackgroundTexture.getColor().g, m_itemBackgroundTexture.getColor().b, static_cast<sf::Uint8>(m_menuBar->getOpacity() * 255)});
         }
     }
 
@@ -733,7 +733,7 @@ namespace tgui
         {
             m_selectedItemBackgroundTexture.setPosition(m_menuBar->getPosition());
             m_selectedItemBackgroundTexture.setSize(m_menuBar->getSize());
-            m_selectedItemBackgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_menuBar->getOpacity() * 255)});
+            m_selectedItemBackgroundTexture.setColor({m_selectedItemBackgroundTexture.getColor().r, m_selectedItemBackgroundTexture.getColor().g, m_selectedItemBackgroundTexture.getColor().b, static_cast<sf::Uint8>(m_menuBar->getOpacity() * 255)});
         }
     }
 

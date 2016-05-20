@@ -418,9 +418,9 @@ namespace tgui
     {
         ClickableWidget::setOpacity(opacity);
 
-        getRenderer()->m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureNormal.setColor({getRenderer()->m_textureNormal.getColor().r, getRenderer()->m_textureNormal.getColor().g, getRenderer()->m_textureNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureHover.setColor({getRenderer()->m_textureHover.getColor().r, getRenderer()->m_textureHover.getColor().g, getRenderer()->m_textureHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureFocused.setColor({getRenderer()->m_textureFocused.getColor().r, getRenderer()->m_textureFocused.getColor().g, getRenderer()->m_textureFocused.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
         m_textBeforeSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
         m_textAfterSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
@@ -1483,7 +1483,7 @@ namespace tgui
         {
             m_textureNormal.setPosition(m_editBox->getPosition());
             m_textureNormal.setSize(m_editBox->getSize());
-            m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
+            m_textureNormal.setColor({m_textureNormal.getColor().r, m_textureNormal.getColor().g, m_textureNormal.getColor().b, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
         }
     }
 
@@ -1496,7 +1496,7 @@ namespace tgui
         {
             m_textureHover.setPosition(m_editBox->getPosition());
             m_textureHover.setSize(m_editBox->getSize());
-            m_textureHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
+            m_textureHover.setColor({m_textureHover.getColor().r, m_textureHover.getColor().g, m_textureHover.getColor().b, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
         }
     }
 
@@ -1509,7 +1509,7 @@ namespace tgui
         {
             m_textureFocused.setPosition(m_editBox->getPosition());
             m_textureFocused.setSize(m_editBox->getSize());
-            m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
+            m_textureFocused.setColor({m_textureFocused.getColor().r, m_textureFocused.getColor().g, m_textureFocused.getColor().b, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
         }
     }
 

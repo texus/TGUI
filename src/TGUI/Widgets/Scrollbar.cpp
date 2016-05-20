@@ -289,17 +289,17 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        getRenderer()->m_textureTrackNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureTrackHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureTrackNormal.setColor({getRenderer()->m_textureTrackNormal.getColor().r, getRenderer()->m_textureTrackNormal.getColor().g, getRenderer()->m_textureTrackNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureTrackHover.setColor({getRenderer()->m_textureTrackHover.getColor().r, getRenderer()->m_textureTrackHover.getColor().g, getRenderer()->m_textureTrackHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
-        getRenderer()->m_textureThumbNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureThumbHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureThumbNormal.setColor({getRenderer()->m_textureThumbNormal.getColor().r, getRenderer()->m_textureThumbNormal.getColor().g, getRenderer()->m_textureThumbNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureThumbHover.setColor({getRenderer()->m_textureThumbHover.getColor().r, getRenderer()->m_textureThumbHover.getColor().g, getRenderer()->m_textureThumbHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
-        getRenderer()->m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowUpNormal.setColor({getRenderer()->m_textureArrowUpNormal.getColor().r, getRenderer()->m_textureArrowUpNormal.getColor().g, getRenderer()->m_textureArrowUpNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowUpHover.setColor({getRenderer()->m_textureArrowUpHover.getColor().r, getRenderer()->m_textureArrowUpHover.getColor().g, getRenderer()->m_textureArrowUpHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
-        getRenderer()->m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowDownNormal.setColor({getRenderer()->m_textureArrowDownNormal.getColor().r, getRenderer()->m_textureArrowDownNormal.getColor().g, getRenderer()->m_textureArrowDownNormal.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureArrowDownHover.setColor({getRenderer()->m_textureArrowDownHover.getColor().r, getRenderer()->m_textureArrowDownHover.getColor().g, getRenderer()->m_textureArrowDownHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1014,7 +1014,7 @@ namespace tgui
         m_textureTrackNormal = texture;
         if (m_textureTrackNormal.isLoaded())
         {
-            m_textureTrackNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
+            m_textureTrackNormal.setColor({m_textureTrackNormal.getColor().r, m_textureTrackNormal.getColor().g, m_textureTrackNormal.getColor().b, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_scrollbar->updateSize();
@@ -1028,7 +1028,7 @@ namespace tgui
         m_textureTrackHover = texture;
         if (m_textureTrackHover.isLoaded())
         {
-            m_textureTrackHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
+            m_textureTrackHover.setColor({m_textureTrackHover.getColor().r, m_textureTrackHover.getColor().g, m_textureTrackHover.getColor().b, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_scrollbar->updateSize();
@@ -1042,7 +1042,7 @@ namespace tgui
         m_textureThumbNormal = texture;
         if (m_textureThumbNormal.isLoaded())
         {
-            m_textureThumbNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
+            m_textureThumbNormal.setColor({m_textureThumbNormal.getColor().r, m_textureThumbNormal.getColor().g, m_textureThumbNormal.getColor().b, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_scrollbar->updateSize();
@@ -1056,7 +1056,7 @@ namespace tgui
         m_textureThumbHover = texture;
         if (m_textureThumbHover.isLoaded())
         {
-            m_textureThumbHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
+            m_textureThumbHover.setColor({m_textureThumbHover.getColor().r, m_textureThumbHover.getColor().g, m_textureThumbHover.getColor().b, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_scrollbar->updateSize();
@@ -1070,7 +1070,7 @@ namespace tgui
         m_textureArrowUpNormal = texture;
         if (m_textureArrowUpNormal.isLoaded())
         {
-            m_textureArrowUpNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
+            m_textureArrowUpNormal.setColor({m_textureArrowUpNormal.getColor().r, m_textureArrowUpNormal.getColor().g, m_textureArrowUpNormal.getColor().b, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_scrollbar->updateSize();
@@ -1084,7 +1084,7 @@ namespace tgui
         m_textureArrowDownNormal = texture;
         if (m_textureArrowDownNormal.isLoaded())
         {
-            m_textureArrowDownNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
+            m_textureArrowDownNormal.setColor({m_textureArrowDownNormal.getColor().r, m_textureArrowDownNormal.getColor().g, m_textureArrowDownNormal.getColor().b, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_scrollbar->updateSize();
@@ -1098,7 +1098,7 @@ namespace tgui
         m_textureArrowUpHover = texture;
         if (m_textureArrowUpHover.isLoaded())
         {
-            m_textureArrowUpHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
+            m_textureArrowUpHover.setColor({m_textureArrowUpHover.getColor().r, m_textureArrowUpHover.getColor().g, m_textureArrowUpHover.getColor().b, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_scrollbar->updateSize();
@@ -1112,7 +1112,7 @@ namespace tgui
         m_textureArrowDownHover = texture;
         if (m_textureArrowDownHover.isLoaded())
         {
-            m_textureArrowDownHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
+            m_textureArrowDownHover.setColor({m_textureArrowDownHover.getColor().r, m_textureArrowDownHover.getColor().g, m_textureArrowDownHover.getColor().b, static_cast<sf::Uint8>(m_scrollbar->getOpacity() * 255)});
 
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded() && m_textureArrowUpNormal.isLoaded() && m_textureArrowDownNormal.isLoaded())
                 m_scrollbar->updateSize();

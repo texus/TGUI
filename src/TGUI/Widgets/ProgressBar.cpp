@@ -274,8 +274,8 @@ namespace tgui
     {
         ClickableWidget::setOpacity(opacity);
 
-        getRenderer()->m_textureBack.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureFront.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureBack.setColor({getRenderer()->m_textureBack.getColor().r, getRenderer()->m_textureBack.getColor().g, getRenderer()->m_textureBack.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureFront.setColor({getRenderer()->m_textureFront.getColor().r, getRenderer()->m_textureFront.getColor().g, getRenderer()->m_textureFront.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
         m_textBack.setTextColor(calcColorOpacity(getRenderer()->m_textColorBack, getOpacity()));
         m_textFront.setTextColor(calcColorOpacity(getRenderer()->m_textColorFront, getOpacity()));
@@ -549,7 +549,7 @@ namespace tgui
         {
             m_textureBack.setPosition(m_progressBar->getPosition());
             m_textureBack.setSize(m_progressBar->getSize());
-            m_textureBack.setColor({255, 255, 255, static_cast<sf::Uint8>(m_progressBar->getOpacity() * 255)});
+            m_textureBack.setColor({m_textureBack.getColor().r, m_textureBack.getColor().g, m_textureBack.getColor().b, static_cast<sf::Uint8>(m_progressBar->getOpacity() * 255)});
 
             if (m_textureFront.isLoaded())
                 m_progressBar->updateSize();
@@ -566,7 +566,7 @@ namespace tgui
             if (m_textureBack.isLoaded())
                 m_progressBar->updateSize();
 
-            m_textureFront.setColor({255, 255, 255, static_cast<sf::Uint8>(m_progressBar->getOpacity() * 255)});
+            m_textureFront.setColor({m_textureFront.getColor().r, m_textureFront.getColor().g, m_textureFront.getColor().b, static_cast<sf::Uint8>(m_progressBar->getOpacity() * 255)});
         }
     }
 

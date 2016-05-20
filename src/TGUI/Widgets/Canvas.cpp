@@ -133,7 +133,7 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        m_sprite.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        m_sprite.setColor({m_sprite.getColor().r, m_sprite.getColor().g, m_sprite.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -172,8 +172,8 @@ namespace tgui
 
         m_closeButton->setOpacity(m_opacity);
 
-        m_iconTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureTitleBar.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        m_iconTexture.setColor({m_iconTexture.getColor().r, m_iconTexture.getColor().g, m_iconTexture.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
+        getRenderer()->m_textureTitleBar.setColor({getRenderer()->m_textureTitleBar.getColor().r, getRenderer()->m_textureTitleBar.getColor().g, getRenderer()->m_textureTitleBar.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
         m_titleText.setTextColor(calcColorOpacity(getRenderer()->m_titleColor, getOpacity()));
     }
@@ -916,7 +916,7 @@ namespace tgui
         {
             m_textureTitleBar.setPosition(m_childWindow->getPosition());
             m_textureTitleBar.setSize({m_childWindow->getSize().x + m_borders.left + m_borders.right, m_titleBarHeight});
-            m_textureTitleBar.setColor({255, 255, 255, static_cast<sf::Uint8>(m_childWindow->getOpacity() * 255)});
+            m_textureTitleBar.setColor({m_textureTitleBar.getColor().r, m_textureTitleBar.getColor().g, m_textureTitleBar.getColor().b, static_cast<sf::Uint8>(m_childWindow->getOpacity() * 255)});
         }
 
         setTitleBarHeight(m_titleBarHeight);
