@@ -5,6 +5,8 @@ breadcrumb: tabs
 ---
 In the example below, two tabs are created with a corresponding panel for each. Only one of the panels is shown at a time depending on which tab is selected.
 
+Note that this example uses the [optional unbound parameter](https://tgui.eu/tutorials/v0.7/signals-optional-parameters/) feature of the connect function, it will not compile on VS2013.
+
 {% highlight c++ %}
 #include <TGUI/TGUI.hpp>
 
