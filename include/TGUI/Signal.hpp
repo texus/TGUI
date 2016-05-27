@@ -179,7 +179,7 @@ namespace tgui
         template <typename Arg, typename = void>
         struct bindRemover
         {
-            static const Arg& remove(const Arg& arg)
+            static Arg remove(Arg arg)
             {
                 return arg;
             }
@@ -188,7 +188,7 @@ namespace tgui
         template <typename Arg>
         struct bindRemover<Arg, typename std::enable_if<std::is_bind_expression<Arg>::value>::type>
         {
-            static auto remove(const Arg& arg) -> decltype(arg())
+            static auto remove(Arg arg) -> decltype(arg())
             {
                 return arg();
             }

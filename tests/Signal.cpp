@@ -30,26 +30,27 @@ TEST_CASE("[Signal]") {
 
     SECTION("connect") {
         unsigned int id = widget->connect("PositionChanged", [](){});
-        REQUIRE(widget->connect("SizeChanged", [](){}) == id+1);
-        REQUIRE(widget->connect("Focused", [](){}) == id+2);
-        REQUIRE(widget->connect("Unfocused", [](){}) == id+3);
-        REQUIRE(widget->connect("MouseEntered", [](){}) == id+4);
-        REQUIRE(widget->connect("MouseLeft", [](){}) == id+5);
+        REQUIRE(widget->connect("SizeChanged", [](){}) == ++id);
+        REQUIRE(widget->connect("Focused", [](){}) == ++id);
+        REQUIRE(widget->connect("Unfocused", [](){}) == ++id);
+        REQUIRE(widget->connect("MouseEntered", [](){}) == ++id);
+        REQUIRE(widget->connect("MouseLeft", [](){}) == ++id);
 
-        REQUIRE(widget->connect("PositionChanged", [](sf::Vector2f){}) == id+6);
-        REQUIRE(widget->connect("SizeChanged", [](sf::Vector2f){}) == id+7);
+        REQUIRE(widget->connect("PositionChanged", [](sf::Vector2f){}) == ++id);
+        REQUIRE(widget->connect("SizeChanged", [](sf::Vector2f){}) == ++id);
 
         tgui::Widget::Ptr widget2 = std::make_shared<tgui::Button>();
-        REQUIRE(widget->connect("PositionChanged", [](sf::Vector2f, sf::Vector2f){}, widget2->getPosition()) == id+8);
-        REQUIRE(widget->connect("SizeChanged", [](sf::Vector2f, sf::Vector2f){}, std::bind(&tgui::Widget::getSize, widget2)) == id+9);
+        REQUIRE(widget->connect("PositionChanged", [](sf::Vector2f, sf::Vector2f){}, widget2->getPosition()) == ++id);
+        REQUIRE(widget->connect("SizeChanged", [](sf::Vector2f, sf::Vector2f){}, std::bind(&tgui::Widget::getSize, widget2)) == ++id);
+        REQUIRE(widget->connect("Pressed", [](std::string){}, std::bind(&tgui::Button::getText, std::static_pointer_cast<tgui::Button>(widget2))) == ++id);
 
         REQUIRE_THROWS_AS(widget->connect("", [](){}), tgui::Exception);
         REQUIRE_THROWS_AS(widget->connect("    ", [](){}), tgui::Exception);
         REQUIRE_THROWS_AS(widget->connect("SomeWrongSignal", [](){}), tgui::Exception);
         REQUIRE_THROWS_AS(widget->connect("PositionChanged", [](bool){}), tgui::Exception);
 
-        REQUIRE(widget->connect("Focused Unfocused MouseEntered MouseLeft", [](){}) == id+13);
-        REQUIRE(widget->connect("All", [](){}) > id+14);
+        REQUIRE(widget->connect("Focused Unfocused", [](){}) == id+2);
+        REQUIRE(widget->connect("All", [](){}) > id+3);
     }
 
     SECTION("connectEx") {
