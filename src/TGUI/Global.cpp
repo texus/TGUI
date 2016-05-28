@@ -200,7 +200,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float getTextVerticalCorrection(std::shared_ptr<sf::Font> font, unsigned int characterSize, sf::Uint32 style)
+    float getTextVerticalCorrection(const std::shared_ptr<sf::Font>& font, unsigned int characterSize, sf::Uint32 style)
     {
         if (!font)
             return 0;
@@ -221,7 +221,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int findBestTextSize(std::shared_ptr<sf::Font> font, float height, int fit)
+    unsigned int findBestTextSize(const std::shared_ptr<sf::Font>& font, float height, int fit)
     {
         if (!font)
             return 0;

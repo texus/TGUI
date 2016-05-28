@@ -177,7 +177,7 @@ namespace tgui
     // The text has to be moved up so that the line spacing really corresponds with the height of every line.
     // This function returns the offset that the text has to be moved.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    float getTextVerticalCorrection(std::shared_ptr<sf::Font> font, unsigned int characterSize, sf::Uint32 style = 0);
+    float getTextVerticalCorrection(const std::shared_ptr<sf::Font>& font, unsigned int characterSize, sf::Uint32 style = 0);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ namespace tgui
     /// @param fit     0 to choose best fit, 1 to select font of at least that height, -1 to select font of maximum that height
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    unsigned int findBestTextSize(std::shared_ptr<sf::Font> font, float height, int fit = 0);
+    unsigned int findBestTextSize(const std::shared_ptr<sf::Font>& font, float height, int fit = 0);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

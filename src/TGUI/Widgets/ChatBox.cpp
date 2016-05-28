@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
@@ -43,8 +42,6 @@ namespace tgui
         m_callback.widgetType = "ChatBox";
         m_draggableWidget = true;
 
-        m_panel->setBackgroundColor(sf::Color::Transparent);
-
         m_renderer = std::make_shared<ChatBoxRenderer>(this);
         reload();
 
@@ -61,8 +58,8 @@ namespace tgui
         m_fullTextHeight     {chatBoxToCopy.m_fullTextHeight},
         m_linesStartFromTop  {chatBoxToCopy.m_linesStartFromTop},
         m_newLinesBelowOthers{chatBoxToCopy.m_newLinesBelowOthers},
-        m_panel              {Panel::copy(chatBoxToCopy.m_panel)},
-        m_scroll             {Scrollbar::copy(chatBoxToCopy.m_scroll)}
+        m_scroll             {Scrollbar::copy(chatBoxToCopy.m_scroll)},
+        m_lines              {chatBoxToCopy.m_lines}
     {
     }
 
@@ -81,8 +78,8 @@ namespace tgui
             std::swap(m_fullTextHeight,      temp.m_fullTextHeight);
             std::swap(m_linesStartFromTop,   temp.m_linesStartFromTop);
             std::swap(m_newLinesBelowOthers, temp.m_newLinesBelowOthers);
-            std::swap(m_panel,               temp.m_panel);
             std::swap(m_scroll,              temp.m_scroll);
+            std::swap(m_lines,               temp.m_lines);
         }
 
         return *this;
@@ -100,25 +97,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::setPosition(const Layout2d& position)
-    {
-        Widget::setPosition(position);
-
-        getRenderer()->m_backgroundTexture.setPosition(getPosition());
-
-        updateRendering();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ChatBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
 
         getRenderer()->m_backgroundTexture.setSize(getSize());
 
-        updatePosition();
-        recalculateFullTextHeight();
+        updateRendering();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +140,7 @@ namespace tgui
     void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const Font& font)
     {
         // Remove the oldest line if you exceed the maximum
-        if ((m_maxLines > 0) && (m_maxLines == m_panel->getWidgets().size()))
+        if ((m_maxLines > 0) && (m_maxLines == m_lines.size()))
         {
             if (m_newLinesBelowOthers)
                 removeLine(0);
@@ -163,24 +148,33 @@ namespace tgui
                 removeLine(m_maxLines-1);
         }
 
-        auto label = std::make_shared<Label>();
-        label->getRenderer()->setTextColor(color);
-        label->setTextSize(textSize);
-        label->setText(text);
-        m_panel->add(label);
+        Line line;
+        line.string = text;
+        line.font = font.getFont();
+        if (line.font == nullptr)
+            line.font = getFont();
 
-        if (!m_newLinesBelowOthers)
-            label->moveToBack();
+        line.text.setColor(color);
+        line.text.setCharacterSize(textSize);
+        line.text.setString(text);
+        if (line.font != nullptr)
+            line.text.setFont(*line.font);
 
-        if (font.getFont())
-            label->setFont(font.getFont());
+        recalculateLineText(line);
+
+        if (m_newLinesBelowOthers)
+            m_lines.push_back(std::move(line));
         else
-            label->setFont(getFont());
+            m_lines.push_front(std::move(line));
 
-        recalculateFullTextHeight();
-
-        if (m_scroll && (m_scroll->getMaximum() > m_scroll->getLowValue()))
+        // Scroll down when there is a scrollbar and it is at the bottom
+        if (m_scroll && m_newLinesBelowOthers && (m_scroll->getValue() == m_scroll->getMaximum() - m_scroll->getLowValue()))
+        {
+            recalculateFullTextHeight();
             m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
+        }
+        else
+            recalculateFullTextHeight();
 
         updateDisplayedText();
     }
@@ -189,9 +183,9 @@ namespace tgui
 
     sf::String ChatBox::getLine(std::size_t lineIndex) const
     {
-        if (lineIndex < m_panel->getWidgets().size())
+        if (lineIndex < m_lines.size())
         {
-            return std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getText();
+            return m_lines[lineIndex].string;
         }
         else // Index too high
             return "";
@@ -201,9 +195,9 @@ namespace tgui
 
     sf::Color ChatBox::getLineColor(std::size_t lineIndex) const
     {
-        if (lineIndex < m_panel->getWidgets().size())
+        if (lineIndex < m_lines.size())
         {
-            return std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getTextColor();
+            return m_lines[lineIndex].text.getColor();
         }
         else // Index too high
             return m_textColor;
@@ -213,9 +207,9 @@ namespace tgui
 
     unsigned int ChatBox::getLineTextSize(std::size_t lineIndex) const
     {
-        if (lineIndex < m_panel->getWidgets().size())
+        if (lineIndex < m_lines.size())
         {
-            return std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getTextSize();
+            return m_lines[lineIndex].text.getCharacterSize();
         }
         else // Index too high
             return m_textSize;
@@ -225,9 +219,9 @@ namespace tgui
 
     std::shared_ptr<sf::Font> ChatBox::getLineFont(std::size_t lineIndex) const
     {
-        if (lineIndex < m_panel->getWidgets().size())
+        if (lineIndex < m_lines.size())
         {
-            return std::static_pointer_cast<Label>(m_panel->getWidgets()[lineIndex])->getFont();
+            return m_lines[lineIndex].font;
         }
         else // Index too high
             return getFont();
@@ -237,9 +231,9 @@ namespace tgui
 
     bool ChatBox::removeLine(std::size_t lineIndex)
     {
-        if (lineIndex < m_panel->getWidgets().size())
+        if (lineIndex < m_lines.size())
         {
-            m_panel->remove(m_panel->getWidgets()[lineIndex]);
+            m_lines.erase(m_lines.begin() + lineIndex);
 
             recalculateFullTextHeight();
             updateDisplayedText();
@@ -253,10 +247,17 @@ namespace tgui
 
     void ChatBox::removeAllLines()
     {
-        m_panel->removeAllWidgets();
+        m_lines.clear();
 
         recalculateFullTextHeight();
         updateDisplayedText();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t ChatBox::getLineAmount()
+    {
+        return m_lines.size();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -266,15 +267,12 @@ namespace tgui
         m_maxLines = maxLines;
 
         // Remove the oldest lines if there are too many lines
-        if ((m_maxLines > 0) && (m_maxLines < m_panel->getWidgets().size()))
+        if ((m_maxLines > 0) && (m_maxLines < m_lines.size()))
         {
-            while (m_maxLines < m_panel->getWidgets().size())
-            {
-                if (m_newLinesBelowOthers)
-                    m_panel->remove(m_panel->getWidgets()[0]);
-                else
-                    m_panel->remove(m_panel->getWidgets().back());
-            }
+            if (m_newLinesBelowOthers)
+                m_lines.erase(m_lines.begin(), m_lines.begin() + m_lines.size() - m_maxLines);
+            else
+                m_lines.erase(m_lines.begin() + m_maxLines, m_lines.end());
 
             recalculateFullTextHeight();
             updateDisplayedText();
@@ -294,25 +292,22 @@ namespace tgui
     {
         Widget::setFont(font);
 
-        bool lineChanged = false;
-        for (auto& label : m_panel->getWidgets())
+        if (font.getFont() != nullptr)
         {
-            auto line = std::static_pointer_cast<Label>(label);
-            if (line->getFont() == nullptr)
+            // Look for lines that did not have a font yet and give them this font
+            bool lineChanged = false;
+            for (auto& line : m_lines)
             {
-                line->setFont(font);
-                lineChanged = true;
+                if (line.font == nullptr)
+                {
+                    line.font = font.getFont();
+                    line.text.setFont(*font.getFont());
+                    lineChanged = true;
+                }
             }
-        }
 
-        if (lineChanged)
-        {
-            recalculateFullTextHeight();
-
-            if (m_scroll && (m_scroll->getMaximum() > m_scroll->getLowValue()))
-                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
-
-            updateDisplayedText();
+            if (lineChanged)
+                recalculateAllLines();
         }
     }
 
@@ -343,12 +338,12 @@ namespace tgui
 
         if (m_scroll)
         {
-            m_scroll->setSize({m_scroll->getSize().x, m_panel->getSize().y});
-            m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
+            Padding padding = getRenderer()->getScaledPadding();
+            m_scroll->setSize({m_scroll->getSize().x, getSize().y - padding.top - padding.bottom});
+            m_scroll->setLowValue(static_cast<unsigned int>(getSize().y - padding.top - padding.bottom));
         }
 
-        recalculateFullTextHeight();
-        updateDisplayedText();
+        recalculateAllLines();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,7 +392,8 @@ namespace tgui
     {
         Widget::setOpacity(opacity);
 
-        m_panel->setOpacity(m_opacity);
+        for (auto& line : m_lines)
+            line.text.setColor({line.text.getColor().r, line.text.getColor().g, line.text.getColor().b, static_cast<sf::Uint8>(opacity * 255)});
 
         if (m_scroll != nullptr)
             m_scroll->setOpacity(m_opacity);
@@ -415,7 +411,6 @@ namespace tgui
     void ChatBox::setParent(Container* parent)
     {
         Widget::setParent(parent);
-        m_panel->setParent(parent);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -433,8 +428,11 @@ namespace tgui
         m_mouseDown = true;
 
         // If there is a scrollbar then pass the event
-        if (m_scroll != nullptr)
+        if (m_scroll)
         {
+            x -= getPosition().x;
+            y -= getPosition().y;
+
             // Remember the old scrollbar value
             unsigned int oldValue = m_scroll->getValue();
 
@@ -458,6 +456,9 @@ namespace tgui
             // Only pass the event when the scrollbar still thinks the mouse is down
             if (m_scroll->m_mouseDown)
             {
+                x -= getPosition().x;
+                y -= getPosition().y;
+
                 // Remember the old scrollbar value
                 unsigned int oldValue = m_scroll->getValue();
 
@@ -504,6 +505,9 @@ namespace tgui
         // If there is a scrollbar then pass the event
         if (m_scroll != nullptr)
         {
+            x -= getPosition().x;
+            y -= getPosition().y;
+
             // Check if you are dragging the thumb of the scrollbar
             if ((m_scroll->m_mouseDown) && (m_scroll->m_mouseDownOnThumb))
             {
@@ -522,6 +526,8 @@ namespace tgui
                 // When the mouse is on top of the scrollbar then pass the mouse move event
                 if (m_scroll->mouseOnWidget(x, y))
                     m_scroll->mouseMoved(x, y);
+                else
+                    m_scroll->mouseNoLongerOnWidget();
             }
         }
     }
@@ -581,66 +587,170 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChatBox::recalculateLineText(Line& line)
+    {
+        line.text.setString("");
+        line.sublines = 0;
+
+        if (!line.font)
+            return;
+
+        // Find the maximum width of one line
+        Padding padding = getRenderer()->getScaledPadding();
+        float maxWidth = getSize().x - padding.left - padding.right;
+        if (m_scroll)
+            maxWidth -= m_scroll->getSize().x;
+        if (maxWidth < 0)
+            return;
+
+        unsigned int index = 0;
+        while (index < line.string.getSize())
+        {
+            line.sublines++;
+            unsigned int oldIndex = index;
+
+            float width = 0;
+            sf::Uint32 prevChar = 0;
+            for (std::size_t i = index; i < line.string.getSize(); ++i)
+            {
+                float charWidth;
+                sf::Uint32 curChar = line.string[i];
+                if (curChar == '\n')
+                {
+                    index++;
+                    break;
+                }
+                else if (curChar == '\t')
+                    charWidth = static_cast<float>(line.font->getGlyph(' ', line.text.getCharacterSize(), false).textureRect.width) * 4;
+                else
+                    charWidth = static_cast<float>(line.font->getGlyph(curChar, line.text.getCharacterSize(), false).textureRect.width);
+
+                float kerning = static_cast<float>(line.font->getKerning(prevChar, curChar, line.text.getCharacterSize()));
+                if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
+                {
+                    if (curChar == '\t')
+                        width += (static_cast<float>(line.font->getGlyph(' ', line.text.getCharacterSize(), false).advance) * 4) + kerning;
+                    else
+                        width += static_cast<float>(line.font->getGlyph(curChar, line.text.getCharacterSize(), false).advance) + kerning;
+
+                    index++;
+                }
+                else
+                    break;
+
+                prevChar = curChar;
+            }
+
+            // Every line contains at least one character
+            if (index == oldIndex)
+                index++;
+
+            // Implement the word-wrap
+            if (line.string[index-1] != '\n')
+            {
+                unsigned int indexWithoutWordWrap = index;
+                if ((index < line.string.getSize()) && (!isWhitespace(line.string[index])))
+                {
+                    unsigned int wordWrapCorrection = 0;
+                    while ((index > oldIndex) && (!isWhitespace(line.string[index - 1])))
+                    {
+                        wordWrapCorrection++;
+                        index--;
+                    }
+
+                    // The word can't be split but there is no other choice, it does not fit on the line
+                    if ((index - oldIndex) <= wordWrapCorrection)
+                        index = indexWithoutWordWrap;
+                }
+            }
+
+            if ((index < line.string.getSize()) && (line.string[index-1] != '\n'))
+                line.text.setString(line.text.getString() + line.string.substring(oldIndex, index - oldIndex) + "\n");
+            else
+                line.text.setString(line.text.getString() + line.string.substring(oldIndex, index - oldIndex));
+
+            // If the next line starts with just a space, then the space need not be visible
+            if ((index < line.string.getSize()) && (line.string[index] == ' '))
+            {
+                if ((index == 0) || (!isWhitespace(line.string[index-1])))
+                {
+                    // But two or more spaces indicate that it is not a normal text and the spaces should not be ignored
+                    if (((index + 1 < line.string.getSize()) && (!isWhitespace(line.string[index + 1]))) || (index + 1 == line.string.getSize()))
+                        index++;
+                }
+            }
+        }
+
+        // There is always at least one line
+        line.sublines = std::max(1u, line.sublines);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::recalculateAllLines()
+    {
+        for (auto& line : m_lines)
+            recalculateLineText(line);
+
+        // Scroll down when there is a scrollbar and it is at the bottom
+        if (m_scroll && m_newLinesBelowOthers && (m_scroll->getValue() == m_scroll->getMaximum() - m_scroll->getLowValue()))
+        {
+            recalculateFullTextHeight();
+            m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
+        }
+        else
+            recalculateFullTextHeight();
+
+        updateDisplayedText();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChatBox::recalculateFullTextHeight()
     {
         m_fullTextHeight = 0;
-        if (!m_panel->getWidgets().empty())
+        for (auto& line : m_lines)
         {
-            for (std::size_t i = 0; i < m_panel->getWidgets().size(); ++i)
-            {
-                auto label = std::static_pointer_cast<Label>(m_panel->getWidgets()[i]);
-
-                // Limit the width of the label
-                if (m_scroll)
-                    label->setMaximumTextWidth(m_panel->getSize().x - m_scroll->getSize().x);
-                else
-                    label->setMaximumTextWidth(m_panel->getSize().x);
-
-                m_fullTextHeight += label->getSize().y;
-            }
-
-            // Set the maximum of the scrollbar when there is one
-            if (m_scroll != nullptr)
-                m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
+            if (line.font)
+                m_fullTextHeight += line.sublines * line.font->getLineSpacing(line.text.getCharacterSize());
         }
+
+        // Set the maximum of the scrollbar when there is one
+        if (m_scroll != nullptr)
+            m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChatBox::updateDisplayedText()
     {
-        m_fullTextHeight = 0;
-        if (!m_panel->getWidgets().empty())
+        if (!m_lines.empty())
         {
-            float positionY = 0;
+            Padding padding = getRenderer()->getScaledPadding();
+
+            sf::Vector2f pos = {padding.left, padding.top};
             if (m_scroll)
-                positionY -= static_cast<float>(m_scroll->getValue());
-
-            for (std::size_t i = 0; i < m_panel->getWidgets().size(); ++i)
-            {
-                auto label = std::static_pointer_cast<Label>(m_panel->getWidgets()[i]);
-
-                label->setPosition({0, positionY});
-                positionY += label->getSize().y;
-            }
+                pos.y -= static_cast<float>(m_scroll->getValue());
 
             // Display the last lines when there is no scrollbar
             if (!m_scroll)
             {
-                if (positionY > m_panel->getSize().y)
-                {
-                    float diff = positionY - m_panel->getSize().y;
-                    for (auto it = m_panel->getWidgets().begin(); it != m_panel->getWidgets().end(); ++it)
-                        (*it)->setPosition({(*it)->getPosition().x, (*it)->getPosition().y - diff});
-                }
+                if (m_fullTextHeight > getSize().y - padding.top - padding.bottom)
+                    pos.y -= m_fullTextHeight - getSize().y - padding.top - padding.bottom;
             }
 
             // Put the lines at the bottom of the chat box if needed
-            if (!m_linesStartFromTop && (positionY < m_panel->getSize().y))
+            if (!m_linesStartFromTop && (m_fullTextHeight < getSize().y - padding.top - padding.bottom))
+                pos.y += getSize().y - padding.top - padding.bottom - m_fullTextHeight;
+
+            // Actually set the position for all the lines
+            for (auto& line : m_lines)
             {
-                float diff = m_panel->getSize().y - positionY;
-                for (auto it = m_panel->getWidgets().begin(); it != m_panel->getWidgets().end(); ++it)
-                    (*it)->setPosition((*it)->getPosition().x, (*it)->getPosition().y + diff);
+                if (line.font)
+                {
+                    line.text.setPosition(std::round(pos.x), std::floor(pos.y - getTextVerticalCorrection(line.font, line.text.getCharacterSize())));
+                    pos.y += line.sublines * line.font->getLineSpacing(line.text.getCharacterSize());
+                }
             }
         }
     }
@@ -649,51 +759,16 @@ namespace tgui
 
     void ChatBox::updateRendering()
     {
-        Padding padding = getRenderer()->getPadding();
-        Padding scaledPadding = padding;
-
-        auto& texture = getRenderer()->m_backgroundTexture;
-        if (texture.isLoaded())
-        {
-            switch (texture.getScalingType())
-            {
-            case Texture::ScalingType::Normal:
-                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
-                break;
-
-            case Texture::ScalingType::Horizontal:
-                scaledPadding.left = padding.left * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.right = padding.right * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
-                break;
-
-            case Texture::ScalingType::Vertical:
-                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.top = padding.top * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.bottom = padding.bottom * (texture.getSize().x / texture.getImageSize().x);
-                break;
-
-            case Texture::ScalingType::NineSlice:
-                break;
-            }
-        }
-
-        m_panel->setPosition({getPosition().x + scaledPadding.left, getPosition().y + scaledPadding.top});
-        m_panel->setSize({getSize().x - scaledPadding.left - scaledPadding.right, getSize().y - scaledPadding.top - scaledPadding.bottom});
+        Padding padding = getRenderer()->getScaledPadding();
 
         if (m_scroll)
         {
-            m_scroll->setSize({m_scroll->getSize().x, m_panel->getSize().y});
-            m_scroll->setLowValue(static_cast<unsigned int>(m_panel->getSize().y));
-            m_scroll->setPosition({getPosition().x + getSize().x - m_scroll->getSize().x - scaledPadding.right, getPosition().y + scaledPadding.top});
+            m_scroll->setSize({m_scroll->getSize().x, getSize().y - padding.top - padding.bottom});
+            m_scroll->setLowValue(static_cast<unsigned int>(getSize().y - padding.top - padding.bottom));
+            m_scroll->setPosition({getSize().x - m_scroll->getSize().x - padding.right, padding.top});
         }
 
-        updateDisplayedText();
+        recalculateAllLines();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -727,11 +802,14 @@ namespace tgui
 
     void ChatBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        states.transform.translate(getPosition());
+
         // Draw the background
         getRenderer()->draw(target, states);
 
-        // Draw the panel
-        target.draw(*m_panel, states);
+        // Draw the text
+        for (auto& line : m_lines)
+            target.draw(line.text, states);
 
         // Draw the scrollbar if there is one
         if (m_scroll != nullptr)
@@ -880,7 +958,6 @@ namespace tgui
         m_backgroundTexture = texture;
         if (m_backgroundTexture.isLoaded())
         {
-            m_backgroundTexture.setPosition(m_chatBox->getPosition());
             m_backgroundTexture.setSize(m_chatBox->getSize());
             m_backgroundTexture.setColor({m_backgroundTexture.getColor().r, m_backgroundTexture.getColor().g, m_backgroundTexture.getColor().b, static_cast<sf::Uint8>(m_chatBox->getOpacity() * 255)});
         }
@@ -904,14 +981,13 @@ namespace tgui
         else
         {
             sf::RectangleShape background(m_chatBox->getSize());
-            background.setPosition(m_chatBox->getPosition());
             background.setFillColor(calcColorOpacity(m_backgroundColor, m_chatBox->getOpacity()));
             target.draw(background, states);
         }
 
         if (m_borders != Borders{0, 0, 0, 0})
         {
-            sf::Vector2f position = m_chatBox->getPosition();
+            sf::Vector2f position;
             sf::Vector2f size = m_chatBox->getSize();
 
             // Draw left border
@@ -935,6 +1011,56 @@ namespace tgui
             border.setPosition({position.x - m_borders.left, position.y + size.y});
             target.draw(border, states);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Padding ChatBoxRenderer::getScaledPadding() const
+    {
+        Padding padding = getPadding();
+        Padding scaledPadding = padding;
+
+        auto& texture = m_backgroundTexture;
+        if (texture.isLoaded())
+        {
+            switch (texture.getScalingType())
+            {
+            case Texture::ScalingType::Normal:
+                if ((texture.getImageSize().x != 0) && (texture.getImageSize().y != 0))
+                {
+                    scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
+                    scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                }
+                break;
+
+            case Texture::ScalingType::Horizontal:
+                if ((texture.getImageSize().x != 0) && (texture.getImageSize().y != 0))
+                {
+                    scaledPadding.left = padding.left * (texture.getSize().y / texture.getImageSize().y);
+                    scaledPadding.right = padding.right * (texture.getSize().y / texture.getImageSize().y);
+                    scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
+                    scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
+                }
+                break;
+
+            case Texture::ScalingType::Vertical:
+                if ((texture.getImageSize().x != 0) && (texture.getImageSize().y != 0))
+                {
+                    scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.top = padding.top * (texture.getSize().x / texture.getImageSize().x);
+                    scaledPadding.bottom = padding.bottom * (texture.getSize().x / texture.getImageSize().x);
+                }
+                break;
+
+            case Texture::ScalingType::NineSlice:
+                break;
+            }
+        }
+
+        return scaledPadding;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
