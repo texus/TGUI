@@ -59,7 +59,7 @@ namespace tgui
         m_linesStartFromTop  {chatBoxToCopy.m_linesStartFromTop},
         m_newLinesBelowOthers{chatBoxToCopy.m_newLinesBelowOthers},
         m_scroll             {Scrollbar::copy(chatBoxToCopy.m_scroll)},
-        m_lines              {chatBoxToCopy.m_lines}
+        m_lines              (chatBoxToCopy.m_lines) // Did not compile in VS2013 when using braces
     {
     }
 
