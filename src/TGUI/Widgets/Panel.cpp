@@ -156,6 +156,34 @@ namespace tgui
 
         // Reset the old clipping area
         glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+
+        // Draw the borders around the panel
+        if (getRenderer()->m_borders != Borders{0, 0, 0, 0})
+        {
+            Borders& borders = getRenderer()->m_borders;
+            sf::Vector2f size = getSize();
+
+            // Draw left border
+            sf::RectangleShape border({borders.left, size.y + borders.top});
+            border.setPosition(-borders.left, -borders.top);
+            border.setFillColor(calcColorOpacity(getRenderer()->m_borderColor, getOpacity()));
+            target.draw(border, states);
+
+            // Draw top border
+            border.setSize({size.x + borders.right, borders.top});
+            border.setPosition(0, -borders.top);
+            target.draw(border, states);
+
+            // Draw right border
+            border.setSize({borders.right, size.y + borders.bottom});
+            border.setPosition(size.x, 0);
+            target.draw(border, states);
+
+            // Draw bottom border
+            border.setSize({size.x + borders.left, borders.bottom});
+            border.setPosition(-borders.left, size.y);
+            target.draw(border, states);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +192,11 @@ namespace tgui
     void PanelRenderer::setProperty(std::string property, const std::string& value)
     {
         property = toLower(property);
-        if (property == "backgroundcolor")
+        if (property == "borders")
+            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
+        else if (property == "bordercolor")
+            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
+        else if (property == "backgroundcolor")
             setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
         else
             WidgetRenderer::setProperty(property, value);
@@ -176,9 +208,18 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (value.getType() == ObjectConverter::Type::Color)
+        if (value.getType() == ObjectConverter::Type::Borders)
         {
-            if (property == "backgroundcolor")
+            if (property == "borders")
+                setBorders(value.getBorders());
+            else
+                return WidgetRenderer::setProperty(property, std::move(value));
+        }
+        else if (value.getType() == ObjectConverter::Type::Color)
+        {
+            if (property == "bordercolor")
+                setBorderColor(value.getColor());
+            else if (property == "backgroundcolor")
                 setBackgroundColor(value.getColor());
             else
                 WidgetRenderer::setProperty(property, std::move(value));
@@ -193,7 +234,11 @@ namespace tgui
     {
         property = toLower(property);
 
-        if (property == "backgroundcolor")
+        if (property == "borders")
+            return m_borders;
+        else if (property == "bordercolor")
+            return m_borderColor;
+        else if (property == "backgroundcolor")
             return m_panel->m_backgroundColor;
         else
             return WidgetRenderer::getProperty(property);
@@ -205,6 +250,8 @@ namespace tgui
     {
         auto pairs = WidgetRenderer::getPropertyValuePairs();
         pairs["BackgroundColor"] = m_panel->m_backgroundColor;
+        pairs["BorderColor"] = m_borderColor;
+        pairs["Borders"] = m_borders;
         return pairs;
     }
 
@@ -213,6 +260,13 @@ namespace tgui
     void PanelRenderer::setBackgroundColor(const Color& color)
     {
         m_panel->setBackgroundColor(color);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void PanelRenderer::setBorderColor(const Color& color)
+    {
+        m_borderColor = color;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -54,23 +54,33 @@ TEST_CASE("[Panel]") {
 
         SECTION("set serialized property") {
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
+            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(40, 50, 60)"));
+            REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
         }
 
         SECTION("set object property") {
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
+            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{40, 50, 60}));
+            REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
         }
 
         SECTION("functions") {
             renderer->setBackgroundColor({10, 20, 30});
+            renderer->setBorderColor({40, 50, 60});
+            renderer->setBorders({1, 2, 3, 4});
 
             SECTION("getPropertyValuePairs") {
                 auto pairs = renderer->getPropertyValuePairs();
-                REQUIRE(pairs.size() == 1);
+                REQUIRE(pairs.size() == 3);
                 REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(10, 20, 30));
+                REQUIRE(pairs["BorderColor"].getColor() == sf::Color(40, 50, 60));
+                REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
             }
         }
 
         REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
+        REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
+        REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
     }
 
     SECTION("Saving and loading from file") {
