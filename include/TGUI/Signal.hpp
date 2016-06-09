@@ -31,6 +31,7 @@
 #include <TGUI/Callback.hpp>
 
 #include <map>
+#include <deque>
 #include <memory>
 #include <cassert>
 #include <functional>
@@ -51,7 +52,7 @@ namespace tgui
 
     namespace priv
     {
-        extern TGUI_API std::vector<const void*> data;
+        extern TGUI_API std::deque<const void*> data;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
