@@ -77,7 +77,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7.0</span>
+   &#160;<span id="projectnumber">v0.7.1</span>
    </div>
   </td>
  </tr>
@@ -156,9 +156,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a388c77f5162ae4c90d9b0e4b560be67b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Layout.html#a388c77f5162ae4c90d9b0e4b560be67b">Layout</a> (float constant=0)</td></tr>
-<tr class="memdesc:a388c77f5162ae4c90d9b0e4b560be67b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor to implicitly construct from numeric constant.  <a href="#a388c77f5162ae4c90d9b0e4b560be67b">More...</a><br /></td></tr>
-<tr class="separator:a388c77f5162ae4c90d9b0e4b560be67b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c6954ae4c69cc71cecde644a585bce4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6c6954ae4c69cc71cecde644a585bce4"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Layout.html#a6c6954ae4c69cc71cecde644a585bce4">Layout</a> ()</td></tr>
+<tr class="memdesc:a6c6954ae4c69cc71cecde644a585bce4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br /></td></tr>
+<tr class="separator:a6c6954ae4c69cc71cecde644a585bce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa460f3a9bb8054a1d9ad30ac26360832"><td class="memTemplParams" colspan="2">template&lt;typename T , typename  = typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, T&gt;::type&gt; </td></tr>
+<tr class="memitem:aa460f3a9bb8054a1d9ad30ac26360832"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1Layout.html#aa460f3a9bb8054a1d9ad30ac26360832">Layout</a> (T constant)</td></tr>
+<tr class="memdesc:aa460f3a9bb8054a1d9ad30ac26360832"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor to implicitly construct from numeric constant.  <a href="#aa460f3a9bb8054a1d9ad30ac26360832">More...</a><br /></td></tr>
+<tr class="separator:aa460f3a9bb8054a1d9ad30ac26360832"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4f7b2eacf3141b8e39ce1e823953051"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Layout.html#ae4f7b2eacf3141b8e39ce1e823953051">Layout</a> (const char *expression)</td></tr>
+<tr class="memdesc:ae4f7b2eacf3141b8e39ce1e823953051"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the layout based on a string which will be parsed to determine the value of the layout.  <a href="#ae4f7b2eacf3141b8e39ce1e823953051">More...</a><br /></td></tr>
+<tr class="separator:ae4f7b2eacf3141b8e39ce1e823953051"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c070d8f0ffbe9215a247a9de9e9611f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Layout.html#a7c070d8f0ffbe9215a247a9de9e9611f">Layout</a> (const std::string &amp;expression)</td></tr>
 <tr class="memdesc:a7c070d8f0ffbe9215a247a9de9e9611f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the layout based on a string which will be parsed to determine the value of the layout.  <a href="#a7c070d8f0ffbe9215a247a9de9e9611f">More...</a><br /></td></tr>
 <tr class="separator:a7c070d8f0ffbe9215a247a9de9e9611f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -208,24 +216,58 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Class to store the left, top, width or height of a widget. </p>
 <p>You don't have to create an instance of this class, numbers are implicitly cast to this class. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a388c77f5162ae4c90d9b0e4b560be67b"></a>
+<a class="anchor" id="aa460f3a9bb8054a1d9ad30ac26360832"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename  = typename std::enable_if&lt;std::is_arithmetic&lt;T&gt;::value, T&gt;::type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">tgui::Layout::Layout </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>constant</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructor to implicitly construct from numeric constant. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">constant</td><td>Value of the layout </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ae4f7b2eacf3141b8e39ce1e823953051"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">tgui::Layout::Layout </td>
           <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>constant</em> = <code>0</code></td><td>)</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>expression</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Default constructor to implicitly construct from numeric constant. </p>
+<p>Construct the layout based on a string which will be parsed to determine the value of the layout. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">constant</td><td>Value of the layout </td></tr>
+    <tr><td class="paramname">expression</td><td>String to parse </td></tr>
   </table>
   </dd>
 </dl>
@@ -331,7 +373,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 4 2016 17:38:35 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jun 12 2016 14:56:47 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
