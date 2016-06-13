@@ -143,6 +143,12 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Ignore warning "C4800: 'const int': forcing value to bool 'true' or 'false' (performance warning)" in Visual Studio
+#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable : 4800)
+#endif
+
         template <typename... T>
         struct connector;
 
@@ -174,6 +180,10 @@ namespace tgui
                                  std::bind(dereference<TypeB>, std::cref(data[argPos+1])));
             }
         };
+
+#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
+    #pragma warning(pop)
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

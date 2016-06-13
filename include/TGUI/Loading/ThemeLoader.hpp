@@ -48,6 +48,9 @@ namespace tgui
     {
     public:
 
+        using PropertyValuePairs = std::map<std::string, std::string>;
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Virtual destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +69,7 @@ namespace tgui
         /// @return Type of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string load(const std::string& primary, const std::string& secondary, std::map<std::string, std::string>& properties) = 0;
+        virtual std::string load(const std::string& primary, const std::string& secondary, PropertyValuePairs& properties) = 0;
     };
 
 
@@ -96,7 +99,7 @@ namespace tgui
         /// @exception Exception when file did not contain requested class name
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string load(const std::string& filename, const std::string& className, std::map<std::string, std::string>& properties);
+        virtual std::string load(const std::string& filename, const std::string& className, PropertyValuePairs& properties);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +127,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
-        static std::map<std::string, std::map<std::string, std::map<std::string, std::string>>> m_propertiesCache;
+        static std::map<std::string, std::map<std::string, PropertyValuePairs>> m_propertiesCache;
         static std::map<std::string, std::map<std::string, std::string>> m_widgetTypeCache;
 
         friend struct DefaultThemeLoaderTest;
