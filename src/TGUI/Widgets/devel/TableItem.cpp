@@ -46,7 +46,7 @@ namespace tgui
 
         m_widget = widgetPtr;
         m_align = align;
-        update();
+        updateItem();
 
         if (m_widget != nullptr)
             add(m_widget);
@@ -57,7 +57,7 @@ namespace tgui
     void TableItem::setHorizontalAlign(HorizontalAlign align)
     {
         m_align = align;
-        update();
+        updateItem();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ namespace tgui
     void TableItem::setFont(const Font& font)
     {
         m_widget->setFont(font);
-        update();
+        updateItem();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,12 +73,12 @@ namespace tgui
     void TableItem::setSize(const Layout2d& size)
     {
         Panel::setSize(size);
-        update();
+        updateItem();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TableItem::update()
+    void TableItem::updateItem()
     {
         if (m_widget != nullptr)
         {
