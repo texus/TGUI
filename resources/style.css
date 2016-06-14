@@ -10,7 +10,7 @@ html, body {
 
 body {
   background-color: #e0e0e0;
-  background-image: url('/resources/Background.jpg');   
+  /* background-image: url('/resources/Background.jpg'); */
   max-width: 1060px;
   margin-left: auto;
   margin-right: auto;
