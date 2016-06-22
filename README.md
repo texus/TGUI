@@ -32,4 +32,5 @@ About me
 --------
 
 Name:   Bruno Van de Velde
+
 E-mail: vdv_b@tgui.eu
