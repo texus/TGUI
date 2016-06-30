@@ -89,12 +89,7 @@ namespace tgui
                     char* pchData = static_cast<char*>(GlobalLock(hGlobal));
                     if (pchData != NULL)
                     {
-                        #if defined(_MSC_VER)
-                            strcpy_s(pchData, sizeof(pchData), m_contents.toAnsiString().c_str());
-                        #else
-                            strcpy(pchData, m_contents.toAnsiString().c_str());
-                        #endif
-
+                        memcpy(pchData, m_contents.toAnsiString().c_str(), m_contents.getSize() + 1);
                         SetClipboardData(CF_TEXT, hGlobal);
 
                         GlobalUnlock(hGlobal);

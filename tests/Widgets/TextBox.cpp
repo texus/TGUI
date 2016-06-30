@@ -98,8 +98,8 @@ TEST_CASE("[TextBox]") {
                     REQUIRE(pairs["SelectedTextBackgroundColor"].getColor() == sf::Color(100, 110, 120));
                     REQUIRE(pairs["CaretColor"].getColor() == sf::Color(130, 140, 150));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(160, 170, 180));
-                    REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
-                    REQUIRE(pairs["Padding"].getBorders() == tgui::Borders(5, 6, 7, 8));
+                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Padding"].getOutline() == tgui::Borders(5, 6, 7, 8));
                 }
             }
 
@@ -109,8 +109,8 @@ TEST_CASE("[TextBox]") {
             REQUIRE(renderer->getProperty("SelectedTextBackgroundColor").getColor() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("CaretColor").getColor() == sf::Color(130, 140, 150));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(160, 170, 180));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
-            REQUIRE(renderer->getProperty("Padding").getBorders() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
         }
 
         SECTION("textured") {

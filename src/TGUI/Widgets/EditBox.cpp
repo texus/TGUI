@@ -27,8 +27,7 @@
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Clipboard.hpp>
-
-#include <SFML/OpenGL.hpp>
+#include <TGUI/Clipping.hpp>
 
 #include <cmath>
 
@@ -47,19 +46,26 @@ namespace tgui
     EditBox::EditBox()
     {
         m_callback.widgetType = "EditBox";
+        m_type = "EditBox";
+
         addSignal<sf::String>("TextChanged");
         addSignal<sf::String>("ReturnKeyPressed");
+
         m_draggableWidget = true;
         m_allowFocus = true;
 
         m_renderer = aurora::makeCopied<tgui::EditBoxRenderer>();
         setRenderer(m_renderer->getData());
 
-        m_defaultText.setStyle(sf::Text::Italic);
+        m_defaultText.setStyle(getRenderer()->getDefaultTextStyle());
         m_caret.setSize({getRenderer()->getCaretWidth(), 0});
 
         setSize({240, 30});
-        m_sizeDefined = false;
+        getRenderer()->setBorders({2, 2, 2, 2});
+        m_textBeforeSelection.setFillColor(getRenderer()->getTextColor());
+        m_textAfterSelection.setFillColor(getRenderer()->getTextColor());
+        m_textSelection.setFillColor(getRenderer()->getSelectedTextColor());
+        m_defaultText.setFillColor(getRenderer()->getDefaultTextColor());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,17 +88,15 @@ namespace tgui
         if (m_textSize == 0)
             setText(m_text);
 
-        getRenderer()->m_textureHover.setSize(getSize());
-        getRenderer()->m_textureNormal.setSize(getSize());
-        getRenderer()->m_textureFocused.setSize(getSize());
+        getRenderer()->getTextureNormal().setSize(getUsableSize());
+        getRenderer()->getTextureHover().setSize(getUsableSize());
+        getRenderer()->getTextureFocused().setSize(getUsableSize());
 
         // Set the size of the caret
-        m_caret.setSize({m_caret.getSize().x,
-                         getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top});
+        m_caret.setSize({m_caret.getSize().x, getUsableSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
 
-        ///TODO
-        // Recalculate the position of the images and texts
-        updatePosition();
+        // Recalculate the position of the texts
+        recalculateTextPositions();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +125,7 @@ namespace tgui
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
-            m_textFull.setCharacterSize(findBestTextSize(getFont(), (getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top) * 0.85f));
+            m_textFull.setCharacterSize(findBestTextSize(getFont(), (getUsableSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.85f));
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
@@ -229,6 +233,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::selectText(std::size_t start, std::size_t length)
+    {
+        m_selStart = start;
+        m_selEnd = std::min(m_text.getSize(), start + length);
+        m_selChars = m_selEnd - m_selStart;
+
+        m_textBeforeSelection.setString(m_displayedText.substring(0, m_selStart));
+        m_textSelection.setString(m_displayedText.substring(m_selStart, m_selEnd));
+        m_textAfterSelection.setString(m_displayedText.substring(m_selEnd));
+
+        recalculateTextPositions();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::String EditBox::getSelectedText() const
     {
         if (m_selStart < m_selEnd)
@@ -317,7 +336,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBox::Alignment EditBox::getAlignment()
+    EditBox::Alignment EditBox::getAlignment() const
     {
         return m_textAlignment;
     }
@@ -355,7 +374,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool EditBox::isTextWidthLimited()
+    bool EditBox::isTextWidthLimited() const
     {
         return m_limitTextWidth;
     }
@@ -401,21 +420,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void EditBox::setCaretWidth(float width)
-    {
-        m_caret.setPosition(m_caret.getPosition().x + ((m_caret.getSize().x - width) / 2.0f), m_caret.getPosition().y);
-        m_caret.setSize({width, getSize().y - getRenderer()->getScaledPadding().bottom - getRenderer()->getScaledPadding().top});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float EditBox::getCaretWidth()
-    {
-        return m_caret.getSize().x;
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::setInputValidator(const std::string& regex)
     {
@@ -427,50 +431,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::string& EditBox::getInputValidator()
+    const std::string& EditBox::getInputValidator() const
     {
         return m_regexString;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::selectText()
-    {
-        m_selStart = 0;
-        m_selEnd = m_text.getSize();
-        m_selChars = m_text.getSize();
-
-        m_textBeforeSelection.setString("");
-        m_textSelection.setString(m_displayedText);
-        m_textAfterSelection.setString("");
-
-        recalculateTextPositions();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void EditBox::setOpacity(float opacity)
-    {
-        ClickableWidget::setOpacity(opacity);
-
-        getRenderer()->m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-
-        m_textBeforeSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
-        m_textAfterSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
-        m_textSelection.setColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
-        m_selectedTextBackground.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextBackgroundColor, getOpacity()));
-        m_defaultText.setColor(calcColorOpacity(getRenderer()->m_defaultTextColor, getOpacity()));
-        m_caret.setFillColor(calcColorOpacity(getRenderer()->m_caretColor, getOpacity()));
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void EditBox::leftMousePressed(float x, float y)
     {
         // Find the caret position
-        float positionX = x - getPosition().x - getRenderer()->getScaledPadding().left;
+        float positionX = x - getPosition().x - getRenderer()->getBorders().left - getRenderer()->getPadding().left;
 
         std::size_t caretPosition = findCaretPosition(positionX);
 
@@ -536,18 +507,21 @@ namespace tgui
         // Check if the mouse is hold down (we are selecting multiple characters)
         if (m_mouseDown)
         {
+            Padding padding = getRenderer()->getPadding();
+            Borders borders = getRenderer()->getBorders();
+
             // Check if there is a text width limit
             if (m_limitTextWidth)
             {
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(x - getPosition().x - getRenderer()->getScaledPadding().left);
+                m_selEnd = findCaretPosition(x - getPosition().x - borders.left - padding.left);
             }
             else // Scrolling is enabled
             {
                 float width = getVisibleEditBoxWidth();
 
                 // Check if the mouse is on the left of the text
-                if (x - getPosition().x < getRenderer()->getScaledPadding().left)
+                if (x - getPosition().x < borders.left + padding.left)
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -564,7 +538,7 @@ namespace tgui
                     }
                 }
                 // Check if the mouse is on the right of the text AND there is a possibility to scroll
-                else if ((x - getPosition().x > getRenderer()->getScaledPadding().left + width) && (m_textFull.findCharacterPos(m_displayedText.getSize()).x > width))
+                else if ((x - getPosition().x > borders.left + padding.left + width) && (m_textFull.findCharacterPos(m_displayedText.getSize()).x > width))
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -582,7 +556,7 @@ namespace tgui
                 }
 
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(x - getPosition().x - getRenderer()->getScaledPadding().left);
+                m_selEnd = findCaretPosition(x - getPosition().x - borders.left - padding.left);
             }
 
             // Check if we are selecting text from left to right
@@ -819,6 +793,9 @@ namespace tgui
                 {
                     Clipboard::set(m_textSelection.getString());
                     deleteSelectedCharacters();
+
+                    m_callback.text = m_text;
+                    sendSignal("TextChanged", getText());
                 }
                 else if (event.code == sf::Keyboard::A)
                 {
@@ -914,50 +891,108 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void EditBox::reload(const std::string& primary, const std::string& secondary, bool force)
+
+    void EditBox::rendererChanged(const std::string& property, ObjectConverter&& value)
     {
-        m_textBeforeSelection.setColor({0, 0, 0});
-        m_textSelection.setColor({255, 255, 255});
-        m_textAfterSelection.setColor({0, 0, 0});
-        m_defaultText.setColor({160, 160, 160});
-        m_caret.setFillColor({0, 0, 0});
-        m_selectedTextBackground.setFillColor({0, 110, 255});
-
-        getRenderer()->setBorders({2, 2, 2, 2});
-        getRenderer()->setPadding({4, 2, 4, 2});
-        getRenderer()->setBorderColor({0, 0, 0});
-        getRenderer()->setBackgroundColorNormal({245, 245, 245});
-        getRenderer()->setBackgroundColorHover({255, 255, 255});
-        getRenderer()->setNormalTexture({});
-        getRenderer()->setHoverTexture({});
-        getRenderer()->setFocusTexture({});
-
-        if (m_theme && primary != "")
+        if (property == "borders")
         {
-            getRenderer()->setBorders({0, 0, 0, 0});
-            Widget::reload(primary, secondary, force);
-
-            if (force)
-            {
-                if (getRenderer()->m_textureNormal.isLoaded())
-                    setSize(getRenderer()->m_textureNormal.getImageSize());
-            }
-
-            // Call setText to re-position the text
+            updateSize();
+        }
+        else if (property == "padding")
+        {
             setText(m_text);
+
+            m_caret.setSize({m_caret.getSize().x, getUsableSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
+        }
+        else if (property == "caretwidth")
+        {
+            m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - value.getNumber()) / 2.0f), m_caret.getPosition().y});
+            m_caret.setSize({value.getNumber(), getSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
+        }
+        else if (property == "textcolor")
+        {
+            m_textBeforeSelection.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
+            m_textAfterSelection.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
+        }
+        else if (property == "selectedtextcolor")
+        {
+            m_textSelection.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
+        }
+        else if (property == "defaulttextcolor")
+        {
+            m_defaultText.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
+        }
+        else if ((property == "texturenormal") || (property == "texturehover") || (property == "texturefocused"))
+        {
+            value.getTexture().setPosition({getRenderer()->getBorders().left, getRenderer()->getBorders().top});
+            value.getTexture().setSize(getSize());
+
+            if (property == "texturefocused")
+                m_allowFocus = value.getTexture().isLoaded();
+        }
+        else if (property == "textstyle")
+        {
+            sf::Uint32 style;
+            if (value.getType() == ObjectConverter::Type::Number)
+                style = value.getNumber();
+            else
+                style = decodeTextStyle(value.getString());
+
+            m_textBeforeSelection.setStyle(style);
+            m_textAfterSelection.setStyle(style);
+            m_textSelection.setStyle(style);
+            m_textFull.setStyle(style);
+        }
+        else if (property == "defaulttextstyle")
+        {
+            sf::Uint32 style;
+            if (value.getType() == ObjectConverter::Type::Number)
+                style = value.getNumber();
+            else
+                style = decodeTextStyle(value.getString());
+
+            m_defaultText.setStyle(style);
+        }
+        else if (property == "opacity")
+        {
+            float opacity = value.getNumber();
+
+            m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), opacity));
+            m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), opacity));
+            m_textSelection.setFillColor(calcColorOpacity(getRenderer()->getSelectedTextColor(), opacity));
+            m_defaultText.setFillColor(calcColorOpacity(getRenderer()->getDefaultTextColor(), opacity));
+
+            getRenderer()->getTextureNormal().setOpacity(opacity);
+            getRenderer()->getTextureHover().setOpacity(opacity);
+            getRenderer()->getTextureFocused().setOpacity(opacity);
+        }
+        else if ((property != "bordercolor")
+              && (property != "backgroundcolornormal")
+              && (property != "backgroundcolorhover")
+              && (property != "selectedtextbackgroundcolor")
+              && (property != "caretcolor"))
+        {
+            Widget::rendererChanged(property, std::move(value));
         }
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float EditBox::getVisibleEditBoxWidth()
+    sf::Vector2f EditBox::getUsableSize() const
+    {
+        Borders borders = getRenderer()->getBorders();
+        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float EditBox::getVisibleEditBoxWidth() const
     {
         return std::max(0.f, getSize().x
                              - getRenderer()->getBorders().left
                              - getRenderer()->getBorders().right
-                             - getScaledPadding().left
-                             - getScaledPadding().right);
+                             - getRenderer()->getPadding().left
+                             - getRenderer()->getPadding().right);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1097,7 +1132,7 @@ namespace tgui
 
     void EditBox::recalculateTextPositions()
     {
-        Padding padding = getRenderer()->getScaledPadding();
+        Padding padding = getRenderer()->getPadding();
 
         float textX = padding.left - m_textCropPosition;
         float textY = 0;
@@ -1142,7 +1177,7 @@ namespace tgui
             // Set the position and size of the rectangle that gets drawn behind the selected text
             m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x - m_textSelection.getPosition().x,
                                               getSize().y - padding.top - padding.bottom});
-            m_selectedTextBackground.setPosition(std::floor(textX + 0.5f), std::floor(padding.top + 0.5f));
+            m_selectedTextBackground.setPosition({std::floor(textX + 0.5f), std::floor(padding.top + 0.5f)});
 
             // Set the text selected text on the correct position
             m_textSelection.setPosition(std::floor(textX + 0.5f), textY);
@@ -1158,7 +1193,7 @@ namespace tgui
 
         // Set the position of the caret
         caretLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_caret.getSize().x * 0.5f);
-        m_caret.setPosition(std::floor(caretLeft + 0.5f), std::floor(padding.top + 0.5f));
+        m_caret.setPosition({std::floor(caretLeft + 0.5f), std::floor(padding.top + 0.5f)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1187,72 +1222,45 @@ namespace tgui
     {
         states.transform.translate(getPosition());
 
-        // Draw the background
-        if (m_textureNormal.isLoaded())
-        {
-            if (m_editBox->m_mouseHover && m_textureHover.isLoaded())
-                target.draw(m_textureHover, states);
-            else
-                target.draw(m_textureNormal, states);
-
-            // When the edit box is focused then draw an extra image
-            if (m_editBox->m_focused && m_textureFocused.isLoaded())
-                target.draw(m_textureFocused, states);
-        }
-        else // There is no background texture
-        {
-            sf::RectangleShape editBox(m_editBox->getSize());
-            editBox.setPosition(m_editBox->getPosition());
-
-            if (m_editBox->m_mouseHover)
-                editBox.setFillColor(calcColorOpacity(m_backgroundColorHover, m_editBox->getOpacity()));
-            else
-                editBox.setFillColor(calcColorOpacity(m_backgroundColorNormal, m_editBox->getOpacity()));
-
-            target.draw(editBox, states);
-        }
-
         // Draw the borders
         Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0, 0, 0, 0})
+        if (borders != Borders{0})
         {
-            drawBorders(target, states, borders, getPosition(), getSize(), calcColorOpacity(getRenderer()->getBorderColor(), getRenderer()->getOpacity()));
+            drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColor());
 
             // Don't try to draw the text when there is no space left for it
             if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
                 return;
         }
 
-        // Calculate the scale factor of the view
-        const sf::View& view = target.getView();
-        float scaleViewX = target.getSize().x / view.getSize().x;
-        float scaleViewY = target.getSize().y / view.getSize().y;
+        states.transform.translate({borders.left, borders.top});
 
-        Padding padding = getRenderer()->getScaledPadding();
+        // Draw the background
+        if (getRenderer()->getTextureNormal().isLoaded())
+        {
+            if (m_mouseHover && getRenderer()->getTextureHover().isLoaded())
+                getRenderer()->getTextureHover().draw(target, states);
+            else
+                getRenderer()->getTextureNormal().draw(target, states);
 
-        // Get the global position
-        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + padding.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                        ((getAbsolutePosition().y + padding.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - padding.right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                            (getAbsolutePosition().y + getSize().y - padding.bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
+            // When the edit box is focused then draw an extra image
+            if (m_focused && getRenderer()->getTextureFocused().isLoaded())
+                getRenderer()->getTextureFocused().draw(target, states);
+        }
+        else // There is no background texture
+        {
+            if (m_mouseHover)
+                drawRectangleShape(target, states, getPosition(), getUsableSize(), getRenderer()->getBackgroundColorHover());
+            else
+                drawRectangleShape(target, states, getPosition(), getUsableSize(), getRenderer()->getBackgroundColorNormal());
+        }
 
-        // Get the old clipping area
-        GLint scissor[4];
-        glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-        // Calculate the clipping area
-        GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-        GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-        if (scissorRight < scissorLeft)
-            scissorRight = scissorLeft;
-        else if (scissorBottom < scissorTop)
-            scissorTop = scissorBottom;
-
-        // Set the clipping area
-        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
+        // Set the clipping for all draw calls that happen until this clipping object goes out of scope
+        Padding padding = getRenderer()->getPadding();
+        Clipping clipping{target,
+                          {getAbsolutePosition().x + padding.left, getAbsolutePosition().y + padding.top},
+                          {getAbsolutePosition().x + getSize().x - padding.right, getAbsolutePosition().y + getSize().y - padding.bottom}
+                         };
 
         if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
         {
@@ -1260,7 +1268,7 @@ namespace tgui
 
             if (m_textSelection.getString() != "")
             {
-                target.draw(m_selectedTextBackground, states);
+                drawRectangleShape(target, states, m_selectedTextBackground.getPosition(), m_selectedTextBackground.getSize(), getRenderer()->getSelectedTextBackgroundColor());
 
                 target.draw(m_textSelection, states);
                 target.draw(m_textAfterSelection, states);
@@ -1273,235 +1281,60 @@ namespace tgui
 
         // Draw the caret
         if ((m_focused) && (m_caretVisible))
-            target.draw(m_caret, states);
-
-        // Reset the old clipping area
-        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+            drawRectangleShape(target, states, m_caret.getPosition(), m_caret.getSize(), getRenderer()->getCaretColor());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void EditBoxRenderer::setProperty(std::string property, const std::string& value)
+
+    void EditBoxRenderer::setTextStyle(sf::Uint32 style)
     {
-        property = toLower(property);
-        if (property == "padding")
-            setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "borders")
-            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "caretwidth")
-            m_editBox->setCaretWidth(Deserializer::deserialize(ObjectConverter::Type::Number, value).getNumber());
-        else if (property == "textcolor")
-            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "selectedtextcolor")
-            setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "selectedtextbackgroundcolor")
-            setSelectedTextBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "defaulttextcolor")
-            setDefaultTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "caretcolor")
-            setCaretColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolor")
-            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolornormal")
-            setBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolorhover")
-            setBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "bordercolor")
-            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "normalimage")
-            setNormalTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "hoverimage")
-            setHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "focusedimage")
-            setFocusTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else
-            WidgetRenderer::setProperty(property, value);
+        setProperty("textstyle", ObjectConverter{static_cast<float>(style)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setProperty(std::string property, ObjectConverter&& value)
+    sf::Uint32 EditBoxRenderer::getTextStyle() const
     {
-        property = toLower(property);
-
-        if (value.getType() == ObjectConverter::Type::Borders)
+        auto it = m_data->propertyValuePairs.find("textstyle");
+        if (it != m_data->propertyValuePairs.end())
         {
-            if (property == "padding")
-                setPadding(value.getBorders());
-            else if (property == "borders")
-                setBorders(value.getBorders());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Color)
-        {
-            if (property == "textcolor")
-                setTextColor(value.getColor());
-            else if (property == "selectedtextcolor")
-                setSelectedTextColor(value.getColor());
-            else if (property == "selectedtextbackgroundcolor")
-                setSelectedTextBackgroundColor(value.getColor());
-            else if (property == "defaulttextcolor")
-                setDefaultTextColor(value.getColor());
-            else if (property == "caretcolor")
-                setCaretColor(value.getColor());
-            else if (property == "backgroundcolor")
-                setBackgroundColor(value.getColor());
-            else if (property == "backgroundcolornormal")
-                setBackgroundColorNormal(value.getColor());
-            else if (property == "backgroundcolorhover")
-                setBackgroundColorHover(value.getColor());
-            else if (property == "bordercolor")
-                setBorderColor(value.getColor());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Texture)
-        {
-            if (property == "normalimage")
-                setNormalTexture(value.getTexture());
-            else if (property == "hoverimage")
-                setHoverTexture(value.getTexture());
-            else if (property == "focusedimage")
-                setFocusTexture(value.getTexture());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Number)
-        {
-            if (property == "caretwidth")
-                m_editBox->setCaretWidth(value.getNumber());
-        }
-        else
-            WidgetRenderer::setProperty(property, std::move(value));
-    }
+            if (it->second.getType() == ObjectConverter::Type::String)
+                it->second = {static_cast<float>(decodeTextStyle(it->second.getString()))};
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter EditBoxRenderer::getProperty(std::string property) const
-    {
-        property = toLower(property);
-
-        if (property == "padding")
-            return m_padding;
-        else if (property == "borders")
-            return m_borders;
-        else if (property == "caretwidth")
-            return m_editBox->getCaretWidth();
-        else if (property == "textcolor")
-            return m_textColor;
-        else if (property == "selectedtextcolor")
-            return m_selectedTextColor;
-        else if (property == "selectedtextbackgroundcolor")
-            return m_selectedTextBackgroundColor;
-        else if (property == "defaulttextcolor")
-            return m_defaultTextColor;
-        else if (property == "caretcolor")
-            return m_caretColor;
-        else if (property == "backgroundcolor")
-            return m_backgroundColorNormal;
-        else if (property == "backgroundcolornormal")
-            return m_backgroundColorNormal;
-        else if (property == "backgroundcolorhover")
-            return m_backgroundColorHover;
-        else if (property == "bordercolor")
-            return m_borderColor;
-        else if (property == "normalimage")
-            return m_textureNormal;
-        else if (property == "hoverimage")
-            return m_textureHover;
-        else if (property == "focusedimage")
-            return m_textureFocused;
-        else
-            return WidgetRenderer::getProperty(property);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::map<std::string, ObjectConverter> EditBoxRenderer::getPropertyValuePairs() const
-    {
-        auto pairs = WidgetRenderer::getPropertyValuePairs();
-
-        if (m_textureNormal.isLoaded())
-        {
-            pairs["NormalImage"] = m_textureNormal;
-            if (m_textureHover.isLoaded())
-                pairs["HoverImage"] = m_textureHover;
-            if (m_textureFocused.isLoaded())
-                pairs["FocusedImage"] = m_textureFocused;
+            return it->second.getNumber();
         }
         else
         {
-            pairs["BackgroundColorNormal"] = m_backgroundColorNormal;
-            pairs["BackgroundColorHover"] = m_backgroundColorHover;
+            m_data->propertyValuePairs["textstyle"] = {static_cast<float>(sf::Text::Regular)};
+            return sf::Text::Regular;
         }
-
-        pairs["CaretWidth"] = m_editBox->getCaretWidth();
-        pairs["TextColor"] = m_textColor;
-        pairs["SelectedTextColor"] = m_selectedTextColor;
-        pairs["SelectedTextBackgroundColor"] = m_selectedTextBackgroundColor;
-        pairs["DefaultTextColor"] = m_defaultTextColor;
-        pairs["CaretColor"] = m_caretColor;
-        pairs["BorderColor"] = m_borderColor;
-        pairs["Borders"] = m_borders;
-        pairs["Padding"] = m_padding;
-
-        return pairs;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setPadding(const Padding& padding)
+    void EditBoxRenderer::setDefaultTextStyle(sf::Uint32 style)
     {
-        WidgetPadding::setPadding(padding);
-
-        // Recalculate the text size
-        m_editBox->setText(m_editBox->m_text);
-
-        // Set the size of the caret
-        m_editBox->m_caret.setSize({m_editBox->m_caret.getSize().x,
-                                    m_editBox->getSize().y - getScaledPadding().bottom - getScaledPadding().top});
+        setProperty("defaulttextstyle", ObjectConverter{static_cast<float>(style)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setCaretWidth(float width)
+    sf::Uint32 EditBoxRenderer::getDefaultTextStyle() const
     {
-        m_editBox->setCaretWidth(width);
-    }
+        auto it = m_data->propertyValuePairs.find("defaulttextstyle");
+        if (it != m_data->propertyValuePairs.end())
+        {
+            if (it->second.getType() == ObjectConverter::Type::String)
+                it->second = {static_cast<float>(decodeTextStyle(it->second.getString()))};
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setTextColor(const Color& textColor)
-    {
-        m_textColor = textColor;
-        m_editBox->m_textBeforeSelection.setColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
-        m_editBox->m_textAfterSelection.setColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setSelectedTextColor(const Color& selectedTextColor)
-    {
-        m_selectedTextColor = selectedTextColor;
-        m_editBox->m_textSelection.setColor(calcColorOpacity(m_selectedTextColor, m_editBox->getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setSelectedTextBackgroundColor(const Color& selectedTextBackgroundColor)
-    {
-        m_selectedTextBackgroundColor = selectedTextBackgroundColor;
-        m_editBox->m_selectedTextBackground.setFillColor(calcColorOpacity(m_selectedTextBackgroundColor, m_editBox->getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setDefaultTextColor(const Color& defaultTextColor)
-    {
-        m_defaultTextColor = defaultTextColor;
-        m_editBox->m_defaultText.setColor(calcColorOpacity(m_defaultTextColor, m_editBox->getOpacity()));
+            return it->second.getNumber();
+        }
+        else
+        {
+            m_data->propertyValuePairs["defaulttextstyle"] = {static_cast<float>(sf::Text::Italic)};
+            return sf::Text::Italic;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1514,180 +1347,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBoxRenderer::setBackgroundColorNormal(const Color& color)
-    {
-        m_backgroundColorNormal = color;
-    }
+    TGUI_RENDERER_PROPERTY_OUTLINE(EditBoxRenderer, Borders, Borders(0))
+    TGUI_RENDERER_PROPERTY_OUTLINE(EditBoxRenderer, Padding, Padding(0))
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_RENDERER_PROPERTY_NUMBER(EditBoxRenderer, CaretWidth, 1.f)
 
-    void EditBoxRenderer::setBackgroundColorHover(const Color& color)
-    {
-        m_backgroundColorHover = color;
-    }
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, TextColor, Color(60, 60, 60))
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, SelectedTextColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, SelectedTextBackgroundColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, DefaultTextColor, Color(245, 245, 245))
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BackgroundColorNormal, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BackgroundColorHover, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, CaretColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BorderColor, sf::Color::Black)
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureNormal)
+    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureHover)
+    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureFocused)
 
-    void EditBoxRenderer::setCaretColor(const Color& caretColor)
-    {
-        m_caretColor = caretColor;
-        m_editBox->m_caret.setFillColor(calcColorOpacity(m_caretColor, m_editBox->getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setBorderColor(const Color& color)
-    {
-        m_borderColor = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setNormalTexture(const Texture& texture)
-    {
-        m_textureNormal = texture;
-        if (m_textureNormal.isLoaded())
-        {
-            m_textureNormal.setPosition(m_editBox->getPosition());
-            m_textureNormal.setSize(m_editBox->getSize());
-            m_textureNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setHoverTexture(const Texture& texture)
-    {
-        m_textureHover = texture;
-        if (m_textureHover.isLoaded())
-        {
-            m_textureHover.setPosition(m_editBox->getPosition());
-            m_textureHover.setSize(m_editBox->getSize());
-            m_textureHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setFocusTexture(const Texture& texture)
-    {
-        m_textureFocused = texture;
-        if (m_textureFocused.isLoaded())
-        {
-            m_textureFocused.setPosition(m_editBox->getPosition());
-            m_textureFocused.setSize(m_editBox->getSize());
-            m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_editBox->getOpacity() * 255)});
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        // Check if there is a background texture
-        if (m_textureNormal.isLoaded())
-        {
-            if (m_editBox->m_mouseHover && m_textureHover.isLoaded())
-                target.draw(m_textureHover, states);
-            else
-                target.draw(m_textureNormal, states);
-
-            // When the edit box is focused then draw an extra image
-            if (m_editBox->m_focused && m_textureFocused.isLoaded())
-                target.draw(m_textureFocused, states);
-        }
-        else // There is no background texture
-        {
-            sf::RectangleShape editBox(m_editBox->getSize());
-            editBox.setPosition(m_editBox->getPosition());
-
-            if (m_editBox->m_mouseHover)
-                editBox.setFillColor(calcColorOpacity(m_backgroundColorHover, m_editBox->getOpacity()));
-            else
-                editBox.setFillColor(calcColorOpacity(m_backgroundColorNormal, m_editBox->getOpacity()));
-
-            target.draw(editBox, states);
-        }
-
-        // Draw the borders around the edit box
-        if (m_borders != Borders{0, 0, 0, 0})
-        {
-            sf::Vector2f position = m_editBox->getPosition();
-            sf::Vector2f size = m_editBox->getSize();
-
-            // Draw left border
-            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
-            border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(calcColorOpacity(m_borderColor, m_editBox->getOpacity()));
-            target.draw(border, states);
-
-            // Draw top border
-            border.setSize({size.x + m_borders.right, m_borders.top});
-            border.setPosition(position.x, position.y - m_borders.top);
-            target.draw(border, states);
-
-            // Draw right border
-            border.setSize({m_borders.right, size.y + m_borders.bottom});
-            border.setPosition(position.x + size.x, position.y);
-            target.draw(border, states);
-
-            // Draw bottom border
-            border.setSize({size.x + m_borders.left, m_borders.bottom});
-            border.setPosition(position.x - m_borders.left, position.y + size.y);
-            target.draw(border, states);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Padding EditBoxRenderer::getScaledPadding() const
-    {
-        Padding padding = getPadding();
-        Padding scaledPadding = padding;
-
-        auto& texture = m_textureNormal;
-        if (texture.isLoaded())
-        {
-            switch (texture.getScalingType())
-            {
-            case Texture::ScalingType::Normal:
-                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
-                break;
-
-            case Texture::ScalingType::Horizontal:
-                scaledPadding.left = padding.left * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.right = padding.right * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
-                scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
-                break;
-
-            case Texture::ScalingType::Vertical:
-                scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.top = padding.top * (texture.getSize().x / texture.getImageSize().x);
-                scaledPadding.bottom = padding.bottom * (texture.getSize().x / texture.getImageSize().x);
-                break;
-
-            case Texture::ScalingType::NineSlice:
-                break;
-            }
-        }
-
-        return scaledPadding;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<WidgetRenderer> EditBoxRenderer::clone(Widget* widget)
-    {
-        auto renderer = std::make_shared<EditBoxRenderer>(*this);
-        renderer->m_editBox = static_cast<EditBox*>(widget);
-        return renderer;
-    }
-*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

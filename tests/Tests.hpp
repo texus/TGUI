@@ -24,12 +24,19 @@
 
 #include "catch.hpp"
 #include <TGUI/Container.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 
-static const sf::Time doubleClickTimeout = sf::milliseconds(500);
+static const sf::Time DOUBLE_CLICK_TIMEOUT = sf::milliseconds(500);
 
 bool compareFiles(const std::string& leftFileName, const std::string& rightFileName);
+
+void mouseCallback(unsigned int& count, sf::Vector2f pos);
+void genericCallback(unsigned int& count);
+
+void testWidgetSignals(tgui::Widget::Ptr widget);
+void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget);
 
 template <typename WidgetType>
 void copy(std::shared_ptr<tgui::Container> parent, std::shared_ptr<WidgetType> widget)
@@ -53,15 +60,4 @@ void copy(std::shared_ptr<tgui::Container> parent, std::shared_ptr<WidgetType> w
     temp4 = std::move(temp3);
 
     parent->add(WidgetType::copy(std::make_shared<WidgetType>(temp4)));
-}
-
-inline void mouseCallback(unsigned int& count, sf::Vector2f pos)
-{
-    count++;
-    REQUIRE(pos == sf::Vector2f(75, 50));
-}
-
-inline void genericCallback(unsigned int& count)
-{
-    count++;
 }

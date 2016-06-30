@@ -25,9 +25,6 @@
 
 #include <TGUI/Loading/ThemeLoader.hpp>
 #include <TGUI/Loading/DataIO.hpp>
-#include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/Label.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
 
 #include <cassert>
 #include <sstream>

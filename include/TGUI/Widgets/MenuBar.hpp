@@ -528,7 +528,7 @@ namespace tgui
 
         MenuBar*  m_menuBar;
 
-        float     m_distanceToSide;
+        float     m_distanceToSide = 0;
 
         sf::Color m_textColor;
         sf::Color m_selectedTextColor;

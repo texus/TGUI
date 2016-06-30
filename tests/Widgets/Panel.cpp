@@ -56,6 +56,20 @@ TEST_CASE("[Panel]")
         REQUIRE(panel->getSize() == sf::Vector2f(150, 100));
         REQUIRE(panel->getFullSize() == panel->getSize());
         REQUIRE(panel->getWidgetOffset() == sf::Vector2f(0, 0));
+
+        SECTION("Child widgets")
+        {
+            auto childWidget = std::make_shared<tgui::ClickableWidget>();
+            childWidget->setPosition(60, 50);
+            panel->add(childWidget);
+
+            REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
+            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(100, 80));
+
+            panel->getRenderer()->setBorders({1, 2, 3, 4});
+            REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
+            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(101, 82));
+        }
     }
 
     SECTION("Events")
@@ -143,26 +157,36 @@ TEST_CASE("[Panel]")
         SECTION("set serialized property")
         {
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
+            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(40, 50, 60)"));
+            REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
+            REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
         }
 
         SECTION("set object property")
         {
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
+            REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{40, 50, 60}));
+            REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
+            REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
         }
 
         SECTION("functions")
         {
             renderer->setBackgroundColor({10, 20, 30});
-
-            SECTION("getPropertyValuePairs")
-            {
-                auto pairs = renderer->getPropertyValuePairs();
-                REQUIRE(pairs.size() == 1);
-                REQUIRE(pairs["backgroundcolor"].getColor() == sf::Color(10, 20, 30));
-            }
+            renderer->setBorderColor({40, 50, 60});
+            renderer->setBorders({1, 2, 3, 4});
+            renderer->setOpacity(0.8f);
         }
 
         REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
+        REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
+        REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+        REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
+
+        REQUIRE(renderer->getBackgroundColor() == sf::Color(10, 20, 30));
+        REQUIRE(renderer->getBorderColor() == sf::Color(40, 50, 60));
+        REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+        REQUIRE(renderer->getOpacity() == 0.8f);
 
         REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }
@@ -194,6 +218,8 @@ TEST_CASE("[Panel]")
 
             panel->getRenderer()->setOpacity(0.8f);
             panel->getRenderer()->setBackgroundColor(sf::Color::Green);
+            panel->getRenderer()->setBorderColor(sf::Color::Blue);
+            panel->getRenderer()->setBorders({1, 2, 3, 4});
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel3.txt"));
 

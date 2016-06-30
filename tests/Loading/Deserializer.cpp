@@ -94,17 +94,17 @@ TEST_CASE("[Deserializer]") {
         REQUIRE(tgui::Deserializer::deserialize(Type::Number, "2.25").getNumber() == 2.25);
     }
 
-    SECTION("deserialize borders")
+    SECTION("deserialize outline")
     {
-        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "1, 2, 3, 4").getBorders() == tgui::Borders(1, 2, 3, 4));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "(5, 6, 7, 8)").getBorders() == tgui::Borders(5, 6, 7, 8));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "9, 10").getBorders() == tgui::Borders(9, 10, 9, 10));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "(11, 12)").getBorders() == tgui::Borders(11, 12, 11, 12));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "13").getBorders() == tgui::Borders(13, 13, 13, 13));
-        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "(14)").getBorders() == tgui::Borders(14, 14, 14, 14));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "1, 2, 3, 4").getOutline() == tgui::Outline(1, 2, 3, 4));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "(5, 6, 7, 8)").getOutline() == tgui::Outline(5, 6, 7, 8));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "9, 10").getOutline() == tgui::Outline(9, 10, 9, 10));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "(11, 12)").getOutline() == tgui::Outline(11, 12, 11, 12));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "13").getOutline() == tgui::Outline(13, 13, 13, 13));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "(14)").getOutline() == tgui::Outline(14, 14, 14, 14));
 
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Borders, "(1,2,3)"), tgui::Exception);
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Borders, ",,,,"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Outline, "(1,2,3)"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Outline, ",,,,"), tgui::Exception);
     }
 
     SECTION("deserialize texture")
@@ -155,7 +155,7 @@ TEST_CASE("[Deserializer]") {
         
         tgui::Deserializer::setFunction(Type::Color, [](const std::string&){ return tgui::ObjectConverter{sf::Color::Green}; });
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == sf::Color::Green);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Borders, "(50, 60, 70, 80)").getBorders() == tgui::Borders(50, 60, 70, 80));
+        REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "(50, 60, 70, 80)").getOutline() == tgui::Outline(50, 60, 70, 80));
         
         tgui::Deserializer::setFunction(tgui::ObjectConverter::Type::Color, oldFunc);
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == sf::Color(10, 20, 30));

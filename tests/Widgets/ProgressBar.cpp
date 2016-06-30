@@ -182,7 +182,7 @@ TEST_CASE("[ProgressBar]") {
                     REQUIRE(pairs["TextColorBack"].getColor() == sf::Color(40, 50, 60));
                     REQUIRE(pairs["TextColorFront"].getColor() == sf::Color(50, 60, 70));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(60, 70, 80));
-                    REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
                 }
             }
 
@@ -191,7 +191,7 @@ TEST_CASE("[ProgressBar]") {
             REQUIRE(renderer->getProperty("TextColorBack").getColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("TextColorFront").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         }
 
         SECTION("textured") {

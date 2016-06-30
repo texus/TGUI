@@ -27,8 +27,7 @@
 #define TGUI_OBJECT_CONVERTER_HPP
 
 
-#include <TGUI/Color.hpp>
-#include <TGUI/Borders.hpp>
+#include <TGUI/Outline.hpp>
 #include <TGUI/Texture.hpp>
 #include <cassert>
 
@@ -50,7 +49,7 @@ namespace tgui
             Color,
             String,
             Number,
-            Borders,
+            Outline,
             Texture
         };
 
@@ -119,14 +118,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a borders object for later retrieval
+        /// @brief Stores a outline object for later retrieval
         ///
-        /// @param borders  Borders to store
+        /// @param outline  Outline to store
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(const Borders& borders) :
-            m_type   {Type::Borders},
-            m_borders{borders}
+        ObjectConverter(const Outline& outline) :
+            m_type   {Type::Outline},
+            m_outline{outline}
         {
         }
 
@@ -176,14 +175,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the saved borders
+        /// @brief Retrieves the saved outline
         ///
-        /// @return The saved borders
+        /// @return The saved outline
         ///
-        /// This function will assert when something other than a borders was saved
+        /// This function will assert when something other than a outline was saved
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const Borders& getBorders();
+        const Outline& getOutline();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +225,7 @@ namespace tgui
         sf::Color  m_color;
         sf::String m_string;
         float      m_number = 0;
-        Borders    m_borders;
+        Outline    m_outline;
         Texture    m_texture;
     };
 

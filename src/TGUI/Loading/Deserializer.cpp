@@ -217,7 +217,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API ObjectConverter deserializeBorders(const std::string& value)
+    TGUI_API ObjectConverter deserializeOutline(const std::string& value)
     {
         std::string str = tgui::trim(value);
 
@@ -230,14 +230,14 @@ namespace tgui
 
             std::vector<std::string> tokens = tgui::split(str, ',');
             if (tokens.size() == 1)
-                return tgui::Borders{tgui::stof(tokens[0])};
+                return tgui::Outline{tgui::stof(tokens[0])};
             else if (tokens.size() == 2)
-                return tgui::Borders{tgui::stof(tokens[0]), tgui::stof(tokens[1])};
+                return tgui::Outline{tgui::stof(tokens[0]), tgui::stof(tokens[1])};
             else if (tokens.size() == 4)
-                return tgui::Borders{tgui::stof(tokens[0]), tgui::stof(tokens[1]), tgui::stof(tokens[2]), tgui::stof(tokens[3])};
+                return tgui::Outline{tgui::stof(tokens[0]), tgui::stof(tokens[1]), tgui::stof(tokens[2]), tgui::stof(tokens[3])};
         }
 
-        throw Exception{"Failed to deserialize borders '" + value + "'."};
+        throw Exception{"Failed to deserialize outlines '" + value + "'."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -345,7 +345,7 @@ namespace tgui
             {ObjectConverter::Type::Color, deserializeColor},
             {ObjectConverter::Type::String, deserializeString},
             {ObjectConverter::Type::Number, deserializeNumber},
-            {ObjectConverter::Type::Borders, deserializeBorders},
+            {ObjectConverter::Type::Outline, deserializeOutline},
             {ObjectConverter::Type::Texture, deserializeTexture}
         };
 

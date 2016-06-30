@@ -59,10 +59,10 @@ TEST_CASE("[Serializer]") {
         REQUIRE(tgui::Serializer::serialize(sf::Color::Transparent) == "Transparent");
     }
 
-    SECTION("serialize borders")
+    SECTION("serialize outline")
     {
-        REQUIRE(tgui::Serializer::serialize(tgui::Borders{}) == "(0, 0, 0, 0)");
-        REQUIRE(tgui::Serializer::serialize(tgui::Borders{10, 2, 50, 300}) == "(10, 2, 50, 300)");
+        REQUIRE(tgui::Serializer::serialize(tgui::Outline{}) == "(0, 0, 0, 0)");
+        REQUIRE(tgui::Serializer::serialize(tgui::Outline{10, 2, 50, 300}) == "(10, 2, 50, 300)");
     }
 
     SECTION("serialize texture")
@@ -108,7 +108,7 @@ TEST_CASE("[Serializer]") {
 
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, [](tgui::ObjectConverter&&){ return "STR"; });
         REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "STR");
-        REQUIRE(tgui::Serializer::serialize(tgui::Borders{10, 2, 50, 300}) == "(10, 2, 50, 300)");
+        REQUIRE(tgui::Serializer::serialize(tgui::Outline{10, 2, 50, 300}) == "(10, 2, 50, 300)");
         
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, oldFunc);
         REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "Blue");

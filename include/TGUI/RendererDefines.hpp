@@ -29,24 +29,24 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_GET_BORDERS(CLASS, NAME, DEFAULT) \
-    Borders CLASS::get##NAME() const \
+#define TGUI_RENDERER_PROPERTY_GET_OUTLINE(CLASS, NAME, DEFAULT) \
+    Outline CLASS::get##NAME() const \
     { \
         auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
-            return it->second.getBorders(); \
+            return it->second.getOutline(); \
         else \
         { \
             m_data->propertyValuePairs[toLower(#NAME)] = {DEFAULT}; \
-            return m_data->propertyValuePairs[toLower(#NAME)].getBorders(); \
+            return m_data->propertyValuePairs[toLower(#NAME)].getOutline(); \
         } \
     }
 
-#define TGUI_RENDERER_PROPERTY_BORDERS(CLASS, NAME, DEFAULT) \
-    TGUI_RENDERER_PROPERTY_GET_BORDERS(CLASS, NAME, DEFAULT) \
-    void CLASS::set##NAME(const Borders& borders) \
+#define TGUI_RENDERER_PROPERTY_OUTLINE(CLASS, NAME, DEFAULT) \
+    TGUI_RENDERER_PROPERTY_GET_OUTLINE(CLASS, NAME, DEFAULT) \
+    void CLASS::set##NAME(const Outline& outline) \
     { \
-        setProperty(toLower(#NAME), {borders}); \
+        setProperty(toLower(#NAME), {outline}); \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,9 +90,31 @@
     TGUI_RENDERER_PROPERTY_GET_NUMBER(CLASS, NAME, DEFAULT) \
     void CLASS::set##NAME(float number) \
     { \
-        setProperty(toLower(#NAME), {number}); \
+        setProperty(toLower(#NAME), ObjectConverter{number}); \
     }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+#define TGUI_RENDERER_PROPERTY_GET_STRING(CLASS, NAME, DEFAULT) \
+    const sf::String& CLASS::get##NAME() const \
+    { \
+        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        if (it != m_data->propertyValuePairs.end()) \
+            return it->second.getString(); \
+        else \
+        { \
+            m_data->propertyValuePairs[toLower(#NAME)] = {DEFAULT}; \
+            return m_data->propertyValuePairs[toLower(#NAME)].getString(); \
+        } \
+    }
+
+#define TGUI_RENDERER_PROPERTY_STRING(CLASS, NAME, DEFAULT) \
+    TGUI_RENDERER_PROPERTY_GET_STRING(CLASS, NAME, DEFAULT) \
+    void CLASS::set##NAME(const sf::String& string) \
+    { \
+        setProperty(toLower(#NAME), {string}); \
+    }
+*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define TGUI_RENDERER_PROPERTY_GET_TEXTURE(CLASS, NAME) \

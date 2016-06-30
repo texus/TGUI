@@ -29,8 +29,8 @@
 #include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/CheckBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>*/
+#include <TGUI/Widgets/EditBox.hpp>/**
 #include <TGUI/Widgets/Knob.hpp>*/
 #include <TGUI/Widgets/Label.hpp>/**
 #include <TGUI/Widgets/ListBox.hpp>*/
@@ -396,7 +396,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+*/
     TGUI_API Widget::Ptr loadEditBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         EditBox::Ptr editBox;
@@ -417,8 +417,6 @@ namespace tgui
             editBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
         if (node->propertyValuePairs["textwidthlimited"])
             editBox->limitTextWidth(parseBoolean(node->propertyValuePairs["textwidthlimited"]->value));
-        if (node->propertyValuePairs["caretwidth"])
-            editBox->setCaretWidth(tgui::stof(node->propertyValuePairs["caretwidth"]->value));
         if (node->propertyValuePairs["passwordcharacter"])
         {
             std::string pass = DESERIALIZE_STRING("passwordcharacter");
@@ -450,7 +448,7 @@ namespace tgui
 
         return editBox;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadKnob(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -492,22 +490,9 @@ namespace tgui
 
         if (node->propertyValuePairs["textstyle"])
         {
-            sf::Uint32 style = sf::Text::Regular;
-            std::vector<std::string> styles = tgui::split(node->propertyValuePairs["textstyle"]->value, '|');
-            for (auto& elem : styles)
-            {
-                std::string requestedStyle = toLower(trim(elem));
-                if (requestedStyle == "bold")
-                    style |= sf::Text::Bold;
-                else if (requestedStyle == "italic")
-                    style |= sf::Text::Italic;
-                else if (requestedStyle == "underlined")
-                    style |= sf::Text::Underlined;
-                else if (requestedStyle == "strikethrough")
-                    style |= sf::Text::StrikeThrough;
-                else if (requestedStyle != "regular")
-                    throw Exception{"Failed to parse TextStyle property, found unknown style."};
-            }
+            sf::Uint32 style = decodeTextStyle(node->propertyValuePairs["textstyle"]->value);
+            if (style == sf::Text::Regular && toLower(node->propertyValuePairs["textstyle"]->value) != "regular")
+                throw Exception{"Failed to parse TextStyle property, found unknown style '" + node->propertyValuePairs["textstyle"]->value + "'."};
 
             label->setTextStyle(style);
         }
@@ -858,8 +843,8 @@ namespace tgui
             {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},
             {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},*/
             {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},/**
-            {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},
-            {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},
+            {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},*/
+            {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},/**
             {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},
             {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},*/
             {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},

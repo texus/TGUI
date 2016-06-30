@@ -23,7 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/TGUI.hpp>
+#include <TGUI/Gui.hpp>
+#include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
 
 TEST_CASE("[Widget]")
 {
@@ -151,6 +154,80 @@ TEST_CASE("[Widget]")
 
         widget->getRenderer()->setOpacity(-2.f);
         REQUIRE(widget->getRenderer()->getOpacity() == 0.f);
+
+        auto pairs = widget->getRenderer()->getPropertyValuePairs();
+        REQUIRE(pairs["opacity"].getNumber() == widget->getRenderer()->getOpacity());
+    }
+
+    SECTION("Layouts") {
+        auto container = std::make_shared<tgui::Panel>();
+        auto widget2 = std::make_shared<tgui::ClickableWidget>();
+        container->add(widget);
+        container->add(widget2, "w2");
+
+        widget2->setPosition(100, 50);
+        widget2->setSize(600, 150);
+
+        widget->setPosition(20, 10);
+        widget->setSize(100, 30);
+
+        SECTION("Position") {
+            REQUIRE(widget->getPosition() == sf::Vector2f(20, 10));
+
+            widget->setPosition(tgui::bindLeft(widget2), {"w2.y"});
+            REQUIRE(widget->getPosition() == sf::Vector2f(100, 50));
+
+            widget2->setPosition(50, 30);
+            REQUIRE(widget->getPosition() == sf::Vector2f(50, 30));
+
+            // String layout only works after adding widget to parent
+            auto widget3 = widget->clone();
+            REQUIRE(widget3->getPosition() == sf::Vector2f(50, 0));
+            container->add(widget3);
+            REQUIRE(widget3->getPosition() == sf::Vector2f(50, 30));
+
+            // Layout can only be copied when it is a string
+            widget2->setPosition(20, 40);
+            REQUIRE(widget3->getPosition() == sf::Vector2f(50, 40));
+
+            // String is re-evaluated and new widgets are bound after copying
+            widget->setPosition({"{width, height}"});
+            REQUIRE(widget->getPosition() == sf::Vector2f(100, 30));
+            auto widget4 = widget->clone();
+            widget->setSize(40, 50);
+            REQUIRE(widget4->getPosition() == sf::Vector2f(100, 30));
+            widget4->setSize(60, 70);
+            REQUIRE(widget4->getPosition() == sf::Vector2f(60, 70));
+        }
+
+        SECTION("Size") {
+            REQUIRE(widget->getSize() == sf::Vector2f(100, 30));
+
+            widget->setSize({"w2.width"}, tgui::bindHeight(widget2));
+            REQUIRE(widget->getSize() == sf::Vector2f(600, 150));
+
+            widget2->setSize(50, 30);
+            REQUIRE(widget->getSize() == sf::Vector2f(50, 30));
+
+            // String layout only works after adding widget to parent
+            auto widget3 = widget->clone();
+            REQUIRE(widget3->getSize() == sf::Vector2f(0, 30));
+            container->add(widget3);
+            REQUIRE(widget3->getSize() == sf::Vector2f(50, 30));
+
+            // Layout can only be copied when it is a string
+            widget2->setSize(20, 40);
+            REQUIRE(widget3->getSize() == sf::Vector2f(20, 30));
+
+            // String is re-evaluated and new widgets are bound after copying
+            widget->setSize({"position"});
+            REQUIRE(widget->getSize() == sf::Vector2f(20, 10));
+            auto widget4 = widget->clone();
+            widget->setPosition(40, 50);
+            REQUIRE(widget4->getSize() == sf::Vector2f(20, 10));
+            widget4->setPosition(60, 70);
+            REQUIRE(widget4->getSize() == sf::Vector2f(60, 70));
+        }
     }
 
     SECTION("Saving and loading widget with layouts from file")
@@ -261,9 +338,11 @@ TEST_CASE("[Widget]")
             REQUIRE(widget->getSize() == sf::Vector2f(800, 600));
         }
     }
-/**
-    SECTION("Bug Fixes") {
-        SECTION("Disabled widgets should not be focusable (https://forum.tgui.eu/index.php?topic=384)") {
+
+    SECTION("Bug Fixes")
+    {
+        SECTION("Disabled widgets should not be focusable (https://forum.tgui.eu/index.php?topic=384)")
+        {
             tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
             tgui::EditBox::Ptr editBox = std::make_shared<tgui::EditBox>();
             panel->add(editBox);
@@ -278,5 +357,4 @@ TEST_CASE("[Widget]")
             REQUIRE(!editBox->isFocused());
         }
     }
-*/
 }

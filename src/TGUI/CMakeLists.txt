@@ -2,7 +2,6 @@ set(TGUI_SRC
     Animation.cpp
     #BoxLayout.cpp
     Clipboard.cpp
-    Color.cpp
     Container.cpp
     Font.cpp
     Global.cpp
@@ -31,7 +30,7 @@ set(TGUI_SRC
     #Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
     #Widgets/ComboBox.cpp
-    #Widgets/EditBox.cpp
+    Widgets/EditBox.cpp
     #Widgets/Grid.cpp
     #Widgets/Knob.cpp
     Widgets/Label.cpp

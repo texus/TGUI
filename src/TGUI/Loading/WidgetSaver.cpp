@@ -28,8 +28,8 @@
 #include <TGUI/Widgets/Button.hpp>/**
 #include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>*/
+#include <TGUI/Widgets/EditBox.hpp>/**
 #include <TGUI/Widgets/Knob.hpp>*/
 #include <TGUI/Widgets/Label.hpp>/**
 #include <TGUI/Widgets/ListBox.hpp>*/
@@ -96,7 +96,13 @@ namespace tgui
         if (widget->getPosition() != sf::Vector2f{})
             SET_PROPERTY("Position", emitLayout(widget->getPositionLayout()));
         if (widget->getSize() != sf::Vector2f{})
-            SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
+        {
+            /// TODO: Fix Grid and Tab to no longer override the getSize function
+            if (widget->getSize() != widget->getSizeLayout().getValue())
+                SET_PROPERTY("Size", emitLayout({widget->getSize()}));
+            else
+                SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
+        }
 
         /// TODO: Font and ToolTip
 
@@ -233,7 +239,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+*/
     TGUI_API std::shared_ptr<DataIO::Node> saveEditBox(EditBox::Ptr editBox)
     {
         auto node = saveWidget(editBox);
@@ -269,11 +275,10 @@ namespace tgui
         if (editBox->isTextWidthLimited())
             SET_PROPERTY("TextWidthLimited", "true");
 
-        SET_PROPERTY("CaretWidth", tgui::to_string((int)editBox->getCaretWidth()));
         SET_PROPERTY("TextSize", tgui::to_string(editBox->getTextSize()));
         return node;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveKnob(Knob::Ptr knob)
@@ -299,21 +304,9 @@ namespace tgui
     {
         auto node = saveWidget(label);
 
-        if (label->getTextStyle() != sf::Text::Regular)
-        {
-            std::string style;
-            if (label->getTextStyle() & sf::Text::Bold)
-                style += " | Bold";
-            if (label->getTextStyle() & sf::Text::Italic)
-                style += " | Italic";
-            if (label->getTextStyle() & sf::Text::Underlined)
-                style += " | Underlined";
-            if (label->getTextStyle() & sf::Text::StrikeThrough)
-                style += " | StrikeThrough";
-
-            if (!style.empty())
-                SET_PROPERTY("TextStyle", style.substr(3));
-        }
+        std::string style = encodeTextStyle(label->getTextStyle());
+        if (style != "Regular")
+            SET_PROPERTY("TextStyle", style);
 
         if (label->getHorizontalAlignment() == Label::HorizontalAlignment::Center)
             SET_PROPERTY("HorizontalAlignment", "Center");
@@ -380,7 +373,7 @@ namespace tgui
     {
         auto node = saveWidget(picture);
 
-        if (!picture->getLoadedFilename().empty())
+        if (!picture->getLoadedFilename().isEmpty())
             SET_PROPERTY("Filename", Serializer::serialize(sf::String{picture->getLoadedFilename()}));
         if (picture->isSmooth())
             SET_PROPERTY("Smooth", "true");
@@ -544,8 +537,8 @@ namespace tgui
             {"checkbox", saveRadioButton},*/
             {"clickablewidget", saveWidget},/**
             {"childwindow", saveChildWindow},
-            {"combobox", saveComboBox},
-            {"editbox", saveEditBox},
+            {"combobox", saveComboBox},*/
+            {"editbox", saveEditBox},/**
             {"knob", saveKnob},*/
             {"label", saveLabel},/**
             {"listbox", saveListBox},*/

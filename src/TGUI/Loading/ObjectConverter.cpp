@@ -47,8 +47,8 @@ namespace tgui
             m_string = Serializer::serialize(m_color);
         else if (m_type == Type::Number)
             m_string = Serializer::serialize(m_number);
-        else if (m_type == Type::Borders)
-            m_string = Serializer::serialize(m_borders);
+        else if (m_type == Type::Outline)
+            m_string = Serializer::serialize(m_outline);
         else if (m_type == Type::Texture)
             m_string = Serializer::serialize(m_texture);
 
@@ -103,17 +103,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const Borders& ObjectConverter::getBorders()
+    const Outline& ObjectConverter::getOutline()
     {
-        assert(m_type == Type::Borders || m_type == Type::String);
+        assert(m_type == Type::Outline || m_type == Type::String);
 
         if (m_type == Type::String)
         {
-            m_borders = Deserializer::deserialize(ObjectConverter::Type::Borders, m_string).getBorders();
-            m_type = Type::Borders;
+            m_outline = Deserializer::deserialize(ObjectConverter::Type::Outline, m_string).getOutline();
+            m_type = Type::Outline;
         }
 
-        return m_borders;
+        return m_outline;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -98,9 +98,14 @@ namespace tgui
     int stoi(const std::string& value)
     {
         int result = 0;
+
         std::istringstream iss(value);
         iss.imbue(std::locale::classic());
         iss >> result;
+
+        if (iss.fail())
+            result = 0;
+
         return result;
     }
 
@@ -109,9 +114,14 @@ namespace tgui
     float stof(const std::string& value)
     {
         float result = 0;
+
         std::istringstream iss(value);
         iss.imbue(std::locale::classic());
         iss >> result;
+
+        if (iss.fail())
+            result = 0;
+
         return result;
     }
 
@@ -146,8 +156,8 @@ namespace tgui
 
     std::string toLower(std::string str)
     {
-        for (std::string::iterator i = str.begin(); i != str.end(); ++i)
-            *i = static_cast<char>(std::tolower(*i));
+        for (auto& c : str)
+            c = static_cast<char>(std::tolower(c));
 
         return str;
     }
@@ -190,7 +200,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float getTextVerticalCorrection(std::shared_ptr<sf::Font> font, unsigned int characterSize, sf::Uint32 style)
+    float getTextVerticalCorrection(const std::shared_ptr<sf::Font>& font, unsigned int characterSize, sf::Uint32 style)
     {
         if (!font)
             return 0;
@@ -211,7 +221,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int findBestTextSize(std::shared_ptr<sf::Font> font, float height, int fit)
+    unsigned int findBestTextSize(const std::shared_ptr<sf::Font>& font, float height, int fit)
     {
         if (!font)
             return 0;
@@ -245,6 +255,54 @@ namespace tgui
             else
                 return *high;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::string encodeTextStyle(sf::Uint32 style)
+    {
+        if (style == sf::Text::Regular)
+            return "Regular";
+
+        std::string encodedStyle;
+        if (style & sf::Text::Bold)
+            encodedStyle += " | Bold";
+        if (style & sf::Text::Italic)
+            encodedStyle += " | Italic";
+        if (style & sf::Text::Underlined)
+            encodedStyle += " | Underlined";
+        if (style & sf::Text::StrikeThrough)
+            encodedStyle += " | StrikeThrough";
+
+        if (!encodedStyle.empty())
+            return encodedStyle.substr(3);
+        else // Something is wrong with the style parameter
+            return "Regular";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Uint32 decodeTextStyle(const std::string& style)
+    {
+        if (toLower(style) == "regular")
+            return sf::Text::Regular;
+
+        sf::Uint32 decodedStyle = sf::Text::Regular;
+        std::vector<std::string> styles = tgui::split(style, '|');
+        for (auto& elem : styles)
+        {
+            std::string requestedStyle = toLower(trim(elem));
+            if (requestedStyle == "bold")
+                decodedStyle |= sf::Text::Bold;
+            else if (requestedStyle == "italic")
+                decodedStyle |= sf::Text::Italic;
+            else if (requestedStyle == "underlined")
+                decodedStyle |= sf::Text::Underlined;
+            else if (requestedStyle == "strikethrough")
+                decodedStyle |= sf::Text::StrikeThrough;
+        }
+
+        return decodedStyle;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

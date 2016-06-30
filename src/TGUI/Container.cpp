@@ -373,7 +373,7 @@ namespace tgui
         // Loop through all radio buttons and uncheck them
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            if (m_widgets[i]->m_callback.widgetType == "RadioButton")
+            if (m_widgets[i]->m_type == "RadioButton")
                 std::static_pointer_cast<RadioButton>(m_widgets[i])->uncheck();
         }
     }
@@ -821,6 +821,10 @@ namespace tgui
         if (!TGUI_TabKeyUsageEnabled)
             return false;
 
+        // If the focused widget is a container then try to focus the next widget inside it
+        if ((m_focusedWidget > 0) && m_widgets[m_focusedWidget-1]->m_containerWidget && std::static_pointer_cast<Container>(m_widgets[m_focusedWidget-1])->focusNextWidgetInContainer())
+            return true;
+
         // Loop through all widgets
         for (std::size_t i = m_focusedWidget; i < m_widgets.size(); ++i)
         {
@@ -981,6 +985,7 @@ namespace tgui
     GuiContainer::GuiContainer()
     {
         m_callback.widgetType = "GuiContainer";
+        m_type = "GuiContainer";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

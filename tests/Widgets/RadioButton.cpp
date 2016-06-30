@@ -201,7 +201,7 @@ TEST_CASE("[RadioButton]") {
                     REQUIRE(pairs["ForegroundColorHover"].getColor() == sf::Color(100, 110, 120));
                     REQUIRE(pairs["CheckColorNormal"].getColor() == sf::Color(110, 120, 130));
                     REQUIRE(pairs["CheckColorHover"].getColor() == sf::Color(120, 130, 140));
-                    REQUIRE(pairs["Padding"].getBorders() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Padding"].getOutline() == tgui::Borders(1, 2, 3, 4));
                 }
             }
 
@@ -213,7 +213,7 @@ TEST_CASE("[RadioButton]") {
             REQUIRE(renderer->getProperty("ForegroundColorHover").getColor() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("CheckColorNormal").getColor() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getProperty("CheckColorHover").getColor() == sf::Color(120, 130, 140));
-            REQUIRE(renderer->getProperty("Padding").getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(1, 2, 3, 4));
         }
 
         SECTION("textured") {

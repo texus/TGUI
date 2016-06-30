@@ -24,8 +24,7 @@
 
 
 #include <TGUI/Widgets/Panel.hpp>
-
-#include <SFML/OpenGL.hpp>
+#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,6 +35,7 @@ namespace tgui
     Panel::Panel(const Layout2d& size)
     {
         m_callback.widgetType = "Panel";
+        m_type = "Panel";
 
         addSignal<sf::Vector2f>("MousePressed");
         addSignal<sf::Vector2f>("MouseReleased");
@@ -62,6 +62,13 @@ namespace tgui
             return std::static_pointer_cast<Panel>(panel->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Panel::getChildWidgetsOffset() const
+    {
+        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +117,7 @@ namespace tgui
 
     void Panel::rendererChanged(const std::string& property, ObjectConverter&& value)
     {
-        if (property != "backgroundcolor")
+        if ((property != "borders") && (property != "bordercolor") && (property != "backgroundcolor"))
             Container::rendererChanged(property, std::move(value));
     }
 
@@ -118,58 +125,40 @@ namespace tgui
 
     void Panel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        const sf::View& view = target.getView();
-
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / view.getSize().x;
-        float scaleViewY = target.getSize().y / view.getSize().y;
-
-        // Get the global position
-        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                        ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                            (getAbsolutePosition().y + getSize().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
-
-        // Get the old clipping area
-        GLint scissor[4];
-        glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-        // Calculate the clipping area
-        GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-        GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-        if (scissorRight < scissorLeft)
-            scissorRight = scissorLeft;
-        else if (scissorBottom < scissorTop)
-            scissorTop = scissorBottom;
-
-        // Set the clipping area
-        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
-        // Set the position
         states.transform.translate(getPosition());
+
+        // Draw the borders
+        Borders borders = getRenderer()->getBorders();
+        if (borders != Borders{0})
+        {
+            drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColor());
+
+            // Don't try to draw the text when there is no space left for it
+            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
+                return;
+        }
+
+        // Set the clipping for all draw calls that happen until this clipping object goes out of scope
+        Clipping clipping{target,
+                          {getAbsolutePosition().x + borders.left, getAbsolutePosition().y + borders.top},
+                          {getAbsolutePosition().x + getSize().x - borders.right, getAbsolutePosition().y + getSize().y - borders.bottom}
+                         };
 
         // Draw the background
         if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-        {
-            sf::RectangleShape background(getSize());
-            background.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
-            target.draw(background, states);
-        }
+            drawRectangleShape(target, states, {0,0}, getSize(), getRenderer()->getBackgroundColor());
 
-        // Draw the widgets
+        // Draw the child widgets
+        states.transform.translate({borders.left, borders.top});
         drawWidgetContainer(&target, states);
-
-        // Reset the old clipping area
-        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BackgroundColor, Color(220, 220, 220))
+    TGUI_RENDERER_PROPERTY_OUTLINE(PanelRenderer, Borders, Borders(0))
+    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BorderColor, Color(220, 220, 220))
+    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BackgroundColor, sf::Color::Transparent)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

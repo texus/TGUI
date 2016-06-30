@@ -170,7 +170,7 @@ TEST_CASE("[SpinButton]") {
                     REQUIRE(pairs["ArrowColorNormal"].getColor() == sf::Color(50, 60, 70));
                     REQUIRE(pairs["ArrowColorHover"].getColor() == sf::Color(60, 70, 80));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
                     REQUIRE(pairs["SpaceBetweenArrows"].getNumber() == 2);
                 }
             }
@@ -180,7 +180,7 @@ TEST_CASE("[SpinButton]") {
             REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("SpaceBetweenArrows").getNumber() == 2);
         }
 

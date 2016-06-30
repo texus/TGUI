@@ -33,6 +33,7 @@ namespace tgui
 
     Picture::Picture()
     {
+        m_type = "Picture";
         m_callback.widgetType = "Picture";
 
         addSignal("DoubleClicked");
@@ -40,19 +41,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture(const std::string& filename, bool fullyClickable) :
+    Picture::Picture(const sf::String& filename, bool fullyClickable) :
         Picture{}
     {
         setTexture(filename, fullyClickable);
-        setSize(m_texture.getImageSize());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Picture::Picture(const sf::Texture& texture) :
-        Picture{}
-    {
-        setTexture(texture);
         setSize(m_texture.getImageSize());
     }
 
@@ -67,7 +59,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setTexture(const std::string& filename, bool fullyClickable)
+    void Picture::setTexture(const sf::String& filename, bool fullyClickable)
     {
         m_fullyClickable = fullyClickable;
         m_loadedFilename = getResourcePath() + filename;
@@ -82,16 +74,6 @@ namespace tgui
     {
         m_fullyClickable = fullyClickable;
         m_texture = texture;
-        m_texture.setSize(getSize());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Picture::setTexture(const sf::Texture& texture)
-    {
-        auto data = std::make_shared<TextureData>();
-        data->texture = texture;
-        m_texture.setTexture(data);
         m_texture.setSize(getSize());
     }
 
@@ -179,7 +161,7 @@ namespace tgui
     void Picture::rendererChanged(const std::string& property, ObjectConverter&& value)
     {
         if (property == "opacity")
-            m_texture.setColor({255, 255, 255, static_cast<sf::Uint8>(value.getNumber() * 255)});
+            m_texture.setOpacity(value.getNumber());
         else
             Widget::rendererChanged(property, std::move(value));
     }
@@ -202,7 +184,7 @@ namespace tgui
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        target.draw(m_texture, states);
+        m_texture.draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

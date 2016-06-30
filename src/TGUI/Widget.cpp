@@ -72,7 +72,7 @@ namespace tgui
         addSignal("MouseEntered");
         addSignal("MouseLeft");
 
-        m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
+        m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,24 +95,37 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget(const Widget& other) :
-        sf::Drawable     {other},
-        Transformable    {other},
-        SignalWidgetBase {other},
+        sf::Drawable                   {other},
+        Transformable                  {other},
+        SignalWidgetBase               {other},
         enable_shared_from_this<Widget>{other},
-        m_enabled        {other.m_enabled},
-        m_visible        {other.m_visible},
-        m_parent         {other.m_parent},
-        m_allowFocus     {other.m_allowFocus},
-        m_draggableWidget{other.m_draggableWidget},
-        m_containerWidget{other.m_containerWidget},
-        m_toolTip        {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
-        m_font           {other.m_font},
-        m_renderer       {other.m_renderer}
+        m_type                         {other.m_type},
+        m_enabled                      {other.m_enabled},
+        m_visible                      {other.m_visible},
+        m_parent                       {nullptr},
+        m_allowFocus                   {other.m_allowFocus},
+        m_draggableWidget              {other.m_draggableWidget},
+        m_containerWidget              {other.m_containerWidget},
+        m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
+        m_font                         {other.m_font},
+        m_renderer                     {other.m_renderer}
     {
         m_callback.widget = this;
 
+        m_position.x.getImpl()->parentWidget = this;
+        m_position.x.getImpl()->recalculate();
+
+        m_position.y.getImpl()->parentWidget = this;
+        m_position.y.getImpl()->recalculate();
+
+        m_size.x.getImpl()->parentWidget = this;
+        m_size.x.getImpl()->recalculate();
+
+        m_size.y.getImpl()->parentWidget = this;
+        m_size.y.getImpl()->recalculate();
+
         if (m_renderer)
-            m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
+            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,9 +135,10 @@ namespace tgui
         Transformable                  {std::move(other)},
         SignalWidgetBase               {std::move(other)},
         enable_shared_from_this<Widget>{std::move(other)},
+        m_type                         {std::move(other.m_type)},
         m_enabled                      {std::move(other.m_enabled)},
         m_visible                      {std::move(other.m_visible)},
-        m_parent                       {std::move(other.m_parent)},
+        m_parent                       {nullptr},
         m_mouseHover                   {std::move(other.m_mouseHover)},
         m_mouseDown                    {std::move(other.m_mouseDown)},
         m_focused                      {std::move(other.m_focused)},
@@ -139,10 +153,22 @@ namespace tgui
     {
         m_callback.widget = this;
 
+        m_position.x.getImpl()->parentWidget = this;
+        m_position.x.getImpl()->recalculate();
+
+        m_position.y.getImpl()->parentWidget = this;
+        m_position.y.getImpl()->recalculate();
+
+        m_size.x.getImpl()->parentWidget = this;
+        m_size.x.getImpl()->recalculate();
+
+        m_size.y.getImpl()->parentWidget = this;
+        m_size.y.getImpl()->recalculate();
+
         if (m_renderer)
         {
             other.m_renderer->unsubscribe(&other);
-            m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
+            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
         }
     }
 
@@ -160,24 +186,37 @@ namespace tgui
             SignalWidgetBase::operator=(other);
             enable_shared_from_this::operator=(other);
 
-            m_callback.widget           = this;
-            m_enabled                   = other.m_enabled;
-            m_visible                   = other.m_visible;
-            m_parent                    = other.m_parent;
-            m_mouseHover                = false;
-            m_mouseDown                 = false;
-            m_focused                   = false;
-            m_allowFocus                = other.m_allowFocus;
-            m_animationTimeElapsed      = {};
-            m_draggableWidget           = other.m_draggableWidget;
-            m_containerWidget           = other.m_containerWidget;
-            m_toolTip                   = other.m_toolTip ? other.m_toolTip->clone() : nullptr;
-            m_font                      = other.m_font;
-            m_renderer                  = other.m_renderer;
-            m_showAnimations            = {};
+            m_callback.widget      = this;
+            m_type                 = other.m_type;
+            m_enabled              = other.m_enabled;
+            m_visible              = other.m_visible;
+            m_parent               = nullptr;
+            m_mouseHover           = false;
+            m_mouseDown            = false;
+            m_focused              = false;
+            m_allowFocus           = other.m_allowFocus;
+            m_animationTimeElapsed = {};
+            m_draggableWidget      = other.m_draggableWidget;
+            m_containerWidget      = other.m_containerWidget;
+            m_toolTip              = other.m_toolTip ? other.m_toolTip->clone() : nullptr;
+            m_font                 = other.m_font;
+            m_renderer             = other.m_renderer;
+            m_showAnimations       = {};
+
+            m_position.x.getImpl()->parentWidget = this;
+            m_position.x.getImpl()->recalculate();
+
+            m_position.y.getImpl()->parentWidget = this;
+            m_position.y.getImpl()->recalculate();
+
+            m_size.x.getImpl()->parentWidget = this;
+            m_size.x.getImpl()->recalculate();
+
+            m_size.y.getImpl()->parentWidget = this;
+            m_size.y.getImpl()->recalculate();
 
             if (m_renderer)
-                m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
+                m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
         }
 
         return *this;
@@ -199,24 +238,37 @@ namespace tgui
             SignalWidgetBase::operator=(std::move(other));
             enable_shared_from_this::operator=(std::move(other));
 
-            m_callback.widget           = this;
-            m_enabled                   = std::move(other.m_enabled);
-            m_visible                   = std::move(other.m_visible);
-            m_parent                    = std::move(other.m_parent);
-            m_mouseHover                = std::move(other.m_mouseHover);
-            m_mouseDown                 = std::move(other.m_mouseDown);
-            m_focused                   = std::move(other.m_focused);
-            m_animationTimeElapsed      = std::move(other.m_animationTimeElapsed);
-            m_allowFocus                = std::move(other.m_allowFocus);
-            m_draggableWidget           = std::move(other.m_draggableWidget);
-            m_containerWidget           = std::move(other.m_containerWidget);
-            m_toolTip                   = std::move(other.m_toolTip);
-            m_font                      = std::move(other.m_font);
-            m_renderer                  = std::move(other.m_renderer);
-            m_showAnimations            = std::move(other.m_showAnimations);
+            m_callback.widget      = this;
+            m_type                 = std::move(other.m_type);
+            m_enabled              = std::move(other.m_enabled);
+            m_visible              = std::move(other.m_visible);
+            m_parent               = nullptr;
+            m_mouseHover           = std::move(other.m_mouseHover);
+            m_mouseDown            = std::move(other.m_mouseDown);
+            m_focused              = std::move(other.m_focused);
+            m_animationTimeElapsed = std::move(other.m_animationTimeElapsed);
+            m_allowFocus           = std::move(other.m_allowFocus);
+            m_draggableWidget      = std::move(other.m_draggableWidget);
+            m_containerWidget      = std::move(other.m_containerWidget);
+            m_toolTip              = std::move(other.m_toolTip);
+            m_font                 = std::move(other.m_font);
+            m_renderer             = std::move(other.m_renderer);
+            m_showAnimations       = std::move(other.m_showAnimations);
+
+            m_position.x.getImpl()->parentWidget = this;
+            m_position.x.getImpl()->recalculate();
+
+            m_position.y.getImpl()->parentWidget = this;
+            m_position.y.getImpl()->recalculate();
+
+            m_size.x.getImpl()->parentWidget = this;
+            m_size.x.getImpl()->recalculate();
+
+            m_size.y.getImpl()->parentWidget = this;
+            m_size.y.getImpl()->recalculate();
 
             if (m_renderer)
-                m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
+                m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
         }
 
         return *this;
@@ -232,7 +284,7 @@ namespace tgui
         m_renderer->m_data = rendererData;
 
         if (m_renderer)
-            m_renderer->subscribe(this, std::bind(&Widget::rendererChangedCallback, this, std::placeholders::_1, std::placeholders::_2));
+            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
 
         for (auto& pair : rendererData->propertyValuePairs)
             rendererChanged(pair.first, ObjectConverter{pair.second});
@@ -270,8 +322,6 @@ namespace tgui
 
     void Widget::setSize(const Layout2d& size)
     {
-        m_sizeDefined = true;
-
         if (size.x.getImpl()->parentWidget != this)
         {
             size.x.getImpl()->parentWidget = this;
@@ -470,7 +520,7 @@ namespace tgui
 
     const std::string& Widget::getWidgetType() const
     {
-        return m_callback.widgetType;
+        return m_type;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -667,11 +717,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::drawBorders(sf::RenderTarget& target, const sf::RenderStates& states, const Borders& borders,
-                             const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color) const
+    void Widget::drawRectangleShape(sf::RenderTarget& target,
+                                    const sf::RenderStates& states,
+                                    sf::Vector2f position,
+                                    sf::Vector2f size,
+                                    sf::Color color) const
+    {
+        sf::RectangleShape shape{size};
+        shape.setPosition(position);
+
+        if (getRenderer()->getOpacity() < 1)
+            shape.setFillColor(calcColorOpacity(color, getRenderer()->getOpacity()));
+        else
+            shape.setFillColor(color);
+
+        target.draw(shape, states);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::drawBorders(sf::RenderTarget& target,
+                             sf::RenderStates states,
+                             const Borders& borders,
+                             sf::Vector2f position,
+                             sf::Vector2f size,
+                             sf::Color color) const
     {
         sf::RectangleShape border;
-        border.setFillColor(color);
+        border.setFillColor(calcColorOpacity(color, getRenderer()->getOpacity()));
 
         // If size is too small then draw entire size as border
         if ((size.x <= borders.left + borders.right) || (size.y <= borders.top + borders.bottom))

@@ -27,25 +27,23 @@
 #include <TGUI/Texture.hpp>
 
 TEST_CASE("[TextureManager]") {
-    tgui::TextureManager textureManager;
-        
     std::streambuf *oldbuf = sf::err().rdbuf(0);
     tgui::Texture texture;
-    REQUIRE(!textureManager.getTexture(texture, "NonExistent.png"));
+    REQUIRE(!tgui::TextureManager::getTexture(texture, "NonExistent.png"));
     sf::err().rdbuf(oldbuf);
 
     tgui::Texture texture1;
     tgui::Texture texture2;
-    REQUIRE(textureManager.getTexture(texture1, "resources/image.png"));
-    REQUIRE(textureManager.getTexture(texture2, "resources/image.png"));
+    REQUIRE(tgui::TextureManager::getTexture(texture1, "resources/image.png"));
+    REQUIRE(tgui::TextureManager::getTexture(texture2, "resources/image.png"));
     REQUIRE(texture1.getData() == texture2.getData());
 
-    REQUIRE_THROWS_AS(textureManager.copyTexture(std::make_shared<tgui::TextureData>()), tgui::Exception);
-    REQUIRE_NOTHROW(textureManager.copyTexture(texture1.getData()));
+    REQUIRE_THROWS_AS(tgui::TextureManager::copyTexture(std::make_shared<tgui::TextureData>()), tgui::Exception);
+    REQUIRE_NOTHROW(tgui::TextureManager::copyTexture(texture1.getData()));
 
-    REQUIRE_THROWS_AS(textureManager.removeTexture(std::make_shared<tgui::TextureData>()), tgui::Exception);
-    REQUIRE_NOTHROW(textureManager.removeTexture(texture1.getData()));
-    REQUIRE_NOTHROW(textureManager.removeTexture(texture1.getData()));
-    REQUIRE_NOTHROW(textureManager.removeTexture(texture1.getData()));
-    REQUIRE_THROWS_AS(textureManager.removeTexture(texture1.getData()), tgui::Exception);
+    REQUIRE_THROWS_AS(tgui::TextureManager::removeTexture(std::make_shared<tgui::TextureData>()), tgui::Exception);
+    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(texture1.getData()));
+    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(texture1.getData()));
+    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(texture1.getData()));
+    REQUIRE_THROWS_AS(tgui::TextureManager::removeTexture(texture1.getData()), tgui::Exception);
 }

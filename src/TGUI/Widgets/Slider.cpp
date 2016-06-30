@@ -645,6 +645,11 @@ namespace tgui
         {
             m_textureTrackNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
 
+            if (m_textureTrackNormal.getImageSize().x < m_textureTrackNormal.getImageSize().y)
+                m_slider->m_verticalImage = true;
+            else
+                m_slider->m_verticalImage = false;
+
             if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
                 m_slider->updateSize();
         }

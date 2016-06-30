@@ -220,22 +220,25 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Hides the widget
         ///
-        /// The widget won't receive events nor will it be drawn when hidden. The widget is visible by default.
+        /// The widget won't receive events (and thus won't send callbacks) nor will it be drawn when hidden.
+        /// The widget is visible by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void hide();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Shows the widget by introducing it with an animation
+        /// @brief Hides the widget by making it leave with an animation
         ///
-        /// If the widget is already hidden then the animation will still play but you will not see it until you show the widget.
+        /// If the widget is already hidden then the animation will still play but you will not see it.
         ///
         /// During the animation the position, size and/or opacity may change. Once the animation is done the widget will
-        /// be back in the state in which it was when this function was called.
+        /// be back in the state in which it was when this function was called, except that it will no longer be visible.
         ///
         /// @param type     Type of the animation
         /// @param duration Duration of the animation
+        ///
+        /// @see showWithEffect
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void hideWithEffect(ShowAnimationType type, sf::Time duration);
@@ -246,8 +249,8 @@ namespace tgui
         ///
         /// @return Is the widget visible?
         ///
-        /// If this function returns false then the widget is hidden, which means that it won't receive events and it won't be drawn.
-        /// All widgets are visible by default.
+        /// If this function returns false then the widget is hidden, which means that it won't receive events (and thus won't
+        /// send callbacks) and it won't be drawn. All widgets are visible by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isVisible() const
@@ -403,7 +406,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
         ///
-        /// This is basically the width and height of the optional borders drawn around widgets.
+        /// The offset is (0,0) for almost all widgets.
         ///
         /// @return Offset of the widget
         ///
@@ -531,15 +534,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draw a shape with the right opacity
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void drawRectangleShape(sf::RenderTarget& target, const sf::RenderStates& states, sf::Vector2f position,
+                                sf::Vector2f size, sf::Color color) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draw the borders around the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawBorders(sf::RenderTarget& target, const sf::RenderStates& states, const Borders& borders,
-                         const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color) const;
+        void drawBorders(sf::RenderTarget& target,
+                         sf::RenderStates states,
+                         const Borders& borders,
+                         sf::Vector2f position,
+                         sf::Vector2f size,
+                         sf::Color color) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Callback function which is called on a renderer change and which calls the virtual rendererChanged function
@@ -548,7 +561,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      protected:
+    protected:
+
+        std::string m_type;
 
         // When a widget is disabled, it will no longer receive events
         bool m_enabled = true;
@@ -589,9 +604,6 @@ namespace tgui
 
         // Show animations
         std::vector<std::shared_ptr<priv::Animation>> m_showAnimations;
-
-        // Keeps track of when setSize is called
-        bool m_sizeDefined = false;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -23,68 +23,68 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "catch.hpp"
-#include <TGUI/Borders.hpp>
+#include <TGUI/Outline.hpp>
 
-TEST_CASE("[Borders]") {
+TEST_CASE("[Outline]") {
     SECTION("Constructors") {
-        auto borders = tgui::Borders();
-        REQUIRE(borders.left == 0);
-        REQUIRE(borders.top == 0);
-        REQUIRE(borders.right == 0);
-        REQUIRE(borders.bottom == 0);
+        auto outline = tgui::Outline();
+        REQUIRE(outline.left == 0);
+        REQUIRE(outline.top == 0);
+        REQUIRE(outline.right == 0);
+        REQUIRE(outline.bottom == 0);
 
-        borders = tgui::Borders(20);
-        REQUIRE(borders.left == 20);
-        REQUIRE(borders.top == 20);
-        REQUIRE(borders.right == 20);
-        REQUIRE(borders.bottom == 20);
+        outline = tgui::Outline(20);
+        REQUIRE(outline.left == 20);
+        REQUIRE(outline.top == 20);
+        REQUIRE(outline.right == 20);
+        REQUIRE(outline.bottom == 20);
 
-        borders = tgui::Borders(10, 5);
-        REQUIRE(borders.left == 10);
-        REQUIRE(borders.top == 5);
-        REQUIRE(borders.right == 10);
-        REQUIRE(borders.bottom == 5);
+        outline = tgui::Outline(10, 5);
+        REQUIRE(outline.left == 10);
+        REQUIRE(outline.top == 5);
+        REQUIRE(outline.right == 10);
+        REQUIRE(outline.bottom == 5);
 
-        borders = tgui::Borders(1, 2, 3, 4);
-        REQUIRE(borders.left == 1);
-        REQUIRE(borders.top == 2);
-        REQUIRE(borders.right == 3);
-        REQUIRE(borders.bottom == 4);
+        outline = tgui::Outline(1, 2, 3, 4);
+        REQUIRE(outline.left == 1);
+        REQUIRE(outline.top == 2);
+        REQUIRE(outline.right == 3);
+        REQUIRE(outline.bottom == 4);
     }
 
     SECTION("Operators") {
-        auto borders0 = tgui::Borders();
-        auto borders1 = tgui::Borders(1, 2, 3, 4);
-        auto borders2 = tgui::Borders(1, 2, 3, 5);
-        auto borders3 = tgui::Borders(6, 7, 8, 9);
-        auto borders4 = tgui::Borders(1, 2, 3, 4);
+        auto outline0 = tgui::Outline();
+        auto outline1 = tgui::Outline(1, 2, 3, 4);
+        auto outline2 = tgui::Outline(1, 2, 3, 5);
+        auto outline3 = tgui::Outline(6, 7, 8, 9);
+        auto outline4 = tgui::Outline(1, 2, 3, 4);
 
         SECTION("==") {
-            REQUIRE(!(borders1 == borders2));
-            REQUIRE(!(borders1 == borders3));
-            REQUIRE(!(borders2 == borders3));
-            REQUIRE(borders1 == borders1);
-            REQUIRE(borders1 == borders4);
-            REQUIRE(borders4 == borders4);
+            REQUIRE(!(outline1 == outline2));
+            REQUIRE(!(outline1 == outline3));
+            REQUIRE(!(outline2 == outline3));
+            REQUIRE(outline1 == outline1);
+            REQUIRE(outline1 == outline4);
+            REQUIRE(outline4 == outline4);
         }
 
         SECTION("!=") {
-            REQUIRE(borders1 != borders2);
-            REQUIRE(borders1 != borders3);
-            REQUIRE(borders2 != borders3);
-            REQUIRE(!(borders1 != borders1));
-            REQUIRE(!(borders1 != borders4));
-            REQUIRE(!(borders4 != borders4));
+            REQUIRE(outline1 != outline2);
+            REQUIRE(outline1 != outline3);
+            REQUIRE(outline2 != outline3);
+            REQUIRE(!(outline1 != outline1));
+            REQUIRE(!(outline1 != outline4));
+            REQUIRE(!(outline4 != outline4));
         }
 
         SECTION("+") {
-            REQUIRE((borders1 + borders3) == tgui::Borders(7, 9, 11, 13));
-            REQUIRE((borders2 + borders0) == borders2);
+            REQUIRE((outline1 + outline3) == tgui::Outline(7, 9, 11, 13));
+            REQUIRE((outline2 + outline0) == outline2);
         }
 
         SECTION("-") {
-            REQUIRE((borders3 - borders1) == tgui::Borders(5, 5, 5, 5));
-            REQUIRE((borders2 - borders0) == borders2);
+            REQUIRE((outline3 - outline1) == tgui::Outline(5, 5, 5, 5));
+            REQUIRE((outline2 - outline0) == outline2);
         }
     }
 }

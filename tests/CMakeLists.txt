@@ -4,12 +4,13 @@ set(TEST_SOURCES
     Borders.cpp
     Clipboard.cpp
     Color.cpp
+    CompareFiles.cpp
     Container.cpp
     Font.cpp
-    FileCompare.cpp
     #HorizontalLayout.cpp
     Layouts.cpp
     Signal.cpp
+    Tests.cpp
     Texture.cpp
     TextureManager.cpp
     #VerticalLayout.cpp
@@ -26,7 +27,7 @@ set(TEST_SOURCES
     #Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
     #Widgets/ComboBox.cpp
-    #Widgets/EditBox.cpp
+    Widgets/EditBox.cpp
     #Widgets/Knob.cpp
     Widgets/Label.cpp
     #Widgets/ListBox.cpp

@@ -707,7 +707,7 @@ namespace tgui
 
         TextBox* m_textBox;
 
-        float m_caretWidth;
+        float m_caretWidth = 1;
 
         Texture   m_backgroundTexture;
 

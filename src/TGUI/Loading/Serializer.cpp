@@ -147,11 +147,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API std::string serializeBorders(ObjectConverter&& value)
+    TGUI_API std::string serializeOutline(ObjectConverter&& value)
     {
-        Borders borders = value.getBorders();
-        return "(" + tgui::to_string(static_cast<unsigned int>(borders.left)) + ", " + tgui::to_string(static_cast<unsigned int>(borders.top))
-             + ", " + tgui::to_string(static_cast<unsigned int>(borders.right)) + ", " + tgui::to_string(static_cast<unsigned int>(borders.bottom)) + ")";
+        Outline outline = value.getOutline();
+        return "(" + tgui::to_string(static_cast<unsigned int>(outline.left)) + ", " + tgui::to_string(static_cast<unsigned int>(outline.top))
+             + ", " + tgui::to_string(static_cast<unsigned int>(outline.right)) + ", " + tgui::to_string(static_cast<unsigned int>(outline.bottom)) + ")";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,7 +192,7 @@ namespace tgui
             {ObjectConverter::Type::Color, serializeColor},
             {ObjectConverter::Type::String, serializeString},
             {ObjectConverter::Type::Number, serializeNumber},
-            {ObjectConverter::Type::Borders, serializeBorders},
+            {ObjectConverter::Type::Outline, serializeOutline},
             {ObjectConverter::Type::Texture, serializeTexture}
         };
 

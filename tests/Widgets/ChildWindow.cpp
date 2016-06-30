@@ -84,7 +84,7 @@ TEST_CASE("[ChildWindow]") {
                     REQUIRE(pairs["TitleColor"].getColor() == sf::Color(40, 50, 60));
                     REQUIRE(pairs["TitleBarColor"].getColor() == sf::Color(70, 80, 90));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(100, 110, 120));
-                    REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
                     REQUIRE(pairs["DistanceToSide"].getNumber() == 2);
                     REQUIRE(pairs["TitleBarHeight"].getNumber() == 25);
                 }
@@ -94,7 +94,7 @@ TEST_CASE("[ChildWindow]") {
             REQUIRE(renderer->getProperty("TitleColor").getColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("TitleBarColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
             REQUIRE(renderer->getProperty("TitleBarHeight").getNumber() == 25);
         }

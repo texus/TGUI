@@ -347,8 +347,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        sf::RectangleShape m_background;
-
         sf::String m_string;
         std::vector<sf::Text> m_lines;
 

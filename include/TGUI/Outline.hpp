@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_BORDERS_HPP
-#define TGUI_BORDERS_HPP
+#ifndef TGUI_OUTLINE_HPP
+#define TGUI_OUTLINE_HPP
 
 #include <TGUI/Config.hpp>
 
@@ -34,14 +34,14 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Borders
+    class TGUI_API Outline
     {
       public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Borders(float size = 0) :
+        Outline(float size = 0) :
             left  (size),
             top   (size),
             right (size),
@@ -51,13 +51,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructor that initializes the borders
+        /// @brief Constructor that initializes the outline
         ///
-        /// @param width   Width of the left and right borders
-        /// @param height  Height of the top and bottom borders
+        /// @param width   Width of the left and right outline
+        /// @param height  Height of the top and bottom outline
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Borders(float width, float height) :
+        Outline(float width, float height) :
             left  (width),
             top   (height),
             right (width),
@@ -67,7 +67,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructor that initializes the borders
+        /// @brief Constructor that initializes the outline
         ///
         /// @param leftBorderWidth    Width of the left border
         /// @param topBorderHeight    Height of the top border
@@ -75,7 +75,7 @@ namespace tgui
         /// @param bottomBorderHeight Height of the bottom border
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Borders(float leftBorderWidth, float topBorderHeight, float rightBorderWidth, float bottomBorderHeight) :
+        Outline(float leftBorderWidth, float topBorderHeight, float rightBorderWidth, float bottomBorderHeight) :
             left  (leftBorderWidth),
             top   (topBorderHeight),
             right (rightBorderWidth),
@@ -85,30 +85,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Compares two borders
+        /// @brief Compares two outlines
         ///
-        /// @param borders  The borders to compare with this instance
+        /// @param outline  The outline to compare with this instance
         ///
-        /// @return Whether the borders are equal or not
+        /// @return Whether the outlines are equal or not
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool operator==(const Borders& borders) const
+        bool operator==(const Outline& outline) const
         {
-            return (left == borders.left) && (top == borders.top) && (right == borders.right) && (bottom == borders.bottom);
+            return (left == outline.left) && (top == outline.top) && (right == outline.right) && (bottom == outline.bottom);
         }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Compares two borders
+        /// @brief Compares two outlines
         ///
-        /// @param borders  The borders to compare with this instance
+        /// @param outline  The outline to compare with this instance
         ///
-        /// @return Whether the borders are equal or not
+        /// @return Whether the outlines are equal or not
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool operator!=(const Borders& borders) const
+        bool operator!=(const Outline& outline) const
         {
-            return !(*this == borders);
+            return !(*this == outline);
         }
 
 
@@ -129,29 +129,30 @@ namespace tgui
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Adds two borders
+    /// @brief Adds two outlines
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    inline Borders operator+(const Borders& left, const Borders& right)
+    inline Outline operator+(const Outline& left, const Outline& right)
     {
         return {left.left + right.left, left.top + right.top, left.right + right.right, left.bottom + right.bottom};
     }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Subtracts two borders
+    /// @brief Subtracts two outlines
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    inline Borders operator-(const Borders& left, const Borders& right)
+    inline Outline operator-(const Outline& left, const Outline& right)
     {
         return {left.left - right.left, left.top - right.top, left.right - right.right, left.bottom - right.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    using Padding = Borders;
+    using Borders = Outline;
+    using Padding = Outline;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_BORDERS_HPP
+#endif // TGUI_OUTLINE_HPP

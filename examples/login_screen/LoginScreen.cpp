@@ -1,3 +1,28 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TGUI - Texus's Graphical User Interface
+// Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 #include <TGUI/TGUI.hpp>
 
 void login(tgui::EditBox::Ptr username, tgui::EditBox::Ptr password)
@@ -28,8 +53,9 @@ void loadWidgets( tgui::Gui& gui )
     editBoxUsername->setDefaultText("Username");
     gui.add(editBoxUsername, "Username");
 
-    // Create the password edit box (we will copy the previously created edit box)
-    tgui::EditBox::Ptr editBoxPassword = tgui::EditBox::copy(editBoxUsername);
+    // Create the password edit box
+    tgui::EditBox::Ptr editBoxPassword = theme->load("EditBox");
+    editBoxPassword->setSize(windowWidth * 2/3, windowHeight / 8);
     editBoxPassword->setPosition(windowWidth / 6, windowHeight * 5/12);
     editBoxPassword->setPasswordCharacter('*');
     editBoxPassword->setDefaultText("Password");
@@ -76,7 +102,7 @@ int main()
             // When the window is resized, the view is changed
             else if (event.type == sf::Event::Resized)
             {
-                window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+                window.setView(sf::View(sf::FloatRect(0, 0, (float)event.size.width, (float)event.size.height)));
                 gui.setView(window.getView());
             }
 

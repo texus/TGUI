@@ -45,7 +45,7 @@ project(tgui)
 
 # project version
 SET( MAJOR_VERSION 0 )
-SET( MINOR_VERSION 7 )
+SET( MINOR_VERSION 8 )
 SET( PATCH_VERSION 0 )
 
 # Disable deprecated warnings from SFML
@@ -107,8 +107,8 @@ if (SFML_OS_ANDROID)
 
     set(CMAKE_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS}")
 
-    # Add the "-std=c++11", "-fexceptions" and "-frtti" flags if they aren't there already
-    tgui_add_cxx_flag(-std=c++11)
+    # Add the "-std=c++1y", "-fexceptions" and "-frtti" flags if they aren't there already
+    tgui_add_cxx_flag(-std=c++1y)
     tgui_add_cxx_flag(-fexceptions)
     tgui_add_cxx_flag(-frtti)
 
@@ -120,7 +120,7 @@ elseif(SFML_COMPILER_GCC OR SFML_COMPILER_CLANG)
     tgui_add_cxx_flag(-Wshadow)
     tgui_add_cxx_flag(-Wno-long-long)
     tgui_add_cxx_flag(-pedantic)
-    tgui_add_cxx_flag(-std=c++11)
+    tgui_add_cxx_flag(-std=c++1y)
 
     # On mac, clang needs another parameter
     if (SFML_COMPILER_CLANG AND SFML_OS_MACOSX)
@@ -247,19 +247,21 @@ if(NOT TGUI_SHARED_LIBS)
     if (SFML_ROOT)
         if (SFML_OS_WINDOWS)
             set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${SFML_ROOT}/extlibs/headers")
-            if(SFML_COMPILER_GCC)
-                if(ARCH_32BITS)
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x86")
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/bin/x86")
-                elseif(ARCH_64BITS)
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x64")
-                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/bin/x64")
-                endif()
-            elseif(SFML_COMPILER_MSVC)
-                if(ARCH_32BITS)
+            if(ARCH_32BITS)
+                if(SFML_COMPILER_MSVC AND MSVC_VERSION LESS 1900) # older than VC++14
                     set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc/x86")
-                elseif(ARCH_64BITS)
+                elseif(SFML_COMPILER_MSVC) # VC++14 or newer
+                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc-universal/x86")
+                else() # gcc
+                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x86")
+                endif()
+            elseif(ARCH_64BITS)
+                if(SFML_COMPILER_MSVC AND MSVC_VERSION LESS 1900) # older than VC++14
                     set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc/x64")
+                elseif(SFML_COMPILER_MSVC) # VC++14 or newer
+                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-msvc-universal/x64")
+                else() # gcc
+                    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-mingw/x64")
                 endif()
             endif()
         elseif(SFML_OS_MACOSX)
@@ -324,9 +326,10 @@ if(SFML_OS_ANDROID)
     set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
 endif()
 
-# Add SFML_STATIC define when linking statically
+# Add SFML_STATIC define when linking statically and link to SFML dependencies
 if(NOT TGUI_SHARED_LIBS)
     add_definitions(-DSFML_STATIC)
+    set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} ${SFML_DEPENDENCIES})
 endif()
 
 # Generate .gcno files when requested

@@ -215,7 +215,7 @@ TEST_CASE("[Picture]")
 
             tgui::Gui gui;
             gui.add(picture);
-            gui.updateTime(doubleClickTimeout);
+            gui.updateTime(DOUBLE_CLICK_TIMEOUT);
 
             picture->leftMousePressed(115, 80);
             picture->leftMouseReleased(115, 80);
@@ -225,7 +225,7 @@ TEST_CASE("[Picture]")
             REQUIRE(clickedCount == 2);
             REQUIRE(doubleClickedCount == 0);
 
-            gui.updateTime(doubleClickTimeout / 2.f);
+            gui.updateTime(DOUBLE_CLICK_TIMEOUT / 2.f);
 
             picture->leftMousePressed(115, 80);
             picture->leftMouseReleased(115, 80);
@@ -251,16 +251,10 @@ TEST_CASE("[Picture]")
         SECTION("functions")
         {
             renderer->setOpacity(0.8f);
-
-            SECTION("getPropertyValuePairs")
-            {
-                auto pairs = renderer->getPropertyValuePairs();
-                REQUIRE(pairs.size() == 1);
-                REQUIRE(pairs["opacity"].getNumber() == 0.8f);
-            }
         }
 
         REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
+        REQUIRE(renderer->getOpacity() == 0.8f);
 
         REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }

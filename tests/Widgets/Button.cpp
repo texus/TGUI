@@ -69,102 +69,48 @@ TEST_CASE("[Button]")
 
     SECTION("Events")
     {
-        unsigned int mousePressedCount = 0;
-        unsigned int mouseReleasedCount = 0;
-        unsigned int clickedCount = 0;
-        unsigned int pressedCount = 0;
+        testClickableWidgetSignals(button);
 
         button->setPosition(40, 30);
         button->setSize(150, 100);
 
-        button->connect("MousePressed", mouseCallback, std::ref(mousePressedCount));
-        button->connect("MouseReleased", mouseCallback, std::ref(mouseReleasedCount));
-        button->connect("Clicked", mouseCallback, std::ref(clickedCount));
-        button->connect("Pressed", genericCallback, std::ref(pressedCount));
-
-        SECTION("mouseOnWidget")
+        SECTION("Pressed signal")
         {
-            REQUIRE(!button->mouseOnWidget(10, 15));
-            REQUIRE(button->mouseOnWidget(40, 30));
-            REQUIRE(button->mouseOnWidget(115, 80));
-            REQUIRE(button->mouseOnWidget(189, 129));
-            REQUIRE(!button->mouseOnWidget(190, 130));
+            unsigned int pressedCount = 0;
 
-            REQUIRE(mousePressedCount == 0);
-            REQUIRE(mouseReleasedCount == 0);
-            REQUIRE(clickedCount == 0);
-            REQUIRE(pressedCount == clickedCount);
-        }
+            button->connect("Pressed", genericCallback, std::ref(pressedCount));
 
-        SECTION("mouse move")
-        {
-            unsigned int mouseEnteredCount = 0;
-            unsigned int mouseLeftCount = 0;
-
-            button->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
-            button->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
-
-            auto parent = std::make_shared<tgui::Panel>(300, 200);
-            parent->add(button);
-
-            parent->mouseMoved(10, 15);
-            REQUIRE(mouseEnteredCount == 0);
-            REQUIRE(mouseLeftCount == 0);
-
-            parent->mouseMoved(40, 30);
-            REQUIRE(mouseEnteredCount == 1);
-            REQUIRE(mouseLeftCount == 0);
-
-            parent->mouseMoved(189, 129);
-            REQUIRE(mouseEnteredCount == 1);
-            REQUIRE(mouseLeftCount == 0);
-
-            parent->mouseMoved(190, 130);
-            REQUIRE(mouseEnteredCount == 1);
-            REQUIRE(mouseLeftCount == 1);
-        }
-
-        SECTION("mouse click")
-        {
-            button->leftMouseReleased(115, 80);
-
-            REQUIRE(mouseReleasedCount == 1);
-            REQUIRE(clickedCount == 0);
-            REQUIRE(pressedCount == clickedCount);
-
-            SECTION("mouse press")
+            SECTION("mouse click")
             {
-                button->leftMousePressed(115, 80);
+                button->leftMouseReleased(115, 80);
+                REQUIRE(pressedCount == 0);
 
-                REQUIRE(mousePressedCount == 1);
-                REQUIRE(mouseReleasedCount == 1);
-                REQUIRE(clickedCount == 0);
-                REQUIRE(pressedCount == clickedCount);
+                SECTION("mouse press")
+                {
+                    button->leftMousePressed(115, 80);
+                    REQUIRE(pressedCount == 0);
+                }
+
+                button->leftMouseReleased(115, 80);
+                REQUIRE(pressedCount == 1);
             }
 
-            button->leftMouseReleased(115, 80);
+            SECTION("key pressed")
+            {
+                sf::Event::KeyEvent keyEvent;
+                keyEvent.alt = false;
+                keyEvent.control = false;
+                keyEvent.shift = false;
+                keyEvent.system = false;
 
-            REQUIRE(mousePressedCount == 1);
-            REQUIRE(mouseReleasedCount == 2);
-            REQUIRE(clickedCount == 1);
-            REQUIRE(pressedCount == clickedCount);
-        }
+                keyEvent.code = sf::Keyboard::Space;
+                button->keyPressed(keyEvent);
+                REQUIRE(pressedCount == 1);
 
-        SECTION("key pressed")
-        {
-            sf::Event::KeyEvent keyEvent;
-            keyEvent.alt = false;
-            keyEvent.control = false;
-            keyEvent.shift = false;
-            keyEvent.system = false;
-
-            keyEvent.code = sf::Keyboard::Space;
-            button->keyPressed(keyEvent);
-            REQUIRE(pressedCount == 1);
-
-            keyEvent.code = sf::Keyboard::Return;
-            button->keyPressed(keyEvent);
-            REQUIRE(pressedCount == 2);
+                keyEvent.code = sf::Keyboard::Return;
+                button->keyPressed(keyEvent);
+                REQUIRE(pressedCount == 2);
+            }
         }
     }
 
@@ -203,14 +149,14 @@ TEST_CASE("[Button]")
             SECTION("functions")
             {
                 renderer->setTextColor({10, 20, 30});
-                REQUIRE(renderer->getProperty("TextColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorDown").getColor() == sf::Color(10, 20, 30));
+                REQUIRE(renderer->getTextColorNormal() == sf::Color(10, 20, 30));
+                REQUIRE(renderer->getTextColorHover() == sf::Color(10, 20, 30));
+                REQUIRE(renderer->getTextColorDown() == sf::Color(10, 20, 30));
 
                 renderer->setBackgroundColor({20, 30, 40});
-                REQUIRE(renderer->getProperty("BackgroundColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("BackgroundColorDown").getColor() == sf::Color(20, 30, 40));
+                REQUIRE(renderer->getBackgroundColorNormal() == sf::Color(20, 30, 40));
+                REQUIRE(renderer->getBackgroundColorHover() == sf::Color(20, 30, 40));
+                REQUIRE(renderer->getBackgroundColorDown() == sf::Color(20, 30, 40));
 
                 renderer->setTextColorNormal({20, 30, 40});
                 renderer->setTextColorHover({30, 40, 50});
@@ -221,25 +167,6 @@ TEST_CASE("[Button]")
                 renderer->setBorderColor({80, 90, 100});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setOpacity(0.8f);
-
-                SECTION("getPropertyValuePairs")
-                {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 13);
-                    REQUIRE(!pairs["texturenormal"].getTexture().isLoaded());
-                    REQUIRE(!pairs["texturehover"].getTexture().isLoaded());
-                    REQUIRE(!pairs["texturedown"].getTexture().isLoaded());
-                    REQUIRE(!pairs["texturefocused"].getTexture().isLoaded());
-                    REQUIRE(pairs["textcolornormal"].getColor() == sf::Color(20, 30, 40));
-                    REQUIRE(pairs["textcolorhover"].getColor() == sf::Color(30, 40, 50));
-                    REQUIRE(pairs["textcolordown"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["backgroundcolornormal"].getColor() == sf::Color(50, 60, 70));
-                    REQUIRE(pairs["backgroundcolorhover"].getColor() == sf::Color(60, 70, 80));
-                    REQUIRE(pairs["backgroundcolordown"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["bordercolor"].getColor() == sf::Color(80, 90, 100));
-                    REQUIRE(pairs["borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
-                    REQUIRE(pairs["opacity"].getNumber() == 0.8f);
-                }
             }
 
             REQUIRE(renderer->getProperty("TextColorNormal").getColor() == sf::Color(20, 30, 40));
@@ -249,8 +176,18 @@ TEST_CASE("[Button]")
             REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("BackgroundColorDown").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
+
+            REQUIRE(renderer->getTextColorNormal() == sf::Color(20, 30, 40));
+            REQUIRE(renderer->getTextColorHover() == sf::Color(30, 40, 50));
+            REQUIRE(renderer->getTextColorDown() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getBackgroundColorNormal() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getBackgroundColorHover() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getBackgroundColorDown() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getBorderColor() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getOpacity() == 0.8f);
         }
 
         SECTION("textured")
@@ -287,16 +224,6 @@ TEST_CASE("[Button]")
                 renderer->setTextureHover(textureHover);
                 renderer->setTextureDown(textureDown);
                 renderer->setTextureFocused(textureFocused);
-
-                SECTION("getPropertyValuePairs")
-                {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 6);
-                    REQUIRE(pairs["texturenormal"].getTexture().getData() == textureNormal.getData());
-                    REQUIRE(pairs["texturehover"].getTexture().getData() == textureHover.getData());
-                    REQUIRE(pairs["texturedown"].getTexture().getData() == textureDown.getData());
-                    REQUIRE(pairs["texturefocused"].getTexture().getData() == textureFocused.getData());
-                }
             }
 
             REQUIRE(renderer->getProperty("TextureNormal").getTexture().isLoaded());
@@ -304,10 +231,10 @@ TEST_CASE("[Button]")
             REQUIRE(renderer->getProperty("TextureDown").getTexture().isLoaded());
             REQUIRE(renderer->getProperty("TextureFocused").getTexture().isLoaded());
 
-            REQUIRE(renderer->getProperty("TextureNormal").getTexture().getData() == textureNormal.getData());
-            REQUIRE(renderer->getProperty("TextureHover").getTexture().getData() == textureHover.getData());
-            REQUIRE(renderer->getProperty("TextureDown").getTexture().getData() == textureDown.getData());
-            REQUIRE(renderer->getProperty("TextureFocused").getTexture().getData() == textureFocused.getData());
+            REQUIRE(renderer->getTextureNormal().getData() == textureNormal.getData());
+            REQUIRE(renderer->getTextureHover().getData() == textureHover.getData());
+            REQUIRE(renderer->getTextureDown().getData() == textureDown.getData());
+            REQUIRE(renderer->getTextureFocused().getData() == textureFocused.getData());
         }
 
         REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);

@@ -152,14 +152,14 @@ TEST_CASE("[Knob]") {
                     REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(10, 20, 30));
                     REQUIRE(pairs["ThumbColor"].getColor() == sf::Color(40, 50, 60));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
                 }
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
             REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         }
 
         SECTION("textured") {

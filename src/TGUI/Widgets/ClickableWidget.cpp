@@ -33,6 +33,7 @@ namespace tgui
 
     ClickableWidget::ClickableWidget(const Layout2d& size)
     {
+        m_type = "ClickableWidget";
         m_callback.widgetType = "ClickableWidget";
 
         addSignal<sf::Vector2f>("MousePressed");

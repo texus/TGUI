@@ -158,8 +158,8 @@ namespace tgui
         void addWidget(const Widget::Ptr& widget,
                        unsigned int       row,
                        unsigned int       column,
-                       const Borders&     borders = Borders(0, 0, 0, 0),
-                       Alignment          alignment  = Alignment::Center);
+                       const Borders&     borders   = Borders{0},
+                       Alignment          alignment = Alignment::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

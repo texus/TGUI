@@ -47,7 +47,7 @@ ComboBox {
 }
 
 EditBox {
-    NormalImage : "BabyBlue.png" Part(103, 40, 72, 48) Middle(24, 0, 24, 48);
+    TextureNormal : "BabyBlue.png" Part(103, 40, 72, 48) Middle(24, 0, 24, 48);
     TextColor : (100, 100, 100);
     SelectedTextColor : (150, 150, 150);
     SelectedTextBackgroundColor : (190, 225, 235);

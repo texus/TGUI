@@ -5,8 +5,8 @@ git:
   depth: 1
 
 os: linux
-compiler: g++-5
-env: COMPILER=g++-5
+compiler: g++-6
+env: COMPILER=g++-6
 cache:
   directories:
     - $HOME/SFML_LINUX
@@ -16,8 +16,7 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - g++-4.7
-    - g++-5
+    - g++-6
     - valgrind
 
     - libfreetype6-dev
@@ -48,7 +47,7 @@ script:
   - tests/travis_linux_tests.sh
 
 after_success:
-  - >
-    if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == g++-5 ]]; then
-      bash <(curl -s https://codecov.io/bash) -x gcov-5 -a "-s /home/travis/build/texus/TGUI -pr"
+  - 
+    if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == g++-6 ]]; then
+      bash <(curl -s https://codecov.io/bash) -x gcov-6 -a "-s /home/travis/build/texus/TGUI -pr"
     fi

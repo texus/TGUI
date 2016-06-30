@@ -41,7 +41,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class TGUI_API Texture : public sf::Transformable, public sf::Drawable
+    class TGUI_API Texture : public sf::Transformable
     {
     public:
 
@@ -75,14 +75,32 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor that created the texture
         ///
-        /// @param filename   Filename of the image to load
+        /// @param id         Id for the the image to load (for the default loader, the id is the filename)
+        /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image
+        ///
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        ///
+        /// This constructor just calls the corresponding load function.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Texture(const sf::String& id,
+                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0));
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor that created the texture from an existing sf::Texture
+        ///
+        /// @param texture    Existing texture to copy
         /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         ///
-        /// This constructor just calls the load function.
+        /// The texture will be copied, you do not have to keep the sf::Texture alive after calling this function.
+        ///
+        /// This constructor just calls the corresponding load function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture(const std::string& filename,
+        Texture(const sf::Texture& texture,
                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0));
 
@@ -99,7 +117,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Virtual destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ~Texture();
+        virtual ~Texture();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +140,21 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const sf::String& id,
+                  const sf::IntRect& partRect = {},
+                  const sf::IntRect& middleRect = {});
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Creates the texture from an existing sf::Texture
+        ///
+        /// @param texture    Existing texture to copy
+        /// @param partRect   Load only part of the texture. Don't pass this parameter if you want to load the full image
+        /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        ///
+        /// The texture will be copied, you do not have to keep the sf::Texture alive after calling this function.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void load(const sf::Texture& texture,
                   const sf::IntRect& partRect = {},
                   const sf::IntRect& middleRect = {});
 
@@ -202,7 +235,7 @@ namespace tgui
         /// @brief Sets the global color of the sprite
         ///
         /// This color is modulated (multiplied) with the sprite's texture. It can be used to colorize the sprite,
-        /// or change its global opacity.
+        /// or change its global opacity. Note that the alpha component is multiplied with the opacity set by setOpacity.
         ///
         /// By default, the sprite's color is opaque white.
         ///
@@ -223,7 +256,27 @@ namespace tgui
         /// @return Current color of the sprite
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getColor();
+        const sf::Color& getColor() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the opacity of the texture
+        ///
+        /// @param opacity  The opacity of the texture. 0 means completely transparent, while 1 (default) means fully opaque
+        ///
+        /// The alpha component of the color specified with setColor is multiplied with this factor.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void setOpacity(float opacity);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the opacity of the texture
+        ///
+        /// @return The opacity of the texture. 0 means completely transparent, while 1 (default) means fully opaque
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getOpacity() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -399,20 +452,16 @@ namespace tgui
         void setDestructCallback(const std::function<void(std::shared_ptr<TextureData>)> func);
 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Draws the texture
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // @brief Updates the vertices of the internal vertex array
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void updateVertices();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // @brief Draws the texture
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,6 +474,7 @@ namespace tgui
         sf::IntRect   m_middleRect;
         sf::FloatRect m_textureRect;
         sf::Color     m_vertexColor = sf::Color::White;
+        float         m_opacity = 1;
 
         ScalingType   m_scalingType = ScalingType::Normal;
 

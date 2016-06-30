@@ -23,8 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Color.hpp>
-#include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Signal.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,37 +31,78 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Color::Color(const sf::Color& color) :
-        m_color{color}
+    std::deque<const void*> Signal::data;
+
+    SignalWidgetBase* Signal::m_currentWidget;
+    std::size_t       Signal::m_currentId;
+    std::string       Signal::m_currentSignalName;
+
+    unsigned int SignalWidgetBase::m_lastId = 0;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SignalWidgetBase::disconnect(unsigned int id)
     {
+        for (auto& signal : m_signals)
+        {
+            if (signal.second.erase(id) != 0)
+                return;
+        }
+
+        throw Exception{"Failed to disconnect signal handler. There is no function bound to the given id " + tgui::to_string(id) + "."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Color::Color(sf::Uint8 red, sf::Uint8 green, sf::Uint8 blue, sf::Uint8 alpha) :
-        m_color{red, green, blue, alpha}
+    void SignalWidgetBase::disconnectAll(const std::string& signalNames)
     {
+        for (auto& name : extractSignalNames(signalNames))
+            m_signals.at(toLower(name)).clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Color::Color(const char* string) :
-        Color{std::string{string}}
+    void SignalWidgetBase::disconnectAll()
     {
+        for (auto& signal : m_signals)
+            signal.second.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Color::Color(const std::string& string) :
-        m_color{Deserializer::deserialize(tgui::ObjectConverter::Type::Color, string).getColor()}
+    std::size_t SignalWidgetBase::findBoundParametersLocation(const std::string& signal, const std::initializer_list<std::type_index>&)
     {
+        throw Exception{"TGUI Error: widget does not support signal '" + signal + "'"};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Color::operator sf::Color() const
+    bool SignalWidgetBase::isSignalBound(std::string&& name)
     {
-        return m_color;
+        return !m_signals[toLower(name)].empty();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<std::string> SignalWidgetBase::extractSignalNames(std::string input)
+    {
+        // A space is used as separator when binding multiple signals at once
+        std::vector<std::string> names;
+        std::string::size_type pos = 0;
+        while ((pos = input.find(" ")) != std::string::npos)
+        {
+            std::string token = input.substr(0, pos);
+            if (token != "")
+                names.push_back(toLower(token));
+
+            input.erase(0, pos+1);
+        }
+
+        if (input != "")
+            names.push_back(toLower(input));
+
+        return names;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

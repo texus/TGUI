@@ -218,7 +218,7 @@ TEST_CASE("[Label]") {
 
             tgui::Gui gui;
             gui.add(label);
-            gui.updateTime(doubleClickTimeout);
+            gui.updateTime(DOUBLE_CLICK_TIMEOUT);
 
             label->leftMousePressed(115, 80);
             label->leftMouseReleased(115, 80);
@@ -228,7 +228,7 @@ TEST_CASE("[Label]") {
             REQUIRE(clickedCount == 2);
             REQUIRE(doubleClickedCount == 0);
 
-            gui.updateTime(doubleClickTimeout / 2.f);
+            gui.updateTime(DOUBLE_CLICK_TIMEOUT / 2.f);
 
             label->leftMousePressed(115, 80);
             label->leftMouseReleased(115, 80);
@@ -269,26 +269,21 @@ TEST_CASE("[Label]") {
             renderer->setBorders({1, 2, 3, 4});
             renderer->setPadding({5, 6, 7, 8});
             renderer->setOpacity(0.8f);
-
-            SECTION("getPropertyValuePairs")
-            {
-                auto pairs = renderer->getPropertyValuePairs();
-                REQUIRE(pairs.size() == 6);
-                REQUIRE(pairs["textcolor"].getColor() == sf::Color(100, 50, 150));
-                REQUIRE(pairs["backgroundcolor"].getColor() == sf::Color(150, 100, 50));
-                REQUIRE(pairs["bordercolor"].getColor() == sf::Color(50, 150, 100));
-                REQUIRE(pairs["borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
-                REQUIRE(pairs["padding"].getBorders() == tgui::Borders(5, 6, 7, 8));
-                REQUIRE(pairs["opacity"].getNumber() == 0.8f);
-            }
         }
 
         REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(100, 50, 150));
         REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(150, 100, 50));
         REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(50, 150, 100));
-        REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
-        REQUIRE(renderer->getProperty("Padding").getBorders() == tgui::Borders(5, 6, 7, 8));
+        REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+        REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
+
+        REQUIRE(renderer->getTextColor() == sf::Color(100, 50, 150));
+        REQUIRE(renderer->getBackgroundColor() == sf::Color(150, 100, 50));
+        REQUIRE(renderer->getBorderColor() == sf::Color(50, 150, 100));
+        REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+        REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
+        REQUIRE(renderer->getOpacity() == 0.8f);
 
         REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }

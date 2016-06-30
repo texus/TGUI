@@ -213,15 +213,15 @@ TEST_CASE("[ChatBox]") {
                     REQUIRE(pairs.size() == 4);
                     REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(10, 20, 30));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
-                    REQUIRE(pairs["Padding"].getBorders() == tgui::Borders(5, 6, 7, 8));
+                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Padding"].getOutline() == tgui::Borders(5, 6, 7, 8));
                 }
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
-            REQUIRE(renderer->getProperty("Padding").getBorders() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
         }
 
         SECTION("textured") {

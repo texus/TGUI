@@ -1,3 +1,27 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TGUI - Texus's Graphical User Interface
+// Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 #include <TGUI/TGUI.hpp>
 
@@ -21,7 +45,7 @@ int main()
     gui.add(tab);
 
     tgui::MenuBar::Ptr menu = theme->load("MenuBar");
-    menu->setSize(window.getSize().x, 22);
+    menu->setSize((float)window.getSize().x, 22.f);
     menu->addMenu("MenuOption-1");
     menu->addMenuItem("MenuOption-1", "Load");
     menu->addMenuItem("MenuOption-1", "Save");
@@ -189,7 +213,7 @@ int main()
     text.setPosition(25, 100);
     text.setColor({200, 200, 200});
 
-    tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>(200, 140);
+    tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>(200.f, 140.f);
     canvas->setPosition(420, 430);
     canvas->clear();
     canvas->draw(sprite);
@@ -198,7 +222,7 @@ int main()
     gui.add(canvas);
    
     button = theme->load("button");
-    button->setPosition(window.getSize().x - 115, window.getSize().y - 50);
+    button->setPosition(window.getSize().x - 115.f, window.getSize().y - 50.f);
     button->setText("Exit");
     button->setSize(100, 40);
     button->connect("pressed", [&](){ window.close(); });

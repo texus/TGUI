@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Gui.hpp>
 
@@ -521,6 +520,16 @@ TEST_CASE("[Layouts]") {
                 REQUIRE(position.getValue() == sf::Vector2f(4, 3));
                 REQUIRE(size.getValue() == sf::Vector2f(40, 30));
             }
+        }
+
+        SECTION("No ambiguity with 0") {
+            auto widget = std::make_shared<tgui::ClickableWidget>();
+            widget->setPosition({0, 0});
+            widget->setPosition(0,0);
+            widget->setPosition({"0","0"});
+            widget->setPosition({"0"},{"0"});
+            widget->setPosition("{0,0}");
+            widget->setPosition("0","0");
         }
     }
 

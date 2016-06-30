@@ -160,7 +160,7 @@ TEST_CASE("[Slider]") {
                     REQUIRE(pairs["ThumbColorNormal"].getColor() == sf::Color(50, 60, 70));
                     REQUIRE(pairs["ThumbColorHover"].getColor() == sf::Color(60, 70, 80));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
                 }
             }
 
@@ -169,7 +169,7 @@ TEST_CASE("[Slider]") {
             REQUIRE(renderer->getProperty("ThumbColorNormal").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         }
 
         SECTION("textured") {

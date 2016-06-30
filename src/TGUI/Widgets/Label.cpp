@@ -26,8 +26,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Loading/Theme.hpp>
-
-#include <SFML/OpenGL.hpp>
+#include <TGUI/Clipping.hpp>
 
 #include <cmath>
 
@@ -39,12 +38,13 @@ namespace tgui
 
     Label::Label()
     {
+        m_type = "Label";
         m_callback.widgetType = "Label";
+
         addSignal<sf::String>("DoubleClicked");
 
         m_renderer = aurora::makeCopied<tgui::LabelRenderer>();
         setRenderer(m_renderer->getData());
-        m_background.setFillColor(getRenderer()->getBackgroundColor());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,11 +63,8 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        m_background.setSize(getSize());
-
         // You are no longer auto-sizing
         m_autoSize = false;
-
         rearrangeText();
     }
 
@@ -237,13 +234,9 @@ namespace tgui
     {
         if (property == "textcolor")
         {
-            sf::Color textColor = calcColorOpacity(value.getColor(), getRenderer()->getOpacity());
+            sf::Color color = calcColorOpacity(value.getColor(), getRenderer()->getOpacity());
             for (auto& line : m_lines)
-                line.setFillColor(textColor);
-        }
-        else if (property == "backgroundcolor")
-        {
-            m_background.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
+                line.setFillColor(color);
         }
         else if ((property == "borders") || (property == "padding"))
         {
@@ -251,13 +244,11 @@ namespace tgui
         }
         else if (property == "opacity")
         {
-            sf::Color textColor = calcColorOpacity(getRenderer()->getTextColor(), value.getNumber());
+            sf::Color color = calcColorOpacity(getRenderer()->getTextColor(), value.getNumber());
             for (auto& line : m_lines)
-                line.setFillColor(textColor);
-
-            m_background.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColor(), value.getNumber()));
+                line.setFillColor(color);
         }
-        else if (property != "bordercolor")
+        else if ((property != "bordercolor") && (property != "backgroundcolor"))
             Widget::rendererChanged(property, std::move(value));
     }
 
@@ -282,66 +273,34 @@ namespace tgui
         states.transform.translate(std::round(getPosition().x), std::round(getPosition().y));
 
         // Draw the background
-        if (m_background.getFillColor() != sf::Color::Transparent)
-            target.draw(m_background, states);
+        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
+            drawRectangleShape(target, states, {0,0}, getSize(), getRenderer()->getBackgroundColor());
 
         // Draw the borders
         Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0, 0, 0, 0})
+        if (borders != Borders{0})
         {
-            drawBorders(target, states, borders, getPosition(), getSize(), calcColorOpacity(getRenderer()->getBorderColor(), getRenderer()->getOpacity()));
+            drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColor());
 
             // Don't try to draw the text when there is no space left for it
             if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
                 return;
         }
 
-        if (m_autoSize)
+        // Apply clipping when needed
+        std::unique_ptr<Clipping> clipping;
+        if (!m_autoSize)
         {
-            // Draw the text
-            for (auto& line : m_lines)
-                target.draw(line, states);
+            Padding padding = getRenderer()->getPadding();
+            clipping = std::make_unique<Clipping>(target,
+                                                  sf::Vector2f{getAbsolutePosition().x + padding.left, getAbsolutePosition().y + padding.top},
+                                                  sf::Vector2f{getAbsolutePosition().x + getSize().x - padding.right, getAbsolutePosition().y + getSize().y - padding.bottom}
+                                                 );
         }
-        else
-        {
-            const sf::View& view = target.getView();
 
-            // Calculate the scale factor of the view
-            float scaleViewX = target.getSize().x / view.getSize().x;
-            float scaleViewY = target.getSize().y / view.getSize().y;
-
-            // Get the global position
-            sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + getRenderer()->getPadding().left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                            ((getAbsolutePosition().y + getRenderer()->getPadding().top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-            sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - getRenderer()->getPadding().right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                (getAbsolutePosition().y + getSize().y - getRenderer()->getPadding().bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
-
-            // Get the old clipping area
-            GLint scissor[4];
-            glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-            // Calculate the clipping area
-            GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-            GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-            GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-            GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-            // If the object outside the window then don't draw anything
-            if (scissorRight < scissorLeft)
-                scissorRight = scissorLeft;
-            else if (scissorBottom < scissorTop)
-                scissorTop = scissorBottom;
-
-            // Set the clipping area
-            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
-            // Draw the text
-            for (auto& line : m_lines)
-                target.draw(line, states);
-
-            // Reset the old clipping area
-            glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
-        }
+        // Draw the text
+        for (auto& line : m_lines)
+            target.draw(line, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -464,8 +423,6 @@ namespace tgui
             Borders borders = getRenderer()->getPadding() + getRenderer()->getBorders();
             m_size = {std::max(calculatedLabelWidth, maxWidth) + borders.left + borders.right,
                       (lineCount * getFont()->getLineSpacing(m_textSize)) + borders.top + borders.bottom};
-
-            m_background.setSize(getSize());
         }
 
         // Update the line positions
@@ -523,8 +480,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_RENDERER_PROPERTY_BORDERS(LabelRenderer, Borders, Borders(0))
-    TGUI_RENDERER_PROPERTY_BORDERS(LabelRenderer, Padding, Padding(0))
+    TGUI_RENDERER_PROPERTY_OUTLINE(LabelRenderer, Borders, Borders(0))
+    TGUI_RENDERER_PROPERTY_OUTLINE(LabelRenderer, Padding, Padding(0))
     TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, TextColor, Color(60, 60, 60))
     TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BackgroundColor, sf::Color::Transparent)
     TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BorderColor, Color(0, 0, 0))

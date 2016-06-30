@@ -284,8 +284,8 @@ TEST_CASE("[ComboBox]") {
                     REQUIRE(pairs["ArrowColorHover"].getColor() == sf::Color(60, 70, 80));
                     REQUIRE(pairs["TextColor"].getColor() == sf::Color(70, 80, 90));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(80, 90, 100));
-                    REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
-                    REQUIRE(pairs["Padding"].getBorders() == tgui::Borders(5, 6, 7, 8));
+                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Padding"].getOutline() == tgui::Borders(5, 6, 7, 8));
                 }
             }
 
@@ -296,8 +296,8 @@ TEST_CASE("[ComboBox]") {
             REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
-            REQUIRE(renderer->getProperty("Padding").getBorders() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
         }
 
         SECTION("textured") {

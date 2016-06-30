@@ -25,8 +25,7 @@
 
 #include <TGUI/Texture.hpp>
 #include <TGUI/Global.hpp>
-
-#include <SFML/OpenGL.hpp>
+#include <TGUI/Clipping.hpp>
 
 #include <cassert>
 
@@ -46,22 +45,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture::Texture(const std::string& filename, const sf::IntRect& partRect, const sf::IntRect& middlePart)
+    Texture::Texture(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middlePart)
     {
-        load(filename, partRect, middlePart);
+        load(id, partRect, middlePart);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Texture::Texture(const sf::Texture& texture, const sf::IntRect& partRect, const sf::IntRect& middlePart)
+    {
+        load(texture, partRect, middlePart);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(const Texture& copy) :
         sf::Transformable {copy},
-        sf::Drawable      {copy},
         m_data            (copy.m_data),
         m_vertices        (copy.m_vertices), // Did not compile in VS2013 when using braces
         m_size            {copy.m_size},
         m_middleRect      {copy.m_middleRect},
         m_textureRect     {copy.m_textureRect},
         m_vertexColor     {copy.m_vertexColor},
+        m_opacity         {copy.m_opacity},
         m_scalingType     {copy.m_scalingType},
         m_loaded          {copy.m_loaded},
         m_id              (copy.m_id), // Did not compile in VS2013 when using braces
@@ -88,7 +94,6 @@ namespace tgui
         {
             Texture temp{right};
             sf::Transformable::operator=(right);
-            sf::Drawable::operator=(right);
 
             std::swap(m_data,             temp.m_data);
             std::swap(m_vertices,         temp.m_vertices);
@@ -96,6 +101,7 @@ namespace tgui
             std::swap(m_middleRect,       temp.m_middleRect);
             std::swap(m_textureRect,      temp.m_textureRect);
             std::swap(m_vertexColor,      temp.m_vertexColor);
+            std::swap(m_opacity,          temp.m_opacity);
             std::swap(m_scalingType,      temp.m_scalingType);
             std::swap(m_loaded,           temp.m_loaded);
             std::swap(m_id,               temp.m_id);
@@ -119,6 +125,25 @@ namespace tgui
 
         m_id = id;
         setTexture(m_data, middleRect);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::load(const sf::Texture& texture, const sf::IntRect& partRect, const sf::IntRect& middleRect)
+    {
+        if (m_loaded && (m_destructCallback != nullptr))
+            m_destructCallback(getData());
+
+        m_loaded = false;
+
+        auto data = std::make_shared<TextureData>();
+        if (partRect == sf::IntRect{})
+            data->texture = texture;
+        else
+            data->texture.loadFromImage(texture.copyToImage(), partRect);
+
+        m_id = "";
+        setTexture(data, middleRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,15 +205,32 @@ namespace tgui
     void Texture::setColor(const sf::Color& color)
     {
         m_vertexColor = color;
+
+        sf::Color vertexColor = calcColorOpacity(m_vertexColor, m_opacity);
         for (auto& vertex : m_vertices)
-            vertex.color = color;
+            vertex.color = vertexColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Texture::getColor()
+    const sf::Color& Texture::getColor() const
     {
         return m_vertexColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::setOpacity(float opacity)
+    {
+        m_opacity = opacity;
+        setColor(m_vertexColor);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Texture::getOpacity() const
+    {
+        return m_opacity;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,57 +519,34 @@ namespace tgui
 
     void Texture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getOrigin());
+        states.transform.translate(getOrigin()); ///TODO: Check this line
         states.transform *= getTransform();
 
         if (m_loaded)
         {
-            if (m_textureRect == sf::FloatRect(0, 0, 0, 0))
+            // Apply clipping when needed
+            std::unique_ptr<Clipping> clipping;
+            if (m_textureRect != sf::FloatRect{0, 0, 0, 0})
             {
-                states.texture = &m_data->texture;
-                target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
+///TODO: Fix clipping
+///      transformPoint should probably be moved to Clipping class and getAbsolutePosition() would no longer be needed here
+///      Lots of testing will be required after this change
+/*
+                clipping = std::make_unique<Clipping>(target,
+                                                      sf::Vector2f{getAbsolutePosition().x + padding.left, getAbsolutePosition().y + padding.top},
+                                                      sf::Vector2f{getAbsolutePosition().x + getSize().x - padding.right, getAbsolutePosition().y + getSize().y - padding.bottom}
+                                                     );
+*/
+/*
+sf::Vector2f topLeftPosition = states.transform.transformPoint(((m_textureRect.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
+                                                               ((m_textureRect.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
+sf::Vector2f bottomRightPosition = states.transform.transformPoint((m_textureRect.left + m_textureRect.width - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+                                                                   (m_textureRect.top + m_textureRect.height - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
+*/
             }
-            else
-            {
-                const sf::View& view = target.getView();
 
-                // Calculate the scale factor of the view
-                float scaleViewX = target.getSize().x / view.getSize().x;
-                float scaleViewY = target.getSize().y / view.getSize().y;
-
-/// TODO: Check this code! Other places don't use transformPoint
-                // Get the global position
-                sf::Vector2f topLeftPosition = states.transform.transformPoint(((m_textureRect.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                                               ((m_textureRect.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-                sf::Vector2f bottomRightPosition = states.transform.transformPoint((m_textureRect.left + m_textureRect.width - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                                                   (m_textureRect.top + m_textureRect.height - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
-
-                // Get the old clipping area
-                GLint scissor[4];
-                glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-                // Calculate the clipping area
-                GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-                GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-                GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-                GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-                // If the object outside the window then don't draw anything
-                if (scissorRight < scissorLeft)
-                    scissorRight = scissorLeft;
-                else if (scissorBottom < scissorTop)
-                    scissorTop = scissorBottom;
-
-                // Set the clipping area
-                glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
-                // Draw the texture
-                states.texture = &m_data->texture;
-                target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
-
-                // Reset the old clipping area
-                glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
-            }
+            states.texture = &m_data->texture;
+            target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
         }
     }
 

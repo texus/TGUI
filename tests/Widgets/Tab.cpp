@@ -81,7 +81,7 @@ TEST_CASE("[Tab]") {
                     REQUIRE(pairs["TextColor"].getColor() == sf::Color(70, 80, 90));
                     REQUIRE(pairs["SelectedTextColor"].getColor() == sf::Color(100, 110, 120));
                     REQUIRE(pairs["BorderColor"].getColor() == sf::Color(130, 140, 150));
-                    REQUIRE(pairs["Borders"].getBorders() == tgui::Borders(1, 2, 3, 4));
+                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
                     REQUIRE(pairs["DistanceToSide"].getNumber() == 2);
                 }
             }
@@ -91,7 +91,7 @@ TEST_CASE("[Tab]") {
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(130, 140, 150));
-            REQUIRE(renderer->getProperty("Borders").getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
         }
 

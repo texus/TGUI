@@ -24,26 +24,7 @@
 
 
 #include <TGUI/Loading/Theme.hpp>
-#include <TGUI/Loading/Serializer.hpp>/**
-#include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/ChatBox.hpp>
-#include <TGUI/Widgets/CheckBox.hpp>
-#include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Widgets/Knob.hpp>*/
-#include <TGUI/Widgets/Label.hpp>/**
-#include <TGUI/Widgets/ListBox.hpp>
-#include <TGUI/Widgets/MenuBar.hpp>
-#include <TGUI/Widgets/MessageBox.hpp>
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/ProgressBar.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/RadioButton.hpp>
-#include <TGUI/Widgets/Scrollbar.hpp>
-#include <TGUI/Widgets/Slider.hpp>
-#include <TGUI/Widgets/SpinButton.hpp>
-#include <TGUI/Widgets/Tab.hpp>
-#include <TGUI/Widgets/TextBox.hpp>*/
+#include <TGUI/Loading/Serializer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -87,7 +68,7 @@ namespace tgui
         {
             auto& properties = m_themeLoader->load(m_primary, lowercaseSecondart);
             for (auto& property : properties)
-                m_renderers[lowercaseSecondart]->propertyValuePairs[property.first] = {property.second};
+                m_renderers[lowercaseSecondart]->propertyValuePairs[property.first] = ObjectConverter(property.second);
         }
 
         return m_renderers[lowercaseSecondart];
