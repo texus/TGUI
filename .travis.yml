@@ -47,7 +47,7 @@ script:
   - tests/travis_linux_tests.sh
 
 after_success:
-  - 
+  - >
     if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == g++-6 ]]; then
       bash <(curl -s https://codecov.io/bash) -x gcov-6 -a "-s /home/travis/build/texus/TGUI -pr"
     fi
