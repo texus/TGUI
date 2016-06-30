@@ -791,6 +791,9 @@ namespace tgui
                 {
                     Clipboard::set(m_textSelection.getString());
                     deleteSelectedCharacters();
+
+                    m_callback.text = m_text;
+                    sendSignal("TextChanged", getText());
                 }
                 else if (event.code == sf::Keyboard::A)
                 {
