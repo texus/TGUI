@@ -210,16 +210,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Hides the widget.
         ///
-        /// The widget won't receive events nor will it be drawn when hidden. The widget is visible by default.
+        /// The widget won't receive events (and thus won't send callbacks) nor will it be drawn when hidden.
+        /// The widget is visible by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void hide();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Shows the widget by introducing it with an animation.
+        /// @brief Hides the widget by making it leave with an animation
         ///
-        /// If the widget is already hidden then the animation will still play but you will not see it until you show the widget.
+        /// If the widget is already hidden then the animation will still play but you will not see it.
         ///
         /// During the animation the position, size and/or opacity may change. Once the animation is done the widget will
         /// be back in the state in which it was when this function was called.
@@ -236,8 +237,8 @@ namespace tgui
         ///
         /// @return Is the widget visible?
         ///
-        /// If this function returns false then the widget is hidden, which means that it won't receive events and it won't be drawn.
-        /// All widgets are visible by default.
+        /// If this function returns false then the widget is hidden, which means that it won't receive events (and thus won't
+        /// send callbacks) and it won't be drawn. All widgets are visible by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isVisible() const
