@@ -25,15 +25,20 @@
 #include "catch.hpp"
 #include <TGUI/Texture.hpp>
 
-TEST_CASE("[Texture]") {
-    SECTION("Loading") {
-        SECTION("Failure") {
+TEST_CASE("[Texture]")
+{
+    SECTION("Loading")
+    {
+        SECTION("Failure")
+        {
             tgui::Texture texture;
 
-            SECTION("No image") {
+            SECTION("No image")
+            {
                 REQUIRE_NOTHROW(tgui::Texture());
             }
-            SECTION("Image not found") {
+            SECTION("Image not found")
+            {
                 std::streambuf *oldbuf = sf::err().rdbuf(0);
                 REQUIRE_THROWS_AS(tgui::Texture("NonExistent.png"), tgui::Exception);
                 REQUIRE_THROWS_AS(texture.load("NonExistent.png"), tgui::Exception);
@@ -54,8 +59,10 @@ TEST_CASE("[Texture]") {
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::Normal);
         }
 
-        SECTION("Success") {
-            SECTION("constructor") {
+        SECTION("Success")
+        {
+            SECTION("constructor")
+            {
                 REQUIRE_NOTHROW(tgui::Texture("resources/image.png"));
 
                 tgui::Texture texture{"resources/image.png"};
@@ -74,7 +81,8 @@ TEST_CASE("[Texture]") {
                 REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::Normal);
             }
 
-            SECTION("load") {
+            SECTION("load")
+            {
                 tgui::Texture texture;
                 texture.load("resources/image.png", {10, 5, 40, 30}, {6, 5, 28, 20});
                 REQUIRE(texture.isLoaded());
@@ -92,7 +100,8 @@ TEST_CASE("[Texture]") {
                 REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::NineSlice);
             }
 
-            SECTION("setTexture") {
+            SECTION("setTexture")
+            {
                 tgui::Texture texture1;
                 texture1.load("resources/image.png", {10, 5, 40, 30});
 
@@ -117,7 +126,8 @@ TEST_CASE("[Texture]") {
         }
     }
 
-    SECTION("Copy and destruct") {
+    SECTION("Copy and destruct")
+    {
         unsigned int copyCount = 0;
         unsigned int destructCount = 0;
         {
@@ -205,7 +215,8 @@ TEST_CASE("[Texture]") {
         REQUIRE(destructCount == 3);
     }
 
-    SECTION("Size") {
+    SECTION("Size")
+    {
         tgui::Texture texture;
         REQUIRE(texture.getSize() == sf::Vector2f());
         REQUIRE(texture.getImageSize() == sf::Vector2f());
@@ -219,7 +230,8 @@ TEST_CASE("[Texture]") {
         REQUIRE(texture.getImageSize() == sf::Vector2f(50, 50));
     }
 
-    SECTION("Color") {
+    SECTION("Color")
+    {
         tgui::Texture texture{"resources/image.png"};
         REQUIRE(texture.getColor() == sf::Color::White);
 
@@ -227,7 +239,8 @@ TEST_CASE("[Texture]") {
         REQUIRE(texture.getColor() == sf::Color::Blue);
     }
 
-    SECTION("TextureRect") {
+    SECTION("TextureRect")
+    {
         tgui::Texture texture;
         REQUIRE(texture.getTextureRect() == sf::FloatRect());
 
@@ -238,7 +251,8 @@ TEST_CASE("[Texture]") {
         REQUIRE(texture.getTextureRect() == sf::FloatRect(10, 10, 30, 30));
     }
 
-    SECTION("MiddleRect") {
+    SECTION("MiddleRect")
+    {
         tgui::Texture texture;
         REQUIRE(texture.getMiddleRect() == sf::IntRect());
 
@@ -246,7 +260,8 @@ TEST_CASE("[Texture]") {
         REQUIRE(texture.getMiddleRect() == sf::IntRect(0, 0, 50, 50));
     }
 
-    SECTION("Smooth") {
+    SECTION("Smooth")
+    {
         tgui::Texture texture{"resources/image.png"};
         REQUIRE(!texture.isSmooth());
 
@@ -257,25 +272,34 @@ TEST_CASE("[Texture]") {
         REQUIRE(!texture.isSmooth());
     }
 
-    SECTION("ImageLoader") {
+    SECTION("ImageLoader")
+    {
+        unsigned int count = 0;
         auto oldImageLoader = tgui::Texture::getImageLoader();
 
-        auto func = [](const sf::String&){ return std::make_shared<sf::Image>(); };
+        auto func = [&](const sf::String&){ auto image=std::make_shared<sf::Image>(); image->create(1,1); count++; return image; };
         tgui::Texture::setImageLoader(func);
+        REQUIRE_NOTHROW(tgui::Texture{"resources/image.png"});
+        REQUIRE(count == 1);
 
         tgui::Texture::setImageLoader(oldImageLoader);
     }
 
-    SECTION("TextureLoader") {
+    SECTION("TextureLoader")
+    {
+        unsigned int count = 0;
         auto oldTextureLoader = tgui::Texture::getTextureLoader();
 
-        auto func = [](tgui::Texture&, const sf::String&, const sf::IntRect&){ return true; };
+        auto func = [&](tgui::Texture&, const sf::String&, const sf::IntRect&){ count++; return true; };
         tgui::Texture::setTextureLoader(func);
+        REQUIRE_NOTHROW(tgui::Texture{"resources/image.png"});
+        REQUIRE(count == 1);
 
         tgui::Texture::setTextureLoader(oldTextureLoader);
     }
 
-    SECTION("isTransparentPixel") {
+    SECTION("isTransparentPixel")
+    {
         tgui::Texture texture;
         texture.setPosition({10, 20});
 
@@ -309,7 +333,8 @@ TEST_CASE("[Texture]") {
             REQUIRE(!texture.isTransparentPixel(69, 20));
         }
 
-        SECTION("Horizontal Scaling") {
+        SECTION("Horizontal Scaling")
+        {
             texture.load("resources/TransparentParts.png", {0, 10, 50, 30}, {10, 0, 30, 30});
             texture.setSize({70, 15});
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::Horizontal);
@@ -378,7 +403,8 @@ TEST_CASE("[Texture]") {
             REQUIRE(!texture.isTransparentPixel(79.5f, 20));
         }
 
-        SECTION("Vertical Scaling") {
+        SECTION("Vertical Scaling")
+        {
             texture.load("resources/TransparentParts.png", {10, 0, 30, 50}, {0, 10, 30, 30});
             texture.setSize({15, 70});
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::Vertical);
@@ -447,7 +473,8 @@ TEST_CASE("[Texture]") {
             REQUIRE(!texture.isTransparentPixel(10, 89.5f));
         }
 
-        SECTION("9-Slice Scaling") {
+        SECTION("9-Slice Scaling")
+        {
             texture.load("resources/TransparentParts.png", {}, {10, 10, 30, 30});
             texture.setSize({80, 35});
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::NineSlice);
@@ -631,8 +658,10 @@ TEST_CASE("[Texture]") {
         }
     }
 
-    SECTION("Downgrading scaling type") {
-        SECTION("Horizontal") {
+    SECTION("Downgrading scaling type")
+    {
+        SECTION("Horizontal")
+        {
             tgui::Texture texture{"resources/image.png", {}, {10, 0, 30, 50}};
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::Horizontal);
 
@@ -643,7 +672,8 @@ TEST_CASE("[Texture]") {
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::Horizontal);
         }
 
-        SECTION("Vertical") {
+        SECTION("Vertical")
+        {
             tgui::Texture texture{"resources/image.png", {}, {0, 5, 50, 40}};
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::Vertical);
 
@@ -654,7 +684,8 @@ TEST_CASE("[Texture]") {
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::Vertical);
         }
 
-        SECTION("9-Slice") {
+        SECTION("9-Slice")
+        {
             tgui::Texture texture{"resources/image.png", {}, {10, 5, 30, 40}};
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::NineSlice);
 

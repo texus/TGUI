@@ -29,7 +29,7 @@ TEST_CASE("[Signal]") {
     tgui::Widget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
 
 /*
-More tests:
+TODO: More tests:
     void f1(int){}
 
     struct A {
