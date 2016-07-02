@@ -40,6 +40,11 @@ namespace tgui
 
         addSignal<sf::Vector2f>("MousePressed");
         addSignal<ChildWindow::Ptr>("Closed");
+        addSignal<ChildWindow::Ptr>("Minimized" );
+        addSignal<ChildWindow::Ptr>("Maximized" );
+
+        m_minimizeButton->hide();
+        m_maximizeButton->hide();
 
         m_renderer = std::make_shared<ChildWindowRenderer>(this);
         reload();
@@ -82,6 +87,11 @@ namespace tgui
         getRenderer()->m_textureTitleBar.setPosition({x, y});
         m_iconTexture.setPosition(x + getRenderer()->m_distanceToSide, y + ((getRenderer()->m_titleBarHeight - m_iconTexture.getSize().y) / 2.0f));
 
+        const float buttonOffsetX =
+            (m_closeButton->isVisible()    ? m_closeButton->getSize().x    : 0) +
+            (m_minimizeButton->isVisible() ? getRenderer()->m_paddingBetweenButtons + m_minimizeButton->getSize().x : 0) +
+            (m_maximizeButton->isVisible() ? getRenderer()->m_paddingBetweenButtons + m_maximizeButton->getSize().x : 0);
+
         if (m_titleAlignment == TitleAlignment::Left)
         {
             if (m_iconTexture.isLoaded())
@@ -95,24 +105,39 @@ namespace tgui
         {
             if (m_iconTexture.isLoaded())
                 m_titleText.setPosition(x + (2 * getRenderer()->m_distanceToSide) + m_iconTexture.getSize().x
-                                        + (((getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (4 * getRenderer()->m_distanceToSide) - m_iconTexture.getSize().x - m_closeButton->getSize().x - m_titleText.getSize().x) / 2.0f),
+                                        + (((getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (4 * getRenderer()->m_distanceToSide) - m_iconTexture.getSize().x - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
                                         y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
             else
-                m_titleText.setPosition(x + getRenderer()->m_distanceToSide + (((getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (3 * getRenderer()->m_distanceToSide) - m_closeButton->getSize().x - m_titleText.getSize().x) / 2.0f),
+                m_titleText.setPosition(x + getRenderer()->m_distanceToSide + (((getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (3 * getRenderer()->m_distanceToSide) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
                                         y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
         }
         else // if (m_titleAlignment == TitleAlignmentRight)
         {
             if (m_iconTexture.isLoaded())
-                m_titleText.setPosition(x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (2 * getRenderer()->m_distanceToSide) - m_closeButton->getSize().x - m_titleText.getSize().x,
+                m_titleText.setPosition(x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (2 * getRenderer()->m_distanceToSide) - buttonOffsetX - m_titleText.getSize().x,
                                         y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
             else
-                m_titleText.setPosition(x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (2 * getRenderer()->m_distanceToSide) - m_closeButton->getSize().x - m_titleText.getSize().x,
+                m_titleText.setPosition(x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (2 * getRenderer()->m_distanceToSide) - buttonOffsetX - m_titleText.getSize().x,
                                         y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
         }
 
-        m_closeButton->setPosition({x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - getRenderer()->m_distanceToSide - m_closeButton->getSize().x,
-                                    y + ((getRenderer()->m_titleBarHeight - m_closeButton->getSize().y) / 2.0f)});
+        //dX is the offset depending on the number of buttons visible
+        float dX = 0.f;
+
+        //Lets make a temporary array of all available buttons and loop through them to align properly the visible buttons
+        const std::shared_ptr<tgui::Button> buttons[3] = {m_closeButton, m_maximizeButton, m_minimizeButton};
+
+        for (std::size_t i = 0; i < 3; ++i)
+        {
+            if (buttons[i]->isVisible())
+            {
+                buttons[i]->setPosition({x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - getRenderer()->m_paddingBetweenButtons - buttons[i]->getSize().x - dX,
+                                         y + ((getRenderer()->m_titleBarHeight - buttons[i]->getSize().y) / 2.0f)});
+
+                //Increase the offset for the next button
+                dX += buttons[i]->getSize().x + getRenderer()->m_paddingBetweenButtons;
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,6 +183,8 @@ namespace tgui
         Container::setFont(font);
 
         m_closeButton->setFont(getFont());
+        m_maximizeButton->setFont(getFont());
+        m_minimizeButton->setFont(getFont());
         m_titleText.setFont(getFont());
         m_titleText.setTextSize(findBestTextSize(getFont(), getRenderer()->m_titleBarHeight * 0.85f));
 
@@ -171,6 +198,8 @@ namespace tgui
         Container::setOpacity(opacity);
 
         m_closeButton->setOpacity(m_opacity);
+        m_maximizeButton->setOpacity(m_opacity);
+        m_minimizeButton->setOpacity(m_opacity);
 
         m_iconTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
         getRenderer()->m_textureTitleBar.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
@@ -190,12 +219,48 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::setTitleButtonsText(const sf::String& closeText, const sf::String& minimizeText, const sf::String& maximizeText)
+    {
+        m_closeButtonText = closeText;
+        m_minimizeButtonText = minimizeText;
+        m_maximizeButtonText = maximizeText;
+
+        m_closeButton->setText(m_closeButtonText);
+        m_minimizeButton->setText(m_minimizeButtonText);
+        m_maximizeButton->setText(m_maximizeButtonText);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::setTitleAlignment(TitleAlignment alignment)
     {
         m_titleAlignment = alignment;
 
         // Reposition the images and text
         updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setTitleButtons(TitleButtons buttons)
+    {
+        m_titleButtons = buttons;
+
+        //Reset the visibility of the buttons given the new input
+        if (m_titleButtons & TitleButtons::Close)
+            m_closeButton->show();
+        else
+            m_closeButton->hide();
+
+        if (m_titleButtons & TitleButtons::Minimize)
+            m_minimizeButton->show();
+        else
+            m_minimizeButton->hide();
+
+        if (m_titleButtons & TitleButtons::Maximize)
+            m_maximizeButton->show();
+        else
+            m_maximizeButton->hide();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,6 +330,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::setMinimizeButton(Button::Ptr minimizeButton)
+    {
+        m_minimizeButton = minimizeButton;
+        updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Button::Ptr ChildWindow::getMinimizeButton() const
+    {
+        return m_minimizeButton;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setMaximizeButton(Button::Ptr maximizeButton)
+    {
+        m_maximizeButton = maximizeButton;
+        updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Button::Ptr ChildWindow::getMaximizeButton() const
+    {
+        return m_maximizeButton;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f ChildWindow::getChildWidgetsOffset() const
     {
         return {getRenderer()->m_borders.left, getRenderer()->m_borders.top + getRenderer()->m_titleBarHeight};
@@ -307,6 +402,15 @@ namespace tgui
             // Send the mouse press event to the close button
             if (m_closeButton->mouseOnWidget(x, y))
                 m_closeButton->leftMousePressed(x, y);
+
+            // Send the mouse press event to the minimize button
+            else if (m_minimizeButton->mouseOnWidget(x, y))
+                m_minimizeButton->leftMousePressed(x, y);
+
+            // Send the mouse press event to the maximize button
+            else if (m_maximizeButton->mouseOnWidget(x, y))
+                m_maximizeButton->leftMousePressed(x, y);
+
             else
             {
                 // The mouse went down on the title bar
@@ -324,6 +428,14 @@ namespace tgui
             // When the mouse is not on the title bar, the mouse can't be on the close button
             if (m_closeButton->m_mouseHover)
                 m_closeButton->mouseNoLongerOnWidget();
+
+            // Likewise for the minimize button
+            if (m_minimizeButton->m_mouseHover)
+                m_minimizeButton->mouseNoLongerOnWidget();
+
+            // Likewise for the maximize button
+            if (m_maximizeButton->m_mouseHover)
+                m_maximizeButton->mouseNoLongerOnWidget();
 
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
@@ -391,8 +503,29 @@ namespace tgui
                     else // The user won't stop the closing, so destroy the window
                     {
                         destroy();
-                        return;
                     }
+                }
+            }
+
+            // Check if the minimize button was clicked
+            else if (m_minimizeButton->m_mouseDown)
+            {
+                // Check if the mouse is still on the minimize button
+                if (m_minimizeButton->mouseOnWidget(x, y))
+                {
+                    if (isSignalBound("minimized"))
+                        sendSignal("minimized", std::static_pointer_cast<ChildWindow>(shared_from_this()));
+                }
+            }
+
+            // Check if the maximize button was clicked
+            else if (m_maximizeButton->m_mouseDown)
+            {
+                // Check if the mouse is still on the minimize button
+                if (m_maximizeButton->mouseOnWidget(x, y))
+                {
+                    if (isSignalBound("maximized"))
+                        sendSignal("maximized", std::static_pointer_cast<ChildWindow>(shared_from_this()));
                 }
             }
 
@@ -404,7 +537,17 @@ namespace tgui
             if (m_closeButton->m_mouseHover)
                 m_closeButton->mouseNoLongerOnWidget();
 
+            // When the mouse is not on the title bar, the mouse can't be on the minimize button either
+            if (m_minimizeButton->m_mouseHover)
+                m_minimizeButton->mouseNoLongerOnWidget();
+
+            // Nor can the maximize button be hovered
+            if (m_maximizeButton->m_mouseHover)
+                m_maximizeButton->mouseNoLongerOnWidget();
+
             m_closeButton->mouseNoLongerDown();
+            m_minimizeButton->mouseNoLongerDown();
+            m_maximizeButton->mouseNoLongerDown();
 
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
@@ -472,6 +615,18 @@ namespace tgui
             else
                 m_closeButton->mouseNoLongerOnWidget();
 
+            // Send the hover event to the minimize button
+            if (m_minimizeButton->mouseOnWidget(x, y))
+                m_minimizeButton->mouseMoved(x, y);
+            else
+                m_minimizeButton->mouseNoLongerOnWidget();
+
+            // Send the hover event to the maximize button
+            if (m_maximizeButton->mouseOnWidget(x, y))
+                m_maximizeButton->mouseMoved(x, y);
+            else
+                m_maximizeButton->mouseNoLongerOnWidget();
+
             return;
         }
         else // The mouse is not on top of the title bar
@@ -479,6 +634,12 @@ namespace tgui
             // When the mouse is not on the title bar, the mouse can't be on the close button
             if (m_closeButton->m_mouseHover)
                 m_closeButton->mouseNoLongerOnWidget();
+
+            if (m_minimizeButton->m_mouseHover)
+                m_minimizeButton->mouseNoLongerOnWidget();
+
+            if (m_maximizeButton->m_mouseHover)
+                m_maximizeButton->mouseNoLongerOnWidget();
 
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
@@ -509,6 +670,8 @@ namespace tgui
     {
         Container::mouseNoLongerOnWidget();
         m_closeButton->mouseNoLongerOnWidget();
+        m_minimizeButton->mouseNoLongerOnWidget();
+        m_maximizeButton->mouseNoLongerOnWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -517,6 +680,8 @@ namespace tgui
     {
         Container::mouseNoLongerDown();
         m_closeButton->mouseNoLongerDown();
+        m_minimizeButton->mouseNoLongerDown();
+        m_maximizeButton->mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -525,6 +690,12 @@ namespace tgui
     {
         m_closeButton->reload();
         m_closeButton->getRenderer()->setBorders({1, 1, 1, 1});
+
+        m_minimizeButton->reload();
+        m_minimizeButton->getRenderer()->setBorders({1, 1, 1, 1});
+
+        m_maximizeButton->reload();
+        m_maximizeButton->getRenderer()->setBorders({1, 1, 1, 1});
 
         getRenderer()->setTitleBarHeight(20);
         getRenderer()->setDistanceToSide(3);
@@ -549,6 +720,13 @@ namespace tgui
 
                     if (m_closeButton->getRenderer()->m_textureNormal.isLoaded())
                         m_closeButton->setSize(m_closeButton->getRenderer()->m_textureNormal.getImageSize());
+
+                    if (m_minimizeButton->getRenderer()->m_textureNormal.isLoaded())
+                        m_minimizeButton->setSize(m_minimizeButton->getRenderer()->m_textureNormal.getImageSize());
+
+
+                    if (m_maximizeButton->getRenderer()->m_textureNormal.isLoaded())
+                        m_maximizeButton->setSize(m_maximizeButton->getRenderer()->m_textureNormal.getImageSize());
                 }
             }
         }
@@ -556,7 +734,19 @@ namespace tgui
         if (!m_closeButton->getRenderer()->m_textureNormal.isLoaded())
         {
             m_closeButton->setSize({getRenderer()->m_titleBarHeight * 0.8f, getRenderer()->m_titleBarHeight * 0.8f});
-            m_closeButton->setText("X");
+            m_closeButton->setText(m_closeButtonText);
+        }
+
+        if (!m_minimizeButton->getRenderer()->m_textureNormal.isLoaded())
+        {
+            m_minimizeButton->setSize({getRenderer()->m_titleBarHeight * 0.8f, getRenderer()->m_titleBarHeight * 0.8f});
+            m_minimizeButton->setText(m_minimizeButtonText);
+        }
+
+        if (!m_maximizeButton->getRenderer()->m_textureNormal.isLoaded())
+        {
+            m_maximizeButton->setSize({getRenderer()->m_titleBarHeight * 0.8f, getRenderer()->m_titleBarHeight * 0.8f});
+            m_maximizeButton->setText(m_maximizeButtonText);
         }
 
         // Set the size of the title text
@@ -598,7 +788,12 @@ namespace tgui
                                        ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
         }
 
-        bottomRightTitleBarPosition = {(getAbsolutePosition().x + getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right - (2*getRenderer()->m_distanceToSide) - m_closeButton->getSize().x - view.getCenter().x + (view.getSize().x / 2.f))
+        const float buttonOffsetX =
+            (m_closeButton->isVisible()    ? (m_closeButton->getSize().x)    : 0) +
+            (m_minimizeButton->isVisible() ? (getRenderer()->m_paddingBetweenButtons + m_minimizeButton->getSize().x) : 0)+
+            (m_maximizeButton->isVisible() ? (getRenderer()->m_paddingBetweenButtons + m_maximizeButton->getSize().x) : 0);
+
+        bottomRightTitleBarPosition = {(getAbsolutePosition().x + getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right - (2*getRenderer()->m_distanceToSide) - buttonOffsetX - view.getCenter().x + (view.getSize().x / 2.f))
                                        * view.getViewport().width + (view.getSize().x * view.getViewport().left),
                                        (getAbsolutePosition().y + getRenderer()->m_titleBarHeight - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
@@ -704,10 +899,57 @@ namespace tgui
                     return;
                 }
 
-                if (m_childWindow->getTheme() == nullptr)
-                    throw Exception{"Failed to load the close button, ChildWindow has no connected theme to load the close button with"};
-
                 m_childWindow->m_closeButton = m_childWindow->getTheme()->internalLoad(
+                                                    m_childWindow->getPrimaryLoadingParameter(),
+                                                    Deserializer::deserialize(ObjectConverter::Type::String, value).getString()
+                                               );
+            }
+        }
+        else if (property == "minimizebutton")
+        {
+            if (value.empty() || toLower(value) == "default")
+            {
+                m_minimizeButtonClassName = "";
+                m_childWindow->m_minimizeButton = std::make_shared<Button>();
+            }
+            else
+            {
+                m_minimizeButtonClassName = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
+
+                /// TODO: Widget files do not contain themes yet. This means that child window cannot be loaded from one.
+                ///       Temporarily load default minimize button in case it is attempted.
+                if (m_childWindow->getTheme() == nullptr)
+                {
+                    m_childWindow->m_minimizeButton = std::make_shared<Button>();
+                    return;
+                }
+
+                m_childWindow->m_minimizeButton = m_childWindow->getTheme()->internalLoad(
+                                                    m_childWindow->getPrimaryLoadingParameter(),
+                                                    Deserializer::deserialize(ObjectConverter::Type::String, value).getString()
+                                               );
+            }
+        }
+        else if (property == "maximizebutton")
+        {
+            if (value.empty() || toLower(value) == "default")
+            {
+                m_maximizeButtonClassName = "";
+                m_childWindow->m_maximizeButton = std::make_shared<Button>();
+            }
+            else
+            {
+                m_maximizeButtonClassName = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
+
+                /// TODO: Widget files do not contain themes yet. This means that child window cannot be loaded from one.
+                ///       Temporarily load default minimize button in case it is attempted.
+                if (m_childWindow->getTheme() == nullptr)
+                {
+                    m_childWindow->m_maximizeButton = std::make_shared<Button>();
+                    return;
+                }
+
+                m_childWindow->m_maximizeButton = m_childWindow->getTheme()->internalLoad(
                                                     m_childWindow->getPrimaryLoadingParameter(),
                                                     Deserializer::deserialize(ObjectConverter::Type::String, value).getString()
                                                );
@@ -775,10 +1017,47 @@ namespace tgui
                         return;
                     }
 
-                    if (m_childWindow->getTheme() == nullptr)
-                        throw Exception{"Failed to load the close button, ChildWindow has no connected theme to load the close button with"};
-
                     m_childWindow->m_closeButton = m_childWindow->getTheme()->internalLoad(m_childWindow->getPrimaryLoadingParameter(), value.getString());
+                }
+            }
+
+            else if (property == "minimizebutton")
+            {
+                m_minimizeButtonClassName = value.getString();
+
+                if (value.getString().isEmpty())
+                    m_childWindow->m_minimizeButton = std::make_shared<Button>();
+                else
+                {
+                    /// TODO: Widget files do not contain themes yet. This means that child window cannot be loaded from one.
+                    ///       Temporarily load default minimize button in case it is attempted.
+                    if (m_childWindow->getTheme() == nullptr)
+                    {
+                        m_childWindow->m_minimizeButton = std::make_shared<Button>();
+                        return;
+                    }
+
+                    m_childWindow->m_minimizeButton = m_childWindow->getTheme()->internalLoad(m_childWindow->getPrimaryLoadingParameter(), value.getString());
+                }
+            }
+
+            else if (property == "maximizebutton")
+            {
+                m_maximizeButtonClassName = value.getString();
+
+                if (value.getString().isEmpty())
+                    m_childWindow->m_maximizeButton = std::make_shared<Button>();
+                else
+                {
+                    /// TODO: Widget files do not contain themes yet. This means that child window cannot be loaded from one.
+                    ///       Temporarily load default maximize button in case it is attempted.
+                    if (m_childWindow->getTheme() == nullptr)
+                    {
+                        m_childWindow->m_maximizeButton = std::make_shared<Button>();
+                        return;
+                    }
+
+                    m_childWindow->m_maximizeButton = m_childWindow->getTheme()->internalLoad(m_childWindow->getPrimaryLoadingParameter(), value.getString());
                 }
             }
         }
@@ -854,6 +1133,24 @@ namespace tgui
         else
             m_childWindow->m_closeButton->setSize({height * 0.8f, height * 0.8f});
 
+        // Set the size of the minimize button
+        if (m_textureTitleBar.isLoaded() && m_childWindow->m_minimizeButton->getRenderer()->m_textureNormal.isLoaded())
+        {
+            m_childWindow->m_minimizeButton->setSize(m_childWindow->m_minimizeButton->getRenderer()->m_textureNormal.getImageSize().x * (height / m_textureTitleBar.getImageSize().y),
+                                                  m_childWindow->m_minimizeButton->getRenderer()->m_textureNormal.getImageSize().y * (height / m_textureTitleBar.getImageSize().y));
+        }
+        else
+            m_childWindow->m_minimizeButton->setSize({height * 0.8f, height * 0.8f});
+
+        // Set the size of the maximize button
+        if (m_textureTitleBar.isLoaded() && m_childWindow->m_maximizeButton->getRenderer()->m_textureNormal.isLoaded())
+        {
+            m_childWindow->m_maximizeButton->setSize(m_childWindow->m_maximizeButton->getRenderer()->m_textureNormal.getImageSize().x * (height / m_textureTitleBar.getImageSize().y),
+                                                  m_childWindow->m_maximizeButton->getRenderer()->m_textureNormal.getImageSize().y * (height / m_textureTitleBar.getImageSize().y));
+        }
+        else
+            m_childWindow->m_maximizeButton->setSize({height * 0.8f, height * 0.8f});
+
         // Set the size of the text in the title bar
         m_childWindow->m_titleText.setTextSize(findBestTextSize(m_childWindow->getFont(), m_titleBarHeight * 0.85f));
 
@@ -902,6 +1199,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindowRenderer::setPaddingBetweenButtons(float paddingBetweenButtons)
+    {
+        m_paddingBetweenButtons = paddingBetweenButtons;
+
+        // Reposition the images and text
+        m_childWindow->updatePosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindowRenderer::setBackgroundColor(const Color& backgroundColor)
     {
         m_backgroundColor = backgroundColor;
@@ -931,6 +1238,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::shared_ptr<ButtonRenderer> ChildWindowRenderer::getMinimizeButton() const
+    {
+        return m_childWindow->m_minimizeButton->getRenderer();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<ButtonRenderer> ChildWindowRenderer::getMaximizeButton() const
+    {
+        return m_childWindow->m_maximizeButton->getRenderer();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindowRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Draw the title bar
@@ -944,8 +1265,15 @@ namespace tgui
             target.draw(titleBar, states);
         }
 
-        // Draw the close button
-        target.draw(*m_childWindow->m_closeButton, states);
+        // Draw the buttons
+        if (m_childWindow->m_closeButton->isVisible())
+            target.draw(*m_childWindow->m_closeButton, states);
+
+        if (m_childWindow->m_minimizeButton->isVisible())
+            target.draw(*m_childWindow->m_minimizeButton, states);
+
+        if (m_childWindow->m_maximizeButton->isVisible())
+            target.draw(*m_childWindow->m_maximizeButton, states);
 
         // Draw the borders
         if (m_borders != Borders{0, 0, 0, 0})
