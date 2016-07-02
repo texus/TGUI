@@ -1,0 +1,12 @@
+comment: false
+coverage:
+  range: 50...90
+  status:
+    project: false
+    patch: false
+    changes: false
+  ignore:
+    - tests/*
+    - examples/.*
+    - include/TGUI/Widgets/devel/.*
+    - src/TGUI/Widgets/devel/.*
