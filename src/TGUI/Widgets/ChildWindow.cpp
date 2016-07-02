@@ -40,8 +40,8 @@ namespace tgui
 
         addSignal<sf::Vector2f>("MousePressed");
         addSignal<ChildWindow::Ptr>("Closed");
-        addSignal<ChildWindow::Ptr>("Minimized" );
-        addSignal<ChildWindow::Ptr>("Maximized" );
+        addSignal<ChildWindow::Ptr>("Minimized");
+        addSignal<ChildWindow::Ptr>("Maximized");
 
         m_minimizeButton->hide();
         m_maximizeButton->hide();
@@ -87,55 +87,48 @@ namespace tgui
         getRenderer()->m_textureTitleBar.setPosition({x, y});
         m_iconTexture.setPosition(x + getRenderer()->m_distanceToSide, y + ((getRenderer()->m_titleBarHeight - m_iconTexture.getSize().y) / 2.0f));
 
-        const float buttonOffsetX =
-            (m_closeButton->isVisible()    ? m_closeButton->getSize().x    : 0) +
-            (m_minimizeButton->isVisible() ? getRenderer()->m_paddingBetweenButtons + m_minimizeButton->getSize().x : 0) +
-            (m_maximizeButton->isVisible() ? getRenderer()->m_paddingBetweenButtons + m_maximizeButton->getSize().x : 0);
+        // Calculate the distance from the right side that the buttons will need
+        float buttonOffsetX = 0;
+        if (m_closeButton->isVisible())
+            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_closeButton->getSize().x;
+        if (m_minimizeButton->isVisible())
+            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_minimizeButton->getSize().x;
+        if (m_maximizeButton->isVisible())
+            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_maximizeButton->getSize().x;
+        if (buttonOffsetX > 0)
+            buttonOffsetX += getRenderer()->m_distanceToSide;
 
         if (m_titleAlignment == TitleAlignment::Left)
         {
+            m_titleText.setPosition(x + getRenderer()->m_distanceToSide, y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
             if (m_iconTexture.isLoaded())
-                m_titleText.setPosition(x + 2*getRenderer()->m_distanceToSide + m_iconTexture.getSize().x,
-                                        y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
-            else
-                m_titleText.setPosition(x + getRenderer()->m_distanceToSide, y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
-
+                m_titleText.move(m_iconTexture.getSize().x + getRenderer()->m_distanceToSide, 0);
         }
         else if (m_titleAlignment == TitleAlignment::Center)
         {
             if (m_iconTexture.isLoaded())
                 m_titleText.setPosition(x + (2 * getRenderer()->m_distanceToSide) + m_iconTexture.getSize().x
-                                        + (((getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (4 * getRenderer()->m_distanceToSide) - m_iconTexture.getSize().x - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
+                                        + (((getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (3 * getRenderer()->m_distanceToSide) - m_iconTexture.getSize().x - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
                                         y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
             else
-                m_titleText.setPosition(x + getRenderer()->m_distanceToSide + (((getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (3 * getRenderer()->m_distanceToSide) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
+                m_titleText.setPosition(x + getRenderer()->m_distanceToSide + (((getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (2 * getRenderer()->m_distanceToSide) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
                                         y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
         }
-        else // if (m_titleAlignment == TitleAlignmentRight)
+        else // if (m_titleAlignment == TitleAlignment::Right)
         {
-            if (m_iconTexture.isLoaded())
-                m_titleText.setPosition(x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (2 * getRenderer()->m_distanceToSide) - buttonOffsetX - m_titleText.getSize().x,
-                                        y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
-            else
-                m_titleText.setPosition(x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - (2 * getRenderer()->m_distanceToSide) - buttonOffsetX - m_titleText.getSize().x,
-                                        y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
+            m_titleText.setPosition(x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - getRenderer()->m_distanceToSide - buttonOffsetX - m_titleText.getSize().x,
+                                    y + ((getRenderer()->m_titleBarHeight - m_titleText.getSize().y) / 2.0f));
         }
 
-        //dX is the offset depending on the number of buttons visible
-        float dX = 0.f;
-
-        //Lets make a temporary array of all available buttons and loop through them to align properly the visible buttons
-        const std::shared_ptr<tgui::Button> buttons[3] = {m_closeButton, m_maximizeButton, m_minimizeButton};
-
-        for (std::size_t i = 0; i < 3; ++i)
+        buttonOffsetX = getRenderer()->m_distanceToSide;
+        for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
         {
-            if (buttons[i]->isVisible())
+            if (button->isVisible())
             {
-                buttons[i]->setPosition({x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - getRenderer()->m_paddingBetweenButtons - buttons[i]->getSize().x - dX,
-                                         y + ((getRenderer()->m_titleBarHeight - buttons[i]->getSize().y) / 2.0f)});
+                button->setPosition({x + (getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right) - buttonOffsetX - button->getSize().x,
+                                     y + ((getRenderer()->m_titleBarHeight - button->getSize().y) / 2.0f)});
 
-                //Increase the offset for the next button
-                dX += buttons[i]->getSize().x + getRenderer()->m_paddingBetweenButtons;
+                buttonOffsetX += button->getSize().x + getRenderer()->m_paddingBetweenButtons;
             }
         }
     }
@@ -425,17 +418,12 @@ namespace tgui
         }
         else // The mouse is not on top of the title bar
         {
-            // When the mouse is not on the title bar, the mouse can't be on the close button
-            if (m_closeButton->m_mouseHover)
-                m_closeButton->mouseNoLongerOnWidget();
-
-            // Likewise for the minimize button
-            if (m_minimizeButton->m_mouseHover)
-                m_minimizeButton->mouseNoLongerOnWidget();
-
-            // Likewise for the maximize button
-            if (m_maximizeButton->m_mouseHover)
-                m_maximizeButton->mouseNoLongerOnWidget();
+            // When the mouse is not on the title bar then the mouse is definitely not on the buttons inside the title bar
+            for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            {
+                if (button->m_mouseHover)
+                    button->mouseNoLongerOnWidget();
+            }
 
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
@@ -533,21 +521,14 @@ namespace tgui
         }
         else // The mouse is not on top of the title bar
         {
-            // When the mouse is not on the title bar, the mouse can't be on the close button
-            if (m_closeButton->m_mouseHover)
-                m_closeButton->mouseNoLongerOnWidget();
+            // When the mouse is not on the title bar, the mouse can't be on the button inside it
+            for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            {
+                if (button->m_mouseHover)
+                    button->mouseNoLongerOnWidget();
 
-            // When the mouse is not on the title bar, the mouse can't be on the minimize button either
-            if (m_minimizeButton->m_mouseHover)
-                m_minimizeButton->mouseNoLongerOnWidget();
-
-            // Nor can the maximize button be hovered
-            if (m_maximizeButton->m_mouseHover)
-                m_maximizeButton->mouseNoLongerOnWidget();
-
-            m_closeButton->mouseNoLongerDown();
-            m_minimizeButton->mouseNoLongerDown();
-            m_maximizeButton->mouseNoLongerDown();
+                button->mouseNoLongerDown();
+            }
 
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
@@ -609,37 +590,25 @@ namespace tgui
         // Check if the mouse is on top of the title bar
         else if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right, getRenderer()->m_titleBarHeight}.contains(x, y))
         {
-            // Send the hover event to the close button
-            if (m_closeButton->mouseOnWidget(x, y))
-                m_closeButton->mouseMoved(x, y);
-            else
-                m_closeButton->mouseNoLongerOnWidget();
-
-            // Send the hover event to the minimize button
-            if (m_minimizeButton->mouseOnWidget(x, y))
-                m_minimizeButton->mouseMoved(x, y);
-            else
-                m_minimizeButton->mouseNoLongerOnWidget();
-
-            // Send the hover event to the maximize button
-            if (m_maximizeButton->mouseOnWidget(x, y))
-                m_maximizeButton->mouseMoved(x, y);
-            else
-                m_maximizeButton->mouseNoLongerOnWidget();
+            // Send the hover event to the button inside the title bar
+            for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            {
+                if (button->mouseOnWidget(x, y))
+                    button->mouseMoved(x, y);
+                else
+                    button->mouseNoLongerOnWidget();
+            }
 
             return;
         }
         else // The mouse is not on top of the title bar
         {
-            // When the mouse is not on the title bar, the mouse can't be on the close button
-            if (m_closeButton->m_mouseHover)
-                m_closeButton->mouseNoLongerOnWidget();
-
-            if (m_minimizeButton->m_mouseHover)
-                m_minimizeButton->mouseNoLongerOnWidget();
-
-            if (m_maximizeButton->m_mouseHover)
-                m_maximizeButton->mouseNoLongerOnWidget();
+            // When the mouse is not on the title bar, the mouse can't be on the buttons inside it
+            for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            {
+                if (button->m_mouseHover)
+                    button->mouseNoLongerOnWidget();
+            }
 
             // Check if the mouse is on top of the borders
             if ((sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
@@ -724,7 +693,6 @@ namespace tgui
                     if (m_minimizeButton->getRenderer()->m_textureNormal.isLoaded())
                         m_minimizeButton->setSize(m_minimizeButton->getRenderer()->m_textureNormal.getImageSize());
 
-
                     if (m_maximizeButton->getRenderer()->m_textureNormal.isLoaded())
                         m_maximizeButton->setSize(m_maximizeButton->getRenderer()->m_textureNormal.getImageSize());
                 }
@@ -788,13 +756,18 @@ namespace tgui
                                        ((getAbsolutePosition().y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
         }
 
-        const float buttonOffsetX =
-            (m_closeButton->isVisible()    ? (m_closeButton->getSize().x)    : 0) +
-            (m_minimizeButton->isVisible() ? (getRenderer()->m_paddingBetweenButtons + m_minimizeButton->getSize().x) : 0)+
-            (m_maximizeButton->isVisible() ? (getRenderer()->m_paddingBetweenButtons + m_maximizeButton->getSize().x) : 0);
+        float buttonOffsetX = 0;
+        if (m_closeButton->isVisible())
+            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_closeButton->getSize().x;
+        if (m_minimizeButton->isVisible())
+            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_minimizeButton->getSize().x;
+        if (m_maximizeButton->isVisible())
+            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_maximizeButton->getSize().x;
+        if (buttonOffsetX > 0)
+            buttonOffsetX += getRenderer()->m_distanceToSide;
 
-        bottomRightTitleBarPosition = {(getAbsolutePosition().x + getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right - (2*getRenderer()->m_distanceToSide) - buttonOffsetX - view.getCenter().x + (view.getSize().x / 2.f))
-                                       * view.getViewport().width + (view.getSize().x * view.getViewport().left),
+        bottomRightTitleBarPosition = {(getAbsolutePosition().x + getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right - getRenderer()->m_distanceToSide - buttonOffsetX
+                                        - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
                                        (getAbsolutePosition().y + getRenderer()->m_titleBarHeight - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
 
         // Get the old clipping area
@@ -1124,32 +1097,17 @@ namespace tgui
     {
         m_titleBarHeight = height;
 
-        // Set the size of the close button
-        if (m_textureTitleBar.isLoaded() && m_childWindow->m_closeButton->getRenderer()->m_textureNormal.isLoaded())
+        // Set the size of the buttons in the title bar
+        for (auto& button : {m_childWindow->m_closeButton, m_childWindow->m_minimizeButton, m_childWindow->m_maximizeButton})
         {
-            m_childWindow->m_closeButton->setSize(m_childWindow->m_closeButton->getRenderer()->m_textureNormal.getImageSize().x * (height / m_textureTitleBar.getImageSize().y),
-                                                  m_childWindow->m_closeButton->getRenderer()->m_textureNormal.getImageSize().y * (height / m_textureTitleBar.getImageSize().y));
+            if (m_textureTitleBar.isLoaded() && button->getRenderer()->m_textureNormal.isLoaded())
+            {
+                button->setSize(button->getRenderer()->m_textureNormal.getImageSize().x * (height / m_textureTitleBar.getImageSize().y),
+                                button->getRenderer()->m_textureNormal.getImageSize().y * (height / m_textureTitleBar.getImageSize().y));
+            }
+            else
+                button->setSize({height * 0.8f, height * 0.8f});
         }
-        else
-            m_childWindow->m_closeButton->setSize({height * 0.8f, height * 0.8f});
-
-        // Set the size of the minimize button
-        if (m_textureTitleBar.isLoaded() && m_childWindow->m_minimizeButton->getRenderer()->m_textureNormal.isLoaded())
-        {
-            m_childWindow->m_minimizeButton->setSize(m_childWindow->m_minimizeButton->getRenderer()->m_textureNormal.getImageSize().x * (height / m_textureTitleBar.getImageSize().y),
-                                                  m_childWindow->m_minimizeButton->getRenderer()->m_textureNormal.getImageSize().y * (height / m_textureTitleBar.getImageSize().y));
-        }
-        else
-            m_childWindow->m_minimizeButton->setSize({height * 0.8f, height * 0.8f});
-
-        // Set the size of the maximize button
-        if (m_textureTitleBar.isLoaded() && m_childWindow->m_maximizeButton->getRenderer()->m_textureNormal.isLoaded())
-        {
-            m_childWindow->m_maximizeButton->setSize(m_childWindow->m_maximizeButton->getRenderer()->m_textureNormal.getImageSize().x * (height / m_textureTitleBar.getImageSize().y),
-                                                  m_childWindow->m_maximizeButton->getRenderer()->m_textureNormal.getImageSize().y * (height / m_textureTitleBar.getImageSize().y));
-        }
-        else
-            m_childWindow->m_maximizeButton->setSize({height * 0.8f, height * 0.8f});
 
         // Set the size of the text in the title bar
         m_childWindow->m_titleText.setTextSize(findBestTextSize(m_childWindow->getFont(), m_titleBarHeight * 0.85f));

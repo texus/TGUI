@@ -33,9 +33,13 @@ TEST_CASE("[ChildWindow]") {
     SECTION("Signals") {
         REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](){}));
         REQUIRE_NOTHROW(childWindow->connect("Closed", [](){}));
+        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](){}));
+        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](){}));
 
         REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](sf::Vector2f){}));
         REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::ChildWindow::Ptr){}));
     }
 
     SECTION("WidgetType") {
