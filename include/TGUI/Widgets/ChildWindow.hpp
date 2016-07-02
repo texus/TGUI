@@ -48,6 +48,12 @@ namespace tgui
     ///     - Closed (Child window was closed)
     ///         * Optional parameter ChildWindow::Ptr: shared pointer to the closed child window
     ///
+    ///     - Minimized (Child window was minimized)
+    ///         * Optional parameter ChildWindow::Ptr: shared pointer to the minimized child window
+    ///
+    ///     - Maximized (Child window was maximized)
+    ///         * Optional parameter ChildWindow::Ptr: shared pointer to the maximized child window
+    ///
     ///     - Inherited signals from Container
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +73,15 @@ namespace tgui
             Right   ///< Places the title on the right side of the title bar
         };
 
+
+        /// Title buttons, bitwise OR to combine
+        enum TitleButtons
+        {
+            None     = 0,      ///< No buttons
+            Close    = 1 << 0, ///< Include a close button
+            Minimize = 1 << 1, ///< Include a minimize button
+            Maximize = 1 << 2  ///< Include a maximize button
+        };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Default constructor
@@ -199,6 +214,43 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the title buttons.
+        ///
+        /// @param buttons  Which buttons should be available in the title bar?
+        ///
+        /// By default ChildWindows only display a close button. You may set the window to show a combination of buttons.
+        /// For example, the following will set the ChildWindow to have both a minimize and close button.
+        /// @code
+        /// childWindow->setTitleButtons(tgui::ChildWindow::TitleButtons::Minimize | tgui::ChildWindow::TitleButtons::Close);
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTitleButtons(TitleButtons buttons);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the title bar buttons.
+        ///
+        /// @return Which buttons are available in the title bar
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TitleButtons getTitleButtons() const
+        {
+            return m_titleButtons;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the text within the title bar buttons.
+        ///
+        /// @param closeText     New text for the close button (default is "x")
+        /// @param minimizeText  New text for the minimize button (default is "-")
+        /// @param maximizeText  New text for the maximize button (default is "+")
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTitleButtonsText(const sf::String& closeText, const sf::String& minimizeText, const sf::String& maximizeText);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the icon in the top left corner of the child window.
         ///
         /// @param icon  the icon image
@@ -297,6 +349,58 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Button::Ptr getCloseButton() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the minimize button
+        ///
+        /// @return minimizeButton  The new minimize button
+        ///
+        /// The minimize button should have no parent and you should not longer change it after calling this function.
+        /// The function is meant to be used like this:
+        /// @code
+        /// childWindow->setMinimizeButton(theme->load("MinimizeButton"));
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMinimizeButton(Button::Ptr minimizeButton);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the minimize button
+        ///
+        /// @return minimize button of the child window
+        ///
+        /// You should not change this minimize button yourself.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Button::Ptr getMinimizeButton() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Change the maximize button
+        ///
+        /// @return maximizeButton  The new maximize button
+        ///
+        /// The maximize button should have no parent and you should not longer change it after calling this function.
+        /// The function is meant to be used like this:
+        /// @code
+        /// childWindow->setMaximizeButton(theme->load("MaximizeButton"));
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMaximizeButton(Button::Ptr maximizeButton);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the maximize button
+        ///
+        /// @return maximize button of the child window
+        ///
+        /// You should not change this maximize button yourself.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Button::Ptr getMaximizeButton() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -399,8 +503,14 @@ namespace tgui
         Label          m_titleText;
         sf::Vector2f   m_draggingPosition;
         TitleAlignment m_titleAlignment = TitleAlignment::Center;
+        TitleButtons   m_titleButtons = TitleButtons::Close;
+        sf::String     m_closeButtonText = "x";
+        sf::String     m_minimizeButtonText = "-";
+        sf::String     m_maximizeButtonText = "+";
 
         std::shared_ptr<Button> m_closeButton = std::make_shared<Button>();
+        std::shared_ptr<Button> m_minimizeButton = std::make_shared<Button>();
+        std::shared_ptr<Button> m_maximizeButton = std::make_shared<Button>();
 
         bool m_mouseDownOnTitleBar = false;
         bool m_keepInParent = false;
@@ -533,6 +643,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setDistanceToSide(float distanceToSide);
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the distance between the title buttons if multiple exist.
+        ///
+        /// @param paddingBetweenButtons  distance between the title and the side of the title bar
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setPaddingBetweenButtons(float paddingBetweenButtons);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color of the child window.
@@ -563,6 +680,21 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::shared_ptr<ButtonRenderer> getCloseButton() const;
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the renderer of the minimize button
+        ///
+        /// @return The minimize button renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::shared_ptr<ButtonRenderer> getMinimizeButton() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the renderer of the maximize button
+        ///
+        /// @return The maximize button renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::shared_ptr<ButtonRenderer> getMaximizeButton() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draws the widget on the render target.
@@ -586,6 +718,7 @@ namespace tgui
 
         float        m_titleBarHeight = 0;
         float        m_distanceToSide = 0;
+        float        m_paddingBetweenButtons = 2;//Pixels between buttons
 
         Texture      m_textureTitleBar;
 
@@ -596,6 +729,8 @@ namespace tgui
         sf::Color    m_borderColor;
 
         sf::String   m_closeButtonClassName = "";
+        sf::String   m_minimizeButtonClassName = "";
+        sf::String   m_maximizeButtonClassName = "";
 
         friend class ChildWindow;
 
