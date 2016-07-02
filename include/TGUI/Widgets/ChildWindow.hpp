@@ -74,7 +74,7 @@ namespace tgui
         };
 
 
-        /// Title buttons, bitwise OR to combine
+        /// Title buttons (bitwise OR to combine)
         enum TitleButtons
         {
             None     = 0,      ///< No buttons
@@ -214,7 +214,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the title buttons.
+        /// @brief Changes the title buttons
         ///
         /// @param buttons  Which buttons should be available in the title bar?
         ///
@@ -228,7 +228,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the title bar buttons.
+        /// @brief Returns the title bar buttons
         ///
         /// @return Which buttons are available in the title bar
         ///
@@ -240,14 +240,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text within the title bar buttons.
+        /// @brief Changes the text within the title bar buttons
         ///
         /// @param closeText     New text for the close button (default is "x")
         /// @param minimizeText  New text for the minimize button (default is "-")
         /// @param maximizeText  New text for the maximize button (default is "+")
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTitleButtonsText(const sf::String& closeText, const sf::String& minimizeText, const sf::String& maximizeText);
+        void setTitleButtonsText(const sf::String& closeText = "x", const sf::String& minimizeText = "-", const sf::String& maximizeText = "+");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -330,7 +330,7 @@ namespace tgui
         ///
         /// @return closeButton  The new close button
         ///
-        /// The close button should have no parent and you should not longer change it after calling this function.
+        /// The close button should have no parent and you should no longer change it after calling this function.
         /// The function is meant to be used like this:
         /// @code
         /// childWindow->setCloseButton(theme->load("CloseButton"));
@@ -356,7 +356,7 @@ namespace tgui
         ///
         /// @return minimizeButton  The new minimize button
         ///
-        /// The minimize button should have no parent and you should not longer change it after calling this function.
+        /// The minimize button should have no parent and you should no longer change it after calling this function.
         /// The function is meant to be used like this:
         /// @code
         /// childWindow->setMinimizeButton(theme->load("MinimizeButton"));
@@ -382,7 +382,7 @@ namespace tgui
         ///
         /// @return maximizeButton  The new maximize button
         ///
-        /// The maximize button should have no parent and you should not longer change it after calling this function.
+        /// The maximize button should have no parent and you should no longer change it after calling this function.
         /// The function is meant to be used like this:
         /// @code
         /// childWindow->setMaximizeButton(theme->load("MaximizeButton"));
@@ -718,7 +718,7 @@ namespace tgui
 
         float        m_titleBarHeight = 0;
         float        m_distanceToSide = 0;
-        float        m_paddingBetweenButtons = 2;//Pixels between buttons
+        float        m_paddingBetweenButtons = 3; // Pixels between buttons
 
         Texture      m_textureTitleBar;
 
