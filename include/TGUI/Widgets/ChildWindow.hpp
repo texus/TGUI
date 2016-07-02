@@ -221,7 +221,7 @@ namespace tgui
         /// By default ChildWindows only display a close button. You may set the window to show a combination of buttons.
         /// For example, the following will set the ChildWindow to have both a minimize and close button.
         /// @code
-        /// childWindow->setTitleButtons(tgui::ChildWindow::TitleButtons::Minimize | tgui::ChildWindow::TitleButtons::Close);
+        /// childWindow->setTitleButtons(ChildWindow::TitleButtons::Minimize | ChildWindow::TitleButtons::Close);
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTitleButtons(TitleButtons buttons);

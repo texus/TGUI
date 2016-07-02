@@ -388,7 +388,7 @@ namespace tgui
         ///
         /// Examples:
         /// @code
-        /// edit1->setInputValidator(tgui::EditBox::Validator::Int);
+        /// edit1->setInputValidator(EditBox::Validator::Int);
         /// edit2->setInputValidator("[a-zA-Z][a-zA-Z0-9]*");
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
