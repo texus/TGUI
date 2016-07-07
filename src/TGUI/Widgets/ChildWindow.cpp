@@ -89,12 +89,12 @@ namespace tgui
 
         // Calculate the distance from the right side that the buttons will need
         float buttonOffsetX = 0;
-        if (m_closeButton->isVisible())
-            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_closeButton->getSize().x;
-        if (m_minimizeButton->isVisible())
-            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_minimizeButton->getSize().x;
-        if (m_maximizeButton->isVisible())
-            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_maximizeButton->getSize().x;
+        for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+        {
+            if (button->isVisible())
+                buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + button->getSize().x;
+        }
+
         if (buttonOffsetX > 0)
             buttonOffsetX += getRenderer()->m_distanceToSide;
 
@@ -562,23 +562,33 @@ namespace tgui
         // Check if you are resizing the window
         else if (m_mouseDown && m_resizeDirection != ResizeNone)
         {
+            float minimumWidth = 0;
+
+            for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            {
+                if (button->isVisible())
+                    minimumWidth += (minimumWidth > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + button->getSize().x;
+            }
+
+            minimumWidth += 2 * getRenderer()->m_distanceToSide - getRenderer()->getBorders().left - getRenderer()->getBorders().right;
+
             if ((m_resizeDirection & ResizeLeft) != 0)
             {
                 float diff = x - getPosition().x;
-                if (getSize().x - diff >= 25)
+                if (getSize().x - diff >= minimumWidth)
                 {
                     setPosition(getPosition().x + diff, getPosition().y);
                     setSize(getSize().x - diff, getSize().y);
                 }
                 else
                 {
-                    setPosition(getPosition().x + getSize().x - 25, getPosition().y);
-                    setSize(25, getSize().y);
+                    setPosition(getPosition().x + getSize().x - minimumWidth, getPosition().y);
+                    setSize(minimumWidth, getSize().y);
                 }
             }
             else if ((m_resizeDirection & ResizeRight) != 0)
             {
-                setSize(std::max(25.0f, x - (getPosition().x + getRenderer()->m_borders.left)), getSize().y);
+                setSize(std::max(minimumWidth, x - (getPosition().x + getRenderer()->m_borders.left)), getSize().y);
             }
 
             if ((m_resizeDirection & ResizeBottom) != 0)
@@ -757,12 +767,12 @@ namespace tgui
         }
 
         float buttonOffsetX = 0;
-        if (m_closeButton->isVisible())
-            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_closeButton->getSize().x;
-        if (m_minimizeButton->isVisible())
-            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_minimizeButton->getSize().x;
-        if (m_maximizeButton->isVisible())
-            buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + m_maximizeButton->getSize().x;
+        for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+        {
+            if (button->isVisible())
+                buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->m_paddingBetweenButtons : 0) + button->getSize().x;
+        }
+
         if (buttonOffsetX > 0)
             buttonOffsetX += getRenderer()->m_distanceToSide;
 
