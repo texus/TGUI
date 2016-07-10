@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -72,7 +72,7 @@ namespace tgui
         addSignal("MouseEntered");
         addSignal("MouseLeft");
 
-        m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
+        m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,6 @@ namespace tgui
         m_draggableWidget              {other.m_draggableWidget},
         m_containerWidget              {other.m_containerWidget},
         m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
-        m_font                         {other.m_font},
         m_renderer                     {other.m_renderer}
     {
         m_callback.widget = this;
@@ -125,7 +124,7 @@ namespace tgui
         m_size.y.getImpl()->recalculate();
 
         if (m_renderer)
-            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
+            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +146,6 @@ namespace tgui
         m_draggableWidget              {std::move(other.m_draggableWidget)},
         m_containerWidget              {std::move(other.m_containerWidget)},
         m_toolTip                      {std::move(other.m_toolTip)},
-        m_font                         {std::move(other.m_font)},
         m_renderer                     {other.m_renderer},
         m_showAnimations               {std::move(other.m_showAnimations)}
     {
@@ -168,7 +166,7 @@ namespace tgui
         if (m_renderer)
         {
             other.m_renderer->unsubscribe(&other);
-            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
+            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
         }
     }
 
@@ -199,7 +197,6 @@ namespace tgui
             m_draggableWidget      = other.m_draggableWidget;
             m_containerWidget      = other.m_containerWidget;
             m_toolTip              = other.m_toolTip ? other.m_toolTip->clone() : nullptr;
-            m_font                 = other.m_font;
             m_renderer             = other.m_renderer;
             m_showAnimations       = {};
 
@@ -216,7 +213,7 @@ namespace tgui
             m_size.y.getImpl()->recalculate();
 
             if (m_renderer)
-                m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
+                m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
         }
 
         return *this;
@@ -251,7 +248,6 @@ namespace tgui
             m_draggableWidget      = std::move(other.m_draggableWidget);
             m_containerWidget      = std::move(other.m_containerWidget);
             m_toolTip              = std::move(other.m_toolTip);
-            m_font                 = std::move(other.m_font);
             m_renderer             = std::move(other.m_renderer);
             m_showAnimations       = std::move(other.m_showAnimations);
 
@@ -268,7 +264,7 @@ namespace tgui
             m_size.y.getImpl()->recalculate();
 
             if (m_renderer)
-                m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
+                m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
         }
 
         return *this;
@@ -284,10 +280,10 @@ namespace tgui
         m_renderer->m_data = rendererData;
 
         if (m_renderer)
-            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter&& value){ rendererChangedCallback(property, std::move(value)); });
+            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
 
         for (auto& pair : rendererData->propertyValuePairs)
-            rendererChanged(pair.first, ObjectConverter{pair.second});
+            rendererChanged(pair.first, pair.second);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -555,20 +551,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::setFont(const Font& font)
-    {
-        m_font = font.getFont();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<sf::Font> Widget::getFont() const
-    {
-        return m_font;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     sf::Vector2f Widget::getWidgetOffset() const
     {
         return sf::Vector2f{0, 0};
@@ -686,9 +668,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::rendererChanged(const std::string& property, ObjectConverter&&)
+    void Widget::rendererChanged(const std::string& property, ObjectConverter&)
     {
-        if (property != "opacity")
+        if ((property != "opacity") && (property != "font"))
             throw Exception{"Could not set property '" + property + "', widget of type '" + getWidgetType() + "' does not has this property."};
     }
 
@@ -710,9 +692,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::rendererChangedCallback(const std::string& property, ObjectConverter&& value)
+    void Widget::rendererChangedCallback(const std::string& property, ObjectConverter& value)
     {
-        rendererChanged(property, std::move(value));
+        rendererChanged(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -775,86 +757,6 @@ namespace tgui
             border.setPosition(position.x, position.y + size.y - borders.bottom);
             target.draw(border, states);
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void WidgetRenderer::setOpacity(float opacity)
-    {
-        if (opacity < 0)
-            opacity = 0;
-        else if (opacity > 1)
-            opacity = 1;
-
-        setProperty("opacity", ObjectConverter{opacity});
-    }
-
-    TGUI_RENDERER_PROPERTY_GET_NUMBER(WidgetRenderer, Opacity, 1)
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void WidgetRenderer::setProperty(const std::string& property, const std::string& value)
-    {
-        setProperty(property, ObjectConverter{sf::String{value}});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void WidgetRenderer::setProperty(const std::string& property, ObjectConverter&& value)
-    {
-        std::string lowercaseProperty = toLower(property);
-
-        m_data->propertyValuePairs[lowercaseProperty] = value;
-
-        for (auto& observer : m_data->observers)
-            observer.second(lowercaseProperty, ObjectConverter{value});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter WidgetRenderer::getProperty(const std::string& property) const
-    {
-        auto it = m_data->propertyValuePairs.find(toLower(property));
-        if (it != m_data->propertyValuePairs.end())
-            return it->second;
-        else
-            return {};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const std::map<std::string, ObjectConverter>& WidgetRenderer::getPropertyValuePairs() const
-    {
-        return m_data->propertyValuePairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void WidgetRenderer::subscribe(void* id, const std::function<void(const std::string& property, ObjectConverter&& value)>& function)
-    {
-        m_data->observers[id] = function;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void WidgetRenderer::unsubscribe(void* id)
-    {
-        m_data->observers.erase(id);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<RendererData> WidgetRenderer::getData() const
-    {
-        return m_data;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<RendererData> WidgetRenderer::clone() const
-    {
-        return std::make_shared<RendererData>(*m_data);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

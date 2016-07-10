@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Loading/ObjectConverter.hpp>
+#include <TGUI/ObjectConverter.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 #include <cassert>
@@ -51,6 +51,8 @@ namespace tgui
             m_string = Serializer::serialize(m_outline);
         else if (m_type == Type::Texture)
             m_string = Serializer::serialize(m_texture);
+        else if (m_type == Type::TextStyle)
+            m_string = encodeTextStyle(m_textStyle);
 
         m_serialized = true;
         return m_string;
@@ -58,13 +60,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::shared_ptr<sf::Font>& ObjectConverter::getFont()
+    const Font& ObjectConverter::getFont()
     {
         assert(m_type == Type::Font || m_type == Type::String);
 
         if (m_type == Type::String)
         {
-            m_font = Deserializer::deserialize(ObjectConverter::Type::Font, m_string).getFont();
+            m_font = Font(m_string);
             m_type = Type::Font;
         }
 
@@ -73,13 +75,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ObjectConverter::getColor()
+    const Color& ObjectConverter::getColor()
     {
         assert(m_type == Type::Color || m_type == Type::String);
 
         if (m_type == Type::String)
         {
-            m_color = Deserializer::deserialize(ObjectConverter::Type::Color, m_string).getColor();
+            m_color = Color(m_string);
             m_type = Type::Color;
         }
 
@@ -129,6 +131,21 @@ namespace tgui
         }
 
         return m_texture;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const TextStyle& ObjectConverter::getTextStyle()
+    {
+        assert(m_type == Type::TextStyle || m_type == Type::String);
+
+        if (m_type == Type::String)
+        {
+            m_textStyle = decodeTextStyle(m_string);
+            m_type = Type::TextStyle;
+        }
+
+        return m_textStyle;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

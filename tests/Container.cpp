@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -41,7 +41,7 @@ TEST_CASE("[Container]") {
 
     SECTION("default font in gui") {
         REQUIRE(std::make_shared<tgui::Gui>()->getFont() != nullptr);
-        REQUIRE(std::make_shared<tgui::Panel>()->getFont() == nullptr);
+        REQUIRE(std::make_shared<tgui::Panel>()->getRenderer()->getFont() == nullptr);
     }
 
     SECTION("add") {
@@ -183,7 +183,7 @@ TEST_CASE("[Container]") {
         REQUIRE(container->getWidgetName(widget2) == "w2");
         REQUIRE(container->getWidgetName(widget3) == "w003");
     }
-/**
+
     SECTION("focus") {
         auto editBox1 = std::make_shared<tgui::EditBox>();
         tgui::EditBox::Ptr editBox2 = std::make_shared<tgui::EditBox>();
@@ -224,7 +224,7 @@ TEST_CASE("[Container]") {
         REQUIRE(!editBox2->isFocused());
         REQUIRE(!editBox3->isFocused());
     }
-*/
+
     SECTION("setOpacity") {
         REQUIRE(container->getOpacity() == 1);
 

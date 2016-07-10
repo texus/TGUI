@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -110,7 +110,7 @@ namespace tgui
     void DataIO::emit(std::shared_ptr<Node> rootNode, std::stringstream& stream)
     {
         for (auto& pair : rootNode->propertyValuePairs)
-            stream << pair.first << ": " << pair.second->value << ";" << std::endl;
+            stream << pair.first << ": " << pair.second->value.toAnsiString() << ";" << std::endl;
 
         if (rootNode->propertyValuePairs.size() > 0 && rootNode->children.size() > 0)
             stream << std::endl;
@@ -282,13 +282,13 @@ namespace tgui
                         }
                         else if (line[i] == '"')
                         {
-                            valueNode->valueList.back().push_back(line[i]);
+                            valueNode->valueList.back().insert(valueNode->valueList.back().getSize(), line[i]);
                             i++;
 
                             bool backslash = false;
                             while (i < line.size()-1)
                             {
-                                valueNode->valueList.back().push_back(line[i]);
+                                valueNode->valueList.back().insert(valueNode->valueList.back().getSize(), line[i]);
 
                                 if (line[i] == '"' && !backslash)
                                 {
@@ -306,7 +306,7 @@ namespace tgui
                         }
                         else
                         {
-                            valueNode->valueList.back().push_back(line[i]);
+                            valueNode->valueList.back().insert(valueNode->valueList.back().getSize(), line[i]);
                             i++;
                         }
                     }

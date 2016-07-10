@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -28,7 +28,7 @@
 TEST_CASE("[EditBox]")
 {
     tgui::EditBox::Ptr editBox = std::make_shared<tgui::EditBox>();
-    editBox->setFont("resources/DroidSansArmenian.ttf");
+    editBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")
     {
@@ -376,18 +376,18 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextBackgroundColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", "rgb(50, 60, 70)"));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretColor", "rgb(60, 70, 80)"));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorNormal", "rgb(70, 80, 90)"));
+                REQUIRE_NOTHROW(renderer->setProperty("CaretColorHover", "rgb(110, 120, 130)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(90, 100, 110)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", "rgb(100, 110, 120)"));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", "2"));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold"));
-                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", "Italic | Underlined"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Italic"));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", "Bold | Underlined"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
-
-                REQUIRE(renderer->getProperty("TextStyle").getString() == "Bold");
-                REQUIRE(renderer->getProperty("DefaultTextStyle").getString() == "Italic | Underlined");
+                REQUIRE_NOTHROW(renderer->setProperty("Font", "resources/DroidSansArmenian.ttf"));
             }
 
             SECTION("set object property")
@@ -397,43 +397,37 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextBackgroundColor", sf::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretColor", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorNormal", sf::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("CaretColorHover", sf::Color{110, 120, 130}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", sf::Color{100, 110, 120}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", 2));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Bold));
-                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", sf::Text::Italic | sf::Text::Underlined));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Italic));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", tgui::TextStyle(sf::Text::Bold | sf::Text::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
-
-                REQUIRE(renderer->getProperty("TextStyle").getNumber() == sf::Text::Bold);
-                REQUIRE(renderer->getProperty("DefaultTextStyle").getNumber() == (sf::Text::Italic | sf::Text::Underlined));
             }
 
             SECTION("functions")
             {
-                renderer->setBackgroundColor({10, 20, 30});
-                REQUIRE(renderer->getBackgroundColorNormal() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getBackgroundColorHover() == sf::Color(10, 20, 30));
-
                 renderer->setTextColor({20, 30, 40});
                 renderer->setSelectedTextColor({30, 40, 50});
                 renderer->setSelectedTextBackgroundColor({40, 50, 60});
                 renderer->setDefaultTextColor({50, 60, 70});
                 renderer->setCaretColor({60, 70, 80});
-                renderer->setBackgroundColorNormal({70, 80, 90});
+                renderer->setCaretColorHover({110, 120, 130});
+                renderer->setBackgroundColor({70, 80, 90});
                 renderer->setBackgroundColorHover({80, 90, 100});
                 renderer->setBorderColor({90, 100, 110});
+                renderer->setBorderColorHover({100, 110, 120});
                 renderer->setCaretWidth(2);
-                renderer->setTextStyle(sf::Text::Bold);
-                renderer->setDefaultTextStyle(sf::Text::Italic | sf::Text::Underlined);
+                renderer->setTextStyle(sf::Text::Italic);
+                renderer->setDefaultTextStyle(sf::Text::Bold | sf::Text::Underlined);
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
                 renderer->setOpacity(0.8f);
-
-                REQUIRE(renderer->getProperty("TextStyle").getNumber() == sf::Text::Bold);
-                REQUIRE(renderer->getProperty("DefaultTextStyle").getNumber() == (sf::Text::Italic | sf::Text::Underlined));
             }
 
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(20, 30, 40));
@@ -441,10 +435,14 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getProperty("SelectedTextBackgroundColor").getColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("DefaultTextColor").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("CaretColor").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("BackgroundColorNormal").getColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("CaretColorHover").getColor() == sf::Color(110, 120, 130));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("CaretWidth").getNumber() == 2);
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Italic);
+            REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == (sf::Text::Bold | sf::Text::Underlined));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
@@ -454,12 +452,14 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getSelectedTextBackgroundColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getDefaultTextColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getCaretColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getBackgroundColorNormal() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getCaretColorHover() == sf::Color(110, 120, 130));
+            REQUIRE(renderer->getBackgroundColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getBackgroundColorHover() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getBorderColor() == sf::Color(90, 100, 110));
+            REQUIRE(renderer->getBorderColorHover() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getCaretWidth() == 2);
-            REQUIRE(renderer->getTextStyle() == sf::Text::Bold);
-            REQUIRE(renderer->getDefaultTextStyle() == (sf::Text::Italic | sf::Text::Underlined));
+            REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
+            REQUIRE(renderer->getDefaultTextStyle() == (sf::Text::Bold | sf::Text::Underlined));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getPadding() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getOpacity() == 0.8f);
@@ -471,36 +471,32 @@ TEST_CASE("[EditBox]")
             tgui::Texture textureHover("resources/Black.png", {0, 114, 60, 40}, {15, 0, 30, 40});
             tgui::Texture textureFocused("resources/Black.png", {0, 114, 60, 40}, {15, 0, 30, 40});
 
-            REQUIRE(!renderer->getProperty("TextureNormal").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("TextureHover").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("TextureFocused").getTexture().isLoaded());
-
             SECTION("set serialized property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("TextureNormal", tgui::Serializer::serialize(textureNormal)));
+                REQUIRE_NOTHROW(renderer->setProperty("Texture", tgui::Serializer::serialize(textureNormal)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureHover", tgui::Serializer::serialize(textureHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureFocused", tgui::Serializer::serialize(textureFocused)));
             }
 
             SECTION("set object property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("TextureNormal", textureNormal));
+                REQUIRE_NOTHROW(renderer->setProperty("Texture", textureNormal));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureHover", textureHover));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureFocused", textureFocused));
             }
 
             SECTION("functions")
             {
-                renderer->setTextureNormal(textureNormal);
+                renderer->setTexture(textureNormal);
                 renderer->setTextureHover(textureHover);
                 renderer->setTextureFocused(textureFocused);
             }
 
-            REQUIRE(renderer->getProperty("TextureNormal").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("Texture").getTexture().isLoaded());
             REQUIRE(renderer->getProperty("TextureHover").getTexture().isLoaded());
             REQUIRE(renderer->getProperty("TextureFocused").getTexture().isLoaded());
 
-            REQUIRE(renderer->getTextureNormal().getData() == textureNormal.getData());
+            REQUIRE(renderer->getTexture().getData() == textureNormal.getData());
             REQUIRE(renderer->getTextureHover().getData() == textureHover.getData());
             REQUIRE(renderer->getTextureFocused().getData() == textureFocused.getData());
         }
@@ -524,20 +520,6 @@ TEST_CASE("[EditBox]")
         editBox->setAlignment(tgui::EditBox::Alignment::Right);
         editBox->limitTextWidth();
         editBox->setInputValidator("[0-9a-zA-Z]*");
-        editBox->getRenderer()->setTextColor({20, 30, 40});
-        editBox->getRenderer()->setSelectedTextColor({30, 40, 50});
-        editBox->getRenderer()->setSelectedTextBackgroundColor({40, 50, 60});
-        editBox->getRenderer()->setDefaultTextColor({50, 60, 70});
-        editBox->getRenderer()->setCaretColor({60, 70, 80});
-        editBox->getRenderer()->setBackgroundColorNormal({70, 80, 90});
-        editBox->getRenderer()->setBackgroundColorHover({80, 90, 100});
-        editBox->getRenderer()->setBorderColor({90, 100, 110});
-        editBox->getRenderer()->setCaretWidth(2);
-        editBox->getRenderer()->setTextStyle(sf::Text::Bold);
-        editBox->getRenderer()->setDefaultTextStyle(sf::Text::Italic | sf::Text::Underlined);
-        editBox->getRenderer()->setBorders({1, 2, 3, 4});
-        editBox->getRenderer()->setPadding({5, 6, 7, 8});
-        editBox->getRenderer()->setOpacity(0.8f);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileEditBox1.txt"));
 

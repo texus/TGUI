@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -25,7 +25,6 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Clipping.hpp>
 
@@ -54,18 +53,19 @@ namespace tgui
         m_draggableWidget = true;
         m_allowFocus = true;
 
-        m_renderer = aurora::makeCopied<tgui::EditBoxRenderer>();
+        m_renderer = aurora::makeCopied<EditBoxRenderer>();
         setRenderer(m_renderer->getData());
 
-        m_defaultText.setStyle(getRenderer()->getDefaultTextStyle());
-        m_caret.setSize({getRenderer()->getCaretWidth(), 0});
+        getRenderer()->setBorders({2});
+        getRenderer()->setCaretWidth(1);
+        getRenderer()->setTextColor({60, 60, 60});
+        getRenderer()->setSelectedTextColor(sf::Color::White);
+        getRenderer()->setBackgroundColor({245, 245, 245});
+        getRenderer()->setBackgroundColorHover(sf::Color::White);
+        getRenderer()->setDefaultTextColor({160, 160, 160});
+        getRenderer()->setDefaultTextStyle(sf::Text::Italic);
 
         setSize({240, 30});
-        getRenderer()->setBorders({2, 2, 2, 2});
-        m_textBeforeSelection.setFillColor(getRenderer()->getTextColor());
-        m_textAfterSelection.setFillColor(getRenderer()->getTextColor());
-        m_textSelection.setFillColor(getRenderer()->getSelectedTextColor());
-        m_defaultText.setFillColor(getRenderer()->getDefaultTextColor());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ namespace tgui
         if (m_textSize == 0)
             setText(m_text);
 
-        getRenderer()->getTextureNormal().setSize(getUsableSize());
+        getRenderer()->getTexture().setSize(getUsableSize());
         getRenderer()->getTextureHover().setSize(getUsableSize());
         getRenderer()->getTextureFocused().setSize(getUsableSize());
 
@@ -101,31 +101,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setFont(const Font& font)
-    {
-        Widget::setFont(font);
-
-        if (font.getFont())
-        {
-            m_textBeforeSelection.setFont(*font.getFont());
-            m_textSelection.setFont(*font.getFont());
-            m_textAfterSelection.setFont(*font.getFont());
-            m_textFull.setFont(*font.getFont());
-            m_defaultText.setFont(*font.getFont());
-        }
-
-        // Recalculate the text size and position
-        setText(m_text);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void EditBox::setText(const sf::String& text)
     {
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
-            m_textFull.setCharacterSize(findBestTextSize(getFont(), (getUsableSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.85f));
+            m_textFull.setCharacterSize(findBestTextSize(getRenderer()->getFont(), (getUsableSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.85f));
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
@@ -172,9 +153,11 @@ namespace tgui
         m_textAfterSelection.setString("");
         m_textFull.setString(m_displayedText);
 
-        float width = getVisibleEditBoxWidth();
+        if (!getRenderer()->getFont())
+            return;
 
         // Check if there is a text width limit
+        float width = getVisibleEditBoxWidth();
         if (m_limitTextWidth)
         {
             // Now check if the text fits into the EditBox
@@ -347,6 +330,9 @@ namespace tgui
     {
         m_limitTextWidth = limitWidth;
 
+        if (!getRenderer()->getFont())
+            return;
+
         // Check if the width is being limited
         if (m_limitTextWidth)
         {
@@ -397,6 +383,9 @@ namespace tgui
         m_textSelection.setString("");
         m_textAfterSelection.setString("");
         m_textFull.setString(m_displayedText);
+
+        if (!getRenderer()->getFont())
+            return;
 
         // Check if scrolling is enabled
         if (!m_limitTextWidth)
@@ -892,7 +881,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::rendererChanged(const std::string& property, ObjectConverter&& value)
+    void EditBox::rendererChanged(const std::string& property, ObjectConverter& value)
     {
         if (property == "borders")
         {
@@ -922,7 +911,7 @@ namespace tgui
         {
             m_defaultText.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
         }
-        else if ((property == "texturenormal") || (property == "texturehover") || (property == "texturefocused"))
+        else if ((property == "texture") || (property == "texturehover") || (property == "texturefocused"))
         {
             value.getTexture().setPosition({getRenderer()->getBorders().left, getRenderer()->getBorders().top});
             value.getTexture().setSize(getSize());
@@ -932,16 +921,10 @@ namespace tgui
         }
         else if (property == "textstyle")
         {
-            sf::Uint32 style;
-            if (value.getType() == ObjectConverter::Type::Number)
-                style = value.getNumber();
-            else
-                style = decodeTextStyle(value.getString());
-
-            m_textBeforeSelection.setStyle(style);
-            m_textAfterSelection.setStyle(style);
-            m_textSelection.setStyle(style);
-            m_textFull.setStyle(style);
+            m_textBeforeSelection.setStyle(value.getTextStyle());
+            m_textAfterSelection.setStyle(value.getTextStyle());
+            m_textSelection.setStyle(value.getTextStyle());
+            m_textFull.setStyle(value.getTextStyle());
         }
         else if (property == "defaulttextstyle")
         {
@@ -962,17 +945,34 @@ namespace tgui
             m_textSelection.setFillColor(calcColorOpacity(getRenderer()->getSelectedTextColor(), opacity));
             m_defaultText.setFillColor(calcColorOpacity(getRenderer()->getDefaultTextColor(), opacity));
 
-            getRenderer()->getTextureNormal().setOpacity(opacity);
+            getRenderer()->getTexture().setOpacity(opacity);
             getRenderer()->getTextureHover().setOpacity(opacity);
             getRenderer()->getTextureFocused().setOpacity(opacity);
         }
+        else if (property == "font")
+        {
+            std::shared_ptr<sf::Font> font = value.getFont();
+            if (font)
+            {
+                m_textBeforeSelection.setFont(*font);
+                m_textSelection.setFont(*font);
+                m_textAfterSelection.setFont(*font);
+                m_textFull.setFont(*font);
+                m_defaultText.setFont(*font);
+            }
+
+            // Recalculate the text size and position
+            setText(m_text);
+        }
         else if ((property != "bordercolor")
-              && (property != "backgroundcolornormal")
+              && (property != "bordercolorhover")
+              && (property != "backgroundcolor")
               && (property != "backgroundcolorhover")
               && (property != "selectedtextbackgroundcolor")
-              && (property != "caretcolor"))
+              && (property != "caretcolor")
+              && (property != "caretcolorhover"))
         {
-            Widget::rendererChanged(property, std::move(value));
+            Widget::rendererChanged(property, value);
         }
     }
 
@@ -1136,10 +1136,10 @@ namespace tgui
 
         float textX = padding.left - m_textCropPosition;
         float textY = 0;
-        if (getFont())
+        if (getRenderer()->getFont())
         {
-            textY = std::round((padding.top - getTextVerticalCorrection(getFont(), getTextSize()))
-                               + ((getSize().y - padding.bottom - padding.top) - getFont()->getLineSpacing(getTextSize())) / 2.f);
+            textY = std::round((padding.top - getTextVerticalCorrection(getRenderer()->getFont(), getTextSize()))
+                               + ((getSize().y - padding.bottom - padding.top) - getRenderer()->getFont().getLineSpacing(getTextSize())) / 2.f);
         }
 
         // Check if the layout wasn't left
@@ -1170,7 +1170,7 @@ namespace tgui
         {
             // Watch out for the kerning
             if (m_textBeforeSelection.getString().getSize() > 0)
-                textX += m_font->getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
+                textX += getRenderer()->getFont().getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
             textX += m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x - m_textBeforeSelection.getPosition().x;
 
@@ -1184,7 +1184,7 @@ namespace tgui
 
             // Watch out for kerning
             if (m_displayedText.getSize() > m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize())
-                textX += m_font->getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
+                textX += getRenderer()->getFont().getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
             // Set the text selected text on the correct position
             textX += m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x  - m_textSelection.getPosition().x;
@@ -1226,7 +1226,10 @@ namespace tgui
         Borders borders = getRenderer()->getBorders();
         if (borders != Borders{0})
         {
-            drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColor());
+            if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
+                drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColorHover());
+            else
+                drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColor());
 
             // Don't try to draw the text when there is no space left for it
             if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
@@ -1236,12 +1239,12 @@ namespace tgui
         states.transform.translate({borders.left, borders.top});
 
         // Draw the background
-        if (getRenderer()->getTextureNormal().isLoaded())
+        if (getRenderer()->getTexture().isLoaded())
         {
             if (m_mouseHover && getRenderer()->getTextureHover().isLoaded())
                 getRenderer()->getTextureHover().draw(target, states);
             else
-                getRenderer()->getTextureNormal().draw(target, states);
+                getRenderer()->getTexture().draw(target, states);
 
             // When the edit box is focused then draw an extra image
             if (m_focused && getRenderer()->getTextureFocused().isLoaded())
@@ -1252,7 +1255,7 @@ namespace tgui
             if (m_mouseHover)
                 drawRectangleShape(target, states, getPosition(), getUsableSize(), getRenderer()->getBackgroundColorHover());
             else
-                drawRectangleShape(target, states, getPosition(), getUsableSize(), getRenderer()->getBackgroundColorNormal());
+                drawRectangleShape(target, states, getPosition(), getUsableSize(), getRenderer()->getBackgroundColor());
         }
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
@@ -1280,90 +1283,14 @@ namespace tgui
         }
 
         // Draw the caret
-        if ((m_focused) && (m_caretVisible))
-            drawRectangleShape(target, states, m_caret.getPosition(), m_caret.getSize(), getRenderer()->getCaretColor());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setTextStyle(sf::Uint32 style)
-    {
-        setProperty("textstyle", ObjectConverter{static_cast<float>(style)});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Uint32 EditBoxRenderer::getTextStyle() const
-    {
-        auto it = m_data->propertyValuePairs.find("textstyle");
-        if (it != m_data->propertyValuePairs.end())
+        if (m_focused && m_caretVisible)
         {
-            if (it->second.getType() == ObjectConverter::Type::String)
-                it->second = {static_cast<float>(decodeTextStyle(it->second.getString()))};
-
-            return it->second.getNumber();
-        }
-        else
-        {
-            m_data->propertyValuePairs["textstyle"] = {static_cast<float>(sf::Text::Regular)};
-            return sf::Text::Regular;
+            if (m_mouseHover && getRenderer()->getCaretColorHover().isSet())
+                drawRectangleShape(target, states, m_caret.getPosition(), m_caret.getSize(), getRenderer()->getCaretColorHover());
+            else
+                drawRectangleShape(target, states, m_caret.getPosition(), m_caret.getSize(), getRenderer()->getCaretColor());
         }
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setDefaultTextStyle(sf::Uint32 style)
-    {
-        setProperty("defaulttextstyle", ObjectConverter{static_cast<float>(style)});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Uint32 EditBoxRenderer::getDefaultTextStyle() const
-    {
-        auto it = m_data->propertyValuePairs.find("defaulttextstyle");
-        if (it != m_data->propertyValuePairs.end())
-        {
-            if (it->second.getType() == ObjectConverter::Type::String)
-                it->second = {static_cast<float>(decodeTextStyle(it->second.getString()))};
-
-            return it->second.getNumber();
-        }
-        else
-        {
-            m_data->propertyValuePairs["defaulttextstyle"] = {static_cast<float>(sf::Text::Italic)};
-            return sf::Text::Italic;
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBoxRenderer::setBackgroundColor(const Color& color)
-    {
-        setBackgroundColorNormal(color);
-        setBackgroundColorHover(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_RENDERER_PROPERTY_OUTLINE(EditBoxRenderer, Borders, Borders(0))
-    TGUI_RENDERER_PROPERTY_OUTLINE(EditBoxRenderer, Padding, Padding(0))
-
-    TGUI_RENDERER_PROPERTY_NUMBER(EditBoxRenderer, CaretWidth, 1.f)
-
-    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, TextColor, Color(60, 60, 60))
-    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, SelectedTextColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, SelectedTextBackgroundColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, DefaultTextColor, Color(245, 245, 245))
-    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BackgroundColorNormal, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BackgroundColorHover, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, CaretColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BorderColor, sf::Color::Black)
-
-    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureNormal)
-    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureHover)
-    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureFocused)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

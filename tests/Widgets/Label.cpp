@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -27,9 +27,10 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Gui.hpp>
 
-TEST_CASE("[Label]") {
+TEST_CASE("[Label]")
+{
     tgui::Label::Ptr label = std::make_shared<tgui::Label>();
-    label->setFont("resources/DroidSansArmenian.ttf");
+    label->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")
     {
@@ -59,13 +60,6 @@ TEST_CASE("[Label]") {
         REQUIRE(label->getText() == "");
         label->setText("SomeText");
         REQUIRE(label->getText() == "SomeText");
-    }
-
-    SECTION("TextStyle")
-    {
-        REQUIRE(label->getTextStyle() == sf::Text::Regular);
-        label->setTextStyle(sf::Text::Bold | sf::Text::Italic);
-        REQUIRE(label->getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
     }
 
     SECTION("TextSize")
@@ -248,6 +242,7 @@ TEST_CASE("[Label]") {
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(50, 150, 100)"));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+            REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold | Italic"));
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
         }
 
@@ -258,6 +253,7 @@ TEST_CASE("[Label]") {
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{50, 150, 100}));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
+            REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle{sf::Text::Bold | sf::Text::Italic}));
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
         }
 
@@ -268,6 +264,7 @@ TEST_CASE("[Label]") {
             renderer->setBorderColor({50, 150, 100});
             renderer->setBorders({1, 2, 3, 4});
             renderer->setPadding({5, 6, 7, 8});
+            renderer->setTextStyle(sf::Text::Bold | sf::Text::Italic);
             renderer->setOpacity(0.8f);
         }
 
@@ -276,6 +273,7 @@ TEST_CASE("[Label]") {
         REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(50, 150, 100));
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
+        REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
         REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
 
         REQUIRE(renderer->getTextColor() == sf::Color(100, 50, 150));
@@ -283,6 +281,7 @@ TEST_CASE("[Label]") {
         REQUIRE(renderer->getBorderColor() == sf::Color(50, 150, 100));
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
+        REQUIRE(renderer->getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
         REQUIRE(renderer->getOpacity() == 0.8f);
 
         REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
@@ -298,16 +297,9 @@ TEST_CASE("[Label]") {
 
         label->setText("SomeText");
         label->setTextSize(25);
-        label->setTextStyle(sf::Text::Bold | sf::Text::Italic);
         label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
         label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
         label->setMaximumTextWidth(300);
-        label->getRenderer()->setTextColor({100, 50, 150});
-        label->getRenderer()->setBackgroundColor({150, 100, 50});
-        label->getRenderer()->setBorderColor({50, 150, 100});
-        label->getRenderer()->setBorders({1, 2, 3, 4});
-        label->getRenderer()->setPadding({5, 6, 7, 8});
-        label->getRenderer()->setOpacity(0.8f);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel1.txt"));
 

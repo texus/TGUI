@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -303,10 +303,6 @@ namespace tgui
     TGUI_API std::shared_ptr<DataIO::Node> saveLabel(Label::Ptr label)
     {
         auto node = saveWidget(label);
-
-        std::string style = encodeTextStyle(label->getTextStyle());
-        if (style != "Regular")
-            SET_PROPERTY("TextStyle", style);
 
         if (label->getHorizontalAlignment() == Label::HorizontalAlignment::Center)
             SET_PROPERTY("HorizontalAlignment", "Center");

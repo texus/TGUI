@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -80,11 +80,11 @@ namespace tgui
     TGUI_API ObjectConverter deserializeFont(const std::string& value)
     {
         if (value == "null" || value == "nullptr")
-            return std::shared_ptr<sf::Font>();
+            return Font{};
 
         auto font = std::make_shared<sf::Font>();
         font->loadFromFile(Deserializer::deserialize(ObjectConverter::Type::String, value).getString());
-        return font;
+        return Font(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ namespace tgui
             // Check if the color is represented by a string with its name
             auto it = colorMap.find(toLower(str));
             if (it != colorMap.end())
-                return it->second;
+                return Color(it->second);
 
             // The color can be represented with a hexadecimal number
             if (str[0] == '#')
@@ -127,29 +127,29 @@ namespace tgui
                 // Parse the different types of strings (#123, #1234, #112233 and #11223344)
                 if (value.length() == 4)
                 {
-                    return sf::Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
-                                     static_cast<sf::Uint8>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
-                                     static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[3]))};
+                    return Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
+                                 static_cast<sf::Uint8>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
+                                 static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[3]))};
                 }
                 else if (value.length() == 5)
                 {
-                    return sf::Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
-                                     static_cast<sf::Uint8>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
-                                     static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[3])),
-                                     static_cast<sf::Uint8>(hexToDec(value[4]) * 16 + hexToDec(value[4]))};
+                    return Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
+                                 static_cast<sf::Uint8>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
+                                 static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[3])),
+                                 static_cast<sf::Uint8>(hexToDec(value[4]) * 16 + hexToDec(value[4]))};
                 }
                 else if (value.length() == 7)
                 {
-                    return sf::Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
-                                     static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
-                                     static_cast<sf::Uint8>(hexToDec(value[5]) * 16 + hexToDec(value[6]))};
+                    return Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
+                                 static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
+                                 static_cast<sf::Uint8>(hexToDec(value[5]) * 16 + hexToDec(value[6]))};
                 }
                 else if (value.length() == 9)
                 {
-                    return sf::Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
-                                     static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
-                                     static_cast<sf::Uint8>(hexToDec(value[5]) * 16 + hexToDec(value[6])),
-                                     static_cast<sf::Uint8>(hexToDec(value[7]) * 16 + hexToDec(value[8]))};
+                    return Color{static_cast<sf::Uint8>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
+                                 static_cast<sf::Uint8>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
+                                 static_cast<sf::Uint8>(hexToDec(value[5]) * 16 + hexToDec(value[6])),
+                                 static_cast<sf::Uint8>(hexToDec(value[7]) * 16 + hexToDec(value[8]))};
                 }
                 else
                     throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but has the wrong length."};
@@ -168,10 +168,10 @@ namespace tgui
             std::vector<std::string> tokens = tgui::split(str, ',');
             if (tokens.size() == 3 || tokens.size() == 4)
             {
-                return sf::Color{static_cast<sf::Uint8>(tgui::stoi(tokens[0])),
-                                 static_cast<sf::Uint8>(tgui::stoi(tokens[1])),
-                                 static_cast<sf::Uint8>(tgui::stoi(tokens[2])),
-                                 static_cast<sf::Uint8>((tokens.size() == 4) ? tgui::stoi(tokens[3]) : 255)};
+                return Color{static_cast<sf::Uint8>(tgui::stoi(tokens[0])),
+                             static_cast<sf::Uint8>(tgui::stoi(tokens[1])),
+                             static_cast<sf::Uint8>(tgui::stoi(tokens[2])),
+                             static_cast<sf::Uint8>((tokens.size() == 4) ? tgui::stoi(tokens[3]) : 255)};
             }
         }
 

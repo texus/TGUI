@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -88,6 +88,8 @@ namespace tgui
 
         if (m_mouseDown)
             sendSignal("Clicked", sf::Vector2f{x - getPosition().x, y - getPosition().y});
+
+        m_mouseDown = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

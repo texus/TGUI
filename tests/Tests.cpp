@@ -14,6 +14,8 @@ void genericCallback(unsigned int& count)
 
 void testWidgetSignals(tgui::Widget::Ptr widget)
 {
+    // TODO: Test other signals than MouseEntered and MouseLeft
+
     SECTION("mouse move")
     {
         unsigned int mouseEnteredCount = 0;

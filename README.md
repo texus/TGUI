@@ -1,4 +1,4 @@
-TGUI - Texus's Graphical User Interface
+TGUI - Texus' Graphical User Interface
 =======================================
 
 [![Build Status](https://travis-ci.org/texus/TGUI.svg?branch=0.8-WIP-dev)](https://travis-ci.org/texus/TGUI)

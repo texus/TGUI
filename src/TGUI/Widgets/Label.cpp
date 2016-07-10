@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -25,7 +25,6 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Label.hpp>
-#include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Clipping.hpp>
 
 #include <cmath>
@@ -43,8 +42,11 @@ namespace tgui
 
         addSignal<sf::String>("DoubleClicked");
 
-        m_renderer = aurora::makeCopied<tgui::LabelRenderer>();
+        m_renderer = aurora::makeCopied<LabelRenderer>();
         setRenderer(m_renderer->getData());
+
+        getRenderer()->setTextColor({60, 60, 60});
+        getRenderer()->setBorderColor({60, 60, 60});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,14 +67,6 @@ namespace tgui
 
         // You are no longer auto-sizing
         m_autoSize = false;
-        rearrangeText();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Label::setFont(const Font& font)
-    {
-        Widget::setFont(font);
         rearrangeText();
     }
 
@@ -137,21 +131,6 @@ namespace tgui
     Label::VerticalAlignment Label::getVerticalAlignment() const
     {
         return m_verticalAlignment;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Label::setTextStyle(sf::Uint32 style)
-    {
-        m_textStyle = style;
-        rearrangeText();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Uint32 Label::getTextStyle() const
-    {
-        return m_textStyle;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +209,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::rendererChanged(const std::string& property, ObjectConverter&& value)
+    void Label::rendererChanged(const std::string& property, ObjectConverter& value)
     {
         if (property == "textcolor")
         {
@@ -238,7 +217,7 @@ namespace tgui
             for (auto& line : m_lines)
                 line.setFillColor(color);
         }
-        else if ((property == "borders") || (property == "padding"))
+        else if ((property == "borders") || (property == "padding") || (property == "font") || (property == "textstyle"))
         {
             rearrangeText();
         }
@@ -249,7 +228,7 @@ namespace tgui
                 line.setFillColor(color);
         }
         else if ((property != "bordercolor") && (property != "backgroundcolor"))
-            Widget::rendererChanged(property, std::move(value));
+            Widget::rendererChanged(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,7 +286,8 @@ namespace tgui
 
     void Label::rearrangeText()
     {
-        if (!getFont())
+        std::shared_ptr<sf::Font> font = getRenderer()->getFont();
+        if (!font)
             return;
 
         // Find the maximum width of one line
@@ -345,17 +325,17 @@ namespace tgui
                     break;
                 }
                 else if (curChar == '\t')
-                    charWidth = static_cast<float>(getFont()->getGlyph(' ', m_textSize, bold).textureRect.width) * 4;
+                    charWidth = static_cast<float>(font->getGlyph(' ', m_textSize, bold).textureRect.width) * 4;
                 else
-                    charWidth = static_cast<float>(getFont()->getGlyph(curChar, m_textSize, bold).textureRect.width);
+                    charWidth = static_cast<float>(font->getGlyph(curChar, m_textSize, bold).textureRect.width);
 
-                float kerning = static_cast<float>(getFont()->getKerning(prevChar, curChar, m_textSize));
+                float kerning = static_cast<float>(font->getKerning(prevChar, curChar, m_textSize));
                 if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
                 {
                     if (curChar == '\t')
-                        width += (static_cast<float>(getFont()->getGlyph(' ', m_textSize, bold).advance) * 4) + kerning;
+                        width += (static_cast<float>(font->getGlyph(' ', m_textSize, bold).advance) * 4) + kerning;
                     else
-                        width += static_cast<float>(getFont()->getGlyph(curChar, m_textSize, bold).advance) + kerning;
+                        width += static_cast<float>(font->getGlyph(curChar, m_textSize, bold).advance) + kerning;
 
                     index++;
                 }
@@ -393,9 +373,9 @@ namespace tgui
 
             // Add the next line
             m_lines.emplace_back();
-            m_lines.back().setFont(*getFont());
+            m_lines.back().setFont(*font);
             m_lines.back().setCharacterSize(getTextSize());
-            m_lines.back().setStyle(getTextStyle());
+            m_lines.back().setStyle(getRenderer()->getTextStyle());
             m_lines.back().setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
 
             if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
@@ -422,7 +402,7 @@ namespace tgui
         {
             Borders borders = getRenderer()->getPadding() + getRenderer()->getBorders();
             m_size = {std::max(calculatedLabelWidth, maxWidth) + borders.left + borders.right,
-                      (lineCount * getFont()->getLineSpacing(m_textSize)) + borders.top + borders.bottom};
+                      (lineCount * font->getLineSpacing(m_textSize)) + borders.top + borders.bottom};
         }
 
         // Update the line positions
@@ -431,12 +411,12 @@ namespace tgui
             if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
                 return;
 
-            sf::Vector2f pos{borders.left, borders.top - getTextVerticalCorrection(getFont(), m_textSize, m_textStyle)};
+            sf::Vector2f pos{borders.left, borders.top - getTextVerticalCorrection(font, m_textSize, m_textStyle)};
 
             if (m_verticalAlignment != VerticalAlignment::Top)
             {
                 float totalHeight = getSize().y - borders.top - borders.bottom;
-                float totalTextHeight = m_lines.size() * getFont()->getLineSpacing(m_textSize);
+                float totalTextHeight = m_lines.size() * font->getLineSpacing(m_textSize);
 
                 if (m_verticalAlignment == VerticalAlignment::Center)
                     pos.y += (totalHeight - totalTextHeight) / 2.f;
@@ -449,7 +429,7 @@ namespace tgui
                 for (auto& line : m_lines)
                 {
                     line.setPosition(pos.x, std::floor(pos.y));
-                    pos.y += getFont()->getLineSpacing(m_textSize);
+                    pos.y += font->getLineSpacing(m_textSize);
                 }
             }
             else // Center or Right alignment
@@ -471,20 +451,11 @@ namespace tgui
                     else if (m_horizontalAlignment == HorizontalAlignment::Right)
                         line.setPosition(std::round(pos.x + totalWidth - textWidth), std::floor(pos.y));
 
-                    pos.y += getFont()->getLineSpacing(m_textSize);
+                    pos.y += font->getLineSpacing(m_textSize);
                 }
             }
         }
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_RENDERER_PROPERTY_OUTLINE(LabelRenderer, Borders, Borders(0))
-    TGUI_RENDERER_PROPERTY_OUTLINE(LabelRenderer, Padding, Padding(0))
-    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, TextColor, Color(60, 60, 60))
-    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BackgroundColor, sf::Color::Transparent)
-    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BorderColor, Color(0, 0, 0))
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

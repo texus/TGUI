@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -23,210 +23,175 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_OBJECT_CONVERTER_HPP
-#define TGUI_OBJECT_CONVERTER_HPP
+#ifndef TGUI_WIDGET_RENDERER_HPP
+#define TGUI_WIDGET_RENDERER_HPP
 
 
-#include <TGUI/Outline.hpp>
-#include <TGUI/Texture.hpp>
-#include <cassert>
+#include <TGUI/Config.hpp>
+#include <TGUI/ObjectConverter.hpp>
+#include <TGUI/RendererDefines.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Implicit converter for settable properties
-    ///
+    /// @brief Shared data used in renderer classes
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API ObjectConverter
+    struct RendererData
+    {
+        std::map<std::string, ObjectConverter> propertyValuePairs;
+        std::map<void*, std::function<void(const std::string& property, ObjectConverter& value)>> observers;
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Base class for all renderer classes
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API WidgetRenderer
     {
     public:
-        enum class Type
-        {
-            None,
-            Font,
-            Color,
-            String,
-            Number,
-            Outline,
-            Texture
-        };
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Virtual destructor
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual ~WidgetRenderer() {};
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor, to create an empty object
+        /// @brief Changes the opacity of the widget
+        ///
+        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter() :
-            m_type{Type::None}
-        {
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a string for later retrieval
-        ///
-        /// @param string  String to store
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(const sf::String& string)  :
-            m_type      {Type::String},
-            m_serialized{true},
-            m_string    {string}
-        {
-        }
+        virtual void setOpacity(float opacity);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a font object for later retrieval
+        /// @brief Returns the opacity of the widget
         ///
-        /// @param font  Font to store
+        /// @return The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(const std::shared_ptr<sf::Font>& font) :
-            m_type{Type::Font},
-            m_font{font}
-        {
-        }
+        float getOpacity() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a color object for later retrieval
+        /// @brief Changes the font used for the text in the widget
         ///
-        /// @param color  Color to store
+        /// @param font  The new font
+        ///
+        /// When you don't call this function then the font from the parent widget will be used.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(const sf::Color& color)  :
-            m_type {Type::Color},
-            m_color{color}
-        {
-        }
+        virtual void setFont(Font font);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a number for later retrieval
+        /// @brief Returns the font associated with the widget (if any)
         ///
-        /// @param number  Number to store
+        /// @return Font used by widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(float number) :
-            m_type  {Type::Number},
-            m_number{number}
-        {
-        }
+        Font getFont() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a outline object for later retrieval
+        /// @brief Changes a property of the renderer
         ///
-        /// @param outline  Outline to store
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The value can either be a string value or a serialized string
         ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(const Outline& outline) :
-            m_type   {Type::Outline},
-            m_outline{outline}
-        {
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a texture object for later retrieval
-        ///
-        /// @param texture  Texture to store
+        /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(const Texture& texture) :
-            m_type   {Type::Texture},
-            m_texture{texture}
-        {
-        }
+        void setProperty(const std::string& property, const std::string& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the saved string
+        /// @brief Changes a property of the renderer
         ///
-        /// @return The saved string or a serialized string
+        /// @param property  The property that you would like to change
+        /// @param value     The new value that you like to assign to the property.
+        ///                  The ObjectConverter is implicitly constructed from the possible value types
         ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::String& getString();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the saved font
-        ///
-        /// @return The saved font
-        ///
-        /// This function will assert when something other than a font was saved
+        /// @throw Exception for unknown properties or when value was of a wrong type
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::shared_ptr<sf::Font>& getFont();
+        void setProperty(const std::string& property, ObjectConverter&& value);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the saved color
+        /// @brief Retrieves the value of a certain property
         ///
-        /// @return The saved color
+        /// @param property  The property that you would like to retrieve
         ///
-        /// This function will assert when something other than a color was saved
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Color& getColor();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the saved outline
-        ///
-        /// @return The saved outline
-        ///
-        /// This function will assert when something other than a outline was saved
+        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
+        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const Outline& getOutline();
+        ObjectConverter getProperty(const std::string& property) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the saved number
+        /// @brief Gets a map with all properties and their values
         ///
-        /// @return The saved number
-        ///
-        /// This function will assert when something other than a number was saved
+        /// @return Property-value pairs of the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getNumber();
+        const std::map<std::string, ObjectConverter>& getPropertyValuePairs() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the saved texture
+        /// @brief Subscribes a callback function to changes in the renderer
         ///
-        /// @return The saved texture
-        ///
-        /// This function will assert when something other than a texture was saved
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTexture();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the type of the object that has been stored
-        ///
-        /// @return The stored object type
+        /// @param id       Unique identifier for this callback function so that you can unsubscribe it later
+        /// @param function Callback function to call when the renderer changes
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Type getType() const;
+        void subscribe(void* id, const std::function<void(const std::string& property, ObjectConverter& value)>& function);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
-        Type m_type = Type::None;
-        bool m_serialized = false;
+        /// @brief Subscribes a callback function to changes in the renderer
+        ///
+        /// @param id  Unique identifier used when subscribing the callback function
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void unsubscribe(void* id);
 
-        std::shared_ptr<sf::Font> m_font;
-        sf::Color  m_color;
-        sf::String m_string;
-        float      m_number = 0;
-        Outline    m_outline;
-        Texture    m_texture;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the renderer data
+        ///
+        /// @return Data that is shared between the renderers
+        ///
+        /// @warning You should not make changed to this data directly. Instead, use the function from the renderer classes
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::shared_ptr<RendererData> getData() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Gets a clone of the renderer data
+        ///
+        /// You can pass this to a widget with the setRenderer function to have a separate non-shared copy of this renderer.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::shared_ptr<RendererData> clone() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        std::shared_ptr<RendererData> m_data = std::make_shared<RendererData>();
+
+        friend class Widget; // Only Widget is allowed to replace the m_data variable
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,4 +199,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_OBJECT_CONVERTER_HPP
+#endif // TGUI_WIDGETS_HPP

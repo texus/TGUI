@@ -2,13 +2,16 @@ set(TGUI_SRC
     Animation.cpp
     #BoxLayout.cpp
     Clipboard.cpp
+    Color.cpp
     Container.cpp
     Font.cpp
     Global.cpp
     Gui.cpp
     #HorizontalLayout.cpp
     Layout.cpp
+    ObjectConverter.cpp
     Signal.cpp
+    TextStyle.cpp
     Texture.cpp
     TextureManager.cpp
     Transformable.cpp
@@ -16,13 +19,17 @@ set(TGUI_SRC
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
-    Loading/ObjectConverter.cpp
     Loading/Serializer.cpp
     Loading/Theme.cpp
     Loading/ThemeLoader.cpp
     Loading/WidgetConverter.cpp
     Loading/WidgetLoader.cpp
     Loading/WidgetSaver.cpp
+    Renderers/ButtonRenderer.cpp
+    Renderers/EditBoxRenderer.cpp
+    Renderers/LabelRenderer.cpp
+    Renderers/PanelRenderer.cpp
+    Renderers/WidgetRenderer.cpp
     Widgets/Button.cpp
     #Widgets/Canvas.cpp
     #Widgets/ChatBox.cpp

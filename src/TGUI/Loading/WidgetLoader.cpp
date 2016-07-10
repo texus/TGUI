@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/WidgetLoader.hpp>
 #include <TGUI/Widgets/Button.hpp>/**
 #include <TGUI/Widgets/Canvas.hpp>
@@ -163,14 +164,33 @@ namespace tgui
         if (node->propertyValuePairs["size"])
             widget->setSize(parseLayout(node->propertyValuePairs["size"]->value));
 
-        /// TODO: Font and ToolTip (and Theme?)
+        /// TODO: ToolTip
+        /// TODO: Separate renderer?
 
         for (auto& childNode : node->children)
         {
             if (toLower(childNode->name) == "renderer")
             {
+                auto rendererData = std::make_shared<RendererData>();
+
+                for (auto& pair : childNode->propertyValuePairs)
+                    rendererData->propertyValuePairs[pair.first] = {pair.second->value};
+
+                widget->setRenderer(rendererData);
+
+/**
+                auto renderer = std::make_shared<WidgetRenderer>();
+
+                for (auto& pair : childNode->propertyValuePairs)
+                    renderer->setProperty(pair.first, pair.second->value);
+
+                widget->setRenderer(renderer->getData());
+*/
+                /**
+                widget->getRenderer()->getData()->propertyValuePairs = {};
                 for (auto& pair : childNode->propertyValuePairs)
                     widget->getRenderer()->setProperty(pair.first, pair.second->value);
+                */
             }
         }
         REMOVE_CHILD("renderer");
@@ -487,15 +507,6 @@ namespace tgui
             label = std::make_shared<Label>();
 
         loadWidget(node, label);
-
-        if (node->propertyValuePairs["textstyle"])
-        {
-            sf::Uint32 style = decodeTextStyle(node->propertyValuePairs["textstyle"]->value);
-            if (style == sf::Text::Regular && toLower(node->propertyValuePairs["textstyle"]->value) != "regular")
-                throw Exception{"Failed to parse TextStyle property, found unknown style '" + node->propertyValuePairs["textstyle"]->value + "'."};
-
-            label->setTextStyle(style);
-        }
 
         if (node->propertyValuePairs["horizontalalignment"])
         {

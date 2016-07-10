@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -29,7 +29,7 @@
 TEST_CASE("[Panel]")
 {
     tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
-    panel->setFont("resources/DroidSansArmenian.ttf");
+    panel->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")
     {
@@ -215,11 +215,6 @@ TEST_CASE("[Panel]")
             auto widget = std::make_shared<tgui::ClickableWidget>();
             widget->setPosition(40, 20);
             panel->add(widget);
-
-            panel->getRenderer()->setOpacity(0.8f);
-            panel->getRenderer()->setBackgroundColor(sf::Color::Green);
-            panel->getRenderer()->setBorderColor(sf::Color::Blue);
-            panel->getRenderer()->setBorders({1, 2, 3, 4});
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel3.txt"));
 

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -33,9 +33,8 @@ TEST_CASE("[Serializer]") {
 
     SECTION("serialize font")
     {
-        auto font = std::make_shared<sf::Font>();
-        font->loadFromFile("resources/DroidSansArmenian.ttf");
-        REQUIRE(tgui::Serializer::serialize(font) == "null"); // Serializing fonts is not supported yet
+        tgui::Font font{"resources/DroidSansArmenian.ttf"};
+        REQUIRE(tgui::Serializer::serialize(font) == "\"resources/DroidSansArmenian.ttf\"");
 
         font = nullptr;
         REQUIRE(tgui::Serializer::serialize(font) == "null");
@@ -84,14 +83,14 @@ TEST_CASE("[Serializer]") {
 
     SECTION("serialize string")
     {
-        REQUIRE(tgui::Serializer::serialize({""}) == "\"\"");
-        REQUIRE(tgui::Serializer::serialize({"Just a string."}) == "\"Just a string.\"");
-        REQUIRE(tgui::Serializer::serialize({"\\"}) == "\"\\\\\"");
-        REQUIRE(tgui::Serializer::serialize({"\n"}) == "\"\\n\"");
-        REQUIRE(tgui::Serializer::serialize({"\t"}) == "\"\\t\"");
-        REQUIRE(tgui::Serializer::serialize({"\v"}) == "\"\\v\"");
-        REQUIRE(tgui::Serializer::serialize({"\""}) == "\"\\\"\"");
-        REQUIRE(tgui::Serializer::serialize({"a\t\"string\"?\nYES!"}) == "\"a\\t\\\"string\\\"?\\nYES!\"");
+        REQUIRE(tgui::Serializer::serialize(sf::String{""}) == "\"\"");
+        REQUIRE(tgui::Serializer::serialize(sf::String{"Just a string."}) == "\"Just a string.\"");
+        REQUIRE(tgui::Serializer::serialize(sf::String{"\\"}) == "\"\\\\\"");
+        REQUIRE(tgui::Serializer::serialize(sf::String{"\n"}) == "\"\\n\"");
+        REQUIRE(tgui::Serializer::serialize(sf::String{"\t"}) == "\"\\t\"");
+        REQUIRE(tgui::Serializer::serialize(sf::String{"\v"}) == "\"\\v\"");
+        REQUIRE(tgui::Serializer::serialize(sf::String{"\""}) == "\"\\\"\"");
+        REQUIRE(tgui::Serializer::serialize(sf::String{"a\t\"string\"?\nYES!"}) == "\"a\\t\\\"string\\\"?\\nYES!\"");
     }
 
     SECTION("serialize number")

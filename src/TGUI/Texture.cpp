@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -189,15 +189,13 @@ namespace tgui
 
     void Texture::setSize(const sf::Vector2f& size)
     {
+        m_size.x = std::max(size.x, 0.f);
+        m_size.y = std::max(size.y, 0.f);
+
+        setOrigin(std::min(m_size.x, m_size.y) / 2.0f, std::min(m_size.x, m_size.y) / 2.0f);
+
         if (m_loaded)
-        {
-            m_size.x = std::max(size.x, 0.f);
-            m_size.y = std::max(size.y, 0.f);
-
-            setOrigin(std::min(m_size.x, m_size.y) / 2.0f, std::min(m_size.x, m_size.y) / 2.0f);
-
             updateVertices();
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -519,7 +517,7 @@ namespace tgui
 
     void Texture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getOrigin()); ///TODO: Check this line
+        states.transform.translate(getOrigin());
         states.transform *= getTransform();
 
         if (m_loaded)

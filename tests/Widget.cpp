@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -86,20 +86,6 @@ TEST_CASE("[Widget]")
         REQUIRE(widget->getToolTip() == nullptr);
     }
 
-    SECTION("Font")
-    {
-        widget = std::make_shared<tgui::ClickableWidget>();
-        REQUIRE(widget->getFont() == nullptr);
-        widget->setFont("resources/DroidSansArmenian.ttf");
-        REQUIRE(widget->getFont() != nullptr);
-        widget->setFont(nullptr);
-        REQUIRE(widget->getFont() == nullptr);
-
-        tgui::Gui gui;
-        gui.add(widget);
-        REQUIRE(widget->getFont() != nullptr);
-    }
-
     SECTION("Move to front/back")
     {
         auto container = std::make_shared<tgui::Panel>();
@@ -142,21 +128,46 @@ TEST_CASE("[Widget]")
 
     SECTION("Renderer")
     {
+        auto renderer = widget->getRenderer();
+
         // TODO: Other tests with the renderer class (e.g. sharing and copying)
 
-        REQUIRE(widget->getRenderer()->getOpacity() == 1.f);
+        SECTION("Opacity")
+        {
+            REQUIRE(renderer->getOpacity() == 1.f);
 
-        widget->getRenderer()->setOpacity(0.5f);
-        REQUIRE(widget->getRenderer()->getOpacity() == 0.5f);
+            renderer->setOpacity(0.5f);
+            REQUIRE(renderer->getOpacity() == 0.5f);
 
-        widget->getRenderer()->setOpacity(2.f);
-        REQUIRE(widget->getRenderer()->getOpacity() == 1.f);
+            renderer->setOpacity(2.f);
+            REQUIRE(renderer->getOpacity() == 1.f);
 
-        widget->getRenderer()->setOpacity(-2.f);
-        REQUIRE(widget->getRenderer()->getOpacity() == 0.f);
+            renderer->setOpacity(-2.f);
+            REQUIRE(renderer->getOpacity() == 0.f);
 
-        auto pairs = widget->getRenderer()->getPropertyValuePairs();
-        REQUIRE(pairs["opacity"].getNumber() == widget->getRenderer()->getOpacity());
+            auto pairs = renderer->getPropertyValuePairs();
+            REQUIRE(pairs["opacity"].getNumber() == renderer->getOpacity());
+            REQUIRE(renderer->getProperty("Opacity").getNumber() == renderer->getOpacity());
+        }
+
+        SECTION("Font")
+        {
+            REQUIRE(renderer->getFont() == nullptr);
+
+            renderer->setFont("resources/DroidSansArmenian.ttf");
+
+            auto pairs = renderer->getPropertyValuePairs();
+            REQUIRE(pairs["font"].getFont() != nullptr);
+            REQUIRE(renderer->getProperty("font").getFont() != nullptr);
+            REQUIRE(renderer->getFont() != nullptr);
+
+            renderer->setFont(nullptr);
+            REQUIRE(renderer->getFont() == nullptr);
+
+            tgui::Gui gui;
+            gui.add(widget);
+            REQUIRE(renderer->getFont() != nullptr);
+        }
     }
 
     SECTION("Layouts") {

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -29,6 +29,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Config.hpp>
+#include <SFML/System/String.hpp>
 #include <sstream>
 #include <memory>
 #include <vector>
@@ -65,11 +66,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct ValueNode
         {
-            ValueNode(const std::string& v = "") : value(v) {}
+            ValueNode(const sf::String& v = "") : value(v) {}
 
-            std::string value;
+            sf::String value;
             bool listNode = false;
-            std::vector<std::string> valueList;
+            std::vector<sf::String> valueList;
         };
 
 

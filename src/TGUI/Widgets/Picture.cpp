@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -158,12 +158,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::rendererChanged(const std::string& property, ObjectConverter&& value)
+    void Picture::rendererChanged(const std::string& property, ObjectConverter& value)
     {
         if (property == "opacity")
             m_texture.setOpacity(value.getNumber());
         else
-            Widget::rendererChanged(property, std::move(value));
+            Widget::rendererChanged(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

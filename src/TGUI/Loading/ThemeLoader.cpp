@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/ThemeLoader.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 
@@ -104,8 +105,8 @@ namespace tgui
                         if (quotePos != std::string::npos)
                         {
                             ///TODO: Detect absolute pathname on windows
-                            if ((pair.second->value.size() > quotePos + 1) && (pair.second->value[quotePos+1] != '/'))
-                                pair.second->value = pair.second->value.substr(0, quotePos+1) + resourcePath + pair.second->value.substr(quotePos+1);
+                            if ((pair.second->value.getSize() > quotePos + 1) && (pair.second->value[quotePos+1] != '/'))
+                                pair.second->value = pair.second->value.substring(0, quotePos+1) + resourcePath + pair.second->value.substring(quotePos+1);
                         }
                     }
 

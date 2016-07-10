@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -303,7 +303,13 @@ TEST_CASE("[Texture]")
         tgui::Texture texture;
         texture.setPosition({10, 20});
 
-        SECTION("Normal Scaling") {
+        SECTION("Invalid image")
+        {
+            //Size==0 and not loaded yet
+        }
+
+        SECTION("Normal Scaling")
+        {
             texture.load("resources/TransparentParts.png", {10, 10, 30, 30});
             texture.setSize({60, 15});
             REQUIRE(texture.getScalingType() == tgui::Texture::ScalingType::Normal);

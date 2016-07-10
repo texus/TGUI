@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -23,9 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Loading/Theme.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,11 +38,21 @@ namespace tgui
 
         addSignal<sf::String>("Pressed");
 
-        m_renderer = aurora::makeCopied<tgui::ButtonRenderer>();
+        m_renderer = aurora::makeCopied<ButtonRenderer>();
         setRenderer(m_renderer->getData());
 
+        getRenderer()->setBorders(2);
+        getRenderer()->setTextColor({60, 60, 60});
+        getRenderer()->setTextColorHover(sf::Color::Black);
+        getRenderer()->setTextColorDown(sf::Color::Black);
+        getRenderer()->setBackgroundColor({245, 245, 245});
+        getRenderer()->setBackgroundColorHover(sf::Color::White);
+        getRenderer()->setBackgroundColorDown(sf::Color::White);
+        getRenderer()->setBorderColor({60, 60, 60});
+        getRenderer()->setBorderColorHover(sf::Color::Black);
+        getRenderer()->setBorderColorDown(sf::Color::Black);
+
         setSize(120, 30);
-        getRenderer()->setBorders({2, 2, 2, 2});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,25 +72,14 @@ namespace tgui
         Widget::setSize(size);
 
         // Reset the texture sizes
-        getRenderer()->getTextureNormal().setSize(getInnerSize());
+        getRenderer()->getTexture().setSize(getInnerSize());
         getRenderer()->getTextureHover().setSize(getInnerSize());
         getRenderer()->getTextureDown().setSize(getInnerSize());
         getRenderer()->getTextureFocused().setSize(getInnerSize());
 
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
-            setText(m_string);
-
-        recalculateTextPosition();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::setFont(const Font& font)
-    {
-        Widget::setFont(font);
-        m_text.setFont(font);
-        setText(m_string);
+            setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +101,7 @@ namespace tgui
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                unsigned int textSize = findBestTextSize(getFont(), getInnerSize().y * 0.85f);
+                unsigned int textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.85f);
                 m_text.setTextSize(textSize);
 
                 // Make the text smaller when it's too width
@@ -126,7 +123,7 @@ namespace tgui
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                unsigned int textSize = findBestTextSize(getFont(), getInnerSize().x * 0.85f);
+                unsigned int textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().x * 0.85f);
                 m_text.setTextSize(textSize);
 
                 // Make the text smaller when it's too high
@@ -134,8 +131,6 @@ namespace tgui
                     m_text.setTextSize(static_cast<unsigned int>(textSize * getInnerSize().y * 0.85f / m_text.getSize().y));
             }
         }
-
-        recalculateTextPosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +149,7 @@ namespace tgui
             m_textSize = size;
 
             // Call setText to reposition the text
-            setText(m_string);
+            setText(getText());
         }
     }
 
@@ -171,7 +166,7 @@ namespace tgui
     {
         ClickableWidget::leftMousePressed(x, y);
 
-        m_text.getRenderer()->setTextColor(getRenderer()->getTextColorDown());
+        updateTextColorAndStyle();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,8 +178,7 @@ namespace tgui
 
         ClickableWidget::leftMouseReleased(x, y);
 
-        if (m_mouseHover)
-            m_text.getRenderer()->setTextColor(getRenderer()->getTextColorHover());
+        updateTextColorAndStyle();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,34 +202,40 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::rendererChanged(const std::string& property, ObjectConverter&& value)
+    void Button::mouseEnteredWidget()
+    {
+        Widget::mouseEnteredWidget();
+        updateTextColorAndStyle();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::mouseLeftWidget()
+    {
+        Widget::mouseLeftWidget();
+        updateTextColorAndStyle();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::rendererChanged(const std::string& property, ObjectConverter& value)
     {
         if (property == "borders")
         {
             updateSize();
 
             sf::Vector2f texturePosition{value.getOutline().left, value.getOutline().top};
-            getRenderer()->getTextureNormal().setPosition(texturePosition);
+            getRenderer()->getTexture().setPosition(texturePosition);
             getRenderer()->getTextureHover().setPosition(texturePosition);
             getRenderer()->getTextureDown().setPosition(texturePosition);
             getRenderer()->getTextureFocused().setPosition(texturePosition);
         }
-        else if (property == "textcolornormal")
+        else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordown") || (property == "textcolordisabled")
+              || (property == "textstyle") || (property == "textstylehover") || (property == "textstyledown") || (property == "textstyledisabled"))
         {
-            if (!m_mouseHover)
-                m_text.getRenderer()->setTextColor(value.getColor());
+            updateTextColorAndStyle();
         }
-        else if (property == "textcolorhover")
-        {
-            if (m_mouseHover && !m_mouseDown)
-                m_text.getRenderer()->setTextColor(value.getColor());
-        }
-        else if (property == "textcolordown")
-        {
-            if (m_mouseHover && m_mouseDown)
-                m_text.getRenderer()->setTextColor(value.getColor());
-        }
-        else if ((property == "texturenormal") || (property == "texturehover") || (property == "texturedown") || (property == "texturefocused"))
+        else if ((property == "texture") || (property == "texturehover") || (property == "texturedown") || (property == "texturedisabled") || (property == "texturefocused"))
         {
             value.getTexture().setPosition({getRenderer()->getBorders().left, getRenderer()->getBorders().top});
             value.getTexture().setSize(getInnerSize());
@@ -247,19 +247,28 @@ namespace tgui
         {
             float opacity = value.getNumber();
 
-            getRenderer()->getTextureNormal().setOpacity(opacity);
+            getRenderer()->getTexture().setOpacity(opacity);
             getRenderer()->getTextureHover().setOpacity(opacity);
             getRenderer()->getTextureDown().setOpacity(opacity);
             getRenderer()->getTextureFocused().setOpacity(opacity);
 
             m_text.getRenderer()->setOpacity(opacity);
         }
-        else if ((property != "bordercolor")
-              && (property != "backgroundcolornormal")
-              && (property != "backgroundcolorhover")
-              && (property != "backgroundcolordown"))
+        else if (property == "font")
         {
-            Widget::rendererChanged(property, std::move(value));
+            m_text.getRenderer()->setFont(value.getFont());
+            setText(getText());
+        }
+        else if ((property != "bordercolor")
+              && (property != "bordercolorhover")
+              && (property != "bordercolordown")
+              && (property != "bordercolordisabled")
+              && (property != "backgroundcolor")
+              && (property != "backgroundcolorhover")
+              && (property != "backgroundcolordown")
+              && (property != "backgroundcolordisabled"))
+        {
+            Widget::rendererChanged(property, value);
         }
     }
 
@@ -273,45 +282,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::mouseEnteredWidget()
-    {
-        Widget::mouseEnteredWidget();
-
-        if (m_mouseDown)
-            m_text.getRenderer()->setTextColor(calcColorOpacity(getRenderer()->getTextColorDown(), getRenderer()->getOpacity()));
-        else
-            m_text.getRenderer()->setTextColor(calcColorOpacity(getRenderer()->getTextColorHover(), getRenderer()->getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::mouseLeftWidget()
-    {
-        Widget::mouseLeftWidget();
-
-        m_text.getRenderer()->setTextColor(calcColorOpacity(getRenderer()->getTextColorNormal(), getRenderer()->getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
 
         // Check if there is a background texture
-        if (getRenderer()->getTextureNormal().isLoaded())
+        if (getRenderer()->getTexture().isLoaded())
         {
-            if (m_mouseHover)
+            if (!m_enabled && getRenderer()->getTextureDisabled().isLoaded())
+            {
+                getRenderer()->getTextureDisabled().draw(target, states);
+            }
+            else if (m_mouseHover)
             {
                 if (m_mouseDown && getRenderer()->getTextureDown().isLoaded())
                     getRenderer()->getTextureDown().draw(target, states);
                 else if (getRenderer()->getTextureHover().isLoaded())
                     getRenderer()->getTextureHover().draw(target, states);
                 else
-                    getRenderer()->getTextureNormal().draw(target, states);
+                    getRenderer()->getTexture().draw(target, states);
             }
             else
-                getRenderer()->getTextureNormal().draw(target, states);
+                getRenderer()->getTexture().draw(target, states);
 
             // When the edit box is focused then draw an extra image
             if (m_focused && getRenderer()->getTextureFocused().isLoaded())
@@ -319,18 +311,7 @@ namespace tgui
         }
         else // There is no background texture
         {
-            sf::Color backroundColor;
-            if (m_mouseHover)
-            {
-                if (m_mouseDown)
-                    backroundColor = getRenderer()->getBackgroundColorDown();
-                else
-                    backroundColor = getRenderer()->getBackgroundColorHover();
-            }
-            else
-                backroundColor = getRenderer()->getBackgroundColorNormal();
-
-            drawRectangleShape(target, states, getPosition(), getInnerSize(), backroundColor);
+            drawRectangleShape(target, states, getPosition(), getInnerSize(), getCurrentBackgroundColor());
         }
 
         // Draw the borders
@@ -345,52 +326,49 @@ namespace tgui
         }
 
         // If the button has a text then also draw the text
+        states.transform.translate({(getInnerSize().x - m_text.getSize().x) / 2.f, (getInnerSize().y - m_text.getSize().y) / 2.f});
         target.draw(m_text, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::recalculateTextPosition()
+    sf::Color Button::getCurrentBackgroundColor() const
     {
-        m_text.setPosition((getInnerSize().x - m_text.getSize().x) * 0.5f,
-                           (getInnerSize().y - m_text.getSize().y) * 0.5f);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ButtonRenderer::setTextColor(const Color& color)
-    {
-        setTextColorNormal(color);
-        setTextColorHover(color);
-        setTextColorDown(color);
+        if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
+            return getRenderer()->getBackgroundColorDisabled();
+        else if (m_mouseHover && m_mouseDown && getRenderer()->getBackgroundColorDown().isSet())
+            return getRenderer()->getBackgroundColorDown();
+        else if (m_mouseHover && getRenderer()->getBackgroundColorHover().isSet())
+            return getRenderer()->getBackgroundColorHover();
+        else
+            return getRenderer()->getBackgroundColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ButtonRenderer::setBackgroundColor(const Color& color)
+    void Button::updateTextColorAndStyle()
     {
-        setBackgroundColorNormal(color);
-        setBackgroundColorHover(color);
-        setBackgroundColorDown(color);
+        if (!m_enabled && getRenderer()->getTextStyleDisabled().isSet())
+            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleDisabled());
+        else if (m_mouseHover && m_mouseDown && getRenderer()->getTextStyleDown().isSet())
+            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleDown());
+        else if (m_mouseHover && getRenderer()->getTextStyleHover().isSet())
+            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleHover());
+        else
+            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+
+        sf::Color color;
+        if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
+            color = getRenderer()->getTextColorDisabled();
+        else if (m_mouseHover && m_mouseDown && getRenderer()->getTextColorDown().isSet())
+            color = getRenderer()->getTextColorDown();
+        else if (m_mouseHover && getRenderer()->getTextColorHover().isSet())
+            color = getRenderer()->getTextColorHover();
+        else
+            color = getRenderer()->getTextColor();
+
+        m_text.getRenderer()->setTextColor(calcColorOpacity(color, getRenderer()->getOpacity()));
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_RENDERER_PROPERTY_OUTLINE(ButtonRenderer, Borders, Borders(0))
-
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorNormal, Color(60, 60, 60))
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorHover, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorDown, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorNormal, Color(245, 245, 245))
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorHover, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorDown, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColor, sf::Color::Black)
-
-    TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureNormal)
-    TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureHover)
-    TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureDown)
-    TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureFocused)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -41,8 +41,10 @@ namespace tgui
         addSignal<sf::Vector2f>("MouseReleased");
         addSignal<sf::Vector2f>("Clicked");
 
-        m_renderer = aurora::makeCopied<tgui::PanelRenderer>();
+        m_renderer = aurora::makeCopied<PanelRenderer>();
         setRenderer(m_renderer->getData());
+
+        getRenderer()->setBorderColor({220, 220, 220});
 
         setSize(size);
     }
@@ -115,10 +117,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::rendererChanged(const std::string& property, ObjectConverter&& value)
+    void Panel::rendererChanged(const std::string& property, ObjectConverter& value)
     {
         if ((property != "borders") && (property != "bordercolor") && (property != "backgroundcolor"))
-            Container::rendererChanged(property, std::move(value));
+            Container::rendererChanged(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,13 +154,6 @@ namespace tgui
         states.transform.translate({borders.left, borders.top});
         drawWidgetContainer(&target, states);
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_RENDERER_PROPERTY_OUTLINE(PanelRenderer, Borders, Borders(0))
-    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BorderColor, Color(220, 220, 220))
-    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BackgroundColor, sf::Color::Transparent)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

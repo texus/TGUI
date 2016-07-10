@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -29,21 +29,15 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_GET_OUTLINE(CLASS, NAME, DEFAULT) \
+#define TGUI_RENDERER_PROPERTY_OUTLINE(CLASS, NAME) \
     Outline CLASS::get##NAME() const \
     { \
         auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
             return it->second.getOutline(); \
         else \
-        { \
-            m_data->propertyValuePairs[toLower(#NAME)] = {DEFAULT}; \
-            return m_data->propertyValuePairs[toLower(#NAME)].getOutline(); \
-        } \
-    }
-
-#define TGUI_RENDERER_PROPERTY_OUTLINE(CLASS, NAME, DEFAULT) \
-    TGUI_RENDERER_PROPERTY_GET_OUTLINE(CLASS, NAME, DEFAULT) \
+            return {}; \
+    } \
     void CLASS::set##NAME(const Outline& outline) \
     { \
         setProperty(toLower(#NAME), {outline}); \
@@ -51,24 +45,34 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_GET_COLOR(CLASS, NAME, DEFAULT) \
-    sf::Color CLASS::get##NAME() const \
+#define TGUI_RENDERER_PROPERTY_COLOR(CLASS, NAME, DEFAULT) \
+    Color CLASS::get##NAME() const \
     { \
         auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
             return it->second.getColor(); \
         else \
-        { \
-            m_data->propertyValuePairs[toLower(#NAME)] = {DEFAULT}; \
-            return m_data->propertyValuePairs[toLower(#NAME)].getColor(); \
-        } \
-    }
-
-#define TGUI_RENDERER_PROPERTY_COLOR(CLASS, NAME, DEFAULT) \
-    TGUI_RENDERER_PROPERTY_GET_COLOR(CLASS, NAME, DEFAULT) \
-    void CLASS::set##NAME(const Color& color) \
+            return DEFAULT; \
+    } \
+    void CLASS::set##NAME(Color color) \
     { \
         setProperty(toLower(#NAME), {color}); \
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define TGUI_RENDERER_PROPERTY_TEXT_STYLE(CLASS, NAME, DEFAULT) \
+    TextStyle CLASS::get##NAME() const \
+    { \
+        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        if (it != m_data->propertyValuePairs.end()) \
+            return it->second.getTextStyle(); \
+        else \
+            return DEFAULT; \
+    } \
+    void CLASS::set##NAME(TextStyle style) \
+    { \
+        setProperty(toLower(#NAME), ObjectConverter{style}); \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,10 +84,7 @@
         if (it != m_data->propertyValuePairs.end()) \
             return it->second.getNumber(); \
         else \
-        { \
-            m_data->propertyValuePairs[toLower(#NAME)] = {DEFAULT}; \
-            return m_data->propertyValuePairs[toLower(#NAME)].getNumber(); \
-        } \
+            return DEFAULT; \
     }
 
 #define TGUI_RENDERER_PROPERTY_NUMBER(CLASS, NAME, DEFAULT) \
@@ -94,30 +95,8 @@
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-#define TGUI_RENDERER_PROPERTY_GET_STRING(CLASS, NAME, DEFAULT) \
-    const sf::String& CLASS::get##NAME() const \
-    { \
-        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
-        if (it != m_data->propertyValuePairs.end()) \
-            return it->second.getString(); \
-        else \
-        { \
-            m_data->propertyValuePairs[toLower(#NAME)] = {DEFAULT}; \
-            return m_data->propertyValuePairs[toLower(#NAME)].getString(); \
-        } \
-    }
 
-#define TGUI_RENDERER_PROPERTY_STRING(CLASS, NAME, DEFAULT) \
-    TGUI_RENDERER_PROPERTY_GET_STRING(CLASS, NAME, DEFAULT) \
-    void CLASS::set##NAME(const sf::String& string) \
-    { \
-        setProperty(toLower(#NAME), {string}); \
-    }
-*/
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#define TGUI_RENDERER_PROPERTY_GET_TEXTURE(CLASS, NAME) \
+#define TGUI_RENDERER_PROPERTY_TEXTURE(CLASS, NAME) \
     Texture& CLASS::get##NAME() const \
     { \
         auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
@@ -128,10 +107,7 @@
             m_data->propertyValuePairs[toLower(#NAME)] = {Texture{}}; \
             return m_data->propertyValuePairs[toLower(#NAME)].getTexture(); \
         } \
-    }
-
-#define TGUI_RENDERER_PROPERTY_TEXTURE(CLASS, NAME) \
-    TGUI_RENDERER_PROPERTY_GET_TEXTURE(CLASS, NAME) \
+    } \
     void CLASS::set##NAME(const Texture& texture) \
     { \
         setProperty(toLower(#NAME), {texture}); \

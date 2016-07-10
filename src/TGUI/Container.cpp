@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// TGUI - Texus's Graphical User Interface
+// TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -81,23 +81,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::setFont(const Font& font)
-    {
-        Widget::setFont(font);
-
-        for (auto& widget : m_widgets)
-            widget->setFont(font);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Container::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
     {
         assert(widgetPtr != nullptr);
 
         // Let the widget inherit our font if it did not had a font yet
-        if (!widgetPtr->getFont() && getFont())
-            widgetPtr->setFont(getFont());
+        if (!widgetPtr->getRenderer()->getFont() && getRenderer()->getFont())
+            widgetPtr->getRenderer()->setFont(getRenderer()->getFont());
 
         widgetPtr->setParent(this);
         m_widgets.push_back(widgetPtr);
@@ -555,15 +545,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::rendererChanged(const std::string& property, ObjectConverter&& value)
+    void Container::rendererChanged(const std::string& property, ObjectConverter& value)
     {
         if (property == "opacity")
         {
             for (std::size_t i = 0; i < m_widgets.size(); ++i)
                 m_widgets[i]->getRenderer()->setOpacity(value.getNumber());
         }
-
-        Widget::rendererChanged(property, std::move(value));
+        else if (property == "font")
+        {
+            for (auto& widget : m_widgets)
+                widget->getRenderer()->setFont(value.getFont());
+        }
+        else
+            Widget::rendererChanged(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
