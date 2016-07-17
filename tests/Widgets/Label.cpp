@@ -231,6 +231,7 @@ TEST_CASE("[Label]")
         }
     }
 
+    testWidgetRenderer(label->getRenderer());
     SECTION("Renderer")
     {
         auto renderer = label->getRenderer();
@@ -243,7 +244,6 @@ TEST_CASE("[Label]")
             REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
             REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold | Italic"));
-            REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
         }
 
         SECTION("set object property")
@@ -254,7 +254,6 @@ TEST_CASE("[Label]")
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
             REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle{sf::Text::Bold | sf::Text::Italic}));
-            REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
         }
 
         SECTION("functions")
@@ -265,7 +264,6 @@ TEST_CASE("[Label]")
             renderer->setBorders({1, 2, 3, 4});
             renderer->setPadding({5, 6, 7, 8});
             renderer->setTextStyle(sf::Text::Bold | sf::Text::Italic);
-            renderer->setOpacity(0.8f);
         }
 
         REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(100, 50, 150));
@@ -274,7 +272,6 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
-        REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
 
         REQUIRE(renderer->getTextColor() == sf::Color(100, 50, 150));
         REQUIRE(renderer->getBackgroundColor() == sf::Color(150, 100, 50));
@@ -282,9 +279,6 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
-        REQUIRE(renderer->getOpacity() == 0.8f);
-
-        REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }
 
     SECTION("Saving and loading from file")

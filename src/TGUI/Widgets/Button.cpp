@@ -51,6 +51,7 @@ namespace tgui
         getRenderer()->setBorderColor({60, 60, 60});
         getRenderer()->setBorderColorHover(sf::Color::Black);
         getRenderer()->setBorderColorDown(sf::Color::Black);
+        ///TODO: Disabled colors
 
         setSize(120, 30);
     }
@@ -80,6 +81,22 @@ namespace tgui
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
             setText(getText());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::enable()
+    {
+        Widget::enable();
+        updateTextColorAndStyle();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::disable()
+    {
+        Widget::disable();
+        updateTextColorAndStyle();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,12 +240,6 @@ namespace tgui
         if (property == "borders")
         {
             updateSize();
-
-            sf::Vector2f texturePosition{value.getOutline().left, value.getOutline().top};
-            getRenderer()->getTexture().setPosition(texturePosition);
-            getRenderer()->getTextureHover().setPosition(texturePosition);
-            getRenderer()->getTextureDown().setPosition(texturePosition);
-            getRenderer()->getTextureFocused().setPosition(texturePosition);
         }
         else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordown") || (property == "textcolordisabled")
               || (property == "textstyle") || (property == "textstylehover") || (property == "textstyledown") || (property == "textstyledisabled"))
@@ -237,7 +248,6 @@ namespace tgui
         }
         else if ((property == "texture") || (property == "texturehover") || (property == "texturedown") || (property == "texturedisabled") || (property == "texturefocused"))
         {
-            value.getTexture().setPosition({getRenderer()->getBorders().left, getRenderer()->getBorders().top});
             value.getTexture().setSize(getInnerSize());
 
             if (property == "texturefocused")
@@ -286,13 +296,23 @@ namespace tgui
     {
         states.transform.translate(getPosition());
 
+        // Draw the borders
+        Borders borders = getRenderer()->getBorders();
+        if (borders != Borders{0})
+        {
+            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
+
+            // Don't try to draw the text when there is no space left for it
+            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
+                return;
+        }
+
         // Check if there is a background texture
+        states.transform.translate({borders.left, borders.top});
         if (getRenderer()->getTexture().isLoaded())
         {
             if (!m_enabled && getRenderer()->getTextureDisabled().isLoaded())
-            {
                 getRenderer()->getTextureDisabled().draw(target, states);
-            }
             else if (m_mouseHover)
             {
                 if (m_mouseDown && getRenderer()->getTextureDown().isLoaded())
@@ -311,18 +331,7 @@ namespace tgui
         }
         else // There is no background texture
         {
-            drawRectangleShape(target, states, getPosition(), getInnerSize(), getCurrentBackgroundColor());
-        }
-
-        // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
-        {
-            drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColor());
-
-            // Don't try to draw the text when there is no space left for it
-            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
-                return;
+            drawRectangleShape(target, states, getInnerSize(), getCurrentBackgroundColor());
         }
 
         // If the button has a text then also draw the text

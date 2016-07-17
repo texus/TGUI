@@ -28,13 +28,12 @@
 
 
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Renderers/RadioButtonRenderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    class RadioButtonRenderer;
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Radio button widget
     ///
@@ -103,7 +102,6 @@ namespace tgui
         /// @return Full size of the radio button
         ///
         /// The returned size includes the text next to the radio button.
-        /// When textures are loaded, the height of the checked image is used (in case the check goes outside of the box).
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getFullSize() const override;
@@ -112,25 +110,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
         ///
-        /// When using textures and the checked texture is larger than the unchecked one (when the check mark leaves the box)
-        /// then this function will return (0, -heightDiff), otherwise (0,0) is returned.
+        /// This function returns (0,0) is the height of the text next to the radio button is less than the radio button height.
+        /// Otherwise (0, -offset) will be returned where the offset is the distance between the top of the text and the top
+        /// of the radio button.
         ///
         /// @return Offset of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getWidgetOffset() const override;
 
-/**
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font of the text in the widget
-        ///
-        /// @param font  The new font
-        ///
-        /// When you don't call this function then the font from the parent widget will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setFont(const Font& font) override;
-*/
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks the radio button
@@ -201,22 +189,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Allows (or disallows) the radio button to be checked/unchecked by clicking on the text next to the radio button
+        /// @brief Allows (or disallows) the radio button to be checked by clicking on the text next to it
         ///
-        /// @param acceptTextClick  Will clicking on the text trigger a checked/unchecked event?
+        /// @param acceptTextClick  Will clicking on the text trigger a checked event?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void allowTextClick(bool acceptTextClick = true);
+        void setTextClickable(bool acceptTextClick);
 
-/**
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the widget
-        ///
-        /// @param opacity  The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
+        /// @brief Returns whether the radio button can be checked by clicking on the text next to it
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setOpacity(float opacity) override;
-*/
+        bool isTextClickable() const;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -241,21 +227,16 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
-/**
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Reloads the widget
+        /// @brief Function called when one of the properties of the renderer is changed
         ///
-        /// @param primary    Primary parameter for the loader
-        /// @param secondary  Secondary parameter for the loader
-        /// @param force      Try to only change the looks of the widget and not alter the widget itself when false
-        ///
-        /// @throw Exception when the connected theme could not create the widget
-        ///
-        /// When primary is an empty string the built-in white theme will be used.
+        /// @param property  Lowercase name of the property that was changed
+        /// @param value     New value of the property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void reload(const std::string& primary = "", const std::string& secondary = "", bool force = false) override;
-*/
+        virtual void rendererChanged(const std::string& property, ObjectConverter& value) override;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
@@ -279,6 +260,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Returns the size without the borders
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::Vector2f getInnerSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -287,19 +274,27 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
+        // Returns the check color that is being used in the current state
+        sf::Color getCurrentCheckColor() const;
+
+        // Returns the background color that is being used in the current state
+        sf::Color getCurrentBackgroundColor() const;
+
+        // Returns the border color that is being used in the current state
+        sf::Color getCurrentBorderColor() const;
+
         // Reset the sizes of the textures if they are used
-        void updateTextureSizes();
+        virtual void updateTextureSizes();
 
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
-
-        // This is the checked flag. When the radio button is checked then this variable will be true.
-        bool m_checked = false; // This member is protected instead of private because it is accessed in the CheckBox class
+        // Update the text color of the label depending on the current state
+        void updateTextColor();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
+
+        // This is the checked flag. When the radio button is checked then this variable will be true.
+        bool m_checked = false;
 
         // When this boolean is true (default) then the radio button will also be checked by clicking on the text.
         bool m_allowTextClick = true;
@@ -310,430 +305,9 @@ namespace tgui
         // This will store the size of the text ( 0 to auto size )
         unsigned int m_textSize = 0;
 
-        friend class RadioButtonRenderer;
-        friend class CheckBoxRenderer;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    class TGUI_API RadioButtonRenderer : public WidgetRenderer
-    {
-    public:
-/**
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes a property of the renderer
-        ///
-        /// @param property  The property that you would like to change
-        /// @param value     The new serialized value that you like to assign to the property
-        ///
-        /// @throw Exception when deserialization fails or when the widget does not have this property
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, const std::string& value) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes a property of the renderer
-        ///
-        /// @param property  The property that you would like to change
-        /// @param value     The new value that you like to assign to the property.
-        ///                  The ObjectConverter is implicitly constructed from the possible value types
-        ///
-        /// @throw Exception for unknown properties or when value was of a wrong type
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setProperty(std::string property, ObjectConverter&& value) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves the value of a certain property
-        ///
-        /// @param property  The property that you would like to retrieve
-        ///
-        /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
-        ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ObjectConverter getProperty(std::string property) const override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Gets a map with all properties and their values
-        ///
-        /// @return Property-value pairs of the renderer
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::map<std::string, ObjectConverter> getPropertyValuePairs() const override;
-*/
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the borders
-        ///
-        /// @param borders  Size of the borders
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBorders(const Borders& borders);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the borders
-        ///
-        /// @return border size
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Borders getBorders() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text
-        ///
-        /// @param color  New text color
-        ///
-        /// This color will overwrite the color for both the normal and hover state.
-        ///
-        /// @see setTextColorNormal
-        /// @see setTextColorHover
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColor(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in normal state (mouse not on top of the radio button)
-        ///
-        /// @param color  New text color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColorNormal(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text color in the normal state (mouse not on radio button)
-        ///
-        /// @return text color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Color getTextColorNormal() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text in hover state (mouse is standing on top of the radio button)
-        ///
-        /// @param color  New text color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextColorHover(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text color in the hover state (mouse on radio button)
-        ///
-        /// @return text color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Color getTextColorHover() const;
-
-///TODO: Background color becomes border color (and can also be used when images are set).
-///      Foreground color becomes background color (and is replaced by images when they are set)
-/**
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color
-        ///
-        /// This color is ignored when checked and unchecked images are set.
-        ///
-        /// @param color  New background color
-        ///
-        /// This color can be seen as the border color. It is only visible when there is some padding.
-        ///
-        /// This color will overwrite the color for both the normal and hover state.
-        ///
-        /// @see setBackgroundColorNormal
-        /// @see setBackgroundColorHover
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColor(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color in normal state (mouse is not on top of the radio button)
-        ///
-        /// This color is ignored when checked and unchecked images are set.
-        ///
-        /// @param color  New background color
-        ///
-        /// This color can be seen as the border color. It is only visible when there is some padding.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColorNormal(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color in the normal state (mouse not on radio button)
-        ///
-        /// @return background color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Color getBackgroundColorNormal() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color in hover state (mouse is standing on top of the radio button)
-        ///
-        /// This color is ignored when checked and unchecked images are set.
-        ///
-        /// @param color  New background color
-        ///
-        /// This color can be seen as the border color. It is only visible when there is some padding.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setBackgroundColorHover(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color in the hover state (mouse on radio button)
-        ///
-        /// @return background color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Color getBackgroundColorHover() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the foreground color
-        ///
-        /// This color is ignored when checked and unchecked images are set.
-        ///
-        /// @param color  New foreground color
-        ///
-        /// This color is drawn on top of the background color, but it does not overdraw it completely when padding is set.
-        /// When there is padding, the background color will thus serve as the border color.
-        ///
-        /// This color will overwrite the color for both the normal and hover state.
-        ///
-        /// @see setForegroundColorNormal
-        /// @see setForegroundColorHover
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setForegroundColor(Color color);
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the foreground color in normal state (mouse is not on top of the radio button)
-        ///
-        /// This color is ignored when checked and unchecked images are set.
-        ///
-        /// @param color  New foreground color
-        ///
-        /// This color is drawn on top of the background color, but it does not overdraw it completely when padding is set.
-        /// When there is padding, the background color will thus serve as the border color.
-        ///
-        /// This color will overwrite the color for both the normal and hover state.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setForegroundColorNormal(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the foreground color in hover state (mouse is standing on top of the radio button)
-        ///
-        /// This color is ignored when checked and unchecked images are set.
-        ///
-        /// @param color  New foreground color
-        ///
-        /// This color is drawn on top of the background color, but it does not overdraw it completely when padding is set.
-        /// When there is padding, the background color will thus serve as the border color.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setForegroundColorHover(Color color);
-*/
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color that is used to fill the radio button when it is checked
-        ///
-        /// This color is ignored when checked and unchecked images are set.
-        ///
-        /// @param color  New check color
-        ///
-        /// This color will overwrite the color for both the normal and hover state.
-        ///
-        /// @see setCheckColorNormal
-        /// @see setCheckColorHover
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCheckColor(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color that is used to fill the radio button when it is checked (mouse is not on radio button)
-        ///
-        /// This color is ignored when checked and unchecked images are set.
-        ///
-        /// @param color  New check color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCheckColorNormal(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color that is used to fill the radio button when it is checked (mouse is on top of radio button)
-        ///
-        /// This color is ignored when checked and unchecked images are set.
-        ///
-        /// @param color  New check color
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCheckColorHover(Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image that is displayed when the checkbox is not checked
-        ///
-        /// @param texture  The new unchecked texture
-        ///
-        /// When checked and unchecked images are set, the background and check color properties will be ignored.
-        /// Pass an empty texture to unset the image.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextureUnchecked(const Texture& texture);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the image that is displayed when the checkbox is not checked
-        ///
-        /// @return unchecked texture
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTextureUnchecked() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image that is displayed when the checkbox is checked
-        ///
-        /// @param texture  The new checked texture
-        ///
-        /// When checked and unchecked images are set, the background and check color properties will be ignored.
-        /// Pass an empty texture to unset the image.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextureChecked(const Texture& texture);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the image that is displayed when the checkbox is checked
-        ///
-        /// @return checked texture
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTextureChecked() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image that is displayed when the checkbox is not checked and the mouse is on top of the checkbox
-        ///
-        /// @param texture  The new unchecked hover texture
-        ///
-        /// This only has effect when the normal checked and unchecked images are also set.
-        /// Pass an empty texture to unset the image.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextureUncheckedHover(const Texture& texture);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the image that is displayed when the checkbox is not checked and the mouse is on top of the checkbox
-        ///
-        /// @return unchecked hover texture
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTextureUncheckedHover() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image that is displayed when the checkbox is checked and the mouse is on top of the checkbox
-        ///
-        /// @param texture  The new checked hover texture
-        ///
-        /// This only has effect when the normal checked and unchecked images are also set.
-        /// Pass an empty texture to unset the image.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextureCheckedHover(const Texture& texture);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the image that is displayed when the checkbox is checked and the mouse is on top of the checkbox
-        ///
-        /// @return checked hover texture
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTextureCheckedHover() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image that is displayed on top of the checkbox when it is focused
-        ///
-        /// @param texture  The new focused texture
-        ///
-        /// This only has effect when the normal checked and unchecked images are also set.
-        /// Pass an empty texture to unset the image.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextureFocused(const Texture& texture);
-
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the image that is displayed on top of the checkbox when it is focused
-        ///
-        /// @return focused texture
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTextureFocused() const;
-
-/**
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Draws the widget on the render target.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-*/
-/**
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the renderer
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::shared_ptr<WidgetRenderer> clone(Widget* widget) override;
-*/
-/**
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
-
-        RadioButton* m_radioButton;
-
-        Texture m_textureUnchecked;
-        Texture m_textureChecked;
-        Texture m_textureUncheckedHover;
-        Texture m_textureCheckedHover;
-        Texture m_textureFocused;
-
-        sf::Color m_textColorNormal;
-        sf::Color m_textColorHover;
-
-        sf::Color m_backgroundColorNormal;
-        sf::Color m_backgroundColorHover;
-
-        sf::Color m_foregroundColorNormal;
-        sf::Color m_foregroundColorHover;
-
-        sf::Color m_checkColorNormal;
-        sf::Color m_checkColorHover;
-
-        friend class RadioButton;
-*/
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        friend class CheckBox;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

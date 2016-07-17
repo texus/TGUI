@@ -24,7 +24,6 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/Panel.hpp>
 
 TEST_CASE("[Button]")
 {
@@ -114,6 +113,7 @@ TEST_CASE("[Button]")
         }
     }
 
+    testWidgetRenderer(button->getRenderer());
     SECTION("Renderer")
     {
         auto renderer = button->getRenderer();
@@ -139,8 +139,6 @@ TEST_CASE("[Button]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", "Bold | Underlined"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", "StrikeThrough"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
-                REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
-                REQUIRE_NOTHROW(renderer->setProperty("Font", "resources/DroidSansArmenian.ttf"));
             }
 
             SECTION("set object property")
@@ -162,8 +160,6 @@ TEST_CASE("[Button]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", sf::Text::Bold | sf::Text::Underlined));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", sf::Text::StrikeThrough));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
-                REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
-                REQUIRE_NOTHROW(renderer->setProperty("Font", tgui::Font{"resources/DroidSansArmenian.ttf"}));
             }
 
             SECTION("functions")
@@ -185,8 +181,6 @@ TEST_CASE("[Button]")
                 renderer->setTextStyleDown(sf::Text::Bold | sf::Text::Underlined);
                 renderer->setTextStyleDisabled(sf::Text::StrikeThrough);
                 renderer->setBorders({1, 2, 3, 4});
-                renderer->setOpacity(0.8f);
-                renderer->setFont({"resources/DroidSansArmenian.ttf"});
             }
 
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(20, 30, 40));
@@ -197,8 +191,6 @@ TEST_CASE("[Button]")
             REQUIRE(renderer->getProperty("BackgroundColorDown").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
-            REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
-            REQUIRE(renderer->getProperty("Font").getFont() != nullptr);
 
             REQUIRE(renderer->getTextColor() == sf::Color(20, 30, 40));
             REQUIRE(renderer->getTextColorHover() == sf::Color(30, 40, 50));
@@ -208,8 +200,6 @@ TEST_CASE("[Button]")
             REQUIRE(renderer->getBackgroundColorDown() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getBorderColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
-            REQUIRE(renderer->getOpacity() == 0.8f);
-            REQUIRE(renderer->getFont().getId() == "resources/DroidSansArmenian.ttf");
         }
 
         SECTION("textured")
@@ -259,8 +249,6 @@ TEST_CASE("[Button]")
             REQUIRE(renderer->getTextureDisabled().getData() == textureDisabled.getData());
             REQUIRE(renderer->getTextureFocused().getData() == textureFocused.getData());
         }
-
-        REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }
 
     SECTION("Saving and loading from file")

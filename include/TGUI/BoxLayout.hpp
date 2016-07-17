@@ -304,7 +304,7 @@ namespace tgui
     protected:
 
         std::vector<float> m_widgetsRatio;              ///< The ratio of each widget
-        std::vector<float> m_widgetsFixedSizes;         ///< The fixed size for each widget. 0 means a variable size
+        std::vector<float> m_widgetsFixedSizes;         ///< The fixed size of each widget. 0 means a variable size
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

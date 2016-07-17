@@ -507,17 +507,18 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draw a rectangle shape with the right opacity
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawRectangleShape(sf::RenderTarget& target, const sf::RenderStates& states, sf::Vector2f position,
-                                sf::Vector2f size, sf::Color color) const;
+        void drawRectangleShape(sf::RenderTarget& target,
+                                const sf::RenderStates& states,
+                                sf::Vector2f size,
+                                sf::Color color) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draw the borders around the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawBorders(sf::RenderTarget& target,
-                         sf::RenderStates states,
+                         const sf::RenderStates& states,
                          const Borders& borders,
-                         sf::Vector2f position,
                          sf::Vector2f size,
                          sf::Color color) const;
 

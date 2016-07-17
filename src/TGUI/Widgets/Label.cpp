@@ -253,13 +253,13 @@ namespace tgui
 
         // Draw the background
         if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-            drawRectangleShape(target, states, {0,0}, getSize(), getRenderer()->getBackgroundColor());
+            drawRectangleShape(target, states, getSize(), getRenderer()->getBackgroundColor());
 
         // Draw the borders
         Borders borders = getRenderer()->getBorders();
         if (borders != Borders{0})
         {
-            drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColor());
+            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
 
             // Don't try to draw the text when there is no space left for it
             if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))

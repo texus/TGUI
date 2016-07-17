@@ -38,6 +38,8 @@ void genericCallback(unsigned int& count);
 void testWidgetSignals(tgui::Widget::Ptr widget);
 void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget);
 
+void testWidgetRenderer(tgui::WidgetRenderer* renderer);
+
 template <typename WidgetType>
 void copy(std::shared_ptr<tgui::Container> parent, std::shared_ptr<WidgetType> widget)
 {

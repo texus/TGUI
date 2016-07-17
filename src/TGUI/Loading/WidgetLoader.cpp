@@ -27,8 +27,8 @@
 #include <TGUI/Loading/WidgetLoader.hpp>
 #include <TGUI/Widgets/Button.hpp>/**
 #include <TGUI/Widgets/Canvas.hpp>
-#include <TGUI/Widgets/ChatBox.hpp>
-#include <TGUI/Widgets/CheckBox.hpp>
+#include <TGUI/Widgets/ChatBox.hpp>*/
+#include <TGUI/Widgets/CheckBox.hpp>/**
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>*/
 #include <TGUI/Widgets/EditBox.hpp>/**
@@ -37,8 +37,8 @@
 #include <TGUI/Widgets/ListBox.hpp>*/
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>/**
-#include <TGUI/Widgets/ProgressBar.hpp>
-#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>*/
+#include <TGUI/Widgets/RadioButton.hpp>/**
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
@@ -312,7 +312,7 @@ namespace tgui
 
         return chatBox;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadCheckBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -328,6 +328,8 @@ namespace tgui
             checkbox->setText(DESERIALIZE_STRING("text"));
         if (node->propertyValuePairs["textsize"])
             checkbox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["textclickable"])
+            checkbox->setTextClickable(parseBoolean(node->propertyValuePairs["textclickable"]->value));
         if (node->propertyValuePairs["checked"])
         {
             if (parseBoolean(node->propertyValuePairs["checked"]->value))
@@ -336,7 +338,7 @@ namespace tgui
 
         return checkbox;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadChildWindow(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -678,7 +680,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+*/
     TGUI_API Widget::Ptr loadRadioButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         RadioButton::Ptr radioButton;
@@ -692,6 +694,8 @@ namespace tgui
             radioButton->setText(DESERIALIZE_STRING("text"));
         if (node->propertyValuePairs["textsize"])
             radioButton->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["textclickable"])
+            radioButton->setTextClickable(parseBoolean(node->propertyValuePairs["textclickable"]->value));
         if (node->propertyValuePairs["checked"])
         {
             if (parseBoolean(node->propertyValuePairs["checked"]->value))
@@ -702,7 +706,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     TGUI_API Widget::Ptr loadScrollbar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         Scrollbar::Ptr scrollbar;
@@ -850,8 +854,8 @@ namespace tgui
             {"container", std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
             {"button", std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},/**
             {"canvas", std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
-            {"chatbox", std::bind(loadChatBox, std::placeholders::_1, std::shared_ptr<ChatBox>{})},
-            {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},
+            {"chatbox", std::bind(loadChatBox, std::placeholders::_1, std::shared_ptr<ChatBox>{})},*/
+            {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},/**
             {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},*/
             {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},/**
             {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},*/
@@ -860,9 +864,9 @@ namespace tgui
             {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},*/
             {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
             {"panel", std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},
-            {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})}/**,
-            {"progressbar", std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},
-            {"radiobutton", std::bind(loadRadioButton, std::placeholders::_1, std::shared_ptr<RadioButton>{})},
+            {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},/**
+            {"progressbar", std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},*/
+            {"radiobutton", std::bind(loadRadioButton, std::placeholders::_1, std::shared_ptr<RadioButton>{})}/**,
             {"scrollbar", std::bind(loadScrollbar, std::placeholders::_1, std::shared_ptr<Scrollbar>{})},
             {"slider", std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},
             {"spinbutton", std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},

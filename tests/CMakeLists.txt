@@ -23,7 +23,7 @@ set(TEST_SOURCES
     Widgets/Button.cpp
     #Widgets/Canvas.cpp
     #Widgets/ChatBox.cpp
-    #Widgets/CheckBox.cpp
+    Widgets/CheckBox.cpp
     #Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
     #Widgets/ComboBox.cpp
@@ -36,7 +36,7 @@ set(TEST_SOURCES
     Widgets/Panel.cpp
     Widgets/Picture.cpp
     #Widgets/ProgressBar.cpp
-    #Widgets/RadioButton.cpp
+    Widgets/RadioButton.cpp
     #Widgets/Scrollbar.cpp
     #Widgets/Slider.cpp
     #Widgets/SpinButton.cpp

@@ -14,12 +14,12 @@ ChatBox {
 }
 
 Checkbox {
-    UncheckedImage      : "Black.png" Part(124, 0, 32, 32);
-    CheckedImage        : "Black.png" Part(156, 0, 32, 32);
-    UncheckedHoverImage : "Black.png" Part(188, 0, 32, 32);
-    CheckedHoverImage   : "Black.png" Part(220, 0, 32, 32);
-    TextColorNormal     : rgb(190, 190, 190);
-    TextColorHover      : rgb(250, 250, 250);
+    TextureUnchecked      : "Black.png" Part(124, 0, 32, 32);
+    TextureChecked        : "Black.png" Part(156, 0, 32, 32);
+    TextureUncheckedHover : "Black.png" Part(188, 0, 32, 32);
+    TextureCheckedHover   : "Black.png" Part(220, 0, 32, 32);
+    TextColor             : rgb(190, 190, 190);
+    TextColorHover        : rgb(250, 250, 250);
 }
 
 ChildWindow {
@@ -103,12 +103,12 @@ ProgressBar {
 }
 
 RadioButton {
-    UncheckedImage      : "Black.png" Part(124, 32, 32, 32);
-    CheckedImage        : "Black.png" Part(156, 32, 32, 32);
-    UncheckedHoverImage : "Black.png" Part(188, 32, 32, 32);
-    CheckedHoverImage   : "Black.png" Part(220, 32, 32, 32);
-    TextColorNormal     : rgb(190, 190, 190);
-    TextColorHover      : rgb(250, 250, 250);
+    TextureUnchecked      : "Black.png" Part(124, 32, 32, 32);
+    TextureChecked        : "Black.png" Part(156, 32, 32, 32);
+    TextureUncheckedHover : "Black.png" Part(188, 32, 32, 32);
+    TextureCheckedHover   : "Black.png" Part(220, 32, 32, 32);
+    TextColor             : rgb(190, 190, 190);
+    TextColorHover        : rgb(250, 250, 250);
 }
 
 Scrollbar {

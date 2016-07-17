@@ -170,7 +170,8 @@ TEST_CASE("[Widget]")
         }
     }
 
-    SECTION("Layouts") {
+    SECTION("Layouts")
+    {
         auto container = std::make_shared<tgui::Panel>();
         auto widget2 = std::make_shared<tgui::ClickableWidget>();
         container->add(widget);

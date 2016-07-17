@@ -8,5 +8,6 @@ coverage:
   ignore:
     - tests/*
     - examples/.*
+    - include/TGUI/Aurora/.*
     - include/TGUI/Widgets/devel/.*
     - src/TGUI/Widgets/devel/.*

@@ -192,8 +192,6 @@ namespace tgui
         m_size.x = std::max(size.x, 0.f);
         m_size.y = std::max(size.y, 0.f);
 
-        setOrigin(std::min(m_size.x, m_size.y) / 2.0f, std::min(m_size.x, m_size.y) / 2.0f);
-
         if (m_loaded)
             updateVertices();
     }
@@ -517,7 +515,6 @@ namespace tgui
 
     void Texture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getOrigin());
         states.transform *= getTransform();
 
         if (m_loaded)

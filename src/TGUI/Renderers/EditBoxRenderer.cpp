@@ -35,19 +35,24 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_NUMBER(EditBoxRenderer, CaretWidth, 1)
 
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, TextColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, TextColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, SelectedTextColor, sf::Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, SelectedTextBackgroundColor, Color(0, 110, 255))
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, DefaultTextColor, Color(160, 160, 160))
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BackgroundColor, sf::Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BackgroundColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BackgroundColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, CaretColor, sf::Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, CaretColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, CaretColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BorderColor, sf::Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BorderColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(EditBoxRenderer, BorderColorDisabled, {})
 
     TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, Texture)
     TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureHover)
-    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureFocused)
+    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureDisabled)
+    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureFocused) /// TODO
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(EditBoxRenderer, TextStyle, sf::Text::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(EditBoxRenderer, DefaultTextStyle, sf::Text::Italic)

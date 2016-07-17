@@ -284,6 +284,10 @@ namespace tgui
 
         for (auto& pair : rendererData->propertyValuePairs)
             rendererChanged(pair.first, pair.second);
+
+        // Try to keep a font
+        if (m_parent && !m_renderer->getFont() && m_parent->getRenderer()->getFont())
+            m_renderer->setFont(m_parent->getRenderer()->getFont());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -701,12 +705,10 @@ namespace tgui
 
     void Widget::drawRectangleShape(sf::RenderTarget& target,
                                     const sf::RenderStates& states,
-                                    sf::Vector2f position,
                                     sf::Vector2f size,
                                     sf::Color color) const
     {
         sf::RectangleShape shape{size};
-        shape.setPosition(position);
 
         if (getRenderer()->getOpacity() < 1)
             shape.setFillColor(calcColorOpacity(color, getRenderer()->getOpacity()));
@@ -719,9 +721,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::drawBorders(sf::RenderTarget& target,
-                             sf::RenderStates states,
+                             const sf::RenderStates& states,
                              const Borders& borders,
-                             sf::Vector2f position,
                              sf::Vector2f size,
                              sf::Color color) const
     {
@@ -732,29 +733,27 @@ namespace tgui
         if ((size.x <= borders.left + borders.right) || (size.y <= borders.top + borders.bottom))
         {
             border.setSize({size.x, size.y});
-            border.setPosition(position.x, position.y);
             target.draw(border, states);
         }
         else // Draw borders in the normal way
         {
             // Draw left border
             border.setSize({borders.left, size.y - borders.bottom});
-            border.setPosition(position.x, position.y);
             target.draw(border, states);
 
             // Draw top border
             border.setSize({size.x - borders.left, borders.top});
-            border.setPosition(position.x + borders.left, position.y);
+            border.setPosition(borders.left, 0);
             target.draw(border, states);
 
             // Draw right border
             border.setSize({borders.right, size.y - borders.top});
-            border.setPosition(position.x + size.x - borders.right, position.y + borders.top);
+            border.setPosition(size.x - borders.right, borders.top);
             target.draw(border, states);
 
             // Draw bottom border
             border.setSize({size.x - borders.right, borders.bottom});
-            border.setPosition(position.x, position.y + size.y - borders.bottom);
+            border.setPosition(0, size.y - borders.bottom);
             target.draw(border, states);
         }
     }

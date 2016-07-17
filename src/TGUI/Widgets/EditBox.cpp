@@ -56,7 +56,7 @@ namespace tgui
         m_renderer = aurora::makeCopied<EditBoxRenderer>();
         setRenderer(m_renderer->getData());
 
-        getRenderer()->setBorders({2});
+        getRenderer()->setBorders(2);
         getRenderer()->setCaretWidth(1);
         getRenderer()->setTextColor({60, 60, 60});
         getRenderer()->setSelectedTextColor(sf::Color::White);
@@ -64,6 +64,7 @@ namespace tgui
         getRenderer()->setBackgroundColorHover(sf::Color::White);
         getRenderer()->setDefaultTextColor({160, 160, 160});
         getRenderer()->setDefaultTextStyle(sf::Text::Italic);
+        ///TODO: Disabled colors
 
         setSize({240, 30});
     }
@@ -88,15 +89,39 @@ namespace tgui
         if (m_textSize == 0)
             setText(m_text);
 
-        getRenderer()->getTexture().setSize(getUsableSize());
-        getRenderer()->getTextureHover().setSize(getUsableSize());
-        getRenderer()->getTextureFocused().setSize(getUsableSize());
+        getRenderer()->getTexture().setSize(getInnerSize());
+        getRenderer()->getTextureHover().setSize(getInnerSize());
+        getRenderer()->getTextureDisabled().setSize(getInnerSize());
+        getRenderer()->getTextureFocused().setSize(getInnerSize());
 
         // Set the size of the caret
-        m_caret.setSize({m_caret.getSize().x, getUsableSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
+        m_caret.setSize({m_caret.getSize().x, getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
 
         // Recalculate the position of the texts
         recalculateTextPositions();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::enable()
+    {
+        Widget::enable();
+
+        m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+        m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::disable()
+    {
+        Widget::disable();
+
+        if (getRenderer()->getTextColorDisabled().isSet())
+        {
+            m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
+            m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +131,7 @@ namespace tgui
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
-            m_textFull.setCharacterSize(findBestTextSize(getRenderer()->getFont(), (getUsableSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.85f));
+            m_textFull.setCharacterSize(findBestTextSize(getRenderer()->getFont(), (getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.85f));
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
@@ -891,17 +916,25 @@ namespace tgui
         {
             setText(m_text);
 
-            m_caret.setSize({m_caret.getSize().x, getUsableSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
+            m_caret.setSize({m_caret.getSize().x, getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
         }
         else if (property == "caretwidth")
         {
             m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - value.getNumber()) / 2.0f), m_caret.getPosition().y});
-            m_caret.setSize({value.getNumber(), getSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
+            m_caret.setSize({value.getNumber(), getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
         }
-        else if (property == "textcolor")
+        else if ((property == "textcolor") || (property == "textcolordisabled"))
         {
-            m_textBeforeSelection.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
-            m_textAfterSelection.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
+            if (m_enabled || !getRenderer()->getTextColorDisabled().isSet())
+            {
+                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+            }
+            else
+            {
+                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
+                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
+            }
         }
         else if (property == "selectedtextcolor")
         {
@@ -911,10 +944,10 @@ namespace tgui
         {
             m_defaultText.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
         }
-        else if ((property == "texture") || (property == "texturehover") || (property == "texturefocused"))
+        else if ((property == "texture") || (property == "texturehover") || (property == "texturedisabled") || (property == "texturefocused"))
         {
             value.getTexture().setPosition({getRenderer()->getBorders().left, getRenderer()->getBorders().top});
-            value.getTexture().setSize(getSize());
+            value.getTexture().setSize(getInnerSize());
 
             if (property == "texturefocused")
                 m_allowFocus = value.getTexture().isLoaded();
@@ -940,13 +973,22 @@ namespace tgui
         {
             float opacity = value.getNumber();
 
-            m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), opacity));
-            m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), opacity));
+            if (m_enabled || !getRenderer()->getTextColorDisabled().isSet())
+            {
+                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+            }
+            else
+            {
+                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
+                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
+            }
             m_textSelection.setFillColor(calcColorOpacity(getRenderer()->getSelectedTextColor(), opacity));
             m_defaultText.setFillColor(calcColorOpacity(getRenderer()->getDefaultTextColor(), opacity));
 
             getRenderer()->getTexture().setOpacity(opacity);
             getRenderer()->getTextureHover().setOpacity(opacity);
+            getRenderer()->getTextureDisabled().setOpacity(opacity);
             getRenderer()->getTextureFocused().setOpacity(opacity);
         }
         else if (property == "font")
@@ -966,11 +1008,14 @@ namespace tgui
         }
         else if ((property != "bordercolor")
               && (property != "bordercolorhover")
+              && (property != "bordercolordisabled")
               && (property != "backgroundcolor")
               && (property != "backgroundcolorhover")
-              && (property != "selectedtextbackgroundcolor")
+              && (property != "backgroundcolordisabled")
               && (property != "caretcolor")
-              && (property != "caretcolorhover"))
+              && (property != "caretcolorhover")
+              && (property != "caretcolordisabled")
+              && (property != "selectedtextbackgroundcolor"))
         {
             Widget::rendererChanged(property, value);
         }
@@ -978,7 +1023,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f EditBox::getUsableSize() const
+    sf::Vector2f EditBox::getInnerSize() const
     {
         Borders borders = getRenderer()->getBorders();
         return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
@@ -1139,7 +1184,7 @@ namespace tgui
         if (getRenderer()->getFont())
         {
             textY = std::round((padding.top - getTextVerticalCorrection(getRenderer()->getFont(), getTextSize()))
-                               + ((getSize().y - padding.bottom - padding.top) - getRenderer()->getFont().getLineSpacing(getTextSize())) / 2.f);
+                               + ((getInnerSize().y - padding.bottom - padding.top) - getRenderer()->getFont().getLineSpacing(getTextSize())) / 2.f);
         }
 
         // Check if the layout wasn't left
@@ -1176,7 +1221,7 @@ namespace tgui
 
             // Set the position and size of the rectangle that gets drawn behind the selected text
             m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x - m_textSelection.getPosition().x,
-                                              getSize().y - padding.top - padding.bottom});
+                                              getInnerSize().y - padding.top - padding.bottom});
             m_selectedTextBackground.setPosition({std::floor(textX + 0.5f), std::floor(padding.top + 0.5f)});
 
             // Set the text selected text on the correct position
@@ -1226,10 +1271,12 @@ namespace tgui
         Borders borders = getRenderer()->getBorders();
         if (borders != Borders{0})
         {
-            if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
-                drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColorHover());
+            if (!m_enabled && getRenderer()->getBorderColorDisabled().isSet())
+                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColorDisabled());
+            else if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
+                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColorHover());
             else
-                drawBorders(target, states, borders, getPosition(), getSize(), getRenderer()->getBorderColor());
+                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
 
             // Don't try to draw the text when there is no space left for it
             if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
@@ -1241,21 +1288,28 @@ namespace tgui
         // Draw the background
         if (getRenderer()->getTexture().isLoaded())
         {
-            if (m_mouseHover && getRenderer()->getTextureHover().isLoaded())
-                getRenderer()->getTextureHover().draw(target, states);
+            if (getRenderer()->getTextureDisabled().isLoaded())
+                getRenderer()->getTextureDisabled().draw(target, states);
             else
-                getRenderer()->getTexture().draw(target, states);
+            {
+                if (m_mouseHover && getRenderer()->getTextureHover().isLoaded())
+                    getRenderer()->getTextureHover().draw(target, states);
+                else
+                    getRenderer()->getTexture().draw(target, states);
 
-            // When the edit box is focused then draw an extra image
-            if (m_focused && getRenderer()->getTextureFocused().isLoaded())
-                getRenderer()->getTextureFocused().draw(target, states);
+                // When the edit box is focused then draw an extra image
+                if (m_focused && getRenderer()->getTextureFocused().isLoaded())
+                    getRenderer()->getTextureFocused().draw(target, states);
+            }
         }
         else // There is no background texture
         {
-            if (m_mouseHover)
-                drawRectangleShape(target, states, getPosition(), getUsableSize(), getRenderer()->getBackgroundColorHover());
+            if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
+                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColorDisabled());
+            else if (m_mouseHover && getRenderer()->getBackgroundColorHover().isSet())
+                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColorHover());
             else
-                drawRectangleShape(target, states, getPosition(), getUsableSize(), getRenderer()->getBackgroundColor());
+                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColor());
         }
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
@@ -1271,7 +1325,9 @@ namespace tgui
 
             if (m_textSelection.getString() != "")
             {
-                drawRectangleShape(target, states, m_selectedTextBackground.getPosition(), m_selectedTextBackground.getSize(), getRenderer()->getSelectedTextBackgroundColor());
+                states.transform.translate(m_selectedTextBackground.getPosition());
+                drawRectangleShape(target, states, m_selectedTextBackground.getSize(), getRenderer()->getSelectedTextBackgroundColor());
+                states.transform.translate(-m_selectedTextBackground.getPosition());
 
                 target.draw(m_textSelection, states);
                 target.draw(m_textAfterSelection, states);
@@ -1283,12 +1339,15 @@ namespace tgui
         }
 
         // Draw the caret
+        states.transform.translate(m_caret.getPosition());
         if (m_focused && m_caretVisible)
         {
-            if (m_mouseHover && getRenderer()->getCaretColorHover().isSet())
-                drawRectangleShape(target, states, m_caret.getPosition(), m_caret.getSize(), getRenderer()->getCaretColorHover());
+            if (!m_enabled && getRenderer()->getCaretColorDisabled().isSet())
+                drawRectangleShape(target, states, m_caret.getSize(), getRenderer()->getCaretColorDisabled());
+            else if (m_mouseHover && getRenderer()->getCaretColorHover().isSet())
+                drawRectangleShape(target, states, m_caret.getSize(), getRenderer()->getCaretColorHover());
             else
-                drawRectangleShape(target, states, m_caret.getPosition(), m_caret.getSize(), getRenderer()->getCaretColor());
+                drawRectangleShape(target, states, m_caret.getSize(), getRenderer()->getCaretColor());
         }
     }
 

@@ -27,13 +27,6 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace
-{
-    const float textDistanceRatio = 0.25f;
-}
-
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,8 +42,18 @@ namespace tgui
         m_renderer = aurora::makeCopied<RadioButtonRenderer>();
         setRenderer(m_renderer->getData());
 
-        setSize({24, 24});
         getRenderer()->setBorders({3});
+        getRenderer()->setTextColor({60, 60, 60});
+        getRenderer()->setTextColorHover(sf::Color::Black);
+        getRenderer()->setBorderColor({60,  60,  60});
+        getRenderer()->setBorderColorHover(sf::Color::Black);
+        getRenderer()->setBackgroundColor({245, 245, 245});
+        getRenderer()->setBackgroundColorHover(sf::Color::White);
+        getRenderer()->setCheckColor({60,  60,  60});
+        getRenderer()->setCheckColorHover(sf::Color::Black);
+        ///TODO: Disabled colors
+
+        setSize({24, 24});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,22 +67,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void RadioButton::setPosition(const Layout2d& position)
-    {
-        ClickableWidget::setPosition(position);
-
-        getRenderer()->getTextureUnchecked().setPosition(getPosition());
-        getRenderer()->getTextureChecked().setPosition(getPosition().x, getPosition().y + getSize().y - getRenderer()->getTextureChecked().getSize().y);
-        getRenderer()->getTextureUncheckedHover().setPosition(getPosition());
-        getRenderer()->getTextureCheckedHover().setPosition(getPosition());
-        getRenderer()->getTextureFocused().setPosition(getPosition());
-
-        m_text.setPosition(getPosition().x + getSize().x + getSize().x * textDistanceRatio,
-                           getPosition().y + ((getSize().y - m_text.getSize().y) / 2.0f));
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::setSize(const Layout2d& size)
     {
@@ -90,46 +77,26 @@ namespace tgui
             setText(getText());
 
         updateTextureSizes();
-        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///TODO: Borders around image
+
     sf::Vector2f RadioButton::getFullSize() const
     {
         if (getText().isEmpty())
-        {
-            if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
-                return getRenderer()->getTextureChecked().getSize();
-            else
-                return getSize();
-        }
+            return getSize();
         else
-        {
-            if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
-                return {getSize().x + (getSize().x * textDistanceRatio) + m_text.getSize().x, getRenderer()->getTextureChecked().getSize().y};
-            else
-                return {getSize().x + (getSize().x * textDistanceRatio) + m_text.getSize().x, getSize().y};
-        }
+            return {getSize().x + (getSize().x * getRenderer()->getTextDistanceRatio()) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f RadioButton::getWidgetOffset() const
     {
-        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
-            return {0, getRenderer()->getTextureUnchecked().getSize().y - getRenderer()->getTextureChecked().getSize().y};
-        else
+        if (getText().isEmpty() || (getSize().y >= m_text.getSize().y))
             return {0, 0};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButton::setFont(const Font& font)
-    {
-        Widget::setFont(font);
-        m_text.setFont(font.getFont());
-        setText(getText());
+        else
+            return {0, -(m_text.getSize().y - getSize().y) / 2};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,6 +112,12 @@ namespace tgui
             // Check this radio button
             m_checked = true;
 
+            updateTextColor();
+            if (getRenderer()->getTextStyleChecked().isSet())
+                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleChecked());
+            else
+                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+
             m_callback.checked = true;
             sendSignal("Checked", m_checked);
         }
@@ -157,6 +130,9 @@ namespace tgui
         if (m_checked)
         {
             m_checked = false;
+
+            updateTextColor();
+            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
 
             m_callback.checked = false;
             sendSignal("Unchecked", m_checked);
@@ -172,12 +148,9 @@ namespace tgui
 
         // Set the text size
         if (m_textSize == 0)
-            m_text.setTextSize(findBestTextSize(getFont(), getSize().y * 0.85f));
+            m_text.setTextSize(findBestTextSize(getRenderer()->getFont(), getSize().y * 0.85f));
         else
             m_text.setTextSize(m_textSize);
-
-        // Reposition the text
-        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,49 +166,36 @@ namespace tgui
     {
         // Change the text size
         m_textSize = size;
-
-        // Call setText to reposition the text
         setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::allowTextClick(bool acceptTextClick)
+    void RadioButton::setTextClickable(bool acceptTextClick)
     {
         m_allowTextClick = acceptTextClick;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void RadioButton::setOpacity(float opacity)
+
+    bool RadioButton::isTextClickable() const
     {
-        Widget::setOpacity(opacity);
-
-        getRenderer()->getTextureUnchecked().setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->getTextureChecked().setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->getTextureUncheckedHover().setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->getTextureCheckedHover().setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->getTextureFocused().setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-
-        if (m_mouseHover)
-            m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorHover, getOpacity()));
-        else
-            m_text.setTextColor(calcColorOpacity(getRenderer()->m_textColorNormal, getOpacity()));
+        return m_allowTextClick;
     }
-*/
-///TODO: Don't forget to pass opacity to label
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool RadioButton::mouseOnWidget(float x, float y) const
     {
-        if (m_allowTextClick)
+        if (m_allowTextClick && !getText().isEmpty())
         {
             // Check if the mouse is on top of the image or the small gap between image and text
-            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getSize().x * textDistanceRatio, getSize().y}.contains(x, y))
+            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getSize().x * getRenderer()->getTextDistanceRatio(), getSize().y}.contains(x, y))
                 return true;
 
             // Check if the mouse is on top of the text
-            if (sf::FloatRect{getPosition().x, getPosition().y, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x + getSize().x * textDistanceRatio), y - ((getSize().y - m_text.getSize().y) / 2.0f)))
+            if (sf::FloatRect{getPosition().x, getPosition().y, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x + getSize().x * getRenderer()->getTextDistanceRatio()),
+                                                                                                                 y - ((getSize().y - m_text.getSize().y) / 2.0f)))
                 return true;
         }
         else // You are not allowed to click on the text
@@ -285,8 +245,7 @@ namespace tgui
     void RadioButton::mouseEnteredWidget()
     {
         Widget::mouseEnteredWidget();
-
-        m_text.getRenderer()->setTextColor(getRenderer()->getTextColorHover());
+        updateTextColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -294,66 +253,124 @@ namespace tgui
     void RadioButton::mouseLeftWidget()
     {
         Widget::mouseLeftWidget();
-
-        m_text.getRenderer()->setTextColor(getRenderer()->getTextColorNormal());
+        updateTextColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void RadioButton::reload(const std::string& primary, const std::string& secondary, bool force)
+
+    void RadioButton::rendererChanged(const std::string& property, ObjectConverter& value)
     {
-        getRenderer()->setPadding({3, 3, 3, 3});
-        getRenderer()->setTextColorNormal({60, 60, 60});
-        getRenderer()->setTextColorHover({0, 0, 0});
-        getRenderer()->setBackgroundColorNormal({60,  60,  60});
-        getRenderer()->setBackgroundColorHover({0, 0, 0});
-        getRenderer()->setForegroundColorNormal({245, 245, 245});
-        getRenderer()->setForegroundColorHover({255, 255, 255});
-        getRenderer()->setCheckColorNormal({60,  60,  60});
-        getRenderer()->setCheckColorHover({0, 0, 0});
-        getRenderer()->setUncheckedTexture({});
-        getRenderer()->setCheckedTexture({});
-        getRenderer()->setUncheckedHoverTexture({});
-        getRenderer()->setCheckedHoverTexture({});
-        getRenderer()->setFocusedTexture({});
-
-        if (m_theme && primary != "")
+        if (property == "borders")
         {
-            Widget::reload(primary, secondary, force);
+            updateTextureSizes();
+        }
+        else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordisabled")
+              || (property == "textcolorchecked") || (property == "textcolorcheckedhover") || (property == "textcolorcheckeddisabled"))
+        {
+            updateTextColor();
+        }
+        else if ((property == "textstyle") || (property == "textstylechecked"))
+        {
+            if (m_checked && getRenderer()->getTextStyleChecked().isSet())
+                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleChecked());
+            else
+                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+        }
+        else if ((property == "textureunchecked") || (property == "textureuncheckedhover") || (property == "textureuncheckeddisabled")
+              || (property == "texturechecked") || (property == "texturecheckedhover") || (property == "texturecheckeddisabled") || (property == "texturefocused"))
+        {
+            updateTextureSizes();
 
-            // The widget can only be focused when there is an image available for this phase
-            if (getRenderer()->getTextureFocused().isLoaded())
-                m_allowFocus = true;
+            if (property == "texturefocused")
+                m_allowFocus = value.getTexture().isLoaded();
+        }
+        else if (property == "opacity")
+        {
+            float opacity = value.getNumber();
 
-            if (force)
-            {
-                if (getRenderer()->getTextureUnchecked().isLoaded())
-                    setSize(getRenderer()->getTextureUnchecked().getImageSize());
-            }
+            getRenderer()->getTextureUnchecked().setOpacity(opacity);
+            getRenderer()->getTextureChecked().setOpacity(opacity);
+            getRenderer()->getTextureUncheckedHover().setOpacity(opacity);
+            getRenderer()->getTextureCheckedHover().setOpacity(opacity);
+            getRenderer()->getTextureUncheckedDisabled().setOpacity(opacity);
+            getRenderer()->getTextureCheckedDisabled().setOpacity(opacity);
+            getRenderer()->getTextureFocused().setOpacity(opacity);
+
+            m_text.getRenderer()->setOpacity(opacity);
+        }
+        else if (property == "font")
+        {
+            m_text.getRenderer()->setFont(value.getFont());
+            setText(getText());
+        }
+        else if ((property != "checkcolor")
+              && (property != "checkcolorhover")
+              && (property != "checkcolordisabled")
+              && (property != "backgroundcolor")
+              && (property != "backgroundcolorhover")
+              && (property != "backgroundcolordisabled")
+              && (property != "backgroundcolorchecked")
+              && (property != "backgroundcolorcheckedhover")
+              && (property != "backgroundcolorcheckeddisabled")
+              && (property != "bordercolor")
+              && (property != "bordercolorhover")
+              && (property != "bordercolordisabled")
+              && (property != "bordercolorchecked")
+              && (property != "bordercolorcheckedhover")
+              && (property != "bordercolorcheckeddisabled")
+              && (property != "textdistanceratio"))
+        {
+            Widget::rendererChanged(property, value);
         }
     }
-*/
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f RadioButton::getInnerSize() const
+    {
+        Borders borders = getRenderer()->getBorders();
+        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
-/**
+
+        // Draw the borders
+        float innerRadius = std::min(getInnerSize().x, getInnerSize().y) / 2;
+        Borders borders = getRenderer()->getBorders();
+        if (borders != Borders{0})
+        {
+            sf::CircleShape circle{innerRadius + borders.left};
+            circle.setOutlineThickness(-borders.left);
+            circle.setFillColor(sf::Color::Transparent);
+            circle.setOutlineColor(calcColorOpacity(getCurrentBorderColor(), getRenderer()->getOpacity()));
+            target.draw(circle, states);
+        }
+
+        // Draw the box
+        states.transform.translate({borders.left, borders.left});
         if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
         {
             if (m_checked)
             {
-                if (m_mouseHover && getRenderer()->getTextureCheckedHover().isLoaded())
-                    getRenderer()->getTextureCheckedHover()->draw(target, states);
+                if (!m_enabled && getRenderer()->getTextureCheckedDisabled().isLoaded())
+                    getRenderer()->getTextureCheckedDisabled().draw(target, states);
+                else if (m_mouseHover && getRenderer()->getTextureCheckedHover().isLoaded())
+                    getRenderer()->getTextureCheckedHover().draw(target, states);
                 else
-                    getRenderer()->getTextureChecked()->draw(target, states);
+                    getRenderer()->getTextureChecked().draw(target, states);
             }
             else
             {
-                if (m_mouseHover && getRenderer()->getTextureUncheckedHover().isLoaded())
-                    getRenderer()->getTextureUncheckedHover()->draw(target, states);
+                if (!m_enabled && getRenderer()->getTextureUncheckedDisabled().isLoaded())
+                    getRenderer()->getTextureUncheckedDisabled().draw(target, states);
+                else if (m_mouseHover && getRenderer()->getTextureUncheckedHover().isLoaded())
+                    getRenderer()->getTextureUncheckedHover().draw(target, states);
                 else
-                    getRenderer()->getTextureUnchecked()->draw(target, states);
+                    getRenderer()->getTextureUnchecked().draw(target, states);
             }
 
             // When the radio button is focused then draw an extra image
@@ -362,47 +379,117 @@ namespace tgui
         }
         else // There are no images
         {
-            float foregroundSize = std::min(getSize().x - m_padding.left - m_padding.right,
-                                            getSize().y - m_padding.top - m_padding.bottom);
-
-            sf::CircleShape circle{std::min(getSize().x / 2.0f, getSize().y / 2.0f)};
-            circle.setPosition(getPosition());
-            circle.setOutlineThickness(-m_padding.left);
-
-            if (m_mouseHover)
-            {
-                circle.setFillColor(calcColorOpacity(m_foregroundColorHover, getOpacity()));
-                circle.setOutlineColor(calcColorOpacity(m_backgroundColorHover, getOpacity()));
-            }
-            else
-            {
-                circle.setFillColor(calcColorOpacity(m_foregroundColorNormal, getRenderer()->getOpacity()));
-                circle.setOutlineColor(calcColorOpacity(m_backgroundColorNormal, getRenderer()->getOpacity()));
-            }
-
+            sf::CircleShape circle{innerRadius};
+            circle.setFillColor(calcColorOpacity(getCurrentBackgroundColor(), getRenderer()->getOpacity()));
             target.draw(circle, states);
 
             // Draw the check if the radio button is checked
             if (m_checked)
             {
-                sf::CircleShape check{foregroundSize * 7/24};
-                check.setPosition(getPosition().x + m_padding.left + ((foregroundSize / 2.0f) - check.getRadius()),
-                                  getPosition().y + m_padding.top + ((foregroundSize / 2.0f) - check.getRadius()));
-
-                if (m_mouseHover)
-                    check.setFillColor(calcColorOpacity(m_checkColorHover, getRenderer()->getOpacity()));
-                else
-                    check.setFillColor(calcColorOpacity(m_checkColorNormal, getRenderer()->getOpacity()));
-
+                sf::CircleShape check{innerRadius * .6f};
+                check.setFillColor(calcColorOpacity(getCurrentCheckColor(), getRenderer()->getOpacity()));
+                check.setPosition({innerRadius - check.getRadius(), innerRadius - check.getRadius()});
                 target.draw(check, states);
             }
         }
-*/
+        states.transform.translate({-borders.left, -borders.left});
 
         if (!getText().isEmpty())
         {
-            states.transform.translate({getSize().x + getSize().x * textDistanceRatio, (getSize().y - m_text.getSize().y) / 2.0f});
+            states.transform.translate({(1 + getRenderer()->getTextDistanceRatio()) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
             target.draw(m_text, states);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Color RadioButton::getCurrentCheckColor() const
+    {
+        if (!m_enabled && getRenderer()->getCheckColorDisabled().isSet())
+            return getRenderer()->getCheckColorDisabled();
+        else if (m_mouseHover && getRenderer()->getCheckColorHover().isSet())
+            return getRenderer()->getCheckColorHover();
+        else
+            return getRenderer()->getCheckColor();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Color RadioButton::getCurrentBackgroundColor() const
+    {
+        if (m_checked)
+        {
+            if (!m_enabled && getRenderer()->getBackgroundColorCheckedDisabled().isSet())
+                return getRenderer()->getBackgroundColorCheckedDisabled();
+            else if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
+                return getRenderer()->getBackgroundColorDisabled();
+            else if (m_mouseHover)
+            {
+                if (getRenderer()->getBackgroundColorCheckedHover().isSet())
+                    return getRenderer()->getBackgroundColorCheckedHover();
+                else if (getRenderer()->getBackgroundColorChecked().isSet())
+                    return getRenderer()->getBackgroundColorChecked();
+                else if (getRenderer()->getBackgroundColorHover().isSet())
+                    return getRenderer()->getBackgroundColorHover();
+                else
+                    return getRenderer()->getBackgroundColor();
+            }
+            else
+            {
+                if (getRenderer()->getBackgroundColorChecked().isSet())
+                    return getRenderer()->getBackgroundColorChecked();
+                else
+                    return getRenderer()->getBackgroundColor();
+            }
+        }
+        else
+        {
+            if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
+                return getRenderer()->getBackgroundColorDisabled();
+            else if (m_mouseHover && getRenderer()->getBackgroundColorHover().isSet())
+                return getRenderer()->getBackgroundColorHover();
+            else
+                return getRenderer()->getBackgroundColor();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Color RadioButton::getCurrentBorderColor() const
+    {
+        if (m_checked)
+        {
+            if (!m_enabled && getRenderer()->getBorderColorCheckedDisabled().isSet())
+                return getRenderer()->getBorderColorCheckedDisabled();
+            else if (!m_enabled && getRenderer()->getBorderColorDisabled().isSet())
+                return getRenderer()->getBorderColorDisabled();
+            else if (m_mouseHover)
+            {
+                if (getRenderer()->getBorderColorCheckedHover().isSet())
+                    return getRenderer()->getBorderColorCheckedHover();
+                else if (getRenderer()->getBorderColorChecked().isSet())
+                    return getRenderer()->getBorderColorChecked();
+                else if (getRenderer()->getBorderColorHover().isSet())
+                    return getRenderer()->getBorderColorHover();
+                else
+                    return getRenderer()->getBorderColor();
+            }
+            else
+            {
+                if (getRenderer()->getBorderColorChecked().isSet())
+                    return getRenderer()->getBorderColorChecked();
+                else
+                    return getRenderer()->getBorderColor();
+            }
+        }
+        else
+        {
+            if (!m_enabled && getRenderer()->getBorderColorDisabled().isSet())
+                return getRenderer()->getBorderColorDisabled();
+            else if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
+                return getRenderer()->getBorderColorHover();
+            else
+                return getRenderer()->getBorderColor();
         }
     }
 
@@ -412,459 +499,55 @@ namespace tgui
     {
         if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
         {
-            getRenderer()->getTextureFocused().setSize(getSize());
-            getRenderer()->getTextureUnchecked().setSize(getSize());
-            getRenderer()->getTextureChecked().setSize(
-                {getSize().x + ((getRenderer()->getTextureChecked().getImageSize().x - getRenderer()->getTextureUnchecked().getImageSize().x) * (getSize().x / getRenderer()->getTextureUnchecked().getImageSize().x)),
-                 getSize().y + ((getRenderer()->getTextureChecked().getImageSize().y - getRenderer()->getTextureUnchecked().getImageSize().y) * (getSize().y / getRenderer()->getTextureUnchecked().getImageSize().y))}
-            );
-
-            getRenderer()->getTextureUncheckedHover().setSize(getSize());
-            getRenderer()->getTextureCheckedHover().setSize(getRenderer()->getTextureChecked().getSize());
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void RadioButtonRenderer::setProperty(std::string property, const std::string& value)
-    {
-        property = toLower(property);
-        if (property == "padding")
-            setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "textcolor")
-            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "textcolornormal")
-            setTextColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "textcolorhover")
-            setTextColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolor")
-            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolornormal")
-            setBackgroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundcolorhover")
-            setBackgroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "foregroundcolor")
-            setForegroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "foregroundcolornormal")
-            setForegroundColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "foregroundcolorhover")
-            setForegroundColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "checkcolor")
-            setCheckColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "checkcolornormal")
-            setCheckColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "checkcolorhover")
-            setCheckColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "uncheckedimage")
-            setUncheckedTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "checkedimage")
-            setCheckedTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "uncheckedhoverimage")
-            setUncheckedHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "checkedhoverimage")
-            setCheckedHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "focusedimage")
-            setFocusedTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else
-            WidgetRenderer::setProperty(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setProperty(std::string property, ObjectConverter&& value)
-    {
-        property = toLower(property);
-
-        if (value.getType() == ObjectConverter::Type::Borders)
-        {
-            if (property == "padding")
-                setPadding(value.getBorders());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Color)
-        {
-            if (property == "textcolor")
-                setTextColor(value.getColor());
-            else if (property == "textcolornormal")
-                setTextColorNormal(value.getColor());
-            else if (property == "textcolorhover")
-                setTextColorHover(value.getColor());
-            else if (property == "backgroundcolor")
-                setBackgroundColor(value.getColor());
-            else if (property == "backgroundcolornormal")
-                setBackgroundColorNormal(value.getColor());
-            else if (property == "backgroundcolorhover")
-                setBackgroundColorHover(value.getColor());
-            else if (property == "foregroundcolor")
-                setForegroundColor(value.getColor());
-            else if (property == "foregroundcolornormal")
-                setForegroundColorNormal(value.getColor());
-            else if (property == "foregroundcolorhover")
-                setForegroundColorHover(value.getColor());
-            else if (property == "checkcolor")
-                setCheckColor(value.getColor());
-            else if (property == "checkcolornormal")
-                setCheckColorNormal(value.getColor());
-            else if (property == "checkcolorhover")
-                setCheckColorHover(value.getColor());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Texture)
-        {
-            if (property == "uncheckedimage")
-                setUncheckedTexture(value.getTexture());
-            else if (property == "checkedimage")
-                setCheckedTexture(value.getTexture());
-            else if (property == "uncheckedhoverimage")
-                setUncheckedHoverTexture(value.getTexture());
-            else if (property == "checkedhoverimage")
-                setCheckedHoverTexture(value.getTexture());
-            else if (property == "focusedimage")
-                setFocusedTexture(value.getTexture());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else
-            WidgetRenderer::setProperty(property, std::move(value));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter RadioButtonRenderer::getProperty(std::string property) const
-    {
-        property = toLower(property);
-        if (property == "padding")
-            return m_padding;
-        else if (property == "textcolor")
-            return m_textColorNormal;
-        else if (property == "textcolornormal")
-            return m_textColorNormal;
-        else if (property == "textcolorhover")
-            return m_textColorHover;
-        else if (property == "backgroundcolor")
-            return m_backgroundColorNormal;
-        else if (property == "backgroundcolornormal")
-            return m_backgroundColorNormal;
-        else if (property == "backgroundcolorhover")
-            return m_backgroundColorHover;
-        else if (property == "foregroundcolor")
-            return m_foregroundColorNormal;
-        else if (property == "foregroundcolornormal")
-            return m_foregroundColorNormal;
-        else if (property == "foregroundcolorhover")
-            return m_foregroundColorHover;
-        else if (property == "checkcolor")
-            return m_checkColorNormal;
-        else if (property == "checkcolornormal")
-            return m_checkColorNormal;
-        else if (property == "checkcolorhover")
-            return m_checkColorHover;
-        else if (property == "uncheckedimage")
-            return m_textureUnchecked;
-        else if (property == "checkedimage")
-            return m_textureChecked;
-        else if (property == "uncheckedhoverimage")
-            return m_textureUncheckedHover;
-        else if (property == "checkedhoverimage")
-            return m_textureCheckedHover;
-        else if (property == "focusedimage")
-            return m_textureFocused;
-        else
-            return WidgetRenderer::getProperty(property);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::map<std::string, ObjectConverter> RadioButtonRenderer::getPropertyValuePairs() const
-    {
-        auto pairs = WidgetRenderer::getPropertyValuePairs();
-
-        if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
-        {
-            pairs["UncheckedImage"] = m_textureUnchecked;
-            pairs["CheckedImage"] = m_textureChecked;
-            if (m_textureUncheckedHover.isLoaded())
-                pairs["UncheckedHoverImage"] = m_textureUncheckedHover;
-            if (m_textureCheckedHover.isLoaded())
-                pairs["CheckedHoverImage"] = m_textureCheckedHover;
-            if (m_textureFocused.isLoaded())
-                pairs["FocusedImage"] = m_textureFocused;
-        }
-        else
-        {
-            pairs["BackgroundColorNormal"] = m_backgroundColorNormal;
-            pairs["BackgroundColorHover"] = m_backgroundColorHover;
-            pairs["ForegroundColorNormal"] = m_foregroundColorNormal;
-            pairs["ForegroundColorHover"] = m_foregroundColorHover;
-            pairs["CheckColorNormal"] = m_checkColorNormal;
-            pairs["CheckColorHover"] = m_checkColorHover;
-        }
-
-        pairs["TextColorNormal"] = m_textColorNormal;
-        pairs["TextColorHover"] = m_textColorHover;
-        pairs["Padding"] = m_padding;
-        return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setTextColor(const Color& color)
-    {
-        setTextColorNormal(color);
-        setTextColorHover(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setTextColorNormal(const Color& color)
-    {
-        m_textColorNormal = color;
-
-        if (!m_radioButton->m_mouseHover)
-            m_radioButton->m_text.setTextColor(calcColorOpacity(m_textColorNormal, m_radioButton->getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setTextColorHover(const Color& color)
-    {
-        m_textColorHover = color;
-
-        if (m_radioButton->m_mouseHover)
-            m_radioButton->m_text.setTextColor(calcColorOpacity(m_textColorHover, m_radioButton->getOpacity()));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setBackgroundColor(const Color& color)
-    {
-        setBackgroundColorNormal(color);
-        setBackgroundColorHover(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setBackgroundColorNormal(const Color& color)
-    {
-        m_backgroundColorNormal = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setBackgroundColorHover(const Color& color)
-    {
-        m_backgroundColorHover = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setForegroundColor(const Color& color)
-    {
-        setForegroundColorNormal(color);
-        setForegroundColorHover(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setForegroundColorNormal(const Color& color)
-    {
-        m_foregroundColorNormal = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setForegroundColorHover(const Color& color)
-    {
-        m_foregroundColorHover = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setCheckColor(const Color& color)
-    {
-        setCheckColorNormal(color);
-        setCheckColorHover(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setCheckColorNormal(const Color& color)
-    {
-        m_checkColorNormal = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setCheckColorHover(const Color& color)
-    {
-        m_checkColorHover = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setUncheckedTexture(const Texture& texture)
-    {
-        m_textureUnchecked = texture;
-        if (m_textureUnchecked.isLoaded())
-        {
-            m_textureUnchecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
-
-            if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
-                m_radioButton->updateSize();
+            getRenderer()->getTextureUnchecked().setSize(getInnerSize());
+            getRenderer()->getTextureChecked().setSize(getInnerSize());
+            getRenderer()->getTextureUncheckedHover().setSize(getInnerSize());
+            getRenderer()->getTextureCheckedHover().setSize(getInnerSize());
+            getRenderer()->getTextureUncheckedDisabled().setSize(getInnerSize());
+            getRenderer()->getTextureCheckedDisabled().setSize(getInnerSize());
+            getRenderer()->getTextureFocused().setSize(getInnerSize());
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButtonRenderer::setCheckedTexture(const Texture& texture)
+    void RadioButton::updateTextColor()
     {
-        m_textureChecked = texture;
-        if (m_textureChecked.isLoaded())
+        if (m_checked)
         {
-            m_textureChecked.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
-
-            if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
-                m_radioButton->updateSize();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setUncheckedHoverTexture(const Texture& texture)
-    {
-        m_textureUncheckedHover = texture;
-        if (m_textureUncheckedHover.isLoaded())
-        {
-            m_textureUncheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
-
-            if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
-                m_radioButton->updateSize();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setCheckedHoverTexture(const Texture& texture)
-    {
-        m_textureCheckedHover = texture;
-        if (m_textureCheckedHover.isLoaded())
-        {
-            m_textureCheckedHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
-
-            if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
-                m_radioButton->updateSize();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButtonRenderer::setFocusedTexture(const Texture& texture)
-    {
-        m_textureFocused = texture;
-        if (m_textureFocused.isLoaded())
-        {
-            m_textureFocused.setSize(m_radioButton->getSize());
-            m_textureFocused.setPosition(m_radioButton->getPosition());
-            m_textureFocused.setColor({255, 255, 255, static_cast<sf::Uint8>(m_radioButton->getOpacity() * 255)});
-        }
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    void RadioButtonRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        if (m_textureUnchecked.isLoaded() && m_textureChecked.isLoaded())
-        {
-            if (m_radioButton->m_checked)
+            if (!m_enabled && getRenderer()->getTextColorCheckedDisabled().isSet())
+                m_text.getRenderer()->setTextColor(getRenderer()->getTextColorCheckedDisabled());
+            else if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
+                m_text.getRenderer()->setTextColor(getRenderer()->getTextColorDisabled());
+            else if (m_mouseHover)
             {
-                if (m_radioButton->m_mouseHover && m_textureCheckedHover.isLoaded())
-                    target.draw(m_textureCheckedHover, states);
+                if (getRenderer()->getTextColorCheckedHover().isSet())
+                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColorCheckedHover());
+                else if (getRenderer()->getTextColorChecked().isSet())
+                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColorChecked());
+                else if (getRenderer()->getTextColorHover().isSet())
+                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColorHover());
                 else
-                    target.draw(m_textureChecked, states);
+                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColor());
             }
             else
             {
-                if (m_radioButton->m_mouseHover && m_textureUncheckedHover.isLoaded())
-                    target.draw(m_textureUncheckedHover, states);
+                if (getRenderer()->getTextColorChecked().isSet())
+                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColorChecked());
                 else
-                    target.draw(m_textureUnchecked, states);
+                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColor());
             }
-
-            // When the radio button is focused then draw an extra image
-            if (m_radioButton->m_focused && m_textureFocused.isLoaded())
-                target.draw(m_textureFocused, states);
         }
-        else // There are no images
+        else
         {
-            float foregroundSize = std::min(m_radioButton->getSize().x - m_padding.left - m_padding.right,
-                                            m_radioButton->getSize().y - m_padding.top - m_padding.bottom);
-
-            sf::CircleShape circle{std::min(m_radioButton->getSize().x / 2.0f, m_radioButton->getSize().y / 2.0f)};
-            circle.setPosition(m_radioButton->getPosition());
-            circle.setOutlineThickness(-m_padding.left);
-
-            if (m_radioButton->m_mouseHover)
-            {
-                circle.setFillColor(calcColorOpacity(m_foregroundColorHover, m_radioButton->getOpacity()));
-                circle.setOutlineColor(calcColorOpacity(m_backgroundColorHover, m_radioButton->getOpacity()));
-            }
+            if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
+                m_text.getRenderer()->setTextColor(getRenderer()->getTextColorDisabled());
+            else if (m_mouseHover && getRenderer()->getTextColorHover().isSet())
+                m_text.getRenderer()->setTextColor(getRenderer()->getTextColorHover());
             else
-            {
-                circle.setFillColor(calcColorOpacity(m_foregroundColorNormal, m_radioButton->getOpacity()));
-                circle.setOutlineColor(calcColorOpacity(m_backgroundColorNormal, m_radioButton->getOpacity()));
-            }
-
-            target.draw(circle, states);
-
-            // Draw the check if the radio button is checked
-            if (m_radioButton->m_checked)
-            {
-                sf::CircleShape check{foregroundSize * 7/24};
-                check.setPosition(m_radioButton->getPosition().x + m_padding.left + ((foregroundSize / 2.0f) - check.getRadius()),
-                                  m_radioButton->getPosition().y + m_padding.top + ((foregroundSize / 2.0f) - check.getRadius()));
-
-                if (m_radioButton->m_mouseHover)
-                    check.setFillColor(calcColorOpacity(m_checkColorHover, m_radioButton->getOpacity()));
-                else
-                    check.setFillColor(calcColorOpacity(m_checkColorNormal, m_radioButton->getOpacity()));
-
-                target.draw(check, states);
-            }
+                m_text.getRenderer()->setTextColor(getRenderer()->getTextColor());
         }
     }
-*/
-
-    void RadioButtonRenderer::setTextColor(const Color& color)
-    {
-        setTextColorNormal(color);
-        setTextColorHover(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-    void RadioButtonRenderer::setBorderColor(const Color& color)
-    {
-        setBorderColorNormal(color);
-        setBorderColorHover(color);
-    }
-*/
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_RENDERER_PROPERTY_OUTLINE(RadioButtonRenderer, Borders, Borders(0))
-
-    TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, TextColorNormal, Color(60, 60, 60))
-    TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, TextColorHover, sf::Color::Black)
-//    TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, BorderColorNormal, Color(60, 60, 60))
-//    TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, BorderColorHover, sf::Color::Black)
-
-//    TGUI_RENDERER_PROPERTY_TEXTURE(RadioButtonRenderer, TextureUnchecked)
-    TGUI_RENDERER_PROPERTY_TEXTURE(RadioButtonRenderer, TextureUncheckedHover)
-    TGUI_RENDERER_PROPERTY_TEXTURE(RadioButtonRenderer, TextureChecked)
-    TGUI_RENDERER_PROPERTY_TEXTURE(RadioButtonRenderer, TextureCheckedHover)
-    TGUI_RENDERER_PROPERTY_TEXTURE(RadioButtonRenderer, TextureFocused)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

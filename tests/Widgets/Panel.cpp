@@ -150,6 +150,7 @@ TEST_CASE("[Panel]")
         }
     }
 
+    testWidgetRenderer(panel->getRenderer());
     SECTION("Renderer")
     {
         auto renderer = panel->getRenderer();
@@ -159,7 +160,6 @@ TEST_CASE("[Panel]")
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(40, 50, 60)"));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
-            REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
         }
 
         SECTION("set object property")
@@ -167,7 +167,6 @@ TEST_CASE("[Panel]")
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{40, 50, 60}));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
-            REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
         }
 
         SECTION("functions")
@@ -175,20 +174,15 @@ TEST_CASE("[Panel]")
             renderer->setBackgroundColor({10, 20, 30});
             renderer->setBorderColor({40, 50, 60});
             renderer->setBorders({1, 2, 3, 4});
-            renderer->setOpacity(0.8f);
         }
 
         REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
         REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
-        REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
 
         REQUIRE(renderer->getBackgroundColor() == sf::Color(10, 20, 30));
         REQUIRE(renderer->getBorderColor() == sf::Color(40, 50, 60));
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
-        REQUIRE(renderer->getOpacity() == 0.8f);
-
-        REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }
 
     SECTION("Saving and loading from file")

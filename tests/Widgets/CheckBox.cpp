@@ -25,11 +25,13 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/CheckBox.hpp>
 
-TEST_CASE("[CheckBox]") {
+TEST_CASE("[CheckBox]")
+{
     tgui::CheckBox::Ptr checkBox = std::make_shared<tgui::CheckBox>();
-    checkBox->setFont("resources/DroidSansArmenian.ttf");
+    checkBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(checkBox->connect("Checked", [](){}));
         REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](){}));
 
@@ -37,11 +39,125 @@ TEST_CASE("[CheckBox]") {
         REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](bool){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(checkBox->getWidgetType() == "CheckBox");
     }
 
-    SECTION("Checked") {
+    SECTION("Position and Size")
+    {
+        checkBox->setPosition(40, 30);
+        checkBox->setSize(36, 36);
+        checkBox->getRenderer()->setBorders(2);
+
+        SECTION("Colored")
+        {
+            REQUIRE(checkBox->getPosition() == sf::Vector2f(40, 30));
+            REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+            REQUIRE(checkBox->getFullSize() == checkBox->getSize());
+            REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, 0));
+
+            SECTION("With text")
+            {
+                checkBox->setText("Test");
+
+                SECTION("Small text")
+                {
+                    checkBox->setTextSize(20);
+                    REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                    REQUIRE(checkBox->getFullSize().x > checkBox->getSize().x);
+                    REQUIRE(checkBox->getFullSize().y == checkBox->getSize().y);
+                    REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, 0));
+                }
+
+                SECTION("Large text")
+                {
+                    checkBox->setTextSize(50);
+                    REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                    REQUIRE(checkBox->getFullSize().x > checkBox->getSize().x);
+                    REQUIRE(checkBox->getFullSize().y > checkBox->getSize().y);
+                    REQUIRE(checkBox->getWidgetOffset().x == 0);
+                    REQUIRE(checkBox->getWidgetOffset().y < 0);
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            SECTION("Unchecked and Checked images of same size")
+            {
+                checkBox->getRenderer()->setTextureUnchecked({"resources/CheckBox1.png", {0, 0, 32, 32}});
+                checkBox->getRenderer()->setTextureChecked({"resources/CheckBox1.png", {32, 0, 32, 32}});
+
+                REQUIRE(checkBox->getPosition() == sf::Vector2f(40, 30));
+                REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                REQUIRE(checkBox->getFullSize() == checkBox->getSize());
+                REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, 0));
+
+                SECTION("With text")
+                {
+                    checkBox->setText("Test");
+
+                    SECTION("Small text")
+                    {
+                        checkBox->setTextSize(20);
+                        REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                        REQUIRE(checkBox->getFullSize().x > checkBox->getSize().x);
+                        REQUIRE(checkBox->getFullSize().y == checkBox->getSize().y);
+                        REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, 0));
+                    }
+
+                    SECTION("Large text")
+                    {
+                        checkBox->setTextSize(50);
+                        REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                        REQUIRE(checkBox->getFullSize().x > checkBox->getSize().x);
+                        REQUIRE(checkBox->getFullSize().y > checkBox->getSize().y);
+                        REQUIRE(checkBox->getWidgetOffset().x == 0);
+                        REQUIRE(checkBox->getWidgetOffset().y < 0);
+                    }
+                }
+            }
+
+            SECTION("Unchecked and Checked images of different sizes")
+            {
+                checkBox->getRenderer()->setTextureUnchecked({"resources/CheckBox2.png", {0, 8, 32, 32}});
+                checkBox->getRenderer()->setTextureChecked({"resources/CheckBox2.png", {32, 0, 38, 40}});
+
+                REQUIRE(checkBox->getPosition() == sf::Vector2f(40, 30));
+                REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                REQUIRE(checkBox->getFullSize() == sf::Vector2f(40, 42));
+                REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, -6));
+
+                SECTION("With text")
+                {
+                    checkBox->setText("Test");
+
+                    SECTION("Small text")
+                    {
+                        checkBox->setTextSize(20);
+                        REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                        REQUIRE(checkBox->getFullSize().x > 40);
+                        REQUIRE(checkBox->getFullSize().y == 42);
+                        REQUIRE(checkBox->getWidgetOffset() == sf::Vector2f(0, -6));
+                    }
+
+                    SECTION("Large text")
+                    {
+                        checkBox->setTextSize(50);
+                        REQUIRE(checkBox->getSize() == sf::Vector2f(36, 36));
+                        REQUIRE(checkBox->getFullSize().x > 40);
+                        REQUIRE(checkBox->getFullSize().y > 42);
+                        REQUIRE(checkBox->getWidgetOffset().x == 0);
+                        REQUIRE(checkBox->getWidgetOffset().y < -6);
+                    }
+                }
+            }
+        }
+    }
+
+    SECTION("Checked")
+    {
         REQUIRE(!checkBox->isChecked());
         checkBox->check();
         REQUIRE(checkBox->isChecked());
@@ -49,21 +165,69 @@ TEST_CASE("[CheckBox]") {
         REQUIRE(!checkBox->isChecked());
     }
 
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(checkBox = std::make_shared<tgui::Theme>()->load("CheckBox"));
+    SECTION("Events")
+    {
+        SECTION("ClickableWidget")
+        {
+            testClickableWidgetSignals(checkBox);
+        }
 
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(checkBox = theme->load("CheckBox"));
-        REQUIRE(checkBox->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(checkBox->getSecondaryLoadingParameter() == "checkbox");
+        SECTION("Check / Uncheck")
+        {
+            checkBox->setPosition(40, 30);
+            checkBox->setSize(50, 60);
+
+            unsigned int checkCount = 0;
+            unsigned int uncheckCount = 0;
+            checkBox->connect("Checked", genericCallback, std::ref(checkCount));
+            checkBox->connect("Unchecked", genericCallback, std::ref(uncheckCount));
+
+            checkBox->leftMousePressed(65, 60);
+            REQUIRE(checkCount == 0);
+            REQUIRE(uncheckCount == 0);
+
+            checkBox->leftMouseReleased(65, 60);
+            REQUIRE(checkCount == 1);
+            REQUIRE(uncheckCount == 0);
+
+            checkBox->leftMousePressed(65, 60);
+            checkBox->leftMouseReleased(65, 60);
+            REQUIRE(checkCount == 1);
+            REQUIRE(uncheckCount == 1);
+
+            SECTION("Key pressed")
+            {
+                sf::Event::KeyEvent keyEvent;
+                keyEvent.alt = false;
+                keyEvent.control = false;
+                keyEvent.shift = false;
+                keyEvent.system = false;
+
+                keyEvent.code = sf::Keyboard::Space;
+                checkBox->keyPressed(keyEvent);
+                REQUIRE(checkCount == 2);
+                REQUIRE(uncheckCount == 1);
+
+                keyEvent.code = sf::Keyboard::Return;
+                checkBox->keyPressed(keyEvent);
+                REQUIRE(checkCount == 2);
+                REQUIRE(uncheckCount == 2);
+            }
+        }
+    }
+
+    SECTION("Saving and loading from file")
+    {
+        tgui::Theme theme{"resources/Black.txt"};
+        checkBox->setRenderer(theme.getRenderer("CheckBox"));
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(checkBox);
 
-        checkBox->setOpacity(0.8f);
         checkBox->check();
         checkBox->setText("SomeText");
         checkBox->setTextSize(25);
+        checkBox->setTextClickable(false);
 
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox1.txt"));
         
@@ -73,12 +237,9 @@ TEST_CASE("[CheckBox]") {
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox2.txt"));
         REQUIRE(compareFiles("WidgetFileCheckBox1.txt", "WidgetFileCheckBox2.txt"));
 
-        SECTION("Copying widget") {
-            tgui::CheckBox temp;
-            temp = *checkBox;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::CheckBox::copy(std::make_shared<tgui::CheckBox>(temp)));
+        SECTION("Copying widget")
+        {
+            copy(parent, checkBox);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox2.txt"));
             REQUIRE(compareFiles("WidgetFileCheckBox1.txt", "WidgetFileCheckBox2.txt"));

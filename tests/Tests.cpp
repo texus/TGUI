@@ -99,3 +99,35 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
         REQUIRE(clickedCount == 1);
     }
 }
+
+void testWidgetRenderer(tgui::WidgetRenderer* renderer)
+{
+    SECTION("WidgetRenderer")
+    {
+        SECTION("set serialized property")
+        {
+            REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
+            REQUIRE_NOTHROW(renderer->setProperty("Font", "resources/DroidSansArmenian.ttf"));
+        }
+
+        SECTION("set object property")
+        {
+            REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
+            REQUIRE_NOTHROW(renderer->setProperty("Font", tgui::Font{"resources/DroidSansArmenian.ttf"}));
+        }
+
+        SECTION("functions")
+        {
+            renderer->setOpacity(0.8f);
+            renderer->setFont({"resources/DroidSansArmenian.ttf"});
+        }
+
+        REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
+        REQUIRE(renderer->getProperty("Font").getFont() != nullptr);
+
+        REQUIRE(renderer->getOpacity() == 0.8f);
+        REQUIRE(renderer->getFont().getId() == "resources/DroidSansArmenian.ttf");
+
+        REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
+    }
+}

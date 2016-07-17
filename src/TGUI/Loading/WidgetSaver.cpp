@@ -34,8 +34,8 @@
 #include <TGUI/Widgets/Label.hpp>/**
 #include <TGUI/Widgets/ListBox.hpp>*/
 #include <TGUI/Widgets/Picture.hpp>/**
-#include <TGUI/Widgets/ProgressBar.hpp>
-#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>*/
+#include <TGUI/Widgets/RadioButton.hpp>/**
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
@@ -404,7 +404,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+*/
     TGUI_API std::shared_ptr<DataIO::Node> saveRadioButton(RadioButton::Ptr radioButton)
     {
         auto node = saveWidget(radioButton);
@@ -413,13 +413,15 @@ namespace tgui
             SET_PROPERTY("Text", Serializer::serialize(radioButton->getText()));
         if (radioButton->isChecked())
             SET_PROPERTY("Checked", "true");
+        if (!radioButton->isTextClickable())
+            SET_PROPERTY("TextClickable", "false");
 
         SET_PROPERTY("TextSize", tgui::to_string(radioButton->getTextSize()));
         return node;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
     TGUI_API std::shared_ptr<DataIO::Node> saveScrollbar(Scrollbar::Ptr scrollbar)
     {
         auto node = saveWidget(scrollbar);
@@ -529,8 +531,8 @@ namespace tgui
             {"container", saveContainer},
             {"button", saveButton},/**
             {"canvas", saveWidget},
-            {"chatbox", saveChatBox},
-            {"checkbox", saveRadioButton},*/
+            {"chatbox", saveChatBox},*/
+            {"checkbox", saveRadioButton},
             {"clickablewidget", saveWidget},/**
             {"childwindow", saveChildWindow},
             {"combobox", saveComboBox},*/
@@ -539,9 +541,9 @@ namespace tgui
             {"label", saveLabel},/**
             {"listbox", saveListBox},*/
             {"panel", saveContainer},
-            {"picture", savePicture}/**,
-            {"progressbar", saveProgressBar},
-            {"radiobutton", saveRadioButton},
+            {"picture", savePicture},/**
+            {"progressbar", saveProgressBar},*/
+            {"radiobutton", saveRadioButton}/**,
             {"scrollbar", saveScrollbar},
             {"slider", saveSlider},
             {"spinbutton", saveSpinButton},

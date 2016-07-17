@@ -43,8 +43,8 @@
 
 #include <TGUI/Widgets/Button.hpp>/**
 #include <TGUI/Widgets/Canvas.hpp>
-#include <TGUI/Widgets/ChatBox.hpp>
-#include <TGUI/Widgets/CheckBox.hpp>
+#include <TGUI/Widgets/ChatBox.hpp>*/
+#include <TGUI/Widgets/CheckBox.hpp>/**
 #include <TGUI/Widgets/ChildWindow.hpp>*/
 #include <TGUI/Widgets/ClickableWidget.hpp>/**
 #include <TGUI/Widgets/ComboBox.hpp>*/
@@ -57,8 +57,8 @@
 #include <TGUI/Widgets/MessageBox.hpp>*/
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>/**
-#include <TGUI/Widgets/ProgressBar.hpp>
-#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>*/
+#include <TGUI/Widgets/RadioButton.hpp>/**
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
