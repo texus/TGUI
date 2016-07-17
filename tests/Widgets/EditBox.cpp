@@ -287,7 +287,10 @@ TEST_CASE("[EditBox]")
 
     SECTION("Events")
     {
-        testClickableWidgetSignals(editBox);
+        SECTION("ClickableWidget")
+        {
+            testClickableWidgetSignals(editBox);
+        }
 
         editBox->setPosition(40, 30);
         editBox->setSize(150, 100);

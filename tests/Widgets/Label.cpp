@@ -126,87 +126,19 @@ TEST_CASE("[Label]")
 
     SECTION("Events")
     {
-        unsigned int mousePressedCount = 0;
-        unsigned int mouseReleasedCount = 0;
-        unsigned int clickedCount = 0;
-        unsigned int doubleClickedCount = 0;
-
-        label->setPosition(40, 30);
-        label->setSize(150, 100);
-
-        label->connect("MousePressed", mouseCallback, std::ref(mousePressedCount));
-        label->connect("MouseReleased", mouseCallback, std::ref(mouseReleasedCount));
-        label->connect("Clicked", mouseCallback, std::ref(clickedCount));
-        label->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
-
-        SECTION("mouseOnWidget")
+        SECTION("ClickableWidget")
         {
-            REQUIRE(!label->mouseOnWidget(10, 15));
-            REQUIRE(label->mouseOnWidget(40, 30));
-            REQUIRE(label->mouseOnWidget(115, 80));
-            REQUIRE(label->mouseOnWidget(189, 129));
-            REQUIRE(!label->mouseOnWidget(190, 130));
-
-            REQUIRE(mousePressedCount == 0);
-            REQUIRE(mouseReleasedCount == 0);
-            REQUIRE(clickedCount == 0);
-            REQUIRE(doubleClickedCount == 0);
-        }
-
-        SECTION("mouse move")
-        {
-            unsigned int mouseEnteredCount = 0;
-            unsigned int mouseLeftCount = 0;
-
-            label->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
-            label->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
-
-            auto parent = std::make_shared<tgui::Panel>(300, 200);
-            parent->add(label);
-
-            parent->mouseMoved(10, 15);
-            REQUIRE(mouseEnteredCount == 0);
-            REQUIRE(mouseLeftCount == 0);
-
-            parent->mouseMoved(40, 30);
-            REQUIRE(mouseEnteredCount == 1);
-            REQUIRE(mouseLeftCount == 0);
-
-            parent->mouseMoved(189, 129);
-            REQUIRE(mouseEnteredCount == 1);
-            REQUIRE(mouseLeftCount == 0);
-
-            parent->mouseMoved(190, 130);
-            REQUIRE(mouseEnteredCount == 1);
-            REQUIRE(mouseLeftCount == 1);
-        }
-
-        SECTION("mouse click")
-        {
-            label->leftMouseReleased(115, 80);
-
-            REQUIRE(mouseReleasedCount == 1);
-            REQUIRE(clickedCount == 0);
-
-            SECTION("mouse press")
-            {
-                label->leftMousePressed(115, 80);
-
-                REQUIRE(mousePressedCount == 1);
-                REQUIRE(mouseReleasedCount == 1);
-                REQUIRE(clickedCount == 0);
-            }
-
-            label->leftMouseReleased(115, 80);
-
-            REQUIRE(mousePressedCount == 1);
-            REQUIRE(mouseReleasedCount == 2);
-            REQUIRE(clickedCount == 1);
-            REQUIRE(doubleClickedCount == 0);
+            testClickableWidgetSignals(label);
         }
 
         SECTION("double click")
         {
+            unsigned int doubleClickedCount = 0;
+            label->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
+
+            label->setPosition(40, 30);
+            label->setSize(150, 100);
+
             label->leftMousePressed(115, 80);
             label->leftMouseReleased(115, 80);
 
@@ -216,17 +148,12 @@ TEST_CASE("[Label]")
 
             label->leftMousePressed(115, 80);
             label->leftMouseReleased(115, 80);
-
-            REQUIRE(mousePressedCount == 2);
-            REQUIRE(mouseReleasedCount == 2);
-            REQUIRE(clickedCount == 2);
             REQUIRE(doubleClickedCount == 0);
 
             gui.updateTime(DOUBLE_CLICK_TIMEOUT / 2.f);
 
             label->leftMousePressed(115, 80);
             label->leftMouseReleased(115, 80);
-
             REQUIRE(doubleClickedCount == 1);
         }
     }

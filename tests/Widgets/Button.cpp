@@ -68,13 +68,16 @@ TEST_CASE("[Button]")
 
     SECTION("Events")
     {
-        testClickableWidgetSignals(button);
-
-        button->setPosition(40, 30);
-        button->setSize(150, 100);
+        SECTION("ClickableWidget")
+        {
+            testClickableWidgetSignals(button);
+        }
 
         SECTION("Pressed signal")
         {
+            button->setPosition(40, 30);
+            button->setSize(150, 100);
+
             unsigned int pressedCount = 0;
 
             button->connect("Pressed", genericCallback, std::ref(pressedCount));
@@ -157,7 +160,7 @@ TEST_CASE("[Button]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorDisabled", sf::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleHover", sf::Text::Underlined));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", sf::Text::Bold | sf::Text::Underlined));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyle(sf::Text::Bold | sf::Text::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", sf::Text::StrikeThrough));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
@@ -186,19 +189,37 @@ TEST_CASE("[Button]")
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(20, 30, 40));
             REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(30, 40, 50));
             REQUIRE(renderer->getProperty("TextColorDown").getColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == sf::Color(90, 100, 110));
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("BackgroundColorDown").getColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(110, 120, 130));
+            REQUIRE(renderer->getProperty("BorderColorDown").getColor() == sf::Color(120, 130, 140));
+            REQUIRE(renderer->getProperty("BorderColorDisabled").getColor() == sf::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Italic);
+            REQUIRE(renderer->getProperty("TextStyleHover").getTextStyle() == sf::Text::Underlined);
+            REQUIRE(renderer->getProperty("TextStyleDown").getTextStyle() == (sf::Text::Bold | sf::Text::Underlined));
+            REQUIRE(renderer->getProperty("TextStyleDisabled").getTextStyle() == sf::Text::StrikeThrough);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
             REQUIRE(renderer->getTextColor() == sf::Color(20, 30, 40));
             REQUIRE(renderer->getTextColorHover() == sf::Color(30, 40, 50));
             REQUIRE(renderer->getTextColorDown() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getTextColorDisabled() == sf::Color(90, 100, 110));
             REQUIRE(renderer->getBackgroundColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getBackgroundColorHover() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getBackgroundColorDown() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getBackgroundColorDisabled() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getBorderColor() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getBorderColorHover() == sf::Color(110, 120, 130));
+            REQUIRE(renderer->getBorderColorDown() == sf::Color(120, 130, 140));
+            REQUIRE(renderer->getBorderColorDisabled() == sf::Color(130, 140, 150));
+            REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
+            REQUIRE(renderer->getTextStyleHover() == sf::Text::Underlined);
+            REQUIRE(renderer->getTextStyleDown() == (sf::Text::Bold | sf::Text::Underlined));
+            REQUIRE(renderer->getTextStyleDisabled() == sf::Text::StrikeThrough);
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         }
 

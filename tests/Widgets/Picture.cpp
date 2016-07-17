@@ -123,93 +123,20 @@ TEST_CASE("[Picture]")
 
     SECTION("Events")
     {
-        unsigned int mousePressedCount = 0;
-        unsigned int mouseReleasedCount = 0;
-        unsigned int clickedCount = 0;
-        unsigned int doubleClickedCount = 0;
-
-        picture->setTexture("resources/image.png");
-        picture->setPosition(40, 30);
-        picture->setSize(150, 100);
-
-        picture->connect("MousePressed", mouseCallback, std::ref(mousePressedCount));
-        picture->connect("MouseReleased", mouseCallback, std::ref(mouseReleasedCount));
-        picture->connect("Clicked", mouseCallback, std::ref(clickedCount));
-        picture->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
-
-        SECTION("mouseOnWidget")
+        SECTION("ClickableWidget")
         {
-            picture->setTexture("resources/TransparentParts.png", true);
-
-            REQUIRE(!picture->mouseOnWidget(10, 15));
-            REQUIRE(picture->mouseOnWidget(40, 30));
-            REQUIRE(picture->mouseOnWidget(115, 80));
-            REQUIRE(picture->mouseOnWidget(189, 129));
-            REQUIRE(!picture->mouseOnWidget(190, 130));
-
-            picture->setTexture("resources/TransparentParts.png", false);
-            REQUIRE(!picture->mouseOnWidget(115, 80));
-
-            REQUIRE(mousePressedCount == 0);
-            REQUIRE(mouseReleasedCount == 0);
-            REQUIRE(clickedCount == 0);
-            REQUIRE(doubleClickedCount == 0);
-        }
-
-        SECTION("mouse move")
-        {
-            unsigned int mouseEnteredCount = 0;
-            unsigned int mouseLeftCount = 0;
-
-            picture->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
-            picture->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
-
-            auto parent = std::make_shared<tgui::Panel>(300, 200);
-            parent->add(picture);
-
-            parent->mouseMoved(10, 15);
-            REQUIRE(mouseEnteredCount == 0);
-            REQUIRE(mouseLeftCount == 0);
-
-            parent->mouseMoved(40, 30);
-            REQUIRE(mouseEnteredCount == 1);
-            REQUIRE(mouseLeftCount == 0);
-
-            parent->mouseMoved(189, 129);
-            REQUIRE(mouseEnteredCount == 1);
-            REQUIRE(mouseLeftCount == 0);
-
-            parent->mouseMoved(190, 130);
-            REQUIRE(mouseEnteredCount == 1);
-            REQUIRE(mouseLeftCount == 1);
-        }
-
-        SECTION("mouse click")
-        {
-            picture->leftMouseReleased(115, 80);
-
-            REQUIRE(mouseReleasedCount == 1);
-            REQUIRE(clickedCount == 0);
-
-            SECTION("mouse press")
-            {
-                picture->leftMousePressed(115, 80);
-
-                REQUIRE(mousePressedCount == 1);
-                REQUIRE(mouseReleasedCount == 1);
-                REQUIRE(clickedCount == 0);
-            }
-
-            picture->leftMouseReleased(115, 80);
-
-            REQUIRE(mousePressedCount == 1);
-            REQUIRE(mouseReleasedCount == 2);
-            REQUIRE(clickedCount == 1);
-            REQUIRE(doubleClickedCount == 0);
+            testClickableWidgetSignals(picture);
         }
 
         SECTION("double click")
         {
+            picture->setTexture("resources/image.png");
+            picture->setPosition(40, 30);
+            picture->setSize(150, 100);
+
+            unsigned int doubleClickedCount = 0;
+            picture->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
+
             picture->leftMousePressed(115, 80);
             picture->leftMouseReleased(115, 80);
 
@@ -219,17 +146,12 @@ TEST_CASE("[Picture]")
 
             picture->leftMousePressed(115, 80);
             picture->leftMouseReleased(115, 80);
-
-            REQUIRE(mousePressedCount == 2);
-            REQUIRE(mouseReleasedCount == 2);
-            REQUIRE(clickedCount == 2);
             REQUIRE(doubleClickedCount == 0);
 
             gui.updateTime(DOUBLE_CLICK_TIMEOUT / 2.f);
 
             picture->leftMousePressed(115, 80);
             picture->leftMouseReleased(115, 80);
-
             REQUIRE(doubleClickedCount == 1);
         }
     }
