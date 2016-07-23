@@ -25,26 +25,30 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/ProgressBar.hpp>
 
-TEST_CASE("[ProgressBar]") {
+TEST_CASE("[ProgressBar]")
+{
     tgui::ProgressBar::Ptr progressBar = std::make_shared<tgui::ProgressBar>();
-    progressBar->setFont("resources/DroidSansArmenian.ttf");
+    progressBar->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     progressBar->setMinimum(10);
     progressBar->setMaximum(20);
     progressBar->setValue(15);
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](){}));
         REQUIRE_NOTHROW(progressBar->connect("Full", [](){}));
 
-        REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](int){}));
-        REQUIRE_NOTHROW(progressBar->connect("Full", [](int){}));
+        REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](unsigned int){}));
+        REQUIRE_NOTHROW(progressBar->connect("Full", [](unsigned int){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(progressBar->getWidgetType() == "ProgressBar");
     }
 
-    SECTION("Minimum") {
+    SECTION("Minimum")
+    {
         REQUIRE(progressBar->getMinimum() == 10);
 
         progressBar->setMinimum(12);
@@ -63,7 +67,8 @@ TEST_CASE("[ProgressBar]") {
         REQUIRE(progressBar->getMaximum() == 22);
     }
 
-    SECTION("Maximum") {
+    SECTION("Maximum")
+    {
         REQUIRE(progressBar->getMaximum() == 20);
 
         progressBar->setMaximum(17);
@@ -82,7 +87,8 @@ TEST_CASE("[ProgressBar]") {
         REQUIRE(progressBar->getMaximum() == 9);
     }
 
-    SECTION("Value") {
+    SECTION("Value")
+    {
         REQUIRE(progressBar->getValue() == 15);
         
         progressBar->setValue(14);
@@ -95,7 +101,8 @@ TEST_CASE("[ProgressBar]") {
         REQUIRE(progressBar->getValue() == 20);
     }
 
-    SECTION("Value") {
+    SECTION("incrementValue")
+    {
         progressBar->setValue(18);
         REQUIRE(progressBar->getValue() == 18);
         REQUIRE(progressBar->incrementValue() == 19);
@@ -106,18 +113,21 @@ TEST_CASE("[ProgressBar]") {
         REQUIRE(progressBar->getValue() == 20);
     }
 
-    SECTION("Text") {
+    SECTION("Text")
+    {
         REQUIRE(progressBar->getText() == "");
         progressBar->setText("SomeText");
         REQUIRE(progressBar->getText() == "SomeText");
     }
 
-    SECTION("TextSize") {
+    SECTION("TextSize")
+    {
         progressBar->setTextSize(25);
         REQUIRE(progressBar->getTextSize() == 25);
     }
     
-    SECTION("FillDirection") {
+    SECTION("FillDirection")
+    {
         REQUIRE(progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::LeftToRight);
         progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
         REQUIRE(progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::RightToLeft);
@@ -129,120 +139,104 @@ TEST_CASE("[ProgressBar]") {
         REQUIRE(progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::LeftToRight);
     }
 
-    SECTION("Renderer") {
+    SECTION("Renderer")
+    {
         auto renderer = progressBar->getRenderer();
 
-        SECTION("colored") {
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(10, 20, 30)"));
-                REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorBack").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorFront").getColor() == sf::Color(10, 20, 30));
-
+        SECTION("colored")
+        {
+            SECTION("set serialized property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(20, 30, 40)"));
-                REQUIRE_NOTHROW(renderer->setProperty("ForegroundColor", "rgb(30, 40, 50)"));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorBack", "rgb(40, 50, 60)"));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorFront", "rgb(50, 60, 70)"));
+                REQUIRE_NOTHROW(renderer->setProperty("FillColor", "rgb(30, 40, 50)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(40, 50, 60)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorFilled", "rgb(50, 60, 70)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(60, 70, 80)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Italic"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{10, 20, 30}));
-                REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorBack").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorFront").getColor() == sf::Color(10, 20, 30));
-                
+            SECTION("set object property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{20, 30, 40}));
-                REQUIRE_NOTHROW(renderer->setProperty("ForegroundColor", sf::Color{30, 40, 50}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorBack", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorFront", sf::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("FillColor", sf::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorFilled", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
 
-            SECTION("functions") {
-                renderer->setTextColor({10, 20, 30});
-                REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorBack").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorFront").getColor() == sf::Color(10, 20, 30));
-
+            SECTION("functions")
+            {
                 renderer->setBackgroundColor({20, 30, 40});
-                renderer->setForegroundColor({30, 40, 50});
-                renderer->setTextColorBack({40, 50, 60});
-                renderer->setTextColorFront({50, 60, 70});
+                renderer->setFillColor({30, 40, 50});
+                renderer->setTextColor({40, 50, 60});
+                renderer->setTextColorFilled({50, 60, 70});
                 renderer->setBorderColor({60, 70, 80});
+                renderer->setTextStyle(sf::Text::Italic);
                 renderer->setBorders({1, 2, 3, 4});
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 6);
-                    REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(20, 30, 40));
-                    REQUIRE(pairs["ForegroundColor"].getColor() == sf::Color(30, 40, 50));
-                    REQUIRE(pairs["TextColorBack"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["TextColorFront"].getColor() == sf::Color(50, 60, 70));
-                    REQUIRE(pairs["BorderColor"].getColor() == sf::Color(60, 70, 80));
-                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
-                }
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getProperty("ForegroundColor").getColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getProperty("TextColorBack").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("TextColorFront").getColor() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("FillColor").getColor() == sf::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("TextColorFilled").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Italic);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+
+            REQUIRE(renderer->getBackgroundColor() == sf::Color(20, 30, 40));
+            REQUIRE(renderer->getFillColor() == sf::Color(30, 40, 50));
+            REQUIRE(renderer->getTextColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getTextColorFilled() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getBorderColor() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
+            REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         }
 
-        SECTION("textured") {
+        SECTION("textured")
+        {
             tgui::Texture textureBack("resources/Black.png", {180, 64, 90, 40}, {20, 0, 50, 40});
             tgui::Texture textureFront("resources/Black.png", {180, 108, 82, 32}, {16, 0, 50, 32});
 
-            REQUIRE(!renderer->getProperty("BackImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("FrontImage").getTexture().isLoaded());
+            REQUIRE(!renderer->getProperty("TextureBackground").getTexture().isLoaded());
+            REQUIRE(!renderer->getProperty("TextureFill").getTexture().isLoaded());
 
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackImage", tgui::Serializer::serialize(textureBack)));
-                REQUIRE_NOTHROW(renderer->setProperty("FrontImage", tgui::Serializer::serialize(textureFront)));
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBack)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureFill", tgui::Serializer::serialize(textureFront)));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackImage", textureBack));
-                REQUIRE_NOTHROW(renderer->setProperty("FrontImage", textureFront));
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBack));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureFill", textureFront));
             }
 
-            SECTION("functions") {
-                renderer->setBackTexture(textureBack);
-                renderer->setFrontTexture(textureFront);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 6);
-                    REQUIRE(pairs["BackImage"].getTexture().getData() == textureBack.getData());
-                    REQUIRE(pairs["FrontImage"].getTexture().getData() == textureFront.getData());
-                }
+            SECTION("functions")
+            {
+                renderer->setTextureBackground(textureBack);
+                renderer->setTextureFill(textureFront);
             }
 
-            REQUIRE(renderer->getProperty("BackImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("FrontImage").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureFill").getTexture().isLoaded());
 
-            REQUIRE(renderer->getProperty("BackImage").getTexture().getData() == textureBack.getData());
-            REQUIRE(renderer->getProperty("FrontImage").getTexture().getData() == textureFront.getData());
+            REQUIRE(renderer->getTextureBackground().getData() == textureBack.getData());
+            REQUIRE(renderer->getTextureFill().getData() == textureFront.getData());
         }
     }
 
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(progressBar = std::make_shared<tgui::Theme>()->load("ProgressBar"));
-
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(progressBar = theme->load("ProgressBar"));
-        REQUIRE(progressBar->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(progressBar->getSecondaryLoadingParameter() == "progressbar");
+    SECTION("Saving and loading from file")
+    {
+        tgui::Theme theme{"resources/Black.txt"};
+        progressBar->setRenderer(theme.getRenderer("ProgressBar"));
 
         auto parent = std::make_shared<tgui::GuiContainer>();
         parent->add(progressBar);
 
-        progressBar->setOpacity(0.8f);
         progressBar->setText("SomeText");
         progressBar->setTextSize(25);
         progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
@@ -255,12 +249,9 @@ TEST_CASE("[ProgressBar]") {
         REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileProgressBar2.txt"));
         REQUIRE(compareFiles("WidgetFileProgressBar1.txt", "WidgetFileProgressBar2.txt"));
 
-        SECTION("Copying widget") {
-            tgui::ProgressBar temp;
-            temp = *progressBar;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::ProgressBar::copy(std::make_shared<tgui::ProgressBar>(temp)));
+        SECTION("Copying widget")
+        {
+            copy(parent, progressBar);
 
             REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileProgressBar2.txt"));
             REQUIRE(compareFiles("WidgetFileProgressBar1.txt", "WidgetFileProgressBar2.txt"));

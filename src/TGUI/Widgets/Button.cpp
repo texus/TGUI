@@ -249,6 +249,7 @@ namespace tgui
         else if ((property == "texture") || (property == "texturehover") || (property == "texturedown") || (property == "texturedisabled") || (property == "texturefocused"))
         {
             value.getTexture().setSize(getInnerSize());
+            value.getTexture().setOpacity(getRenderer()->getOpacity());
 
             if (property == "texturefocused")
                 m_allowFocus = value.getTexture().isLoaded();
@@ -301,14 +302,10 @@ namespace tgui
         if (borders != Borders{0})
         {
             drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-
-            // Don't try to draw the text when there is no space left for it
-            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
-                return;
+            states.transform.translate({borders.left, borders.top});
         }
 
         // Check if there is a background texture
-        states.transform.translate({borders.left, borders.top});
         if (getRenderer()->getTexture().isLoaded())
         {
             if (!m_enabled && getRenderer()->getTextureDisabled().isLoaded())

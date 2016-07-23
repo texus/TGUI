@@ -35,7 +35,7 @@ set(TEST_SOURCES
     #Widgets/MessageBox.cpp
     Widgets/Panel.cpp
     Widgets/Picture.cpp
-    #Widgets/ProgressBar.cpp
+    Widgets/ProgressBar.cpp
     Widgets/RadioButton.cpp
     #Widgets/Scrollbar.cpp
     #Widgets/Slider.cpp

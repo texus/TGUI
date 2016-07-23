@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Container.hpp>
-#include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 
 namespace tgui
@@ -280,6 +279,8 @@ namespace tgui
               || (property == "texturechecked") || (property == "texturecheckedhover") || (property == "texturecheckeddisabled") || (property == "texturefocused"))
         {
             updateTextureSizes();
+
+            value.getTexture().setOpacity(getRenderer()->getOpacity());
 
             if (property == "texturefocused")
                 m_allowFocus = value.getTexture().isLoaded();

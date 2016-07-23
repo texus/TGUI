@@ -29,6 +29,7 @@ set(TGUI_SRC
     Renderers/EditBoxRenderer.cpp
     Renderers/LabelRenderer.cpp
     Renderers/PanelRenderer.cpp
+    Renderers/ProgressBarRenderer.cpp
     Renderers/RadioButtonRenderer.cpp
     Renderers/WidgetRenderer.cpp
     Widgets/Button.cpp
@@ -47,7 +48,7 @@ set(TGUI_SRC
     #Widgets/MessageBox.cpp
     Widgets/Panel.cpp
     Widgets/Picture.cpp
-    #Widgets/ProgressBar.cpp
+    Widgets/ProgressBar.cpp
     Widgets/RadioButton.cpp
     #Widgets/Scrollbar.cpp
     #Widgets/Slider.cpp

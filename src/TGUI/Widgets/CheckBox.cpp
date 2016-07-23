@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Container.hpp>
 #include <TGUI/Widgets/CheckBox.hpp>
 #include <TGUI/Clipping.hpp>
 
@@ -203,10 +202,7 @@ namespace tgui
             if (m_checked)
             {
                 // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-                Clipping clipping{target,
-                                  {getAbsolutePosition().x + borders.left, getAbsolutePosition().y + borders.top},
-                                  {getAbsolutePosition().x + getSize().x - borders.right, getAbsolutePosition().y + getSize().y - borders.bottom}
-                                 };
+                Clipping clipping{target, states, {borders.left, borders.top}, getInnerSize()};
 
                 sf::Vector2f size = getInnerSize();
 

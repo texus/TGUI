@@ -36,8 +36,8 @@
 #include <TGUI/Widgets/Label.hpp>/**
 #include <TGUI/Widgets/ListBox.hpp>*/
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/Picture.hpp>/**
-#include <TGUI/Widgets/ProgressBar.hpp>*/
+#include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>/**
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
@@ -638,7 +638,7 @@ namespace tgui
 
         return picture;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadProgressBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -680,7 +680,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
+
     TGUI_API Widget::Ptr loadRadioButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         RadioButton::Ptr radioButton;
@@ -864,8 +864,8 @@ namespace tgui
             {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},*/
             {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
             {"panel", std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},
-            {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},/**
-            {"progressbar", std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},*/
+            {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},
+            {"progressbar", std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},
             {"radiobutton", std::bind(loadRadioButton, std::placeholders::_1, std::shared_ptr<RadioButton>{})}/**,
             {"scrollbar", std::bind(loadScrollbar, std::placeholders::_1, std::shared_ptr<Scrollbar>{})},
             {"slider", std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},

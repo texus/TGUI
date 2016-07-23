@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Clipping.hpp>
 
@@ -251,30 +250,29 @@ namespace tgui
     {
         states.transform.translate(std::round(getPosition().x), std::round(getPosition().y));
 
-        // Draw the background
-        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-            drawRectangleShape(target, states, getSize(), getRenderer()->getBackgroundColor());
+        Borders borders = getRenderer()->getBorders();
+        sf::Vector2f innerSize = {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
         if (borders != Borders{0})
         {
             drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-
-            // Don't try to draw the text when there is no space left for it
-            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
-                return;
+            states.transform.translate({borders.left, borders.top});
         }
+
+        // Draw the background
+        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
+            drawRectangleShape(target, states, innerSize, getRenderer()->getBackgroundColor());
 
         // Apply clipping when needed
         std::unique_ptr<Clipping> clipping;
         if (!m_autoSize)
         {
             Padding padding = getRenderer()->getPadding();
-            clipping = std::make_unique<Clipping>(target,
-                                                  sf::Vector2f{getAbsolutePosition().x + padding.left, getAbsolutePosition().y + padding.top},
-                                                  sf::Vector2f{getAbsolutePosition().x + getSize().x - padding.right, getAbsolutePosition().y + getSize().y - padding.bottom}
-                                                 );
+            innerSize.x -= padding.left + padding.right;
+            innerSize.y -= padding.top + padding.bottom;
+
+            clipping = std::make_unique<Clipping>(target, states, sf::Vector2f{padding.left, padding.top}, innerSize);
         }
 
         // Draw the text
@@ -398,24 +396,23 @@ namespace tgui
         // There is always at least one line
         lineCount = std::max(1u, lineCount);
 
+        Outline outline = getRenderer()->getPadding() + getRenderer()->getBorders();
         if (m_autoSize)
         {
-            Borders borders = getRenderer()->getPadding() + getRenderer()->getBorders();
-            m_size = {std::max(calculatedLabelWidth, maxWidth) + borders.left + borders.right,
-                      (lineCount * font->getLineSpacing(m_textSize)) + borders.top + borders.bottom};
+            m_size = {std::max(calculatedLabelWidth, maxWidth) + outline.left + outline.right,
+                      (lineCount * font->getLineSpacing(m_textSize)) + outline.top + outline.bottom};
         }
 
         // Update the line positions
         {
-            Borders borders = getRenderer()->getPadding() + getRenderer()->getBorders();
-            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
+            if ((getSize().x <= outline.left + outline.right) || (getSize().y <= outline.top + outline.bottom))
                 return;
 
-            sf::Vector2f pos{borders.left, borders.top - getTextVerticalCorrection(font, m_textSize, m_textStyle)};
+            sf::Vector2f pos{getRenderer()->getBorders().left, getRenderer()->getBorders().top - getTextVerticalCorrection(font, m_textSize, m_textStyle)};
 
             if (m_verticalAlignment != VerticalAlignment::Top)
             {
-                float totalHeight = getSize().y - borders.top - borders.bottom;
+                float totalHeight = getSize().y - outline.top - outline.bottom;
                 float totalTextHeight = m_lines.size() * font->getLineSpacing(m_textSize);
 
                 if (m_verticalAlignment == VerticalAlignment::Center)
@@ -434,7 +431,7 @@ namespace tgui
             }
             else // Center or Right alignment
             {
-                float totalWidth = getSize().x - borders.left - borders.right;
+                float totalWidth = getSize().x - outline.left - outline.right;
 
                 for (auto& line : m_lines)
                 {

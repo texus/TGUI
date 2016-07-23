@@ -42,14 +42,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a clipping object which will define a clipping region until the object is destroyed
         ///
-        /// @param target      Target to which we are drawing
-        /// @param topLeft     Position of the top left corner of the clipping area relative to the view
-        /// @param bottomRight Position of the bottom right corner of the clipping area relative to the view
+        /// @param target  Target to which we are drawing
+        /// @param topLeft Position of the top left corner of the clipping area relative to the view
+        /// @param size    Size of the clipping area relative to the view
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Clipping(const sf::RenderTarget& target, sf::Vector2f topLeft, sf::Vector2f bottomRight)
+        Clipping(const sf::RenderTarget& target, const sf::RenderStates& states, sf::Vector2f topLeft, sf::Vector2f size)
         {
             const sf::View& view = target.getView();
+            sf::Vector2f bottomRight = topLeft + size;
 
             // Calculate the scale factor of the view
             float scaleViewX = target.getSize().x / view.getSize().x;
@@ -60,6 +61,9 @@ namespace tgui
                                             ((topLeft.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
             sf::Vector2f bottomRightPosition = {(bottomRight.x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
                                                 (bottomRight.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
+
+            topLeftPosition = states.transform.transformPoint(topLeftPosition);
+            bottomRightPosition = states.transform.transformPoint(bottomRightPosition);
 
             // Get the old clipping area
             glGetIntegerv(GL_SCISSOR_BOX, m_scissor);

@@ -33,8 +33,8 @@
 #include <TGUI/Widgets/Knob.hpp>*/
 #include <TGUI/Widgets/Label.hpp>/**
 #include <TGUI/Widgets/ListBox.hpp>*/
-#include <TGUI/Widgets/Picture.hpp>/**
-#include <TGUI/Widgets/ProgressBar.hpp>*/
+#include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>/**
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
@@ -376,7 +376,7 @@ namespace tgui
 
         return node;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveProgressBar(ProgressBar::Ptr progressBar)
@@ -404,7 +404,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
+
     TGUI_API std::shared_ptr<DataIO::Node> saveRadioButton(RadioButton::Ptr radioButton)
     {
         auto node = saveWidget(radioButton);
@@ -541,8 +541,8 @@ namespace tgui
             {"label", saveLabel},/**
             {"listbox", saveListBox},*/
             {"panel", saveContainer},
-            {"picture", savePicture},/**
-            {"progressbar", saveProgressBar},*/
+            {"picture", savePicture},
+            {"progressbar", saveProgressBar},
             {"radiobutton", saveRadioButton}/**,
             {"scrollbar", saveScrollbar},
             {"slider", saveSlider},

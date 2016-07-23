@@ -4,7 +4,6 @@ Button {
     TextureDown     : "Black.png" Part(90, 64, 45, 50) Middle(10, 0, 25, 50);
     TextColor       : rgb(190, 190, 190);
     TextColorHover  : rgb(250, 250, 250);
-    TextColorDown   : rgb(250, 250, 250);
 }
 
 ChatBox {
@@ -96,10 +95,10 @@ Panel {
 }
 
 ProgressBar {
-    BackImage      : "Black.png" Part(180, 64, 90, 40) Middle(20, 0, 50, 40);
-    FrontImage     : "Black.png" Part(180, 108, 90, 32) Middle(16, 0, 50, 32);
-    TextColorBack  : rgb(190, 190, 190);
-    TextColorFront : rgb(250, 250, 250);
+    TextureBackground : "Black.png" Part(180, 64, 90, 40) Middle(20, 0, 50, 40);
+    TextureFill       : "Black.png" Part(184, 108, 82, 32) Middle(16, 0, 50, 32);
+    TextColor         : rgb(190, 190, 190);
+    TextColorFilled   : rgb(250, 250, 250);
 }
 
 RadioButton {

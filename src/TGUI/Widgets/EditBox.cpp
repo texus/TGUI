@@ -1278,12 +1278,8 @@ namespace tgui
             else
                 drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
 
-            // Don't try to draw the text when there is no space left for it
-            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
-                return;
+            states.transform.translate({borders.left, borders.top});
         }
-
-        states.transform.translate({borders.left, borders.top});
 
         // Draw the background
         if (getRenderer()->getTexture().isLoaded())
@@ -1314,10 +1310,7 @@ namespace tgui
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
         Padding padding = getRenderer()->getPadding();
-        Clipping clipping{target,
-                          {getAbsolutePosition().x + padding.left, getAbsolutePosition().y + padding.top},
-                          {getAbsolutePosition().x + getSize().x - padding.right, getAbsolutePosition().y + getSize().y - padding.bottom}
-                         };
+        Clipping clipping{target, states, {padding.left, padding.top}, {getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}};
 
         if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
         {

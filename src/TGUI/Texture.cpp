@@ -522,23 +522,7 @@ namespace tgui
             // Apply clipping when needed
             std::unique_ptr<Clipping> clipping;
             if (m_textureRect != sf::FloatRect{0, 0, 0, 0})
-            {
-///TODO: Fix clipping
-///      transformPoint should probably be moved to Clipping class and getAbsolutePosition() would no longer be needed here
-///      Lots of testing will be required after this change
-/*
-                clipping = std::make_unique<Clipping>(target,
-                                                      sf::Vector2f{getAbsolutePosition().x + padding.left, getAbsolutePosition().y + padding.top},
-                                                      sf::Vector2f{getAbsolutePosition().x + getSize().x - padding.right, getAbsolutePosition().y + getSize().y - padding.bottom}
-                                                     );
-*/
-/*
-sf::Vector2f topLeftPosition = states.transform.transformPoint(((m_textureRect.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                                               ((m_textureRect.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));
-sf::Vector2f bottomRightPosition = states.transform.transformPoint((m_textureRect.left + m_textureRect.width - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                                   (m_textureRect.top + m_textureRect.height - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top));
-*/
-            }
+                clipping = std::make_unique<Clipping>(target, states, sf::Vector2f{m_textureRect.left, m_textureRect.top}, sf::Vector2f{m_textureRect.width, m_textureRect.height});
 
             states.texture = &m_data->texture;
             target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);

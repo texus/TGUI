@@ -134,24 +134,18 @@ namespace tgui
         if (borders != Borders{0})
         {
             drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-
-            // Don't try to draw the text when there is no space left for it
-            if ((getSize().x <= borders.left + borders.right) || (getSize().y <= borders.top + borders.bottom))
-                return;
+            states.transform.translate({borders.left, borders.top});
         }
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        Clipping clipping{target,
-                          {getAbsolutePosition().x + borders.left, getAbsolutePosition().y + borders.top},
-                          {getAbsolutePosition().x + getSize().x - borders.right, getAbsolutePosition().y + getSize().y - borders.bottom}
-                         };
+        sf::Vector2f innerSize = {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        Clipping clipping{target, states, {borders.left, borders.top}, innerSize};
 
         // Draw the background
         if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-            drawRectangleShape(target, states, getSize(), getRenderer()->getBackgroundColor());
+            drawRectangleShape(target, states, innerSize, getRenderer()->getBackgroundColor());
 
         // Draw the child widgets
-        states.transform.translate({borders.left, borders.top});
         drawWidgetContainer(&target, states);
     }
 
