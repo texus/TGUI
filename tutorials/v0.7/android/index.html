@@ -34,6 +34,8 @@ cmake -DANDROID_ABI=armeabi-v7a -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/andro
 make -j2
 make install
 {% endhighlight %}
+
+If you get tons of linking errors after running make then double check that you are including and linking to the android sfml libraries and not the ones for the OS that you are running.
 </div>
 
 <div>
