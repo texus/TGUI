@@ -1,7 +1,8 @@
 <!-- Piwik -->
 <script type="text/javascript">
   var _paq = _paq || [];
-  _paq.push(["setDomains", ["*.tgui.eu","*.forum.tgui.eu","*.www.tgui.eu"]]);
+  _paq.push(["setCookieDomain", "*.tgui.eu"]);
+  _paq.push(["setDomains", ["*.tgui.eu"]]);
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
@@ -12,5 +13,4 @@
     g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
   })();
 </script>
-<noscript><p><img src="//stats.denbeke.be/piwik.php?idsite=14" style="border:0;" alt="" /></p></noscript>
 <!-- End Piwik Code -->
