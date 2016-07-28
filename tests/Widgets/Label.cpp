@@ -124,14 +124,14 @@ TEST_CASE("[Label]")
         REQUIRE(label->getMaximumTextWidth() == 500);
     }
 
-    SECTION("Events")
+    SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
         {
             testClickableWidgetSignals(label);
         }
 
-        SECTION("double click")
+        SECTION("Double click")
         {
             unsigned int doubleClickedCount = 0;
             label->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
@@ -210,32 +210,12 @@ TEST_CASE("[Label]")
 
     SECTION("Saving and loading from file")
     {
-        tgui::Theme theme{"resources/Black.txt"};
-        label->setRenderer(theme.getRenderer("label"));
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(label);
-
         label->setText("SomeText");
         label->setTextSize(25);
         label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
         label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
         label->setMaximumTextWidth(300);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel1.txt"));
-
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileLabel1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel2.txt"));
-        REQUIRE(compareFiles("WidgetFileLabel1.txt", "WidgetFileLabel2.txt"));
-
-        SECTION("Copying widget")
-        {
-            copy(parent, label);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileLabel2.txt"));
-            REQUIRE(compareFiles("WidgetFileLabel1.txt", "WidgetFileLabel2.txt"));
-        }
+        testSavingWidget("Label", label);
     }
 }

@@ -141,7 +141,7 @@ TEST_CASE("[RadioButton]")
         }
     }
 
-    SECTION("Events")
+    SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
         {
@@ -402,31 +402,11 @@ TEST_CASE("[RadioButton]")
 
     SECTION("Saving and loading from file")
     {
-        tgui::Theme theme{"resources/Black.txt"};
-        radioButton->setRenderer(theme.getRenderer("RadioButton"));
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(radioButton);
-
         radioButton->check();
         radioButton->setText("SomeText");
         radioButton->setTextSize(25);
         radioButton->setTextClickable(false);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileRadioButton1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileRadioButton1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileRadioButton2.txt"));
-        REQUIRE(compareFiles("WidgetFileRadioButton1.txt", "WidgetFileRadioButton2.txt"));
-
-        SECTION("Copying widget")
-        {
-            copy(parent, radioButton);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileRadioButton2.txt"));
-            REQUIRE(compareFiles("WidgetFileRadioButton1.txt", "WidgetFileRadioButton2.txt"));
-        }
+        testSavingWidget("RadioButton", radioButton);
     }
 }

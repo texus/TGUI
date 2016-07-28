@@ -47,6 +47,18 @@ TEST_CASE("[ProgressBar]")
         REQUIRE(progressBar->getWidgetType() == "ProgressBar");
     }
 
+    SECTION("Position and Size")
+    {
+        progressBar->setPosition(40, 30);
+        progressBar->setSize(300, 40);
+        progressBar->getRenderer()->setBorders(2);
+
+        REQUIRE(progressBar->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(progressBar->getSize() == sf::Vector2f(300, 40));
+        REQUIRE(progressBar->getFullSize() == progressBar->getSize());
+        REQUIRE(progressBar->getWidgetOffset() == sf::Vector2f(0, 0));
+    }
+
     SECTION("Minimum")
     {
         REQUIRE(progressBar->getMinimum() == 10);
@@ -90,13 +102,13 @@ TEST_CASE("[ProgressBar]")
     SECTION("Value")
     {
         REQUIRE(progressBar->getValue() == 15);
-        
+
         progressBar->setValue(14);
         REQUIRE(progressBar->getValue() == 14);
-        
+
         progressBar->setValue(7);
         REQUIRE(progressBar->getValue() == 10);
-        
+
         progressBar->setValue(23);
         REQUIRE(progressBar->getValue() == 20);
     }
@@ -125,7 +137,7 @@ TEST_CASE("[ProgressBar]")
         progressBar->setTextSize(25);
         REQUIRE(progressBar->getTextSize() == 25);
     }
-    
+
     SECTION("FillDirection")
     {
         REQUIRE(progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::LeftToRight);
@@ -139,6 +151,63 @@ TEST_CASE("[ProgressBar]")
         REQUIRE(progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::LeftToRight);
     }
 
+    SECTION("Events / Signals")
+    {
+        SECTION("ClickableWidget")
+        {
+            testClickableWidgetSignals(progressBar);
+        }
+
+        SECTION("ValueChanged")
+        {
+            unsigned int valueChangedCount = 0;
+            progressBar->connect("ValueChanged", genericCallback, std::ref(valueChangedCount));
+
+            progressBar->setValue(4);
+            REQUIRE(valueChangedCount == 1);
+
+            progressBar->setValue(20);
+            REQUIRE(valueChangedCount == 2);
+
+            progressBar->setValue(20);
+            REQUIRE(valueChangedCount == 2);
+
+            progressBar->setValue(18);
+            progressBar->incrementValue();
+            progressBar->incrementValue();
+            REQUIRE(valueChangedCount == 5);
+
+            progressBar->incrementValue();
+            REQUIRE(valueChangedCount == 5);
+        }
+
+        SECTION("Full")
+        {
+            unsigned int fullCount = 0;
+            progressBar->connect("Full", genericCallback, std::ref(fullCount));
+
+            progressBar->setValue(4);
+            REQUIRE(fullCount == 0);
+
+            progressBar->setValue(20);
+            REQUIRE(fullCount == 1);
+
+            progressBar->setValue(20);
+            REQUIRE(fullCount == 1);
+
+            progressBar->setValue(18);
+            progressBar->incrementValue();
+            REQUIRE(fullCount == 1);
+
+            progressBar->incrementValue();
+            REQUIRE(fullCount == 2);
+
+            progressBar->incrementValue();
+            REQUIRE(fullCount == 2);
+        }
+    }
+
+    testWidgetRenderer(progressBar->getRenderer());
     SECTION("Renderer")
     {
         auto renderer = progressBar->getRenderer();
@@ -231,30 +300,10 @@ TEST_CASE("[ProgressBar]")
 
     SECTION("Saving and loading from file")
     {
-        tgui::Theme theme{"resources/Black.txt"};
-        progressBar->setRenderer(theme.getRenderer("ProgressBar"));
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(progressBar);
-
         progressBar->setText("SomeText");
         progressBar->setTextSize(25);
         progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileProgressBar1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileProgressBar1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileProgressBar2.txt"));
-        REQUIRE(compareFiles("WidgetFileProgressBar1.txt", "WidgetFileProgressBar2.txt"));
-
-        SECTION("Copying widget")
-        {
-            copy(parent, progressBar);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileProgressBar2.txt"));
-            REQUIRE(compareFiles("WidgetFileProgressBar1.txt", "WidgetFileProgressBar2.txt"));
-        }
+        testSavingWidget("ProgressBar", progressBar);
     }
 }

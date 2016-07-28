@@ -22,31 +22,27 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "../Tests.hpp"
-#include <TGUI/Widgets/Canvas.hpp>
 
-TEST_CASE("[Canvas]")
+#include <TGUI/Renderers/SpinButtonRenderer.hpp>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace tgui
 {
-    tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>();
-    canvas->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    TGUI_RENDERER_PROPERTY_OUTLINE(SpinButtonRenderer, Borders)
 
-    SECTION("WidgetType")
-    {
-        REQUIRE(canvas->getWidgetType() == "Canvas");
-    }
+    TGUI_RENDERER_PROPERTY_NUMBER(SpinButtonRenderer, SpaceBetweenArrows, 0)
 
-    SECTION("constructor")
-    {
-        canvas = std::make_shared<tgui::Canvas>(200.f, 100.f);
-        REQUIRE(canvas->getSize() == sf::Vector2f(200, 100));
-    }
+    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BackgroundColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, ArrowColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, ArrowColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BorderColor, sf::Color::Black)
 
-    testWidgetRenderer(canvas->getRenderer());
-
-    SECTION("Saving and loading from file")
-    {
-        REQUIRE_NOTHROW(canvas = std::make_shared<tgui::Canvas>(60.f, 40.f));
-
-        testSavingWidget("Canvas", canvas, false);
-    }
+    TGUI_RENDERER_PROPERTY_TEXTURE(SpinButtonRenderer, TextureArrowUp)
+    TGUI_RENDERER_PROPERTY_TEXTURE(SpinButtonRenderer, TextureArrowUpHover)
+    TGUI_RENDERER_PROPERTY_TEXTURE(SpinButtonRenderer, TextureArrowDown)
+    TGUI_RENDERER_PROPERTY_TEXTURE(SpinButtonRenderer, TextureArrowDownHover)
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

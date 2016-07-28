@@ -66,7 +66,7 @@ TEST_CASE("[Button]")
         REQUIRE(button->getTextSize() == 25);
     }
 
-    SECTION("Events")
+    SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
         {
@@ -274,29 +274,9 @@ TEST_CASE("[Button]")
 
     SECTION("Saving and loading from file")
     {
-        tgui::Theme theme{"resources/Black.txt"};
-        button->setRenderer(theme.getRenderer("button"));
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(button);
-
         button->setText("SomeText");
         button->setTextSize(25);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileButton1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileButton1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileButton2.txt"));
-        REQUIRE(compareFiles("WidgetFileButton1.txt", "WidgetFileButton2.txt"));
-
-        SECTION("Copying widget")
-        {
-            copy(parent, button);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileButton2.txt"));
-            REQUIRE(compareFiles("WidgetFileButton1.txt", "WidgetFileButton2.txt"));
-        }
+        testSavingWidget("Button", button);
     }
 }

@@ -37,8 +37,8 @@
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>/**
 #include <TGUI/Widgets/Scrollbar.hpp>
-#include <TGUI/Widgets/Slider.hpp>
-#include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Slider.hpp>*/
+#include <TGUI/Widgets/SpinButton.hpp>/**
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>*/
 
@@ -450,7 +450,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+*/
     TGUI_API std::shared_ptr<DataIO::Node> saveSpinButton(SpinButton::Ptr spinButton)
     {
         auto node = saveWidget(spinButton);
@@ -465,7 +465,7 @@ namespace tgui
         SET_PROPERTY("Value", tgui::to_string(spinButton->getValue()));
         return node;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveTab(Tab::Ptr tab)
@@ -529,8 +529,8 @@ namespace tgui
         {
             {"widget", saveWidget},
             {"container", saveContainer},
-            {"button", saveButton},/**
-            {"canvas", saveWidget},
+            {"button", saveButton},
+            {"canvas", saveWidget},/**
             {"chatbox", saveChatBox},*/
             {"checkbox", saveRadioButton},
             {"clickablewidget", saveWidget},/**
@@ -543,10 +543,10 @@ namespace tgui
             {"panel", saveContainer},
             {"picture", savePicture},
             {"progressbar", saveProgressBar},
-            {"radiobutton", saveRadioButton}/**,
+            {"radiobutton", saveRadioButton},/**
             {"scrollbar", saveScrollbar},
-            {"slider", saveSlider},
-            {"spinbutton", saveSpinButton},
+            {"slider", saveSlider},*/
+            {"spinbutton", saveSpinButton}/**,
             {"tab", saveTab},
             {"textbox", saveTextBox}*/
         };

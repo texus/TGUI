@@ -25,23 +25,39 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/SpinButton.hpp>
 
-TEST_CASE("[SpinButton]") {
+TEST_CASE("[SpinButton]")
+{
     tgui::SpinButton::Ptr spinButton = std::make_shared<tgui::SpinButton>();
-    spinButton->setFont("resources/DroidSansArmenian.ttf");
+    spinButton->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     spinButton->setMinimum(10);
     spinButton->setMaximum(20);
     spinButton->setValue(15);
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](){}));
         REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](int){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(spinButton->getWidgetType() == "SpinButton");
     }
 
-    SECTION("Minimum") {
+    SECTION("Position and Size")
+    {
+        spinButton->setPosition(40, 30);
+        spinButton->setSize(25, 60);
+        spinButton->getRenderer()->setBorders(2);
+
+        REQUIRE(spinButton->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(spinButton->getSize() == sf::Vector2f(25, 60));
+        REQUIRE(spinButton->getFullSize() == spinButton->getSize());
+        REQUIRE(spinButton->getWidgetOffset() == sf::Vector2f(0, 0));
+    }
+
+    SECTION("Minimum")
+    {
         REQUIRE(spinButton->getMinimum() == 10);
 
         spinButton->setMinimum(12);
@@ -60,7 +76,8 @@ TEST_CASE("[SpinButton]") {
         REQUIRE(spinButton->getMaximum() == 22);
     }
 
-    SECTION("Maximum") {
+    SECTION("Maximum")
+    {
         REQUIRE(spinButton->getMaximum() == 20);
 
         spinButton->setMaximum(17);
@@ -79,7 +96,8 @@ TEST_CASE("[SpinButton]") {
         REQUIRE(spinButton->getMaximum() == 9);
     }
 
-    SECTION("Value") {
+    SECTION("Value")
+    {
         REQUIRE(spinButton->getValue() == 15);
         
         spinButton->setValue(14);
@@ -92,185 +110,167 @@ TEST_CASE("[SpinButton]") {
         REQUIRE(spinButton->getValue() == 20);
     }
 
-    SECTION("VerticalScroll") {
+    SECTION("VerticalScroll")
+    {
         spinButton->setVerticalScroll(false);
         REQUIRE(!spinButton->getVerticalScroll());
         spinButton->setVerticalScroll(true);
         REQUIRE(spinButton->getVerticalScroll());
     }
 
-    SECTION("Renderer") {
+    SECTION("Events / Signals")
+    {
+        SECTION("ClickableWidget")
+        {
+            testClickableWidgetSignals(spinButton);
+        }
+
+        SECTION("ValueChanged")
+        {
+            spinButton->setPosition(40, 30);
+            spinButton->setSize(25, 60);
+
+            unsigned int valueChangedCount = 0;
+            spinButton->connect("ValueChanged", genericCallback, std::ref(valueChangedCount));
+
+            spinButton->setValue(10);
+            REQUIRE(valueChangedCount == 1);
+
+            spinButton->setValue(10);
+            REQUIRE(valueChangedCount == 1);
+
+            spinButton->leftMousePressed(50, 45);
+            REQUIRE(valueChangedCount == 1);
+            REQUIRE(spinButton->getValue() == 10);
+
+            spinButton->leftMouseReleased(50, 45);
+            REQUIRE(valueChangedCount == 2);
+            REQUIRE(spinButton->getValue() == 11);
+
+            spinButton->leftMousePressed(50, 75);
+            spinButton->leftMouseReleased(50, 75);
+            REQUIRE(valueChangedCount == 3);
+            REQUIRE(spinButton->getValue() == 10);
+
+            spinButton->leftMousePressed(50, 75);
+            spinButton->leftMouseReleased(50, 75);
+            REQUIRE(valueChangedCount == 3);
+            REQUIRE(spinButton->getValue() == 10);
+        }
+    }
+
+    testWidgetRenderer(spinButton->getRenderer());
+    SECTION("Renderer")
+    {
         auto renderer = spinButton->getRenderer();
 
-        SECTION("colored") {
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
-                REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("BackgroundColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(10, 20, 30));
-
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", "rgb(20, 30, 40)"));
-                REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(20, 30, 40));
-
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorNormal", "rgb(30, 40, 50)"));
+        SECTION("Colored")
+        {
+            SECTION("Set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(30, 40, 50)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", "rgb(40, 50, 60)"));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorNormal", "rgb(50, 60, 70)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", "rgb(50, 60, 70)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", "rgb(60, 70, 80)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SpaceBetweenArrows", "2"));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
-                REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("BackgroundColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(10, 20, 30));
-                
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{20, 30, 40}));
-                REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(20, 30, 40));
-
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorNormal", sf::Color{30, 40, 50}));
+            SECTION("Set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{30, 40, 50}));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorNormal", sf::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", sf::Color{60, 70, 80}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("SpaceBetweenArrows", 2));
             }
 
-            SECTION("functions") {
-                renderer->setBackgroundColor({10, 20, 30});
-                REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("BackgroundColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(10, 20, 30));
-
-                renderer->setArrowColor({20, 30, 40});
-                REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(20, 30, 40));
-
-                renderer->setBackgroundColorNormal({30, 40, 50});
+            SECTION("Functions")
+            {
+                renderer->setBackgroundColor({30, 40, 50});
                 renderer->setBackgroundColorHover({40, 50, 60});
-                renderer->setArrowColorNormal({50, 60, 70});
+                renderer->setArrowColor({50, 60, 70});
                 renderer->setArrowColorHover({60, 70, 80});
                 renderer->setBorderColor({70, 80, 90});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setSpaceBetweenArrows(2);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 7);
-                    REQUIRE(pairs["BackgroundColorNormal"].getColor() == sf::Color(30, 40, 50));
-                    REQUIRE(pairs["BackgroundColorHover"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["ArrowColorNormal"].getColor() == sf::Color(50, 60, 70));
-                    REQUIRE(pairs["ArrowColorHover"].getColor() == sf::Color(60, 70, 80));
-                    REQUIRE(pairs["BorderColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
-                    REQUIRE(pairs["SpaceBetweenArrows"].getNumber() == 2);
-                }
             }
 
-            REQUIRE(renderer->getProperty("BackgroundColorNormal").getColor() == sf::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(30, 40, 50));
             REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("SpaceBetweenArrows").getNumber() == 2);
+
+            REQUIRE(renderer->getBackgroundColor() == sf::Color(30, 40, 50));
+            REQUIRE(renderer->getBackgroundColorHover() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getArrowColor() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getArrowColorHover() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getBorderColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getSpaceBetweenArrows() == 2);
         }
 
-        SECTION("textured") {
+        SECTION("textured")
+        {
             tgui::Texture textureArrowUpNormal("resources/Black.png", {163, 154, 20, 20}, {0, 0, 20, 19});
             tgui::Texture textureArrowUpHover("resources/Black.png", {183, 154, 20, 20}, {0, 0, 20, 19});
             tgui::Texture textureArrowDownNormal("resources/Black.png", {163, 174, 20, 20}, {0, 1, 20, 19});
             tgui::Texture textureArrowDownHover("resources/Black.png", {183, 174, 20, 20}, {0, 1, 20, 19});
 
-            REQUIRE(!renderer->getProperty("ArrowUpImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowUpHoverImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowDownImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowDownHoverImage").getTexture().isLoaded());
+            REQUIRE(!renderer->getProperty("TextureArrowUp").getTexture().isLoaded());
+            REQUIRE(!renderer->getProperty("TextureArrowUpHover").getTexture().isLoaded());
+            REQUIRE(!renderer->getProperty("TextureArrowDown").getTexture().isLoaded());
+            REQUIRE(!renderer->getProperty("TextureArrowDownHover").getTexture().isLoaded());
 
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpImage", tgui::Serializer::serialize(textureArrowUpNormal)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpHoverImage", tgui::Serializer::serialize(textureArrowUpHover)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownImage", tgui::Serializer::serialize(textureArrowDownNormal)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownHoverImage", tgui::Serializer::serialize(textureArrowDownHover)));
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUp", tgui::Serializer::serialize(textureArrowUpNormal)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUpHover", tgui::Serializer::serialize(textureArrowUpHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDown", tgui::Serializer::serialize(textureArrowDownNormal)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDownHover", tgui::Serializer::serialize(textureArrowDownHover)));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpImage", textureArrowUpNormal));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpHoverImage", textureArrowUpHover));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownImage", textureArrowDownNormal));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownHoverImage", textureArrowDownHover));
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUp", textureArrowUpNormal));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUpHover", textureArrowUpHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDown", textureArrowDownNormal));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDownHover", textureArrowDownHover));
             }
 
-            SECTION("functions") {
-                renderer->setArrowUpTexture(textureArrowUpNormal);
-                renderer->setArrowUpHoverTexture(textureArrowUpHover);
-                renderer->setArrowDownTexture(textureArrowDownNormal);
-                renderer->setArrowDownHoverTexture(textureArrowDownHover);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 7);
-                    REQUIRE(pairs["ArrowUpImage"].getTexture().getData() == textureArrowUpNormal.getData());
-                    REQUIRE(pairs["ArrowUpHoverImage"].getTexture().getData() == textureArrowUpHover.getData());
-                    REQUIRE(pairs["ArrowDownImage"].getTexture().getData() == textureArrowDownNormal.getData());
-                    REQUIRE(pairs["ArrowDownHoverImage"].getTexture().getData() == textureArrowDownHover.getData());
-                }
+            SECTION("functions")
+            {
+                renderer->setTextureArrowUp(textureArrowUpNormal);
+                renderer->setTextureArrowUpHover(textureArrowUpHover);
+                renderer->setTextureArrowDown(textureArrowDownNormal);
+                renderer->setTextureArrowDownHover(textureArrowDownHover);
             }
 
-            REQUIRE(renderer->getProperty("ArrowUpImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowUpHoverImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowDownImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowDownHoverImage").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().isLoaded());
 
-            REQUIRE(renderer->getProperty("ArrowUpImage").getTexture().getData() == textureArrowUpNormal.getData());
-            REQUIRE(renderer->getProperty("ArrowUpHoverImage").getTexture().getData() == textureArrowUpHover.getData());
-            REQUIRE(renderer->getProperty("ArrowDownImage").getTexture().getData() == textureArrowDownNormal.getData());
-            REQUIRE(renderer->getProperty("ArrowDownHoverImage").getTexture().getData() == textureArrowDownHover.getData());
+            REQUIRE(renderer->getTextureArrowUp().getData() == textureArrowUpNormal.getData());
+            REQUIRE(renderer->getTextureArrowUpHover().getData() == textureArrowUpHover.getData());
+            REQUIRE(renderer->getTextureArrowDown().getData() == textureArrowDownNormal.getData());
+            REQUIRE(renderer->getTextureArrowDownHover().getData() == textureArrowDownHover.getData());
         }
     }
 
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(spinButton = std::make_shared<tgui::Theme>()->load("SpinButton"));
-
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(spinButton = theme->load("SpinButton"));
-        REQUIRE(spinButton->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(spinButton->getSecondaryLoadingParameter() == "spinbutton");
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(spinButton);
-
-        spinButton->setOpacity(0.8f);
+    SECTION("Saving and loading from file")
+    {
         spinButton->setMinimum(10);
         spinButton->setMaximum(50);
         spinButton->setValue(20);
         spinButton->setVerticalScroll(false);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSpinButton1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileSpinButton1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSpinButton2.txt"));
-        REQUIRE(compareFiles("WidgetFileSpinButton1.txt", "WidgetFileSpinButton2.txt"));
-
-        SECTION("Copying widget") {
-            tgui::SpinButton temp;
-            temp = *spinButton;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::SpinButton::copy(std::make_shared<tgui::SpinButton>(temp)));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSpinButton2.txt"));
-            REQUIRE(compareFiles("WidgetFileSpinButton1.txt", "WidgetFileSpinButton2.txt"));
-        }
+        testSavingWidget("SpinButton", spinButton);
     }
 }

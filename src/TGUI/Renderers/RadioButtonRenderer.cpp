@@ -39,7 +39,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, TextColorChecked, {})
     TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, TextColorCheckedHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, TextColorCheckedDisabled, {})
-    TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, BackgroundColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, BackgroundColor, sf::Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, BackgroundColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, BackgroundColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(RadioButtonRenderer, BackgroundColorChecked, {})

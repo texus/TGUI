@@ -31,9 +31,10 @@ set(TGUI_SRC
     Renderers/PanelRenderer.cpp
     Renderers/ProgressBarRenderer.cpp
     Renderers/RadioButtonRenderer.cpp
+    Renderers/SpinButtonRenderer.cpp
     Renderers/WidgetRenderer.cpp
     Widgets/Button.cpp
-    #Widgets/Canvas.cpp
+    Widgets/Canvas.cpp
     #Widgets/ChatBox.cpp
     Widgets/CheckBox.cpp
     #Widgets/ChildWindow.cpp
@@ -52,7 +53,7 @@ set(TGUI_SRC
     Widgets/RadioButton.cpp
     #Widgets/Scrollbar.cpp
     #Widgets/Slider.cpp
-    #Widgets/SpinButton.cpp
+    Widgets/SpinButton.cpp
     #Widgets/Tab.cpp
     #Widgets/TextBox.cpp
     #Widgets/ToolTip.cpp

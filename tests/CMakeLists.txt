@@ -21,7 +21,7 @@ set(TEST_SOURCES
     Loading/Theme.cpp
     Loading/ThemeLoader.cpp
     Widgets/Button.cpp
-    #Widgets/Canvas.cpp
+    Widgets/Canvas.cpp
     #Widgets/ChatBox.cpp
     Widgets/CheckBox.cpp
     #Widgets/ChildWindow.cpp
@@ -39,7 +39,7 @@ set(TEST_SOURCES
     Widgets/RadioButton.cpp
     #Widgets/Scrollbar.cpp
     #Widgets/Slider.cpp
-    #Widgets/SpinButton.cpp
+    Widgets/SpinButton.cpp
     #Widgets/Tab.cpp
     #Widgets/TextBox.cpp
     #Widgets/ToolTip.cpp

@@ -285,7 +285,7 @@ TEST_CASE("[EditBox]")
         }
     }
 
-    SECTION("Events")
+    SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
         {
@@ -525,12 +525,6 @@ TEST_CASE("[EditBox]")
 
     SECTION("Saving and loading from file")
     {
-        tgui::Theme theme{"resources/Black.txt"};
-        editBox->setRenderer(theme.getRenderer("editbox"));
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(editBox);
-
         editBox->setText("SomeText");
         editBox->setDefaultText("SomeDefaultText");
         editBox->setTextSize(25);
@@ -540,21 +534,7 @@ TEST_CASE("[EditBox]")
         editBox->limitTextWidth();
         editBox->setInputValidator("[0-9a-zA-Z]*");
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileEditBox1.txt"));
-
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileEditBox1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileEditBox2.txt"));
-        REQUIRE(compareFiles("WidgetFileEditBox1.txt", "WidgetFileEditBox2.txt"));
-
-        SECTION("Copying widget")
-        {
-            copy(parent, editBox);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileEditBox2.txt"));
-            REQUIRE(compareFiles("WidgetFileEditBox1.txt", "WidgetFileEditBox2.txt"));
-        }
+        testSavingWidget("EditBox", editBox);
     }
 
     SECTION("Bug Fixes")

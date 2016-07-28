@@ -128,11 +128,11 @@ Slider {
 }
 
 SpinButton {
-    ArrowUpImage        : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
-    ArrowUpHoverImage   : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
-    ArrowDownImage      : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
-    ArrowDownHoverImage : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
-    SpaceBetweenArrows  : 0;
+    TextureArrowUp        : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
+    TextureArrowUpHover   : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
+    TextureArrowDown      : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
+    TextureArrowDownHover : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
+    SpaceBetweenArrows    : 0;
 }
 
 Tab {

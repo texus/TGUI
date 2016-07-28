@@ -165,7 +165,7 @@ TEST_CASE("[CheckBox]")
         REQUIRE(!checkBox->isChecked());
     }
 
-    SECTION("Events")
+    SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
         {
@@ -182,18 +182,26 @@ TEST_CASE("[CheckBox]")
             checkBox->connect("Checked", genericCallback, std::ref(checkCount));
             checkBox->connect("Unchecked", genericCallback, std::ref(uncheckCount));
 
-            checkBox->leftMousePressed(65, 60);
-            REQUIRE(checkCount == 0);
-            REQUIRE(uncheckCount == 0);
-
-            checkBox->leftMouseReleased(65, 60);
+            checkBox->check();
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 0);
 
-            checkBox->leftMousePressed(65, 60);
-            checkBox->leftMouseReleased(65, 60);
+            checkBox->uncheck();
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 1);
+
+            checkBox->leftMousePressed(65, 60);
+            REQUIRE(checkCount == 1);
+            REQUIRE(uncheckCount == 1);
+
+            checkBox->leftMouseReleased(65, 60);
+            REQUIRE(checkCount == 2);
+            REQUIRE(uncheckCount == 1);
+
+            checkBox->leftMousePressed(65, 60);
+            checkBox->leftMouseReleased(65, 60);
+            REQUIRE(checkCount == 2);
+            REQUIRE(uncheckCount == 2);
 
             SECTION("Key pressed")
             {
@@ -205,44 +213,24 @@ TEST_CASE("[CheckBox]")
 
                 keyEvent.code = sf::Keyboard::Space;
                 checkBox->keyPressed(keyEvent);
-                REQUIRE(checkCount == 2);
-                REQUIRE(uncheckCount == 1);
+                REQUIRE(checkCount == 3);
+                REQUIRE(uncheckCount == 2);
 
                 keyEvent.code = sf::Keyboard::Return;
                 checkBox->keyPressed(keyEvent);
-                REQUIRE(checkCount == 2);
-                REQUIRE(uncheckCount == 2);
+                REQUIRE(checkCount == 3);
+                REQUIRE(uncheckCount == 3);
             }
         }
     }
 
     SECTION("Saving and loading from file")
     {
-        tgui::Theme theme{"resources/Black.txt"};
-        checkBox->setRenderer(theme.getRenderer("CheckBox"));
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(checkBox);
-
         checkBox->check();
         checkBox->setText("SomeText");
         checkBox->setTextSize(25);
         checkBox->setTextClickable(false);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileCheckBox1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox2.txt"));
-        REQUIRE(compareFiles("WidgetFileCheckBox1.txt", "WidgetFileCheckBox2.txt"));
-
-        SECTION("Copying widget")
-        {
-            copy(parent, checkBox);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileCheckBox2.txt"));
-            REQUIRE(compareFiles("WidgetFileCheckBox1.txt", "WidgetFileCheckBox2.txt"));
-        }
+        testSavingWidget("CheckBox", checkBox);
     }
 }

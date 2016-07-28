@@ -34,6 +34,7 @@ namespace tgui
     Canvas::Canvas(const Layout2d& size)
     {
         m_callback.widgetType = "Canvas";
+        m_type = "Canvas";
 
         setSize(size);
     }
@@ -60,7 +61,6 @@ namespace tgui
         if (this != &right)
         {
             ClickableWidget::operator=(right);
-
             setSize(right.getSize());
         }
 
@@ -79,15 +79,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setPosition(const Layout2d& position)
-    {
-        Widget::setPosition(position);
-
-        m_sprite.setPosition(getPosition());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Canvas::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
@@ -101,7 +92,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::clear(const Color& color)
+    void Canvas::clear(Color color)
     {
         m_renderTexture.clear(color);
     }
@@ -129,17 +120,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::setOpacity(float opacity)
+    void Canvas::rendererChanged(const std::string& property, ObjectConverter& value)
     {
-        Widget::setOpacity(opacity);
-
-        m_sprite.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
+        if (property == "opacity")
+            m_sprite.setColor(calcColorOpacity(sf::Color::White, value.getNumber()));
+        else
+            Widget::rendererChanged(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Canvas::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        states.transform.translate(getPosition());
         target.draw(m_sprite, states);
     }
 

@@ -40,26 +40,58 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget);
 
 void testWidgetRenderer(tgui::WidgetRenderer* renderer);
 
+void testSavingWidget(std::string name, tgui::Widget::Ptr widget);
+
 template <typename WidgetType>
-void copy(std::shared_ptr<tgui::Container> parent, std::shared_ptr<WidgetType> widget)
+void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool loadFromTheme = true)
 {
-    REQUIRE(WidgetType::copy(nullptr) == nullptr);
+    if (loadFromTheme)
+    {
+        tgui::Theme theme{"resources/Black.txt"};
+        widget->setRenderer(theme.getRenderer(name));
+    }
+
+    auto parent = std::make_shared<tgui::GuiContainer>();
+    parent->add(widget);
+
+    REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile1.txt"));
 
     parent->removeAllWidgets();
+    parent = std::make_shared<tgui::GuiContainer>();
+    REQUIRE_NOTHROW(parent->loadWidgetsFromFile(name + "WidgetFile1.txt"));
 
-    // Copy constructor
-    WidgetType temp1(*widget);
+    REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile2.txt"));
+    REQUIRE(compareFiles(name + "WidgetFile1.txt", name + "WidgetFile2.txt"));
 
-    // Assignment operator
-    WidgetType temp2;
-    temp2 = temp1;
+    SECTION("Copying widget")
+    {
+        // Copy constructor
+        WidgetType temp1(*widget);
 
-    // Move constructor
-    WidgetType temp3 = std::move(temp2);
+        // Assignment operator
+        WidgetType temp2;
+        temp2 = temp1;
 
-    // Move assignment operator
-    WidgetType temp4;
-    temp4 = std::move(temp3);
+        // Move constructor
+        WidgetType temp3 = std::move(temp2);
 
-    parent->add(WidgetType::copy(std::make_shared<WidgetType>(temp4)));
+        // Move assignment operator
+        WidgetType temp4;
+        temp4 = std::move(temp3);
+
+        // copy function
+        std::shared_ptr<WidgetType> temp5 = std::make_shared<WidgetType>(temp4);
+        tgui::Widget::Ptr temp6 = WidgetType::copy(temp5);
+        REQUIRE(temp6 != nullptr);
+        REQUIRE(WidgetType::copy(nullptr) == nullptr);
+
+        // clone function
+        tgui::Widget::Ptr temp7 = temp6->clone();
+
+        parent = std::make_shared<tgui::GuiContainer>();
+        parent->add(temp7);
+
+        REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile2.txt"));
+        REQUIRE(compareFiles(name + "WidgetFile1.txt", name + "WidgetFile2.txt"));
+    }
 }

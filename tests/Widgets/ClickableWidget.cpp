@@ -63,7 +63,7 @@ TEST_CASE("[ClickableWidget]")
         REQUIRE(widget->getWidgetOffset() == sf::Vector2f(0, 0));
     }
 
-    SECTION("Events")
+    SECTION("Events / Signals")
     {
         testClickableWidgetSignals(widget);
     }
@@ -95,23 +95,6 @@ TEST_CASE("[ClickableWidget]")
 
     SECTION("Saving and loading from file")
     {
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(widget);
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget1.txt"));
-
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
-        REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
-
-        SECTION("Copying widget")
-        {
-            copy(parent, widget);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
-            REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
-        }
+        testSavingWidget("ClickableWidget", widget, false);
     }
 }

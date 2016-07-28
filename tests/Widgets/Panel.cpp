@@ -72,7 +72,7 @@ TEST_CASE("[Panel]")
         }
     }
 
-    SECTION("Events")
+    SECTION("Events / Signals")
     {
         unsigned int mousePressedCount = 0;
         unsigned int mouseReleasedCount = 0;
@@ -203,28 +203,11 @@ TEST_CASE("[Panel]")
 
         SECTION("panel inside gui")
         {
-            auto parent = std::make_shared<tgui::GuiContainer>();
-            parent->add(panel);
-
             auto widget = std::make_shared<tgui::ClickableWidget>();
             widget->setPosition(40, 20);
             panel->add(widget);
 
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel3.txt"));
-
-            parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFilePanel3.txt"));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel4.txt"));
-            REQUIRE(compareFiles("WidgetFilePanel3.txt", "WidgetFilePanel4.txt"));
-
-            SECTION("Copying widget")
-            {
-                copy(parent, panel);
-
-                REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFilePanel4.txt"));
-                REQUIRE(compareFiles("WidgetFilePanel3.txt", "WidgetFilePanel4.txt"));
-            }
+            testSavingWidget("Panel", panel, false);
         }
     }
 }
