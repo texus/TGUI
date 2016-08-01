@@ -39,6 +39,10 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Text box widget
     ///
+    /// A text box is a multi-line input box which supports word-wrap and a vertical scrollbar.
+    /// If you are looking for a single line input field (with options like setting a password character or displaying a
+    /// default text when it is empty) then check out the EditBox class.
+    ///
     /// Signals:
     ///     - TextChanged
     ///         * Optional parameter sf::String: current text in the text box

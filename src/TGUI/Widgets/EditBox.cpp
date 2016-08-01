@@ -62,6 +62,8 @@ namespace tgui
         getRenderer()->setSelectedTextColor(sf::Color::White);
         getRenderer()->setBackgroundColor({245, 245, 245});
         getRenderer()->setBackgroundColorHover(sf::Color::White);
+        getRenderer()->setBorderColor({60, 60, 60});
+        getRenderer()->setBorderColorHover(sf::Color::Black);
         getRenderer()->setDefaultTextColor({160, 160, 160});
         getRenderer()->setDefaultTextStyle(sf::Text::Italic);
         ///TODO: Disabled colors

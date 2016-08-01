@@ -36,8 +36,8 @@
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>/**
-#include <TGUI/Widgets/Scrollbar.hpp>
-#include <TGUI/Widgets/Slider.hpp>*/
+#include <TGUI/Widgets/Scrollbar.hpp>*/
+#include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>/**
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>*/
@@ -118,7 +118,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveContainer(Container::Ptr container)
     {
-        auto node = saveWidget(container);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{container});
         for (auto& child : container->getWidgets())
         {
             auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));
@@ -135,7 +135,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveButton(Button::Ptr button)
     {
-        auto node = saveWidget(button);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{button});
 
         if (!button->getText().isEmpty())
             SET_PROPERTY("Text", Serializer::serialize(button->getText()));
@@ -148,7 +148,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveChatBox(ChatBox::Ptr chatBox)
     {
-        auto node = saveWidget(chatBox);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{chatBox});
 
         SET_PROPERTY("TextSize", tgui::to_string(chatBox->getTextSize()));
         SET_PROPERTY("TextColor", Serializer::serialize(chatBox->getTextColor()));
@@ -198,7 +198,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveChildWindow(ChildWindow::Ptr childWindow)
     {
-        auto node = saveContainer(childWindow);
+        auto node = WidgetSaver::getSaveFunction("container")(tgui::WidgetConverter{childWindow});
 
         if (childWindow->getTitleAlignment() == ChildWindow::TitleAlignment::Left)
             SET_PROPERTY("TitleAlignment", "Left");
@@ -227,7 +227,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveComboBox(ComboBox::Ptr comboBox)
     {
-        auto node = saveWidget(comboBox);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{comboBox});
 
         SET_PROPERTY("ItemsToDisplay", tgui::to_string(comboBox->getItemsToDisplay()));
 
@@ -242,7 +242,7 @@ namespace tgui
 */
     TGUI_API std::shared_ptr<DataIO::Node> saveEditBox(EditBox::Ptr editBox)
     {
-        auto node = saveWidget(editBox);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{editBox});
 
         if (editBox->getAlignment() != EditBox::Alignment::Left)
         {
@@ -283,7 +283,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveKnob(Knob::Ptr knob)
     {
-        auto node = saveWidget(knob);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{knob});
 
         if (knob->getClockwiseTurning())
             SET_PROPERTY("ClockwiseTurning", "true");
@@ -302,7 +302,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveLabel(Label::Ptr label)
     {
-        auto node = saveWidget(label);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{label});
 
         if (label->getHorizontalAlignment() == Label::HorizontalAlignment::Center)
             SET_PROPERTY("HorizontalAlignment", "Center");
@@ -329,7 +329,7 @@ namespace tgui
 /**
     TGUI_API std::shared_ptr<DataIO::Node> saveListBox(ListBox::Ptr listBox)
     {
-        auto node = saveWidget(listBox);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{listBox});
 
         if (listBox->getItemCount() > 0)
         {
@@ -367,7 +367,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> savePicture(Picture::Ptr picture)
     {
-        auto node = saveWidget(picture);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{picture});
 
         if (!picture->getLoadedFilename().isEmpty())
             SET_PROPERTY("Filename", Serializer::serialize(sf::String{picture->getLoadedFilename()}));
@@ -381,7 +381,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveProgressBar(ProgressBar::Ptr progressBar)
     {
-        auto node = saveWidget(progressBar);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{progressBar});
 
         if (!progressBar->getText().isEmpty())
             SET_PROPERTY("Text", Serializer::serialize(progressBar->getText()));
@@ -407,7 +407,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveRadioButton(RadioButton::Ptr radioButton)
     {
-        auto node = saveWidget(radioButton);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{radioButton});
 
         if (!radioButton->getText().isEmpty())
             SET_PROPERTY("Text", Serializer::serialize(radioButton->getText()));
@@ -424,7 +424,7 @@ namespace tgui
 /**
     TGUI_API std::shared_ptr<DataIO::Node> saveScrollbar(Scrollbar::Ptr scrollbar)
     {
-        auto node = saveWidget(scrollbar);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{scrollbar});
 
         if (scrollbar->getAutoHide())
             SET_PROPERTY("AutoHide", "true");
@@ -439,10 +439,10 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+*/
     TGUI_API std::shared_ptr<DataIO::Node> saveSlider(Slider::Ptr slider)
     {
-        auto node = saveWidget(slider);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{slider});
         SET_PROPERTY("Minimum", tgui::to_string(slider->getMinimum()));
         SET_PROPERTY("Maximum", tgui::to_string(slider->getMaximum()));
         SET_PROPERTY("Value", tgui::to_string(slider->getValue()));
@@ -450,10 +450,10 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
+
     TGUI_API std::shared_ptr<DataIO::Node> saveSpinButton(SpinButton::Ptr spinButton)
     {
-        auto node = saveWidget(spinButton);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{spinButton});
 
         if (spinButton->getVerticalScroll())
             SET_PROPERTY("VerticalScroll", "true");
@@ -470,7 +470,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveTab(Tab::Ptr tab)
     {
-        auto node = saveWidget(tab);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{tab});
 
         if (tab->getTabsCount() > 0)
         {
@@ -497,7 +497,7 @@ namespace tgui
 
     TGUI_API std::shared_ptr<DataIO::Node> saveTextBox(TextBox::Ptr textBox)
     {
-        auto node = saveWidget(textBox);
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{textBox});
 
         SET_PROPERTY("Text", Serializer::serialize(textBox->getText()));
         SET_PROPERTY("TextSize", tgui::to_string(textBox->getTextSize()));
@@ -544,8 +544,8 @@ namespace tgui
             {"picture", savePicture},
             {"progressbar", saveProgressBar},
             {"radiobutton", saveRadioButton},/**
-            {"scrollbar", saveScrollbar},
-            {"slider", saveSlider},*/
+            {"scrollbar", saveScrollbar},*/
+            {"slider", saveSlider},
             {"spinbutton", saveSpinButton}/**,
             {"tab", saveTab},
             {"textbox", saveTextBox}*/

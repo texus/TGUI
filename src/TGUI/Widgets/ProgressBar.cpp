@@ -306,6 +306,76 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ProgressBar::recalculateFillSize()
+    {
+        sf::Vector2f size = getInnerSize();
+
+        if (getRenderer()->getTextureFill().isLoaded())
+        {
+            sf::Vector2f frontSize;
+            if (getRenderer()->getTextureBackground().isLoaded())
+            {
+                switch (getRenderer()->getTextureBackground().getScalingType())
+                {
+                case Texture::ScalingType::Normal:
+                    frontSize.x = getRenderer()->getTextureFill().getImageSize().x * getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x;
+                    frontSize.y = getRenderer()->getTextureFill().getImageSize().y * getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y;
+                    break;
+
+                case Texture::ScalingType::Horizontal:
+                    frontSize.x = getInnerSize().x - ((getRenderer()->getTextureBackground().getImageSize().x - getRenderer()->getTextureFill().getImageSize().x) * (getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y));
+                    frontSize.y = getRenderer()->getTextureFill().getImageSize().y * getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y;
+                    break;
+
+                case Texture::ScalingType::Vertical:
+                    frontSize.x = getRenderer()->getTextureFill().getImageSize().x * getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x;
+                    frontSize.y = getInnerSize().y - ((getRenderer()->getTextureBackground().getImageSize().y - getRenderer()->getTextureFill().getImageSize().y) * (getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x));
+                    break;
+
+                case Texture::ScalingType::NineSlice:
+                    frontSize.x = getInnerSize().x - (getRenderer()->getTextureBackground().getImageSize().x - getRenderer()->getTextureFill().getImageSize().x);
+                    frontSize.y = getInnerSize().y - (getRenderer()->getTextureBackground().getImageSize().y - getRenderer()->getTextureFill().getImageSize().y);
+                    break;
+                }
+            }
+            else // There is a fill texture but not a background one
+                frontSize = getInnerSize();
+
+            getRenderer()->getTextureFill().setSize(frontSize);
+            size = frontSize;
+        }
+
+        switch (getFillDirection())
+        {
+            case FillDirection::LeftToRight:
+                m_frontRect =  {0, 0, size.x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), size.y};
+                m_backRect = {m_frontRect.width, 0, size.x - m_frontRect.width, size.y};
+                break;
+
+            case FillDirection::RightToLeft:
+                m_frontRect =  {0, 0, size.x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), size.y};
+                m_frontRect.left = size.x - m_frontRect.width;
+                m_backRect = {0, 0, size.x - m_frontRect.width, size.y};
+                break;
+
+            case FillDirection::TopToBottom:
+                m_frontRect =  {0, 0, size.x, size.y * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum))};
+                m_backRect = {0, m_frontRect.height, size.x, size.y - m_frontRect.height};
+                break;
+
+            case FillDirection::BottomToTop:
+                m_frontRect =  {0, 0, size.x, size.y * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum))};
+                m_frontRect.top = size.y - m_frontRect.height;
+                m_backRect = {0, 0, size.x, size.y - m_frontRect.height};
+                break;
+        }
+
+        if (getRenderer()->getTextureFill().isLoaded())
+            getRenderer()->getTextureFill().setTextureRect(m_frontRect);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ProgressBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
@@ -386,76 +456,6 @@ namespace tgui
                 }
             }
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ProgressBar::recalculateFillSize()
-    {
-        sf::Vector2f size = getInnerSize();
-
-        if (getRenderer()->getTextureFill().isLoaded())
-        {
-            sf::Vector2f frontSize;
-            if (getRenderer()->getTextureBackground().isLoaded())
-            {
-                switch (getRenderer()->getTextureBackground().getScalingType())
-                {
-                case Texture::ScalingType::Normal:
-                    frontSize.x = getRenderer()->getTextureFill().getImageSize().x * getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x;
-                    frontSize.y = getRenderer()->getTextureFill().getImageSize().y * getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y;
-                    break;
-
-                case Texture::ScalingType::Horizontal:
-                    frontSize.x = getInnerSize().x - ((getRenderer()->getTextureBackground().getImageSize().x - getRenderer()->getTextureFill().getImageSize().x) * (getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y));
-                    frontSize.y = getRenderer()->getTextureFill().getImageSize().y * getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y;
-                    break;
-
-                case Texture::ScalingType::Vertical:
-                    frontSize.x = getRenderer()->getTextureFill().getImageSize().x * getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x;
-                    frontSize.y = getInnerSize().y - ((getRenderer()->getTextureBackground().getImageSize().y - getRenderer()->getTextureFill().getImageSize().y) * (getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x));
-                    break;
-
-                case Texture::ScalingType::NineSlice:
-                    frontSize.x = getInnerSize().x - (getRenderer()->getTextureBackground().getImageSize().x - getRenderer()->getTextureFill().getImageSize().x);
-                    frontSize.y = getInnerSize().y - (getRenderer()->getTextureBackground().getImageSize().y - getRenderer()->getTextureFill().getImageSize().y);
-                    break;
-                }
-            }
-            else // There is a fill texture but not a background one
-                frontSize = getInnerSize();
-
-            getRenderer()->getTextureFill().setSize(frontSize);
-            size = frontSize;
-        }
-
-        switch (getFillDirection())
-        {
-            case FillDirection::LeftToRight:
-                m_frontRect =  {0, 0, size.x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), size.y};
-                m_backRect = {m_frontRect.width, 0, size.x - m_frontRect.width, size.y};
-                break;
-
-            case FillDirection::RightToLeft:
-                m_frontRect =  {0, 0, size.x * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)), size.y};
-                m_frontRect.left = size.x - m_frontRect.width;
-                m_backRect = {0, 0, size.x - m_frontRect.width, size.y};
-                break;
-
-            case FillDirection::TopToBottom:
-                m_frontRect =  {0, 0, size.x, size.y * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum))};
-                m_backRect = {0, m_frontRect.height, size.x, size.y - m_frontRect.height};
-                break;
-
-            case FillDirection::BottomToTop:
-                m_frontRect =  {0, 0, size.x, size.y * ((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum))};
-                m_frontRect.top = size.y - m_frontRect.height;
-                m_backRect = {0, 0, size.x, size.y - m_frontRect.height};
-                break;
-        }
-
-        if (getRenderer()->getTextureFill().isLoaded())
-            getRenderer()->getTextureFill().setTextureRect(m_frontRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

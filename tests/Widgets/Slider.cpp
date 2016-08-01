@@ -25,23 +25,39 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Slider.hpp>
 
-TEST_CASE("[Slider]") {
+TEST_CASE("[Slider]")
+{
     tgui::Slider::Ptr slider = std::make_shared<tgui::Slider>();
-    slider->setFont("resources/DroidSansArmenian.ttf");
+    slider->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     slider->setMinimum(10);
     slider->setMaximum(20);
     slider->setValue(15);
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(slider->connect("ValueChanged", [](){}));
         REQUIRE_NOTHROW(slider->connect("ValueChanged", [](int){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(slider->getWidgetType() == "Slider");
     }
 
-    SECTION("Minimum") {
+    SECTION("Position and Size")
+    {
+        slider->setPosition(40, 30);
+        slider->setSize(150, 25);
+        slider->getRenderer()->setBorders(2);
+
+        REQUIRE(slider->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(slider->getSize() == sf::Vector2f(150, 25));
+
+        // TODO: Test getFullSize and getWidgetOffset
+    }
+
+    SECTION("Minimum")
+    {
         REQUIRE(slider->getMinimum() == 10);
 
         slider->setMinimum(12);
@@ -60,7 +76,8 @@ TEST_CASE("[Slider]") {
         REQUIRE(slider->getMaximum() == 22);
     }
 
-    SECTION("Maximum") {
+    SECTION("Maximum")
+    {
         REQUIRE(slider->getMaximum() == 20);
 
         slider->setMaximum(17);
@@ -79,7 +96,8 @@ TEST_CASE("[Slider]") {
         REQUIRE(slider->getMaximum() == 9);
     }
 
-    SECTION("Value") {
+    SECTION("Value")
+    {
         REQUIRE(slider->getValue() == 15);
         
         slider->setValue(14);
@@ -92,172 +110,134 @@ TEST_CASE("[Slider]") {
         REQUIRE(slider->getValue() == 20);
     }
 
-    SECTION("Renderer") {
-        auto renderer = slider->getRenderer();
-
-        SECTION("colored") {
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", "rgb(10, 20, 30)"));
-                REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(10, 20, 30));
-
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", "rgb(20, 30, 40)"));
-                REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(20, 30, 40));
-
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColorNormal", "rgb(30, 40, 50)"));
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", "rgb(40, 50, 60)"));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorNormal", "rgb(50, 60, 70)"));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", "rgb(60, 70, 80)"));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(70, 80, 90)"));
-                REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
-            }
-
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", sf::Color{10, 20, 30}));
-                REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(10, 20, 30));
-                
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", sf::Color{20, 30, 40}));
-                REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(20, 30, 40));
-
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColorNormal", sf::Color{30, 40, 50}));
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorNormal", sf::Color{50, 60, 70}));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{70, 80, 90}));
-                REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
-            }
-
-            SECTION("functions") {
-                renderer->setTrackColor({10, 20, 30});
-                REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(10, 20, 30));
-
-                renderer->setThumbColor({20, 30, 40});
-                REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(20, 30, 40));
-
-                renderer->setTrackColorNormal({30, 40, 50});
-                renderer->setTrackColorHover({40, 50, 60});
-                renderer->setThumbColorNormal({50, 60, 70});
-                renderer->setThumbColorHover({60, 70, 80});
-                renderer->setBorderColor({70, 80, 90});
-                renderer->setBorders({1, 2, 3, 4});
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 6);
-                    REQUIRE(pairs["TrackColorNormal"].getColor() == sf::Color(30, 40, 50));
-                    REQUIRE(pairs["TrackColorHover"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["ThumbColorNormal"].getColor() == sf::Color(50, 60, 70));
-                    REQUIRE(pairs["ThumbColorHover"].getColor() == sf::Color(60, 70, 80));
-                    REQUIRE(pairs["BorderColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
-                }
-            }
-
-            REQUIRE(renderer->getProperty("TrackColorNormal").getColor() == sf::Color(30, 40, 50));
-            REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("ThumbColorNormal").getColor() == sf::Color(50, 60, 70));
-            REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(70, 80, 90));
-            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+    SECTION("Events / Signals")
+    {
+        SECTION("Widget")
+        {
+            testWidgetSignals(slider);
         }
 
-        SECTION("textured") {
-            tgui::Texture textureTrackNormal("resources/Black.png", {203, 150, 20, 45}, {0, 15, 20, 15});
-            tgui::Texture textureTrackHover("resources/Black.png", {223, 150, 20, 45}, {0, 15, 20, 15});
-            tgui::Texture textureThumbNormal("resources/Black.png", {243, 150, 30, 30});
-            tgui::Texture textureThumbHover("resources/Black.png", {243, 150, 30, 30});
+        SECTION("ValueChanged")
+        {
+            unsigned int valueChangedCount = 0;
+            slider->connect("ValueChanged", genericCallback, std::ref(valueChangedCount));
 
-            REQUIRE(!renderer->getProperty("TrackImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("TrackHoverImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ThumbImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ThumbHoverImage").getTexture().isLoaded());
+            slider->setValue(14);
+            REQUIRE(valueChangedCount == 1);
 
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackImage", tgui::Serializer::serialize(textureTrackNormal)));
-                REQUIRE_NOTHROW(renderer->setProperty("TrackHoverImage", tgui::Serializer::serialize(textureTrackHover)));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbImage", tgui::Serializer::serialize(textureThumbNormal)));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbHoverImage", tgui::Serializer::serialize(textureThumbHover)));
-            }
+            slider->setValue(14);
+            REQUIRE(valueChangedCount == 1);
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackImage", textureTrackNormal));
-                REQUIRE_NOTHROW(renderer->setProperty("TrackHoverImage", textureTrackHover));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbImage", textureThumbNormal));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbHoverImage", textureThumbHover));
-            }
-
-            SECTION("functions") {
-                renderer->setTrackTexture(textureTrackNormal);
-                renderer->setTrackHoverTexture(textureTrackHover);
-                renderer->setThumbTexture(textureThumbNormal);
-                renderer->setThumbHoverTexture(textureThumbHover);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 6);
-                    REQUIRE(pairs["TrackImage"].getTexture().getData() == textureTrackNormal.getData());
-                    REQUIRE(pairs["TrackHoverImage"].getTexture().getData() == textureTrackHover.getData());
-                    REQUIRE(pairs["ThumbImage"].getTexture().getData() == textureThumbNormal.getData());
-                    REQUIRE(pairs["ThumbHoverImage"].getTexture().getData() == textureThumbHover.getData());
-                }
-            }
-
-            REQUIRE(renderer->getProperty("TrackImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TrackHoverImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ThumbImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ThumbHoverImage").getTexture().isLoaded());
-
-            REQUIRE(renderer->getProperty("TrackImage").getTexture().getData() == textureTrackNormal.getData());
-            REQUIRE(renderer->getProperty("TrackHoverImage").getTexture().getData() == textureTrackHover.getData());
-            REQUIRE(renderer->getProperty("ThumbImage").getTexture().getData() == textureThumbNormal.getData());
-            REQUIRE(renderer->getProperty("ThumbHoverImage").getTexture().getData() == textureThumbHover.getData());
+            // TODO: Test value changes on mouse events
         }
     }
 
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(slider = std::make_shared<tgui::Theme>()->load("Slider"));
+    testWidgetRenderer(slider->getRenderer());
+    SECTION("Renderer")
+    {
+        auto renderer = slider->getRenderer();
 
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(slider = theme->load("Slider"));
-        REQUIRE(slider->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(slider->getSecondaryLoadingParameter() == "slider");
+        SECTION("colored")
+        {
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", "rgb(30, 40, 50)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", "rgb(40, 50, 60)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", "rgb(50, 60, 70)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", "rgb(60, 70, 80)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(70, 80, 90)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", "rgb(80, 90, 100)"));
+                REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
+            }
 
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(slider);
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", sf::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", sf::Color{40, 50, 60}));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", sf::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", sf::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorHover", sf::Color{80, 90, 100}));
+                REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
+            }
 
-        slider->setOpacity(0.8f);
+            SECTION("functions")
+            {
+                renderer->setTrackColor({30, 40, 50});
+                renderer->setTrackColorHover({40, 50, 60});
+                renderer->setThumbColor({50, 60, 70});
+                renderer->setThumbColorHover({60, 70, 80});
+                renderer->setBorderColor({70, 80, 90});
+                renderer->setBorderColorHover({80, 90, 100});
+                renderer->setBorders({1, 2, 3, 4});
+            }
+
+            REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("BorderColorHover").getColor() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+
+            REQUIRE(renderer->getTrackColor() == sf::Color(30, 40, 50));
+            REQUIRE(renderer->getTrackColorHover() == sf::Color(40, 50, 60));
+            REQUIRE(renderer->getThumbColor() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getThumbColorHover() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getBorderColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getBorderColorHover() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+        }
+
+        SECTION("textured")
+        {
+            tgui::Texture textureTrack("resources/Black.png", {203, 150, 20, 45}, {0, 15, 20, 15});
+            tgui::Texture textureTrackHover("resources/Black.png", {223, 150, 20, 45}, {0, 15, 20, 15});
+            tgui::Texture textureThumb("resources/Black.png", {243, 150, 30, 30});
+            tgui::Texture textureThumbHover("resources/Black.png", {243, 150, 30, 30});
+
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTrack", tgui::Serializer::serialize(textureTrack)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTrackHover", tgui::Serializer::serialize(textureTrackHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureThumb", tgui::Serializer::serialize(textureThumb)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureThumbHover", tgui::Serializer::serialize(textureThumbHover)));
+            }
+
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTrack", textureTrack));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTrackHover", textureTrackHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureThumb", textureThumb));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureThumbHover", textureThumbHover));
+            }
+
+            SECTION("functions")
+            {
+                renderer->setTextureTrack(textureTrack);
+                renderer->setTextureTrackHover(textureTrackHover);
+                renderer->setTextureThumb(textureThumb);
+                renderer->setTextureThumbHover(textureThumbHover);
+            }
+
+            REQUIRE(renderer->getProperty("TextureTrack").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureThumb").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureThumbHover").getTexture().isLoaded());
+
+            REQUIRE(renderer->getProperty("TextureTrack").getTexture().getData() == textureTrack.getData());
+            REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().getData() == textureTrackHover.getData());
+            REQUIRE(renderer->getProperty("TextureThumb").getTexture().getData() == textureThumb.getData());
+            REQUIRE(renderer->getProperty("TextureThumbHover").getTexture().getData() == textureThumbHover.getData());
+        }
+    }
+
+    SECTION("Saving and loading from file")
+    {
         slider->setMinimum(10);
         slider->setMaximum(50);
         slider->setValue(20);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSlider1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileSlider1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSlider2.txt"));
-        REQUIRE(compareFiles("WidgetFileSlider1.txt", "WidgetFileSlider2.txt"));
-
-        SECTION("Copying widget") {
-            tgui::Slider temp;
-            temp = *slider;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::Slider::copy(std::make_shared<tgui::Slider>(temp)));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileSlider2.txt"));
-            REQUIRE(compareFiles("WidgetFileSlider1.txt", "WidgetFileSlider2.txt"));
-        }
+        testSavingWidget("Slider", slider);
     }
 }

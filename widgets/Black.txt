@@ -122,9 +122,9 @@ Scrollbar {
 }
 
 Slider {
-    TrackImage      : "Black.png" Part(203, 150, 20, 45) Middle(0, 15, 20, 15);
-    TrackHoverImage : "Black.png" Part(223, 150, 20, 45) Middle(0, 15, 20, 15);
-    ThumbImage      : "Black.png" Part(243, 150, 30, 30);
+    TextureTrack      : "Black.png" Part(203, 150, 20, 45) Middle(0, 15, 20, 15);
+    TextureTrackHover : "Black.png" Part(223, 150, 20, 45) Middle(0, 15, 20, 15);
+    TextureThumb      : "Black.png" Part(243, 150, 30, 30);
 }
 
 SpinButton {

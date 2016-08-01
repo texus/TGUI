@@ -335,75 +335,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        states.transform.translate(getPosition());
-
-        // Draw the borders
-        float innerRadius = std::min(getInnerSize().x, getInnerSize().y) / 2;
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
-        {
-            sf::CircleShape circle{innerRadius + borders.left};
-            circle.setOutlineThickness(-borders.left);
-            circle.setFillColor(sf::Color::Transparent);
-            circle.setOutlineColor(calcColorOpacity(getCurrentBorderColor(), getRenderer()->getOpacity()));
-            target.draw(circle, states);
-        }
-
-        // Draw the box
-        states.transform.translate({borders.left, borders.left});
-        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
-        {
-            if (m_checked)
-            {
-                if (!m_enabled && getRenderer()->getTextureCheckedDisabled().isLoaded())
-                    getRenderer()->getTextureCheckedDisabled().draw(target, states);
-                else if (m_mouseHover && getRenderer()->getTextureCheckedHover().isLoaded())
-                    getRenderer()->getTextureCheckedHover().draw(target, states);
-                else
-                    getRenderer()->getTextureChecked().draw(target, states);
-            }
-            else
-            {
-                if (!m_enabled && getRenderer()->getTextureUncheckedDisabled().isLoaded())
-                    getRenderer()->getTextureUncheckedDisabled().draw(target, states);
-                else if (m_mouseHover && getRenderer()->getTextureUncheckedHover().isLoaded())
-                    getRenderer()->getTextureUncheckedHover().draw(target, states);
-                else
-                    getRenderer()->getTextureUnchecked().draw(target, states);
-            }
-
-            // When the radio button is focused then draw an extra image
-            if (m_focused && getRenderer()->getTextureFocused().isLoaded())
-                getRenderer()->getTextureFocused().draw(target, states);
-        }
-        else // There are no images
-        {
-            sf::CircleShape circle{innerRadius};
-            circle.setFillColor(calcColorOpacity(getCurrentBackgroundColor(), getRenderer()->getOpacity()));
-            target.draw(circle, states);
-
-            // Draw the check if the radio button is checked
-            if (m_checked)
-            {
-                sf::CircleShape check{innerRadius * .6f};
-                check.setFillColor(calcColorOpacity(getCurrentCheckColor(), getRenderer()->getOpacity()));
-                check.setPosition({innerRadius - check.getRadius(), innerRadius - check.getRadius()});
-                target.draw(check, states);
-            }
-        }
-        states.transform.translate({-borders.left, -borders.left});
-
-        if (!getText().isEmpty())
-        {
-            states.transform.translate({(1 + getRenderer()->getTextDistanceRatio()) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
-            target.draw(m_text, states);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     sf::Color RadioButton::getCurrentCheckColor() const
     {
         if (!m_enabled && getRenderer()->getCheckColorDisabled().isSet())
@@ -547,6 +478,75 @@ namespace tgui
                 m_text.getRenderer()->setTextColor(getRenderer()->getTextColorHover());
             else
                 m_text.getRenderer()->setTextColor(getRenderer()->getTextColor());
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void RadioButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        states.transform.translate(getPosition());
+
+        // Draw the borders
+        float innerRadius = std::min(getInnerSize().x, getInnerSize().y) / 2;
+        Borders borders = getRenderer()->getBorders();
+        if (borders != Borders{0})
+        {
+            sf::CircleShape circle{innerRadius + borders.left};
+            circle.setOutlineThickness(-borders.left);
+            circle.setFillColor(sf::Color::Transparent);
+            circle.setOutlineColor(calcColorOpacity(getCurrentBorderColor(), getRenderer()->getOpacity()));
+            target.draw(circle, states);
+        }
+
+        // Draw the box
+        states.transform.translate({borders.left, borders.left});
+        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
+        {
+            if (m_checked)
+            {
+                if (!m_enabled && getRenderer()->getTextureCheckedDisabled().isLoaded())
+                    getRenderer()->getTextureCheckedDisabled().draw(target, states);
+                else if (m_mouseHover && getRenderer()->getTextureCheckedHover().isLoaded())
+                    getRenderer()->getTextureCheckedHover().draw(target, states);
+                else
+                    getRenderer()->getTextureChecked().draw(target, states);
+            }
+            else
+            {
+                if (!m_enabled && getRenderer()->getTextureUncheckedDisabled().isLoaded())
+                    getRenderer()->getTextureUncheckedDisabled().draw(target, states);
+                else if (m_mouseHover && getRenderer()->getTextureUncheckedHover().isLoaded())
+                    getRenderer()->getTextureUncheckedHover().draw(target, states);
+                else
+                    getRenderer()->getTextureUnchecked().draw(target, states);
+            }
+
+            // When the radio button is focused then draw an extra image
+            if (m_focused && getRenderer()->getTextureFocused().isLoaded())
+                getRenderer()->getTextureFocused().draw(target, states);
+        }
+        else // There are no images
+        {
+            sf::CircleShape circle{innerRadius};
+            circle.setFillColor(calcColorOpacity(getCurrentBackgroundColor(), getRenderer()->getOpacity()));
+            target.draw(circle, states);
+
+            // Draw the check if the radio button is checked
+            if (m_checked)
+            {
+                sf::CircleShape check{innerRadius * .6f};
+                check.setFillColor(calcColorOpacity(getCurrentCheckColor(), getRenderer()->getOpacity()));
+                check.setPosition({innerRadius - check.getRadius(), innerRadius - check.getRadius()});
+                target.draw(check, states);
+            }
+        }
+        states.transform.translate({-borders.left, -borders.left});
+
+        if (!getText().isEmpty())
+        {
+            states.transform.translate({(1 + getRenderer()->getTextDistanceRatio()) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
+            target.draw(m_text, states);
         }
     }
 

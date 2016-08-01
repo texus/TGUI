@@ -246,42 +246,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        states.transform.translate(std::round(getPosition().x), std::round(getPosition().y));
-
-        Borders borders = getRenderer()->getBorders();
-        sf::Vector2f innerSize = {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
-
-        // Draw the borders
-        if (borders != Borders{0})
-        {
-            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
-        }
-
-        // Draw the background
-        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-            drawRectangleShape(target, states, innerSize, getRenderer()->getBackgroundColor());
-
-        // Apply clipping when needed
-        std::unique_ptr<Clipping> clipping;
-        if (!m_autoSize)
-        {
-            Padding padding = getRenderer()->getPadding();
-            innerSize.x -= padding.left + padding.right;
-            innerSize.y -= padding.top + padding.bottom;
-
-            clipping = std::make_unique<Clipping>(target, states, sf::Vector2f{padding.left, padding.top}, innerSize);
-        }
-
-        // Draw the text
-        for (auto& line : m_lines)
-            target.draw(line, states);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Label::rearrangeText()
     {
         std::shared_ptr<sf::Font> font = getRenderer()->getFont();
@@ -452,6 +416,42 @@ namespace tgui
                 }
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        states.transform.translate(std::round(getPosition().x), std::round(getPosition().y));
+
+        Borders borders = getRenderer()->getBorders();
+        sf::Vector2f innerSize = {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+
+        // Draw the borders
+        if (borders != Borders{0})
+        {
+            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
+            states.transform.translate({borders.left, borders.top});
+        }
+
+        // Draw the background
+        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
+            drawRectangleShape(target, states, innerSize, getRenderer()->getBackgroundColor());
+
+        // Apply clipping when needed
+        std::unique_ptr<Clipping> clipping;
+        if (!m_autoSize)
+        {
+            Padding padding = getRenderer()->getPadding();
+            innerSize.x -= padding.left + padding.right;
+            innerSize.y -= padding.top + padding.bottom;
+
+            clipping = std::make_unique<Clipping>(target, states, sf::Vector2f{padding.left, padding.top}, innerSize);
+        }
+
+        // Draw the text
+        for (auto& line : m_lines)
+            target.draw(line, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

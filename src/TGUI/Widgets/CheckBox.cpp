@@ -160,6 +160,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void CheckBox::updateTextureSizes()
+    {
+        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
+        {
+            getRenderer()->getTextureUnchecked().setSize(getInnerSize());
+            getRenderer()->getTextureChecked().setSize(
+                {getInnerSize().x + ((getRenderer()->getTextureChecked().getImageSize().x - getRenderer()->getTextureUnchecked().getImageSize().x) * (getInnerSize().x / getRenderer()->getTextureUnchecked().getImageSize().x)),
+                 getInnerSize().y + ((getRenderer()->getTextureChecked().getImageSize().y - getRenderer()->getTextureUnchecked().getImageSize().y) * (getInnerSize().y / getRenderer()->getTextureUnchecked().getImageSize().y))}
+            );
+
+            getRenderer()->getTextureUncheckedHover().setSize(getRenderer()->getTextureUnchecked().getSize());
+            getRenderer()->getTextureCheckedHover().setSize(getRenderer()->getTextureChecked().getSize());
+
+            getRenderer()->getTextureUncheckedDisabled().setSize(getRenderer()->getTextureUnchecked().getSize());
+            getRenderer()->getTextureCheckedDisabled().setSize(getRenderer()->getTextureChecked().getSize());
+
+            getRenderer()->getTextureFocused().setSize(getRenderer()->getTextureUnchecked().getSize());
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void CheckBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
@@ -234,28 +256,6 @@ namespace tgui
         {
             states.transform.translate({(1 + getRenderer()->getTextDistanceRatio()) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
             target.draw(m_text, states);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void CheckBox::updateTextureSizes()
-    {
-        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
-        {
-            getRenderer()->getTextureUnchecked().setSize(getInnerSize());
-            getRenderer()->getTextureChecked().setSize(
-                {getInnerSize().x + ((getRenderer()->getTextureChecked().getImageSize().x - getRenderer()->getTextureUnchecked().getImageSize().x) * (getInnerSize().x / getRenderer()->getTextureUnchecked().getImageSize().x)),
-                 getInnerSize().y + ((getRenderer()->getTextureChecked().getImageSize().y - getRenderer()->getTextureUnchecked().getImageSize().y) * (getInnerSize().y / getRenderer()->getTextureUnchecked().getImageSize().y))}
-            );
-
-            getRenderer()->getTextureUncheckedHover().setSize(getRenderer()->getTextureUnchecked().getSize());
-            getRenderer()->getTextureCheckedHover().setSize(getRenderer()->getTextureChecked().getSize());
-
-            getRenderer()->getTextureUncheckedDisabled().setSize(getRenderer()->getTextureUnchecked().getSize());
-            getRenderer()->getTextureCheckedDisabled().setSize(getRenderer()->getTextureChecked().getSize());
-
-            getRenderer()->getTextureFocused().setSize(getRenderer()->getTextureUnchecked().getSize());
         }
     }
 

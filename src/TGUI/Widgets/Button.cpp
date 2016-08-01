@@ -293,6 +293,46 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Color Button::getCurrentBackgroundColor() const
+    {
+        if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
+            return getRenderer()->getBackgroundColorDisabled();
+        else if (m_mouseHover && m_mouseDown && getRenderer()->getBackgroundColorDown().isSet())
+            return getRenderer()->getBackgroundColorDown();
+        else if (m_mouseHover && getRenderer()->getBackgroundColorHover().isSet())
+            return getRenderer()->getBackgroundColorHover();
+        else
+            return getRenderer()->getBackgroundColor();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::updateTextColorAndStyle()
+    {
+        if (!m_enabled && getRenderer()->getTextStyleDisabled().isSet())
+            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleDisabled());
+        else if (m_mouseHover && m_mouseDown && getRenderer()->getTextStyleDown().isSet())
+            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleDown());
+        else if (m_mouseHover && getRenderer()->getTextStyleHover().isSet())
+            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleHover());
+        else
+            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+
+        sf::Color color;
+        if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
+            color = getRenderer()->getTextColorDisabled();
+        else if (m_mouseHover && m_mouseDown && getRenderer()->getTextColorDown().isSet())
+            color = getRenderer()->getTextColorDown();
+        else if (m_mouseHover && getRenderer()->getTextColorHover().isSet())
+            color = getRenderer()->getTextColorHover();
+        else
+            color = getRenderer()->getTextColor();
+
+        m_text.getRenderer()->setTextColor(calcColorOpacity(color, getRenderer()->getOpacity()));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
@@ -334,46 +374,6 @@ namespace tgui
         // If the button has a text then also draw the text
         states.transform.translate({(getInnerSize().x - m_text.getSize().x) / 2.f, (getInnerSize().y - m_text.getSize().y) / 2.f});
         target.draw(m_text, states);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Color Button::getCurrentBackgroundColor() const
-    {
-        if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
-            return getRenderer()->getBackgroundColorDisabled();
-        else if (m_mouseHover && m_mouseDown && getRenderer()->getBackgroundColorDown().isSet())
-            return getRenderer()->getBackgroundColorDown();
-        else if (m_mouseHover && getRenderer()->getBackgroundColorHover().isSet())
-            return getRenderer()->getBackgroundColorHover();
-        else
-            return getRenderer()->getBackgroundColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Button::updateTextColorAndStyle()
-    {
-        if (!m_enabled && getRenderer()->getTextStyleDisabled().isSet())
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleDisabled());
-        else if (m_mouseHover && m_mouseDown && getRenderer()->getTextStyleDown().isSet())
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleDown());
-        else if (m_mouseHover && getRenderer()->getTextStyleHover().isSet())
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleHover());
-        else
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
-
-        sf::Color color;
-        if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
-            color = getRenderer()->getTextColorDisabled();
-        else if (m_mouseHover && m_mouseDown && getRenderer()->getTextColorDown().isSet())
-            color = getRenderer()->getTextColorDown();
-        else if (m_mouseHover && getRenderer()->getTextColorHover().isSet())
-            color = getRenderer()->getTextColorHover();
-        else
-            color = getRenderer()->getTextColor();
-
-        m_text.getRenderer()->setTextColor(calcColorOpacity(color, getRenderer()->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

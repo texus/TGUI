@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/Slider.hpp>
-#include <TGUI/Loading/Theme.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,12 +34,22 @@ namespace tgui
     Slider::Slider()
     {
         m_callback.widgetType = "Slider";
+        m_type = "Slider";
+
         m_draggableWidget = true;
 
         addSignal<int>("ValueChanged");
 
-        m_renderer = std::make_shared<SliderRenderer>(this);
-        reload();
+        m_renderer = aurora::makeCopied<SliderRenderer>();
+        setRenderer(m_renderer->getData());
+
+        getRenderer()->setBorders({2});
+        getRenderer()->setTrackColor({245, 245, 245});
+        getRenderer()->setTrackColorHover({255, 255, 255});
+        getRenderer()->setThumbColor({245, 245, 245});
+        getRenderer()->setThumbColorHover({255, 255, 255});
+        getRenderer()->setBorderColor({60, 60, 60});
+        getRenderer()->setBorderColorHover(sf::Color::Black);
 
         setSize(200, 16);
     }
@@ -57,33 +66,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setPosition(const Layout2d& position)
-    {
-        Widget::setPosition(position);
-
-        if (m_verticalScroll)
-        {
-            m_thumb.left = getPosition().x + ((getSize().x - m_thumb.width) / 2.0f);
-            m_thumb.top = getPosition().y - (m_thumb.height / 2.0f) + (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum));
-        }
-        else
-        {
-            m_thumb.left = getPosition().x - (m_thumb.width / 2.0f) + (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum));
-            m_thumb.top = getPosition().y + ((getSize().y - m_thumb.height) / 2.0f);
-        }
-
-        if (getRenderer()->m_textureTrackNormal.isLoaded() && getRenderer()->m_textureThumbNormal.isLoaded())
-        {
-            getRenderer()->m_textureTrackNormal.setPosition(getPosition());
-            getRenderer()->m_textureTrackHover.setPosition(getPosition());
-
-            getRenderer()->m_textureThumbNormal.setPosition({m_thumb.left, m_thumb.top});
-            getRenderer()->m_textureThumbHover.setPosition({m_thumb.left, m_thumb.top});
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Slider::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
@@ -93,58 +75,50 @@ namespace tgui
         else
             m_verticalScroll = false;
 
-        if (getRenderer()->m_textureTrackNormal.isLoaded() && getRenderer()->m_textureThumbNormal.isLoaded())
+        if (getRenderer()->getTextureTrack().isLoaded() && getRenderer()->getTextureThumb().isLoaded())
         {
+            float scaleFactor;
             if (m_verticalImage == m_verticalScroll)
             {
-                getRenderer()->m_textureTrackNormal.setSize(getSize());
-                getRenderer()->m_textureTrackHover.setSize(getSize());
+                getRenderer()->getTextureTrack().setSize(getInnerSize());
+                getRenderer()->getTextureTrackHover().setSize(getInnerSize());
 
                 if (m_verticalScroll)
-                {
-                    m_thumb.width = getSize().x / getRenderer()->m_textureTrackNormal.getImageSize().x * getRenderer()->m_textureThumbNormal.getImageSize().x;
-                    m_thumb.height = getSize().x / getRenderer()->m_textureTrackNormal.getImageSize().x * getRenderer()->m_textureThumbNormal.getImageSize().y;
-                }
+                    scaleFactor = getInnerSize().x / getRenderer()->getTextureTrack().getImageSize().x;
                 else
-                {
-                    m_thumb.width = getSize().y / getRenderer()->m_textureTrackNormal.getImageSize().y * getRenderer()->m_textureThumbNormal.getImageSize().x;
-                    m_thumb.height = getSize().y / getRenderer()->m_textureTrackNormal.getImageSize().y * getRenderer()->m_textureThumbNormal.getImageSize().y;
-                }
+                    scaleFactor = getInnerSize().y / getRenderer()->getTextureTrack().getImageSize().y;
             }
             else // The image is rotated
             {
-                getRenderer()->m_textureTrackNormal.setSize({getSize().y, getSize().x});
-                getRenderer()->m_textureTrackHover.setSize({getSize().y, getSize().x});
+                getRenderer()->getTextureTrack().setSize({getInnerSize().y, getInnerSize().x});
+                getRenderer()->getTextureTrackHover().setSize({getInnerSize().y, getInnerSize().x});
 
                 if (m_verticalScroll)
-                {
-                    m_thumb.width = getSize().x / getRenderer()->m_textureTrackNormal.getImageSize().y * getRenderer()->m_textureThumbNormal.getImageSize().x;
-                    m_thumb.height = getSize().x / getRenderer()->m_textureTrackNormal.getImageSize().y * getRenderer()->m_textureThumbNormal.getImageSize().y;
-                }
+                    scaleFactor = getInnerSize().x / getRenderer()->getTextureTrack().getImageSize().y;
                 else
-                {
-                    m_thumb.width = getSize().y / getRenderer()->m_textureTrackNormal.getImageSize().x * getRenderer()->m_textureThumbNormal.getImageSize().x;
-                    m_thumb.height = getSize().y / getRenderer()->m_textureTrackNormal.getImageSize().x * getRenderer()->m_textureThumbNormal.getImageSize().y;
-                }
+                    scaleFactor = getInnerSize().y / getRenderer()->getTextureTrack().getImageSize().x;
             }
 
-            getRenderer()->m_textureThumbNormal.setSize({m_thumb.width, m_thumb.height});
-            getRenderer()->m_textureThumbHover.setSize({m_thumb.width, m_thumb.height});
+            m_thumb.width = scaleFactor * getRenderer()->getTextureThumb().getImageSize().x;
+            m_thumb.height = scaleFactor * getRenderer()->getTextureThumb().getImageSize().y;
+
+            getRenderer()->getTextureThumb().setSize({m_thumb.width, m_thumb.height});
+            getRenderer()->getTextureThumbHover().setSize({m_thumb.width, m_thumb.height});
 
             // Apply the rotation now that the size has been set
             if (m_verticalScroll != m_verticalImage)
             {
-                getRenderer()->m_textureTrackNormal.setRotation(-90);
-                getRenderer()->m_textureTrackHover.setRotation(-90);
-                getRenderer()->m_textureThumbNormal.setRotation(-90);
-                getRenderer()->m_textureThumbHover.setRotation(-90);
+                getRenderer()->getTextureTrack().setRotation(-90);
+                getRenderer()->getTextureTrackHover().setRotation(-90);
+                getRenderer()->getTextureThumb().setRotation(-90);
+                getRenderer()->getTextureThumbHover().setRotation(-90);
             }
             else
             {
-                getRenderer()->m_textureTrackNormal.setRotation(0);
-                getRenderer()->m_textureTrackHover.setRotation(0);
-                getRenderer()->m_textureThumbNormal.setRotation(0);
-                getRenderer()->m_textureThumbHover.setRotation(0);
+                getRenderer()->getTextureTrack().setRotation(0);
+                getRenderer()->getTextureTrackHover().setRotation(0);
+                getRenderer()->getTextureThumb().setRotation(0);
+                getRenderer()->getTextureThumbHover().setRotation(0);
             }
         }
         else // There are no textures
@@ -161,16 +135,27 @@ namespace tgui
             }
         }
 
-        // Recalculate the position of the images
-        updatePosition();
+        updateThumbPosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f Slider::getFullSize() const
     {
-        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
-                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
+        if (m_verticalScroll)
+            return {std::max(getSize().x, m_thumb.width), getSize().y + m_thumb.height};
+        else
+            return {getSize().x + m_thumb.width, std::max(getSize().y, m_thumb.height)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Slider::getWidgetOffset() const
+    {
+        if (m_verticalScroll)
+            return {std::min(0.f, getSize().x - m_thumb.width), -m_thumb.height / 2.f};
+        else
+            return {-m_thumb.width / 2.f, std::min(0.f, getSize().y - m_thumb.height)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,8 +173,14 @@ namespace tgui
         if (m_value < m_minimum)
             setValue(m_minimum);
 
-        // Recalculate the position of the thumb image
-        updatePosition();
+        updateThumbPosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int Slider::getMinimum() const
+    {
+        return m_minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -210,8 +201,14 @@ namespace tgui
         if (m_value > m_maximum)
             setValue(m_maximum);
 
-        // Recalculate the position of the thumb image
-        updatePosition();
+        updateThumbPosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int Slider::getMaximum() const
+    {
+        return m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,28 +228,15 @@ namespace tgui
             m_callback.value = m_value;
             sendSignal("ValueChanged", m_value);
 
-            // Recalculate the position of the thumb image
-            updatePosition();
+            updateThumbPosition();
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setOpacity(float opacity)
+    int Slider::getValue() const
     {
-        Widget::setOpacity(opacity);
-
-        getRenderer()->m_textureTrackNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureTrackHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureThumbNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-        getRenderer()->m_textureThumbHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Slider::getWidgetOffset() const
-    {
-        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
+        return m_value;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,15 +266,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::leftMouseReleased(float, float)
-    {
-        // The thumb might have been dragged between two values
-        if (m_mouseDown)
-            updatePosition();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Slider::mouseMoved(float x, float y)
     {
         if (!m_mouseHover)
@@ -299,6 +274,9 @@ namespace tgui
         // Check if the mouse button is down
         if (m_mouseDown)
         {
+            x -= getPosition().x;
+            y -= getPosition().y;
+
             // Check in which direction the slider goes
             if (m_verticalScroll)
             {
@@ -311,17 +289,17 @@ namespace tgui
                 }
 
                 // Set the new value
-                if ((y - m_mouseDownOnThumbPos.y + (m_thumb.height / 2.0f) - getPosition().y) > 0)
-                    setValue(static_cast<int>((((y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y - getPosition().y) / getSize().y) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
+                if (y - m_mouseDownOnThumbPos.y + (m_thumb.height / 2.0f) > 0)
+                    setValue(static_cast<int>((((y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
                 else
                     setValue(m_minimum);
 
                 // Set the thumb position for smooth scrolling
                 float thumbTop = y - m_mouseDownOnThumbPos.y;
-                if ((thumbTop + (m_thumb.height / 2.0f) > getPosition().y) && (thumbTop + (m_thumb.height / 2.0f) < getPosition().y + getSize().y))
+                if ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))
                     m_thumb.top = thumbTop;
                 else
-                    m_thumb.top = getPosition().y - (m_thumb.height / 2.0f) + (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum));
+                    m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.height / 2.0f);
             }
             else // the slider lies horizontal
             {
@@ -334,23 +312,17 @@ namespace tgui
                 }
 
                 // Set the new value
-                if ((x - m_mouseDownOnThumbPos.x + (m_thumb.width / 2.0f) - getPosition().x) > 0)
-                    setValue(static_cast<int>((((x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x - getPosition().x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
+                if (x - m_mouseDownOnThumbPos.x + (m_thumb.width / 2.0f) > 0)
+                    setValue(static_cast<int>((((x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
                 else
                     setValue(m_minimum);
 
                 // Set the thumb position for smooth scrolling
                 float thumbLeft = x - m_mouseDownOnThumbPos.x;
-                if ((thumbLeft + (m_thumb.width / 2.0f) > getPosition().x) && (thumbLeft + (m_thumb.width / 2.0f) < getPosition().x + getSize().x))
+                if ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))
                     m_thumb.left = thumbLeft;
                 else
-                    m_thumb.left = getPosition().x - (m_thumb.width / 2.0f) + (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum));
-            }
-
-            if (getRenderer()->m_textureThumbNormal.isLoaded())
-            {
-                getRenderer()->m_textureThumbNormal.setPosition({m_thumb.left, m_thumb.top});
-                getRenderer()->m_textureThumbHover.setPosition({m_thumb.left, m_thumb.top});
+                    m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f) ;
             }
         }
         else // Normal mouse move
@@ -391,44 +363,74 @@ namespace tgui
     {
         // The thumb might have been dragged between two values
         if (m_mouseDown)
-            updatePosition();
+            updateThumbPosition();
 
         Widget::mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::reload(const std::string& primary, const std::string& secondary, bool force)
+    void Slider::rendererChanged(const std::string& property, ObjectConverter& value)
     {
-        getRenderer()->setBorders({2, 2, 2, 2});
-        getRenderer()->setTrackColorNormal({245, 245, 245});
-        getRenderer()->setTrackColorHover({255, 255, 255});
-        getRenderer()->setThumbColorNormal({245, 245, 245});
-        getRenderer()->setThumbColorHover({255, 255, 255});
-        getRenderer()->setBorderColor({0, 0, 0});
-        getRenderer()->setTrackTexture({});
-        getRenderer()->setTrackHoverTexture({});
-        getRenderer()->setThumbTexture({});
-        getRenderer()->setThumbHoverTexture({});
-
-        if (m_theme && primary != "")
+        if (property == "borders")
         {
-            getRenderer()->setBorders({0, 0, 0, 0});
-            Widget::reload(primary, secondary, force);
+            updateSize();
+        }
+        else if (property == "texturetrack")
+        {
+            if (value.getTexture().getImageSize().x < value.getTexture().getImageSize().y)
+                m_verticalImage = true;
+            else
+                m_verticalImage = false;
 
-            if (force)
-            {
-                // Use the size of the images when images were loaded
-                if (getRenderer()->m_textureTrackNormal.isLoaded() && getRenderer()->m_textureThumbNormal.isLoaded())
-                {
-                    if (getRenderer()->m_textureTrackNormal.getImageSize().x < getRenderer()->m_textureTrackNormal.getImageSize().y)
-                        m_verticalImage = true;
-                    else
-                        m_verticalImage = false;
+            updateSize();
+            value.getTexture().setOpacity(getRenderer()->getOpacity());
+        }
+        else if ((property == "texturetrackhover") || (property == "texturethumb") || (property == "texturethumbhover"))
+        {
+            updateSize();
+            value.getTexture().setOpacity(getRenderer()->getOpacity());
+        }
+        else if (property == "opacity")
+        {
+            float opacity = value.getNumber();
+            getRenderer()->getTextureTrack().setOpacity(opacity);
+            getRenderer()->getTextureTrackHover().setOpacity(opacity);
+            getRenderer()->getTextureThumb().setOpacity(opacity);
+            getRenderer()->getTextureThumbHover().setOpacity(opacity);
+        }
+        else if ((property != "trackcolor")
+              && (property != "trackcolorhover")
+              && (property != "thumbcolor")
+              && (property != "thumbcolorhover")
+              && (property != "bordercolor")
+              && (property != "bordercolorhover"))
+        {
+            Widget::rendererChanged(property, value);
+        }
+    }
 
-                    setSize(getRenderer()->m_textureTrackNormal.getImageSize());
-                }
-            }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Slider::getInnerSize() const
+    {
+        Borders borders = getRenderer()->getBorders();
+        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Slider::updateThumbPosition()
+    {
+        if (m_verticalScroll)
+        {
+            m_thumb.left = (getSize().x - m_thumb.width) / 2.0f;
+            m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.height / 2.0f);
+        }
+        else
+        {
+            m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
+            m_thumb.top = (getSize().y - m_thumb.height) / 2.0f;
         }
     }
 
@@ -436,352 +438,65 @@ namespace tgui
 
     void Slider::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        getRenderer()->draw(target, states);
-    }
+        states.transform.translate(getPosition());
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setProperty(std::string property, const std::string& value)
-    {
-        property = toLower(property);
-
-        if (property == "borders")
-            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "trackcolor")
-            setTrackColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "trackcolornormal")
-            setTrackColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "trackcolorhover")
-            setTrackColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "thumbcolor")
-            setThumbColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "thumbcolornormal")
-            setThumbColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "thumbcolorhover")
-            setThumbColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "bordercolor")
-            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "trackimage")
-            setTrackTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "trackhoverimage")
-            setTrackHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "thumbimage")
-            setThumbTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "thumbhoverimage")
-            setThumbHoverTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else
-            WidgetRenderer::setProperty(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setProperty(std::string property, ObjectConverter&& value)
-    {
-        property = toLower(property);
-
-        if (value.getType() == ObjectConverter::Type::Borders)
+        // Draw the borders around the track
+        Borders borders = getRenderer()->getBorders();
+        if (borders != Borders{0})
         {
-            if (property == "borders")
-                setBorders(value.getBorders());
+            if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
+                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColorHover());
             else
-                return WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Color)
-        {
-            if (property == "trackcolor")
-                setTrackColor(value.getColor());
-            else if (property == "trackcolornormal")
-                setTrackColorNormal(value.getColor());
-            else if (property == "trackcolorhover")
-                setTrackColorHover(value.getColor());
-            else if (property == "thumbcolor")
-                setThumbColor(value.getColor());
-            else if (property == "thumbcolornormal")
-                setThumbColorNormal(value.getColor());
-            else if (property == "thumbcolorhover")
-                setThumbColorHover(value.getColor());
-            else if (property == "bordercolor")
-                setBorderColor(value.getColor());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Texture)
-        {
-            if (property == "trackimage")
-                setTrackTexture(value.getTexture());
-            else if (property == "trackhoverimage")
-                setTrackHoverTexture(value.getTexture());
-            else if (property == "thumbimage")
-                setThumbTexture(value.getTexture());
-            else if (property == "thumbhoverimage")
-                setThumbHoverTexture(value.getTexture());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else
-            WidgetRenderer::setProperty(property, std::move(value));
-    }
+                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter SliderRenderer::getProperty(std::string property) const
-    {
-        property = toLower(property);
-
-        if (property == "borders")
-            return m_borders;
-        else if (property == "trackcolor")
-            return m_trackColorNormal;
-        else if (property == "trackcolornormal")
-            return m_trackColorNormal;
-        else if (property == "trackcolorhover")
-            return m_trackColorHover;
-        else if (property == "thumbcolor")
-            return m_thumbColorNormal;
-        else if (property == "thumbcolornormal")
-            return m_thumbColorNormal;
-        else if (property == "thumbcolorhover")
-            return m_thumbColorHover;
-        else if (property == "bordercolor")
-            return m_borderColor;
-        else if (property == "trackimage")
-            return m_textureTrackNormal;
-        else if (property == "trackhoverimage")
-            return m_textureTrackHover;
-        else if (property == "thumbimage")
-            return m_textureThumbNormal;
-        else if (property == "thumbhoverimage")
-            return m_textureThumbHover;
-        else
-            return WidgetRenderer::getProperty(property);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::map<std::string, ObjectConverter> SliderRenderer::getPropertyValuePairs() const
-    {
-        auto pairs = WidgetRenderer::getPropertyValuePairs();
-
-        if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
-        {
-            pairs["TrackImage"] = m_textureTrackNormal;
-            pairs["ThumbImage"] = m_textureThumbNormal;
-            if (m_textureTrackHover.isLoaded())
-                pairs["TrackHoverImage"] = m_textureTrackHover;
-            if (m_textureThumbHover.isLoaded())
-                pairs["ThumbHoverImage"] = m_textureThumbHover;
-        }
-        else
-        {
-            pairs["TrackColorNormal"] = m_trackColorNormal;
-            pairs["TrackColorHover"] = m_trackColorHover;
-            pairs["ThumbColorNormal"] = m_thumbColorNormal;
-            pairs["ThumbColorHover"] = m_thumbColorHover;
+            states.transform.translate({borders.left, borders.top});
         }
 
-        pairs["BorderColor"] = m_borderColor;
-        pairs["Borders"] = m_borders;
-        return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setTrackColor(const Color& color)
-    {
-        setTrackColorNormal(color);
-        setTrackColorHover(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setTrackColorNormal(const Color& color)
-    {
-        m_trackColorNormal = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setTrackColorHover(const Color& color)
-    {
-        m_trackColorHover = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setThumbColor(const Color& color)
-    {
-        setThumbColorNormal(color);
-        setThumbColorHover(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setThumbColorNormal(const Color& color)
-    {
-        m_thumbColorNormal = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setThumbColorHover(const Color& color)
-    {
-        m_thumbColorHover = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setBorderColor(const Color& color)
-    {
-        m_borderColor = color;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setTrackTexture(const Texture& texture)
-    {
-        m_textureTrackNormal = texture;
-        if (m_textureTrackNormal.isLoaded())
-        {
-            m_textureTrackNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
-
-            if (m_textureTrackNormal.getImageSize().x < m_textureTrackNormal.getImageSize().y)
-                m_slider->m_verticalImage = true;
-            else
-                m_slider->m_verticalImage = false;
-
-            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
-                m_slider->updateSize();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setTrackHoverTexture(const Texture& texture)
-    {
-        m_textureTrackHover = texture;
-        if (m_textureTrackHover.isLoaded())
-        {
-            m_textureTrackHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
-
-            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
-                m_slider->updateSize();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setThumbTexture(const Texture& texture)
-    {
-        m_textureThumbNormal = texture;
-        if (m_textureThumbNormal.isLoaded())
-        {
-            m_textureThumbNormal.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
-
-            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
-                m_slider->updateSize();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::setThumbHoverTexture(const Texture& texture)
-    {
-        m_textureThumbHover = texture;
-        if (m_textureThumbHover.isLoaded())
-        {
-            m_textureThumbHover.setColor({255, 255, 255, static_cast<sf::Uint8>(m_slider->getOpacity() * 255)});
-
-            if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
-                m_slider->updateSize();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SliderRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
         // Draw the track
-        if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
+        if (getRenderer()->getTextureTrack().isLoaded() && getRenderer()->getTextureThumb().isLoaded())
         {
-            if (m_slider->m_mouseHover && m_textureTrackHover.isLoaded())
-                target.draw(m_textureTrackHover, states);
+            if (m_mouseHover && getRenderer()->getTextureTrackHover().isLoaded())
+                getRenderer()->getTextureTrackHover().draw(target, states);
             else
-                target.draw(m_textureTrackNormal, states);
+                getRenderer()->getTextureTrack().draw(target, states);
         }
         else // There are no textures
         {
-            sf::RectangleShape track{m_slider->getSize()};
-            track.setPosition(m_slider->getPosition());
-
-            if (m_slider->m_mouseHover)
-                track.setFillColor(calcColorOpacity(m_trackColorHover, m_slider->getOpacity()));
+            if (m_mouseHover && getRenderer()->getTrackColorHover().isSet())
+                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getTrackColorHover());
             else
-                track.setFillColor(calcColorOpacity(m_trackColorNormal, m_slider->getOpacity()));
-
-            target.draw(track, states);
+                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getTrackColor());
         }
 
-        // Draw the borders around the track and thumb
-        if (m_borders != Borders{0, 0, 0, 0})
+        states.transform.translate({-borders.left + m_thumb.left, -borders.top + m_thumb.top});
+
+        // Draw the borders around the thumb
+        if (borders != Borders{0})
         {
-            sf::Vector2f position[2] = {m_slider->getPosition(), {m_slider->m_thumb.left, m_slider->m_thumb.top}};
-            sf::Vector2f size[2] = {m_slider->getSize(), {m_slider->m_thumb.width, m_slider->m_thumb.height}};
+            if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
+                drawBorders(target, states, borders, {m_thumb.width, m_thumb.height}, getRenderer()->getBorderColorHover());
+            else
+                drawBorders(target, states, borders, {m_thumb.width, m_thumb.height}, getRenderer()->getBorderColor());
 
-            for (unsigned int i = 0; i < 2; ++i)
-            {
-                // Draw left border
-                sf::RectangleShape border({m_borders.left, size[i].y + m_borders.top});
-                border.setPosition(position[i].x - m_borders.left, position[i].y - m_borders.top);
-                border.setFillColor(calcColorOpacity(m_borderColor, m_slider->getOpacity()));
-                target.draw(border, states);
-
-                // Draw top border
-                border.setSize({size[i].x + m_borders.right, m_borders.top});
-                border.setPosition(position[i].x, position[i].y - m_borders.top);
-                target.draw(border, states);
-
-                // Draw right border
-                border.setSize({m_borders.right, size[i].y + m_borders.bottom});
-                border.setPosition(position[i].x + size[i].x, position[i].y);
-                target.draw(border, states);
-
-                // Draw bottom border
-                border.setSize({size[i].x + m_borders.left, m_borders.bottom});
-                border.setPosition(position[i].x - m_borders.left, position[i].y + size[i].y);
-                target.draw(border, states);
-            }
+            states.transform.translate({borders.left, borders.top});
         }
 
         // Draw the thumb
-        if (m_textureTrackNormal.isLoaded() && m_textureThumbNormal.isLoaded())
+        if (getRenderer()->getTextureTrack().isLoaded() && getRenderer()->getTextureThumb().isLoaded())
         {
-            if (m_slider->m_mouseHover && m_textureThumbHover.isLoaded())
-                target.draw(m_textureThumbHover, states);
+            if (m_mouseHover && getRenderer()->getTextureThumbHover().isLoaded())
+                getRenderer()->getTextureThumbHover().draw(target, states);
             else
-                target.draw(m_textureThumbNormal, states);
+                getRenderer()->getTextureThumb().draw(target, states);
         }
         else // There are no textures
         {
-            sf::RectangleShape thumb{{m_slider->m_thumb.width, m_slider->m_thumb.height}};
-            thumb.setPosition({m_slider->m_thumb.left, m_slider->m_thumb.top});
-
-            if (m_slider->m_mouseHover)
-                thumb.setFillColor(calcColorOpacity(m_thumbColorHover, m_slider->getOpacity()));
+            sf::Vector2f thumbInnerSize = {m_thumb.width - borders.left - borders.right, m_thumb.height - borders.top - borders.bottom};
+            if (m_mouseHover && getRenderer()->getThumbColorHover().isSet())
+                drawRectangleShape(target, states, thumbInnerSize, getRenderer()->getThumbColorHover());
             else
-                thumb.setFillColor(calcColorOpacity(m_thumbColorNormal, m_slider->getOpacity()));
-
-            target.draw(thumb, states);
+                drawRectangleShape(target, states, thumbInnerSize, getRenderer()->getThumbColor());
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<WidgetRenderer> SliderRenderer::clone(Widget* widget)
-    {
-        auto renderer = std::make_shared<SliderRenderer>(*this);
-        renderer->m_slider = static_cast<Slider*>(widget);
-        return renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
