@@ -363,16 +363,15 @@ namespace tgui
                 arrow.setPoint(2, {arrowBack.getSize().x * 4/5, arrowBack.getSize().y * 4/5});
             }
 
-            if (m_mouseHover && m_mouseHoverOnTopArrow)
-            {
+            if (m_mouseHover && m_mouseHoverOnTopArrow && getRenderer()->getBackgroundColorHover().isSet())
                 arrowBack.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColorHover(), getRenderer()->getOpacity()));
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
-            }
             else
-            {
                 arrowBack.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
+
+            if (m_mouseHover && m_mouseHoverOnTopArrow && getRenderer()->getArrowColorHover().isSet())
+                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+            else
                 arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
-            }
 
             target.draw(arrowBack, states);
             target.draw(arrow, states);
@@ -431,15 +430,14 @@ namespace tgui
             }
 
             if (m_mouseHover && !m_mouseHoverOnTopArrow)
-            {
                 arrowBack.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColorHover(), getRenderer()->getOpacity()));
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
-            }
             else
-            {
                 arrowBack.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
+
+            if (m_mouseHover && !m_mouseHoverOnTopArrow)
+                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+            else
                 arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
-            }
 
             target.draw(arrowBack, states);
             target.draw(arrow, states);

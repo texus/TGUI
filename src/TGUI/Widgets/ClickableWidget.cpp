@@ -71,7 +71,7 @@ namespace tgui
 
     void ClickableWidget::leftMousePressed(float x, float y)
     {
-        m_mouseDown = true;
+        m_mouseDown = true; /// TODO: Is there any widget for which this can't be in Widget base class?
 
         m_callback.mouse.x = static_cast<int>(x - getPosition().x);
         m_callback.mouse.y = static_cast<int>(y - getPosition().y);
@@ -89,7 +89,7 @@ namespace tgui
         if (m_mouseDown)
             sendSignal("Clicked", sf::Vector2f{x - getPosition().x, y - getPosition().y});
 
-        m_mouseDown = false;
+        m_mouseDown = false; /// TODO: Is there any widget for which this can't be in Widget base class?
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

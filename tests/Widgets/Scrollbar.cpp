@@ -25,23 +25,38 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Scrollbar.hpp>
 
-TEST_CASE("[Scrollbar]") {
+TEST_CASE("[Scrollbar]")
+{
     tgui::Scrollbar::Ptr scrollbar = std::make_shared<tgui::Scrollbar>();
-    scrollbar->setFont("resources/DroidSansArmenian.ttf");
-    scrollbar->setLowValue(5);
+    scrollbar->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     scrollbar->setMaximum(20);
+    scrollbar->setLowValue(5);
     scrollbar->setValue(10);
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](){}));
         REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](int){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(scrollbar->getWidgetType() == "Scrollbar");
     }
 
-    SECTION("LowValue") {
+    SECTION("Position and Size")
+    {
+        scrollbar->setPosition(40, 30);
+        scrollbar->setSize(150, 25);
+
+        REQUIRE(scrollbar->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(scrollbar->getSize() == sf::Vector2f(150, 25));
+        REQUIRE(scrollbar->getFullSize() == scrollbar->getSize());
+        REQUIRE(scrollbar->getWidgetOffset() == sf::Vector2f(0, 0));
+    }
+
+    SECTION("LowValue")
+    {
         REQUIRE(scrollbar->getLowValue() == 5);
 
         scrollbar->setLowValue(7);
@@ -60,7 +75,8 @@ TEST_CASE("[Scrollbar]") {
         REQUIRE(scrollbar->getMaximum() == 20);
     }
 
-    SECTION("Maximum") {
+    SECTION("Maximum")
+    {
         REQUIRE(scrollbar->getMaximum() == 20);
 
         scrollbar->setMaximum(17);
@@ -79,7 +95,8 @@ TEST_CASE("[Scrollbar]") {
         REQUIRE(scrollbar->getMaximum() == 4);
     }
 
-    SECTION("Value") {
+    SECTION("Value")
+    {
         REQUIRE(scrollbar->getValue() == 10);
         
         scrollbar->setValue(13);
@@ -89,13 +106,15 @@ TEST_CASE("[Scrollbar]") {
         REQUIRE(scrollbar->getValue() == 15);
     }
 
-    SECTION("ArrowScrollAmount") {
-        REQUIRE(scrollbar->getArrowScrollAmount() == 1);
-        scrollbar->setArrowScrollAmount(50);
-        REQUIRE(scrollbar->getArrowScrollAmount() == 50);
+    SECTION("ScrollAmount")
+    {
+        REQUIRE(scrollbar->getScrollAmount() == 1);
+        scrollbar->setScrollAmount(50);
+        REQUIRE(scrollbar->getScrollAmount() == 50);
     }
 
-    SECTION("AutoHide") {
+    SECTION("AutoHide")
+    {
         REQUIRE(scrollbar->getAutoHide());
         scrollbar->setAutoHide(false);
         REQUIRE(!scrollbar->getAutoHide());
@@ -103,127 +122,80 @@ TEST_CASE("[Scrollbar]") {
         REQUIRE(scrollbar->getAutoHide());
     }
 
-    SECTION("Renderer") {
+    SECTION("Events / Signals")
+    {
+        SECTION("Widget")
+        {
+            testWidgetSignals(scrollbar);
+        }
+
+        // TODO
+    }
+
+    testWidgetRenderer(scrollbar->getRenderer());
+    SECTION("Renderer")
+    {
         auto renderer = scrollbar->getRenderer();
 
-        SECTION("colored") {
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", "rgb(10, 20, 30)"));
-                REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(10, 20, 30));
-
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", "rgb(20, 30, 40)"));
-                REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(20, 30, 40));
-
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", "rgb(30, 40, 50)"));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(30, 40, 50));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorNormal").getColor() == sf::Color(30, 40, 50));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(30, 40, 50));
-                
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", "rgb(40, 50, 60)"));
-                REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(40, 50, 60));
-                REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(40, 50, 60));
-                REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(40, 50, 60));
-
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColorNormal", "rgb(50, 60, 70)"));
+        SECTION("colored")
+        {
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", "rgb(50, 60, 70)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", "rgb(60, 70, 80)"));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorNormal", "rgb(70, 80, 90)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", "rgb(80, 90, 100)"));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorNormal", "rgb(90, 100, 110)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", "rgb(90, 100, 110)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", "rgb(100, 110, 120)"));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorNormal", "rgb(110, 120, 130)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", "rgb(110, 120, 130)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", "rgb(120, 130, 140)"));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", sf::Color{10, 20, 30}));
-                REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(10, 20, 30));
-                
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", sf::Color{20, 30, 40}));
-                REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(20, 30, 40));
-                
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", sf::Color{30, 40, 50}));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(30, 40, 50));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorNormal").getColor() == sf::Color(30, 40, 50));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(30, 40, 50));
-                
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{40, 50, 60}));
-                REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(40, 50, 60));
-                REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(40, 50, 60));
-                REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(40, 50, 60));
-
-                REQUIRE_NOTHROW(renderer->setProperty("TrackColorNormal", sf::Color{50, 60, 70}));
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TrackColor", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("TrackColorHover", sf::Color{60, 70, 80}));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbColorNormal", sf::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("ThumbColorHover", sf::Color{80, 90, 100}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorNormal", sf::Color{90, 100, 110}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", sf::Color{90, 100, 110}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", sf::Color{100, 110, 120}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorNormal", sf::Color{110, 120, 130}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{110, 120, 130}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", sf::Color{120, 130, 140}));
             }
 
-            SECTION("functions") {
-                renderer->setTrackColor({10, 20, 30});
-                REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(10, 20, 30));
-
-                renderer->setThumbColor({20, 30, 40});
-                REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(20, 30, 40));
-                
-                renderer->setArrowBackgroundColor({30, 40, 50});
-                REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(30, 40, 50));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorNormal").getColor() == sf::Color(30, 40, 50));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(30, 40, 50));
-
-                renderer->setArrowColor({40, 50, 60});
-                REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(40, 50, 60));
-                REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(40, 50, 60));
-                REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(40, 50, 60));
-
-                renderer->setTrackColorNormal({50, 60, 70});
+            SECTION("functions")
+            {
+                renderer->setTrackColor({50, 60, 70});
                 renderer->setTrackColorHover({60, 70, 80});
-                renderer->setThumbColorNormal({70, 80, 90});
+                renderer->setThumbColor({70, 80, 90});
                 renderer->setThumbColorHover({80, 90, 100});
-                renderer->setArrowBackgroundColorNormal({90, 100, 110});
+                renderer->setArrowBackgroundColor({90, 100, 110});
                 renderer->setArrowBackgroundColorHover({100, 110, 120});
-                renderer->setArrowColorNormal({110, 120, 130});
+                renderer->setArrowColor({110, 120, 130});
                 renderer->setArrowColorHover({120, 130, 140});
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 8);
-                    REQUIRE(pairs["TrackColorNormal"].getColor() == sf::Color(50, 60, 70));
-                    REQUIRE(pairs["TrackColorHover"].getColor() == sf::Color(60, 70, 80));
-                    REQUIRE(pairs["ThumbColorNormal"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["ThumbColorHover"].getColor() == sf::Color(80, 90, 100));
-                    REQUIRE(pairs["ArrowBackgroundColorNormal"].getColor() == sf::Color(90, 100, 110));
-                    REQUIRE(pairs["ArrowBackgroundColorHover"].getColor() == sf::Color(100, 110, 120));
-                    REQUIRE(pairs["ArrowColorNormal"].getColor() == sf::Color(110, 120, 130));
-                    REQUIRE(pairs["ArrowColorHover"].getColor() == sf::Color(120, 130, 140));
-                }
             }
 
-            REQUIRE(renderer->getProperty("TrackColorNormal").getColor() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("TrackColor").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("TrackColorHover").getColor() == sf::Color(60, 70, 80));
-            REQUIRE(renderer->getProperty("ThumbColorNormal").getColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("ThumbColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("ThumbColorHover").getColor() == sf::Color(80, 90, 100));
-            REQUIRE(renderer->getProperty("ArrowBackgroundColorNormal").getColor() == sf::Color(90, 100, 110));
+            REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(90, 100, 110));
             REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(100, 110, 120));
-            REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(110, 120, 130));
+            REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(120, 130, 140));
+
+            REQUIRE(renderer->getTrackColor() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getTrackColorHover() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getThumbColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getThumbColorHover() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getArrowBackgroundColor() == sf::Color(90, 100, 110));
+            REQUIRE(renderer->getArrowBackgroundColorHover() == sf::Color(100, 110, 120));
+            REQUIRE(renderer->getArrowColor() == sf::Color(110, 120, 130));
+            REQUIRE(renderer->getArrowColorHover() == sf::Color(120, 130, 140));
         }
 
-        SECTION("textured") {
+        SECTION("textured")
+        {
             tgui::Texture textureTrackNormal("resources/Black.png", {123, 154, 20, 20});
             tgui::Texture textureTrackHover("resources/Black.png", {123, 174, 20, 20});
             tgui::Texture textureThumbNormal("resources/Black.png", {143, 154, 20, 20});
@@ -233,114 +205,70 @@ TEST_CASE("[Scrollbar]") {
             tgui::Texture textureArrowDownNormal("resources/Black.png", {163, 174, 20, 20}, {0, 1, 20, 19});
             tgui::Texture textureArrowDownHover("resources/Black.png", {183, 174, 20, 20}, {0, 1, 20, 19});
 
-            REQUIRE(!renderer->getProperty("TrackImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("TrackHoverImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ThumbImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ThumbHoverImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowUpImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowUpHoverImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowDownImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowDownHoverImage").getTexture().isLoaded());
-
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackImage", tgui::Serializer::serialize(textureTrackNormal)));
-                REQUIRE_NOTHROW(renderer->setProperty("TrackHoverImage", tgui::Serializer::serialize(textureTrackHover)));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbImage", tgui::Serializer::serialize(textureThumbNormal)));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbHoverImage", tgui::Serializer::serialize(textureThumbHover)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpImage", tgui::Serializer::serialize(textureArrowUpNormal)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpHoverImage", tgui::Serializer::serialize(textureArrowUpHover)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownImage", tgui::Serializer::serialize(textureArrowDownNormal)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownHoverImage", tgui::Serializer::serialize(textureArrowDownHover)));
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTrack", tgui::Serializer::serialize(textureTrackNormal)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTrackHover", tgui::Serializer::serialize(textureTrackHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureThumb", tgui::Serializer::serialize(textureThumbNormal)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureThumbHover", tgui::Serializer::serialize(textureThumbHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUp", tgui::Serializer::serialize(textureArrowUpNormal)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUpHover", tgui::Serializer::serialize(textureArrowUpHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDown", tgui::Serializer::serialize(textureArrowDownNormal)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDownHover", tgui::Serializer::serialize(textureArrowDownHover)));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TrackImage", textureTrackNormal));
-                REQUIRE_NOTHROW(renderer->setProperty("TrackHoverImage", textureTrackHover));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbImage", textureThumbNormal));
-                REQUIRE_NOTHROW(renderer->setProperty("ThumbHoverImage", textureThumbHover));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpImage", textureArrowUpNormal));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpHoverImage", textureArrowUpHover));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownImage", textureArrowDownNormal));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownHoverImage", textureArrowDownHover));
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTrack", textureTrackNormal));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTrackHover", textureTrackHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureThumb", textureThumbNormal));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureThumbHover", textureThumbHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUp", textureArrowUpNormal));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUpHover", textureArrowUpHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDown", textureArrowDownNormal));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDownHover", textureArrowDownHover));
             }
 
-            SECTION("functions") {
-                renderer->setTrackTexture(textureTrackNormal);
-                renderer->setTrackHoverTexture(textureTrackHover);
-                renderer->setThumbTexture(textureThumbNormal);
-                renderer->setThumbHoverTexture(textureThumbHover);
-                renderer->setArrowUpTexture(textureArrowUpNormal);
-                renderer->setArrowUpHoverTexture(textureArrowUpHover);
-                renderer->setArrowDownTexture(textureArrowDownNormal);
-                renderer->setArrowDownHoverTexture(textureArrowDownHover);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 8);
-                    REQUIRE(pairs["TrackImage"].getTexture().getData() == textureTrackNormal.getData());
-                    REQUIRE(pairs["TrackHoverImage"].getTexture().getData() == textureTrackHover.getData());
-                    REQUIRE(pairs["ThumbImage"].getTexture().getData() == textureThumbNormal.getData());
-                    REQUIRE(pairs["ThumbHoverImage"].getTexture().getData() == textureThumbHover.getData());
-                    REQUIRE(pairs["ArrowUpImage"].getTexture().getData() == textureArrowUpNormal.getData());
-                    REQUIRE(pairs["ArrowUpHoverImage"].getTexture().getData() == textureArrowUpHover.getData());
-                    REQUIRE(pairs["ArrowDownImage"].getTexture().getData() == textureArrowDownNormal.getData());
-                    REQUIRE(pairs["ArrowDownHoverImage"].getTexture().getData() == textureArrowDownHover.getData());
-                }
+            SECTION("functions")
+            {
+                renderer->setTextureTrack(textureTrackNormal);
+                renderer->setTextureTrackHover(textureTrackHover);
+                renderer->setTextureThumb(textureThumbNormal);
+                renderer->setTextureThumbHover(textureThumbHover);
+                renderer->setTextureArrowUp(textureArrowUpNormal);
+                renderer->setTextureArrowUpHover(textureArrowUpHover);
+                renderer->setTextureArrowDown(textureArrowDownNormal);
+                renderer->setTextureArrowDownHover(textureArrowDownHover);
             }
 
-            REQUIRE(renderer->getProperty("TrackImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TrackHoverImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ThumbImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ThumbHoverImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowUpImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowUpHoverImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowDownImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowDownHoverImage").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureTrack").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureThumb").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureThumbHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().isLoaded());
 
-            REQUIRE(renderer->getProperty("TrackImage").getTexture().getData() == textureTrackNormal.getData());
-            REQUIRE(renderer->getProperty("TrackHoverImage").getTexture().getData() == textureTrackHover.getData());
-            REQUIRE(renderer->getProperty("ThumbImage").getTexture().getData() == textureThumbNormal.getData());
-            REQUIRE(renderer->getProperty("ThumbHoverImage").getTexture().getData() == textureThumbHover.getData());
-            REQUIRE(renderer->getProperty("ArrowUpImage").getTexture().getData() == textureArrowUpNormal.getData());
-            REQUIRE(renderer->getProperty("ArrowUpHoverImage").getTexture().getData() == textureArrowUpHover.getData());
-            REQUIRE(renderer->getProperty("ArrowDownImage").getTexture().getData() == textureArrowDownNormal.getData());
-            REQUIRE(renderer->getProperty("ArrowDownHoverImage").getTexture().getData() == textureArrowDownHover.getData());
+            REQUIRE(renderer->getTextureTrack().getData() == textureTrackNormal.getData());
+            REQUIRE(renderer->getTextureTrackHover().getData() == textureTrackHover.getData());
+            REQUIRE(renderer->getTextureThumb().getData() == textureThumbNormal.getData());
+            REQUIRE(renderer->getTextureThumbHover().getData() == textureThumbHover.getData());
+            REQUIRE(renderer->getTextureArrowUp().getData() == textureArrowUpNormal.getData());
+            REQUIRE(renderer->getTextureArrowUpHover().getData() == textureArrowUpHover.getData());
+            REQUIRE(renderer->getTextureArrowDown().getData() == textureArrowDownNormal.getData());
+            REQUIRE(renderer->getTextureArrowDownHover().getData() == textureArrowDownHover.getData());
         }
     }
 
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(scrollbar = std::make_shared<tgui::Theme>()->load("Scrollbar"));
-
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(scrollbar = theme->load("Scrollbar"));
-        REQUIRE(scrollbar->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(scrollbar->getSecondaryLoadingParameter() == "scrollbar");
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(scrollbar);
-
-        scrollbar->setOpacity(0.8f);
-        scrollbar->setLowValue(10);
+    SECTION("Saving and loading from file")
+    {
         scrollbar->setMaximum(50);
+        scrollbar->setLowValue(10);
         scrollbar->setValue(20);
+        scrollbar->setScrollAmount(5);
+        scrollbar->setAutoHide(false);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileScrollbar1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileScrollbar1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileScrollbar2.txt"));
-        REQUIRE(compareFiles("WidgetFileScrollbar1.txt", "WidgetFileScrollbar2.txt"));
-
-        SECTION("Copying widget") {
-            tgui::Scrollbar temp;
-            temp = *scrollbar;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::Scrollbar::copy(std::make_shared<tgui::Scrollbar>(temp)));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileScrollbar2.txt"));
-            REQUIRE(compareFiles("WidgetFileScrollbar1.txt", "WidgetFileScrollbar2.txt"));
-        }
+        testSavingWidget("Scrollbar", scrollbar);
     }
 }

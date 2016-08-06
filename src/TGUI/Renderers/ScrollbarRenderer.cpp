@@ -22,42 +22,30 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_EXCEPTION_HPP
-#define TGUI_EXCEPTION_HPP
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#include <string>
-#include <stdexcept>
-#include <TGUI/Config.hpp>
+#include <TGUI/Renderers/ScrollbarRenderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, TrackColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, TrackColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ThumbColor, sf::Color(128, 128, 128))
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ThumbColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowBackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowBackgroundColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowColorHover, {})
 
-#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
-    #pragma warning(push)
-    #pragma warning(disable:4275)
-#endif
-
-    class TGUI_API Exception : public std::runtime_error {
-    public:
-        explicit Exception(const std::string& argument) :
-            std::runtime_error(argument)
-        {
-        }
-    };
-
-#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
-    #pragma warning(pop)
-#endif
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_RENDERER_PROPERTY_TEXTURE(ScrollbarRenderer, TextureTrack)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ScrollbarRenderer, TextureTrackHover)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ScrollbarRenderer, TextureThumb)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ScrollbarRenderer, TextureThumbHover)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ScrollbarRenderer, TextureArrowUp)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ScrollbarRenderer, TextureArrowUpHover)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ScrollbarRenderer, TextureArrowDown)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ScrollbarRenderer, TextureArrowDownHover)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#endif // TGUI_EXCEPTION_HPP
-

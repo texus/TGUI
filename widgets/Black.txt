@@ -43,7 +43,7 @@ ComboBox {
     ArrowDownHoverImage : "Black.png" Part(60, 32, 32, 32);
     ArrowUpImage        : "Black.png" Part(92,  0, 32, 32);
     ArrowUpHoverImage   : "Black.png" Part(92, 32, 32, 32);
-    TextColor           : (190, 190, 190);
+    TextColor           : rgb(190, 190, 190);
     Padding             : (3, 3, 3, 3);
     ListBox             : "ListBox";
 }
@@ -61,7 +61,7 @@ EditBox {
 }
 
 Label {
-    TextColor : (190, 190, 190);
+    TextColor : rgb(190, 190, 190);
 }
 
 ListBox {
@@ -111,14 +111,14 @@ RadioButton {
 }
 
 Scrollbar {
-    TrackImage          : "Black.png" Part(123, 154, 20, 20);
-    TrackHoverImage     : "Black.png" Part(123, 174, 20, 20);
-    ThumbImage          : "Black.png" Part(143, 154, 20, 20);
-    ThumbHoverImage     : "Black.png" Part(143, 174, 20, 20);
-    ArrowUpImage        : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
-    ArrowUpHoverImage   : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
-    ArrowDownImage      : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
-    ArrowDownHoverImage : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
+    TextureTrack          : "Black.png" Part(123, 154, 20, 20);
+    TextureTrackHover     : "Black.png" Part(123, 174, 20, 20);
+    TextureThumb          : "Black.png" Part(143, 154, 20, 20);
+    TextureThumbHover     : "Black.png" Part(143, 174, 20, 20);
+    TextureArrowUp        : "Black.png" Part(163, 154, 20, 20) Middle(0, 0, 20, 19);
+    TextureArrowUpHover   : "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
+    TextureArrowDown      : "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
+    TextureArrowDownHover : "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
 }
 
 Slider {

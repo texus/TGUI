@@ -35,8 +35,8 @@
 #include <TGUI/Widgets/ListBox.hpp>*/
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
-#include <TGUI/Widgets/RadioButton.hpp>/**
-#include <TGUI/Widgets/Scrollbar.hpp>*/
+#include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>/**
 #include <TGUI/Widgets/Tab.hpp>
@@ -421,7 +421,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
+
     TGUI_API std::shared_ptr<DataIO::Node> saveScrollbar(Scrollbar::Ptr scrollbar)
     {
         auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{scrollbar});
@@ -434,12 +434,12 @@ namespace tgui
         SET_PROPERTY("LowValue", tgui::to_string(scrollbar->getLowValue()));
         SET_PROPERTY("Maximum", tgui::to_string(scrollbar->getMaximum()));
         SET_PROPERTY("Value", tgui::to_string(scrollbar->getValue()));
-        SET_PROPERTY("ArrowScrollAmount", tgui::to_string(scrollbar->getArrowScrollAmount()));
+        SET_PROPERTY("ScrollAmount", tgui::to_string(scrollbar->getScrollAmount()));
         return node;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
+
     TGUI_API std::shared_ptr<DataIO::Node> saveSlider(Slider::Ptr slider)
     {
         auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{slider});
@@ -543,8 +543,8 @@ namespace tgui
             {"panel", saveContainer},
             {"picture", savePicture},
             {"progressbar", saveProgressBar},
-            {"radiobutton", saveRadioButton},/**
-            {"scrollbar", saveScrollbar},*/
+            {"radiobutton", saveRadioButton},
+            {"scrollbar", saveScrollbar},
             {"slider", saveSlider},
             {"spinbutton", saveSpinButton}/**,
             {"tab", saveTab},
