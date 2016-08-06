@@ -110,7 +110,7 @@ namespace tgui
     void DataIO::emit(std::shared_ptr<Node> rootNode, std::stringstream& stream)
     {
         for (auto& pair : rootNode->propertyValuePairs)
-            stream << pair.first << ": " << pair.second->value.toAnsiString() << ";" << std::endl;
+            stream << pair.first << " = " << pair.second->value.toAnsiString() << ";" << std::endl;
 
         if (rootNode->propertyValuePairs.size() > 0 && rootNode->children.size() > 0)
             stream << std::endl;
@@ -142,7 +142,7 @@ namespace tgui
         if (node->propertyValuePairs.size())
         {
             for (auto& pair : node->propertyValuePairs)
-                output.emplace_back("    " + pair.first + ": " + pair.second->value + ";");
+                output.emplace_back("    " + pair.first + " = " + pair.second->value + ";");
         }
 
         if (node->propertyValuePairs.size() > 0 && node->children.size() > 0)
@@ -181,10 +181,10 @@ namespace tgui
         REMOVE_WHITESPACE_AND_COMMENTS(true)
         if (stream.peek() == '{')
             return parseSection(stream, root, word);
-        else if (stream.peek() == ':')
+        else if (stream.peek() == '=')
             return parseKeyValue(stream, root, word);
         else
-            return "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
+            return "Expected '{' or '=', found '" + std::string(1, stream.peek()) + "' instead.";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,14 +227,14 @@ namespace tgui
                 if (!error.empty())
                     return error;
             }
-            else if (stream.peek() == ':')
+            else if (stream.peek() == '=')
             {
                 std::string error = parseKeyValue(stream, node, word);
                 if (!error.empty())
                     return error;
             }
             else
-                return "Expected '{' or ':', found '" + std::string(1, stream.peek()) + "' instead.";
+                return "Expected '{' or '=', found '" + std::string(1, stream.peek()) + "' instead.";
         }
 
         return "Found EOF while reading section.";
@@ -324,8 +324,8 @@ namespace tgui
             else
             {
                 chr = stream.peek();
-                if (chr == ':')
-                    return "Found ':' while trying to read a value.";
+                if (chr == '=')
+                    return "Found '=' while trying to read a value.";
                 else if (chr == '{')
                     return "Found '{' while trying to read a value.";
                 else
@@ -405,7 +405,7 @@ namespace tgui
                 c = stream.peek();
             }
 
-            if ((c == ':') || (c == '{'))
+            if ((c == '=') || (c == '{'))
                 return "";
             else if ((c == ';') || (c == '}'))
             {
@@ -446,7 +446,7 @@ namespace tgui
                 stream.read(&c, 1);
                 return word;
             }
-            else if (!::isspace(c) && (c != ':') && (c != ';') && (c != '{') && (c != '}'))
+            else if (!::isspace(c) && (c != '=') && (c != ';') && (c != '{') && (c != '}'))
             {
                 stream.read(&c, 1);
 

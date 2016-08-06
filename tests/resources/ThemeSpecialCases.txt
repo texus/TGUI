@@ -1,14 +1,14 @@
-Button1 { TextColor : rgb(255, 0, 0); }
+Button1 { TextColor = rgb(255, 0, 0); }
 
 Name.With.Dots {
-    TextColor : rgb(0, 255, 0);
-    BackgroundColor : rgb(255, 255, 255);
+    TextColor = rgb(0, 255, 0);
+    BackgroundColor = rgb(255, 255, 255);
 }
 
-"SpecialChars.{}:;/*#//\t\\\"" {
-    TextColor : rgba(,,,);
+"SpecialChars.{}=:;/*#//\t\\\"" {
+    TextColor = rgba(,,,);
 }
 
 label {
-    TextColor : rgb(0, 0, 255)
+    TextColor = rgb(0, 0, 255)
 }

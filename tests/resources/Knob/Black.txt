@@ -1,5 +1,0 @@
-Knob {
-    BackgroundImage : "Back.png";
-    ForegroundImage : "Front.png";
-    ImageRotation   : 90;
-}

@@ -1,143 +1,143 @@
-# Theme based on http://dribbble.com/shots/635698-UI-Kit-Baby-Blue
+# Theme based on http=//dribbble.com/shots/635698-UI-Kit-Baby-Blue
 
 Button {
-    NormalImage : "BabyBlue.png" Part(269, 40, 90, 60) Middle(30, 0, 30, 60);
-    HoverImage : "BabyBlue.png" Part(361, 40, 90, 60) Middle(30, 0, 30, 60);
-    DownImage : "BabyBlue.png" Part(177, 40, 90, 60) Middle(30, 0, 30, 60);
-    TextColor : (100, 100, 100);
+    NormalImage = "BabyBlue.png" Part(269, 40, 90, 60) Middle(30, 0, 30, 60);
+    HoverImage = "BabyBlue.png" Part(361, 40, 90, 60) Middle(30, 0, 30, 60);
+    DownImage = "BabyBlue.png" Part(177, 40, 90, 60) Middle(30, 0, 30, 60);
+    TextColor = (100, 100, 100);
 }
 
 ChatBox {
-    BackgroundColor : (210, 210, 210);
-    BorderColor : (255, 255, 255);
-    Borders : (2, 2, 2, 2);
-    Scrollbar : "Scrollbar";
+    BackgroundColor = (210, 210, 210);
+    BorderColor = (255, 255, 255);
+    Borders = (2, 2, 2, 2);
+    Scrollbar = "Scrollbar";
 }
 
 CheckBox {
-    CheckedImage : "BabyBlue.png" Part(48, 40, 34, 36);
-    UncheckedImage : "BabyBlue.png" Part(381, 2, 31, 31);
-    TextColor : (100, 100, 100);
+    CheckedImage = "BabyBlue.png" Part(48, 40, 34, 36);
+    UncheckedImage = "BabyBlue.png" Part(381, 2, 31, 31);
+    TextColor = (100, 100, 100);
 }
 
 ChildWindow {
-    TitlebarImage : "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31);
-    TitleColor : (100, 100, 100);
-    BackgroundColor : (230, 230, 230);
-    BorderColor : (255, 255, 255);
-    Borders : (2, 0, 2, 2);
-    DistanceToSide : 3;
-    CloseButton : "ChildWindowCloseButton";
+    TitlebarImage = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31);
+    TitleColor = (100, 100, 100);
+    BackgroundColor = (230, 230, 230);
+    BorderColor = (255, 255, 255);
+    Borders = (2, 0, 2, 2);
+    DistanceToSide = 3;
+    CloseButton = "ChildWindowCloseButton";
 }
 
 Button.ChildWindowCloseButton {
-    NormalImage : "BabyBlue.png" Part(96, 2, 25, 25);
-    HoverImage : "BabyBlue.png" Part(123, 2, 25, 25);
-    DownImage : "BabyBlue.png" Part(150, 2, 25, 25);
+    NormalImage = "BabyBlue.png" Part(96, 2, 25, 25);
+    HoverImage = "BabyBlue.png" Part(123, 2, 25, 25);
+    DownImage = "BabyBlue.png" Part(150, 2, 25, 25);
 }
 
 ComboBox {
-    ArrowUpImage : "BabyBlue.png" Part(199, 2, 20, 26);
-    ArrowDownImage : "BabyBlue.png" Part(177, 2, 20, 26);
-    BackgroundColor : (210, 210, 210);
-    TextColor : (100, 100, 100);
-    BorderColor : (255, 255, 255);
-    Borders : (2, 2, 2, 2);
-    ListBox : "ListBox";
+    ArrowUpImage = "BabyBlue.png" Part(199, 2, 20, 26);
+    ArrowDownImage = "BabyBlue.png" Part(177, 2, 20, 26);
+    BackgroundColor = (210, 210, 210);
+    TextColor = (100, 100, 100);
+    BorderColor = (255, 255, 255);
+    Borders = (2, 2, 2, 2);
+    ListBox = "ListBox";
 }
 
 EditBox {
-    TextureNormal : "BabyBlue.png" Part(103, 40, 72, 48) Middle(24, 0, 24, 48);
-    TextColor : (100, 100, 100);
-    SelectedTextColor : (150, 150, 150);
-    SelectedTextBackgroundColor : (190, 225, 235);
-    CaretColor : (145, 180, 190);
-    Padding : (14, 4, 14, 4);
+    TextureNormal = "BabyBlue.png" Part(103, 40, 72, 48) Middle(24, 0, 24, 48);
+    TextColor = (100, 100, 100);
+    SelectedTextColor = (150, 150, 150);
+    SelectedTextBackgroundColor = (190, 225, 235);
+    CaretColor = (145, 180, 190);
+    Padding = (14, 4, 14, 4);
 }
 
 Label {
-    TextColor : (100, 100, 100);
+    TextColor = (100, 100, 100);
 }
 
 ListBox {
-    BackgroundColor : (210, 210, 210);
-    TextColor : (100, 100, 100);
-    SelectedBackgroundColor : (190, 225, 235);
-    SelectedTextColor : (150, 150, 150);
-    BorderColor : (255, 255, 255);
-    Borders : (2, 2, 2, 2);
-    Scrollbar : "Scrollbar";
+    BackgroundColor = (210, 210, 210);
+    TextColor = (100, 100, 100);
+    SelectedBackgroundColor = (190, 225, 235);
+    SelectedTextColor = (150, 150, 150);
+    BorderColor = (255, 255, 255);
+    Borders = (2, 2, 2, 2);
+    Scrollbar = "Scrollbar";
 }
 
 MenuBar {
-    BackgroundColor : (210, 210, 210);
-    TextColor : (100, 100, 100);
-    SelectedBackgroundColor : (190, 225, 235);
-    SelectedTextColor : (150, 150, 150);
-    DistanceToSide : 5;
+    BackgroundColor = (210, 210, 210);
+    TextColor = (100, 100, 100);
+    SelectedBackgroundColor = (190, 225, 235);
+    SelectedTextColor = (150, 150, 150);
+    DistanceToSide = 5;
 }
 
 MessageBox {
-    ChildWindow : "ChildWindow";
-    Button : "Button";
-    TextColor : (100, 100, 100);
+    ChildWindow = "ChildWindow";
+    Button = "Button";
+    TextColor = (100, 100, 100);
 }
 
 Panel {
-    BackgroundColor : rgb(230, 230, 230);
+    BackgroundColor = rgb(230, 230, 230);
 }
 
 ProgressBar {
-    BackImage : "BabyBlue.png" Part(221, 2, 30, 30) Middle(10, 0, 10, 30);
-    FrontImage : "BabyBlue.png" Part(70, 2, 24, 24) Middle(7, 0, 7, 24);
+    BackImage = "BabyBlue.png" Part(221, 2, 30, 30) Middle(10, 0, 10, 30);
+    FrontImage = "BabyBlue.png" Part(70, 2, 24, 24) Middle(7, 0, 7, 24);
 }
 
 RadioButton {
-    CheckedImage : "BabyBlue.png" Part(253, 2, 30, 30);
-    UncheckedImage : "BabyBlue.png" Part(285, 2, 30, 30);
-    TextColor : (100, 100, 100);
+    CheckedImage = "BabyBlue.png" Part(253, 2, 30, 30);
+    UncheckedImage = "BabyBlue.png" Part(285, 2, 30, 30);
+    TextColor = (100, 100, 100);
 }
 
 Scrollbar {
-    TrackImage : "BabyBlue.png" Part(432, 2, 16, 32) Middle(0, 5, 32, 22);
-    ThumbImage : "BabyBlue.png" Part(414, 2, 16, 32) Middle(0, 5, 32, 22);
-    ArrowUpImage : "BabyBlue.png" Part(2, 2, 16, 16);
-    ArrowDownImage : "BabyBlue.png" Part(20, 2, 16, 16);
+    TrackImage = "BabyBlue.png" Part(432, 2, 16, 32) Middle(0, 5, 32, 22);
+    ThumbImage = "BabyBlue.png" Part(414, 2, 16, 32) Middle(0, 5, 32, 22);
+    ArrowUpImage = "BabyBlue.png" Part(2, 2, 16, 16);
+    ArrowDownImage = "BabyBlue.png" Part(20, 2, 16, 16);
 }
 
 Slider {
-    TrackImage : "BabyBlue.png" Part(38, 2, 30, 20) Middle(10, 0, 10, 20);
-    ThumbImage : "BabyBlue.png" Part(84, 40, 17, 38);
+    TrackImage = "BabyBlue.png" Part(38, 2, 30, 20) Middle(10, 0, 10, 20);
+    ThumbImage = "BabyBlue.png" Part(84, 40, 17, 38);
 }
 
 SpinButton {
-    ArrowUpImage : "BabyBlue.png" Part(2, 2, 16, 16);
-    ArrowDownImage : "BabyBlue.png" Part(20, 2, 16, 16);
+    ArrowUpImage = "BabyBlue.png" Part(2, 2, 16, 16);
+    ArrowDownImage = "BabyBlue.png" Part(20, 2, 16, 16);
 }
 
 Tab {
-    NormalImage : "BabyBlue.png" Part(450, 2, 44, 36) Middle(4, 3, 36, 30);
-    SelectedImage : "BabyBlue.png" Part(2, 40, 44, 36) Middle(4, 3, 36, 30);
-    TextColor : (100, 100, 100);
-    SelectedTextColor : (150, 150, 150);
-    DistanceToSide : 5;
+    NormalImage = "BabyBlue.png" Part(450, 2, 44, 36) Middle(4, 3, 36, 30);
+    SelectedImage = "BabyBlue.png" Part(2, 40, 44, 36) Middle(4, 3, 36, 30);
+    TextColor = (100, 100, 100);
+    SelectedTextColor = (150, 150, 150);
+    DistanceToSide = 5;
 }
 
 TextBox {
-    BackgroundColor : (210, 210, 210);
-    TextColor : (100, 100, 100);
-    SelectedTextColor : (150, 150, 150);
-    SelectedTextBackgroundColor : (190, 225, 235);
-    CaretColor : (145, 180, 190);
-    BorderColor : (255, 255, 255);
-    Borders : (2, 2, 2, 2);
-    Scrollbar : "Scrollbar";
+    BackgroundColor = (210, 210, 210);
+    TextColor = (100, 100, 100);
+    SelectedTextColor = (150, 150, 150);
+    SelectedTextBackgroundColor = (190, 225, 235);
+    CaretColor = (145, 180, 190);
+    BorderColor = (255, 255, 255);
+    Borders = (2, 2, 2, 2);
+    Scrollbar = "Scrollbar";
 }
 
 Label.Tooltip {
-    TextColor       : rgb(100, 100, 100);
-    BackgroundColor : rgb(210, 210, 210);
-    BorderColor     : rgb(255, 255, 255);
-    Borders         : (1, 1, 1, 1);
-    Padding         : (2, 2, 2, 2);
+    TextColor       = rgb(100, 100, 100);
+    BackgroundColor = rgb(210, 210, 210);
+    BorderColor     = rgb(255, 255, 255);
+    Borders         = (1, 1, 1, 1);
+    Padding         = (2, 2, 2, 2);
 }

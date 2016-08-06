@@ -89,8 +89,8 @@ TEST_CASE("[ThemeLoader]")
             REQUIRE(cache1["name.with.dots"].size() == 2);
             REQUIRE(cache1["name.with.dots"]["textcolor"] == "rgb(0, 255, 0)");
             REQUIRE(cache1["name.with.dots"]["backgroundcolor"] == "rgb(255, 255, 255)");
-            REQUIRE(cache1["specialchars.{}:;/*#//\t\\\""].size() == 1);
-            REQUIRE(cache1["specialchars.{}:;/*#//\t\\\""]["textcolor"] == "rgba(,,,)");
+            REQUIRE(cache1["specialchars.{}=:;/*#//\t\\\""].size() == 1);
+            REQUIRE(cache1["specialchars.{}=:;/*#//\t\\\""]["textcolor"] == "rgba(,,,)");
             REQUIRE(cache1["label"].size() == 1);
             REQUIRE(cache1["label"]["textcolor"] == "rgb(0, 0, 255)");
             REQUIRE(cache2.size() == 1);
@@ -131,8 +131,8 @@ TEST_CASE("[ThemeLoader]")
             REQUIRE(cache["name.with.dots"].size() == 2);
             REQUIRE(cache["name.with.dots"]["textcolor"] == "rgb(0, 255, 0)");
             REQUIRE(cache["name.with.dots"]["backgroundcolor"] == "rgb(255, 255, 255)");
-            REQUIRE(cache["specialchars.{}:;/*#//\t\\\""].size() == 1);
-            REQUIRE(cache["specialchars.{}:;/*#//\t\\\""]["textcolor"] == "rgba(,,,)");
+            REQUIRE(cache["specialchars.{}=:;/*#//\t\\\""].size() == 1);
+            REQUIRE(cache["specialchars.{}=:;/*#//\t\\\""]["textcolor"] == "rgba(,,,)");
             REQUIRE(cache["label"].size() == 1);
             REQUIRE(cache["label"]["textcolor"] == "rgb(0, 0, 255)");
 

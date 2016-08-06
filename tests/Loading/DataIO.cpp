@@ -38,25 +38,25 @@ TEST_CASE("[DataIO]")
 
         SECTION("Global properties")
         {
-            std::stringstream input("Property: Value;");
+            std::stringstream input("Property = Value;");
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
         }
 
         SECTION("Nested childs")
         {
-            std::stringstream input("Child { Child2 { Property: Value; } }");
+            std::stringstream input("Child { Child2 { Property = Value; } }");
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
         }
 
         SECTION("List property")
         {
-            std::stringstream input("Property: [a,b,c,d];");
+            std::stringstream input("Property = [a,b,c,d];");
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
         }
 
         SECTION("Section without name")
         {
-            std::stringstream input("{ Property//\n: [\"a\", \"\\\"b\\\"\", \"\\\\c\\\\\"]; }");
+            std::stringstream input("{ Property//\n= [\"a\", \"\\\"b\\\"\", \"\\\\c\\\\\"]; }");
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
         }
 
@@ -68,19 +68,19 @@ TEST_CASE("[DataIO]")
 
         SECTION("Name with special characters")
         {
-            std::stringstream input("\"SpecialChars.{}:;/*#//\\t\\\"\\\\\" { Property\r\n//txt\n : \"\\\\\\\"Value\\\"\\\\\"; }");
+            std::stringstream input("\"SpecialChars.{}=:;/*#//\\t\\\"\\\\\" { Property\r\n//txt\n = \"\\\\\\\"Value\\\"\\\\\"; }");
 
             std::shared_ptr<tgui::DataIO::Node> rootNode;
             REQUIRE_NOTHROW(rootNode = tgui::DataIO::parse(input));
 
             REQUIRE(rootNode->children.size() == 1);
-            REQUIRE(rootNode->children[0]->name == "\"SpecialChars.{}:;/*#//\\t\\\"\\\\\"");
+            REQUIRE(rootNode->children[0]->name == "\"SpecialChars.{}=:;/*#//\\t\\\"\\\\\"");
             REQUIRE(rootNode->children[0]->propertyValuePairs.size() == 1);
             REQUIRE(rootNode->children[0]->propertyValuePairs["property"]->value == "\"\\\\\\\"Value\\\"\\\\\"");
 
             REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String,
                                                     rootNode->children[0]->name).getString()
-                    == "SpecialChars.{}:;/*#//\t\"\\");
+                    == "SpecialChars.{}=:;/*#//\t\"\\");
 
             REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String,
                                                     rootNode->children[0]->propertyValuePairs["property"]->value).getString()
@@ -127,7 +127,7 @@ TEST_CASE("[DataIO]")
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
         }
 
-        SECTION("Expected '{' or ':', found X instead")
+        SECTION("Expected '{' or '=', found X instead")
         {
             std::stringstream input("name;");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
@@ -159,31 +159,31 @@ TEST_CASE("[DataIO]")
 
         SECTION("Found EOF while trying to read a value")
         {
-            std::stringstream input("{ Property : Value");
+            std::stringstream input("{ Property = Value");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
 
-            std::stringstream input2("{ { Property : Value /");
+            std::stringstream input2("{ { Property = Value /");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input2), tgui::Exception);
 
-            std::stringstream input3("{ Property: \"");
+            std::stringstream input3("{ Property= \"");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input3), tgui::Exception);
         }
 
-        SECTION("Found ':' while trying to read a value")
+        SECTION("Found '=' while trying to read a value")
         {
-            std::stringstream input("{ Property : :");
+            std::stringstream input("{ Property = =");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
         }
 
         SECTION("Found '{' while trying to read a value")
         {
-            std::stringstream input("{ Property : {");
+            std::stringstream input("{ Property = {");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
         }
 
         SECTION("Found empty value")
         {
-            std::stringstream input("{ Property: ; ");
+            std::stringstream input("{ Property = ; ");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
         }
     }
@@ -222,16 +222,16 @@ TEST_CASE("[DataIO]")
 
         SECTION("direct stream")
         {
-            stream << "GlobalProperty1: GlobalValue1;" << std::endl;
-            stream << "GlobalProperty2: GlobalValue2;" << std::endl;
+            stream << "GlobalProperty1 = GlobalValue1;" << std::endl;
+            stream << "GlobalProperty2 = GlobalValue2;" << std::endl;
             stream << "Child1" << std::endl;
             stream << "{" << std::endl;
-            stream << "Property: Value;" << std::endl;
+            stream << "Property = Value;" << std::endl;
             stream << "NestedChild" << std::endl;
             stream << "{" << std::endl;
-            stream << "PropertyA: ValueA;" << std::endl;
-            stream << "PropertyB: [];" << std::endl;
-            stream << "PropertyC: [X, Y, Z];" << std::endl;
+            stream << "PropertyA = ValueA;" << std::endl;
+            stream << "PropertyB = [];" << std::endl;
+            stream << "PropertyC = [X, Y, Z];" << std::endl;
             stream << "}" << std::endl;
             stream << "}" << std::endl;
             stream << "{" << std::endl;
