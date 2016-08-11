@@ -4,7 +4,19 @@ title: Xcode
 breadcrumb: xcode
 redirect_from: "/tutorials/v07/xcode/index.html"
 ---
+<div>
 <p>Tip: The sfml example comes with a resourcePath() function which you have to put before the paths to load resources. You can use tgui::setResourcePath(resourcePath()) at the beginning of your program so that everything tgui loads starts with that folder.</p>
+</div>
+
+<div>
+    <h3 id="homebrew">Homebrew</h3>
+    <p class="SmallBottomMargin">If you use homebrew then you can install the <a href="http://braumeister.org/formula/tgui">unofficial TGUI formula</a> by executing:</p>
+{% highlight bash %}
+brew install tgui
+{% endhighlight %}
+    <p>When doing this you can skip the building steps below and go directly to the <a href="#using_tgui_dylib">Using TGUI (dylib)</a> section.</p>
+</div>
+
 <div>
     <h3 id="cmake">CMake</h3>
     <ul>
