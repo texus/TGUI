@@ -157,10 +157,10 @@ namespace tgui
             line.font = getFont();
 
         
-#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
-		line.text.setFillColor(color);
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
+        line.text.setFillColor(color);
 #else
-		line.text.setColor(color);
+        line.text.setColor(color);
 #endif
         line.text.setCharacterSize(textSize);
         line.text.setString(text);
@@ -400,10 +400,10 @@ namespace tgui
         Widget::setOpacity(opacity);
 
         for (auto& line : m_lines)
-#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
-			line.text.setFillColor({line.text.getFillColor().r, line.text.getFillColor().g, line.text.getFillColor().b, static_cast<sf::Uint8>(opacity * 255)});
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
+            line.text.setFillColor({line.text.getFillColor().r, line.text.getFillColor().g, line.text.getFillColor().b, static_cast<sf::Uint8>(opacity * 255)});
 #else
-			line.text.setColor({line.text.getColor().r, line.text.getColor().g, line.text.getColor().b, static_cast<sf::Uint8>(opacity * 255)});
+            line.text.setColor({line.text.getColor().r, line.text.getColor().g, line.text.getColor().b, static_cast<sf::Uint8>(opacity * 255)});
 #endif
 
         if (m_scroll != nullptr)

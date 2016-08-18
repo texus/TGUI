@@ -34,7 +34,7 @@
 #include <fstream>
 
 #ifdef SFML_SYSTEM_ANDROID
-    #if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         #include "SFML/System/NativeActivity.hpp"
     #else
         #include "SFML/System/Android/Activity.hpp"
@@ -153,7 +153,7 @@ namespace tgui
         if (!fullFilename.empty() && (fullFilename[0] != '/'))
         {
             ANativeActivity* activity;
-            #if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+            #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
                 activity = sf::getNativeActivity();
             #else
                 activity = sf::priv::getActivity(NULL)->activity;

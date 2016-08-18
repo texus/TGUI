@@ -271,10 +271,10 @@ namespace tgui
 
         sf::Color textColor = calcColorOpacity(getRenderer()->m_textColor, getOpacity());
         for (auto& line : m_lines)
-#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
             line.setFillColor(textColor);
 #else
-			line.setColor(textColor);
+            line.setColor(textColor);
 #endif
 
         m_background.setFillColor(calcColorOpacity(getRenderer()->m_backgroundColor, getOpacity()));
@@ -435,10 +435,10 @@ namespace tgui
             m_lines.back().setFont(*getFont());
             m_lines.back().setCharacterSize(getTextSize());
             m_lines.back().setStyle(getTextStyle());
-#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
             m_lines.back().setFillColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
 #else
-			m_lines.back().setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+            m_lines.back().setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
 #endif
 
             if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
@@ -636,10 +636,10 @@ namespace tgui
 
         sf::Color textColor = calcColorOpacity(m_textColor, m_label->getOpacity());
 		for (auto& line : m_label->m_lines)
-#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
-			line.setFillColor(textColor);
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
+            line.setFillColor(textColor);
 #else
-			line.setColor(textColor);
+            line.setColor(textColor);
 #endif
     }
 

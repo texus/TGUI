@@ -293,10 +293,10 @@ namespace tgui
         for (std::size_t i = 0; i < chunks.size(); ++i)
         {
             sf::Text tempText;
-#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
             tempText.setFillColor(chunks[i].color);
 #else
-			tempText.setColor(chunks[i].color);
+            tempText.setColor(chunks[i].color);
 #endif
             tempText.setString(chunks[i].text);
             tempText.setStyle(chunks[i].style);
