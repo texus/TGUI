@@ -422,11 +422,19 @@ namespace tgui
         getRenderer()->m_textureHover.setColor({getRenderer()->m_textureHover.getColor().r, getRenderer()->m_textureHover.getColor().g, getRenderer()->m_textureHover.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
         getRenderer()->m_textureFocused.setColor({getRenderer()->m_textureFocused.getColor().r, getRenderer()->m_textureFocused.getColor().g, getRenderer()->m_textureFocused.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
 
-        m_textBeforeSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
-        m_textAfterSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
-        m_textSelection.setColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
-        m_selectedTextBackground.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextBackgroundColor, getOpacity()));
-        m_defaultText.setColor(calcColorOpacity(getRenderer()->m_defaultTextColor, getOpacity()));
+#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+        m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        m_textSelection.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
+		m_selectedTextBackground.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextBackgroundColor, getOpacity()));
+		m_defaultText.setFillColor(calcColorOpacity(getRenderer()->m_defaultTextColor, getOpacity()));
+#else
+		m_textBeforeSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+		m_textAfterSelection.setColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+		m_textSelection.setColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
+		m_selectedTextBackground.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextBackgroundColor, getOpacity()));
+		m_defaultText.setColor(calcColorOpacity(getRenderer()->m_defaultTextColor, getOpacity()));
+#endif
         m_caret.setFillColor(calcColorOpacity(getRenderer()->m_caretColor, getOpacity()));
     }
 
@@ -892,10 +900,17 @@ namespace tgui
 
     void EditBox::reload(const std::string& primary, const std::string& secondary, bool force)
     {
-        m_textBeforeSelection.setColor({0, 0, 0});
-        m_textSelection.setColor({255, 255, 255});
-        m_textAfterSelection.setColor({0, 0, 0});
-        m_defaultText.setColor({160, 160, 160});
+#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+        m_textBeforeSelection.setFillColor({0, 0, 0});
+        m_textSelection.setFillColor({255, 255, 255});
+        m_textAfterSelection.setFillColor({0, 0, 0});
+        m_defaultText.setFillColor({160, 160, 160});
+#else
+		m_textBeforeSelection.setColor({0, 0, 0});
+		m_textSelection.setColor({255, 255, 255});
+		m_textAfterSelection.setColor({0, 0, 0});
+		m_defaultText.setColor({160, 160, 160});
+#endif
         m_caret.setFillColor({0, 0, 0});
         m_selectedTextBackground.setFillColor({0, 110, 255});
 
@@ -1412,8 +1427,13 @@ namespace tgui
     void EditBoxRenderer::setTextColor(const Color& textColor)
     {
         m_textColor = textColor;
-        m_editBox->m_textBeforeSelection.setColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
-        m_editBox->m_textAfterSelection.setColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
+#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+        m_editBox->m_textBeforeSelection.setFillColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
+        m_editBox->m_textAfterSelection.setFillColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
+#else
+		m_editBox->m_textBeforeSelection.setColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
+		m_editBox->m_textAfterSelection.setColor(calcColorOpacity(m_textColor, m_editBox->getOpacity()));
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1421,7 +1441,11 @@ namespace tgui
     void EditBoxRenderer::setSelectedTextColor(const Color& selectedTextColor)
     {
         m_selectedTextColor = selectedTextColor;
-        m_editBox->m_textSelection.setColor(calcColorOpacity(m_selectedTextColor, m_editBox->getOpacity()));
+#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+        m_editBox->m_textSelection.setFillColor(calcColorOpacity(m_selectedTextColor, m_editBox->getOpacity()));
+#else
+		m_editBox->m_textSelection.setColor(calcColorOpacity(m_selectedTextColor, m_editBox->getOpacity()));
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1437,7 +1461,12 @@ namespace tgui
     void EditBoxRenderer::setDefaultTextColor(const Color& defaultTextColor)
     {
         m_defaultTextColor = defaultTextColor;
-        m_editBox->m_defaultText.setColor(calcColorOpacity(m_defaultTextColor, m_editBox->getOpacity()));
+#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+        m_editBox->m_defaultText.setFillColor(calcColorOpacity(m_defaultTextColor, m_editBox->getOpacity()));
+#else
+
+		m_editBox->m_defaultText.setColor(calcColorOpacity(m_defaultTextColor, m_editBox->getOpacity()));
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
