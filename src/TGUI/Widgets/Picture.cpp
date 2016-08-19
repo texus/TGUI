@@ -44,7 +44,6 @@ namespace tgui
         Picture{}
     {
         setTexture(filename, fullyClickable);
-        setSize(m_texture.getImageSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,29 +51,31 @@ namespace tgui
     Picture::Picture(const Texture& texture, bool fullyClickable) :
         Picture{}
     {
-        auto size = texture.getSize();
         setTexture(texture, fullyClickable);
-        setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Picture::setTexture(const sf::String& filename, bool fullyClickable)
     {
-        m_fullyClickable = fullyClickable;
         m_loadedFilename = getResourcePath() + filename;
 
-        m_texture.load(m_loadedFilename);
-        m_texture.setSize(getSize());
+        setTexture(Texture{filename}, fullyClickable);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Picture::setTexture(const Texture& texture, bool fullyClickable)
     {
+        sf::Vector2f size;
+        if (!m_texture.isLoaded())
+            setSize(texture.getSize());
+
         m_fullyClickable = fullyClickable;
         m_texture = texture;
         m_texture.setSize(getSize());
+        m_texture.setPosition(getPosition());
+        m_texture.setColor({m_texture.getColor().r, m_texture.getColor().g, m_texture.getColor().b, static_cast<sf::Uint8>(m_opacity * 255)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
