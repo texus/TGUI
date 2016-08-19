@@ -156,7 +156,7 @@ namespace tgui
         if (line.font == nullptr)
             line.font = getFont();
 
-        
+
 #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         line.text.setFillColor(color);
 #else
@@ -174,15 +174,7 @@ namespace tgui
         else
             m_lines.push_front(std::move(line));
 
-        // Scroll down when there is a scrollbar and it is at the bottom
-        if (m_scroll && m_newLinesBelowOthers && (m_scroll->getValue() == m_scroll->getMaximum() - m_scroll->getLowValue()))
-        {
-            recalculateFullTextHeight();
-            m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
-        }
-        else
-            recalculateFullTextHeight();
-
+        recalculateFullTextHeight();
         updateDisplayedText();
     }
 
@@ -703,15 +695,7 @@ namespace tgui
         for (auto& line : m_lines)
             recalculateLineText(line);
 
-        // Scroll down when there is a scrollbar and it is at the bottom
-        if (m_scroll && m_newLinesBelowOthers && (m_scroll->getValue() == m_scroll->getMaximum() - m_scroll->getLowValue()))
-        {
-            recalculateFullTextHeight();
-            m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
-        }
-        else
-            recalculateFullTextHeight();
-
+        recalculateFullTextHeight();
         updateDisplayedText();
     }
 
@@ -728,7 +712,20 @@ namespace tgui
 
         // Set the maximum of the scrollbar when there is one
         if (m_scroll != nullptr)
+        {
+            unsigned int oldMaximum = m_scroll->getMaximum();
             m_scroll->setMaximum(static_cast<unsigned int>(m_fullTextHeight));
+
+            // Scroll down to the last item when there is a scrollbar and it is at the bottom
+            if (m_newLinesBelowOthers)
+            {
+                if (((oldMaximum >= m_scroll->getLowValue()) && (m_scroll->getValue() == oldMaximum - m_scroll->getLowValue()))
+                 || ((oldMaximum <= m_scroll->getLowValue()) && (m_scroll->getMaximum() > m_scroll->getLowValue())))
+                {
+                    m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
+                }
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
