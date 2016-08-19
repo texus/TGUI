@@ -39,6 +39,11 @@
     #include <android/configuration.h>
 #endif
 
+// Ignore warning "C4503: decorated name length exceeded, name was truncated" in Visual Studio
+#if defined _MSC_VER
+    #pragma warning(disable : 4503)
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void injectRelativePathInTextures(std::shared_ptr<tgui::DataIO::Node> node, const std::string& path)
