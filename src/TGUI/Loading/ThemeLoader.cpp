@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #include <TGUI/Loading/ThemeLoader.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Widgets/Button.hpp>
@@ -45,24 +44,19 @@
     #include <android/configuration.h>
 #endif
 
+// Ignore warning "C4503: decorated name length exceeded, name was truncated" in Visual Studio
+#if defined _MSC_VER
+    #pragma warning(disable : 4503)
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Ignore warning "C4503: decorated name length exceeded, name was truncated" in Visual Studio
-#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
-    #pragma warning(push)
-    #pragma warning(disable : 4503)
-#endif
-
     std::map<std::string, std::map<std::string, DefaultThemeLoader::PropertyValuePairs>> DefaultThemeLoader::m_propertiesCache;
     std::map<std::string, std::map<std::string, std::string>> DefaultThemeLoader::m_widgetTypeCache;
-
-#if defined SFML_SYSTEM_WINDOWS && defined _MSC_VER
-    #pragma warning(pop)
-#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
