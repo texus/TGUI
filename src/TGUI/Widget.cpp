@@ -96,6 +96,7 @@ namespace tgui
         Transformable    {copy},
         SignalWidgetBase {copy},
         enable_shared_from_this<Widget>{copy},
+        m_disabledBlockingMouseEvents  {copy.m_disabledBlockingMouseEvents},
         m_enabled        {copy.m_enabled},
         m_visible        {copy.m_visible},
         m_parent         {nullptr},
@@ -141,6 +142,7 @@ namespace tgui
             SignalWidgetBase::operator=(right);
             enable_shared_from_this::operator=(right);
 
+            m_disabledBlockingMouseEvents = right.m_disabledBlockingMouseEvents;
             m_enabled             = right.m_enabled;
             m_visible             = right.m_visible;
             m_parent              = nullptr;
@@ -375,9 +377,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::disable()
+    void Widget::disable(bool blockMouseEvents)
     {
         m_enabled = false;
+        m_disabledBlockingMouseEvents = blockMouseEvents;
 
         // Change the mouse button state.
         m_mouseHover = false;
@@ -614,6 +617,13 @@ namespace tgui
     {
         m_mouseHover = false;
         sendSignal("MouseLeft");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Widget::isDisabledBlockingMouseEvents() const
+    {
+        return m_disabledBlockingMouseEvents;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

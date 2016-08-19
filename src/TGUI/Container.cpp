@@ -955,11 +955,16 @@ namespace tgui
             {
                 if ((*it)->mouseOnWidget(x, y))
                 {
-                    // If the widget is disabled but the mouse is on top of it, nobody gets the event
                     if ((*it)->isEnabled())
+                    {
                         widget = *it;
-
-                    break;
+                        break;
+                    }
+                    else // The widget is disabled
+                    {
+                        if ((*it)->isDisabledBlockingMouseEvents())
+                            break;
+                    }
                 }
             }
         }
