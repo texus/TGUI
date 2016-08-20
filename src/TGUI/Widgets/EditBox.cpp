@@ -115,9 +115,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::disable()
+    void EditBox::disable(bool blockMouseEvents)
     {
-        Widget::disable();
+        Widget::disable(blockMouseEvents);
 
         if (getRenderer()->getTextColorDisabled().isSet())
         {

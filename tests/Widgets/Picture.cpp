@@ -88,21 +88,34 @@ TEST_CASE("[Picture]")
         {
             REQUIRE_NOTHROW(picture->setTexture("resources/image.png"));
             REQUIRE(picture->getLoadedFilename() == "resources/image.png");
+            REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
+
+            picture->setSize(100, 100);
+            REQUIRE_NOTHROW(picture->setTexture("resources/image.png"));
+            REQUIRE(picture->getSize() == sf::Vector2f(100, 100));
         }
 
         SECTION("from texture")
         {
             REQUIRE_NOTHROW(picture->setTexture(tgui::Texture{"resources/image.png"}));
             REQUIRE(picture->getLoadedFilename() == "");
+            REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
+
+            picture->setSize(100, 100);
+            REQUIRE_NOTHROW(picture->setTexture(tgui::Texture{"resources/image.png"}));
+            REQUIRE(picture->getSize() == sf::Vector2f(100, 100));
         }
 
         SECTION("from sf::Texture")
         {
             REQUIRE_NOTHROW(picture->setTexture(texture));
             REQUIRE(picture->getLoadedFilename() == "");
-        }
+            REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
 
-        REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
+            picture->setSize(100, 100);
+            REQUIRE_NOTHROW(picture->setTexture(texture));
+            REQUIRE(picture->getSize() == sf::Vector2f(100, 100));
+        }
     }
 
     SECTION("Smooth")

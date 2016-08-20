@@ -32,7 +32,7 @@
 #include <fstream>
 
 #ifdef SFML_SYSTEM_ANDROID
-    #include "SFML/System/Android/Activity.hpp"
+    #include <SFML/System/NativeActivity.hpp>
     #include <android/asset_manager_jni.h>
     #include <android/asset_manager.h>
     #include <android/native_activity.h>
@@ -193,9 +193,7 @@ namespace tgui
         // If the file does not start with a slash then load it from the assets
         if (!fullFilename.empty() && (fullFilename[0] != '/'))
         {
-            /// TODO: Workaround until SFML makes native activity publicly accessible
-            /// When this happens, extra SFML folder in include can be removed as well.
-            ANativeActivity* activity = sf::priv::getActivity(NULL)->activity;
+            ANativeActivity* activity = sf::getNativeActivity();
 
             JNIEnv* env = 0;
             activity->vm->AttachCurrentThread(&env, NULL);

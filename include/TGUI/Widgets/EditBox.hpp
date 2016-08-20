@@ -139,11 +139,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Disables the widget
         ///
+        /// @param blockMouseEvents  Should mouse events be passed to the widget behind this one or blocked?
+        ///
         /// The widget will no longer receive events and it will thus no longer send callbacks.
         /// All widgets are enabled by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void disable() override;
+        virtual void disable(bool blockMouseEvents = true) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +343,7 @@ namespace tgui
         ///
         /// Examples:
         /// @code
-        /// edit1->setInputValidator(tgui::EditBox::Validator::Int);
+        /// edit1->setInputValidator(EditBox::Validator::Int);
         /// edit2->setInputValidator("[a-zA-Z][a-zA-Z0-9]*");
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
