@@ -31,8 +31,8 @@
 #include <TGUI/Widgets/ComboBox.hpp>*/
 #include <TGUI/Widgets/EditBox.hpp>/**
 #include <TGUI/Widgets/Knob.hpp>*/
-#include <TGUI/Widgets/Label.hpp>/**
-#include <TGUI/Widgets/ListBox.hpp>*/
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
@@ -105,11 +105,20 @@ namespace tgui
         }
 
         /// TODO: Font and ToolTip
+        /// TODO: Separate renderer section?
 
         node->children.emplace_back(std::make_shared<DataIO::Node>());
         node->children.back()->name = "Renderer";
         for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
-            node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(ObjectConverter{pair.second}.getString());
+        {
+            sf::String strValue;
+            if (pair.second.getType() == ObjectConverter::Type::RendererData)
+                strValue = "{\n" + ObjectConverter{pair.second}.getString() + "}";
+            else
+                strValue = ObjectConverter{pair.second}.getString();
+
+            node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(strValue);
+        }
 
         return node;
     }
@@ -326,7 +335,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
+
     TGUI_API std::shared_ptr<DataIO::Node> saveListBox(ListBox::Ptr listBox)
     {
         auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{listBox});
@@ -350,19 +359,16 @@ namespace tgui
             SET_PROPERTY("ItemIds", itemIdList);
         }
 
+        if (!listBox->getAutoScroll())
+            SET_PROPERTY("AutoScroll", "false");
+
+        SET_PROPERTY("TextSize", tgui::to_string(listBox->getTextSize()));
         SET_PROPERTY("ItemHeight", tgui::to_string(listBox->getItemHeight()));
         SET_PROPERTY("MaximumItems", tgui::to_string(listBox->getMaximumItems()));
 
-        if (listBox->getScrollbar() != nullptr)
-        {
-            node->children.push_back(WidgetSaver::getSaveFunction("scrollbar")(tgui::WidgetConverter{listBox->getScrollbar()}));
-            node->children.back()->parent = node.get();
-            node->children.back()->name = "Scrollbar";
-        }
-
         return node;
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> savePicture(Picture::Ptr picture)
@@ -532,14 +538,14 @@ namespace tgui
             {"button", saveButton},
             {"canvas", saveWidget},/**
             {"chatbox", saveChatBox},*/
-            {"checkbox", saveRadioButton},
+            {"checkbox", saveRadioButton},/**
+            {"childwindow", saveChildWindow},*/
             {"clickablewidget", saveWidget},/**
-            {"childwindow", saveChildWindow},
             {"combobox", saveComboBox},*/
             {"editbox", saveEditBox},/**
             {"knob", saveKnob},*/
-            {"label", saveLabel},/**
-            {"listbox", saveListBox},*/
+            {"label", saveLabel},
+            {"listbox", saveListBox},
             {"panel", saveContainer},
             {"picture", savePicture},
             {"progressbar", saveProgressBar},

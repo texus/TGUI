@@ -51,8 +51,8 @@
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Grid.hpp>/**
 #include <TGUI/Widgets/Knob.hpp>*/
-#include <TGUI/Widgets/Label.hpp>/**
-#include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/ListBox.hpp>/**
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Widgets/MessageBox.hpp>*/
 #include <TGUI/Widgets/Panel.hpp>
@@ -63,8 +63,8 @@
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>/**
 #include <TGUI/Widgets/Tab.hpp>
-#include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Widgets/ToolTip.hpp>*/
+#include <TGUI/Widgets/TextBox.hpp>*/
+#include <TGUI/Widgets/ToolTip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

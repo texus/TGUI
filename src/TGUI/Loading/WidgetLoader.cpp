@@ -33,8 +33,8 @@
 #include <TGUI/Widgets/ComboBox.hpp>*/
 #include <TGUI/Widgets/EditBox.hpp>/**
 #include <TGUI/Widgets/Knob.hpp>*/
-#include <TGUI/Widgets/Label.hpp>/**
-#include <TGUI/Widgets/ListBox.hpp>*/
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
@@ -164,8 +164,8 @@ namespace tgui
         if (node->propertyValuePairs["size"])
             widget->setSize(parseLayout(node->propertyValuePairs["size"]->value));
 
-        /// TODO: ToolTip
-        /// TODO: Separate renderer?
+        /// TODO: Font and ToolTip
+        /// TODO: Separate renderer section?
 
         for (auto& childNode : node->children)
         {
@@ -175,6 +175,13 @@ namespace tgui
 
                 for (auto& pair : childNode->propertyValuePairs)
                     rendererData->propertyValuePairs[pair.first] = {pair.second->value};
+
+                for (auto& nestedProperty : childNode->children)
+                {
+                    std::stringstream ss;
+                    DataIO::emit(nestedProperty, ss);
+                    rendererData->propertyValuePairs[toLower(nestedProperty->name)] = {sf::String{ss.str()}};
+                }
 
                 widget->setRenderer(rendererData);
             }
@@ -531,7 +538,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
+
     TGUI_API Widget::Ptr loadListBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         ListBox::Ptr listBox;
@@ -579,21 +586,18 @@ namespace tgui
             }
         }
 
+        if (node->propertyValuePairs["autoscroll"])
+            listBox->setAutoScroll(parseBoolean(node->propertyValuePairs["autoscroll"]->value));
+        if (node->propertyValuePairs["textsize"])
+            listBox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["itemheight"])
             listBox->setItemHeight(tgui::stoi(node->propertyValuePairs["itemheight"]->value));
         if (node->propertyValuePairs["maximumitems"])
             listBox->setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
 
-        for (auto& childNode : node->children)
-        {
-            if (toLower(childNode->name) == "scrollbar")
-                listBox->setScrollbar(std::static_pointer_cast<Scrollbar>(WidgetLoader::getLoadFunction("scrollbar")(childNode)));
-        }
-        REMOVE_CHILD("scrollbar");
-
         return listBox;
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadPanel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -846,9 +850,9 @@ namespace tgui
             {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},/**
             {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},*/
             {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},/**
-            {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},
-            {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},*/
+            {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},*/
             {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
+            {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},
             {"panel", std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},
             {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},
             {"progressbar", std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},

@@ -41,19 +41,7 @@ namespace tgui
         if (m_serialized || (m_type == Type::String))
             return m_string;
 
-        if (m_type == Type::Font)
-            m_string = Serializer::serialize(m_font);
-        else if (m_type == Type::Color)
-            m_string = Serializer::serialize(m_color);
-        else if (m_type == Type::Number)
-            m_string = Serializer::serialize(m_number);
-        else if (m_type == Type::Outline)
-            m_string = Serializer::serialize(m_outline);
-        else if (m_type == Type::Texture)
-            m_string = Serializer::serialize(m_texture);
-        else if (m_type == Type::TextStyle)
-            m_string = encodeTextStyle(m_textStyle);
-
+        m_string = Serializer::serialize(ObjectConverter{*this});
         m_serialized = true;
         return m_string;
     }
@@ -62,90 +50,112 @@ namespace tgui
 
     const Font& ObjectConverter::getFont()
     {
+        assert(m_type != Type::None);
         assert(m_type == Type::Font || m_type == Type::String);
 
         if (m_type == Type::String)
         {
-            m_font = Font(m_string);
+            m_value = Font(m_string);
             m_type = Type::Font;
         }
 
-        return m_font;
+        return m_value.as<Font>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const Color& ObjectConverter::getColor()
     {
+        assert(m_type != Type::None);
         assert(m_type == Type::Color || m_type == Type::String);
 
         if (m_type == Type::String)
         {
-            m_color = Color(m_string);
+            m_value = Color(m_string);
             m_type = Type::Color;
         }
 
-        return m_color;
+        return m_value.as<Color>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float ObjectConverter::getNumber()
     {
+        assert(m_type != Type::None);
         assert(m_type == Type::Number || m_type == Type::String);
 
         if (m_type == Type::String)
         {
-            m_number = Deserializer::deserialize(ObjectConverter::Type::Number, m_string).getNumber();
+            m_value = Deserializer::deserialize(ObjectConverter::Type::Number, m_string).getNumber();
             m_type = Type::Number;
         }
 
-        return m_number;
+        return m_value.as<float>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const Outline& ObjectConverter::getOutline()
     {
+        assert(m_type != Type::None);
         assert(m_type == Type::Outline || m_type == Type::String);
 
         if (m_type == Type::String)
         {
-            m_outline = Deserializer::deserialize(ObjectConverter::Type::Outline, m_string).getOutline();
+            m_value = Deserializer::deserialize(ObjectConverter::Type::Outline, m_string).getOutline();
             m_type = Type::Outline;
         }
 
-        return m_outline;
+        return m_value.as<Outline>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture& ObjectConverter::getTexture()
     {
+        assert(m_type != Type::None);
         assert(m_type == Type::Texture || m_type == Type::String);
 
         if (m_type == Type::String)
         {
-            m_texture = Deserializer::deserialize(ObjectConverter::Type::Texture, m_string).getTexture();
+            m_value = Deserializer::deserialize(ObjectConverter::Type::Texture, m_string).getTexture();
             m_type = Type::Texture;
         }
 
-        return m_texture;
+        return m_value.as<Texture>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const TextStyle& ObjectConverter::getTextStyle()
     {
+        assert(m_type != Type::None);
         assert(m_type == Type::TextStyle || m_type == Type::String);
 
         if (m_type == Type::String)
         {
-            m_textStyle = decodeTextStyle(m_string);
+            m_value = Deserializer::deserialize(ObjectConverter::Type::TextStyle, m_string).getTextStyle();
             m_type = Type::TextStyle;
         }
 
-        return m_textStyle;
+        return m_value.as<TextStyle>();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const std::shared_ptr<RendererData>& ObjectConverter::getRenderer()
+    {
+        assert(m_type != Type::None);
+        assert(m_type == Type::RendererData || m_type == Type::String);
+
+        if (m_type == Type::String)
+        {
+            m_value = Deserializer::deserialize(ObjectConverter::Type::RendererData, m_string).getRenderer();
+            m_type = Type::RendererData;
+        }
+
+        return m_value.as<std::shared_ptr<RendererData>>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

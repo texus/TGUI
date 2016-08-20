@@ -28,6 +28,7 @@ set(TGUI_SRC
     Renderers/ButtonRenderer.cpp
     Renderers/EditBoxRenderer.cpp
     Renderers/LabelRenderer.cpp
+    Renderers/ListBoxRenderer.cpp
     Renderers/PanelRenderer.cpp
     Renderers/ProgressBarRenderer.cpp
     Renderers/RadioButtonRenderer.cpp
@@ -46,7 +47,7 @@ set(TGUI_SRC
     #Widgets/Grid.cpp
     #Widgets/Knob.cpp
     Widgets/Label.cpp
-    #Widgets/ListBox.cpp
+    Widgets/ListBox.cpp
     #Widgets/MenuBar.cpp
     #Widgets/MessageBox.cpp
     Widgets/Panel.cpp
@@ -58,7 +59,7 @@ set(TGUI_SRC
     Widgets/SpinButton.cpp
     #Widgets/Tab.cpp
     #Widgets/TextBox.cpp
-    #Widgets/ToolTip.cpp
+    Widgets/ToolTip.cpp
     #Widgets/devel/RichTextLabel.cpp
     #Widgets/devel/TableItem.cpp
     #Widgets/devel/TableRow.cpp

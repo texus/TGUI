@@ -8,7 +8,7 @@ Button {
 
 ChatBox {
     BackgroundImage = "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
-    Scrollbar       = "Scrollbar";
+    Scrollbar       = &Scrollbar;
     Padding         = (3, 3, 3, 3);
 }
 
@@ -65,14 +65,15 @@ Label {
 }
 
 ListBox {
-    BackgroundImage         = "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
-    TextColorNormal         = rgb(190, 190, 190);
-    TextColorHover          = rgb(250, 250, 250);
-    HoverBackgroundColor    = rgb(255, 255, 255, 20);
-    SelectedBackgroundColor = rgb( 10, 110, 255);
-    SelectedTextColor       = rgb(255, 255, 255);
-    Padding                 = (3, 3, 3, 3);
-    Scrollbar               = "Scrollbar";
+    TextureBackground            = "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
+    TextColor                    = rgb(190, 190, 190);
+    TextColorHover               = rgb(250, 250, 250);
+    BackgroundColorHover         = rgb(100, 100, 100);
+    SelectedBackgroundColor      = rgb( 10, 110, 255);
+    SelectedBackgroundColorHover = rgb(30, 150, 255);
+    SelectedTextColor            = rgb(255, 255, 255);
+    Padding                      = (3, 3, 3, 3);
+    Scrollbar                    = &Scrollbar;
 }
 
 MenuBar {

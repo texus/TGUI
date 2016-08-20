@@ -32,12 +32,15 @@
 #include <TGUI/Texture.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/Font.hpp>
+#include <TGUI/Any.hpp>
 #include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    class RendererData;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Implicit converter for settable properties
     ///
@@ -54,7 +57,8 @@ namespace tgui
             Number,
             Outline,
             Texture,
-            TextStyle
+            TextStyle,
+            RendererData
         };
 
 
@@ -76,6 +80,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(const sf::String& string)  :
             m_type      {Type::String},
+            m_value     {string},
             m_serialized{true},
             m_string    {string}
         {
@@ -89,8 +94,8 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(Font font) :
-            m_type{Type::Font},
-            m_font{font}
+            m_type {Type::Font},
+            m_value{font}
         {
         }
 
@@ -115,7 +120,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(Color color) :
             m_type {Type::Color},
-            m_color{color}
+            m_value{color}
         {
         }
 
@@ -127,8 +132,8 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(float number) :
-            m_type  {Type::Number},
-            m_number{number}
+            m_type {Type::Number},
+            m_value{number}
         {
         }
 
@@ -140,8 +145,8 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(const Outline& outline) :
-            m_type   {Type::Outline},
-            m_outline{outline}
+            m_type {Type::Outline},
+            m_value{outline}
         {
         }
 
@@ -153,8 +158,8 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(const Texture& texture) :
-            m_type   {Type::Texture},
-            m_texture{texture}
+            m_type {Type::Texture},
+            m_value{texture}
         {
         }
 
@@ -180,8 +185,21 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(TextStyle style) :
-            m_type     {Type::TextStyle},
-            m_textStyle{style}
+            m_type {Type::TextStyle},
+            m_value{style}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Stores render data for later retrieval
+        ///
+        /// @param data  Renderer data to store
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ObjectConverter(std::shared_ptr<RendererData> data) :
+            m_type {Type::RendererData},
+            m_value{data}
         {
         }
 
@@ -262,6 +280,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves the saved renderer data
+        ///
+        /// @return Saved renderer data
+        ///
+        /// This function will assert when something other than a renderer data was saved
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const std::shared_ptr<RendererData>& getRenderer();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves the type of the object that has been stored
         ///
         /// @return The stored object type
@@ -273,15 +302,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
         Type m_type = Type::None;
-        bool m_serialized = false;
+        Any  m_value;
 
-        Font       m_font;
-        Color      m_color;
+        bool m_serialized = false;
         sf::String m_string;
-        float      m_number = 0;
-        Outline    m_outline;
-        Texture    m_texture;
-        TextStyle  m_textStyle;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

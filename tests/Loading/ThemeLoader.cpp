@@ -69,6 +69,22 @@ TEST_CASE("[ThemeLoader]")
         REQUIRE(properties["textcolor"] == "#ABCDEF");
     }
 
+    SECTION("load theme with nested sections")
+    {
+        std::map<sf::String, sf::String> properties = loader->load("resources/ThemeNested.txt", "ListBox1");
+        REQUIRE(properties.size() == 2);
+        REQUIRE(properties["backgroundcolor"] == "White");
+        REQUIRE(properties["scrollbar"] == "thumbcolor = Green;\ntrackcolor = Red;\n");
+
+        properties = loader->load("resources/ThemeNested.txt", "ListBox2");
+        REQUIRE(properties.size() == 1);
+        REQUIRE(properties["scrollbar"] == "thumbcolor = Blue;\n");
+
+        properties = loader->load("resources/ThemeNested.txt", "ListBox3");
+        REQUIRE(properties.size() == 1);
+        REQUIRE(properties["scrollbar"] == "trackcolor = Yellow;\n");
+    }
+
     SECTION("cache")
     {
         REQUIRE(tgui::DefaultThemeLoaderTest::getPropertiesCache(loader).size() == 0);

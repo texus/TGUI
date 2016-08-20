@@ -25,7 +25,8 @@
 #include "../Tests.hpp"
 #include <TGUI/Loading/Serializer.hpp>
 
-TEST_CASE("[Serializer]") {
+TEST_CASE("[Serializer]")
+{
     SECTION("serialize uninitialized object")
     {
         REQUIRE_THROWS_AS(tgui::Serializer::serialize({}), tgui::Exception);
@@ -98,6 +99,34 @@ TEST_CASE("[Serializer]") {
         REQUIRE(tgui::Serializer::serialize({0}) == "0");
         REQUIRE(tgui::Serializer::serialize({1}) == "1");
         REQUIRE(tgui::Serializer::serialize({2.15f}) == "2.15");
+    }
+
+    SECTION("serialize text style")
+    {
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{sf::Text::Regular}) == "Regular");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{sf::Text::Bold}) == "Bold");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{sf::Text::Italic | sf::Text::Underlined}) == "Italic | Underlined");
+
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{256}) == "Regular");
+    }
+
+    SECTION("serialize renderer")
+    {
+        auto childRendererData = std::make_shared<tgui::RendererData>();
+        childRendererData->propertyValuePairs["Num"] = {5};
+
+        auto rendererData = std::make_shared<tgui::RendererData>();
+        rendererData->propertyValuePairs["SomeColor"] = {sf::Color::Red};
+        rendererData->propertyValuePairs["TextStyleProperty"] = {sf::Text::StrikeThrough};
+        rendererData->propertyValuePairs["Nested"] = {childRendererData};
+
+        std::string result = "Nested = {\n"
+                             "Num = 5;\n"
+                             "};\n"
+                             "SomeColor = Red;\n"
+                             "TextStyleProperty = StrikeThrough;\n";
+
+        REQUIRE(tgui::Serializer::serialize(rendererData) == result);
     }
 
     SECTION("custom serialize function")

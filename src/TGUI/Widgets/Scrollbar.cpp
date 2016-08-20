@@ -42,9 +42,9 @@ namespace tgui
         m_renderer = aurora::makeCopied<ScrollbarRenderer>();
         setRenderer(m_renderer->getData());
 
-        getRenderer()->setTrackColor({220, 220, 220});
-        getRenderer()->setThumbColor({245, 245, 245});
-        getRenderer()->setThumbColorHover({255, 255, 255});
+        getRenderer()->setTrackColor({245, 245, 245});
+        getRenderer()->setThumbColor({220, 220, 220});
+        getRenderer()->setThumbColorHover({230, 230, 230});
         getRenderer()->setArrowBackgroundColor({245, 245, 245});
         getRenderer()->setArrowBackgroundColorHover({255, 255, 255});
         getRenderer()->setArrowColor({60, 60, 60});
@@ -851,6 +851,21 @@ namespace tgui
 
             target.draw(arrow, states);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ScrollbarChildWidget::isMouseDown() const
+    {
+        return m_mouseDown;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ScrollbarChildWidget::isMouseDownOnThumb() const
+    {
+        return m_mouseDownOnThumb;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

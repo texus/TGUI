@@ -24,6 +24,8 @@
 
 
 #include <TGUI/Loading/Serializer.hpp>
+#include <TGUI/Loading/DataIO.hpp>
+#include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,6 +184,52 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API std::string serializeTextStyle(ObjectConverter&& value)
+    {
+        sf::Uint32 style = value.getTextStyle();
+
+        if (style == sf::Text::Regular)
+            return "Regular";
+
+        std::string encodedStyle;
+        if (style & sf::Text::Bold)
+            encodedStyle += " | Bold";
+        if (style & sf::Text::Italic)
+            encodedStyle += " | Italic";
+        if (style & sf::Text::Underlined)
+            encodedStyle += " | Underlined";
+        if (style & sf::Text::StrikeThrough)
+            encodedStyle += " | StrikeThrough";
+
+        if (!encodedStyle.empty())
+            return encodedStyle.substr(3);
+        else // Something is wrong with the style parameter
+            return "Regular";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::string serializeRendererData(ObjectConverter&& value)
+    {
+        auto node = std::make_shared<DataIO::Node>();
+        for (auto& pair : value.getRenderer()->propertyValuePairs)
+        {
+            sf::String strValue;
+            if (pair.second.getType() == ObjectConverter::Type::RendererData)
+                strValue = "{\n" + ObjectConverter{pair.second}.getString() + "}";
+            else
+                strValue = ObjectConverter{pair.second}.getString();
+
+            node->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(strValue);
+        }
+
+        std::stringstream ss;
+        DataIO::emit(node, ss);
+        return ss.str();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 namespace tgui
@@ -196,7 +244,9 @@ namespace tgui
             {ObjectConverter::Type::String, serializeString},
             {ObjectConverter::Type::Number, serializeNumber},
             {ObjectConverter::Type::Outline, serializeOutline},
-            {ObjectConverter::Type::Texture, serializeTexture}
+            {ObjectConverter::Type::Texture, serializeTexture},
+            {ObjectConverter::Type::TextStyle, serializeTextStyle},
+            {ObjectConverter::Type::RendererData, serializeRendererData}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

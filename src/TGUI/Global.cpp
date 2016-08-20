@@ -258,54 +258,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string encodeTextStyle(sf::Uint32 style)
-    {
-        if (style == sf::Text::Regular)
-            return "Regular";
-
-        std::string encodedStyle;
-        if (style & sf::Text::Bold)
-            encodedStyle += " | Bold";
-        if (style & sf::Text::Italic)
-            encodedStyle += " | Italic";
-        if (style & sf::Text::Underlined)
-            encodedStyle += " | Underlined";
-        if (style & sf::Text::StrikeThrough)
-            encodedStyle += " | StrikeThrough";
-
-        if (!encodedStyle.empty())
-            return encodedStyle.substr(3);
-        else // Something is wrong with the style parameter
-            return "Regular";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Uint32 decodeTextStyle(const std::string& style)
-    {
-        if (toLower(style) == "regular")
-            return sf::Text::Regular;
-
-        sf::Uint32 decodedStyle = sf::Text::Regular;
-        std::vector<std::string> styles = tgui::split(style, '|');
-        for (auto& elem : styles)
-        {
-            std::string requestedStyle = toLower(trim(elem));
-            if (requestedStyle == "bold")
-                decodedStyle |= sf::Text::Bold;
-            else if (requestedStyle == "italic")
-                decodedStyle |= sf::Text::Italic;
-            else if (requestedStyle == "underlined")
-                decodedStyle |= sf::Text::Underlined;
-            else if (requestedStyle == "strikethrough")
-                decodedStyle |= sf::Text::StrikeThrough;
-        }
-
-        return decodedStyle;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

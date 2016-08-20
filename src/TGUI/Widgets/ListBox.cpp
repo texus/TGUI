@@ -29,6 +29,7 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,6 +40,8 @@ namespace tgui
     ListBox::ListBox()
     {
         m_callback.widgetType = "ListBox";
+        m_type = "ListBox";
+
         m_draggableWidget = true;
 
         addSignal<sf::String, TypeSet<sf::String, sf::String>>("ItemSelected");
@@ -46,52 +49,20 @@ namespace tgui
         addSignal<sf::String, TypeSet<sf::String, sf::String>>("MouseReleased");
         addSignal<sf::String, TypeSet<sf::String, sf::String>>("DoubleClicked");
 
-        m_renderer = std::make_shared<ListBoxRenderer>(this);
-        reload();
+        m_renderer = aurora::makeCopied<ListBoxRenderer>();
+        setRenderer(m_renderer->getData());
+
+        getRenderer()->setBorders({2});
+        getRenderer()->setBackgroundColor({245, 245, 245});
+        getRenderer()->setTextColor({60, 60, 60});
+        getRenderer()->setTextColorHover(sf::Color::Black);
+        getRenderer()->setBackgroundColorHover(sf::Color::White);
+        getRenderer()->setSelectedBackgroundColor({0, 110, 255});
+        getRenderer()->setSelectedBackgroundColorHover({30, 150, 255});
+        getRenderer()->setSelectedTextColor(sf::Color::White);
 
         setSize({150, 154});
         setItemHeight(22);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ListBox::ListBox(const ListBox& listBoxToCopy) :
-        Widget               {listBoxToCopy},
-        m_items              (listBoxToCopy.m_items), // Did not compile in VS2013 when using braces
-        m_itemIds            (listBoxToCopy.m_itemIds), // Did not compile in VS2013 when using braces
-        m_selectedItem       {listBoxToCopy.m_selectedItem},
-        m_hoveringItem       {listBoxToCopy.m_hoveringItem},
-        m_itemHeight         {listBoxToCopy.m_itemHeight},
-        m_requestedTextSize  {listBoxToCopy.m_requestedTextSize},
-        m_textSize           {listBoxToCopy.m_textSize},
-        m_maxItems           {listBoxToCopy.m_maxItems},
-        m_scroll             {Scrollbar::copy(listBoxToCopy.m_scroll)},
-        m_possibleDoubleClick{listBoxToCopy.m_possibleDoubleClick}
-    {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ListBox& ListBox::operator= (const ListBox& right)
-    {
-        if (this != &right)
-        {
-            ListBox temp(right);
-            Widget::operator=(right);
-
-            std::swap(m_items,               temp.m_items);
-            std::swap(m_itemIds,             temp.m_itemIds);
-            std::swap(m_selectedItem,        temp.m_selectedItem);
-            std::swap(m_hoveringItem,        temp.m_hoveringItem);
-            std::swap(m_itemHeight,          temp.m_itemHeight);
-            std::swap(m_requestedTextSize,   temp.m_requestedTextSize);
-            std::swap(m_textSize,            temp.m_textSize);
-            std::swap(m_maxItems,            temp.m_maxItems);
-            std::swap(m_scroll,              temp.m_scroll);
-            std::swap(m_possibleDoubleClick, temp.m_possibleDoubleClick);
-        }
-
-        return *this;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,24 +81,16 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        getRenderer()->m_backgroundTexture.setPosition(getPosition());
+        Borders borders = getRenderer()->getBorders();
+        Padding padding = getRenderer()->getPadding();
 
-        Padding padding = getRenderer()->getScaledPadding();
-
-        if (m_font != nullptr)
+        if (getRenderer()->getFont() != nullptr)
         {
             for (std::size_t i = 0; i < m_items.size(); ++i)
-            {
-                m_items[i].setPosition({getPosition().x + padding.left,
-                                        getPosition().y + padding.top + (i * m_itemHeight) + ((m_itemHeight - m_items[i].getSize().y) / 2.0f)});
-
-                if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-                    m_items[i].setPosition({m_items[i].getPosition().x, m_items[i].getPosition().y - m_scroll->getValue()});
-            }
+                m_items[i].setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].getSize().y) / 2.0f) - m_scroll.getValue()});
         }
 
-        if (m_scroll != nullptr)
-            m_scroll->setPosition(getPosition().x + getSize().x - m_scroll->getSize().x - padding.right, getPosition().y + padding.top);
+        m_scroll.setPosition(getSize().x - borders.right - padding.right - m_scroll.getSize().x, borders.top + padding.top);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,43 +99,11 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        getRenderer()->m_backgroundTexture.setSize(getSize());
+        getRenderer()->getTextureBackground().setSize(getInnerSize());
 
-        // If there is a scrollbar then reinitialize it
-        if (m_scroll != nullptr)
-        {
-            Padding padding = getRenderer()->getScaledPadding();
-            m_scroll->setSize({m_scroll->getSize().x, std::max(0.f, getSize().y - padding.top - padding.bottom)});
-            m_scroll->setLowValue(static_cast<unsigned int>(std::max(0.f, getSize().y - padding.top - padding.bottom)));
-        }
-
-        updatePosition();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ListBox::getFullSize() const
-    {
-        return {getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
-                getSize().y + getRenderer()->getBorders().top + getRenderer()->getBorders().bottom};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setFont(const Font& font)
-    {
-        Widget::setFont(font);
-
-        for (auto& item : m_items)
-            item.setFont(font);
-
-        // Recalculate the text size with the new font
-        if (m_requestedTextSize == 0)
-        {
-            m_textSize = findBestTextSize(getFont(), m_itemHeight * 0.85f);
-            for (auto& item : m_items)
-                item.setTextSize(m_textSize);
-        }
+        Padding padding = getRenderer()->getPadding();
+        m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y - padding.top - padding.bottom)});
+        m_scroll.setLowValue(static_cast<unsigned int>(m_scroll.getSize().y));
 
         updatePosition();
     }
@@ -184,29 +115,18 @@ namespace tgui
         // Check if the item limit is reached (if there is one)
         if ((m_maxItems == 0) || (m_items.size() < m_maxItems))
         {
-            // If there is no scrollbar then there is another limit
-            if (m_scroll == nullptr)
-            {
-                // Calculate the amount of items that fit in the list box
-                std::size_t maximumItems = static_cast<std::size_t>(getSize().y / m_itemHeight);
+            m_scroll.setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
 
-                // Check if the item still fits in the list box
-                if (m_items.size() == maximumItems)
-                    return false;
-            }
-            else // There is a scrollbar so tell it that another item was added
-            {
-                m_scroll->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
-
-                // Scroll down when auto-scrolling is enabled
-                if (m_autoScroll && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-                    m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
-            }
+            // Scroll down when auto-scrolling is enabled
+            if (m_autoScroll && (m_scroll.getLowValue() < m_scroll.getMaximum()))
+                m_scroll.setValue(m_scroll.getMaximum() - m_scroll.getLowValue());
 
             // Create the new item
             Label newItem;
-            newItem.setFont(getFont());
-            newItem.setTextColor(getRenderer()->m_textColor);
+            newItem.getRenderer()->setFont(getRenderer()->getFont());
+            newItem.getRenderer()->setTextColor(getRenderer()->getTextColor());
+            newItem.getRenderer()->setOpacity(getRenderer()->getOpacity());
+            newItem.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
             newItem.setTextSize(m_textSize);
             newItem.setText(itemName);
 
@@ -261,24 +181,15 @@ namespace tgui
             return false;
         }
 
-        if (m_selectedItem >= 0)
-            m_items[m_selectedItem].setTextColor(getRenderer()->m_textColor);
+        updateSelectedItem(static_cast<int>(index));
 
-        // Select the item
-        m_selectedItem = static_cast<int>(index);
-        m_items[m_selectedItem].setTextColor(getRenderer()->m_selectedTextColor);
+        // Move the scrollbar
+        if (m_selectedItem * getItemHeight() < m_scroll.getValue())
+            m_scroll.setValue(m_selectedItem * getItemHeight());
+        else if ((m_selectedItem + 1) * getItemHeight() > m_scroll.getValue() + m_scroll.getLowValue())
+            m_scroll.setValue((m_selectedItem + 1) * getItemHeight() - m_scroll.getLowValue());
 
-        // Move the scrollbar if needed
-        if (m_scroll)
-        {
-            if (m_selectedItem * getItemHeight() < m_scroll->getValue())
-                m_scroll->setValue(m_selectedItem * getItemHeight());
-            else if ((m_selectedItem + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getLowValue())
-                m_scroll->setValue((m_selectedItem + 1) * getItemHeight() - m_scroll->getLowValue());
-
-            updatePosition();
-        }
-
+        updatePosition();
         return true;
     }
 
@@ -286,11 +197,7 @@ namespace tgui
 
     void ListBox::deselectItem()
     {
-        if (m_selectedItem >= 0)
-        {
-            m_items[m_selectedItem].setTextColor(getRenderer()->m_textColor);
-            m_selectedItem = -1;
-        }
+        updateSelectedItem(-1);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -330,28 +237,19 @@ namespace tgui
         m_items.erase(m_items.begin() + index);
         m_itemIds.erase(m_itemIds.begin() + index);
 
-        // If there is a scrollbar then tell it that an item was removed
-        if (m_scroll != nullptr)
-        {
-            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-            updatePosition();
-        }
+        m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+        updatePosition();
+
+        // Keep it simple and forget hover when an item is removed
+        updateHoveringItem(-1);
 
         // Check if the selected item should change
         if (m_selectedItem == static_cast<int>(index))
             m_selectedItem = -1;
         else if (m_selectedItem > static_cast<int>(index))
         {
-            --m_selectedItem;
-            m_items[m_selectedItem].setTextColor(getRenderer()->m_selectedTextColor);
+            updateSelectedItem(m_selectedItem - 1);
         }
-
-        // Check if the hovering item should change
-        if (m_hoveringItem >= static_cast<int>(m_items.size()))
-            m_hoveringItem = -1;
-
-        if (m_hoveringItem >= 0)
-            m_items[m_hoveringItem].setTextColor(getRenderer()->m_hoverTextColor);
 
         return true;
     }
@@ -368,9 +266,7 @@ namespace tgui
         m_selectedItem = -1;
         m_hoveringItem = -1;
 
-        // If there is a scrollbar then tell it that all item were removed
-        if (m_scroll != nullptr)
-            m_scroll->setMaximum(0);
+        m_scroll.setMaximum(0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -446,7 +342,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String> ListBox::getItems()
+    std::size_t ListBox::getItemCount() const
+    {
+        return m_items.size();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<sf::String> ListBox::getItems() const
     {
         std::vector<sf::String> items;
         for (auto& label : m_items)
@@ -457,47 +360,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::vector<sf::String>& ListBox::getItemIds()
+    const std::vector<sf::String>& ListBox::getItemIds() const
     {
         return m_itemIds;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBox::setScrollbar(Scrollbar::Ptr scrollbar)
-    {
-        m_scroll = scrollbar;
-
-        if (m_scroll)
-        {
-            Padding padding = getRenderer()->getScaledPadding();
-            m_scroll->setSize({m_scroll->getSize().x, std::max(0.f, getSize().y - padding.top - padding.bottom)});
-            m_scroll->setLowValue(static_cast<unsigned int>(std::max(0.f, getSize().y - padding.top - padding.bottom)));
-            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-            m_scroll->setPosition(getPosition().x + getSize().x - m_scroll->getSize().x, getPosition().y);
-        }
-        else // The scrollbar was removed
-        {
-            // When the items no longer fit inside the list box then we need to remove some
-            if ((m_items.size() * m_itemHeight) > static_cast<std::size_t>(getSize().y))
-            {
-                // Calculate ho many items fit inside the list box
-                m_maxItems = static_cast<std::size_t>(getSize().y / m_itemHeight);
-
-                // Remove the items that did not fit inside the list box
-                m_items.erase(m_items.begin() + m_maxItems, m_items.end());
-                m_itemIds.erase(m_itemIds.begin() + m_maxItems, m_itemIds.end());
-            }
-        }
-
-        updatePosition();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Scrollbar::Ptr ListBox::getScrollbar() const
-    {
-        return m_scroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,31 +373,13 @@ namespace tgui
         m_itemHeight = itemHeight;
         if (m_requestedTextSize == 0)
         {
-            m_textSize = findBestTextSize(getFont(), itemHeight * 0.85f);
+            m_textSize = findBestTextSize(getRenderer()->getFont(), itemHeight * 0.85f);
             for (auto& item : m_items)
                 item.setTextSize(m_textSize);
         }
 
-        // Some items might be removed when there is no scrollbar
-        if (m_scroll == nullptr)
-        {
-            // When the items no longer fit inside the list box then we need to remove some
-            if ((m_items.size() * m_itemHeight) > static_cast<std::size_t>(getSize().y))
-            {
-                // Calculate ho many items fit inside the list box
-                m_maxItems = static_cast<std::size_t>(getSize().y / m_itemHeight);
-
-                // Remove the items that did not fit inside the list box
-                m_items.erase(m_items.begin() + m_maxItems, m_items.end());
-                m_itemIds.erase(m_itemIds.begin() + m_maxItems, m_itemIds.end());
-            }
-        }
-        else // There is a scrollbar
-        {
-            // Set the maximum of the scrollbar
-            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-        }
-
+        m_scroll.setScrollAmount(m_itemHeight);
+        m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         updatePosition();
     }
 
@@ -552,7 +399,7 @@ namespace tgui
         if (textSize)
             m_textSize = textSize;
         else
-            m_textSize = findBestTextSize(getFont(), m_itemHeight * 0.85f);
+            m_textSize = findBestTextSize(getRenderer()->getFont(), m_itemHeight * 0.85f);
 
         for (auto& item : m_items)
             item.setTextSize(m_textSize);
@@ -581,13 +428,16 @@ namespace tgui
             m_items.erase(m_items.begin() + m_maxItems, m_items.end());
             m_itemIds.erase(m_itemIds.begin() + m_maxItems, m_itemIds.end());
 
-            // If there is a scrollbar then tell it that the number of items was changed
-            if (m_scroll != nullptr)
-            {
-                m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-                updatePosition();
-            }
+            m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+            updatePosition();
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t ListBox::getMaximumItems() const
+    {
+        return m_maxItems;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -599,23 +449,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::setOpacity(float opacity)
+    bool ListBox::getAutoScroll() const
     {
-        Widget::setOpacity(opacity);
-
-        getRenderer()->m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_opacity * 255)});
-
-        if (m_scroll != nullptr)
-            m_scroll->setOpacity(m_opacity);
-
-        updateItemColors();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f ListBox::getWidgetOffset() const
-    {
-        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
+        return m_autoScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -629,52 +465,54 @@ namespace tgui
 
     void ListBox::leftMousePressed(float x, float y)
     {
-        // If there is a scrollbar then pass the event
-        bool mouseOnScrollbar = false;
-        if (m_scroll != nullptr)
+        x -= getPosition().x;
+        y -= getPosition().y;
+
+        if (m_scroll.mouseOnWidget(x, y))
         {
-            if (m_scroll->mouseOnWidget(x, y))
-            {
-                m_scroll->leftMousePressed(x, y);
-                mouseOnScrollbar = true;
-            }
+            m_scroll.leftMousePressed(x, y);
+            updatePosition();
         }
-
-        // If the click occurred on the list box
-        Padding padding = getRenderer()->getScaledPadding();
-        if (!mouseOnScrollbar && (sf::FloatRect{getPosition().x + padding.left, getPosition().y + padding.top, getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}.contains(x, y)))
+        else
         {
-            m_mouseDown = true;
-
-            if (m_hoveringItem >= 0)
+            Borders borders = getRenderer()->getBorders();
+            Padding padding = getRenderer()->getPadding();
+            if (sf::FloatRect{borders.left + padding.left, borders.top + padding.top, getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}.contains(x, y))
             {
-                m_callback.text = m_items[m_hoveringItem].getText();
-                m_callback.itemId = m_itemIds[m_hoveringItem];
-                sendSignal("MousePressed", m_items[m_hoveringItem].getText(), m_items[m_hoveringItem].getText(), m_itemIds[m_hoveringItem]);
-            }
+                y -= borders.top + padding.top;
+                m_mouseDown = true;
 
-            if (m_selectedItem != m_hoveringItem)
-            {
-                m_possibleDoubleClick = false;
-
-                if (m_selectedItem >= 0)
-                    m_items[m_selectedItem].setTextColor(getRenderer()->m_textColor);
-
-                m_selectedItem = m_hoveringItem;
-
-                if (m_selectedItem >= 0)
-                {
-                    m_items[m_selectedItem].setTextColor(getRenderer()->m_selectedTextColor);
-
-                    m_callback.text  = m_items[m_selectedItem].getText();
-                    m_callback.itemId = m_itemIds[m_selectedItem];
-                    sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
-                }
+                int hoveringItem = static_cast<int>(((y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
+                if (hoveringItem < static_cast<int>(m_items.size()))
+                    updateHoveringItem(hoveringItem);
                 else
+                    updateHoveringItem(-1);
+
+                if (m_hoveringItem >= 0)
                 {
-                    m_callback.text  = "";
-                    m_callback.itemId = "";
-                    sendSignal("ItemSelected", "", "", "");
+                    m_callback.text = m_items[m_hoveringItem].getText();
+                    m_callback.itemId = m_itemIds[m_hoveringItem];
+                    sendSignal("MousePressed", m_items[m_hoveringItem].getText(), m_items[m_hoveringItem].getText(), m_itemIds[m_hoveringItem]);
+                }
+
+                if (m_selectedItem != m_hoveringItem)
+                {
+                    m_possibleDoubleClick = false;
+
+                    updateSelectedItem(m_hoveringItem);
+
+                    if (m_selectedItem >= 0)
+                    {
+                        m_callback.text = m_items[m_selectedItem].getText();
+                        m_callback.itemId = m_itemIds[m_selectedItem];
+                        sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                    }
+                    else
+                    {
+                        m_callback.text = "";
+                        m_callback.itemId = "";
+                        sendSignal("ItemSelected", "", "", "");
+                    }
                 }
             }
         }
@@ -684,38 +522,11 @@ namespace tgui
 
     void ListBox::leftMouseReleased(float x, float y)
     {
-        // If there is a scrollbar then pass it the event
-        if (m_scroll != nullptr)
-        {
-            // Remember the old scrollbar value
-            unsigned int oldValue = m_scroll->getValue();
+        x -= getPosition().x;
+        y -= getPosition().y;
 
-            // Pass the event
-            m_scroll->leftMouseReleased(x, y);
-
-            // Check if the scrollbar value was incremented (you have pressed on the down arrow)
-            if (m_scroll->getValue() == oldValue + 1)
-            {
-                // Decrement the value
-                m_scroll->setValue(m_scroll->getValue()-1);
-
-                // Scroll down with the whole item height instead of with a single pixel
-                m_scroll->setValue(m_scroll->getValue() + m_itemHeight - (m_scroll->getValue() % m_itemHeight));
-            }
-            else if (m_scroll->getValue() == oldValue - 1) // Check if the scrollbar value was decremented (you have pressed on the up arrow)
-            {
-                // increment the value
-                m_scroll->setValue(m_scroll->getValue()+1);
-
-                // Scroll up with the whole item height instead of with a single pixel
-                if (m_scroll->getValue() % m_itemHeight > 0)
-                    m_scroll->setValue(m_scroll->getValue() - (m_scroll->getValue() % m_itemHeight));
-                else
-                    m_scroll->setValue(m_scroll->getValue() - m_itemHeight);
-            }
-
-            updatePosition();
-        }
+        m_scroll.leftMouseReleased(x, y);
+        updatePosition();
 
         if (m_mouseDown)
         {
@@ -746,110 +557,60 @@ namespace tgui
 
     void ListBox::mouseMoved(float x, float y)
     {
+        x -= getPosition().x;
+        y -= getPosition().y;
+
         if (!m_mouseHover)
             mouseEnteredWidget();
 
-        // If there is a scrollbar then pass the event
-        bool mouseOnScrollbar = false;
-        if (m_scroll != nullptr)
+        updateHoveringItem(-1);
+
+        // Check if the mouse event should go to the scrollbar
+        if ((m_scroll.isMouseDown() && m_scroll.isMouseDownOnThumb()) || m_scroll.mouseOnWidget(x, y))
         {
-            // Check if you are dragging the thumb of the scrollbar
-            if ((m_scroll->m_mouseDown) && (m_scroll->m_mouseDownOnThumb))
-            {
-                // Pass the event, even when the mouse is not on top of the scrollbar
-                m_scroll->mouseMoved(x, y);
-
-                updatePosition();
-                mouseOnScrollbar = true;
-            }
-            else // You are just moving the mouse
-            {
-                // When the mouse is on top of the scrollbar then pass the mouse move event
-                if (m_scroll->mouseOnWidget(x, y))
-                {
-                    m_scroll->mouseMoved(x, y);
-
-                    // The mouse is no longer on top of an item
-                    if ((m_hoveringItem >= 0) && (m_selectedItem != m_hoveringItem))
-                    {
-                        m_items[m_hoveringItem].setTextColor(getRenderer()->m_textColor);
-                        m_hoveringItem = -1;
-                    }
-
-                    updatePosition();
-                    mouseOnScrollbar = true;
-                }
-            }
+            m_scroll.mouseMoved(x, y);
+            updatePosition();
         }
-
-        // Find out on which item the mouse is hovering
-        Padding padding = getRenderer()->getScaledPadding();
-        if (!mouseOnScrollbar && (sf::FloatRect{getPosition().x + padding.left, getPosition().y + padding.top, getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}.contains(x, y)))
+        else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
-            y -= padding.top;
+            m_scroll.mouseNoLongerOnWidget();
 
-            if ((m_hoveringItem >= 0) && (m_selectedItem != m_hoveringItem))
-                m_items[m_hoveringItem].setTextColor(getRenderer()->m_textColor);
-
-            // Check if there is a scrollbar or whether it is hidden
-            if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
+            // Find out on which item the mouse is hovering
+            Borders borders = getRenderer()->getBorders();
+            Padding padding = getRenderer()->getPadding();
+            if (sf::FloatRect{borders.left + padding.left, borders.top + padding.top, getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}.contains(x, y))
             {
-                // Check if the mouse is on the first (perhaps partially) visible item
-                if (y - getPosition().y <= (m_itemHeight - (m_scroll->getValue() % m_itemHeight)))
+                y -= borders.top + padding.top;
+
+                int hoveringItem = static_cast<int>(((y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
+                if (hoveringItem < static_cast<int>(m_items.size()))
+                    updateHoveringItem(hoveringItem);
+                else
+                    updateHoveringItem(-1);
+
+                // If the mouse is held down then select the item below the mouse
+                if (m_mouseDown)
                 {
-                    m_hoveringItem = static_cast<int>(m_scroll->getValue() / m_itemHeight);
-                }
-                else // The mouse is not on the first visible item
-                {
-                    // Calculate on what item the mouse is standing
-                    if ((m_scroll->getValue() % m_itemHeight) == 0)
-                        m_hoveringItem = static_cast<int>((y - getPosition().y) / m_itemHeight + (m_scroll->getValue() / m_itemHeight));
-                    else
-                        m_hoveringItem = static_cast<int>((((y - getPosition().y) - (m_itemHeight - (m_scroll->getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll->getValue() / m_itemHeight) + 1);
-                }
-            }
-            else // There is no scrollbar or it is not displayed
-            {
-                // Calculate on which item the mouse is standing
-                m_hoveringItem = static_cast<int>((y - getPosition().y) / m_itemHeight);
-
-                // Check if the mouse is behind the last item
-                if (m_hoveringItem > static_cast<int>(m_items.size())-1)
-                    m_hoveringItem = -1;
-            }
-
-            // If the mouse is held down then select the item below the mouse
-            if (m_mouseDown)
-            {
-                if (m_selectedItem != m_hoveringItem)
-                {
-                    m_possibleDoubleClick = false;
-
-                    if (m_selectedItem >= 0)
-                        m_items[m_selectedItem].setTextColor(getRenderer()->m_textColor);
-
-                    m_selectedItem = m_hoveringItem;
-
-                    if (m_selectedItem >= 0)
+                    if (m_selectedItem != m_hoveringItem)
                     {
-                        m_items[m_selectedItem].setTextColor(getRenderer()->m_selectedTextColor);
+                        m_possibleDoubleClick = false;
 
-                        m_callback.text = m_items[m_selectedItem].getText();
-                        m_callback.itemId = m_itemIds[m_selectedItem];
-                        sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
-                    }
-                    else
-                    {
-                        m_callback.text = "";
-                        m_callback.itemId = "";
-                        sendSignal("ItemSelected", "", "", "");
+                        updateSelectedItem(m_hoveringItem);
+
+                        if (m_selectedItem >= 0)
+                        {
+                            m_callback.text = m_items[m_selectedItem].getText();
+                            m_callback.itemId = m_itemIds[m_selectedItem];
+                            sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                        }
+                        else
+                        {
+                            m_callback.text = "";
+                            m_callback.itemId = "";
+                            sendSignal("ItemSelected", "", "", "");
+                        }
                     }
                 }
-            }
-            else // The mouse isn't held down, just change the text color to hover
-            {
-                if ((m_hoveringItem >= 0) && (m_selectedItem != m_hoveringItem))
-                    m_items[m_hoveringItem].setTextColor(getRenderer()->m_hoverTextColor);
             }
         }
     }
@@ -858,31 +619,13 @@ namespace tgui
 
     void ListBox::mouseWheelMoved(int delta, int x, int y)
     {
-        // Only do something when there is a scrollbar
-        if (m_scroll != nullptr)
+        if (m_scroll.getLowValue() < m_scroll.getMaximum())
         {
-            if (m_scroll->getLowValue() < m_scroll->getMaximum())
-            {
-                // Check if you are scrolling down
-                if (delta < 0)
-                {
-                    // Scroll down
-                    m_scroll->setValue(m_scroll->getValue() + (static_cast<unsigned int>(-delta) * m_itemHeight));
-                }
-                else // You are scrolling up
-                {
-                    unsigned int change = static_cast<unsigned int>(delta) * m_itemHeight;
+            m_scroll.mouseWheelMoved(delta, 0, 0);
+            updatePosition();
 
-                    // Scroll up
-                    if (change < m_scroll->getValue())
-                        m_scroll->setValue(m_scroll->getValue() - change);
-                    else
-                        m_scroll->setValue(0);
-                }
-
-                updatePosition();
-                mouseMoved(static_cast<float>(x), static_cast<float>(y));
-            }
+            // Update on which item the mouse is hovering
+            mouseMoved(static_cast<float>(x), static_cast<float>(y));
         }
     }
 
@@ -893,14 +636,9 @@ namespace tgui
         if (m_mouseHover)
             mouseLeftWidget();
 
-        if (m_scroll != nullptr)
-            m_scroll->m_mouseHover = false;
+        m_scroll.mouseNoLongerOnWidget();
 
-        if ((m_hoveringItem >= 0) && (m_selectedItem != m_hoveringItem))
-        {
-            m_items[m_hoveringItem].setTextColor(getRenderer()->m_textColor);
-            m_hoveringItem = -1;
-        }
+        updateHoveringItem(-1);
 
         m_possibleDoubleClick = false;
     }
@@ -910,52 +648,165 @@ namespace tgui
     void ListBox::mouseNoLongerDown()
     {
         Widget::mouseNoLongerDown();
-        if (m_scroll != nullptr)
-            m_scroll->mouseNoLongerDown();
+        m_scroll.mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::updateItemColors()
+    void ListBox::rendererChanged(const std::string& property, ObjectConverter& value)
     {
-        for (auto& item : m_items)
-            item.setTextColor(calcColorOpacity(getRenderer()->m_textColor, getOpacity()));
+        if ((property == "borders") || (property == "padding"))
+        {
+            updateSize();
+        }
+        else if ((property == "textcolor") || (property == "textcolorhover") || (property == "selectedtextcolor") || (property == "selectedtextcolorhover"))
+        {
+            updateItemColorsAndStyle();
+        }
+        else if (property == "texturebackground")
+        {
+            value.getTexture().setSize(getInnerSize());
+            value.getTexture().setOpacity(getRenderer()->getOpacity());
+        }
+        else if (property == "textstyle")
+        {
+            for (auto& item : m_items)
+                item.getRenderer()->setTextStyle(value.getTextStyle());
+
+            if ((m_selectedItem >= 0) && (getRenderer()->getSelectedTextStyle().isSet()))
+                m_items[m_selectedItem].getRenderer()->setTextStyle(getRenderer()->getSelectedTextStyle());
+        }
+        else if (property == "selectedtextstyle")
+        {
+            if (m_selectedItem >= 0)
+            {
+                if (value.getTextStyle().isSet())
+                    m_items[m_selectedItem].getRenderer()->setTextStyle(value.getTextStyle());
+                else
+                    m_items[m_selectedItem].getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+            }
+        }
+        else if (property == "scrollbar")
+        {
+            m_scroll.setRenderer(value.getRenderer());
+        }
+        else if (property == "opacity")
+        {
+            float opacity = value.getNumber();
+
+            getRenderer()->getTextureBackground().setOpacity(opacity);
+            m_scroll.getRenderer()->setOpacity(opacity);
+            for (auto& item : m_items)
+                item.getRenderer()->setOpacity(opacity);
+        }
+        else if (property == "font")
+        {
+            std::shared_ptr<sf::Font> font = value.getFont();
+            for (auto& item : m_items)
+                item.getRenderer()->setFont(font);
+
+            // Recalculate the text size with the new font
+            if (m_requestedTextSize == 0)
+            {
+                m_textSize = findBestTextSize(font, m_itemHeight * 0.85f);
+                for (auto& item : m_items)
+                    item.setTextSize(m_textSize);
+            }
+
+            updatePosition();
+        }
+        else if ((property != "bordercolor")
+              && (property != "backgroundcolor")
+              && (property != "backgroundcolorhover")
+              && (property != "selectedbackgroundcolor")
+              && (property != "selectedbackgroundcolorhover"))
+        {
+            Widget::rendererChanged(property, value);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ListBox::getInnerSize() const
+    {
+        Borders borders = getRenderer()->getBorders();
+        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::updateSelectedAndHoveringItemColorsAndStyle()
+    {
+        if (m_selectedItem >= 0)
+        {
+            if ((m_selectedItem == m_hoveringItem) && getRenderer()->getSelectedTextColorHover().isSet())
+                m_items[m_selectedItem].getRenderer()->setTextColor(getRenderer()->getSelectedTextColorHover());
+            else if (getRenderer()->getSelectedTextColor().isSet())
+                m_items[m_selectedItem].getRenderer()->setTextColor(getRenderer()->getSelectedTextColor());
+
+            if (getRenderer()->getSelectedTextStyle().isSet())
+                m_items[m_selectedItem].getRenderer()->setTextStyle(getRenderer()->getSelectedTextStyle());
+        }
 
         if ((m_hoveringItem >= 0) && (m_selectedItem != m_hoveringItem))
-            m_items[m_hoveringItem].setTextColor(calcColorOpacity(getRenderer()->m_hoverTextColor, getOpacity()));
-
-        if (m_selectedItem >= 0)
-            m_items[m_selectedItem].setTextColor(calcColorOpacity(getRenderer()->m_selectedTextColor, getOpacity()));
+        {
+            if (getRenderer()->getTextColorHover().isSet())
+                m_items[m_hoveringItem].getRenderer()->setTextColor(getRenderer()->getTextColorHover());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::reload(const std::string& primary, const std::string& secondary, bool force)
+    void ListBox::updateItemColorsAndStyle()
     {
-        getRenderer()->setBorders({2, 2, 2, 2});
-        getRenderer()->setBackgroundColor({245, 245, 245});
-        getRenderer()->setTextColorNormal({60, 60, 60});
-        getRenderer()->setTextColorHover({0, 0, 0});
-        getRenderer()->setHoverBackgroundColor({255, 255, 255});
-        getRenderer()->setSelectedBackgroundColor({0, 110, 255});
-        getRenderer()->setSelectedTextColor({255, 255, 255});
-        getRenderer()->setBorderColor({0, 0, 0});
-        getRenderer()->setBackgroundTexture({});
-
-        if (m_theme && primary != "")
+        for (auto& item : m_items)
         {
-            getRenderer()->setBorders({0, 0, 0, 0});
-            getRenderer()->setHoverBackgroundColor(sf::Color::Transparent);
+            item.getRenderer()->setTextColor(getRenderer()->getTextColor());
+            item.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+        }
 
-            Widget::reload(primary, secondary, force);
+        updateSelectedAndHoveringItemColorsAndStyle();
+    }
 
-            if (force)
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::updateHoveringItem(int item)
+    {
+        if (m_hoveringItem != item)
+        {
+            if (m_hoveringItem >= 0)
             {
-                if (getRenderer()->m_backgroundTexture.isLoaded())
-                    setSize(getRenderer()->m_backgroundTexture.getImageSize());
+                if ((m_selectedItem == m_hoveringItem) && getRenderer()->getSelectedTextColor().isSet())
+                    m_items[m_hoveringItem].getRenderer()->setTextColor(getRenderer()->getSelectedTextColor());
+                else
+                    m_items[m_hoveringItem].getRenderer()->setTextColor(getRenderer()->getTextColor());
             }
-            else
-                updateSize();
+
+            m_hoveringItem = item;
+
+            updateSelectedAndHoveringItemColorsAndStyle();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListBox::updateSelectedItem(int item)
+    {
+        if (m_selectedItem != item)
+        {
+            if (m_selectedItem >= 0)
+            {
+                if ((m_selectedItem == m_hoveringItem) && getRenderer()->getTextColorHover().isSet())
+                    m_items[m_selectedItem].getRenderer()->setTextColor(getRenderer()->getTextColorHover());
+                else
+                    m_items[m_selectedItem].getRenderer()->setTextColor(getRenderer()->getTextColor());
+
+                m_items[m_selectedItem].getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+            }
+
+            m_selectedItem = item;
+
+            updateSelectedAndHoveringItemColorsAndStyle();
         }
     }
 
@@ -977,441 +828,76 @@ namespace tgui
 
     void ListBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        // Draw the background
-        getRenderer()->draw(target, states);
-
-        const sf::View& view = target.getView();
-
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / view.getSize().x;
-        float scaleViewY = target.getSize().y / view.getSize().y;
-
-        Padding padding = getRenderer()->getScaledPadding();
-
-        // Get the global position
-        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + padding.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                        ((getAbsolutePosition().y + padding.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-
-        sf::Vector2f bottomRightPosition = {((getAbsolutePosition().x + getSize().x - padding.right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                            ((getAbsolutePosition().y + getSize().y - padding.bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-
-        if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-            bottomRightPosition.x -= m_scroll->getSize().x;
-
-        // Get the old clipping area
-        GLint scissor[4];
-        glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-        // Calculate the clipping area
-        GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-        GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-        if (scissorRight < scissorLeft)
-            scissorRight = scissorLeft;
-        else if (scissorBottom < scissorTop)
-            scissorTop = scissorBottom;
-
-        // Set the clipping area
-        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
-        // Find out which items are visible
-        std::size_t firstItem = 0;
-        std::size_t lastItem = m_items.size();
-        if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-        {
-            firstItem = m_scroll->getValue() / m_itemHeight;
-            lastItem = (m_scroll->getValue() + m_scroll->getLowValue()) / m_itemHeight;
-
-            // Show another item when the scrollbar is standing between two items
-            if ((m_scroll->getValue() + m_scroll->getLowValue()) % m_itemHeight != 0)
-                ++lastItem;
-        }
-
-        // Draw the background of the selected item
-        if (m_selectedItem >= 0)
-        {
-            sf::RectangleShape back({getSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)});
-            back.setFillColor(calcColorOpacity(getRenderer()->m_selectedBackgroundColor, getOpacity()));
-            back.setPosition({getPosition().x + padding.left, getPosition().y + padding.top + (m_selectedItem * m_itemHeight)});
-
-            if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-                back.setPosition({back.getPosition().x, back.getPosition().y - m_scroll->getValue()});
-
-            target.draw(back, states);
-        }
-
-        // Draw the background of the item on which the mouse is standing
-        if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && (getRenderer()->m_hoverBackgroundColor != sf::Color::Transparent))
-        {
-            sf::RectangleShape back({getSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)});
-            back.setFillColor(calcColorOpacity(getRenderer()->m_hoverBackgroundColor, getOpacity()));
-            back.setPosition({getPosition().x + padding.left, getPosition().y + padding.top + (m_hoveringItem * m_itemHeight)});
-
-            if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-                back.setPosition({back.getPosition().x, back.getPosition().y - m_scroll->getValue()});
-
-            target.draw(back, states);
-        }
-
-        // Draw the items
-        for (std::size_t i = firstItem; i < lastItem; ++i)
-            target.draw(m_items[i], states);
-
-        // Reset the old clipping area
-        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
-
-        // Draw the scrollbar
-        if (m_scroll != nullptr)
-            target.draw(*m_scroll, states);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setProperty(std::string property, const std::string& value)
-    {
-        property = toLower(property);
-
-        if (property == "borders")
-            setBorders(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "padding")
-            setPadding(Deserializer::deserialize(ObjectConverter::Type::Borders, value).getBorders());
-        else if (property == "backgroundcolor")
-            setBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "textcolor")
-            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "textcolornormal")
-            setTextColorNormal(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "textcolorhover")
-            setTextColorHover(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "hoverbackgroundcolor")
-            setHoverBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "selectedbackgroundcolor")
-            setSelectedBackgroundColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "selectedtextcolor")
-            setSelectedTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "bordercolor")
-            setBorderColor(Deserializer::deserialize(ObjectConverter::Type::Color, value).getColor());
-        else if (property == "backgroundimage")
-            setBackgroundTexture(Deserializer::deserialize(ObjectConverter::Type::Texture, value).getTexture());
-        else if (property == "scrollbar")
-        {
-            if (toLower(value) == "none")
-                m_listBox->setScrollbar(nullptr);
-            else
-            {
-                if (m_listBox->getTheme() == nullptr)
-                    throw Exception{"Failed to load scrollbar, ListBox has no connected theme to load the scrollbar with"};
-
-                m_listBox->setScrollbar(m_listBox->getTheme()->internalLoad(m_listBox->m_primaryLoadingParameter,
-                                                                            Deserializer::deserialize(ObjectConverter::Type::String, value).getString()));
-            }
-        }
-        else
-            WidgetRenderer::setProperty(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setProperty(std::string property, ObjectConverter&& value)
-    {
-        property = toLower(property);
-
-        if (value.getType() == ObjectConverter::Type::Borders)
-        {
-            if (property == "borders")
-                setBorders(value.getBorders());
-            else if (property == "padding")
-                setPadding(value.getBorders());
-            else
-                return WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Color)
-        {
-            if (property == "backgroundcolor")
-                setBackgroundColor(value.getColor());
-            else if (property == "textcolor")
-                setTextColor(value.getColor());
-            else if (property == "textcolornormal")
-                setTextColorNormal(value.getColor());
-            else if (property == "textcolorhover")
-                setTextColorHover(value.getColor());
-            else if (property == "hoverbackgroundcolor")
-                setHoverBackgroundColor(value.getColor());
-            else if (property == "selectedbackgroundcolor")
-                setSelectedBackgroundColor(value.getColor());
-            else if (property == "selectedtextcolor")
-                setSelectedTextColor(value.getColor());
-            else if (property == "bordercolor")
-                setBorderColor(value.getColor());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::Texture)
-        {
-            if (property == "backgroundimage")
-                setBackgroundTexture(value.getTexture());
-            else
-                WidgetRenderer::setProperty(property, std::move(value));
-        }
-        else if (value.getType() == ObjectConverter::Type::String)
-        {
-            if (property == "scrollbar")
-            {
-                if (toLower(value.getString()) == "none")
-                    m_listBox->setScrollbar(nullptr);
-                else
-                {
-                    if (m_listBox->getTheme() == nullptr)
-                        throw Exception{"Failed to load scrollbar, ListBox has no connected theme to load the scrollbar with"};
-
-                    m_listBox->setScrollbar(m_listBox->getTheme()->internalLoad(m_listBox->getPrimaryLoadingParameter(), value.getString()));
-                }
-            }
-        }
-        else
-            WidgetRenderer::setProperty(property, std::move(value));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ObjectConverter ListBoxRenderer::getProperty(std::string property) const
-    {
-        property = toLower(property);
-
-        if (property == "borders")
-            return m_borders;
-        else if (property == "padding")
-            return m_padding;
-        else if (property == "backgroundcolor")
-            return m_backgroundColor;
-        else if (property == "textcolor")
-            return m_textColor;
-        else if (property == "textcolornormal")
-            return m_textColor;
-        else if (property == "textcolorhover")
-            return m_hoverTextColor;
-        else if (property == "hoverbackgroundcolor")
-            return m_hoverBackgroundColor;
-        else if (property == "selectedbackgroundcolor")
-            return m_selectedBackgroundColor;
-        else if (property == "selectedtextcolor")
-            return m_selectedTextColor;
-        else if (property == "bordercolor")
-            return m_borderColor;
-        else if (property == "backgroundimage")
-            return m_backgroundTexture;
-        else
-            return WidgetRenderer::getProperty(property);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::map<std::string, ObjectConverter> ListBoxRenderer::getPropertyValuePairs() const
-    {
-        auto pairs = WidgetRenderer::getPropertyValuePairs();
-
-        if (m_backgroundTexture.isLoaded())
-            pairs["BackgroundImage"] = m_backgroundTexture;
-        else
-            pairs["BackgroundColor"] = m_backgroundColor;
-
-        pairs["TextColorNormal"] = m_textColor;
-        pairs["TextColorHover"] = m_hoverTextColor;
-        pairs["HoverBackgroundColor"] = m_hoverBackgroundColor;
-        pairs["SelectedBackgroundColor"] = m_selectedBackgroundColor;
-        pairs["SelectedTextColor"] = m_selectedTextColor;
-        pairs["BorderColor"] = m_borderColor;
-        pairs["Borders"] = m_borders;
-        pairs["Padding"] = m_padding;
-        return pairs;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setBackgroundColor(const Color& backgroundColor)
-    {
-        m_backgroundColor = backgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setTextColor(const Color& color)
-    {
-        setTextColorNormal(color);
-        setTextColorHover(color);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setTextColorNormal(const Color& color)
-    {
-        m_textColor = color;
-        m_listBox->updateItemColors();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setTextColorHover(const Color& color)
-    {
-        m_hoverTextColor = color;
-        m_listBox->updateItemColors();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setHoverBackgroundColor(const Color& hoverBackgroundColor)
-    {
-        m_hoverBackgroundColor = hoverBackgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setSelectedBackgroundColor(const Color& selectedBackgroundColor)
-    {
-        m_selectedBackgroundColor = selectedBackgroundColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setSelectedTextColor(const Color& selectedTextColor)
-    {
-        m_selectedTextColor = selectedTextColor;
-        m_listBox->updateItemColors();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setBorderColor(const Color& borderColor)
-    {
-        m_borderColor = borderColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setBackgroundTexture(const Texture& texture)
-    {
-        m_backgroundTexture = texture;
-        if (m_backgroundTexture.isLoaded())
-        {
-            m_backgroundTexture.setPosition(m_listBox->getPosition());
-            m_backgroundTexture.setSize(m_listBox->getSize());
-            m_backgroundTexture.setColor({255, 255, 255, static_cast<sf::Uint8>(m_listBox->getOpacity() * 255)});
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setPadding(const Padding& padding)
-    {
-        WidgetPadding::setPadding(padding);
-
-        m_listBox->updateSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        // Draw the background
-        if (m_backgroundTexture.isLoaded())
-            target.draw(m_backgroundTexture, states);
-        else
-        {
-            sf::RectangleShape background(m_listBox->getSize());
-            background.setPosition(m_listBox->getPosition());
-            background.setFillColor(calcColorOpacity(m_backgroundColor, m_listBox->getOpacity()));
-            target.draw(background, states);
-        }
+        states.transform.translate(getPosition());
+        sf::RenderStates statesForScrollbar = states;
 
         // Draw the borders
-        if (m_borders != Borders{0, 0, 0, 0})
+        Borders borders = getRenderer()->getBorders();
+        if (borders != Borders{0})
         {
-            sf::Vector2f size = m_listBox->getSize();
-            sf::Vector2f position = m_listBox->getPosition();
-
-            // Draw left border
-            sf::RectangleShape border({m_borders.left, size.y + m_borders.top});
-            border.setPosition(position.x - m_borders.left, position.y - m_borders.top);
-            border.setFillColor(calcColorOpacity(m_borderColor, m_listBox->getOpacity()));
-            target.draw(border, states);
-
-            // Draw top border
-            border.setSize({size.x + m_borders.right, m_borders.top});
-            border.setPosition(position.x, position.y - m_borders.top);
-            target.draw(border, states);
-
-            // Draw right border
-            border.setSize({m_borders.right, size.y + m_borders.bottom});
-            border.setPosition(position.x + size.x, position.y);
-            target.draw(border, states);
-
-            // Draw bottom border
-            border.setSize({size.x + m_borders.left, m_borders.bottom});
-            border.setPosition(position.x - m_borders.left, position.y + size.y);
-            target.draw(border, states);
+            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
+            states.transform.translate({borders.left, borders.top});
         }
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Draw the background
+        if (getRenderer()->getTextureBackground().isLoaded())
+            getRenderer()->getTextureBackground().draw(target, states);
+        else
+            drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColor());
 
-    Padding ListBoxRenderer::getScaledPadding() const
-    {
-        Padding padding = getPadding();
-        Padding scaledPadding = padding;
-
-        auto& texture = m_backgroundTexture;
-        if (texture.isLoaded())
+        // Draw the items and their selected/hover backgrounds
         {
-            switch (texture.getScalingType())
+            // Set the clipping for all draw calls that happen until this clipping object goes out of scope
+            Padding padding = getRenderer()->getPadding();
+            float maxItemWidth = getInnerSize().x - padding.left - padding.right;
+            if (m_scroll.getLowValue() < m_scroll.getMaximum())
+                maxItemWidth -= m_scroll.getSize().x;
+            Clipping clipping{target, states, {padding.left, padding.top}, {maxItemWidth, getInnerSize().y - padding.top - padding.bottom}};
+
+            // Find out which items are visible
+            std::size_t firstItem = 0;
+            std::size_t lastItem = m_items.size();
+            if (m_scroll.getLowValue() < m_scroll.getMaximum())
             {
-            case Texture::ScalingType::Normal:
-                if ((texture.getImageSize().x != 0) && (texture.getImageSize().y != 0))
-                {
-                    scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
-                    scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
-                    scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
-                    scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
-                }
-                break;
+                firstItem = m_scroll.getValue() / m_itemHeight;
+                lastItem = (m_scroll.getValue() + m_scroll.getLowValue()) / m_itemHeight;
 
-            case Texture::ScalingType::Horizontal:
-                if ((texture.getImageSize().x != 0) && (texture.getImageSize().y != 0))
-                {
-                    scaledPadding.left = padding.left * (texture.getSize().y / texture.getImageSize().y);
-                    scaledPadding.right = padding.right * (texture.getSize().y / texture.getImageSize().y);
-                    scaledPadding.top = padding.top * (texture.getSize().y / texture.getImageSize().y);
-                    scaledPadding.bottom = padding.bottom * (texture.getSize().y / texture.getImageSize().y);
-                }
-                break;
-
-            case Texture::ScalingType::Vertical:
-                if ((texture.getImageSize().x != 0) && (texture.getImageSize().y != 0))
-                {
-                    scaledPadding.left = padding.left * (texture.getSize().x / texture.getImageSize().x);
-                    scaledPadding.right = padding.right * (texture.getSize().x / texture.getImageSize().x);
-                    scaledPadding.top = padding.top * (texture.getSize().x / texture.getImageSize().x);
-                    scaledPadding.bottom = padding.bottom * (texture.getSize().x / texture.getImageSize().x);
-                }
-                break;
-
-            case Texture::ScalingType::NineSlice:
-                break;
+                // Show another item when the scrollbar is standing between two items
+                if ((m_scroll.getValue() + m_scroll.getLowValue()) % m_itemHeight != 0)
+                    ++lastItem;
             }
+
+            states.transform.translate({padding.left, padding.top});
+
+            // Draw the background of the selected item
+            if (m_selectedItem >= 0)
+            {
+                states.transform.translate({0, static_cast<float>(m_selectedItem * m_itemHeight) - m_scroll.getValue()});
+
+                sf::Vector2f size = {getInnerSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)};
+                if ((m_selectedItem == m_hoveringItem) && getRenderer()->getSelectedBackgroundColorHover().isSet())
+                    drawRectangleShape(target, states, size, getRenderer()->getSelectedBackgroundColorHover());
+                else
+                    drawRectangleShape(target, states, size, getRenderer()->getSelectedBackgroundColor());
+
+                states.transform.translate({0, -(static_cast<float>(m_selectedItem * m_itemHeight) - m_scroll.getValue())});
+            }
+
+            // Draw the background of the item on which the mouse is standing
+            if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && getRenderer()->getBackgroundColorHover().isSet())
+            {
+                states.transform.translate({0, static_cast<float>(m_hoveringItem * m_itemHeight) - m_scroll.getValue()});
+                drawRectangleShape(target, states, {getInnerSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)}, getRenderer()->getBackgroundColorHover());
+                states.transform.translate({0, -(static_cast<float>(m_hoveringItem * m_itemHeight) - m_scroll.getValue())});
+            }
+
+            // Draw the items
+            for (std::size_t i = firstItem; i < lastItem; ++i)
+                target.draw(m_items[i], states);
         }
 
-        return scaledPadding;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<WidgetRenderer> ListBoxRenderer::clone(Widget* widget)
-    {
-        auto renderer = std::make_shared<ListBoxRenderer>(*this);
-        renderer->m_listBox = static_cast<ListBox*>(widget);
-        return renderer;
+        // Draw the scrollbar
+        target.draw(m_scroll, statesForScrollbar);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

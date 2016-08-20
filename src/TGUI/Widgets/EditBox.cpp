@@ -948,8 +948,8 @@ namespace tgui
         }
         else if ((property == "texture") || (property == "texturehover") || (property == "texturedisabled") || (property == "texturefocused"))
         {
-            value.getTexture().setPosition({getRenderer()->getBorders().left, getRenderer()->getBorders().top});
             value.getTexture().setSize(getInnerSize());
+            value.getTexture().setOpacity(getRenderer()->getOpacity());
 
             if (property == "texturefocused")
                 m_allowFocus = value.getTexture().isLoaded();
@@ -963,13 +963,7 @@ namespace tgui
         }
         else if (property == "defaulttextstyle")
         {
-            sf::Uint32 style;
-            if (value.getType() == ObjectConverter::Type::Number)
-                style = value.getNumber();
-            else
-                style = decodeTextStyle(value.getString());
-
-            m_defaultText.setStyle(style);
+            m_defaultText.setStyle(value.getTextStyle());
         }
         else if (property == "opacity")
         {
@@ -977,13 +971,13 @@ namespace tgui
 
             if (m_enabled || !getRenderer()->getTextColorDisabled().isSet())
             {
-                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
-                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), opacity));
+                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), opacity));
             }
             else
             {
-                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
-                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
+                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), opacity));
+                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), opacity));
             }
             m_textSelection.setFillColor(calcColorOpacity(getRenderer()->getSelectedTextColor(), opacity));
             m_defaultText.setFillColor(calcColorOpacity(getRenderer()->getDefaultTextColor(), opacity));
@@ -1312,7 +1306,7 @@ namespace tgui
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
         Padding padding = getRenderer()->getPadding();
-        Clipping clipping{target, states, {padding.left, padding.top}, {getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}};
+        Clipping clipping{target, states, {padding.left, padding.top}, {getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}};
 
         if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
         {

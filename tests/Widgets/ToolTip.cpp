@@ -25,13 +25,16 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/ToolTip.hpp>
 
-TEST_CASE("[ToolTip]") {
-    SECTION("TimeToDisplay") {
+TEST_CASE("[ToolTip]")
+{
+    SECTION("TimeToDisplay")
+    {
         tgui::ToolTip::setTimeToDisplay(sf::milliseconds(280));
         REQUIRE(tgui::ToolTip::getTimeToDisplay() == sf::milliseconds(280));
     }
 
-    SECTION("DistanceToMouse") {
+    SECTION("DistanceToMouse")
+    {
         tgui::ToolTip::setDistanceToMouse({5, 5});
         REQUIRE(tgui::ToolTip::getDistanceToMouse() == sf::Vector2f(5, 5));
     }

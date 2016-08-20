@@ -24,6 +24,8 @@
 
 
 #include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Loading/DataIO.hpp>
+#include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,6 +335,41 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API ObjectConverter deserializeTextStyle(const std::string& style)
+    {
+        sf::Uint32 decodedStyle = sf::Text::Regular;
+        std::vector<std::string> styles = tgui::split(style, '|');
+        for (auto& elem : styles)
+        {
+            std::string requestedStyle = toLower(trim(elem));
+            if (requestedStyle == "bold")
+                decodedStyle |= sf::Text::Bold;
+            else if (requestedStyle == "italic")
+                decodedStyle |= sf::Text::Italic;
+            else if (requestedStyle == "underlined")
+                decodedStyle |= sf::Text::Underlined;
+            else if (requestedStyle == "strikethrough")
+                decodedStyle |= sf::Text::StrikeThrough;
+        }
+
+        return TextStyle(decodedStyle);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_API ObjectConverter deserializeRendererData(const std::string& renderer)
+    {
+        std::stringstream ss{renderer};
+        auto node = DataIO::parse(ss);
+        auto rendererData = std::make_shared<RendererData>();
+        for (auto& pair : node->propertyValuePairs)
+            rendererData->propertyValuePairs[pair.first] = {pair.second->value};
+
+        return rendererData;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -346,7 +383,9 @@ namespace tgui
             {ObjectConverter::Type::String, deserializeString},
             {ObjectConverter::Type::Number, deserializeNumber},
             {ObjectConverter::Type::Outline, deserializeOutline},
-            {ObjectConverter::Type::Texture, deserializeTexture}
+            {ObjectConverter::Type::Texture, deserializeTexture},
+            {ObjectConverter::Type::TextStyle, deserializeTextStyle},
+            {ObjectConverter::Type::RendererData, deserializeRendererData}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

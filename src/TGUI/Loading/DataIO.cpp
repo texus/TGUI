@@ -214,6 +214,13 @@ namespace tgui
                 else if (stream.peek() == '}')
                 {
                     stream.read(&chr, 1);
+
+                    // Ignore semicolon behind closing brace
+                    REMOVE_WHITESPACE_AND_COMMENTS(false)
+                    if (stream.peek() == ';')
+                        stream.read(&chr, 1);
+
+                    REMOVE_WHITESPACE_AND_COMMENTS(false)
                     return "";
                 }
                 else if (stream.peek() != '{')
@@ -249,6 +256,10 @@ namespace tgui
         stream.read(&chr, 1);
 
         REMOVE_WHITESPACE_AND_COMMENTS(true)
+
+        // Check for subsection as value
+        if (stream.peek() == '{')
+            return parseSection(stream, node, key);
 
         // Read the value
         std::string line = trim(readLine(stream));

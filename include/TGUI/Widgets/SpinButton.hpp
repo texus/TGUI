@@ -247,8 +247,6 @@ namespace tgui
         // On which arrow is the mouse?
         bool m_mouseHoverOnTopArrow = false;
         bool m_mouseDownOnTopArrow = false;
-
-        friend class SpinButtonRenderer;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

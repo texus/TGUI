@@ -191,14 +191,14 @@ TEST_CASE("[Panel]")
 
         SECTION("independent panel")
         {
-            REQUIRE_NOTHROW(panel->saveWidgetsToFile("WidgetFilePanel1.txt"));
+            REQUIRE_NOTHROW(panel->saveWidgetsToFile("PanelWidgetFile1.txt"));
             
             panel->setSize(200, 100);
-            REQUIRE_NOTHROW(panel->loadWidgetsFromFile("WidgetFilePanel1.txt"));
+            REQUIRE_NOTHROW(panel->loadWidgetsFromFile("PanelWidgetFile1.txt"));
             REQUIRE(panel->getSize() == sf::Vector2f(200, 100)); // The Panel itself is not saved, only its children
 
-            REQUIRE_NOTHROW(panel->saveWidgetsToFile("WidgetFilePanel2.txt"));
-            REQUIRE(compareFiles("WidgetFilePanel1.txt", "WidgetFilePanel2.txt"));
+            REQUIRE_NOTHROW(panel->saveWidgetsToFile("PanelWidgetFile2.txt"));
+            REQUIRE(compareFiles("PanelWidgetFile1.txt", "PanelWidgetFile2.txt"));
         }
 
         SECTION("panel inside gui")

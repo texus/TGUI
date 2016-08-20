@@ -30,7 +30,7 @@ set(TEST_SOURCES
     Widgets/EditBox.cpp
     #Widgets/Knob.cpp
     Widgets/Label.cpp
-    #Widgets/ListBox.cpp
+    Widgets/ListBox.cpp
     #Widgets/MenuBar.cpp
     #Widgets/MessageBox.cpp
     Widgets/Panel.cpp
@@ -42,7 +42,7 @@ set(TEST_SOURCES
     Widgets/SpinButton.cpp
     #Widgets/Tab.cpp
     #Widgets/TextBox.cpp
-    #Widgets/ToolTip.cpp
+    Widgets/ToolTip.cpp
 )
 
 # The tests require c++14

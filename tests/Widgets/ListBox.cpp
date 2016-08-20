@@ -23,14 +23,15 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "../Tests.hpp"
-#include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
 
-TEST_CASE("[ListBox]") {
+TEST_CASE("[ListBox]")
+{
     tgui::ListBox::Ptr listBox = std::make_shared<tgui::ListBox>();
-    listBox->setFont("resources/DroidSansArmenian.ttf");
+    listBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(listBox->connect("ItemSelected", [](){}));
         REQUIRE_NOTHROW(listBox->connect("MousePressed", [](){}));
         REQUIRE_NOTHROW(listBox->connect("MouseReleased", [](){}));
@@ -47,11 +48,25 @@ TEST_CASE("[ListBox]") {
         REQUIRE_NOTHROW(listBox->connect("DoubleClicked", [](sf::String, sf::String){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(listBox->getWidgetType() == "ListBox");
     }
 
-    SECTION("adding items") {
+    SECTION("Position and Size")
+    {
+        listBox->setPosition(40, 30);
+        listBox->setSize(150, 100);
+        listBox->getRenderer()->setBorders(2);
+
+        REQUIRE(listBox->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(listBox->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(listBox->getFullSize() == listBox->getSize());
+        REQUIRE(listBox->getWidgetOffset() == sf::Vector2f(0, 0));
+    }
+
+    SECTION("Adding items")
+    {
         REQUIRE(listBox->getItemCount() == 0);
         listBox->addItem("Item 1", "1");
         REQUIRE(listBox->getItemCount() == 1);
@@ -68,7 +83,8 @@ TEST_CASE("[ListBox]") {
         REQUIRE(listBox->getItemById("3") == "");
     }
     
-    SECTION("removing items") {
+    SECTION("Removing items")
+    {
         listBox->addItem("Item 1", "1");
         listBox->addItem("Item 2", "2");
         listBox->addItem("Item 3", "3");
@@ -106,7 +122,8 @@ TEST_CASE("[ListBox]") {
         REQUIRE(listBox->getItemCount() == 0);
     }
     
-    SECTION("changing items") {
+    SECTION("Changing items")
+    {
         listBox->addItem("Item 1", "1");
         listBox->addItem("Item 2", "2");
         listBox->addItem("Item 3", "3");
@@ -145,7 +162,8 @@ TEST_CASE("[ListBox]") {
         REQUIRE(listBox->getItems()[2] == "Item 30");
     }
 
-    SECTION("selecting items") {
+    SECTION("Selecting items")
+    {
         listBox->addItem("Item 1", "1");
         listBox->addItem("Item 2", "2");
         listBox->addItem("Item 3", "3");
@@ -181,12 +199,14 @@ TEST_CASE("[ListBox]") {
         REQUIRE(listBox->getSelectedItemIndex() == -1);
     }
     
-    SECTION("ItemHeight") {
+    SECTION("ItemHeight")
+    {
         listBox->setItemHeight(20);
         REQUIRE(listBox->getItemHeight() == 20);
     }
 
-    SECTION("MaximumItems") {
+    SECTION("MaximumItems")
+    {
         listBox->addItem("Item 1");
         listBox->addItem("Item 2");
         listBox->addItem("Item 3");
@@ -203,8 +223,9 @@ TEST_CASE("[ListBox]") {
         REQUIRE(listBox->getItems()[0] == "Item 1");
         REQUIRE(listBox->getItems()[2] == "Item 3");
     }
-    
-    SECTION("Scrollbar") {
+    /*
+    SECTION("Scrollbar")
+    {
         tgui::Scrollbar::Ptr scrollbar = std::make_shared<tgui::Theme>()->load("scrollbar");
     
         REQUIRE(listBox->getScrollbar() != nullptr);
@@ -215,151 +236,128 @@ TEST_CASE("[ListBox]") {
         REQUIRE(listBox->getScrollbar() != nullptr);
         REQUIRE(listBox->getScrollbar() == scrollbar);
     }
+*/
 
-    SECTION("Renderer") {
+    SECTION("Events / Signals")
+    {
+        SECTION("Widget")
+        {
+            testWidgetSignals(listBox);
+        }
+
+        // TODO
+    }
+
+    testWidgetRenderer(listBox->getRenderer());
+    SECTION("Renderer")
+    {
         auto renderer = listBox->getRenderer();
 
-        SECTION("colored") {
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(10, 20, 30)"));
-                REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(10, 20, 30));
-                
+        SECTION("colored")
+        {
+            SECTION("set serialized property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(20, 30, 40)"));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorNormal", "rgb(30, 40, 50)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", "rgb(50, 60, 70)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(30, 40, 50)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", "rgb(40, 50, 60)"));
-                REQUIRE_NOTHROW(renderer->setProperty("HoverBackgroundColor", "rgb(50, 60, 70)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", "rgb(60, 70, 80)"));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColorHover", "rgb(90, 100, 110)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", "rgb(70, 80, 90)"));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColorHover", "rgb(100, 110, 120)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold"));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextStyle", "Italic"));
             }
             
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{10, 20, 30}));
-                REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(10, 20, 30));
-                
+            SECTION("set object property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{20, 30, 40}));
-                REQUIRE_NOTHROW(renderer->setProperty("TextColorNormal", sf::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{30, 40, 50}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColorHover", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("HoverBackgroundColor", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", sf::Color{60, 70, 80}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColorHover", sf::Color{90, 100, 110}));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", sf::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColorHover", sf::Color{100, 110, 120}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Bold));
+                REQUIRE_NOTHROW(renderer->setProperty("SelectedTextStyle", sf::Text::Italic));
             }
 
-            SECTION("functions") {
-                renderer->setTextColor({10, 20, 30});
-                REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(10, 20, 30));
-
+            SECTION("functions")
+            {
                 renderer->setBackgroundColor({20, 30, 40});
-                renderer->setTextColorNormal({30, 40, 50});
+                renderer->setBackgroundColorHover({50, 60, 70});
+                renderer->setTextColor({30, 40, 50});
                 renderer->setTextColorHover({40, 50, 60});
-                renderer->setHoverBackgroundColor({50, 60, 70});
                 renderer->setSelectedBackgroundColor({60, 70, 80});
+                renderer->setSelectedBackgroundColorHover({90, 100, 110});
                 renderer->setSelectedTextColor({70, 80, 90});
+                renderer->setSelectedTextColorHover({100, 110, 120});
                 renderer->setBorderColor({80, 90, 100});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 9);
-                    REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(20, 30, 40));
-                    REQUIRE(pairs["TextColorNormal"].getColor() == sf::Color(30, 40, 50));
-                    REQUIRE(pairs["TextColorHover"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["HoverBackgroundColor"].getColor() == sf::Color(50, 60, 70));
-                    REQUIRE(pairs["SelectedBackgroundColor"].getColor() == sf::Color(60, 70, 80));
-                    REQUIRE(pairs["SelectedTextColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["BorderColor"].getColor() == sf::Color(80, 90, 100));
-                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
-                    REQUIRE(pairs["Padding"].getOutline() == tgui::Borders(5, 6, 7, 8));
-                }
+                renderer->setTextStyle(sf::Text::Bold);
+                renderer->setSelectedTextStyle(sf::Text::Italic);
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getProperty("TextColorNormal").getColor() == sf::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(30, 40, 50));
             REQUIRE(renderer->getProperty("TextColorHover").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("HoverBackgroundColor").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("SelectedBackgroundColor").getColor() == sf::Color(60, 70, 80));
+            REQUIRE(renderer->getProperty("SelectedBackgroundColorHover").getColor() == sf::Color(90, 100, 110));
             REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("SelectedTextColorHover").getColor() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Bold);
+            REQUIRE(renderer->getProperty("SelectedTextStyle").getTextStyle() == sf::Text::Italic);
         }
 
-        SECTION("textured") {
+        SECTION("textured")
+        {
             tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
-            REQUIRE(!renderer->getProperty("BackgroundImage").getTexture().isLoaded());
-
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", tgui::Serializer::serialize(textureBackground)));
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", textureBackground));
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
             }
 
-            SECTION("functions") {
-                renderer->setBackgroundTexture(textureBackground);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 9);
-                    REQUIRE(pairs["BackgroundImage"].getTexture().getData() == textureBackground.getData());
-                }
+            SECTION("functions")
+            {
+                renderer->setTextureBackground(textureBackground);
             }
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().getData() == textureBackground.getData());
+            REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
         }
     }
 
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(listBox = std::make_shared<tgui::Theme>()->load("ListBox"));
-
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(listBox = theme->load("ListBox"));
-        REQUIRE(listBox->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(listBox->getSecondaryLoadingParameter() == "listbox");
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(listBox);
-
-        listBox->setOpacity(0.8f);
+    SECTION("Saving and loading from file")
+    {
         listBox->addItem("Item 1", "1");
         listBox->addItem("Item 2");
         listBox->addItem("Item 3", "3");
         listBox->setItemHeight(25);
         listBox->setMaximumItems(5);
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileListBox1.txt"));
+        listBox->setSelectedItem("Item 2");
+        listBox->setTextSize(20);
+        listBox->setMaximumItems(5);
+        listBox->setAutoScroll(false);
         
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileListBox1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileListBox2.txt"));
-        REQUIRE(compareFiles("WidgetFileListBox1.txt", "WidgetFileListBox2.txt"));
-
-        SECTION("Copying widget") {
-            tgui::ListBox temp;
-            temp = *listBox;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::ListBox::copy(std::make_shared<tgui::ListBox>(temp)));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileListBox2.txt"));
-            REQUIRE(compareFiles("WidgetFileListBox1.txt", "WidgetFileListBox2.txt"));
-        }
+        testSavingWidget("ListBox", listBox);
     }
 }

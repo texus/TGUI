@@ -1,0 +1,21 @@
+ListBox1 {
+    BackgroundColor = White;
+    Scrollbar       = &ScrollbarSection;
+}
+
+ListBox2 {
+    Scrollbar = {
+        ThumbColor = Blue;
+    };
+}
+
+ListBox3 {
+    Scrollbar {
+        TrackColor = Yellow;
+    }
+}
+
+ScrollbarSection {
+    ThumbColor = Green;
+    TrackColor = Red;
+}

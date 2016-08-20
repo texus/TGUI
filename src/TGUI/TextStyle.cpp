@@ -23,8 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/TextStyle.hpp>
-#include <TGUI/Global.hpp>
+#include <TGUI/Loading/Deserializer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,7 +49,7 @@ namespace tgui
 
     TextStyle::TextStyle(const std::string& string) :
         m_isSet{true},
-        m_style{decodeTextStyle(string)}
+        m_style{Deserializer::deserialize(ObjectConverter::Type::TextStyle, string).getTextStyle()}
     {
     }
 

@@ -27,7 +27,8 @@
 
 using Type = tgui::ObjectConverter::Type;
 
-TEST_CASE("[Deserializer]") {
+TEST_CASE("[Deserializer]")
+{
     SECTION("deserialize font")
     {
         REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "resources/DroidSansArmenian.ttf").getFont() != nullptr);
@@ -146,6 +147,34 @@ TEST_CASE("[Deserializer]") {
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0,1)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(0,)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 20, 20"), tgui::Exception);
+    }
+
+    SECTION("deserialize text style")
+    {
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Regular").getTextStyle() == sf::Text::Regular);
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Bold | Italic").getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
+
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "| Underlined").getTextStyle() == sf::Text::Underlined);
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "StrikeThrough |").getTextStyle() == sf::Text::StrikeThrough);
+
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Invalid").getTextStyle() == sf::Text::Regular);
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Bold + Italic").getTextStyle() == sf::Text::Regular);
+    }
+
+    SECTION("deserialize renderer")
+    {
+        std::string data = "Nested = {\n"
+                           "    Num = 5;\n"
+                           "};\n"
+                           "SomeColor = Red;\n"
+                           "TextStyleProperty = StrikeThrough;";
+
+        std::shared_ptr<tgui::RendererData> rendererData = tgui::Deserializer::deserialize(Type::RendererData, data).getRenderer();
+        REQUIRE(rendererData->propertyValuePairs.size() == 2);
+        REQUIRE(rendererData->propertyValuePairs["somecolor"].getString() == "Red");
+        REQUIRE(rendererData->propertyValuePairs["textstyleproperty"].getString() == "StrikeThrough");
+        
+        // TODO: Support nested property
     }
 
     SECTION("custom deserialize function")

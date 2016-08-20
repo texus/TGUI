@@ -48,6 +48,18 @@ TEST_CASE("[DataIO]")
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
         }
 
+        SECTION("Nested child as value")
+        {
+            std::stringstream input("Child { Child2 = { Property = Value; }; }");
+            REQUIRE_NOTHROW(tgui::DataIO::parse(input));
+        }
+
+        SECTION("Extra semicolons")
+        {
+            std::stringstream input("Child { Child2 { Property = Value; }; };");
+            REQUIRE_NOTHROW(tgui::DataIO::parse(input));
+        }
+
         SECTION("List property")
         {
             std::stringstream input("Property = [a,b,c,d];");

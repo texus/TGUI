@@ -447,6 +447,8 @@ namespace tgui
     {
         m_mouseDown = true;
 
+///TODO: Can this be moved to ListBox? Just reselect the item here and ListBox should move to selected item when an item is selected
+
         // If the list wasn't visible then open it
         if (!m_listBox->isVisible())
         {

@@ -41,6 +41,28 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void injectRelativePathInTextures(std::shared_ptr<tgui::DataIO::Node> node, const std::string& path)
+{
+    for (auto& pair : node->propertyValuePairs)
+    {
+        if ((pair.first.size() >= 7) && (tgui::toLower(pair.first.substr(0, 7)) == "texture"))
+        {
+            auto quotePos = pair.second->value.find('"');
+            if (quotePos != std::string::npos)
+            {
+                ///TODO: Detect absolute pathname on windows
+                if ((pair.second->value.getSize() > quotePos + 1) && (pair.second->value[quotePos+1] != '/'))
+                    pair.second->value = pair.second->value.substring(0, quotePos+1) + path + pair.second->value.substring(quotePos+1);
+            }
+        }
+    }
+
+    for (auto& child : node->children)
+        injectRelativePathInTextures(child, path);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,28 +111,60 @@ namespace tgui
             if (root->propertyValuePairs.size() != 0)
                 throw Exception{"Unexpected result while loading theme file '" + filename + "'. Root property-value pair found."};
 
+            // Inject relative path to the theme file into texture filenames
+            if (!resourcePath.empty())
+                injectRelativePathInTextures(root, resourcePath);
+
+            std::map<std::string, std::shared_ptr<DataIO::Node>> sections;
+            std::map<std::string, std::vector<std::pair<std::string, std::string>>> unresolvedReferences;
             for (auto& child : root->children)
             {
                 std::string name = Deserializer::deserialize(ObjectConverter::Type::String, toLower(child->name)).getString();
-
-                if (child->children.size() != 0)
-                    throw Exception{"Unexpected result while loading theme file '" + filename + "'. Nested section encountered."};
+                sections[name] = child;
 
                 for (auto& pair : child->propertyValuePairs)
                 {
-                    // Inject relative path to the theme file into texture filenames
-                    if (!resourcePath.empty() && (pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture"))
+                    // Check if this property is a reference to another section
+                    if (!pair.second->value.isEmpty() && (pair.second->value[0] == '&'))
                     {
-                        auto quotePos = pair.second->value.find('"');
-                        if (quotePos != std::string::npos)
+                        // If the section was already parsed then just copy its contents
+                        auto sectionsIt = sections.find(toLower(pair.second->value.substring(1)));
+                        if (sectionsIt != sections.end())
                         {
-                            ///TODO: Detect absolute pathname on windows
-                            if ((pair.second->value.getSize() > quotePos + 1) && (pair.second->value[quotePos+1] != '/'))
-                                pair.second->value = pair.second->value.substring(0, quotePos+1) + resourcePath + pair.second->value.substring(quotePos+1);
+                            std::stringstream ss;
+                            DataIO::emit(sectionsIt->second, ss);
+                            pair.second->value = ss.str();
+                        }
+                        else // Unresolved reference
+                        {
+                            unresolvedReferences[toLower(pair.second->value.substring(1))].emplace_back(name, pair.first);
+                            pair.second->value = "";
                         }
                     }
 
                     m_propertiesCache[filename][name][toLower(pair.first)] = pair.second->value;
+                }
+
+                for (auto& nestedProperty : child->children)
+                {
+                    std::stringstream ss;
+                    DataIO::emit(nestedProperty, ss);
+                    m_propertiesCache[filename][name][toLower(nestedProperty->name)] = ss.str();
+                }
+
+                // Check if this is a section that was previously refered to
+                auto unresolvedIt = unresolvedReferences.find(name);
+                if (unresolvedIt != unresolvedReferences.end())
+                {
+                    // Copy this section to where it was referenced
+                    std::stringstream ss;
+                    DataIO::emit(child, ss);
+                    std::string value = ss.str();
+
+                    for (auto& pair : unresolvedIt->second)
+                        m_propertiesCache[filename][pair.first][pair.second] = value;
+
+                    unresolvedReferences.erase(unresolvedIt);
                 }
             }
         }
