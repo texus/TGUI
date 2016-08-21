@@ -81,15 +81,11 @@ namespace tgui
     {
         Widget::setPosition(position);
 
+        for (std::size_t i = 0; i < m_items.size(); ++i)
+            m_items[i].setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].getSize().y) / 2.0f)});
+
         Borders borders = getRenderer()->getBorders();
         Padding padding = getRenderer()->getPadding();
-
-        if (getRenderer()->getFont() != nullptr)
-        {
-            for (std::size_t i = 0; i < m_items.size(); ++i)
-                m_items[i].setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].getSize().y) / 2.0f) - m_scroll.getValue()});
-        }
-
         m_scroll.setPosition(getSize().x - borders.right - padding.right - m_scroll.getSize().x, borders.top + padding.top);
     }
 
@@ -129,12 +125,11 @@ namespace tgui
             newItem.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
             newItem.setTextSize(m_textSize);
             newItem.setText(itemName);
+            newItem.setPosition({0, (m_items.size() * m_itemHeight) + ((m_itemHeight - newItem.getSize().y) / 2.0f)});
 
             // Add the new item to the list
             m_items.push_back(std::move(newItem));
             m_itemIds.push_back(id);
-
-            updatePosition();
             return true;
         }
         else // The item limit was reached
@@ -189,7 +184,6 @@ namespace tgui
         else if ((m_selectedItem + 1) * getItemHeight() > m_scroll.getValue() + m_scroll.getLowValue())
             m_scroll.setValue((m_selectedItem + 1) * getItemHeight() - m_scroll.getLowValue());
 
-        updatePosition();
         return true;
     }
 
@@ -471,7 +465,6 @@ namespace tgui
         if (m_scroll.mouseOnWidget(x, y))
         {
             m_scroll.leftMousePressed(x, y);
-            updatePosition();
         }
         else
         {
@@ -526,7 +519,6 @@ namespace tgui
         y -= getPosition().y;
 
         m_scroll.leftMouseReleased(x, y);
-        updatePosition();
 
         if (m_mouseDown)
         {
@@ -569,7 +561,6 @@ namespace tgui
         if ((m_scroll.isMouseDown() && m_scroll.isMouseDownOnThumb()) || m_scroll.mouseOnWidget(x, y))
         {
             m_scroll.mouseMoved(x, y);
-            updatePosition();
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
@@ -622,7 +613,6 @@ namespace tgui
         if (m_scroll.getLowValue() < m_scroll.getMaximum())
         {
             m_scroll.mouseWheelMoved(delta, 0, 0);
-            updatePosition();
 
             // Update on which item the mouse is hovering
             mouseMoved(static_cast<float>(x), static_cast<float>(y));
@@ -867,12 +857,12 @@ namespace tgui
                     ++lastItem;
             }
 
-            states.transform.translate({padding.left, padding.top});
+            states.transform.translate({padding.left, padding.top - m_scroll.getValue()});
 
             // Draw the background of the selected item
             if (m_selectedItem >= 0)
             {
-                states.transform.translate({0, static_cast<float>(m_selectedItem * m_itemHeight) - m_scroll.getValue()});
+                states.transform.translate({0, static_cast<float>(m_selectedItem * m_itemHeight)});
 
                 sf::Vector2f size = {getInnerSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)};
                 if ((m_selectedItem == m_hoveringItem) && getRenderer()->getSelectedBackgroundColorHover().isSet())
@@ -880,15 +870,15 @@ namespace tgui
                 else
                     drawRectangleShape(target, states, size, getRenderer()->getSelectedBackgroundColor());
 
-                states.transform.translate({0, -(static_cast<float>(m_selectedItem * m_itemHeight) - m_scroll.getValue())});
+                states.transform.translate({0, -static_cast<float>(m_selectedItem * m_itemHeight)});
             }
 
             // Draw the background of the item on which the mouse is standing
             if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && getRenderer()->getBackgroundColorHover().isSet())
             {
-                states.transform.translate({0, static_cast<float>(m_hoveringItem * m_itemHeight) - m_scroll.getValue()});
+                states.transform.translate({0, static_cast<float>(m_hoveringItem * m_itemHeight)});
                 drawRectangleShape(target, states, {getInnerSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)}, getRenderer()->getBackgroundColorHover());
-                states.transform.translate({0, -(static_cast<float>(m_hoveringItem * m_itemHeight) - m_scroll.getValue())});
+                states.transform.translate({0, -static_cast<float>(m_hoveringItem * m_itemHeight)});
             }
 
             // Draw the items
