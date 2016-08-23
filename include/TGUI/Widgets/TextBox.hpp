@@ -82,22 +82,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Create the text box
-        ///
-        /// @param themeFileFilename  Filename of the theme file.
-        /// @param section            The section in the theme file to read.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static TextBox::Ptr create(const std::string& themeFileFilename = "", const std::string& section = "TextBox");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another text box
         ///
         /// @param textBox  The other text box
