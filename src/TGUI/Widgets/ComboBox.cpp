@@ -492,6 +492,8 @@ namespace tgui
                 if (m_listBox->m_selectedItem > 0)
                     m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->m_selectedItem-1));
             }
+
+            m_text.setText(m_listBox->getSelectedItem());
         }
     }
 
