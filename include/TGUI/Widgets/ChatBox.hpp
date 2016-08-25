@@ -676,9 +676,6 @@ namespace tgui
         ///
         /// @param padding  Size of the padding
         ///
-        /// This padding will be scaled together with the background image.
-        /// If there is no background image, or when 9-slice scaling is used, the padding will be exactly what you pass here.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setPadding(const Padding& padding) override;
         using WidgetPadding::setPadding;

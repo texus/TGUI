@@ -23,48 +23,49 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Renderers/ListBoxRenderer.hpp>
+#include <TGUI/Renderers/ComboBoxRenderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    TGUI_RENDERER_PROPERTY_OUTLINE(ListBoxRenderer, Borders)
-    TGUI_RENDERER_PROPERTY_OUTLINE(ListBoxRenderer, Padding)
+    TGUI_RENDERER_PROPERTY_OUTLINE(ComboBoxRenderer, Borders)
+    TGUI_RENDERER_PROPERTY_OUTLINE(ComboBoxRenderer, Padding)
 
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, BackgroundColor, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, BackgroundColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, SelectedBackgroundColor, Color(0, 110, 255))
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, SelectedBackgroundColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, TextColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, TextColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, SelectedTextColor, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, SelectedTextColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, TextColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowBackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowBackgroundColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BorderColor, sf::Color::Black)
 
-    TGUI_RENDERER_PROPERTY_TEXTURE(ListBoxRenderer, TextureBackground)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureBackground)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowUp)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowUpHover)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowDown)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowDownHover)
 
-    TGUI_RENDERER_PROPERTY_TEXT_STYLE(ListBoxRenderer, TextStyle, sf::Text::Regular)
-    TGUI_RENDERER_PROPERTY_TEXT_STYLE(ListBoxRenderer, SelectedTextStyle, {})
+    TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, TextStyle, sf::Text::Regular)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBoxRenderer::setScrollbar(std::shared_ptr<RendererData> texture)
+    void ComboBoxRenderer::setListBox(std::shared_ptr<RendererData> texture)
     {
-        setProperty("scrollbar", {texture});
+        setProperty("listbox", {texture});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<RendererData> ListBoxRenderer::getScrollbar() const
+    std::shared_ptr<RendererData> ComboBoxRenderer::getListBox() const
     {
-        auto it = m_data->propertyValuePairs.find("scrollbar");
+        auto it = m_data->propertyValuePairs.find("listbox");
         if (it != m_data->propertyValuePairs.end())
             return it->second.getRenderer();
         else
         {
-            m_data->propertyValuePairs["scrollbar"] = {std::make_shared<RendererData>()};
-            return m_data->propertyValuePairs["scrollbar"].getRenderer();
+            m_data->propertyValuePairs["listbox"] = {std::make_shared<RendererData>()};
+            return m_data->propertyValuePairs["listbox"].getRenderer();
         }
     }
 }

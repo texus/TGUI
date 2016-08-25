@@ -88,6 +88,401 @@
 
 namespace tgui
 {
+    namespace
+    {
+        // Forward declare one of the functions to solve circular dependency
+        std::string parseSection(std::stringstream& stream, std::shared_ptr<DataIO::Node> node, const std::string& sectionName);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string readWord(std::stringstream& stream)
+        {
+            std::string word = "";
+            while (stream.peek() != EOF)
+            {
+                char c = stream.peek();
+                if (c == '\r')
+                {
+                    stream.read(&c, 1);
+                    return word;
+                }
+                else if (!::isspace(c) && (c != '=') && (c != ';') && (c != '{') && (c != '}'))
+                {
+                    stream.read(&c, 1);
+
+                    if ((c == '/') && (stream.peek() == '/'))
+                    {
+                        while (stream.peek() != EOF)
+                        {
+                            stream.read(&c, 1);
+                            if (c == '\n')
+                            {
+                                assert(!word.empty()); // No known case in which you can pass here with an empty word
+                                return word;
+                            }
+                        }
+                    }
+                    else if ((c == '/') && (stream.peek() == '*'))
+                    {
+                        while (stream.peek() != EOF)
+                        {
+                            stream.read(&c, 1);
+                            if (c == '*')
+                            {
+                                if (stream.peek() == '/')
+                                {
+                                    stream.read(&c, 1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else if (c == '"')
+                    {
+                        word.push_back(c);
+                        bool backslash = false;
+                        while (stream.peek() != EOF)
+                        {
+                            stream.read(&c, 1);
+                            word.push_back(c);
+
+                            if (c == '"' && !backslash)
+                                break;
+
+                            if (c == '\\' && !backslash)
+                                backslash = true;
+                            else
+                                backslash = false;
+                        }
+                    }
+                    else
+                        word.push_back(c);
+                }
+                else
+                    return word;
+            }
+
+            return "";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string readLine(std::stringstream& stream)
+        {
+            std::string line;
+            bool whitespaceFound = false;
+            while (stream.peek() != EOF)
+            {
+                char c = stream.peek();
+
+                if (stream.peek() == '/')
+                {
+                    stream.read(&c, 1);
+                    if (stream.peek() == '/')
+                    {
+                        while (stream.peek() != EOF)
+                        {
+                            stream.read(&c, 1);
+                            if (c == '\n')
+                                break;
+                        }
+                    }
+                    else if (stream.peek() == '*')
+                    {
+                        while (stream.peek() != EOF)
+                        {
+                            stream.read(&c, 1);
+                            if (stream.peek() == '*')
+                            {
+                                stream.read(&c, 1);
+                                if (stream.peek() == '/')
+                                {
+                                    stream.read(&c, 1);
+                                    break;
+                                }
+                            }
+                        }
+                        continue;
+                    }
+                    else
+                        return "";
+
+                    continue;
+                }
+
+                if (c == '"')
+                {
+                    stream.read(&c, 1);
+                    line.push_back(c);
+
+                    bool backslash = false;
+                    while (stream.peek() != EOF)
+                    {
+                        stream.read(&c, 1);
+                        line.push_back(c);
+
+                        if (c == '"' && !backslash)
+                            break;
+
+                        if (c == '\\' && !backslash)
+                            backslash = true;
+                        else
+                            backslash = false;
+                    }
+
+                    if (stream.peek() == EOF)
+                        return "";
+
+                    c = stream.peek();
+                }
+
+                if ((c == '=') || (c == '{'))
+                    return "";
+                else if ((c == ';') || (c == '}'))
+                {
+                    // Remove trailing whitespace before returning the line
+                    line.erase(line.find_last_not_of(" \n\r\t")+1);
+                    return line;
+                }
+                else if (::isspace(c))
+                {
+                    stream.read(&c, 1);
+                    if (!whitespaceFound)
+                    {
+                        whitespaceFound = true;
+                        line.push_back(' ');
+                    }
+                }
+                else
+                {
+                    whitespaceFound = false;
+                    line.push_back(c);
+                    stream.read(&c, 1);
+                }
+            }
+
+            return "";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string parseKeyValue(std::stringstream& stream, std::shared_ptr<DataIO::Node> node, const std::string& key)
+        {
+            // Read the assignment symbol from the stream and remove the whitespace behind it
+            char chr;
+            stream.read(&chr, 1);
+
+            REMOVE_WHITESPACE_AND_COMMENTS(true)
+
+            // Check for subsection as value
+            if (stream.peek() == '{')
+                return parseSection(stream, node, key);
+
+            // Read the value
+            std::string line = trim(readLine(stream));
+            if (!line.empty())
+            {
+                // Remove the ';' if it is there
+                if (stream.peek() == ';')
+                    stream.read(&chr, 1);
+
+                // Create a value node to store the value
+                auto valueNode = std::make_shared<DataIO::ValueNode>();
+                valueNode->value = line;
+                node->propertyValuePairs[toLower(key)] = valueNode;
+
+                // It might be a list node
+                if ((line.size() >= 2) && (line[0] == '[') && (line.back() == ']'))
+                {
+                    valueNode->listNode = true;
+                    if (line.size() >= 3)
+                    {
+                        valueNode->valueList.push_back("");
+
+                        std::size_t i = 1;
+                        while (i < line.size()-1)
+                        {
+                            if (line[i] == ',')
+                            {
+                                i++;
+                                valueNode->valueList.back() = trim(valueNode->valueList.back());
+                                valueNode->valueList.push_back("");
+                            }
+                            else if (line[i] == '"')
+                            {
+                                valueNode->valueList.back().insert(valueNode->valueList.back().getSize(), line[i]);
+                                i++;
+
+                                bool backslash = false;
+                                while (i < line.size()-1)
+                                {
+                                    valueNode->valueList.back().insert(valueNode->valueList.back().getSize(), line[i]);
+
+                                    if (line[i] == '"' && !backslash)
+                                    {
+                                        i++;
+                                        break;
+                                    }
+
+                                    if (line[i] == '\\' && !backslash)
+                                        backslash = true;
+                                    else
+                                        backslash = false;
+
+                                    i++;
+                                }
+                            }
+                            else
+                            {
+                                valueNode->valueList.back().insert(valueNode->valueList.back().getSize(), line[i]);
+                                i++;
+                            }
+                        }
+
+                        valueNode->valueList.back() = trim(valueNode->valueList.back());
+                    }
+                }
+
+                return "";
+            }
+            else
+            {
+                if (stream.peek() == EOF)
+                    return "Found EOF while trying to read a value.";
+                else
+                {
+                    chr = stream.peek();
+                    if (chr == '=')
+                        return "Found '=' while trying to read a value.";
+                    else if (chr == '{')
+                        return "Found '{' while trying to read a value.";
+                    else
+                        return "Found empty value.";
+                }
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string parseSection(std::stringstream& stream, std::shared_ptr<DataIO::Node> node, const std::string& sectionName)
+        {
+            // Create a new node for this section
+            auto sectionNode = std::make_shared<DataIO::Node>();
+            sectionNode->parent = node.get();
+            sectionNode->name = sectionName;
+            node->children.push_back(sectionNode);
+            node = sectionNode;
+
+            // Read the brace from the stream
+            char chr;
+            stream.read(&chr, 1);
+
+            while (stream.peek() != EOF)
+            {
+                REMOVE_WHITESPACE_AND_COMMENTS(true)
+
+                std::string word = readWord(stream);
+                if (word == "")
+                {
+                    if (stream.peek() == EOF)
+                        return "Found EOF while trying to read property or nested section name.";
+                    else if (stream.peek() == '}')
+                    {
+                        stream.read(&chr, 1);
+
+                        // Ignore semicolon behind closing brace
+                        REMOVE_WHITESPACE_AND_COMMENTS(false)
+                        if (stream.peek() == ';')
+                            stream.read(&chr, 1);
+
+                        REMOVE_WHITESPACE_AND_COMMENTS(false)
+                        return "";
+                    }
+                    else if (stream.peek() != '{')
+                        return "Expected property or nested section name, found '" + std::string(1, stream.peek()) + "' instead.";
+                }
+
+                REMOVE_WHITESPACE_AND_COMMENTS(true)
+                if (stream.peek() == '{')
+                {
+                    std::string error = parseSection(stream, node, word);
+                    if (!error.empty())
+                        return error;
+                }
+                else if (stream.peek() == '=')
+                {
+                    std::string error = parseKeyValue(stream, node, word);
+                    if (!error.empty())
+                        return error;
+                }
+                else
+                    return "Expected '{' or '=', found '" + std::string(1, stream.peek()) + "' instead.";
+            }
+
+            return "Found EOF while reading section.";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string parseRootSection(std::stringstream& stream, std::shared_ptr<DataIO::Node> root)
+        {
+            REMOVE_WHITESPACE_AND_COMMENTS(false)
+
+            std::string word = readWord(stream);
+            if (word == "")
+            {
+                REMOVE_WHITESPACE_AND_COMMENTS(true)
+                if (stream.peek() != '{')
+                    return "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
+            }
+
+            REMOVE_WHITESPACE_AND_COMMENTS(true)
+            if (stream.peek() == '{')
+                return parseSection(stream, root, word);
+            else if (stream.peek() == '=')
+                return parseKeyValue(stream, root, word);
+            else
+                return "Expected '{' or '=', found '" + std::string(1, stream.peek()) + "' instead.";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::vector<std::string> convertNodesToLines(std::shared_ptr<DataIO::Node> node)
+        {
+            std::vector<std::string> output;
+            if (node->name.empty())
+                output.emplace_back("{");
+            else
+                output.emplace_back(node->name + " {");
+
+            if (node->propertyValuePairs.size())
+            {
+                for (auto& pair : node->propertyValuePairs)
+                    output.emplace_back("    " + pair.first + " = " + pair.second->value + ";");
+            }
+
+            if (node->propertyValuePairs.size() > 0 && node->children.size() > 0)
+                output.emplace_back("");
+
+            if (node->children.size())
+            {
+                for (std::size_t i = 0; i < node->children.size(); ++i)
+                {
+                    for (auto& line : convertNodesToLines(node->children[i]))
+                        output.emplace_back("    " + line);
+
+                    if (i < node->children.size() - 1)
+                        output.emplace_back("");
+                }
+            }
+
+            output.emplace_back("}");
+            return output;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::shared_ptr<DataIO::Node> DataIO::parse(std::stringstream& stream)
@@ -127,393 +522,6 @@ namespace tgui
 
         for (auto& line : output)
             stream << line << std::endl;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::vector<std::string> DataIO::convertNodesToLines(std::shared_ptr<Node> node)
-    {
-        std::vector<std::string> output;
-        if (node->name.empty())
-            output.emplace_back("{");
-        else
-            output.emplace_back(node->name + " {");
-
-        if (node->propertyValuePairs.size())
-        {
-            for (auto& pair : node->propertyValuePairs)
-                output.emplace_back("    " + pair.first + " = " + pair.second->value + ";");
-        }
-
-        if (node->propertyValuePairs.size() > 0 && node->children.size() > 0)
-            output.emplace_back("");
-
-        if (node->children.size())
-        {
-            for (std::size_t i = 0; i < node->children.size(); ++i)
-            {
-                for (auto& line : convertNodesToLines(node->children[i]))
-                    output.emplace_back("    " + line);
-
-                if (i < node->children.size() - 1)
-                    output.emplace_back("");
-            }
-        }
-
-        output.emplace_back("}");
-        return output;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string DataIO::parseRootSection(std::stringstream& stream, std::shared_ptr<Node> root)
-    {
-        REMOVE_WHITESPACE_AND_COMMENTS(false)
-
-        std::string word = readWord(stream);
-        if (word == "")
-        {
-            REMOVE_WHITESPACE_AND_COMMENTS(true)
-            if (stream.peek() != '{')
-                return "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
-        }
-
-        REMOVE_WHITESPACE_AND_COMMENTS(true)
-        if (stream.peek() == '{')
-            return parseSection(stream, root, word);
-        else if (stream.peek() == '=')
-            return parseKeyValue(stream, root, word);
-        else
-            return "Expected '{' or '=', found '" + std::string(1, stream.peek()) + "' instead.";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string DataIO::parseSection(std::stringstream& stream, std::shared_ptr<Node> node, const std::string& sectionName)
-    {
-        // Create a new node for this section
-        auto sectionNode = std::make_shared<Node>();
-        sectionNode->parent = node.get();
-        sectionNode->name = sectionName;
-        node->children.push_back(sectionNode);
-        node = sectionNode;
-
-        // Read the brace from the stream
-        char chr;
-        stream.read(&chr, 1);
-
-        while (stream.peek() != EOF)
-        {
-            REMOVE_WHITESPACE_AND_COMMENTS(true)
-
-            std::string word = readWord(stream);
-            if (word == "")
-            {
-                if (stream.peek() == EOF)
-                    return "Found EOF while trying to read property or nested section name.";
-                else if (stream.peek() == '}')
-                {
-                    stream.read(&chr, 1);
-
-                    // Ignore semicolon behind closing brace
-                    REMOVE_WHITESPACE_AND_COMMENTS(false)
-                    if (stream.peek() == ';')
-                        stream.read(&chr, 1);
-
-                    REMOVE_WHITESPACE_AND_COMMENTS(false)
-                    return "";
-                }
-                else if (stream.peek() != '{')
-                    return "Expected property or nested section name, found '" + std::string(1, stream.peek()) + "' instead.";
-            }
-
-            REMOVE_WHITESPACE_AND_COMMENTS(true)
-            if (stream.peek() == '{')
-            {
-                std::string error = parseSection(stream, node, word);
-                if (!error.empty())
-                    return error;
-            }
-            else if (stream.peek() == '=')
-            {
-                std::string error = parseKeyValue(stream, node, word);
-                if (!error.empty())
-                    return error;
-            }
-            else
-                return "Expected '{' or '=', found '" + std::string(1, stream.peek()) + "' instead.";
-        }
-
-        return "Found EOF while reading section.";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string DataIO::parseKeyValue(std::stringstream& stream, std::shared_ptr<Node> node, const std::string& key)
-    {
-        // Read the colon from the stream and remove the whitespace behind it
-        char chr;
-        stream.read(&chr, 1);
-
-        REMOVE_WHITESPACE_AND_COMMENTS(true)
-
-        // Check for subsection as value
-        if (stream.peek() == '{')
-            return parseSection(stream, node, key);
-
-        // Read the value
-        std::string line = trim(readLine(stream));
-        if (!line.empty())
-        {
-            // Remove the ';' if it is there
-            if (stream.peek() == ';')
-                stream.read(&chr, 1);
-
-            // Create a value node to store the value
-            auto valueNode = std::make_shared<ValueNode>();
-            valueNode->value = line;
-            node->propertyValuePairs[toLower(key)] = valueNode;
-
-            // It might be a list node
-            if ((line.size() >= 2) && (line[0] == '[') && (line.back() == ']'))
-            {
-                valueNode->listNode = true;
-                if (line.size() >= 3)
-                {
-                    valueNode->valueList.push_back("");
-
-                    std::size_t i = 1;
-                    while (i < line.size()-1)
-                    {
-                        if (line[i] == ',')
-                        {
-                            i++;
-                            valueNode->valueList.back() = trim(valueNode->valueList.back());
-                            valueNode->valueList.push_back("");
-                        }
-                        else if (line[i] == '"')
-                        {
-                            valueNode->valueList.back().insert(valueNode->valueList.back().getSize(), line[i]);
-                            i++;
-
-                            bool backslash = false;
-                            while (i < line.size()-1)
-                            {
-                                valueNode->valueList.back().insert(valueNode->valueList.back().getSize(), line[i]);
-
-                                if (line[i] == '"' && !backslash)
-                                {
-                                    i++;
-                                    break;
-                                }
-
-                                if (line[i] == '\\' && !backslash)
-                                    backslash = true;
-                                else
-                                    backslash = false;
-
-                                i++;
-                            }
-                        }
-                        else
-                        {
-                            valueNode->valueList.back().insert(valueNode->valueList.back().getSize(), line[i]);
-                            i++;
-                        }
-                    }
-
-                    valueNode->valueList.back() = trim(valueNode->valueList.back());
-                }
-            }
-
-            return "";
-        }
-        else
-        {
-            if (stream.peek() == EOF)
-                return "Found EOF while trying to read a value.";
-            else
-            {
-                chr = stream.peek();
-                if (chr == '=')
-                    return "Found '=' while trying to read a value.";
-                else if (chr == '{')
-                    return "Found '{' while trying to read a value.";
-                else
-                    return "Found empty value.";
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string DataIO::readLine(std::stringstream& stream)
-    {
-        std::string line;
-        bool whitespaceFound = false;
-        while (stream.peek() != EOF)
-        {
-            char c = stream.peek();
-
-            if (stream.peek() == '/')
-            {
-                stream.read(&c, 1);
-                if (stream.peek() == '/')
-                {
-                    while (stream.peek() != EOF)
-                    {
-                        stream.read(&c, 1);
-                        if (c == '\n')
-                            break;
-                    }
-                }
-                else if (stream.peek() == '*')
-                {
-                    while (stream.peek() != EOF)
-                    {
-                        stream.read(&c, 1);
-                        if (stream.peek() == '*')
-                        {
-                            stream.read(&c, 1);
-                            if (stream.peek() == '/')
-                            {
-                                stream.read(&c, 1);
-                                break;
-                            }
-                        }
-                    }
-                    continue;
-                }
-                else
-                    return "";
-
-                continue;
-            }
-
-            if (c == '"')
-            {
-                stream.read(&c, 1);
-                line.push_back(c);
-
-                bool backslash = false;
-                while (stream.peek() != EOF)
-                {
-                    stream.read(&c, 1);
-                    line.push_back(c);
-
-                    if (c == '"' && !backslash)
-                        break;
-
-                    if (c == '\\' && !backslash)
-                        backslash = true;
-                    else
-                        backslash = false;
-                }
-
-                if (stream.peek() == EOF)
-                    return "";
-
-                c = stream.peek();
-            }
-
-            if ((c == '=') || (c == '{'))
-                return "";
-            else if ((c == ';') || (c == '}'))
-            {
-                // Remove trailing whitespace before returning the line
-                line.erase(line.find_last_not_of(" \n\r\t")+1);
-                return line;
-            }
-            else if (::isspace(c))
-            {
-                stream.read(&c, 1);
-                if (!whitespaceFound)
-                {
-                    whitespaceFound = true;
-                    line.push_back(' ');
-                }
-            }
-            else
-            {
-                whitespaceFound = false;
-                line.push_back(c);
-                stream.read(&c, 1);
-            }
-        }
-
-        return "";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string DataIO::readWord(std::stringstream& stream)
-    {
-        std::string word = "";
-        while (stream.peek() != EOF)
-        {
-            char c = stream.peek();
-            if (c == '\r')
-            {
-                stream.read(&c, 1);
-                return word;
-            }
-            else if (!::isspace(c) && (c != '=') && (c != ';') && (c != '{') && (c != '}'))
-            {
-                stream.read(&c, 1);
-
-                if ((c == '/') && (stream.peek() == '/'))
-                {
-                    while (stream.peek() != EOF)
-                    {
-                        stream.read(&c, 1);
-                        if (c == '\n')
-                        {
-                            assert(!word.empty()); // No known case in which you can pass here with an empty word
-                            return word;
-                        }
-                    }
-                }
-                else if ((c == '/') && (stream.peek() == '*'))
-                {
-                    while (stream.peek() != EOF)
-                    {
-                        stream.read(&c, 1);
-                        if (c == '*')
-                        {
-                            if (stream.peek() == '/')
-                            {
-                                stream.read(&c, 1);
-                                break;
-                            }
-                        }
-                    }
-                }
-                else if (c == '"')
-                {
-                    word.push_back(c);
-                    bool backslash = false;
-                    while (stream.peek() != EOF)
-                    {
-                        stream.read(&c, 1);
-                        word.push_back(c);
-
-                        if (c == '"' && !backslash)
-                            break;
-
-                        if (c == '\\' && !backslash)
-                            backslash = true;
-                        else
-                            backslash = false;
-                    }
-                }
-                else
-                    word.push_back(c);
-            }
-            else
-                return word;
-        }
-
-        return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

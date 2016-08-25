@@ -30,7 +30,6 @@
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ListBoxRenderer.hpp>
-#include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

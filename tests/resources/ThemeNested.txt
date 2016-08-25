@@ -1,3 +1,31 @@
+ComboBox1 {
+    ListBox = &ListBox1;
+}
+
+ComboBox2 {
+    ListBox = &ListBox2;
+}
+
+ComboBox3 {
+    ListBox = &ListBox3;
+}
+
+ComboBox4 {
+    ListBox = {
+        BackgroundColor = Magenta;
+        Scrollbar       = &ScrollbarSection;
+    }
+}
+
+ComboBox5 {
+    ListBox = {
+        BackgroundColor = Cyan;
+        Scrollbar       = {
+            TrackColor = Black;
+        }
+    }
+}
+
 ListBox1 {
     BackgroundColor = White;
     Scrollbar       = &ScrollbarSection;

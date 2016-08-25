@@ -27,8 +27,8 @@
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Widgets/Button.hpp>/**
 #include <TGUI/Widgets/ChatBox.hpp>
-#include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Widgets/ComboBox.hpp>*/
+#include <TGUI/Widgets/ChildWindow.hpp>*/
+#include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>/**
 #include <TGUI/Widgets/Knob.hpp>*/
 #include <TGUI/Widgets/Label.hpp>
@@ -111,13 +111,15 @@ namespace tgui
         node->children.back()->name = "Renderer";
         for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
         {
-            sf::String strValue;
+            sf::String value = ObjectConverter{pair.second}.getString();
             if (pair.second.getType() == ObjectConverter::Type::RendererData)
-                strValue = "{\n" + ObjectConverter{pair.second}.getString() + "}";
+            {
+                std::stringstream ss{value};
+                node->children.back()->children.push_back(DataIO::parse(ss)->children[0]);
+                node->children.back()->children.back()->name = pair.first;
+            }
             else
-                strValue = ObjectConverter{pair.second}.getString();
-
-            node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(strValue);
+                node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(value);
         }
 
         return node;
@@ -231,24 +233,41 @@ namespace tgui
 
         return node;
     }
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveComboBox(ComboBox::Ptr comboBox)
     {
         auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{comboBox});
 
-        SET_PROPERTY("ItemsToDisplay", tgui::to_string(comboBox->getItemsToDisplay()));
+        if (comboBox->getItemCount() > 0)
+        {
+            auto items = comboBox->getItems();
+            auto& ids = comboBox->getItemIds();
 
-        node->children.push_back(WidgetSaver::getSaveFunction("listbox")(tgui::WidgetConverter{comboBox->getListBox()}));
-        node->children.back()->parent = node.get();
-        node->children.back()->name = "ListBox";
+            std::string itemList = "[" + Serializer::serialize(items[0]);
+            std::string itemIdList = "[" + Serializer::serialize(ids[0]);
+            for (std::size_t i = 1; i < items.size(); ++i)
+            {
+                itemList += ", " + Serializer::serialize(items[i]);
+                itemIdList += ", " + Serializer::serialize(ids[i]);
+            }
+            itemList += "]";
+            itemIdList += "]";
+
+            SET_PROPERTY("Items", itemList);
+            SET_PROPERTY("ItemIds", itemIdList);
+        }
+
+        SET_PROPERTY("ItemsToDisplay", tgui::to_string(comboBox->getItemsToDisplay()));
+        SET_PROPERTY("TextSize", tgui::to_string(comboBox->getTextSize()));
+        SET_PROPERTY("MaximumItems", tgui::to_string(comboBox->getMaximumItems()));
 
         return node;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
+
     TGUI_API std::shared_ptr<DataIO::Node> saveEditBox(EditBox::Ptr editBox)
     {
         auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{editBox});
@@ -540,8 +559,8 @@ namespace tgui
             {"chatbox", saveChatBox},*/
             {"checkbox", saveRadioButton},/**
             {"childwindow", saveChildWindow},*/
-            {"clickablewidget", saveWidget},/**
-            {"combobox", saveComboBox},*/
+            {"clickablewidget", saveWidget},
+            {"combobox", saveComboBox},
             {"editbox", saveEditBox},/**
             {"knob", saveKnob},*/
             {"label", saveLabel},

@@ -223,20 +223,6 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getItems()[0] == "Item 1");
         REQUIRE(listBox->getItems()[2] == "Item 3");
     }
-    /*
-    SECTION("Scrollbar")
-    {
-        tgui::Scrollbar::Ptr scrollbar = std::make_shared<tgui::Theme>()->load("scrollbar");
-    
-        REQUIRE(listBox->getScrollbar() != nullptr);
-        REQUIRE(listBox->getScrollbar() != scrollbar);
-        listBox->setScrollbar(nullptr);
-        REQUIRE(listBox->getScrollbar() == nullptr);
-        listBox->setScrollbar(scrollbar);
-        REQUIRE(listBox->getScrollbar() != nullptr);
-        REQUIRE(listBox->getScrollbar() == scrollbar);
-    }
-*/
 
     SECTION("Events / Signals")
     {
@@ -255,6 +241,10 @@ TEST_CASE("[ListBox]")
 
         SECTION("colored")
         {
+            auto scrollbarRendererData = std::make_shared<tgui::RendererData>();
+            scrollbarRendererData->propertyValuePairs["trackcolor"] = {sf::Color::Red};
+            scrollbarRendererData->propertyValuePairs["thumbcolor"] = {sf::Color::Blue};
+
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(20, 30, 40)"));
@@ -270,6 +260,7 @@ TEST_CASE("[ListBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextStyle", "Italic"));
+                REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", "{ TrackColor = Red; ThumbColor = Blue; }"));
             }
             
             SECTION("set object property")
@@ -287,6 +278,7 @@ TEST_CASE("[ListBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Bold));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextStyle", sf::Text::Italic));
+                REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRendererData));
             }
 
             SECTION("functions")
@@ -304,6 +296,7 @@ TEST_CASE("[ListBox]")
                 renderer->setPadding({5, 6, 7, 8});
                 renderer->setTextStyle(sf::Text::Bold);
                 renderer->setSelectedTextStyle(sf::Text::Italic);
+                renderer->setScrollbar(scrollbarRendererData);
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
@@ -319,6 +312,11 @@ TEST_CASE("[ListBox]")
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Bold);
             REQUIRE(renderer->getProperty("SelectedTextStyle").getTextStyle() == sf::Text::Italic);
+
+            scrollbarRendererData = renderer->getProperty("Scrollbar").getRenderer();
+            REQUIRE(scrollbarRendererData->propertyValuePairs.size() == 2);
+            REQUIRE(scrollbarRendererData->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
+            REQUIRE(scrollbarRendererData->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);
         }
 
         SECTION("textured")

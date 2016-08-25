@@ -217,11 +217,16 @@ namespace tgui
         {
             sf::String strValue;
             if (pair.second.getType() == ObjectConverter::Type::RendererData)
-                strValue = "{\n" + ObjectConverter{pair.second}.getString() + "}";
+            {
+                std::stringstream ss{ObjectConverter{pair.second}.getString()};
+                node->children.push_back(DataIO::parse(ss));
+                node->children.back()->name = pair.first;
+            }
             else
+            {
                 strValue = ObjectConverter{pair.second}.getString();
-
-            node->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(strValue);
+                node->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(strValue);
+            }
         }
 
         std::stringstream ss;

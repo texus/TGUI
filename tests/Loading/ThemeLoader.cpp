@@ -74,15 +74,35 @@ TEST_CASE("[ThemeLoader]")
         std::map<sf::String, sf::String> properties = loader->load("resources/ThemeNested.txt", "ListBox1");
         REQUIRE(properties.size() == 2);
         REQUIRE(properties["backgroundcolor"] == "White");
-        REQUIRE(properties["scrollbar"] == "thumbcolor = Green;\ntrackcolor = Red;\n");
+        REQUIRE(properties["scrollbar"] == "{\nthumbcolor = Green;\ntrackcolor = Red;\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ListBox2");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["scrollbar"] == "thumbcolor = Blue;\n");
+        REQUIRE(properties["scrollbar"] == "{\nthumbcolor = Blue;\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ListBox3");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["scrollbar"] == "trackcolor = Yellow;\n");
+        REQUIRE(properties["scrollbar"] == "{\ntrackcolor = Yellow;\n}");
+
+        properties = loader->load("resources/ThemeNested.txt", "ComboBox1");
+        REQUIRE(properties.size() == 1);
+        REQUIRE(properties["listbox"] == "{\nbackgroundcolor = White;\nscrollbar = {\nthumbcolor = Green;\ntrackcolor = Red;\n};\n}");
+
+        properties = loader->load("resources/ThemeNested.txt", "ComboBox2");
+        REQUIRE(properties.size() == 1);
+        REQUIRE(properties["listbox"] == "{\nScrollbar {\n    thumbcolor = Blue;\n}\n}");
+
+        properties = loader->load("resources/ThemeNested.txt", "ComboBox3");
+        REQUIRE(properties.size() == 1);
+        REQUIRE(properties["listbox"] == "{\nScrollbar {\n    trackcolor = Yellow;\n}\n}");
+
+        properties = loader->load("resources/ThemeNested.txt", "ComboBox4");
+        REQUIRE(properties.size() == 1);
+        REQUIRE(properties["listbox"] == "{\nbackgroundcolor = Magenta;\nscrollbar = {\nthumbcolor = Green;\ntrackcolor = Red;\n};\n}");
+
+        properties = loader->load("resources/ThemeNested.txt", "ComboBox5");
+        REQUIRE(properties.size() == 1);
+        REQUIRE(properties["listbox"] == "{\nbackgroundcolor = Cyan;\n\nScrollbar {\n    trackcolor = Black;\n}\n}");
     }
 
     SECTION("cache")

@@ -93,22 +93,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void emit(std::shared_ptr<Node> rootNode, std::stringstream& stream);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
-
-        static std::vector<std::string> convertNodesToLines(std::shared_ptr<Node> node);
-
-        static std::string parseRootSection(std::stringstream& stream, std::shared_ptr<Node> root);
-
-        static std::string parseSection(std::stringstream& stream, std::shared_ptr<Node> node, const std::string& sectionName);
-
-        static std::string parseKeyValue(std::stringstream& stream, std::shared_ptr<Node> node, const std::string& key);
-
-        static std::string readLine(std::stringstream& stream);
-
-        static std::string readWord(std::stringstream& stream);
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

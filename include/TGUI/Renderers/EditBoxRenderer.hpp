@@ -101,9 +101,6 @@ namespace tgui
         /// When the text is auto-scaled then it will be drawn within the area defined by the size minus the border and padding.
         /// The padding is also used to define the clipping area for when the text it too long.
         ///
-        /// This padding will be scaled together with the background image.
-        /// If there is no background image, or when 9-slice scaling is used, the padding will be exactly what you pass here.
-        ///
         /// @param padding  The padding width and height
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

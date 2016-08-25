@@ -163,18 +163,19 @@ TEST_CASE("[Deserializer]")
 
     SECTION("deserialize renderer")
     {
-        std::string data = "Nested = {\n"
+        std::string data = "{\n"
+                           "  Nested = {\n"
                            "    Num = 5;\n"
-                           "};\n"
-                           "SomeColor = Red;\n"
-                           "TextStyleProperty = StrikeThrough;";
+                           "  };\n"
+                           "  SomeColor = Red;\n"
+                           "  TextStyleProperty = StrikeThrough;\n"
+                           "}";
 
         std::shared_ptr<tgui::RendererData> rendererData = tgui::Deserializer::deserialize(Type::RendererData, data).getRenderer();
-        REQUIRE(rendererData->propertyValuePairs.size() == 2);
+        REQUIRE(rendererData->propertyValuePairs.size() == 3);
         REQUIRE(rendererData->propertyValuePairs["somecolor"].getString() == "Red");
         REQUIRE(rendererData->propertyValuePairs["textstyleproperty"].getString() == "StrikeThrough");
-        
-        // TODO: Support nested property
+        REQUIRE(rendererData->propertyValuePairs["nested"].getString() == "{\nnum = 5;\n}");
     }
 
     SECTION("custom deserialize function")

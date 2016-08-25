@@ -462,6 +462,8 @@ namespace tgui
         x -= getPosition().x;
         y -= getPosition().y;
 
+        m_mouseDown = true;
+
         if (m_scroll.mouseOnWidget(x, y))
         {
             m_scroll.leftMousePressed(x, y);
@@ -473,7 +475,6 @@ namespace tgui
             if (sf::FloatRect{borders.left + padding.left, borders.top + padding.top, getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}.contains(x, y))
             {
                 y -= borders.top + padding.top;
-                m_mouseDown = true;
 
                 int hoveringItem = static_cast<int>(((y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
@@ -518,9 +519,7 @@ namespace tgui
         x -= getPosition().x;
         y -= getPosition().y;
 
-        m_scroll.leftMouseReleased(x, y);
-
-        if (m_mouseDown)
+        if (m_mouseDown && !m_scroll.isMouseDown())
         {
             if (m_selectedItem >= 0)
             {
@@ -543,6 +542,8 @@ namespace tgui
                 m_possibleDoubleClick = true;
             }
         }
+
+        m_scroll.leftMouseReleased(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -580,7 +581,7 @@ namespace tgui
                     updateHoveringItem(-1);
 
                 // If the mouse is held down then select the item below the mouse
-                if (m_mouseDown)
+                if (m_mouseDown && !m_scroll.isMouseDown())
                 {
                     if (m_selectedItem != m_hoveringItem)
                     {
@@ -623,9 +624,7 @@ namespace tgui
 
     void ListBox::mouseNoLongerOnWidget()
     {
-        if (m_mouseHover)
-            mouseLeftWidget();
-
+        Widget::mouseNoLongerOnWidget();
         m_scroll.mouseNoLongerOnWidget();
 
         updateHoveringItem(-1);

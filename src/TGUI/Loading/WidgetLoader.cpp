@@ -29,8 +29,8 @@
 #include <TGUI/Widgets/Canvas.hpp>/**
 #include <TGUI/Widgets/ChatBox.hpp>*/
 #include <TGUI/Widgets/CheckBox.hpp>/**
-#include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Widgets/ComboBox.hpp>*/
+#include <TGUI/Widgets/ChildWindow.hpp>*/
+#include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>/**
 #include <TGUI/Widgets/Knob.hpp>*/
 #include <TGUI/Widgets/Label.hpp>
@@ -180,7 +180,7 @@ namespace tgui
                 {
                     std::stringstream ss;
                     DataIO::emit(nestedProperty, ss);
-                    rendererData->propertyValuePairs[toLower(nestedProperty->name)] = {sf::String{ss.str()}};
+                    rendererData->propertyValuePairs[toLower(nestedProperty->name)] = {sf::String{"{\n" + ss.str() + "}"}};
                 }
 
                 widget->setRenderer(rendererData);
@@ -386,7 +386,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
+
     TGUI_API Widget::Ptr loadComboBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         ComboBox::Ptr comboBox;
@@ -395,23 +395,57 @@ namespace tgui
         else
             comboBox = std::make_shared<ComboBox>();
 
-        for (auto& childNode : node->children)
-        {
-            if (toLower(childNode->name) == "listbox")
-                comboBox->setListBox(std::static_pointer_cast<ListBox>(WidgetLoader::getLoadFunction("listbox")(childNode)));
-        }
-        REMOVE_CHILD("listbox");
-
         loadWidget(node, comboBox);
+
+        if (node->propertyValuePairs["items"])
+        {
+            if (!node->propertyValuePairs["items"]->listNode)
+                throw Exception{"Failed to parse 'Items' property, expected a list as value"};
+
+            if (node->propertyValuePairs["itemids"])
+            {
+                if (!node->propertyValuePairs["itemids"]->listNode)
+                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+
+                if (node->propertyValuePairs["items"]->valueList.size() != node->propertyValuePairs["itemids"]->valueList.size())
+                    throw Exception{"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
+
+                for (std::size_t i = 0; i < node->propertyValuePairs["items"]->valueList.size(); ++i)
+                {
+                    comboBox->addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["items"]->valueList[i]).getString(),
+                                      Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["itemids"]->valueList[i]).getString());
+                }
+            }
+            else // There are no item ids
+            {
+                for (auto& item : node->propertyValuePairs["items"]->valueList)
+                    comboBox->addItem(item);
+            }
+        }
+        else // If there are no items, there should be no item ids
+        {
+            if (node->propertyValuePairs["itemids"])
+            {
+                if (!node->propertyValuePairs["itemids"]->listNode)
+                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+
+                if (!node->propertyValuePairs["itemids"]->valueList.empty())
+                    throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
+            }
+        }
 
         if (node->propertyValuePairs["itemstodisplay"])
             comboBox->setItemsToDisplay(tgui::stoi(node->propertyValuePairs["itemstodisplay"]->value));
+        if (node->propertyValuePairs["textsize"])
+            comboBox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["maximumitems"])
+            comboBox->setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
 
         return comboBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
+
     TGUI_API Widget::Ptr loadEditBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         EditBox::Ptr editBox;
@@ -847,8 +881,8 @@ namespace tgui
             {"chatbox", std::bind(loadChatBox, std::placeholders::_1, std::shared_ptr<ChatBox>{})},*/
             {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},/**
             {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},*/
-            {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},/**
-            {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},*/
+            {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},
+            {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},
             {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},/**
             {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},*/
             {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},

@@ -26,6 +26,7 @@ set(TGUI_SRC
     Loading/WidgetLoader.cpp
     Loading/WidgetSaver.cpp
     Renderers/ButtonRenderer.cpp
+    Renderers/ComboBoxRenderer.cpp
     Renderers/EditBoxRenderer.cpp
     Renderers/LabelRenderer.cpp
     Renderers/ListBoxRenderer.cpp
@@ -42,7 +43,7 @@ set(TGUI_SRC
     Widgets/CheckBox.cpp
     #Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
-    #Widgets/ComboBox.cpp
+    Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
     #Widgets/Grid.cpp
     #Widgets/Knob.cpp

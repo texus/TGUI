@@ -26,21 +26,37 @@
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 
-TEST_CASE("[ComboBox]") {
+TEST_CASE("[ComboBox]")
+{
     tgui::ComboBox::Ptr comboBox = std::make_shared<tgui::ComboBox>();
-    comboBox->setFont("resources/DroidSansArmenian.ttf");
+    comboBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](sf::String){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](sf::String, sf::String){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(comboBox->getWidgetType() == "ComboBox");
     }
 
-    SECTION("adding items") {
+    SECTION("Position and Size")
+    {
+        comboBox->setPosition(40, 30);
+        comboBox->setSize(150, 35);
+        comboBox->getRenderer()->setBorders(2);
+
+        REQUIRE(comboBox->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(comboBox->getSize() == sf::Vector2f(150, 35));
+        REQUIRE(comboBox->getFullSize() == comboBox->getSize());
+        REQUIRE(comboBox->getWidgetOffset() == sf::Vector2f(0, 0));
+    }
+
+    SECTION("Adding items")
+    {
         REQUIRE(comboBox->getItemCount() == 0);
         comboBox->addItem("Item 1", "1");
         REQUIRE(comboBox->getItemCount() == 1);
@@ -57,7 +73,8 @@ TEST_CASE("[ComboBox]") {
         REQUIRE(comboBox->getItemById("3") == "");
     }
     
-    SECTION("removing items") {
+    SECTION("Removing items")
+    {
         comboBox->addItem("Item 1", "1");
         comboBox->addItem("Item 2", "2");
         comboBox->addItem("Item 3", "3");
@@ -95,7 +112,8 @@ TEST_CASE("[ComboBox]") {
         REQUIRE(comboBox->getItemCount() == 0);
     }
     
-    SECTION("changing items") {
+    SECTION("Changing items")
+    {
         comboBox->addItem("Item 1", "1");
         comboBox->addItem("Item 2", "2");
         comboBox->addItem("Item 3", "3");
@@ -134,7 +152,8 @@ TEST_CASE("[ComboBox]") {
         REQUIRE(comboBox->getItems()[2] == "Item 30");
     }
 
-    SECTION("selecting items") {
+    SECTION("Selecting items")
+    {
         comboBox->addItem("Item 1", "1");
         comboBox->addItem("Item 2", "2");
         comboBox->addItem("Item 3", "3");
@@ -170,12 +189,14 @@ TEST_CASE("[ComboBox]") {
         REQUIRE(comboBox->getSelectedItemIndex() == -1);
     }
     
-    SECTION("ItemsToDisplay") {
+    SECTION("ItemsToDisplay")
+    {
         comboBox->setItemsToDisplay(5);
         REQUIRE(comboBox->getItemsToDisplay() == 5);
     }
 
-    SECTION("MaximumItems") {
+    SECTION("MaximumItems")
+    {
         comboBox->addItem("Item 1");
         comboBox->addItem("Item 2");
         comboBox->addItem("Item 3");
@@ -193,209 +214,134 @@ TEST_CASE("[ComboBox]") {
         REQUIRE(comboBox->getItems()[2] == "Item 3");
     }
 
-    SECTION("Scrollbar") {
-        tgui::Scrollbar::Ptr scrollbar = std::make_shared<tgui::Theme>()->load("scrollbar");
-    
-        REQUIRE(comboBox->getScrollbar() != nullptr);
-        REQUIRE(comboBox->getScrollbar() != scrollbar);
-        comboBox->setScrollbar(nullptr);
-        REQUIRE(comboBox->getScrollbar() == nullptr);
-        comboBox->setScrollbar(scrollbar);
-        REQUIRE(comboBox->getScrollbar() != nullptr);
-        REQUIRE(comboBox->getScrollbar() == scrollbar);
+    SECTION("Events / Signals")
+    {
+        SECTION("Widget")
+        {
+            testWidgetSignals(comboBox);
+        }
+
+        // TODO
     }
 
-    SECTION("Renderer") {
+    testWidgetRenderer(comboBox->getRenderer());
+    SECTION("Renderer")
+    {
         auto renderer = comboBox->getRenderer();
 
-        SECTION("colored") {
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", "rgb(10, 20, 30)"));
-                REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(10, 20, 30));
-                
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", "rgb(20, 30, 40)"));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(20, 30, 40));
-                
+        SECTION("colored")
+        {
+            SECTION("set serialized property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(20, 30, 40)"));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorNormal", "rgb(30, 40, 50)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", "rgb(30, 40, 50)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", "rgb(40, 50, 60)"));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorNormal", "rgb(50, 60, 70)"));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", "rgb(50, 60, 70)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", "rgb(60, 70, 80)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold"));
             }
-            
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{10, 20, 30}));
-                REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(10, 20, 30));
-                
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", sf::Color{20, 30, 40}));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(20, 30, 40));
-                
+
+            SECTION("set object property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{20, 30, 40}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorNormal", sf::Color{30, 40, 50}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColor", sf::Color{30, 40, 50}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowBackgroundColorHover", sf::Color{40, 50, 60}));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowColorNormal", sf::Color{50, 60, 70}));
+                REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", sf::Color{60, 70, 80}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Bold));
             }
 
-            SECTION("functions") {
-                renderer->setArrowColor({10, 20, 30});
-                REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(10, 20, 30));
-                REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(10, 20, 30));
-                
-                renderer->setArrowBackgroundColor({20, 30, 40});
-                REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorNormal").getColor() == sf::Color(20, 30, 40));
-                REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(20, 30, 40));
-
+            SECTION("functions")
+            {
                 renderer->setBackgroundColor({20, 30, 40});
-                renderer->setArrowBackgroundColorNormal({30, 40, 50});
+                renderer->setArrowBackgroundColor({30, 40, 50});
                 renderer->setArrowBackgroundColorHover({40, 50, 60});
-                renderer->setArrowColorNormal({50, 60, 70});
+                renderer->setArrowColor({50, 60, 70});
                 renderer->setArrowColorHover({60, 70, 80});
                 renderer->setTextColor({70, 80, 90});
                 renderer->setBorderColor({80, 90, 100});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 9);
-                    REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(20, 30, 40));
-                    REQUIRE(pairs["ArrowBackgroundColorNormal"].getColor() == sf::Color(30, 40, 50));
-                    REQUIRE(pairs["ArrowBackgroundColorHover"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["ArrowColorNormal"].getColor() == sf::Color(50, 60, 70));
-                    REQUIRE(pairs["ArrowColorHover"].getColor() == sf::Color(60, 70, 80));
-                    REQUIRE(pairs["TextColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["BorderColor"].getColor() == sf::Color(80, 90, 100));
-                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
-                    REQUIRE(pairs["Padding"].getOutline() == tgui::Borders(5, 6, 7, 8));
-                }
+                renderer->setTextStyle(sf::Text::Bold);
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
-            REQUIRE(renderer->getProperty("ArrowBackgroundColorNormal").getColor() == sf::Color(30, 40, 50));
+            REQUIRE(renderer->getProperty("ArrowBackgroundColor").getColor() == sf::Color(30, 40, 50));
             REQUIRE(renderer->getProperty("ArrowBackgroundColorHover").getColor() == sf::Color(40, 50, 60));
-            REQUIRE(renderer->getProperty("ArrowColorNormal").getColor() == sf::Color(50, 60, 70));
+            REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Bold);
         }
 
-        SECTION("textured") {
+        SECTION("textured")
+        {
             tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
             tgui::Texture textureArrowUp("resources/Black.png", {60,  0, 32, 32});
             tgui::Texture textureArrowUpHover("resources/Black.png", {60, 32, 32, 32});
             tgui::Texture textureArrowDown("resources/Black.png", {92,  0, 32, 32});
             tgui::Texture textureArrowDownHover("resources/Black.png", {92, 32, 32, 32});
 
-            REQUIRE(!renderer->getProperty("BackgroundImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowUpImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowUpHoverImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowDownImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ArrowDownHoverImage").getTexture().isLoaded());
-            
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", tgui::Serializer::serialize(textureBackground)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpImage", tgui::Serializer::serialize(textureArrowUp)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpHoverImage", tgui::Serializer::serialize(textureArrowUpHover)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownImage", tgui::Serializer::serialize(textureArrowDown)));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownHoverImage", tgui::Serializer::serialize(textureArrowDownHover)));
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUp", tgui::Serializer::serialize(textureArrowUp)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUpHover", tgui::Serializer::serialize(textureArrowUpHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDown", tgui::Serializer::serialize(textureArrowDown)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDownHover", tgui::Serializer::serialize(textureArrowDownHover)));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", textureBackground));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpImage", textureArrowUp));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowUpHoverImage", textureArrowUpHover));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownImage", textureArrowDown));
-                REQUIRE_NOTHROW(renderer->setProperty("ArrowDownHoverImage", textureArrowDownHover));
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUp", textureArrowUp));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUpHover", textureArrowUpHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDown", textureArrowDown));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDownHover", textureArrowDownHover));
             }
 
-            SECTION("functions") {
-                renderer->setBackgroundTexture(textureBackground);
-                renderer->setArrowUpTexture(textureArrowUp);
-                renderer->setArrowUpHoverTexture(textureArrowUpHover);
-                renderer->setArrowDownTexture(textureArrowDown);
-                renderer->setArrowDownHoverTexture(textureArrowDownHover);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 9);
-                    REQUIRE(pairs["BackgroundImage"].getTexture().getData() == textureBackground.getData());
-                    REQUIRE(pairs["ArrowUpImage"].getTexture().getData() == textureArrowUp.getData());
-                    REQUIRE(pairs["ArrowUpHoverImage"].getTexture().getData() == textureArrowUpHover.getData());
-                    REQUIRE(pairs["ArrowDownImage"].getTexture().getData() == textureArrowDown.getData());
-                    REQUIRE(pairs["ArrowDownHoverImage"].getTexture().getData() == textureArrowDownHover.getData());
-                }
+            SECTION("functions")
+            {
+                renderer->setTextureBackground(textureBackground);
+                renderer->setTextureArrowUp(textureArrowUp);
+                renderer->setTextureArrowUpHover(textureArrowUpHover);
+                renderer->setTextureArrowDown(textureArrowDown);
+                renderer->setTextureArrowDownHover(textureArrowDownHover);
             }
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowUpImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowUpHoverImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowDownImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ArrowDownHoverImage").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().isLoaded());
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().getData() == textureBackground.getData());
-            REQUIRE(renderer->getProperty("ArrowUpImage").getTexture().getData() == textureArrowUp.getData());
-            REQUIRE(renderer->getProperty("ArrowUpHoverImage").getTexture().getData() == textureArrowUpHover.getData());
-            REQUIRE(renderer->getProperty("ArrowDownImage").getTexture().getData() == textureArrowDown.getData());
-            REQUIRE(renderer->getProperty("ArrowDownHoverImage").getTexture().getData() == textureArrowDownHover.getData());
+            REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
+            REQUIRE(renderer->getTextureArrowUp().getData() == textureArrowUp.getData());
+            REQUIRE(renderer->getTextureArrowUpHover().getData() == textureArrowUpHover.getData());
+            REQUIRE(renderer->getTextureArrowDown().getData() == textureArrowDown.getData());
+            REQUIRE(renderer->getTextureArrowDownHover().getData() == textureArrowDownHover.getData());
         }
     }
 
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(comboBox = std::make_shared<tgui::Theme>()->load("ComboBox"));
-
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(comboBox = theme->load("ComboBox"));
-        REQUIRE(comboBox->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(comboBox->getSecondaryLoadingParameter() == "combobox");
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(comboBox);
-
-        comboBox->setOpacity(0.8f);
+    SECTION("Saving and loading from file")
+    {
         comboBox->addItem("Item 1", "1");
         comboBox->addItem("Item 2");
         comboBox->addItem("Item 3", "3");
         comboBox->setItemsToDisplay(3);
         comboBox->setMaximumItems(5);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileComboBox1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileComboBox1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileComboBox2.txt"));
-        REQUIRE(compareFiles("WidgetFileComboBox1.txt", "WidgetFileComboBox2.txt"));
-
-        SECTION("Copying widget") {
-            tgui::ComboBox temp;
-            temp = *comboBox;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::ComboBox::copy(std::make_shared<tgui::ComboBox>(temp)));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileComboBox2.txt"));
-            REQUIRE(compareFiles("WidgetFileComboBox1.txt", "WidgetFileComboBox2.txt"));
-        }
+        testSavingWidget("ComboBox", comboBox);
     }
 }

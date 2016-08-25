@@ -438,6 +438,12 @@ namespace tgui
         if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
             drawRectangleShape(target, states, innerSize, getRenderer()->getBackgroundColor());
 
+        // Round the position of the text to avoid blurry text
+        const float* matrix = states.transform.getMatrix();
+        states.transform = sf::Transform{matrix[0], matrix[4], std::round(matrix[12]),
+                                         matrix[1], matrix[5], std::round(matrix[13]),
+                                         matrix[3], matrix[7], matrix[15]};
+
         // Apply clipping when needed
         std::unique_ptr<Clipping> clipping;
         if (!m_autoSize)

@@ -362,9 +362,21 @@ namespace tgui
     {
         std::stringstream ss{renderer};
         auto node = DataIO::parse(ss);
+
+        // The root node should contain exactly one child which is the node we need
+        if (node->propertyValuePairs.empty() && (node->children.size() == 1))
+            node = node->children[0];
+
         auto rendererData = std::make_shared<RendererData>();
         for (auto& pair : node->propertyValuePairs)
             rendererData->propertyValuePairs[pair.first] = {pair.second->value};
+
+        for (auto& child : node->children)
+        {
+            ss = std::stringstream{};
+            DataIO::emit(child, ss);
+            rendererData->propertyValuePairs[toLower(child->name)] = {sf::String{"{\n" + ss.str() + "}"}};
+        }
 
         return rendererData;
     }

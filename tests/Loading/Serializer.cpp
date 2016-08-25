@@ -120,11 +120,12 @@ TEST_CASE("[Serializer]")
         rendererData->propertyValuePairs["TextStyleProperty"] = {sf::Text::StrikeThrough};
         rendererData->propertyValuePairs["Nested"] = {childRendererData};
 
-        std::string result = "Nested = {\n"
-                             "Num = 5;\n"
-                             "};\n"
-                             "SomeColor = Red;\n"
-                             "TextStyleProperty = StrikeThrough;\n";
+        std::string result = "SomeColor = Red;\n"
+                             "TextStyleProperty = StrikeThrough;\n"
+                             "\n"
+                             "Nested {\n"
+                             "    num = 5;\n"
+                             "}\n";
 
         REQUIRE(tgui::Serializer::serialize(rendererData) == result);
     }

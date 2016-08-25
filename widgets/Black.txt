@@ -28,24 +28,22 @@ ChildWindow {
     BorderColor     = rgb(0, 0, 0);
     Borders         = (1, 1, 1, 1);
     DistanceToSide  = 5;
-    CloseButton     = "ChildWindowCloseButton";
-}
-
-ChildWindowCloseButton {
-    NormalImage = "Black.png" Part(48, 179, 15, 15);
-    HoverImage  = "Black.png" Part(63, 179, 15, 15);
-    DownImage   = "Black.png" Part(78, 179, 15, 15);
+    CloseButton     = {
+                        NormalImage = "Black.png" Part(48, 179, 15, 15);
+                        HoverImage  = "Black.png" Part(63, 179, 15, 15);
+                        DownImage   = "Black.png" Part(78, 179, 15, 15);
+                      };
 }
 
 ComboBox {
-    BackgroundImage     = "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
-    ArrowDownImage      = "Black.png" Part(60,  0, 32, 32);
-    ArrowDownHoverImage = "Black.png" Part(60, 32, 32, 32);
-    ArrowUpImage        = "Black.png" Part(92,  0, 32, 32);
-    ArrowUpHoverImage   = "Black.png" Part(92, 32, 32, 32);
-    TextColor           = rgb(190, 190, 190);
-    Padding             = (3, 3, 3, 3);
-    ListBox             = "ListBox";
+    TextureBackground     = "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
+    TextureArrowDown      = "Black.png" Part(60,  0, 32, 32);
+    TextureArrowDownHover = "Black.png" Part(60, 32, 32, 32);
+    TextureArrowUp        = "Black.png" Part(92,  0, 32, 32);
+    TextureArrowUpHover   = "Black.png" Part(92, 32, 32, 32);
+    TextColor             = rgb(190, 190, 190);
+    Padding               = (3, 3, 3, 3);
+    ListBox               = &ListBox;
 }
 
 EditBox {
@@ -86,8 +84,8 @@ MenuBar {
 }
 
 MessageBox {
-    ChildWindow = "ChildWindow";
-    Button      = "Button";
+    ChildWindow = &ChildWindow;
+    Button      = &Button;
     TextColor   = rgb(190, 190, 190);
 }
 
@@ -151,7 +149,7 @@ TextBox {
     SelectedTextBackgroundColor = rgb( 10, 110, 255);
     CaretColor                  = rgb(110, 110, 255);
     Padding                     = (3, 3, 3, 3);
-    Scrollbar                   = "Scrollbar";
+    Scrollbar                   = &Scrollbar;
 }
 
 Tooltip {
