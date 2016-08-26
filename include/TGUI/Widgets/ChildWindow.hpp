@@ -29,7 +29,6 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/Label.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -500,7 +499,7 @@ namespace tgui
 
         Texture        m_iconTexture;
 
-        Label          m_titleText;
+        Text           m_titleText;
         sf::Vector2f   m_draggingPosition;
         TitleAlignment m_titleAlignment = TitleAlignment::Center;
         TitleButtons   m_titleButtons = TitleButtons::Close;

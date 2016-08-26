@@ -156,9 +156,7 @@ namespace tgui
             getRenderer()->getTextureArrowDownHover().setSize(getRenderer()->getTextureArrowDown().getSize());
         }
 
-        m_text.setTextSize(m_listBox->getTextSize());
-
-        updatePosition();
+        m_text.setCharacterSize(m_listBox->getTextSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -201,7 +199,7 @@ namespace tgui
     bool ComboBox::setSelectedItem(const sf::String& itemName)
     {
         bool ret = m_listBox->setSelectedItem(itemName);
-        m_text.setText(m_listBox->getSelectedItem());
+        m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
 
@@ -210,7 +208,7 @@ namespace tgui
     bool ComboBox::setSelectedItemById(const sf::String& id)
     {
         bool ret = m_listBox->setSelectedItemById(id);
-        m_text.setText(m_listBox->getSelectedItem());
+        m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
 
@@ -219,7 +217,7 @@ namespace tgui
     bool ComboBox::setSelectedItemByIndex(std::size_t index)
     {
         bool ret = m_listBox->setSelectedItemByIndex(index);
-        m_text.setText(m_listBox->getSelectedItem());
+        m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
 
@@ -227,7 +225,7 @@ namespace tgui
 
     void ComboBox::deselectItem()
     {
-        m_text.setText("");
+        m_text.setString("");
         m_listBox->deselectItem();
     }
 
@@ -239,7 +237,7 @@ namespace tgui
 
         bool ret = m_listBox->removeItem(itemName);
 
-        m_text.setText(m_listBox->getSelectedItem());
+        m_text.setString(m_listBox->getSelectedItem());
 
         // Shrink the list size
         if ((m_nrOfItemsToDisplay == 0) || (m_listBox->getItemCount() < m_nrOfItemsToDisplay))
@@ -268,7 +266,7 @@ namespace tgui
     {
         bool ret = m_listBox->removeItemByIndex(index);
 
-        m_text.setText(m_listBox->getSelectedItem());
+        m_text.setString(m_listBox->getSelectedItem());
 
         // Shrink the list size
         if ((m_nrOfItemsToDisplay == 0) || (m_listBox->getItemCount() < m_nrOfItemsToDisplay))
@@ -281,7 +279,7 @@ namespace tgui
 
     void ComboBox::removeAllItems()
     {
-        m_text.setText("");
+        m_text.setString("");
         m_listBox->removeAllItems();
 
         updateListBoxHeight();
@@ -320,7 +318,7 @@ namespace tgui
     bool ComboBox::changeItem(const sf::String& originalValue, const sf::String& newValue)
     {
         bool ret = m_listBox->changeItem(originalValue, newValue);
-        m_text.setText(m_listBox->getSelectedItem());
+        m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
 
@@ -329,7 +327,7 @@ namespace tgui
     bool ComboBox::changeItemById(const sf::String& id, const sf::String& newValue)
     {
         bool ret = m_listBox->changeItemById(id, newValue);
-        m_text.setText(m_listBox->getSelectedItem());
+        m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
 
@@ -338,7 +336,7 @@ namespace tgui
     bool ComboBox::changeItemByIndex(std::size_t index, const sf::String& newValue)
     {
         bool ret = m_listBox->changeItemByIndex(index, newValue);
-        m_text.setText(m_listBox->getSelectedItem());
+        m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
 
@@ -375,7 +373,7 @@ namespace tgui
     void ComboBox::setTextSize(unsigned int textSize)
     {
         m_listBox->setTextSize(textSize);
-        m_text.setTextSize(m_listBox->getTextSize());
+        m_text.setCharacterSize(m_listBox->getTextSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -426,7 +424,7 @@ namespace tgui
                 if (static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1) < m_listBox->getItemCount())
                 {
                     m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1));
-                    m_text.setText(m_listBox->getSelectedItem());
+                    m_text.setString(m_listBox->getSelectedItem());
                 }
             }
             else // You are scrolling up
@@ -435,7 +433,7 @@ namespace tgui
                 if (m_listBox->getSelectedItemIndex() > 0)
                 {
                     m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() - 1));
-                    m_text.setText(m_listBox->getSelectedItem());
+                    m_text.setString(m_listBox->getSelectedItem());
                 }
             }
         }
@@ -451,11 +449,11 @@ namespace tgui
         }
         else if (property == "textcolor")
         {
-            m_text.getRenderer()->setTextColor(value.getColor());
+            m_text.setColor(value.getColor());
         }
         else if (property == "textstyle")
         {
-            m_text.getRenderer()->setTextStyle(value.getTextStyle());
+            m_text.setStyle(value.getTextStyle());
         }
         else if (property == "texturebackground")
         {
@@ -481,11 +479,11 @@ namespace tgui
             getRenderer()->getTextureArrowDown().setOpacity(opacity);
             getRenderer()->getTextureArrowDownHover().setOpacity(opacity);
 
-            m_text.getRenderer()->setOpacity(opacity);
+            m_text.setOpacity(opacity);
         }
         else if (property == "font")
         {
-            m_text.getRenderer()->setFont(value.getFont());
+            m_text.setFont(value.getFont());
 
             if (m_listBox->getRenderer()->getFont() == nullptr)
                 m_listBox->getRenderer()->setFont(value.getFont());
@@ -580,7 +578,7 @@ namespace tgui
 
     void ComboBox::newItemSelectedCallbackFunction()
     {
-        m_text.setText(m_listBox->getSelectedItem());
+        m_text.setString(m_listBox->getSelectedItem());
 
         m_callback.text   = m_listBox->getSelectedItem();
         m_callback.itemId = m_listBox->getSelectedItemId();
@@ -677,12 +675,12 @@ namespace tgui
         }
 
         // Draw the selected item
-        if (!m_text.getText().isEmpty())
+        if (!m_text.getString().isEmpty())
         {
             Clipping clipping{target, statesForText, {padding.left, padding.top}, {getInnerSize().x - padding.left - padding.right - arrowSize, getInnerSize().y - padding.top - padding.bottom}};
 
             statesForText.transform.translate(padding.left, padding.top + (((getInnerSize().y - padding.top - padding.bottom) - m_text.getSize().y) / 2.0f));
-            target.draw(m_text, statesForText);
+            m_text.draw(target, statesForText);
         }
     }
 

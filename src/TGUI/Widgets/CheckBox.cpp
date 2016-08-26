@@ -101,9 +101,9 @@ namespace tgui
 
             updateTextColor();
             if (getRenderer()->getTextStyleChecked().isSet())
-                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleChecked());
+                m_text.setStyle(getRenderer()->getTextStyleChecked());
             else
-                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+                m_text.setStyle(getRenderer()->getTextStyle());
 
             m_callback.checked = true;
             sendSignal("Checked", m_checked);
@@ -119,7 +119,7 @@ namespace tgui
             m_checked = false;
 
             updateTextColor();
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+            m_text.setStyle(getRenderer()->getTextStyle());
 
             m_callback.checked = false;
             sendSignal("Unchecked", m_checked);
@@ -255,7 +255,7 @@ namespace tgui
         if (!getText().isEmpty())
         {
             states.transform.translate({(1 + getRenderer()->getTextDistanceRatio()) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
-            target.draw(m_text, states);
+            m_text.draw(target, states);
         }
     }
 

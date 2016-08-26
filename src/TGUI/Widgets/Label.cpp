@@ -212,9 +212,9 @@ namespace tgui
     {
         if (property == "textcolor")
         {
-            sf::Color color = calcColorOpacity(value.getColor(), getRenderer()->getOpacity());
+            Color color = value.getColor();
             for (auto& line : m_lines)
-                line.setFillColor(color);
+                line.setColor(color);
         }
         else if ((property == "borders") || (property == "padding") || (property == "font") || (property == "textstyle"))
         {
@@ -222,9 +222,9 @@ namespace tgui
         }
         else if (property == "opacity")
         {
-            sf::Color color = calcColorOpacity(getRenderer()->getTextColor(), value.getNumber());
+            float opacity = value.getNumber();
             for (auto& line : m_lines)
-                line.setFillColor(color);
+                line.setOpacity(opacity);
         }
         else if ((property != "bordercolor") && (property != "backgroundcolor"))
             Widget::rendererChanged(property, value);
@@ -265,6 +265,7 @@ namespace tgui
                 return;
         }
 
+        // Split the text over multiple lines if needed
         m_lines.clear();
         unsigned int index = 0;
         unsigned int lineCount = 0;
@@ -335,10 +336,11 @@ namespace tgui
 
             // Add the next line
             m_lines.emplace_back();
-            m_lines.back().setFont(*font);
             m_lines.back().setCharacterSize(getTextSize());
+            m_lines.back().setFont(getRenderer()->getFont());
             m_lines.back().setStyle(getRenderer()->getTextStyle());
-            m_lines.back().setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+            m_lines.back().setColor(getRenderer()->getTextColor());
+            m_lines.back().setOpacity(getRenderer()->getOpacity());
 
             if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
                 m_lines.back().setString(m_string.substring(oldIndex, index - oldIndex) + "\n");
@@ -364,7 +366,7 @@ namespace tgui
         if (m_autoSize)
         {
             m_size = {std::max(calculatedLabelWidth, maxWidth) + outline.left + outline.right,
-                      (lineCount * font->getLineSpacing(m_textSize)) + outline.top + outline.bottom};
+                      (lineCount * font->getLineSpacing(m_textSize)) + Text::calculateExtraVerticalSpace(font, m_textSize, m_textStyle) + outline.top + outline.bottom};
         }
 
         // Update the line positions
@@ -372,7 +374,7 @@ namespace tgui
             if ((getSize().x <= outline.left + outline.right) || (getSize().y <= outline.top + outline.bottom))
                 return;
 
-            sf::Vector2f pos{getRenderer()->getBorders().left, getRenderer()->getBorders().top - getTextVerticalCorrection(font, m_textSize, m_textStyle)};
+            sf::Vector2f pos{getRenderer()->getBorders().left, getRenderer()->getBorders().top};
 
             if (m_verticalAlignment != VerticalAlignment::Top)
             {
@@ -387,10 +389,11 @@ namespace tgui
 
             if (m_horizontalAlignment == HorizontalAlignment::Left)
             {
+                float lineSpacing = font->getLineSpacing(m_textSize);
                 for (auto& line : m_lines)
                 {
-                    line.setPosition(pos.x, std::floor(pos.y));
-                    pos.y += font->getLineSpacing(m_textSize);
+                    line.setPosition(pos.x, pos.y);
+                    pos.y += lineSpacing;
                 }
             }
             else // Center or Right alignment
@@ -408,9 +411,9 @@ namespace tgui
                     float textWidth = line.findCharacterPos(lastChar).x;
 
                     if (m_horizontalAlignment == HorizontalAlignment::Center)
-                        line.setPosition(std::round(pos.x + (totalWidth - textWidth) / 2.f), std::floor(pos.y));
+                        line.setPosition(pos.x + ((totalWidth - textWidth) / 2.f), pos.y);
                     else if (m_horizontalAlignment == HorizontalAlignment::Right)
-                        line.setPosition(std::round(pos.x + totalWidth - textWidth), std::floor(pos.y));
+                        line.setPosition(pos.x + totalWidth - textWidth, pos.y);
 
                     pos.y += font->getLineSpacing(m_textSize);
                 }
@@ -438,12 +441,6 @@ namespace tgui
         if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
             drawRectangleShape(target, states, innerSize, getRenderer()->getBackgroundColor());
 
-        // Round the position of the text to avoid blurry text
-        const float* matrix = states.transform.getMatrix();
-        states.transform = sf::Transform{matrix[0], matrix[4], std::round(matrix[12]),
-                                         matrix[1], matrix[5], std::round(matrix[13]),
-                                         matrix[3], matrix[7], matrix[15]};
-
         // Apply clipping when needed
         std::unique_ptr<Clipping> clipping;
         if (!m_autoSize)
@@ -457,7 +454,7 @@ namespace tgui
 
         // Draw the text
         for (auto& line : m_lines)
-            target.draw(line, states);
+            line.draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

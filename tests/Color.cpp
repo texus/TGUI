@@ -25,7 +25,8 @@
 #include "Tests.hpp"
 #include <TGUI/Color.hpp>
 
-TEST_CASE("[Color]") {
+TEST_CASE("[Color]")
+{
     sf::Color color{16, 32, 64, 128};
     REQUIRE(sf::Color(tgui::Color(color)) == color);
     REQUIRE(sf::Color(tgui::Color(16, 32, 64, 128)) == color);

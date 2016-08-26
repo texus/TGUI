@@ -467,7 +467,6 @@ namespace tgui
         bool          m_limitTextWidth = false;
 
         // The text inside the edit box
-        sf::String    m_displayedText;
         sf::String    m_text;
 
         std::string   m_regexString = ".*";
@@ -501,11 +500,11 @@ namespace tgui
         FloatRect     m_caret;
 
         // We need three SFML texts to draw our text + one for the default text + one more for calculations.
-        sf::Text m_textBeforeSelection;
-        sf::Text m_textSelection;
-        sf::Text m_textAfterSelection;
-        sf::Text m_defaultText;
-        sf::Text m_textFull;
+        Text m_textBeforeSelection;
+        Text m_textSelection;
+        Text m_textAfterSelection;
+        Text m_defaultText;
+        Text m_textFull;
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick = false;

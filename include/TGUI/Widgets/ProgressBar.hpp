@@ -199,7 +199,7 @@ namespace tgui
         /// @return Text that is drawn on top of the progress bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getText() const;
+        const sf::String& getText() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,8 +291,8 @@ namespace tgui
         unsigned int m_maximum = 100;
         unsigned int m_value = 0;
 
-        Label m_textBack;
-        Label m_textFront;
+        Text m_textBack;
+        Text m_textFront;
         unsigned int m_textSize = 0;
 
         sf::FloatRect m_backRect;

@@ -11,6 +11,7 @@ set(TEST_SOURCES
     Layouts.cpp
     Signal.cpp
     Tests.cpp
+    Text.cpp
     Texture.cpp
     TextureManager.cpp
     #VerticalLayout.cpp

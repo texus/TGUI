@@ -30,6 +30,8 @@
 
 #include <cmath>
 
+/// TODO: Where m_selStart and m_selEnd are compared, use std::min and std::max and merge the if and else bodies
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -109,8 +111,8 @@ namespace tgui
     {
         Widget::enable();
 
-        m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
-        m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+        m_textBeforeSelection.setColor(getRenderer()->getTextColor());
+        m_textAfterSelection.setColor(getRenderer()->getTextColor());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,8 +123,8 @@ namespace tgui
 
         if (getRenderer()->getTextColorDisabled().isSet())
         {
-            m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
-            m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
+            m_textBeforeSelection.setColor(getRenderer()->getTextColorDisabled());
+            m_textAfterSelection.setColor(getRenderer()->getTextColorDisabled());
         }
     }
 
@@ -133,7 +135,7 @@ namespace tgui
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
-            m_textFull.setCharacterSize(findBestTextSize(getRenderer()->getFont(), (getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.85f));
+            m_textFull.setCharacterSize(findBestTextSize(getRenderer()->getFont(), (getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.8f));
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
@@ -156,29 +158,25 @@ namespace tgui
         else // Clear the text
             m_text = "";
 
-        m_displayedText = m_text;
-
-        // If there is a character limit then check if it is exeeded
-        if ((m_maxChars > 0) && (m_displayedText.getSize() > m_maxChars))
-        {
-            // Remove all the excess characters
+        // Remove all the excess characters if there is a character limit
+        if ((m_maxChars > 0) && (m_text.getSize() > m_maxChars))
             m_text.erase(m_maxChars, sf::String::InvalidPos);
-            m_displayedText.erase(m_maxChars, sf::String::InvalidPos);
-        }
 
-        // Check if there is a password character
+        // Set the displayed text
         if (m_passwordChar != '\0')
         {
-            // Loop every character and change it
-            for (std::size_t i = 0; i < m_text.getSize(); ++i)
-                m_displayedText[i] = m_passwordChar;
+            sf::String displayedText = m_text;
+            std::fill(displayedText.begin(), displayedText.end(), m_passwordChar);
+
+            m_textFull.setString(displayedText);
         }
+        else
+            m_textFull.setString(m_text);
 
         // Set the texts
-        m_textBeforeSelection.setString(m_displayedText);
+        m_textBeforeSelection.setString(m_textFull.getString());
         m_textSelection.setString("");
         m_textAfterSelection.setString("");
-        m_textFull.setString(m_displayedText);
 
         if (!getRenderer()->getFont())
             return;
@@ -188,23 +186,20 @@ namespace tgui
         if (m_limitTextWidth)
         {
             // Now check if the text fits into the EditBox
-            while (m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x - m_textBeforeSelection.getPosition().x > width)
+            while (m_textFull.getSize().x > width)
             {
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
+                sf::String displayedString = m_textFull.getString();
+                displayedString.erase(displayedString.getSize()-1);
+                m_textFull.setString(displayedString);
                 m_text.erase(m_text.getSize()-1);
-                m_displayedText.erase(m_displayedText.getSize()-1);
-
-                // Set the new text
-                m_textBeforeSelection.setString(m_displayedText);
             }
 
-            // Set the full text again
-            m_textFull.setString(m_displayedText);
+            m_textBeforeSelection.setString(m_textFull.getString());
         }
         else // There is no text cropping
         {
-            // Calculate the text width
-            float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
+            float textWidth = m_textFull.getSize().x;
 
             // If the text can be moved to the right then do so
             if (textWidth > width)
@@ -217,7 +212,7 @@ namespace tgui
         }
 
         // Set the caret behind the last character
-        setCaretPosition(m_displayedText.getSize());
+        setCaretPosition(m_textFull.getString().getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,9 +244,9 @@ namespace tgui
         m_selEnd = std::min(m_text.getSize(), start + length);
         m_selChars = m_selEnd - m_selStart;
 
-        m_textBeforeSelection.setString(m_displayedText.substring(0, m_selStart));
-        m_textSelection.setString(m_displayedText.substring(m_selStart, m_selEnd));
-        m_textAfterSelection.setString(m_displayedText.substring(m_selEnd));
+        m_textBeforeSelection.setString(m_textFull.getString().substring(0, m_selStart));
+        m_textSelection.setString(m_textFull.getString().substring(m_selStart, m_selEnd));
+        m_textAfterSelection.setString(m_textFull.getString().substring(m_selEnd));
 
         recalculateTextPositions();
     }
@@ -260,12 +255,7 @@ namespace tgui
 
     sf::String EditBox::getSelectedText() const
     {
-        if (m_selStart < m_selEnd)
-            return m_text.substring(m_selStart, m_selChars);
-        else if (m_selStart > m_selEnd)
-            return m_text.substring(m_selEnd, m_selChars);
-        else
-            return "";
+        return m_text.substring(std::min(m_selStart, m_selEnd), std::max(m_selStart, m_selEnd));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,20 +302,22 @@ namespace tgui
         m_maxChars = maxChars;
 
         // If there is a character limit then check if it is exceeded
-        if ((m_maxChars > 0) && (m_displayedText.getSize() > m_maxChars))
+        if ((m_maxChars > 0) && (m_textFull.getString().getSize() > m_maxChars))
         {
+            sf::String displayedText = m_textFull.getString();
+
             // Remove all the excess characters
             m_text.erase(m_maxChars, sf::String::InvalidPos);
-            m_displayedText.erase(m_maxChars, sf::String::InvalidPos);
+            displayedText.erase(m_maxChars, sf::String::InvalidPos);
 
             // If we passed here then the text has changed.
-            m_textBeforeSelection.setString(m_displayedText);
+            m_textBeforeSelection.setString(displayedText);
             m_textSelection.setString("");
             m_textAfterSelection.setString("");
-            m_textFull.setString(m_displayedText);
+            m_textFull.setString(displayedText);
 
             // Set the caret behind the last character
-            setCaretPosition(m_displayedText.getSize());
+            setCaretPosition(displayedText.getSize());
         }
     }
 
@@ -363,24 +355,23 @@ namespace tgui
         // Check if the width is being limited
         if (m_limitTextWidth)
         {
-            // Now check if the text fits into the EditBox
+            // Delete the last characters when the text no longer fits inside the edit box
             float width = getVisibleEditBoxWidth();
-            while (m_textBeforeSelection.findCharacterPos(m_displayedText.getSize()).x - m_textBeforeSelection.getPosition().x > width)
+            while (m_textFull.getSize().x > width)
             {
-                // The text doesn't fit inside the EditBox, so the last character must be deleted.
+                sf::String displayedString = m_textFull.getString();
+                displayedString.erase(displayedString.getSize()-1);
+                m_textFull.setString(displayedString);
                 m_text.erase(m_text.getSize()-1);
-                m_displayedText.erase(m_displayedText.getSize()-1);
-                m_textBeforeSelection.setString(m_displayedText);
             }
 
-            // The full text might have changed
-            m_textFull.setString(m_displayedText);
+            m_textBeforeSelection.setString(m_textFull.getString());
 
             // There is no clipping
             m_textCropPosition = 0;
 
             // If the caret was behind the limit, then set it at the end
-            if (m_selEnd > m_displayedText.getSize())
+            if (m_selEnd > m_textFull.getString().getSize())
                 setCaretPosition(m_selEnd);
         }
     }
@@ -406,10 +397,9 @@ namespace tgui
         m_selEnd = charactersBeforeCaret;
 
         // Change our texts
-        m_textBeforeSelection.setString(m_displayedText);
+        m_textBeforeSelection.setString(m_textFull.getString());
         m_textSelection.setString("");
         m_textAfterSelection.setString("");
-        m_textFull.setString(m_displayedText);
 
         if (!getRenderer()->getFont())
             return;
@@ -419,9 +409,6 @@ namespace tgui
         {
             // Find out the position of the caret
             float caretPosition = m_textFull.findCharacterPos(m_selEnd).x;
-
-            if (m_selEnd == m_displayedText.getSize())
-                caretPosition += m_textFull.getCharacterSize() / 10.f;
 
             // If the caret is too far on the right then adjust the cropping
             if (m_textCropPosition + getVisibleEditBoxWidth() < caretPosition)
@@ -466,7 +453,7 @@ namespace tgui
             --caretPosition;
 
         // When clicking on the right of the right character, move the caret to the right
-        else if ((positionX > getVisibleEditBoxWidth()) && (caretPosition < m_displayedText.getSize()))
+        else if ((positionX > getVisibleEditBoxWidth()) && (caretPosition < m_textFull.getString().getSize()))
             ++caretPosition;
 
         // Check if this is a double click
@@ -476,7 +463,7 @@ namespace tgui
             m_possibleDoubleClick = false;
 
             // Set the caret at the end of the text
-            setCaretPosition(m_displayedText.getSize());
+            setCaretPosition(m_textFull.getString().getSize());
 
             // Select the whole text
             m_selStart = 0;
@@ -485,7 +472,7 @@ namespace tgui
 
             // Change the texts
             m_textBeforeSelection.setString("");
-            m_textSelection.setString(m_displayedText);
+            m_textSelection.setString(m_textFull.getString());
             m_textAfterSelection.setString("");
         }
         else // No double clicking
@@ -554,19 +541,19 @@ namespace tgui
                     }
                 }
                 // Check if the mouse is on the right of the text AND there is a possibility to scroll
-                else if ((x - getPosition().x > borders.left + padding.left + width) && (m_textFull.findCharacterPos(m_displayedText.getSize()).x > width))
+                else if ((x - getPosition().x > borders.left + padding.left + width) && (m_textFull.getSize().x > width))
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
                     {
-                        if (m_textCropPosition + width < m_textFull.findCharacterPos(m_displayedText.getSize()).x + (m_textFull.getCharacterSize() / 10))
+                        if (m_textCropPosition + width < m_textFull.getSize().x + (m_textFull.getCharacterSize() / 10))
                             m_textCropPosition += static_cast<unsigned int>(std::floor(m_textFull.getCharacterSize() / 10.f + 0.5f));
                         else
-                            m_textCropPosition = static_cast<unsigned int>(m_textFull.findCharacterPos(m_displayedText.getSize()).x + (m_textFull.getCharacterSize() / 10) - width);
+                            m_textCropPosition = static_cast<unsigned int>(m_textFull.getSize().x + (m_textFull.getCharacterSize() / 10) - width);
                     }
                     else
                     {
-                        if (m_textCropPosition + width < m_textFull.findCharacterPos(m_displayedText.getSize()).x)
+                        if (m_textCropPosition + width < m_textFull.getSize().x)
                             ++m_textCropPosition;
                     }
                 }
@@ -585,9 +572,9 @@ namespace tgui
                     m_selChars = m_selEnd - m_selStart;
 
                     // Change our three texts
-                    m_textBeforeSelection.setString(m_displayedText.toWideString().substr(0, m_selStart));
-                    m_textSelection.setString(m_displayedText.toWideString().substr(m_selStart, m_selChars));
-                    m_textAfterSelection.setString(m_displayedText.toWideString().substr(m_selEnd));
+                    m_textBeforeSelection.setString(m_textFull.getString().substring(0, m_selStart));
+                    m_textSelection.setString(m_textFull.getString().substring(m_selStart, m_selChars));
+                    m_textAfterSelection.setString(m_textFull.getString().substring(m_selEnd));
 
                     recalculateTextPositions();
                 }
@@ -601,9 +588,9 @@ namespace tgui
                     m_selChars = m_selStart - m_selEnd;
 
                     // Change our three texts
-                    m_textBeforeSelection.setString(m_displayedText.toWideString().substr(0, m_selEnd));
-                    m_textSelection.setString(m_displayedText.toWideString().substr(m_selEnd, m_selChars));
-                    m_textAfterSelection.setString(m_displayedText.toWideString().substr(m_selStart));
+                    m_textBeforeSelection.setString(m_textFull.getString().substring(0, m_selEnd));
+                    m_textSelection.setString(m_textFull.getString().substring(m_selEnd, m_selChars));
+                    m_textAfterSelection.setString(m_textFull.getString().substring(m_selStart));
 
                     recalculateTextPositions();
                 }
@@ -614,7 +601,7 @@ namespace tgui
                 m_selChars = 0;
 
                 // Change our three texts
-                m_textBeforeSelection.setString(m_displayedText);
+                m_textBeforeSelection.setString(m_textFull.getString());
                 m_textSelection.setString("");
                 m_textAfterSelection.setString("");
 
@@ -634,10 +621,7 @@ namespace tgui
             if (m_selChars > 0)
             {
                 // We will not move the caret, but just undo the selection
-                if (m_selStart < m_selEnd)
-                    setCaretPosition(m_selStart);
-                else
-                    setCaretPosition(m_selEnd);
+                setCaretPosition(std::min(m_selStart, m_selEnd));
             }
             else // When we did not select any text
             {
@@ -656,15 +640,12 @@ namespace tgui
             if (m_selChars > 0)
             {
                 // We will not move the caret, but just undo the selection
-                if (m_selStart < m_selEnd)
-                    setCaretPosition(m_selEnd);
-                else
-                    setCaretPosition(m_selStart);
+                setCaretPosition(std::max(m_selStart, m_selEnd));
             }
             else // When we did not select any text
             {
                 // Move the caret to the right
-                if (m_selEnd < m_displayedText.getSize())
+                if (m_selEnd < m_textFull.getString().getSize())
                     setCaretPosition(m_selEnd + 1);
             }
 
@@ -705,8 +686,10 @@ namespace tgui
                     return;
 
                 // Erase the character
+                sf::String displayedString = m_textFull.getString();
+                displayedString.erase(m_selEnd-1, 1);
+                m_textFull.setString(displayedString);
                 m_text.erase(m_selEnd-1, 1);
-                m_displayedText.erase(m_selEnd-1, 1);
 
                 // Set the caret back on the correct position
                 setCaretPosition(m_selEnd - 1);
@@ -714,7 +697,7 @@ namespace tgui
                 float width = getVisibleEditBoxWidth();
 
                 // Calculate the text width
-                float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
+                float textWidth = m_textFull.getSize().x;
 
                 // If the text can be moved to the right then do so
                 if (textWidth > width)
@@ -745,14 +728,16 @@ namespace tgui
                     return;
 
                 // Erase the character
+                sf::String displayedString = m_textFull.getString();
+                displayedString.erase(m_selEnd, 1);
+                m_textFull.setString(displayedString);
                 m_text.erase(m_selEnd, 1);
-                m_displayedText.erase(m_selEnd, 1);
 
                 // Set the caret back on the correct position
                 setCaretPosition(m_selEnd);
 
                 // Calculate the text width
-                float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
+                float textWidth = m_textFull.getSize().x;
 
                 // If the text can be moved to the right then do so
                 float width = getVisibleEditBoxWidth();
@@ -848,23 +833,24 @@ namespace tgui
         m_text.insert(m_selEnd, key);
 
         // Change the displayed text
+        sf::String displayedText = m_textFull.getString();
         if (m_passwordChar != '\0')
-            m_displayedText.insert(m_selEnd, m_passwordChar);
+            displayedText.insert(m_selEnd, m_passwordChar);
         else
-            m_displayedText.insert(m_selEnd, key);
+            displayedText.insert(m_selEnd, key);
 
-        // Append the character to the text
-        m_textFull.setString(m_displayedText);
+        m_textFull.setString(displayedText);
 
         // When there is a text width limit then reverse what we just did
         if (m_limitTextWidth)
         {
             // Now check if the text fits into the EditBox
-            if (m_textFull.findCharacterPos(m_displayedText.getSize()).x > getVisibleEditBoxWidth())
+            if (m_textFull.getSize().x > getVisibleEditBoxWidth())
             {
                 // If the text does not fit in the EditBox then delete the added character
                 m_text.erase(m_selEnd, 1);
-                m_displayedText.erase(m_selEnd, 1);
+                displayedText.erase(m_selEnd, 1);
+                m_textFull.setString(displayedText);
                 return;
             }
         }
@@ -929,22 +915,22 @@ namespace tgui
         {
             if (m_enabled || !getRenderer()->getTextColorDisabled().isSet())
             {
-                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
-                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), getRenderer()->getOpacity()));
+                m_textBeforeSelection.setColor(getRenderer()->getTextColor());
+                m_textAfterSelection.setColor(getRenderer()->getTextColor());
             }
             else
             {
-                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
-                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), getRenderer()->getOpacity()));
+                m_textBeforeSelection.setColor(getRenderer()->getTextColorDisabled());
+                m_textAfterSelection.setColor(getRenderer()->getTextColorDisabled());
             }
         }
         else if (property == "selectedtextcolor")
         {
-            m_textSelection.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
+            m_textSelection.setColor(value.getColor());
         }
         else if (property == "defaulttextcolor")
         {
-            m_defaultText.setFillColor(calcColorOpacity(value.getColor(), getRenderer()->getOpacity()));
+            m_defaultText.setColor(value.getColor());
         }
         else if ((property == "texture") || (property == "texturehover") || (property == "texturedisabled") || (property == "texturefocused"))
         {
@@ -968,19 +954,10 @@ namespace tgui
         else if (property == "opacity")
         {
             float opacity = value.getNumber();
-
-            if (m_enabled || !getRenderer()->getTextColorDisabled().isSet())
-            {
-                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), opacity));
-                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColor(), opacity));
-            }
-            else
-            {
-                m_textBeforeSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), opacity));
-                m_textAfterSelection.setFillColor(calcColorOpacity(getRenderer()->getTextColorDisabled(), opacity));
-            }
-            m_textSelection.setFillColor(calcColorOpacity(getRenderer()->getSelectedTextColor(), opacity));
-            m_defaultText.setFillColor(calcColorOpacity(getRenderer()->getDefaultTextColor(), opacity));
+            m_textBeforeSelection.setOpacity(opacity);
+            m_textAfterSelection.setOpacity(opacity);
+            m_textSelection.setOpacity(opacity);
+            m_defaultText.setOpacity(opacity);
 
             getRenderer()->getTexture().setOpacity(opacity);
             getRenderer()->getTextureHover().setOpacity(opacity);
@@ -989,15 +966,12 @@ namespace tgui
         }
         else if (property == "font")
         {
-            std::shared_ptr<sf::Font> font = value.getFont();
-            if (font)
-            {
-                m_textBeforeSelection.setFont(*font);
-                m_textSelection.setFont(*font);
-                m_textAfterSelection.setFont(*font);
-                m_textFull.setFont(*font);
-                m_defaultText.setFont(*font);
-            }
+            Font font = value.getFont();
+            m_textBeforeSelection.setFont(font);
+            m_textSelection.setFont(font);
+            m_textAfterSelection.setFont(font);
+            m_textFull.setFont(font);
+            m_defaultText.setFont(font);
 
             // Recalculate the text size and position
             setText(m_text);
@@ -1041,7 +1015,7 @@ namespace tgui
     std::size_t EditBox::findCaretPosition(float posX)
     {
         // This code will crash when the editbox is empty. We need to avoid this.
-        if (m_displayedText.isEmpty())
+        if (m_textFull.getString().isEmpty())
             return 0;
 
         // Find out what the first visible character is
@@ -1070,7 +1044,7 @@ namespace tgui
         if (m_textAlignment != Alignment::Left)
         {
             // Calculate the text width
-            float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
+            float textWidth = m_textFull.getSize().x;
 
             // Check if a layout would make sense
             if (textWidth < width)
@@ -1089,14 +1063,14 @@ namespace tgui
         // Go forward to find the character
         while (m_textFull.findCharacterPos(lastVisibleChar+1).x < m_textCropPosition + width)
         {
-            if (lastVisibleChar == m_displayedText.getSize())
+            if (lastVisibleChar == m_textFull.getString().getSize())
                 break;
 
             ++lastVisibleChar;
         }
 
         // Set the first part of the text
-        tempString = m_displayedText.toWideString().substr(0, firstVisibleChar);
+        tempString = m_textFull.getString().substring(0, firstVisibleChar);
         m_textFull.setString(tempString);
 
         // Calculate the first position
@@ -1105,8 +1079,10 @@ namespace tgui
         // for all the other characters, check where you have clicked.
         for (std::size_t i = firstVisibleChar; i < lastVisibleChar; ++i)
         {
+            sf::String displayedString = m_textFull.getString();
+
             // Add the next character to the temporary string
-            tempString += m_displayedText[i];
+            tempString += displayedString[i];
             m_textFull.setString(tempString);
 
             // Make some calculations
@@ -1117,13 +1093,12 @@ namespace tgui
             // Check if you have clicked on the first halve of that character
             if (posX < textWidthWithoutLastChar + pixelsToMove + halfOfLastCharWidth - m_textCropPosition)
             {
-                m_textFull.setString(m_displayedText);
+                m_textFull.setString(displayedString);
                 return i;
             }
         }
 
         // If you pass here then you clicked behind all the characters
-        m_textFull.setString(m_displayedText);
         return lastVisibleChar;
     }
 
@@ -1135,31 +1110,20 @@ namespace tgui
         if (m_selChars == 0)
             return;
 
-        // Check if the characters were selected from left to right
-        if (m_selStart < m_selEnd)
-        {
-            // Erase the characters
-            m_text.erase(m_selStart, m_selChars);
-            m_displayedText.erase(m_selStart, m_selChars);
+        std::size_t pos = std::min(m_selStart, m_selEnd);
 
-            // Set the caret back on the correct position
-            setCaretPosition(m_selStart);
-        }
-        else // When the text is selected from right to left
-        {
-            // Erase the characters
-            m_text.erase(m_selEnd, m_selChars);
-            m_displayedText.erase(m_selEnd, m_selChars);
+        // Erase the characters
+        sf::String displayedString = m_textFull.getString();
+        displayedString.erase(pos, m_selChars);
+        m_textFull.setString(displayedString);
+        m_text.erase(pos, m_selChars);
 
-            // Set the caret back on the correct position
-            setCaretPosition(m_selEnd);
-        }
-
-        // Calculate the text width
-        float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
+        // Set the caret back on the correct position
+        setCaretPosition(pos);
 
         // If the text can be moved to the right then do so
         float width = getVisibleEditBoxWidth();
+        float textWidth = m_textFull.getSize().x;
         if (textWidth > width)
         {
             if (textWidth - m_textCropPosition < width)
@@ -1176,18 +1140,13 @@ namespace tgui
         Padding padding = getRenderer()->getPadding();
 
         float textX = padding.left - m_textCropPosition;
-        float textY = 0;
-        if (getRenderer()->getFont())
-        {
-            textY = std::round((padding.top - getTextVerticalCorrection(getRenderer()->getFont(), getTextSize()))
-                               + ((getInnerSize().y - padding.bottom - padding.top) - getRenderer()->getFont().getLineSpacing(getTextSize())) / 2.f);
-        }
+        float textY = padding.top + (((getInnerSize().y - padding.bottom - padding.top) - m_textFull.getSize().y) / 2.f);
 
         // Check if the layout wasn't left
         if (m_textAlignment != Alignment::Left)
         {
             // Calculate the text width
-            float textWidth = m_textFull.findCharacterPos(m_displayedText.getSize()).x;
+            float textWidth = m_textFull.getSize().x;
 
             // Check if a layout would make sense
             if (textWidth < getVisibleEditBoxWidth())
@@ -1211,7 +1170,7 @@ namespace tgui
         {
             // Watch out for the kerning
             if (m_textBeforeSelection.getString().getSize() > 0)
-                textX += getRenderer()->getFont().getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
+                textX += getRenderer()->getFont().getKerning(m_textFull.getString()[m_textBeforeSelection.getString().getSize() - 1], m_textFull.getString()[m_textBeforeSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
             textX += m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x - m_textBeforeSelection.getPosition().x;
 
@@ -1224,8 +1183,8 @@ namespace tgui
             m_textSelection.setPosition(std::floor(textX + 0.5f), textY);
 
             // Watch out for kerning
-            if (m_displayedText.getSize() > m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize())
-                textX += getRenderer()->getFont().getKerning(m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize() - 1], m_displayedText[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
+            if (m_textFull.getString().getSize() > m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize())
+                textX += getRenderer()->getFont().getKerning(m_textFull.getString()[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize() - 1], m_textFull.getString()[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
             // Set the text selected text on the correct position
             textX += m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x  - m_textSelection.getPosition().x;
@@ -1310,7 +1269,7 @@ namespace tgui
 
         if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
         {
-            target.draw(m_textBeforeSelection, states);
+            m_textBeforeSelection.draw(target, states);
 
             if (m_textSelection.getString() != "")
             {
@@ -1318,13 +1277,13 @@ namespace tgui
                 drawRectangleShape(target, states, m_selectedTextBackground.getSize(), getRenderer()->getSelectedTextBackgroundColor());
                 states.transform.translate(-m_selectedTextBackground.getPosition());
 
-                target.draw(m_textSelection, states);
-                target.draw(m_textAfterSelection, states);
+                m_textSelection.draw(target, states);
+                m_textAfterSelection.draw(target, states);
             }
         }
         else if (m_defaultText.getString() != "")
         {
-            target.draw(m_defaultText, states);
+            m_defaultText.draw(target, states);
         }
 
         // Draw the caret

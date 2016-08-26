@@ -181,38 +181,38 @@ namespace tgui
     void ProgressBar::setText(const sf::String& text)
     {
         // Set the new text
-        m_textBack.setText(text);
-        m_textFront.setText(text);
+        m_textBack.setString(text);
+        m_textFront.setString(text);
 
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
             unsigned int textSize;
             if (getRenderer()->getTextureFill().isLoaded())
-               textSize = findBestTextSize(getRenderer()->getFont(), getRenderer()->getTextureFill().getSize().y * 0.85f);
+               textSize = findBestTextSize(getRenderer()->getFont(), getRenderer()->getTextureFill().getSize().y * 0.8f);
             else
-                textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.85f);
+                textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.8f);
 
-            m_textBack.setTextSize(textSize);
+            m_textBack.setCharacterSize(textSize);
 
             // Make the text smaller when it's too width
             if (m_textBack.getSize().x > (getInnerSize().x * 0.85f))
-                m_textBack.setTextSize(static_cast<unsigned int>(textSize * ((getInnerSize().x * 0.85f) / m_textBack.getSize().x)));
+                m_textBack.setCharacterSize(static_cast<unsigned int>(textSize * ((getInnerSize().x * 0.85f) / m_textBack.getSize().x)));
         }
         else // When the text has a fixed size
         {
             // Set the text size
-            m_textBack.setTextSize(m_textSize);
+            m_textBack.setCharacterSize(m_textSize);
         }
 
-        m_textFront.setTextSize(m_textBack.getTextSize());
+        m_textFront.setCharacterSize(m_textBack.getCharacterSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ProgressBar::getText() const
+    const sf::String& ProgressBar::getText() const
     {
-        return m_textBack.getText();
+        return m_textBack.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@ namespace tgui
 
     unsigned int ProgressBar::getTextSize() const
     {
-        return m_textBack.getTextSize();
+        return m_textBack.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,12 +256,12 @@ namespace tgui
         }
         else if ((property == "textcolor") || (property == "textcolorfilled"))
         {
-            m_textBack.getRenderer()->setTextColor(getRenderer()->getTextColor());
+            m_textBack.setColor(getRenderer()->getTextColor());
 
             if (getRenderer()->getTextColorFilled().isSet())
-                m_textFront.getRenderer()->setTextColor(getRenderer()->getTextColorFilled());
+                m_textFront.setColor(getRenderer()->getTextColorFilled());
             else
-                m_textFront.getRenderer()->setTextColor(getRenderer()->getTextColor());
+                m_textFront.setColor(getRenderer()->getTextColor());
         }
         else if (property == "texturebackground")
         {
@@ -275,21 +275,21 @@ namespace tgui
         }
         else if (property == "textstyle")
         {
-            m_textBack.getRenderer()->setTextStyle(value.getTextStyle());
-            m_textFront.getRenderer()->setTextStyle(value.getTextStyle());
+            m_textBack.setStyle(value.getTextStyle());
+            m_textFront.setStyle(value.getTextStyle());
         }
         else if (property == "opacity")
         {
             getRenderer()->getTextureBackground().setOpacity(value.getNumber());
             getRenderer()->getTextureFill().setOpacity(value.getNumber());
 
-            m_textBack.getRenderer()->setOpacity(value.getNumber());
-            m_textFront.getRenderer()->setOpacity(value.getNumber());
+            m_textBack.setOpacity(value.getNumber());
+            m_textFront.setOpacity(value.getNumber());
         }
         else if (property == "font")
         {
-            m_textBack.getRenderer()->setFont(value.getFont());
-            m_textFront.getRenderer()->setFont(value.getFont());
+            m_textBack.setFont(value.getFont());
+            m_textFront.setFont(value.getFont());
             setText(getText());
         }
         else if ((property != "bordercolor") && (property != "backgroundcolor") && (property != "fillcolor"))
@@ -425,14 +425,14 @@ namespace tgui
         }
 
         // Draw the text
-        if (m_textBack.getText() != "")
+        if (m_textBack.getString() != "")
         {
             sf::Vector2f textTranslation = (getInnerSize() - m_textBack.getSize()) / 2.f;
 
-            if (sf::Color(m_textBack.getRenderer()->getTextColor()) == sf::Color(m_textFront.getRenderer()->getTextColor()))
+            if (sf::Color(m_textBack.getColor()) == sf::Color(m_textFront.getColor()))
             {
                 states.transform.translate(textTranslation);
-                target.draw(m_textBack, states);
+                m_textBack.draw(target, states);
                 states.transform.translate(-textTranslation);
             }
             else
@@ -442,7 +442,7 @@ namespace tgui
                     Clipping clipping{target, states, imageShift + sf::Vector2f{m_backRect.left, m_backRect.top}, {m_backRect.width, m_backRect.height}};
 
                     states.transform.translate(textTranslation);
-                    target.draw(m_textBack, states);
+                    m_textBack.draw(target, states);
                     states.transform.translate(-textTranslation);
                 }
 
@@ -451,7 +451,7 @@ namespace tgui
                     Clipping clipping{target, states, imageShift + sf::Vector2f{m_frontRect.left, m_frontRect.top}, {m_frontRect.width, m_frontRect.height}};
 
                     states.transform.translate(textTranslation);
-                    target.draw(m_textFront, states);
+                    m_textFront.draw(target, states);
                     states.transform.translate(-textTranslation);
                 }
             }

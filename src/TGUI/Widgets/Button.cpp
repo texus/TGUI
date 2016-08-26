@@ -108,22 +108,22 @@ namespace tgui
 
         // Set the text size when the text has a fixed size
         if (m_textSize != 0)
-            m_text.setTextSize(m_textSize);
+            m_text.setCharacterSize(m_textSize);
 
         // Draw the text normally unless the height is more than double of the width
         if (getInnerSize().y <= getInnerSize().x * 2)
         {
-            m_text.setText(text);
+            m_text.setString(text);
 
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                unsigned int textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.85f);
-                m_text.setTextSize(textSize);
+                unsigned int textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.8f);
+                m_text.setCharacterSize(textSize);
 
                 // Make the text smaller when it's too width
                 if (m_text.getSize().x > (getInnerSize().x * 0.85f))
-                    m_text.setTextSize(static_cast<unsigned int>(textSize * ((getInnerSize().x * 0.85f) / m_text.getSize().x)));
+                    m_text.setCharacterSize(static_cast<unsigned int>(textSize * ((getInnerSize().x * 0.85f) / m_text.getSize().x)));
             }
         }
         else // Place the text vertically
@@ -131,21 +131,21 @@ namespace tgui
             // The text is vertical
             if (!m_string.isEmpty())
             {
-                m_text.setText(m_string[0]);
+                m_text.setString(m_string[0]);
 
                 for (unsigned int i = 1; i < m_string.getSize(); ++i)
-                    m_text.setText(m_text.getText() + "\n" + m_string[i]);
+                    m_text.setString(m_text.getString() + "\n" + m_string[i]);
             }
 
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                unsigned int textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().x * 0.85f);
-                m_text.setTextSize(textSize);
+                unsigned int textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().x * 0.8f);
+                m_text.setCharacterSize(textSize);
 
                 // Make the text smaller when it's too high
                 if (m_text.getSize().y > (getInnerSize().y * 0.85f))
-                    m_text.setTextSize(static_cast<unsigned int>(textSize * getInnerSize().y * 0.85f / m_text.getSize().y));
+                    m_text.setCharacterSize(static_cast<unsigned int>(textSize * getInnerSize().y * 0.85f / m_text.getSize().y));
             }
         }
     }
@@ -174,7 +174,7 @@ namespace tgui
 
     unsigned int Button::getTextSize() const
     {
-        return m_text.getTextSize();
+        return m_text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ namespace tgui
     void Button::leftMouseReleased(float x, float y)
     {
         if (m_mouseDown)
-            sendSignal("Pressed", m_text.getText());
+            sendSignal("Pressed", m_text.getString());
 
         ClickableWidget::leftMouseReleased(x, y);
 
@@ -203,7 +203,7 @@ namespace tgui
     void Button::keyPressed(const sf::Event::KeyEvent& event)
     {
         if ((event.code == sf::Keyboard::Space) || (event.code == sf::Keyboard::Return))
-            sendSignal("Pressed", m_text.getText());
+            sendSignal("Pressed", m_text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -263,11 +263,11 @@ namespace tgui
             getRenderer()->getTextureDown().setOpacity(opacity);
             getRenderer()->getTextureFocused().setOpacity(opacity);
 
-            m_text.getRenderer()->setOpacity(opacity);
+            m_text.setOpacity(opacity);
         }
         else if (property == "font")
         {
-            m_text.getRenderer()->setFont(value.getFont());
+            m_text.setFont(value.getFont());
             setText(getText());
         }
         else if ((property != "bordercolor")
@@ -310,13 +310,13 @@ namespace tgui
     void Button::updateTextColorAndStyle()
     {
         if (!m_enabled && getRenderer()->getTextStyleDisabled().isSet())
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleDisabled());
+            m_text.setStyle(getRenderer()->getTextStyleDisabled());
         else if (m_mouseHover && m_mouseDown && getRenderer()->getTextStyleDown().isSet())
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleDown());
+            m_text.setStyle(getRenderer()->getTextStyleDown());
         else if (m_mouseHover && getRenderer()->getTextStyleHover().isSet())
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleHover());
+            m_text.setStyle(getRenderer()->getTextStyleHover());
         else
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+            m_text.setStyle(getRenderer()->getTextStyle());
 
         sf::Color color;
         if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
@@ -328,7 +328,7 @@ namespace tgui
         else
             color = getRenderer()->getTextColor();
 
-        m_text.getRenderer()->setTextColor(calcColorOpacity(color, getRenderer()->getOpacity()));
+        m_text.setColor(color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -373,7 +373,7 @@ namespace tgui
 
         // If the button has a text then also draw the text
         states.transform.translate({(getInnerSize().x - m_text.getSize().x) / 2.f, (getInnerSize().y - m_text.getSize().y) / 2.f});
-        target.draw(m_text, states);
+        m_text.draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

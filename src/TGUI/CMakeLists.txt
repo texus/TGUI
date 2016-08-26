@@ -12,6 +12,7 @@ set(TGUI_SRC
     ObjectConverter.cpp
     Signal.cpp
     TextStyle.cpp
+    Text.cpp
     Texture.cpp
     TextureManager.cpp
     Transformable.cpp

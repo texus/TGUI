@@ -27,7 +27,6 @@
 #define TGUI_MESSAGE_BOX_HPP
 
 
-#include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 
@@ -134,10 +133,7 @@ namespace tgui
         /// @return Text that is being displayed inside the message box
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getText() const
-        {
-            return m_label->getText();
-        }
+        sf::String getText() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

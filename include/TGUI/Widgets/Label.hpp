@@ -29,6 +29,7 @@
 
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Renderers/LabelRenderer.hpp>
+#include <TGUI/Text.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -311,7 +312,7 @@ namespace tgui
     protected:
 
         sf::String m_string;
-        std::vector<sf::Text> m_lines;
+        std::vector<Text> m_lines;
 
         unsigned int m_textSize = 18;
         sf::Uint32 m_textStyle = sf::Text::Style::Regular;

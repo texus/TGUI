@@ -27,7 +27,6 @@
 #define TGUI_COMBO_BOX_HPP
 
 
-#include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Renderers/ComboBoxRenderer.hpp>
 
@@ -538,7 +537,7 @@ namespace tgui
         // Internally a list box is used to store all items
         ListBox::Ptr m_listBox = std::make_shared<ListBox>();
 
-        Label m_text;
+        Text m_text;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -118,13 +118,13 @@ namespace tgui
                 m_scroll.setValue(m_scroll.getMaximum() - m_scroll.getLowValue());
 
             // Create the new item
-            Label newItem;
-            newItem.getRenderer()->setFont(getRenderer()->getFont());
-            newItem.getRenderer()->setTextColor(getRenderer()->getTextColor());
-            newItem.getRenderer()->setOpacity(getRenderer()->getOpacity());
-            newItem.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
-            newItem.setTextSize(m_textSize);
-            newItem.setText(itemName);
+            Text newItem;
+            newItem.setFont(getRenderer()->getFont());
+            newItem.setColor(getRenderer()->getTextColor());
+            newItem.setOpacity(getRenderer()->getOpacity());
+            newItem.setStyle(getRenderer()->getTextStyle());
+            newItem.setCharacterSize(m_textSize);
+            newItem.setString(itemName);
             newItem.setPosition({0, (m_items.size() * m_itemHeight) + ((m_itemHeight - newItem.getSize().y) / 2.0f)});
 
             // Add the new item to the list
@@ -142,7 +142,7 @@ namespace tgui
     {
         for (std::size_t i = 0; i < m_items.size(); ++i)
         {
-            if (m_items[i].getText() == itemName)
+            if (m_items[i].getString() == itemName)
                 return setSelectedItemByIndex(i);
         }
 
@@ -200,7 +200,7 @@ namespace tgui
     {
         for (std::size_t i = 0; i < m_items.size(); ++i)
         {
-            if (m_items[i].getText() == itemName)
+            if (m_items[i].getString() == itemName)
                 return removeItemByIndex(i);
         }
 
@@ -270,7 +270,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_itemIds.size(); ++i)
         {
             if (m_itemIds[i] == id)
-                return m_items[i].getText();
+                return m_items[i].getString();
         }
 
         return "";
@@ -280,7 +280,7 @@ namespace tgui
 
     sf::String ListBox::getSelectedItem() const
     {
-        return (m_selectedItem >= 0) ? m_items[m_selectedItem].getText() : "";
+        return (m_selectedItem >= 0) ? m_items[m_selectedItem].getString() : "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -303,7 +303,7 @@ namespace tgui
     {
         for (std::size_t i = 0; i < m_items.size(); ++i)
         {
-            if (m_items[i].getText() == originalValue)
+            if (m_items[i].getString() == originalValue)
                 return changeItemByIndex(i, newValue);
         }
 
@@ -330,7 +330,7 @@ namespace tgui
         if (index >= m_items.size())
             return false;
 
-        m_items[index].setText(newValue);
+        m_items[index].setString(newValue);
         return true;
     }
 
@@ -346,8 +346,8 @@ namespace tgui
     std::vector<sf::String> ListBox::getItems() const
     {
         std::vector<sf::String> items;
-        for (auto& label : m_items)
-            items.push_back(label.getText());
+        for (auto& item : m_items)
+            items.push_back(item.getString());
 
         return items;
     }
@@ -369,7 +369,7 @@ namespace tgui
         {
             m_textSize = findBestTextSize(getRenderer()->getFont(), itemHeight * 0.85f);
             for (auto& item : m_items)
-                item.setTextSize(m_textSize);
+                item.setCharacterSize(m_textSize);
         }
 
         m_scroll.setScrollAmount(m_itemHeight);
@@ -396,7 +396,7 @@ namespace tgui
             m_textSize = findBestTextSize(getRenderer()->getFont(), m_itemHeight * 0.85f);
 
         for (auto& item : m_items)
-            item.setTextSize(m_textSize);
+            item.setCharacterSize(m_textSize);
 
         updatePosition();
     }
@@ -484,9 +484,9 @@ namespace tgui
 
                 if (m_hoveringItem >= 0)
                 {
-                    m_callback.text = m_items[m_hoveringItem].getText();
+                    m_callback.text = m_items[m_hoveringItem].getString();
                     m_callback.itemId = m_itemIds[m_hoveringItem];
-                    sendSignal("MousePressed", m_items[m_hoveringItem].getText(), m_items[m_hoveringItem].getText(), m_itemIds[m_hoveringItem]);
+                    sendSignal("MousePressed", m_items[m_hoveringItem].getString(), m_items[m_hoveringItem].getString(), m_itemIds[m_hoveringItem]);
                 }
 
                 if (m_selectedItem != m_hoveringItem)
@@ -497,9 +497,9 @@ namespace tgui
 
                     if (m_selectedItem >= 0)
                     {
-                        m_callback.text = m_items[m_selectedItem].getText();
+                        m_callback.text = m_items[m_selectedItem].getString();
                         m_callback.itemId = m_itemIds[m_selectedItem];
-                        sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                        sendSignal("ItemSelected", m_items[m_selectedItem].getString(), m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
                     }
                     else
                     {
@@ -523,9 +523,9 @@ namespace tgui
         {
             if (m_selectedItem >= 0)
             {
-                m_callback.text  = m_items[m_selectedItem].getText();
+                m_callback.text  = m_items[m_selectedItem].getString();
                 m_callback.itemId = m_itemIds[m_selectedItem];
-                sendSignal("MouseReleased", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                sendSignal("MouseReleased", m_items[m_selectedItem].getString(), m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
             }
 
             // Check if you double-clicked
@@ -534,7 +534,7 @@ namespace tgui
                 m_possibleDoubleClick = false;
 
                 if (m_selectedItem >= 0)
-                    sendSignal("DoubleClicked", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                    sendSignal("DoubleClicked", m_items[m_selectedItem].getString(), m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
             }
             else // This is the first click
             {
@@ -591,9 +591,9 @@ namespace tgui
 
                         if (m_selectedItem >= 0)
                         {
-                            m_callback.text = m_items[m_selectedItem].getText();
+                            m_callback.text = m_items[m_selectedItem].getString();
                             m_callback.itemId = m_itemIds[m_selectedItem];
-                            sendSignal("ItemSelected", m_items[m_selectedItem].getText(), m_items[m_selectedItem].getText(), m_itemIds[m_selectedItem]);
+                            sendSignal("ItemSelected", m_items[m_selectedItem].getString(), m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
                         }
                         else
                         {
@@ -660,19 +660,19 @@ namespace tgui
         else if (property == "textstyle")
         {
             for (auto& item : m_items)
-                item.getRenderer()->setTextStyle(value.getTextStyle());
+                item.setStyle(value.getTextStyle());
 
             if ((m_selectedItem >= 0) && (getRenderer()->getSelectedTextStyle().isSet()))
-                m_items[m_selectedItem].getRenderer()->setTextStyle(getRenderer()->getSelectedTextStyle());
+                m_items[m_selectedItem].setStyle(getRenderer()->getSelectedTextStyle());
         }
         else if (property == "selectedtextstyle")
         {
             if (m_selectedItem >= 0)
             {
                 if (value.getTextStyle().isSet())
-                    m_items[m_selectedItem].getRenderer()->setTextStyle(value.getTextStyle());
+                    m_items[m_selectedItem].setStyle(value.getTextStyle());
                 else
-                    m_items[m_selectedItem].getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+                    m_items[m_selectedItem].setStyle(getRenderer()->getTextStyle());
             }
         }
         else if (property == "scrollbar")
@@ -686,20 +686,20 @@ namespace tgui
             getRenderer()->getTextureBackground().setOpacity(opacity);
             m_scroll.getRenderer()->setOpacity(opacity);
             for (auto& item : m_items)
-                item.getRenderer()->setOpacity(opacity);
+                item.setOpacity(opacity);
         }
         else if (property == "font")
         {
             std::shared_ptr<sf::Font> font = value.getFont();
             for (auto& item : m_items)
-                item.getRenderer()->setFont(font);
+                item.setFont(font);
 
             // Recalculate the text size with the new font
             if (m_requestedTextSize == 0)
             {
                 m_textSize = findBestTextSize(font, m_itemHeight * 0.85f);
                 for (auto& item : m_items)
-                    item.setTextSize(m_textSize);
+                    item.setCharacterSize(m_textSize);
             }
 
             updatePosition();
@@ -729,18 +729,18 @@ namespace tgui
         if (m_selectedItem >= 0)
         {
             if ((m_selectedItem == m_hoveringItem) && getRenderer()->getSelectedTextColorHover().isSet())
-                m_items[m_selectedItem].getRenderer()->setTextColor(getRenderer()->getSelectedTextColorHover());
+                m_items[m_selectedItem].setColor(getRenderer()->getSelectedTextColorHover());
             else if (getRenderer()->getSelectedTextColor().isSet())
-                m_items[m_selectedItem].getRenderer()->setTextColor(getRenderer()->getSelectedTextColor());
+                m_items[m_selectedItem].setColor(getRenderer()->getSelectedTextColor());
 
             if (getRenderer()->getSelectedTextStyle().isSet())
-                m_items[m_selectedItem].getRenderer()->setTextStyle(getRenderer()->getSelectedTextStyle());
+                m_items[m_selectedItem].setStyle(getRenderer()->getSelectedTextStyle());
         }
 
         if ((m_hoveringItem >= 0) && (m_selectedItem != m_hoveringItem))
         {
             if (getRenderer()->getTextColorHover().isSet())
-                m_items[m_hoveringItem].getRenderer()->setTextColor(getRenderer()->getTextColorHover());
+                m_items[m_hoveringItem].setColor(getRenderer()->getTextColorHover());
         }
     }
 
@@ -750,8 +750,8 @@ namespace tgui
     {
         for (auto& item : m_items)
         {
-            item.getRenderer()->setTextColor(getRenderer()->getTextColor());
-            item.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+            item.setColor(getRenderer()->getTextColor());
+            item.setStyle(getRenderer()->getTextStyle());
         }
 
         updateSelectedAndHoveringItemColorsAndStyle();
@@ -766,9 +766,9 @@ namespace tgui
             if (m_hoveringItem >= 0)
             {
                 if ((m_selectedItem == m_hoveringItem) && getRenderer()->getSelectedTextColor().isSet())
-                    m_items[m_hoveringItem].getRenderer()->setTextColor(getRenderer()->getSelectedTextColor());
+                    m_items[m_hoveringItem].setColor(getRenderer()->getSelectedTextColor());
                 else
-                    m_items[m_hoveringItem].getRenderer()->setTextColor(getRenderer()->getTextColor());
+                    m_items[m_hoveringItem].setColor(getRenderer()->getTextColor());
             }
 
             m_hoveringItem = item;
@@ -786,11 +786,11 @@ namespace tgui
             if (m_selectedItem >= 0)
             {
                 if ((m_selectedItem == m_hoveringItem) && getRenderer()->getTextColorHover().isSet())
-                    m_items[m_selectedItem].getRenderer()->setTextColor(getRenderer()->getTextColorHover());
+                    m_items[m_selectedItem].setColor(getRenderer()->getTextColorHover());
                 else
-                    m_items[m_selectedItem].getRenderer()->setTextColor(getRenderer()->getTextColor());
+                    m_items[m_selectedItem].setColor(getRenderer()->getTextColor());
 
-                m_items[m_selectedItem].getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+                m_items[m_selectedItem].setStyle(getRenderer()->getTextStyle());
             }
 
             m_selectedItem = item;
@@ -882,7 +882,7 @@ namespace tgui
 
             // Draw the items
             for (std::size_t i = firstItem; i < lastItem; ++i)
-                target.draw(m_items[i], states);
+                m_items[i].draw(target, states);
         }
 
         // Draw the scrollbar

@@ -27,7 +27,7 @@
 #define TGUI_MENU_BAR_HPP
 
 
-#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -327,8 +327,8 @@ namespace tgui
 
         struct Menu
         {
-            Label text;
-            std::vector<Label> menuItems;
+            Text text;
+            std::vector<Text> menuItems;
             int selectedMenuItem = -1;
         };
 

@@ -27,7 +27,6 @@
 #define TGUI_LIST_BOX_HPP
 
 
-#include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ListBoxRenderer.hpp>
 
@@ -553,7 +552,7 @@ namespace tgui
     protected:
 
         // This contains the different items in the list box
-        std::vector<Label>      m_items;
+        std::vector<Text>       m_items;
         std::vector<sf::String> m_itemIds;
 
         // What is the index of the selected item?

@@ -25,7 +25,8 @@
 #include "Tests.hpp"
 #include <TGUI/Font.hpp>
 
-TEST_CASE("[Font]") {
+TEST_CASE("[Font]")
+{
     sf::Font font1;
     auto font2 = std::make_shared<sf::Font>();
 

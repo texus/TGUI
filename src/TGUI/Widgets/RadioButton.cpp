@@ -113,9 +113,9 @@ namespace tgui
 
             updateTextColor();
             if (getRenderer()->getTextStyleChecked().isSet())
-                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleChecked());
+                m_text.setStyle(getRenderer()->getTextStyleChecked());
             else
-                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+                m_text.setStyle(getRenderer()->getTextStyle());
 
             m_callback.checked = true;
             sendSignal("Checked", m_checked);
@@ -131,7 +131,7 @@ namespace tgui
             m_checked = false;
 
             updateTextColor();
-            m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+            m_text.setStyle(getRenderer()->getTextStyle());
 
             m_callback.checked = false;
             sendSignal("Unchecked", m_checked);
@@ -143,29 +143,35 @@ namespace tgui
     void RadioButton::setText(const sf::String& text)
     {
         // Set the new text
-        m_text.setText(text);
+        m_text.setString(text);
 
         // Set the text size
         if (m_textSize == 0)
-            m_text.setTextSize(findBestTextSize(getRenderer()->getFont(), getSize().y * 0.85f));
+            m_text.setCharacterSize(findBestTextSize(getRenderer()->getFont(), getSize().y * 0.85f));
         else
-            m_text.setTextSize(m_textSize);
+            m_text.setCharacterSize(m_textSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const sf::String& RadioButton::getText() const
     {
-        return m_text.getText();
+        return m_text.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void RadioButton::setTextSize(unsigned int size)
     {
-        // Change the text size
         m_textSize = size;
         setText(getText());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int RadioButton::getTextSize() const
+    {
+        return m_text.getCharacterSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,9 +277,9 @@ namespace tgui
         else if ((property == "textstyle") || (property == "textstylechecked"))
         {
             if (m_checked && getRenderer()->getTextStyleChecked().isSet())
-                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyleChecked());
+                m_text.setStyle(getRenderer()->getTextStyleChecked());
             else
-                m_text.getRenderer()->setTextStyle(getRenderer()->getTextStyle());
+                m_text.setStyle(getRenderer()->getTextStyle());
         }
         else if ((property == "textureunchecked") || (property == "textureuncheckedhover") || (property == "textureuncheckeddisabled")
               || (property == "texturechecked") || (property == "texturecheckedhover") || (property == "texturecheckeddisabled") || (property == "texturefocused"))
@@ -297,11 +303,11 @@ namespace tgui
             getRenderer()->getTextureCheckedDisabled().setOpacity(opacity);
             getRenderer()->getTextureFocused().setOpacity(opacity);
 
-            m_text.getRenderer()->setOpacity(opacity);
+            m_text.setOpacity(opacity);
         }
         else if (property == "font")
         {
-            m_text.getRenderer()->setFont(value.getFont());
+            m_text.setFont(value.getFont());
             setText(getText());
         }
         else if ((property != "checkcolor")
@@ -448,36 +454,36 @@ namespace tgui
         if (m_checked)
         {
             if (!m_enabled && getRenderer()->getTextColorCheckedDisabled().isSet())
-                m_text.getRenderer()->setTextColor(getRenderer()->getTextColorCheckedDisabled());
+                m_text.setColor(getRenderer()->getTextColorCheckedDisabled());
             else if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
-                m_text.getRenderer()->setTextColor(getRenderer()->getTextColorDisabled());
+                m_text.setColor(getRenderer()->getTextColorDisabled());
             else if (m_mouseHover)
             {
                 if (getRenderer()->getTextColorCheckedHover().isSet())
-                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColorCheckedHover());
+                    m_text.setColor(getRenderer()->getTextColorCheckedHover());
                 else if (getRenderer()->getTextColorChecked().isSet())
-                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColorChecked());
+                    m_text.setColor(getRenderer()->getTextColorChecked());
                 else if (getRenderer()->getTextColorHover().isSet())
-                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColorHover());
+                    m_text.setColor(getRenderer()->getTextColorHover());
                 else
-                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColor());
+                    m_text.setColor(getRenderer()->getTextColor());
             }
             else
             {
                 if (getRenderer()->getTextColorChecked().isSet())
-                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColorChecked());
+                    m_text.setColor(getRenderer()->getTextColorChecked());
                 else
-                    m_text.getRenderer()->setTextColor(getRenderer()->getTextColor());
+                    m_text.setColor(getRenderer()->getTextColor());
             }
         }
         else
         {
             if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
-                m_text.getRenderer()->setTextColor(getRenderer()->getTextColorDisabled());
+                m_text.setColor(getRenderer()->getTextColorDisabled());
             else if (m_mouseHover && getRenderer()->getTextColorHover().isSet())
-                m_text.getRenderer()->setTextColor(getRenderer()->getTextColorHover());
+                m_text.setColor(getRenderer()->getTextColorHover());
             else
-                m_text.getRenderer()->setTextColor(getRenderer()->getTextColor());
+                m_text.setColor(getRenderer()->getTextColor());
         }
     }
 
@@ -546,7 +552,7 @@ namespace tgui
         if (!getText().isEmpty())
         {
             states.transform.translate({(1 + getRenderer()->getTextDistanceRatio()) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
-            target.draw(m_text, states);
+            m_text.draw(target, states);
         }
     }
 

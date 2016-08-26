@@ -182,10 +182,7 @@ namespace tgui
         /// @return Character size of the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getTextSize() const
-        {
-            return m_text.getTextSize();
-        }
+        unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,7 +308,7 @@ namespace tgui
         bool m_allowTextClick = true;
 
         // This will contain the text that is written next to radio button.
-        Label m_text;
+        Text m_text;
 
         // This will store the size of the text ( 0 to auto size )
         unsigned int m_textSize = 0;
