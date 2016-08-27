@@ -1,5 +1,5 @@
 Knob {
-    BackgroundImage = "Back.png";
-    ForegroundImage = "Front.png";
-    ImageRotation   = 90;
+    TextureBackground = "Back.png";
+    TextureForeground = "Front.png";
+    ImageRotation     = 90;
 }

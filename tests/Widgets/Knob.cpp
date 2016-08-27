@@ -25,45 +25,63 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Knob.hpp>
 
-TEST_CASE("[Knob]") {
+TEST_CASE("[Knob]")
+{
     tgui::Knob::Ptr knob = std::make_shared<tgui::Knob>();
-    knob->setFont("resources/DroidSansArmenian.ttf");
+    knob->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     knob->setMinimum(10);
     knob->setMaximum(20);
     knob->setValue(15);
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(knob->connect("ValueChanged", [](){}));
         REQUIRE_NOTHROW(knob->connect("ValueChanged", [](int){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(knob->getWidgetType() == "Knob");
     }
 
-    SECTION("StartRotation") {
+    SECTION("Position and Size")
+    {
+        knob->setPosition(40, 30);
+        knob->setSize(100, 100);
+        knob->getRenderer()->setBorders(2);
+
+        REQUIRE(knob->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(knob->getSize() == sf::Vector2f(100, 100));
+        REQUIRE(knob->getFullSize() == knob->getSize());
+        REQUIRE(knob->getWidgetOffset() == sf::Vector2f(0, 0));
+    }
+
+    SECTION("StartRotation")
+    {
         knob->setStartRotation(50);
         REQUIRE(knob->getStartRotation() == 50);
-        
+
         knob->setStartRotation(740);
         REQUIRE(knob->getStartRotation() == 20);
-        
+
         knob->setStartRotation(-30);
         REQUIRE(knob->getStartRotation() == 330);
     }
     
-    SECTION("EndRotation") {
+    SECTION("EndRotation")
+    {
         knob->setEndRotation(50);
         REQUIRE(knob->getEndRotation() == 50);
-        
+
         knob->setEndRotation(750);
         REQUIRE(knob->getEndRotation() == 30);
-        
+
         knob->setEndRotation(-25);
         REQUIRE(knob->getEndRotation() == 335);
     }
 
-    SECTION("Minimum") {
+    SECTION("Minimum")
+    {
         REQUIRE(knob->getMinimum() == 10);
 
         knob->setMinimum(12);
@@ -82,7 +100,8 @@ TEST_CASE("[Knob]") {
         REQUIRE(knob->getMaximum() == 22);
     }
 
-    SECTION("Maximum") {
+    SECTION("Maximum")
+    {
         REQUIRE(knob->getMaximum() == 20);
 
         knob->setMaximum(17);
@@ -101,20 +120,22 @@ TEST_CASE("[Knob]") {
         REQUIRE(knob->getMaximum() == 9);
     }
 
-    SECTION("Value") {
+    SECTION("Value")
+    {
         REQUIRE(knob->getValue() == 15);
-        
+
         knob->setValue(14);
         REQUIRE(knob->getValue() == 14);
-        
+
         knob->setValue(7);
         REQUIRE(knob->getValue() == 10);
-        
+
         knob->setValue(23);
         REQUIRE(knob->getValue() == 20);
     }
 
-    SECTION("ClockwiseTurning") {
+    SECTION("ClockwiseTurning")
+    {
         REQUIRE(knob->getClockwiseTurning());
         knob->setClockwiseTurning(false);
         REQUIRE(!knob->getClockwiseTurning());
@@ -122,38 +143,45 @@ TEST_CASE("[Knob]") {
         REQUIRE(knob->getClockwiseTurning());
     }
 
-    SECTION("Renderer") {
+    SECTION("Events / Signals")
+    {
+        SECTION("Widget")
+        {
+            testWidgetSignals(knob);
+        }
+
+        /// TODO
+    }
+
+    testWidgetRenderer(knob->getRenderer());
+    SECTION("Renderer")
+    {
         auto renderer = knob->getRenderer();
 
-        SECTION("colored") {
-            SECTION("set serialized property") {
+        SECTION("colored")
+        {
+            SECTION("set serialized property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
             }
 
-            SECTION("set object property") {
+            SECTION("set object property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
                 REQUIRE_NOTHROW(renderer->setProperty("ThumbColor", sf::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
 
-            SECTION("functions") {
+            SECTION("functions")
+            {
                 renderer->setBackgroundColor({10, 20, 30});
                 renderer->setThumbColor({40, 50, 60});
                 renderer->setBorderColor({70, 80, 90});
                 renderer->setBorders({1, 2, 3, 4});
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 4);
-                    REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(10, 20, 30));
-                    REQUIRE(pairs["ThumbColor"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["BorderColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
-                }
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
@@ -162,60 +190,43 @@ TEST_CASE("[Knob]") {
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         }
 
-        SECTION("textured") {
+        SECTION("textured")
+        {
             tgui::Texture textureBackground("resources/Knob/Back.png");
             tgui::Texture textureForeground("resources/Knob/Front.png");
 
-            REQUIRE(!renderer->getProperty("BackgroundImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ForegroundImage").getTexture().isLoaded());
-
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", tgui::Serializer::serialize(textureBackground)));
-                REQUIRE_NOTHROW(renderer->setProperty("ForegroundImage", tgui::Serializer::serialize(textureForeground)));
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureForeground", tgui::Serializer::serialize(textureForeground)));
                 REQUIRE_NOTHROW(renderer->setProperty("ImageRotation", "90"));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", textureBackground));
-                REQUIRE_NOTHROW(renderer->setProperty("ForegroundImage", textureForeground));
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureForeground", textureForeground));
                 REQUIRE_NOTHROW(renderer->setProperty("ImageRotation", 90));
             }
 
-            SECTION("functions") {
-                renderer->setBackgroundTexture(textureBackground);
-                renderer->setForegroundTexture(textureForeground);
+            SECTION("functions")
+            {
+                renderer->setTextureBackground(textureBackground);
+                renderer->setTextureForeground(textureForeground);
                 renderer->setImageRotation(90);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 5);
-                    REQUIRE(pairs["BackgroundImage"].getTexture().getData() == textureBackground.getData());
-                    REQUIRE(pairs["ForegroundImage"].getTexture().getData() == textureForeground.getData());
-                    REQUIRE(pairs["ImageRotation"].getNumber() == 90);
-                }
             }
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ForegroundImage").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureForeground").getTexture().isLoaded());
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().getData() == textureBackground.getData());
-            REQUIRE(renderer->getProperty("ForegroundImage").getTexture().getData() == textureForeground.getData());
-            REQUIRE(renderer->getProperty("ImageRotation").getNumber() == 90);
+            REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
+            REQUIRE(renderer->getTextureForeground().getData() == textureForeground.getData());
+            REQUIRE(renderer->getImageRotation() == 90);
         }
     }
 
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(knob = std::make_shared<tgui::Theme>()->load("Knob"));
-
-        auto theme = std::make_shared<tgui::Theme>("resources/Knob/Black.txt");
-        REQUIRE_NOTHROW(knob = theme->load("Knob"));
-        REQUIRE(knob->getPrimaryLoadingParameter() == "resources/Knob/Black.txt");
-        REQUIRE(knob->getSecondaryLoadingParameter() == "knob");
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(knob);
-
-        knob->setOpacity(0.8f);
+    SECTION("Saving and loading from file")
+    {
         knob->setStartRotation(-180);
         knob->setEndRotation(0);
         knob->setClockwiseTurning(false);
@@ -223,23 +234,6 @@ TEST_CASE("[Knob]") {
         knob->setMaximum(50);
         knob->setValue(20);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileKnob1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileKnob1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileKnob2.txt"));
-        REQUIRE(compareFiles("WidgetFileKnob1.txt", "WidgetFileKnob2.txt"));
-
-        SECTION("Copying widget") {
-            tgui::Knob temp;
-            temp = *knob;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::Knob::copy(std::make_shared<tgui::Knob>(temp)));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileKnob2.txt"));
-            REQUIRE(compareFiles("WidgetFileKnob1.txt", "WidgetFileKnob2.txt"));
-        }
+        testSavingWidget("Knob", knob, false);
     }
 }

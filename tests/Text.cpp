@@ -100,6 +100,15 @@ TEST_CASE("[Text]")
             REQUIRE(text2.getSize() == sf::Vector2f(0, 0));
         }
 
+        SECTION("Tab is 4x wider than space")
+        {
+            text.setString(" ");
+            float width = text.getSize().x;
+
+            text.setString("\t");
+            REQUIRE(text.getSize().x == 4 * width);
+        }
+
         SECTION("Updated when string changes")
         {
             unsigned int height = text.getSize().y;

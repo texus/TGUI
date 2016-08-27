@@ -147,7 +147,7 @@ namespace tgui
 
         // Set the text size
         if (m_textSize == 0)
-            m_text.setCharacterSize(findBestTextSize(getRenderer()->getFont(), getSize().y * 0.85f));
+            m_text.setCharacterSize(findBestTextSize(getRenderer()->getFont(), getSize().y * 0.8f));
         else
             m_text.setCharacterSize(m_textSize);
     }

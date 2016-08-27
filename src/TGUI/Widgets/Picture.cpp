@@ -91,11 +91,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setPosition(const Layout2d& position)
+    const sf::String& Picture::getLoadedFilename() const
     {
-        Widget::setPosition(position);
-
-        m_texture.setPosition(getPosition());
+        return m_loadedFilename;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,10 +114,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Picture::isSmooth() const
+    {
+        return m_texture.isSmooth();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Picture::mouseOnWidget(float x, float y) const
     {
+        x -= getPosition().x;
+        y -= getPosition().y;
+
         // Check if the mouse is on top of the picture
-        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
+        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y))
         {
             // We sometimes want clicks to go through transparent parts of the picture
             if (!m_fullyClickable && m_texture.isTransparentPixel(x, y))
@@ -186,6 +194,7 @@ namespace tgui
 
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        states.transform.translate(getPosition());
         m_texture.draw(target, states);
     }
 

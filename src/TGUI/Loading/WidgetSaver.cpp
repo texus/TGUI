@@ -29,8 +29,8 @@
 #include <TGUI/Widgets/ChatBox.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>*/
 #include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Widgets/EditBox.hpp>/**
-#include <TGUI/Widgets/Knob.hpp>*/
+#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/Picture.hpp>
@@ -306,7 +306,7 @@ namespace tgui
         SET_PROPERTY("TextSize", tgui::to_string(editBox->getTextSize()));
         return node;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveKnob(Knob::Ptr knob)
@@ -325,7 +325,7 @@ namespace tgui
         SET_PROPERTY("Value", tgui::to_string(knob->getValue()));
         return node;
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveLabel(Label::Ptr label)
@@ -561,8 +561,8 @@ namespace tgui
             {"childwindow", saveChildWindow},*/
             {"clickablewidget", saveWidget},
             {"combobox", saveComboBox},
-            {"editbox", saveEditBox},/**
-            {"knob", saveKnob},*/
+            {"editbox", saveEditBox},
+            {"knob", saveKnob},
             {"label", saveLabel},
             {"listbox", saveListBox},
             {"panel", saveContainer},

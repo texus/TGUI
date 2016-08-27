@@ -31,8 +31,8 @@
 #include <TGUI/Widgets/CheckBox.hpp>/**
 #include <TGUI/Widgets/ChildWindow.hpp>*/
 #include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Widgets/EditBox.hpp>/**
-#include <TGUI/Widgets/Knob.hpp>*/
+#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/Panel.hpp>
@@ -497,7 +497,7 @@ namespace tgui
 
         return editBox;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadKnob(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -526,7 +526,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
+
     TGUI_API Widget::Ptr loadLabel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         Label::Ptr label;
@@ -883,8 +883,8 @@ namespace tgui
             {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},*/
             {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},
             {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},
-            {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},/**
-            {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},*/
+            {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},
+            {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},
             {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
             {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},
             {"panel", std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},

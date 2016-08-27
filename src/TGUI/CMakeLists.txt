@@ -29,6 +29,7 @@ set(TGUI_SRC
     Renderers/ButtonRenderer.cpp
     Renderers/ComboBoxRenderer.cpp
     Renderers/EditBoxRenderer.cpp
+    Renderers/KnobRenderer.cpp
     Renderers/LabelRenderer.cpp
     Renderers/ListBoxRenderer.cpp
     Renderers/PanelRenderer.cpp
@@ -47,7 +48,7 @@ set(TGUI_SRC
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
     #Widgets/Grid.cpp
-    #Widgets/Knob.cpp
+    Widgets/Knob.cpp
     Widgets/Label.cpp
     Widgets/ListBox.cpp
     #Widgets/MenuBar.cpp
