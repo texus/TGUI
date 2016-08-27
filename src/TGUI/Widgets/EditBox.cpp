@@ -444,7 +444,7 @@ namespace tgui
     void EditBox::leftMousePressed(float x, float y)
     {
         // Find the caret position
-        float positionX = x - getPosition().x - getRenderer()->getBorders().left - getRenderer()->getPadding().left;
+        float positionX = x - getRenderer()->getBorders().left - getRenderer()->getPadding().left;
 
         std::size_t caretPosition = findCaretPosition(positionX);
 
@@ -486,9 +486,9 @@ namespace tgui
 
         // Set the mouse down flag
         m_mouseDown = true;
-        m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-        m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-        sendSignal("MousePressed", sf::Vector2f{x - getPosition().x, y - getPosition().y});
+        m_callback.mouse.x = static_cast<int>(x);
+        m_callback.mouse.y = static_cast<int>(y);
+        sendSignal("MousePressed", sf::Vector2f{x, y});
 
         recalculateTextPositions();
 
@@ -517,14 +517,14 @@ namespace tgui
             if (m_limitTextWidth)
             {
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(x - getPosition().x - borders.left - padding.left);
+                m_selEnd = findCaretPosition(x - borders.left - padding.left);
             }
             else // Scrolling is enabled
             {
                 float width = getVisibleEditBoxWidth();
 
                 // Check if the mouse is on the left of the text
-                if (x - getPosition().x < borders.left + padding.left)
+                if (x < borders.left + padding.left)
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -541,7 +541,7 @@ namespace tgui
                     }
                 }
                 // Check if the mouse is on the right of the text AND there is a possibility to scroll
-                else if ((x - getPosition().x > borders.left + padding.left + width) && (m_textFull.getSize().x > width))
+                else if ((x > borders.left + padding.left + width) && (m_textFull.getSize().x > width))
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -559,7 +559,7 @@ namespace tgui
                 }
 
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(x - getPosition().x - borders.left - padding.left);
+                m_selEnd = findCaretPosition(x - borders.left - padding.left);
             }
 
             // Check if we are selecting text from left to right

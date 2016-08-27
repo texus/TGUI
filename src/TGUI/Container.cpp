@@ -427,8 +427,8 @@ namespace tgui
         sf::Event event;
         event.type = sf::Event::MouseButtonPressed;
         event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(x - getPosition().x);
-        event.mouseButton.y = static_cast<int>(y - getPosition().y);
+        event.mouseButton.x = static_cast<int>(x);
+        event.mouseButton.y = static_cast<int>(y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -441,8 +441,8 @@ namespace tgui
         sf::Event event;
         event.type = sf::Event::MouseButtonReleased;
         event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(x - getPosition().x);
-        event.mouseButton.y = static_cast<int>(y - getPosition().y);
+        event.mouseButton.x = static_cast<int>(x);
+        event.mouseButton.y = static_cast<int>(y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -456,8 +456,8 @@ namespace tgui
 
         sf::Event event;
         event.type = sf::Event::MouseMoved;
-        event.mouseMove.x = static_cast<int>(x - getPosition().x);
-        event.mouseMove.y = static_cast<int>(y - getPosition().y);
+        event.mouseMove.x = static_cast<int>(x);
+        event.mouseMove.y = static_cast<int>(y);
         handleEvent(event);
     }
 
@@ -492,8 +492,8 @@ namespace tgui
         sf::Event event;
         event.type = sf::Event::MouseWheelMoved;
         event.mouseWheel.delta = delta;
-        event.mouseWheel.x = static_cast<int>(x - getPosition().x);
-        event.mouseWheel.y = static_cast<int>(y - getPosition().y);
+        event.mouseWheel.x = static_cast<int>(x);
+        event.mouseWheel.y = static_cast<int>(y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -537,12 +537,12 @@ namespace tgui
         {
             Widget::Ptr toolTip = nullptr;
 
-            mousePos -= getPosition() + getChildWidgetsOffset();
+            mousePos -= getChildWidgetsOffset();
 
             Widget::Ptr widget = mouseOnWhichWidget(mousePos.x, mousePos.y);
             if (widget)
             {
-                toolTip = widget->askToolTip(mousePos);
+                toolTip = widget->askToolTip(mousePos - widget->getPosition());
                 if (toolTip)
                     return toolTip;
             }
@@ -668,7 +668,7 @@ namespace tgui
                     // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
                     if ((m_widgets[i]->m_draggableWidget) || (m_widgets[i]->m_containerWidget))
                     {
-                        m_widgets[i]->mouseMoved(mouseX, mouseY);
+                        m_widgets[i]->mouseMoved(mouseX - m_widgets[i]->getPosition().x, mouseY - m_widgets[i]->getPosition().y);
                         return true;
                     }
                 }
@@ -679,7 +679,7 @@ namespace tgui
             if (widget != nullptr)
             {
                 // Send the event to the widget
-                widget->mouseMoved(mouseX, mouseY);
+                widget->mouseMoved(mouseX - widget->getPosition().x, mouseY - widget->getPosition().y);
                 return true;
             }
 
@@ -714,7 +714,7 @@ namespace tgui
                         }
                     }
 
-                    widget->leftMousePressed(mouseX, mouseY);
+                    widget->leftMousePressed(mouseX - widget->getPosition().x, mouseY - widget->getPosition().y);
                     return true;
                 }
                 else // The mouse did not went down on a widget, so unfocus the focused widget
@@ -736,7 +736,7 @@ namespace tgui
                 // Check if the mouse is on top of a widget
                 Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mouseX, mouseY);
                 if (widgetBelowMouse != nullptr)
-                    widgetBelowMouse->leftMouseReleased(mouseX, mouseY);
+                    widgetBelowMouse->leftMouseReleased(mouseX - widgetBelowMouse->getPosition().x, mouseY - widgetBelowMouse->getPosition().y);
 
                 // Tell all widgets that the mouse has gone up
                 for (auto& widget : m_widgets)
@@ -809,7 +809,9 @@ namespace tgui
             if (widget != nullptr)
             {
                 // Send the event to the widget
-                widget->mouseWheelMoved(event.mouseWheel.delta, event.mouseWheel.x,  event.mouseWheel.y);
+                widget->mouseWheelMoved(event.mouseWheel.delta,
+                                        static_cast<int>(event.mouseWheel.x - widget->getPosition().x),
+                                        static_cast<int>(event.mouseWheel.y - widget->getPosition().y));
                 return true;
             }
 
@@ -954,7 +956,7 @@ namespace tgui
         {
             if ((*it)->isVisible())
             {
-                if ((*it)->mouseOnWidget(x, y))
+                if ((*it)->mouseOnWidget(x - (*it)->getPosition().x, y - (*it)->getPosition().y))
                 {
                     if ((*it)->isEnabled())
                     {

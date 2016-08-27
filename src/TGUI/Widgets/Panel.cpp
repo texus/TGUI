@@ -77,21 +77,18 @@ namespace tgui
 
     bool Panel::mouseOnWidget(float x, float y) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Panel::leftMousePressed(float x, float y)
     {
-        if (mouseOnWidget(x, y))
-        {
-            m_mouseDown = true;
+        m_mouseDown = true;
 
-            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-            sendSignal("MousePressed", sf::Vector2f{x - getPosition().x, y - getPosition().y});
-        }
+        m_callback.mouse.x = static_cast<int>(x);
+        m_callback.mouse.y = static_cast<int>(y);
+        sendSignal("MousePressed", sf::Vector2f{x, y});
 
         Container::leftMousePressed(x, y);
     }
@@ -100,15 +97,12 @@ namespace tgui
 
     void Panel::leftMouseReleased(float x , float y)
     {
-        if (mouseOnWidget(x, y))
-        {
-            m_callback.mouse.x = static_cast<int>(x - getPosition().x);
-            m_callback.mouse.y = static_cast<int>(y - getPosition().y);
-            sendSignal("MouseReleased", sf::Vector2f{x - getPosition().x, y - getPosition().y});
+        m_callback.mouse.x = static_cast<int>(x);
+        m_callback.mouse.y = static_cast<int>(y);
+        sendSignal("MouseReleased", sf::Vector2f{x, y});
 
-            if (m_mouseDown)
-                sendSignal("Clicked", sf::Vector2f{x - getPosition().x, y - getPosition().y});
-        }
+        if (m_mouseDown)
+            sendSignal("Clicked", sf::Vector2f{x, y});
 
         m_mouseDown = false;
 

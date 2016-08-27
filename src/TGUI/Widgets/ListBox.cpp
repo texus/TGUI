@@ -452,21 +452,18 @@ namespace tgui
 
     bool ListBox::mouseOnWidget(float x, float y) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ListBox::leftMousePressed(float x, float y)
     {
-        x -= getPosition().x;
-        y -= getPosition().y;
-
         m_mouseDown = true;
 
-        if (m_scroll.mouseOnWidget(x, y))
+        if (m_scroll.mouseOnWidget(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y))
         {
-            m_scroll.leftMousePressed(x, y);
+            m_scroll.leftMousePressed(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y);
         }
         else
         {
@@ -516,9 +513,6 @@ namespace tgui
 
     void ListBox::leftMouseReleased(float x, float y)
     {
-        x -= getPosition().x;
-        y -= getPosition().y;
-
         if (m_mouseDown && !m_scroll.isMouseDown())
         {
             if (m_selectedItem >= 0)
@@ -543,25 +537,22 @@ namespace tgui
             }
         }
 
-        m_scroll.leftMouseReleased(x, y);
+        m_scroll.leftMouseReleased(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ListBox::mouseMoved(float x, float y)
     {
-        x -= getPosition().x;
-        y -= getPosition().y;
-
         if (!m_mouseHover)
             mouseEnteredWidget();
 
         updateHoveringItem(-1);
 
         // Check if the mouse event should go to the scrollbar
-        if ((m_scroll.isMouseDown() && m_scroll.isMouseDownOnThumb()) || m_scroll.mouseOnWidget(x, y))
+        if ((m_scroll.isMouseDown() && m_scroll.isMouseDownOnThumb()) || m_scroll.mouseOnWidget(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y))
         {
-            m_scroll.mouseMoved(x, y);
+            m_scroll.mouseMoved(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y);
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {

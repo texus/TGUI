@@ -24,6 +24,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 
 TEST_CASE("[SpinButton]")
 {
@@ -139,21 +140,25 @@ TEST_CASE("[SpinButton]")
             spinButton->setValue(10);
             REQUIRE(valueChangedCount == 1);
 
-            spinButton->leftMousePressed(50, 45);
+            auto parent = std::make_shared<tgui::Panel>(300, 200);
+            parent->setPosition(60, 55);
+            parent->add(spinButton);
+
+            parent->leftMousePressed(50, 45);
             REQUIRE(valueChangedCount == 1);
             REQUIRE(spinButton->getValue() == 10);
 
-            spinButton->leftMouseReleased(50, 45);
+            parent->leftMouseReleased(50, 45);
             REQUIRE(valueChangedCount == 2);
             REQUIRE(spinButton->getValue() == 11);
 
-            spinButton->leftMousePressed(50, 75);
-            spinButton->leftMouseReleased(50, 75);
+            parent->leftMousePressed(50, 75);
+            parent->leftMouseReleased(50, 75);
             REQUIRE(valueChangedCount == 3);
             REQUIRE(spinButton->getValue() == 10);
 
-            spinButton->leftMousePressed(50, 75);
-            spinButton->leftMouseReleased(50, 75);
+            parent->leftMousePressed(50, 75);
+            parent->leftMouseReleased(50, 75);
             REQUIRE(valueChangedCount == 3);
             REQUIRE(spinButton->getValue() == 10);
         }

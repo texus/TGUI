@@ -248,7 +248,7 @@ namespace tgui
             return true;
 
         // Check if the mouse is on top of the track
-        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
+        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y))
             return true;
 
         return false;
@@ -283,9 +283,6 @@ namespace tgui
         // Check if the mouse button is down
         if (m_mouseDown)
         {
-            x -= getPosition().x;
-            y -= getPosition().y;
-
             // Check in which direction the slider goes
             if (m_verticalScroll)
             {

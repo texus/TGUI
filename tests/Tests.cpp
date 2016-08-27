@@ -25,6 +25,7 @@ void testWidgetSignals(tgui::Widget::Ptr widget)
         widget->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
 
         auto parent = std::make_shared<tgui::Panel>(300, 200);
+        parent->setPosition(30, 25);
         parent->add(widget);
 
         widget->setPosition(40, 30);
@@ -65,11 +66,11 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
 
     SECTION("mouseOnWidget")
     {
-        REQUIRE(!widget->mouseOnWidget(10, 15));
-        REQUIRE(widget->mouseOnWidget(40, 30));
-        REQUIRE(widget->mouseOnWidget(115, 80));
-        REQUIRE(widget->mouseOnWidget(189, 129));
-        REQUIRE(!widget->mouseOnWidget(190, 130));
+        REQUIRE(!widget->mouseOnWidget(-1, -1));
+        REQUIRE(widget->mouseOnWidget(0, 0));
+        REQUIRE(widget->mouseOnWidget(75, 50));
+        REQUIRE(widget->mouseOnWidget(149, 99));
+        REQUIRE(!widget->mouseOnWidget(150, 100));
 
         REQUIRE(mousePressedCount == 0);
         REQUIRE(mouseReleasedCount == 0);
@@ -78,21 +79,25 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
 
     SECTION("mouse click")
     {
-        widget->leftMouseReleased(115, 80);
+        auto parent = std::make_shared<tgui::Panel>(300, 200);
+        parent->setPosition(60, 55);
+        parent->add(widget);
+
+        parent->leftMouseReleased(115, 80);
 
         REQUIRE(mouseReleasedCount == 1);
         REQUIRE(clickedCount == 0);
 
         SECTION("mouse press")
         {
-            widget->leftMousePressed(115, 80);
+            parent->leftMousePressed(115, 80);
 
             REQUIRE(mousePressedCount == 1);
             REQUIRE(mouseReleasedCount == 1);
             REQUIRE(clickedCount == 0);
         }
 
-        widget->leftMouseReleased(115, 80);
+        parent->leftMouseReleased(115, 80);
 
         REQUIRE(mousePressedCount == 1);
         REQUIRE(mouseReleasedCount == 2);

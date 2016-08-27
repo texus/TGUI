@@ -195,18 +195,18 @@ namespace tgui
         if (m_allowTextClick && !getText().isEmpty())
         {
             // Check if the mouse is on top of the image or the small gap between image and text
-            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + getSize().x * getRenderer()->getTextDistanceRatio(), getSize().y}.contains(x, y))
+            if (sf::FloatRect{0, 0, getSize().x + getSize().x * getRenderer()->getTextDistanceRatio(), getSize().y}.contains(x, y))
                 return true;
 
             // Check if the mouse is on top of the text
-            if (sf::FloatRect{getPosition().x, getPosition().y, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x + getSize().x * getRenderer()->getTextDistanceRatio()),
-                                                                                                                 y - ((getSize().y - m_text.getSize().y) / 2.0f)))
+            if (sf::FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x + (getSize().x * getRenderer()->getTextDistanceRatio())),
+                                                                                     y - ((getSize().y - m_text.getSize().y) / 2.0f)))
                 return true;
         }
         else // You are not allowed to click on the text
         {
             // Check if the mouse is on top of the image
-            if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y))
+            if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y))
                 return true;
         }
 

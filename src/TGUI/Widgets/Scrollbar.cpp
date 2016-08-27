@@ -317,7 +317,7 @@ namespace tgui
         if ((m_maximum <= m_lowValue) && m_autoHide)
             return false;
 
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,9 +326,6 @@ namespace tgui
     {
         m_mouseDown = true;
         m_mouseDownOnArrow = false;
-
-        x -= getPosition().x;
-        y -= getPosition().y;
 
         if (m_verticalScroll)
         {
@@ -368,7 +365,7 @@ namespace tgui
 
         // Refresh the scrollbar value
         if (!m_mouseDownOnArrow)
-            mouseMoved(getPosition().x + x, getPosition().y + y);
+            mouseMoved(x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -383,9 +380,6 @@ namespace tgui
             {
                 bool valueDown = false;
                 bool valueUp = false;
-
-                x -= getPosition().x;
-                y -= getPosition().y;
 
                 // Check in which direction the scrollbar lies
                 if (m_verticalScroll)
@@ -471,9 +465,6 @@ namespace tgui
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
-
-        x -= getPosition().x;
-        y -= getPosition().y;
 
         // Check if the mouse button went down on top of the track (or thumb)
         if (m_mouseDown && !m_mouseDownOnArrow)
@@ -639,15 +630,8 @@ namespace tgui
         else
             setValue(static_cast<unsigned int>(m_value - (delta * m_scrollAmount)));
 
-        // Find out over which part the mouse is hovering
-        if (sf::FloatRect{m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height}.contains(static_cast<float>(x), static_cast<float>(y)))
-            m_mouseHoverOverPart = Part::Thumb;
-        else if (sf::FloatRect{m_track.left, m_track.top, m_track.width, m_track.height}.contains(static_cast<float>(x), static_cast<float>(y)))
-            m_mouseHoverOverPart = Part::Track;
-        else if (sf::FloatRect{m_arrowUp.left, m_arrowUp.top, m_arrowUp.width, m_arrowUp.height}.contains(static_cast<float>(x), static_cast<float>(y)))
-            m_mouseHoverOverPart = Part::ArrowUp;
-        else if (sf::FloatRect{m_arrowDown.left, m_arrowDown.top, m_arrowDown.width, m_arrowDown.height}.contains(static_cast<float>(x), static_cast<float>(y)))
-            m_mouseHoverOverPart = Part::ArrowDown;
+        // Update over which part the mouse is hovering
+        mouseMoved(static_cast<float>(x), static_cast<float>(y));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
