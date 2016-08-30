@@ -56,14 +56,17 @@ void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool
 
     REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile1.txt"));
 
-    parent->removeAllWidgets();
-    parent = std::make_shared<tgui::GuiContainer>();
-    REQUIRE_NOTHROW(parent->loadWidgetsFromFile(name + "WidgetFile1.txt"));
+    SECTION("Saving normally")
+    {
+        parent->removeAllWidgets();
+        parent = std::make_shared<tgui::GuiContainer>();
+        REQUIRE_NOTHROW(parent->loadWidgetsFromFile(name + "WidgetFile1.txt"));
 
-    REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile2.txt"));
-    REQUIRE(compareFiles(name + "WidgetFile1.txt", name + "WidgetFile2.txt"));
+        REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile2.txt"));
+        REQUIRE(compareFiles(name + "WidgetFile1.txt", name + "WidgetFile2.txt"));
+    }
 
-    SECTION("Copying widget")
+    SECTION("Copying widget before saving")
     {
         // Copy constructor
         WidgetType temp1(*widget);
@@ -71,6 +74,7 @@ void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool
         // Assignment operator
         WidgetType temp2;
         temp2 = temp1;
+        temp2 = temp2;
 
         // Move constructor
         WidgetType temp3 = std::move(temp2);

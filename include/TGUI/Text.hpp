@@ -49,6 +49,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static float calculateExtraVerticalSpace(Font font, unsigned int characterSize, TextStyle style = sf::Text::Regular);
 
+        static sf::String wordWrap(float maxWidth, const sf::String& text, Font font, unsigned int textSize, bool bold, bool dropLeadingSpace = true);
+
 
     public:
 

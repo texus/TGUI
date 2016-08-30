@@ -314,7 +314,7 @@ namespace tgui
     bool Scrollbar::mouseOnWidget(float x, float y) const
     {
         // Don't make any calculations when no scrollbar is needed
-        if ((m_maximum <= m_lowValue) && m_autoHide)
+        if (m_autoHide && (m_maximum <= m_lowValue))
             return false;
 
         return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);

@@ -23,7 +23,7 @@ set(TEST_SOURCES
     Loading/ThemeLoader.cpp
     Widgets/Button.cpp
     Widgets/Canvas.cpp
-    #Widgets/ChatBox.cpp
+    Widgets/ChatBox.cpp
     Widgets/CheckBox.cpp
     #Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp

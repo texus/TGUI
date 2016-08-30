@@ -248,8 +248,7 @@ namespace tgui
 
     void Label::rearrangeText()
     {
-        std::shared_ptr<sf::Font> font = getRenderer()->getFont();
-        if (!font)
+        if (getRenderer()->getFont() == nullptr)
             return;
 
         // Find the maximum width of one line
@@ -258,83 +257,26 @@ namespace tgui
             maxWidth = m_maximumTextWidth;
         else
         {
-            Borders borders = getRenderer()->getPadding() + getRenderer()->getBorders();
-            if (getSize().x > borders.left + borders.right)
-                maxWidth = getSize().x - getRenderer()->getPadding().left - getRenderer()->getPadding().right;
+            Borders borders = getRenderer()->getBorders();
+            Padding padding = getRenderer()->getPadding();
+            if (getSize().x > borders.left + borders.right + padding.left + padding.right)
+                maxWidth = getSize().x - borders.left - borders.right - padding.left - padding.right;
             else // There is no room for text
                 return;
         }
 
-        // Split the text over multiple lines if needed
+        // Fit the text in the available space
+        sf::String string = Text::wordWrap(maxWidth, m_string, getRenderer()->getFont(), m_textSize, m_textStyle & sf::Text::Bold);
+
+        // Split the string in multiple lines
         m_lines.clear();
-        unsigned int index = 0;
-        unsigned int lineCount = 0;
-        float calculatedLabelWidth = 0;
-        bool bold = (m_textStyle & sf::Text::Bold) != 0;
-        while (index < m_string.getSize())
+        float width = 0;
+        std::size_t searchPosStart = 0;
+        std::size_t newLinePos;
+        do
         {
-            lineCount++;
-            unsigned int oldIndex = index;
+            newLinePos = string.find('\n', searchPosStart);
 
-            float width = 0;
-            sf::Uint32 prevChar = 0;
-            for (std::size_t i = index; i < m_string.getSize(); ++i)
-            {
-                float charWidth;
-                sf::Uint32 curChar = m_string[i];
-                if (curChar == '\n')
-                {
-                    index++;
-                    break;
-                }
-                else if (curChar == '\t')
-                    charWidth = static_cast<float>(font->getGlyph(' ', m_textSize, bold).textureRect.width) * 4;
-                else
-                    charWidth = static_cast<float>(font->getGlyph(curChar, m_textSize, bold).textureRect.width);
-
-                float kerning = static_cast<float>(font->getKerning(prevChar, curChar, m_textSize));
-                if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
-                {
-                    if (curChar == '\t')
-                        width += (static_cast<float>(font->getGlyph(' ', m_textSize, bold).advance) * 4) + kerning;
-                    else
-                        width += static_cast<float>(font->getGlyph(curChar, m_textSize, bold).advance) + kerning;
-
-                    index++;
-                }
-                else
-                    break;
-
-                prevChar = curChar;
-            }
-
-            calculatedLabelWidth = std::max(calculatedLabelWidth, width);
-
-            // Every line contains at least one character
-            if (index == oldIndex)
-                index++;
-
-            // Implement the word-wrap
-            if (m_string[index-1] != '\n')
-            {
-                unsigned int indexWithoutWordWrap = index;
-
-                if ((index < m_string.getSize()) && (!isWhitespace(m_string[index])))
-                {
-                    unsigned int wordWrapCorrection = 0;
-                    while ((index > oldIndex) && (!isWhitespace(m_string[index - 1])))
-                    {
-                        wordWrapCorrection++;
-                        index--;
-                    }
-
-                    // The word can't be split but there is no other choice, it does not fit on the line
-                    if ((index - oldIndex) <= wordWrapCorrection)
-                        index = indexWithoutWordWrap;
-                }
-            }
-
-            // Add the next line
             m_lines.emplace_back();
             m_lines.back().setCharacterSize(getTextSize());
             m_lines.back().setFont(getRenderer()->getFont());
@@ -342,31 +284,26 @@ namespace tgui
             m_lines.back().setColor(getRenderer()->getTextColor());
             m_lines.back().setOpacity(getRenderer()->getOpacity());
 
-            if ((index < m_string.getSize()) && (m_string[index-1] != '\n'))
-                m_lines.back().setString(m_string.substring(oldIndex, index - oldIndex) + "\n");
+            if (newLinePos != sf::String::InvalidPos)
+                m_lines.back().setString(string.substring(searchPosStart, newLinePos - searchPosStart));
             else
-                m_lines.back().setString(m_string.substring(oldIndex, index - oldIndex));
+                m_lines.back().setString(string.substring(searchPosStart));
 
-            // If the next line starts with just a space, then the space need not be visible
-            if ((index < m_string.getSize()) && (m_string[index] == ' '))
-            {
-                if ((index == 0) || (!isWhitespace(m_string[index-1])))
-                {
-                    // But two or more spaces indicate that it is not a normal text and the spaces should not be ignored
-                    if (((index + 1 < m_string.getSize()) && (!isWhitespace(m_string[index + 1]))) || (index + 1 == m_string.getSize()))
-                        index++;
-                }
-            }
+            if (m_lines.back().getSize().x > width)
+                width = m_lines.back().getSize().x;
+
+            searchPosStart = newLinePos + 1;
         }
+        while (newLinePos != sf::String::InvalidPos);
 
-        // There is always at least one line
-        lineCount = std::max(1u, lineCount);
-
+        std::shared_ptr<sf::Font> font = getRenderer()->getFont();
         Outline outline = getRenderer()->getPadding() + getRenderer()->getBorders();
+
+        // Update the size of the label
         if (m_autoSize)
         {
-            m_size = {std::max(calculatedLabelWidth, maxWidth) + outline.left + outline.right,
-                      (lineCount * font->getLineSpacing(m_textSize)) + Text::calculateExtraVerticalSpace(font, m_textSize, m_textStyle) + outline.top + outline.bottom};
+            m_size = {std::max(width, maxWidth) + outline.left + outline.right,
+                      (std::max<std::size_t>(m_lines.size(), 1) * font->getLineSpacing(m_textSize)) + Text::calculateExtraVerticalSpace(font, m_textSize, m_textStyle) + outline.top + outline.bottom};
         }
 
         // Update the line positions

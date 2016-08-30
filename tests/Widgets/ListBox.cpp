@@ -217,7 +217,7 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getItemCount() == 3);
         REQUIRE(listBox->getItems()[0] == "Item 1");
         REQUIRE(listBox->getItems()[2] == "Item 3");
-        
+
         listBox->addItem("Item 6");
         REQUIRE(listBox->getItemCount() == 3);
         REQUIRE(listBox->getItems()[0] == "Item 1");

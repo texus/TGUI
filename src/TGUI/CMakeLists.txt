@@ -27,6 +27,7 @@ set(TGUI_SRC
     Loading/WidgetLoader.cpp
     Loading/WidgetSaver.cpp
     Renderers/ButtonRenderer.cpp
+    Renderers/ChatBoxRenderer.cpp
     Renderers/ComboBoxRenderer.cpp
     Renderers/EditBoxRenderer.cpp
     Renderers/KnobRenderer.cpp
@@ -41,7 +42,7 @@ set(TGUI_SRC
     Renderers/WidgetRenderer.cpp
     Widgets/Button.cpp
     Widgets/Canvas.cpp
-    #Widgets/ChatBox.cpp
+    Widgets/ChatBox.cpp
     Widgets/CheckBox.cpp
     #Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp

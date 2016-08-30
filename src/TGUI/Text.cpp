@@ -221,6 +221,98 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::String Text::wordWrap(float maxWidth, const sf::String& text, Font font, unsigned int textSize, bool bold, bool dropLeadingSpace)
+    {
+        if (font == nullptr)
+            return "";
+
+        sf::String result;
+        std::size_t index = 0;
+        while (index < text.getSize())
+        {
+            std::size_t oldIndex = index;
+
+            // Find out how many characters we can get on this line
+            float width = 0;
+            sf::Uint32 prevChar = 0;
+            for (std::size_t i = index; i < text.getSize(); ++i)
+            {
+                float charWidth;
+                sf::Uint32 curChar = text[i];
+                if (curChar == '\n')
+                {
+                    index++;
+                    break;
+                }
+                else if (curChar == '\t')
+                    charWidth = font.getFont()->getGlyph(' ', textSize, bold).bounds.width * 4;
+                else
+                    charWidth = font.getFont()->getGlyph(curChar, textSize, bold).bounds.width;
+
+                float kerning = font.getFont()->getKerning(prevChar, curChar, textSize);
+                if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
+                {
+                    // The advance of a glyph can be larger than the width of its bound (e.g. space has width 0 but a positive advance)
+                    if (curChar == '\t')
+                        width += kerning + (font.getFont()->getGlyph(' ', textSize, bold).advance * 4);
+                    else
+                        width += kerning + font.getFont()->getGlyph(curChar, textSize, bold).advance;
+
+                    index++;
+                }
+                else
+                    break;
+
+                prevChar = curChar;
+            }
+
+            // Every line contains at least one character
+            if (index == oldIndex)
+                index++;
+
+            // Implement the word-wrap by removing the last few characters from the line
+            if (text[index-1] != '\n')
+            {
+                std::size_t indexWithoutWordWrap = index;
+                if ((index < text.getSize()) && (!isWhitespace(text[index])))
+                {
+                    std::size_t wordWrapCorrection = 0;
+                    while ((index > oldIndex) && (!isWhitespace(text[index - 1])))
+                    {
+                        wordWrapCorrection++;
+                        index--;
+                    }
+
+                    // The word can't be split but there is no other choice, it does not fit on the line
+                    if ((index - oldIndex) <= wordWrapCorrection)
+                        index = indexWithoutWordWrap;
+                }
+            }
+
+            // If the next line starts with just a space, then the space need not be visible
+            if (dropLeadingSpace)
+            {
+                if ((index < text.getSize()) && (text[index] == ' '))
+                {
+                    if ((index == 0) || (!isWhitespace(text[index-1])))
+                    {
+                        // But two or more spaces indicate that it is not a normal text and the spaces should not be ignored
+                        if (((index + 1 < text.getSize()) && (!isWhitespace(text[index + 1]))) || (index + 1 == text.getSize()))
+                            index++;
+                    }
+                }
+            }
+
+            result += text.substring(oldIndex, index - oldIndex);
+            if ((index < text.getSize()) && (text[index-1] != '\n'))
+                result += "\n";
+        }
+
+        return result;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

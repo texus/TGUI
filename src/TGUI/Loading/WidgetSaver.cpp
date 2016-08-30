@@ -25,8 +25,8 @@
 
 #include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Loading/Serializer.hpp>
-#include <TGUI/Widgets/Button.hpp>/**
-#include <TGUI/Widgets/ChatBox.hpp>
+#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/ChatBox.hpp>/**
 #include <TGUI/Widgets/ChildWindow.hpp>*/
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
@@ -154,7 +154,7 @@ namespace tgui
         SET_PROPERTY("TextSize", tgui::to_string(button->getTextSize()));
         return node;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveChatBox(ChatBox::Ptr chatBox)
@@ -195,16 +195,9 @@ namespace tgui
             node->children.push_back(lineNode);
         }
 
-        if (chatBox->getScrollbar())
-        {
-            node->children.push_back(WidgetSaver::getSaveFunction("scrollbar")(tgui::WidgetConverter{chatBox->getScrollbar()}));
-            node->children.back()->parent = node.get();
-            node->children.back()->name = "Scrollbar";
-        }
-
         return node;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveChildWindow(ChildWindow::Ptr childWindow)
@@ -555,8 +548,8 @@ namespace tgui
             {"widget", saveWidget},
             {"container", saveContainer},
             {"button", saveButton},
-            {"canvas", saveWidget},/**
-            {"chatbox", saveChatBox},*/
+            {"canvas", saveWidget},
+            {"chatbox", saveChatBox},
             {"checkbox", saveRadioButton},/**
             {"childwindow", saveChildWindow},*/
             {"clickablewidget", saveWidget},

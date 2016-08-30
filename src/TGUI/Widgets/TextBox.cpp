@@ -1433,7 +1433,8 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/// TODO: Word-wrap from Text class will add newlines to some places
+///       Remove these by looping over both the old and the new text to find where the real and where the inserted new lines are.
     void TextBox::rearrangeText(bool keepSelection)
     {
         // Don't continue when line height is 0 or when there is no font yet

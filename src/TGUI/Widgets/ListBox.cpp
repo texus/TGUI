@@ -62,7 +62,7 @@ namespace tgui
         getRenderer()->setSelectedTextColor(sf::Color::White);
 
         setSize({150, 154});
-        setItemHeight(22);
+        setItemHeight(m_itemHeight);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
