@@ -22,51 +22,23 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_TGUI_HPP
-#define TGUI_TGUI_HPP
+
+#include <TGUI/Renderers/MenuBarRenderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Clipboard.hpp>
-#include <TGUI/Animation.hpp>
-#include <TGUI/Widget.hpp>
-#include <TGUI/Container.hpp>/**
-#include <TGUI/HorizontalLayout.hpp>
-#include <TGUI/VerticalLayout.hpp>*/
-#include <TGUI/Gui.hpp>
+namespace tgui
+{
+    TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, BackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, SelectedBackgroundColor, Color(0, 110, 255))
+    TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, TextColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, SelectedTextColor, sf::Color::White)
 
-#include <TGUI/Loading/Deserializer.hpp>
-#include <TGUI/Loading/Serializer.hpp>
-#include <TGUI/Loading/Theme.hpp>
-#include <TGUI/Loading/WidgetLoader.hpp>
-#include <TGUI/Loading/WidgetSaver.hpp>
+    TGUI_RENDERER_PROPERTY_TEXTURE(MenuBarRenderer, TextureBackground)
+    TGUI_RENDERER_PROPERTY_TEXTURE(MenuBarRenderer, TextureItemBackground)
+    TGUI_RENDERER_PROPERTY_TEXTURE(MenuBarRenderer, TextureSelectedItemBackground)
 
-#include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/Canvas.hpp>
-#include <TGUI/Widgets/ChatBox.hpp>
-#include <TGUI/Widgets/CheckBox.hpp>/**
-#include <TGUI/Widgets/ChildWindow.hpp>*/
-#include <TGUI/Widgets/ClickableWidget.hpp>
-#include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/Grid.hpp>
-#include <TGUI/Widgets/Knob.hpp>
-#include <TGUI/Widgets/Label.hpp>
-#include <TGUI/Widgets/ListBox.hpp>
-#include <TGUI/Widgets/MenuBar.hpp>/**
-#include <TGUI/Widgets/MessageBox.hpp>*/
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/Picture.hpp>
-#include <TGUI/Widgets/ProgressBar.hpp>
-#include <TGUI/Widgets/RadioButton.hpp>
-#include <TGUI/Widgets/Scrollbar.hpp>
-#include <TGUI/Widgets/Slider.hpp>
-#include <TGUI/Widgets/SpinButton.hpp>/**
-#include <TGUI/Widgets/Tab.hpp>
-#include <TGUI/Widgets/TextBox.hpp>*/
-#include <TGUI/Widgets/ToolTip.hpp>
+    TGUI_RENDERER_PROPERTY_NUMBER(MenuBarRenderer, DistanceToSide, 0)
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#endif // TGUI_TGUI_HPP
-

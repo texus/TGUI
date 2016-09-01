@@ -25,7 +25,7 @@ ChildWindow {
     TitlebarImage   = "Black.png" Part(48, 154, 75, 25) Middle(25, 0, 25, 25);
     TitleColor      = rgb(190, 190, 190);
     BackgroundColor = rgb( 80,  80,  80);
-    BorderColor     = rgb(0, 0, 0);
+    BorderColor     = Black;
     Borders         = (1, 1, 1, 1);
     DistanceToSide  = 5;
     CloseButton     = {
@@ -51,7 +51,7 @@ EditBox {
     TextureHover = "Black.png" Part(0, 114, 60, 40) Middle(15, 0, 30, 40);
 
     TextColor                   = rgb(190, 190, 190);
-    SelectedTextColor           = rgb(255, 255, 255);
+    SelectedTextColor           = White;
     SelectedTextBackgroundColor = rgb( 10, 110, 255);
     DefaultTextColor            = rgb(120, 120, 120);
     CaretColor                  = rgb(110, 110, 255);
@@ -69,18 +69,18 @@ ListBox {
     BackgroundColorHover         = rgb(100, 100, 100);
     SelectedBackgroundColor      = rgb( 10, 110, 255);
     SelectedBackgroundColorHover = rgb(30, 150, 255);
-    SelectedTextColor            = rgb(255, 255, 255);
+    SelectedTextColor            = White;
     Padding                      = (3, 3, 3, 3);
     Scrollbar                    = &Scrollbar;
 }
 
 MenuBar {
-    BackgroundImage         = "Black.png" Part(115, 179, 8, 6) Middle(2, 2, 4, 2);
-    ItemBackgroundImage     = "Black.png" Part(115, 181, 8, 4) Middle(2, 0, 4, 2);
-    SelectedItemBackgroundImage = "Black.png" Part(115, 185, 8, 6) Middle(2, 2, 4, 2);
-    TextColor               = rgb(190, 190, 190);
-    SelectedTextColor       = rgb(255, 255, 255);
-    DistanceToSide          = 5;
+    TextureBackground             = "Black.png" Part(115, 179, 8, 6) Middle(2, 2, 4, 2);
+    TextureItemBackground         = "Black.png" Part(115, 181, 8, 4) Middle(2, 0, 4, 2);
+    TextureSelectedItemBackground = "Black.png" Part(115, 185, 8, 6) Middle(2, 2, 4, 2);
+    TextColor                     = rgb(190, 190, 190);
+    SelectedTextColor             = White;
+    DistanceToSide                = 5;
 }
 
 MessageBox {
@@ -138,14 +138,14 @@ Tab {
     NormalImage       = "Black.png" Part(0, 0, 60, 32) Middle(16, 0, 28, 32);
     SelectedImage     = "Black.png" Part(0, 32, 60, 32) Middle(16, 0, 28, 32);
     TextColor         = rgb(190, 190, 190);
-    SelectedTextColor = rgb(255, 255, 255);
+    SelectedTextColor = White;
     DistanceToSide    = 8;
 }
 
 TextBox {
     BackgroundImage             = "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
     TextColor                   = rgb(190, 190, 190);
-    SelectedTextColor           = rgb(255, 255, 255);
+    SelectedTextColor           = White;
     SelectedTextBackgroundColor = rgb( 10, 110, 255);
     CaretColor                  = rgb(110, 110, 255);
     Padding                     = (3, 3, 3, 3);
@@ -155,7 +155,7 @@ TextBox {
 Tooltip {
     TextColor       = rgb(190, 190, 190);
     BackgroundColor = rgb( 80,  80,  80);
-    BorderColor     = rgb(  0,   0,   0);
+    BorderColor     = Black;
     Borders         = (1, 1, 1, 1);
     Padding         = (2, 2, 2, 2);
 }

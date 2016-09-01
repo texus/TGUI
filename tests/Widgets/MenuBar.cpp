@@ -24,28 +24,172 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/MenuBar.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 
-TEST_CASE("[MenuBar]") {
+TEST_CASE("[MenuBar]")
+{
     tgui::MenuBar::Ptr menuBar = std::make_shared<tgui::MenuBar>();
-    menuBar->setFont("resources/DroidSansArmenian.ttf");
+    menuBar->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](){}));
         REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](sf::String){}));
         REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](std::vector<sf::String>){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(menuBar->getWidgetType() == "MenuBar");
     }
 
-    /// TODO: Test the functions in the MenuBar class
+    SECTION("Position and Size")
+    {
+        SECTION("Manual size")
+        {
+            menuBar->setPosition(40, 30);
+            menuBar->setSize(150, 100);
 
-    SECTION("Renderer") {
+            REQUIRE(menuBar->getPosition() == sf::Vector2f(40, 30));
+            REQUIRE(menuBar->getSize() == sf::Vector2f(150, 100));
+            REQUIRE(menuBar->getFullSize() == menuBar->getSize());
+            REQUIRE(menuBar->getWidgetOffset() == sf::Vector2f(0, 0));
+
+            SECTION("Width is unchanged when adding to parent")
+            {
+                auto parent = std::make_shared<tgui::Panel>();
+                parent->add(menuBar);
+
+                REQUIRE(menuBar->getSize() == sf::Vector2f(150, 100));
+            }
+        }
+
+        SECTION("Width is set when added to parent")
+        {
+            REQUIRE(menuBar->getSize().x == 0);
+
+            auto parent = std::make_shared<tgui::Panel>();
+            parent->setSize(400, 300);
+            parent->add(menuBar);
+
+            REQUIRE(menuBar->getSize().x == 400);
+
+            SECTION("Width of parent is bound")
+            {
+                parent->setSize(50, 100);
+                REQUIRE(menuBar->getSize().x == 50);
+            }
+        }
+    }
+
+    SECTION("Adding and removing menus")
+    {
+        SECTION("Single menu")
+        {
+            REQUIRE(menuBar->getMenus().empty());
+            menuBar->addMenu("Help");
+            REQUIRE(menuBar->getMenus().size() == 1);
+            REQUIRE(menuBar->getMenus()["Help"].empty());
+
+            menuBar->addMenuItem("About");
+            REQUIRE(menuBar->getMenus().size() == 1);
+            REQUIRE(menuBar->getMenus()["Help"].size() == 1);
+            REQUIRE(menuBar->getMenus()["Help"][0] == "About");
+        }
+
+        SECTION("Multiple menus")
+        {
+            menuBar->addMenu("File");
+            menuBar->addMenuItem("Load");
+            menuBar->addMenuItem("Save");
+            menuBar->addMenu("Edit");
+            menuBar->addMenuItem("Undo");
+            menuBar->addMenuItem("Redo");
+            menuBar->addMenuItem("Copy");
+            menuBar->addMenuItem("Paste");
+            menuBar->addMenu("Help");
+            menuBar->addMenuItem("About");
+
+            REQUIRE(menuBar->getMenus().size() == 3);
+            REQUIRE(menuBar->getMenus()["File"].size() == 2);
+            REQUIRE(menuBar->getMenus()["File"][0] == "Load");
+            REQUIRE(menuBar->getMenus()["File"][1] == "Save");
+            REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
+            REQUIRE(menuBar->getMenus()["Edit"][0] == "Undo");
+            REQUIRE(menuBar->getMenus()["Edit"][1] == "Redo");
+            REQUIRE(menuBar->getMenus()["Edit"][2] == "Copy");
+            REQUIRE(menuBar->getMenus()["Edit"][3] == "Paste");
+            REQUIRE(menuBar->getMenus()["Help"].size() == 1);
+            REQUIRE(menuBar->getMenus()["Help"][0] == "About");
+
+            SECTION("Adding menu items to older menu")
+            {
+                menuBar->addMenuItem("Quit", "File");
+
+                REQUIRE(menuBar->getMenus().size() == 3);
+                REQUIRE(menuBar->getMenus()["File"].size() == 3);
+                REQUIRE(menuBar->getMenus()["File"][0] == "Load");
+                REQUIRE(menuBar->getMenus()["File"][1] == "Save");
+                REQUIRE(menuBar->getMenus()["File"][2] == "Quit");
+                REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
+                REQUIRE(menuBar->getMenus()["Help"].size() == 1);
+            }
+
+            SECTION("Removing menu items")
+            {
+                menuBar->removeMenuItem("Edit", "Undo");
+                menuBar->removeMenuItem("Edit", "Paste");
+                menuBar->removeMenuItem("Help", "About");
+
+                REQUIRE(menuBar->getMenus()["File"].size() == 2);
+                REQUIRE(menuBar->getMenus()["Edit"].size() == 2);
+                REQUIRE(menuBar->getMenus()["Edit"][0] == "Redo");
+                REQUIRE(menuBar->getMenus()["Edit"][1] == "Copy");
+                REQUIRE(menuBar->getMenus()["Help"].size() == 0);
+            }
+
+            SECTION("Removing menu")
+            {
+                menuBar->removeMenu("File");
+
+                REQUIRE(menuBar->getMenus().size() == 2);
+                REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
+                REQUIRE(menuBar->getMenus()["Help"].size() == 1);
+            }
+        }
+    }
+
+    SECTION("TextSize")
+    {
+        menuBar->setTextSize(25);
+        REQUIRE(menuBar->getTextSize() == 25);
+    }
+
+    SECTION("MinimumSubMenuWidth")
+    {
+        menuBar->setMinimumSubMenuWidth(150);
+        REQUIRE(menuBar->getMinimumSubMenuWidth() == 150);
+    }
+
+    SECTION("Events / Signals")
+    {
+        SECTION("Widget")
+        {
+            testWidgetSignals(menuBar);
+        }
+
+        /// TODO
+    }
+
+    testWidgetRenderer(menuBar->getRenderer());
+    SECTION("Renderer")
+    {
         auto renderer = menuBar->getRenderer();
 
-        SECTION("colored") {
-            SECTION("set serialized property") {
+        SECTION("colored")
+        {
+            SECTION("set serialized property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(70, 80, 90)"));
@@ -53,7 +197,8 @@ TEST_CASE("[MenuBar]") {
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
             }
             
-            SECTION("set object property") {
+            SECTION("set object property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", sf::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{70, 80, 90}));
@@ -61,22 +206,13 @@ TEST_CASE("[MenuBar]") {
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
             }
 
-            SECTION("functions") {
+            SECTION("functions")
+            {
                 renderer->setBackgroundColor({10, 20, 30});
                 renderer->setSelectedBackgroundColor({40, 50, 60});
                 renderer->setTextColor({70, 80, 90});
                 renderer->setSelectedTextColor({100, 110, 120});
                 renderer->setDistanceToSide(2);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 5);
-                    REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(10, 20, 30));
-                    REQUIRE(pairs["SelectedBackgroundColor"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["TextColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["SelectedTextColor"].getColor() == sf::Color(100, 110, 120));
-                    REQUIRE(pairs["DistanceToSide"].getNumber() == 2);
-                }
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
@@ -86,50 +222,55 @@ TEST_CASE("[MenuBar]") {
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
         }
 
-        SECTION("textured") {
+        SECTION("textured")
+        {
             tgui::Texture textureBackground("resources/Black.png", {115, 179, 8, 6}, {2, 2, 4, 2});
             tgui::Texture textureItemBackground("resources/Black.png", {115, 181, 8, 4}, {2, 0, 4, 2});
             tgui::Texture textureSelectedItemBackground("resources/Black.png", {115, 185, 8, 6}, {2, 2, 4, 2});
 
-            REQUIRE(!renderer->getProperty("BackgroundImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("ItemBackgroundImage").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("SelectedItemBackgroundImage").getTexture().isLoaded());
-
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", tgui::Serializer::serialize(textureBackground)));
-                REQUIRE_NOTHROW(renderer->setProperty("ItemBackgroundImage", tgui::Serializer::serialize(textureItemBackground)));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedItemBackgroundImage", tgui::Serializer::serialize(textureSelectedItemBackground)));
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureItemBackground", tgui::Serializer::serialize(textureItemBackground)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedItemBackground", tgui::Serializer::serialize(textureSelectedItemBackground)));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", textureBackground));
-                REQUIRE_NOTHROW(renderer->setProperty("ItemBackgroundImage", textureItemBackground));
-                REQUIRE_NOTHROW(renderer->setProperty("SelectedItemBackgroundImage", textureSelectedItemBackground));
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureItemBackground", textureItemBackground));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedItemBackground", textureSelectedItemBackground));
             }
 
-            SECTION("functions") {
-                renderer->setBackgroundTexture(textureBackground);
-                renderer->setItemBackgroundTexture(textureItemBackground);
-                renderer->setSelectedItemBackgroundTexture(textureSelectedItemBackground);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 8);
-                    REQUIRE(pairs["BackgroundImage"].getTexture().getData() == textureBackground.getData());
-                    REQUIRE(pairs["ItemBackgroundImage"].getTexture().getData() == textureItemBackground.getData());
-                    REQUIRE(pairs["SelectedItemBackgroundImage"].getTexture().getData() == textureSelectedItemBackground.getData());
-                }
+            SECTION("functions")
+            {
+                renderer->setTextureBackground(textureBackground);
+                renderer->setTextureItemBackground(textureItemBackground);
+                renderer->setTextureSelectedItemBackground(textureSelectedItemBackground);
             }
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("ItemBackgroundImage").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("SelectedItemBackgroundImage").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureItemBackground").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureSelectedItemBackground").getTexture().isLoaded());
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().getData() == textureBackground.getData());
-            REQUIRE(renderer->getProperty("ItemBackgroundImage").getTexture().getData() == textureItemBackground.getData());
-            REQUIRE(renderer->getProperty("SelectedItemBackgroundImage").getTexture().getData() == textureSelectedItemBackground.getData());
+            REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
+            REQUIRE(renderer->getTextureItemBackground().getData() == textureItemBackground.getData());
+            REQUIRE(renderer->getTextureSelectedItemBackground().getData() == textureSelectedItemBackground.getData());
         }
     }
 
-    // TODO: Saving and loading from file test
+    SECTION("Saving and loading from file")
+    {
+        menuBar->addMenu("File");
+        menuBar->addMenuItem("Quit");
+        menuBar->addMenu("Edit");
+        menuBar->addMenuItem("Undo");
+        menuBar->addMenuItem("Redo");
+        menuBar->addMenu("Help");
+
+        menuBar->setMinimumSubMenuWidth(100);
+        menuBar->setTextSize(25); // TextSize is currently reset when copying (due to setSize calling setTextSize)
+
+        testSavingWidget("MenuBar", menuBar);
+    }
 }

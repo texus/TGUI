@@ -33,6 +33,7 @@
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
@@ -383,6 +384,41 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    TGUI_API std::shared_ptr<DataIO::Node> saveMenuBar(MenuBar::Ptr menuBar)
+    {
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{menuBar});
+
+        std::map<sf::String, std::vector<sf::String>> menus = menuBar->getMenus();
+        for (auto& menu : menus)
+        {
+            auto menuNode = std::make_shared<DataIO::Node>();
+            menuNode->parent = node.get();
+            menuNode->name = "Menu";
+
+            menuNode->propertyValuePairs["Name"] = std::make_shared<DataIO::ValueNode>(Serializer::serialize(menu.first));
+
+            auto& items = menu.second;
+            if (!items.empty())
+            {
+                std::string itemList = "[" + Serializer::serialize(items[0]);
+                for (std::size_t i = 1; i < items.size(); ++i)
+                    itemList += ", " + Serializer::serialize(items[i]);
+                itemList += "]";
+
+                menuNode->propertyValuePairs["Items"] = std::make_shared<DataIO::ValueNode>(itemList);
+            }
+
+            node->children.push_back(menuNode);
+        }
+
+        SET_PROPERTY("TextSize", tgui::to_string(menuBar->getTextSize()));
+        SET_PROPERTY("MinimumSubMenuWidth", tgui::to_string(menuBar->getMinimumSubMenuWidth()));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TGUI_API std::shared_ptr<DataIO::Node> savePicture(Picture::Ptr picture)
     {
         auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{picture});
@@ -558,6 +594,7 @@ namespace tgui
             {"knob", saveKnob},
             {"label", saveLabel},
             {"listbox", saveListBox},
+            {"menubar", saveMenuBar},
             {"panel", saveContainer},
             {"picture", savePicture},
             {"progressbar", saveProgressBar},

@@ -23,224 +23,165 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_TEXT_HPP
-#define TGUI_TEXT_HPP
+#ifndef TGUI_MENU_BAR_RENDERER_HPP
+#define TGUI_MENU_BAR_RENDERER_HPP
 
-#include <TGUI/Font.hpp>
-#include <TGUI/Color.hpp>
-#include <TGUI/TextStyle.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/Transformable.hpp>
+
+#include <TGUI/Renderers/WidgetRenderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    class TGUI_API Text : public sf::Transformable
+    struct TGUI_API MenuBarRenderer : public WidgetRenderer
     {
-    public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// The line spacing of a font gives the distance between two lines. There may however be an overlap between the highest
-        /// character on the bottom line and the smallest one on the top line. This function calculates that distance.
+        /// @brief Changes the background color of the list box
+        ///
+        /// @param backgroundColor  The new background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static float calculateExtraVerticalSpace(Font font, unsigned int characterSize, TextStyle style = sf::Text::Regular);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Takes a string and inserts newlines into it so that the width does not exceed maxWidth.
-        ///
-        /// @param maxWidth         Maximum width of the text
-        /// @param text             The text to wrap
-        /// @param font             Font of the text
-        /// @param textSize         The text size
-        /// @param dropLeadingSpace Should a single space at the beginning of a line be removed?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static sf::String wordWrap(float maxWidth, const sf::String& text, Font font, unsigned int textSize, bool bold, bool dropLeadingSpace = true);
-
-
-    public:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the text
-        ///
-        /// @return Size required for drawing the text
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f getSize() const;
+        void setBackgroundColor(Color backgroundColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text
+        /// @brief Returns the background color
         ///
-        /// @param string  The new text
+        /// @return Background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setString(const sf::String& string);
+        Color getBackgroundColor() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text
+        /// @brief Changes the background color of the selected item
         ///
-        /// @return The current text
+        /// @param backgroundColor  The new selected item background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::String& getString() const;
+        void setSelectedBackgroundColor(Color backgroundColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the character size of the text
+        /// @brief Returns the background color of the selected item
         ///
-        /// @param size  The new text size
+        /// @return Selected item background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setCharacterSize(unsigned int size);
+        Color getSelectedBackgroundColor() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the character size of the text
+        /// @brief Changes the color of the text
         ///
-        /// @return The current text size
+        /// @param textColor  The new text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getCharacterSize() const;
+        void setTextColor(Color textColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the text color
+        /// @brief Returns the color of the text
         ///
-        /// @param color  The new text color
+        /// @return Text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setColor(Color color);
+        Color getTextColor() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text color
+        /// @brief Changes the color of the text from the selected item
         ///
-        /// @return text color
+        /// @param textColor  The new selected text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Color getColor() const;
+        void setSelectedTextColor(Color textColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the opacity of the text
+        /// @brief Returns the color of the text from the selected item
         ///
-        /// @param opacity  The text opacity
+        /// @return Selected text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setOpacity(float opacity);
+        Color getSelectedTextColor() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the opacity of the text
+        /// @brief Changes the image that is used to fill the entire menu bar
         ///
-        /// @return text opacity
+        /// @param texture  The background texture
+        ///
+        /// When this image is set, the background color property will be ignored.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getOpacity() const;
+        void setTextureBackground(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the font used for the text
+        /// @brief Returns the image that is used to fill the entire menu bar
         ///
-        /// @param font  The new font
+        /// @return Background texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setFont(Font font);
+        Texture& getTextureBackground() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the font of the text
+        /// @brief Changes the image that is displayed when the menu item is not selected
         ///
-        /// @return text font
+        /// @param texture  New item background texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Font getFont() const;
+        void setTextureItemBackground(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the style of the text
+        /// @brief Returns the image that is displayed when the menu item is not selected
         ///
-        /// The possible styles can be found in the sf::Text::Style enum.
-        /// You can also pass a combination of multiple styles, for example sf::Text::Bold | sf::Text::Italic.
-        /// The default style is sf::Text::Regular.
-        ///
-        /// @param style  New text style
+        /// @return Item background texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setStyle(TextStyle style);
+        Texture& getTextureItemBackground() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the style of the text
+        /// @brief Changes the image that is used as background of the selected menu item
         ///
-        /// @return The current text style
+        /// @param texture  New selected item background texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TextStyle getStyle() const;
+        void setTextureSelectedItemBackground(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Return the position of the @a index-th character
+        /// @brief Returns the image that is used as background of the selected menu item
         ///
-        /// This function computes the visual position of a character from its index in the string. The returned position is
-        /// in global coordinates (translation, rotation, scale and origin are applied).
-        /// If @a index is out of range, the position of the end of the string is returned.
-        ///
-        /// @param index Index of the character
-        ///
-        /// @return Position of the character
+        /// @return Selected item background texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f findCharacterPos(std::size_t index) const;
-
-/*
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Find the index of the character at a certain position
-        ///
-        /// @param position  Position to look at
-        ///
-        /// @return Index of the character
-        ///
-        /// If the position is behind or below the text then the index is the one directly behind the text.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::size_t findCharacterIndex(sf::Vector2f position) const;
-*/
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draw the text to a render target
-        ///
-        /// \param target Render target to draw to
-        /// \param states Current render states
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+        Texture& getTextureSelectedItemBackground() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+        /// @brief Changes the distance between the text and the side of the menu item
+        ///
+        /// @param distanceToSide  distance between the text and the side of the menu item
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setDistanceToSide(float distanceToSide);
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Calculates the size of the text again after something changed.
+        /// @brief Returns the distance between the text and the side of the menu item
+        ///
+        /// @return Distance between the text and the side of the menu item
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void recalculateSize();
+        float getDistanceToSide() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
-
-        sf::Text     m_text;
-        sf::Vector2f m_size;
-        Font         m_font;
-        Color        m_color;
-        float        m_opacity = 1;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,4 +189,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_TEXT_HPP
+#endif // TGUI_MENU_BAR_RENDERER_HPP

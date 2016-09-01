@@ -33,6 +33,7 @@ set(TGUI_SRC
     Renderers/KnobRenderer.cpp
     Renderers/LabelRenderer.cpp
     Renderers/ListBoxRenderer.cpp
+    Renderers/MenuBarRenderer.cpp
     Renderers/PanelRenderer.cpp
     Renderers/ProgressBarRenderer.cpp
     Renderers/RadioButtonRenderer.cpp
@@ -52,7 +53,7 @@ set(TGUI_SRC
     Widgets/Knob.cpp
     Widgets/Label.cpp
     Widgets/ListBox.cpp
-    #Widgets/MenuBar.cpp
+    Widgets/MenuBar.cpp
     #Widgets/MessageBox.cpp
     Widgets/Panel.cpp
     Widgets/Picture.cpp

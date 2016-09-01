@@ -35,6 +35,7 @@
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
@@ -627,6 +628,47 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    TGUI_API Widget::Ptr loadMenuBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        MenuBar::Ptr menuBar;
+        if (widget)
+            menuBar = std::static_pointer_cast<MenuBar>(widget);
+        else
+            menuBar = std::make_shared<MenuBar>();
+
+        loadWidget(node, menuBar);
+
+        if (node->propertyValuePairs["textsize"])
+            menuBar->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["minimumsubmenuwidth"])
+            menuBar->setMinimumSubMenuWidth(tgui::stoi(node->propertyValuePairs["minimumsubmenuwidth"]->value));
+
+        for (auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "menu")
+            {
+                if (childNode->propertyValuePairs["name"])
+                {
+                    menuBar->addMenu(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["name"]->value).getString());
+
+                    if (childNode->propertyValuePairs["items"])
+                    {
+                        if (!childNode->propertyValuePairs["items"]->listNode)
+                            throw Exception{"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
+
+                        for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
+                            menuBar->addMenuItem(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString());
+                    }
+                }
+            }
+        }
+        REMOVE_CHILD("menu");
+
+        return menuBar;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TGUI_API Widget::Ptr loadPanel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         if (widget)
@@ -880,6 +922,7 @@ namespace tgui
             {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},
             {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
             {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},
+            {"menubar", std::bind(loadMenuBar, std::placeholders::_1, std::shared_ptr<MenuBar>{})},
             {"panel", std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},
             {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},
             {"progressbar", std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},
