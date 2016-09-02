@@ -60,7 +60,7 @@ namespace tgui
 
     Container::~Container()
     {
-        for (auto& widget : m_widgets)
+        for (const auto& widget : m_widgets)
         {
             if (widget->getParent() == this)
                 widget->setParent(nullptr);
@@ -168,7 +168,7 @@ namespace tgui
 
     void Container::removeAllWidgets()
     {
-        for (auto& widget : m_widgets)
+        for (const auto& widget : m_widgets)
             widget->setParent(nullptr);
 
         // Clear the lists
@@ -565,7 +565,7 @@ namespace tgui
         }
         else if (property == "font")
         {
-            for (auto& widget : m_widgets)
+            for (const auto& widget : m_widgets)
                 widget->getRenderer()->setFont(value.getFont());
         }
         else
@@ -739,7 +739,7 @@ namespace tgui
                     widgetBelowMouse->leftMouseReleased(mouseX - widgetBelowMouse->getPosition().x, mouseY - widgetBelowMouse->getPosition().y);
 
                 // Tell all widgets that the mouse has gone up
-                for (auto& widget : m_widgets)
+                for (const auto& widget : m_widgets)
                     widget->mouseNoLongerDown();
 
                 if (widgetBelowMouse != nullptr)

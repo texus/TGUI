@@ -346,7 +346,7 @@ namespace tgui
     std::vector<sf::String> ListBox::getItems() const
     {
         std::vector<sf::String> items;
-        for (auto& item : m_items)
+        for (const auto& item : m_items)
             items.push_back(item.getString());
 
         return items;

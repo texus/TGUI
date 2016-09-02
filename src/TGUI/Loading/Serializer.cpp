@@ -106,7 +106,7 @@ namespace tgui
         sf::Color color = value.getColor();
 
         // Check if the color can be represented by a string with its name
-        for (auto& pair : colorMap)
+        for (const auto& pair : colorMap)
         {
             if (color == pair.second)
                 return pair.first;
@@ -213,7 +213,7 @@ namespace tgui
     std::string serializeRendererData(ObjectConverter&& value)
     {
         auto node = std::make_shared<DataIO::Node>();
-        for (auto& pair : value.getRenderer()->propertyValuePairs)
+        for (const auto& pair : value.getRenderer()->propertyValuePairs)
         {
             sf::String strValue;
             if (pair.second.getType() == ObjectConverter::Type::RendererData)

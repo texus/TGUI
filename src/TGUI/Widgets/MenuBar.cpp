@@ -228,10 +228,10 @@ namespace tgui
     {
         std::map<sf::String, std::vector<sf::String>> menus;
 
-        for (auto& menu : m_menus)
+        for (const auto& menu : m_menus)
         {
             std::vector<sf::String> items;
-            for (auto& item : menu.menuItems)
+            for (const auto& item : menu.menuItems)
                 items.push_back(item.getString());
 
             menus[menu.text.getString()] = items;

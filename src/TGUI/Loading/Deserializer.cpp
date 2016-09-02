@@ -340,7 +340,7 @@ namespace tgui
     {
         sf::Uint32 decodedStyle = sf::Text::Regular;
         std::vector<std::string> styles = tgui::split(style, '|');
-        for (auto& elem : styles)
+        for (const auto& elem : styles)
         {
             std::string requestedStyle = toLower(trim(elem));
             if (requestedStyle == "bold")
@@ -368,10 +368,10 @@ namespace tgui
             node = node->children[0];
 
         auto rendererData = std::make_shared<RendererData>();
-        for (auto& pair : node->propertyValuePairs)
+        for (const auto& pair : node->propertyValuePairs)
             rendererData->propertyValuePairs[pair.first] = {pair.second->value};
 
-        for (auto& child : node->children)
+        for (const auto& child : node->children)
         {
             ss = std::stringstream{};
             DataIO::emit(child, ss);

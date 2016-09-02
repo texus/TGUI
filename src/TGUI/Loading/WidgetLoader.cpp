@@ -168,16 +168,16 @@ namespace tgui
         /// TODO: Font and ToolTip
         /// TODO: Separate renderer section?
 
-        for (auto& childNode : node->children)
+        for (const auto& childNode : node->children)
         {
             if (toLower(childNode->name) == "renderer")
             {
                 auto rendererData = std::make_shared<RendererData>();
 
-                for (auto& pair : childNode->propertyValuePairs)
+                for (const auto& pair : childNode->propertyValuePairs)
                     rendererData->propertyValuePairs[pair.first] = {pair.second->value};
 
-                for (auto& nestedProperty : childNode->children)
+                for (const auto& nestedProperty : childNode->children)
                 {
                     std::stringstream ss;
                     DataIO::emit(nestedProperty, ss);
@@ -199,7 +199,7 @@ namespace tgui
         assert(container != nullptr);
         loadWidget(node, container);
 
-        for (auto& childNode : node->children)
+        for (const auto& childNode : node->children)
         {
             auto nameSeparator = childNode->name.find('.');
             auto widgetType = childNode->name.substr(0, nameSeparator);
@@ -268,7 +268,7 @@ namespace tgui
         if (node->propertyValuePairs["linelimit"])
             chatBox->setLineLimit(tgui::stoi(node->propertyValuePairs["linelimit"]->value));
 
-        for (auto& childNode : node->children)
+        for (const auto& childNode : node->children)
         {
             if (toLower(childNode->name) == "line")
             {
@@ -357,7 +357,7 @@ namespace tgui
         if (node->propertyValuePairs["keepinparent"])
             childWindow->keepInParent(parseBoolean(node->propertyValuePairs["keepinparent"]->value));
 
-        for (auto& childNode : node->children)
+        for (const auto& childNode : node->children)
         {
             if (toLower(childNode->name) == "closebutton")
                 childWindow->setCloseButton(std::static_pointer_cast<Button>(WidgetLoader::getLoadFunction("button")(childNode)));
@@ -412,7 +412,7 @@ namespace tgui
             }
             else // There are no item ids
             {
-                for (auto& item : node->propertyValuePairs["items"]->valueList)
+                for (const auto& item : node->propertyValuePairs["items"]->valueList)
                     comboBox->addItem(item);
             }
         }
@@ -598,7 +598,7 @@ namespace tgui
             }
             else // There are no item ids
             {
-                for (auto& item : node->propertyValuePairs["items"]->valueList)
+                for (const auto& item : node->propertyValuePairs["items"]->valueList)
                     listBox->addItem(item);
             }
         }
@@ -643,7 +643,7 @@ namespace tgui
         if (node->propertyValuePairs["minimumsubmenuwidth"])
             menuBar->setMinimumSubMenuWidth(tgui::stoi(node->propertyValuePairs["minimumsubmenuwidth"]->value));
 
-        for (auto& childNode : node->children)
+        for (const auto& childNode : node->children)
         {
             if (toLower(childNode->name) == "menu")
             {
@@ -850,7 +850,7 @@ namespace tgui
             if (!node->propertyValuePairs["tabs"]->listNode)
                 throw Exception{"Failed to parse 'Tabs' property, expected a list as value"};
 
-            for (auto& tabText : node->propertyValuePairs["tabs"]->valueList)
+            for (const auto& tabText : node->propertyValuePairs["tabs"]->valueList)
                 tab->add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString());
         }
 
@@ -887,7 +887,7 @@ namespace tgui
         if (node->propertyValuePairs["readonly"])
             textBox->setReadOnly(parseBoolean(node->propertyValuePairs["readonly"]->value));
 
-        for (auto& childNode : node->children)
+        for (const auto& childNode : node->children)
         {
             if (toLower(childNode->name) == "scrollbar")
                 textBox->setScrollbar(std::static_pointer_cast<Scrollbar>(WidgetLoader::getLoadFunction("scrollbar")(childNode)));
@@ -943,7 +943,7 @@ namespace tgui
         if (rootNode->propertyValuePairs.size() != 0)
             loadWidget(rootNode, parent);
 
-        for (auto& node : rootNode->children)
+        for (const auto& node : rootNode->children)
         {
             auto nameSeparator = node->name.find('.');
             auto widgetType = node->name.substr(0, nameSeparator);

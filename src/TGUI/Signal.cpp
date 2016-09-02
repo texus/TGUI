@@ -39,7 +39,7 @@ namespace tgui
     Signal::Signal(std::vector<std::vector<std::string>>&& types)
     {
         std::size_t maxSize = 0;
-        for (auto& typeList : types)
+        for (const auto& typeList : types)
             maxSize += typeList.size();
 
         m_allowedTypes = types;
@@ -73,7 +73,7 @@ namespace tgui
 
     void Signal::operator()(unsigned int)
     {
-        for (auto& function : m_functions)
+        for (const auto& function : m_functions)
             function.second();
     }
 
@@ -95,7 +95,7 @@ namespace tgui
 
     void SignalWidgetBase::disconnectAll(const std::string& signalName)
     {
-        for (auto& name : extractSignalNames(signalName))
+        for (const auto& name : extractSignalNames(signalName))
             m_signals.at(toLower(name)).disconnectAll();
     }
 

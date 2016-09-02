@@ -110,7 +110,7 @@ namespace tgui
 
         node->children.emplace_back(std::make_shared<DataIO::Node>());
         node->children.back()->name = "Renderer";
-        for (auto& pair : widget->getRenderer()->getPropertyValuePairs())
+        for (const auto& pair : widget->getRenderer()->getPropertyValuePairs())
         {
             sf::String value = ObjectConverter{pair.second}.getString();
             if (pair.second.getType() == ObjectConverter::Type::RendererData)
@@ -131,7 +131,7 @@ namespace tgui
     TGUI_API std::shared_ptr<DataIO::Node> saveContainer(Container::Ptr container)
     {
         auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{container});
-        for (auto& child : container->getWidgets())
+        for (const auto& child : container->getWidgets())
         {
             auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));
             if (saveFunction)
@@ -389,7 +389,7 @@ namespace tgui
         auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{menuBar});
 
         std::map<sf::String, std::vector<sf::String>> menus = menuBar->getMenus();
-        for (auto& menu : menus)
+        for (const auto& menu : menus)
         {
             auto menuNode = std::make_shared<DataIO::Node>();
             menuNode->parent = node.get();
@@ -611,7 +611,7 @@ namespace tgui
     void WidgetSaver::save(Container::Ptr widget, std::stringstream& stream)
     {
         auto node = std::make_shared<DataIO::Node>();
-        for (auto& child : widget->getWidgets())
+        for (const auto& child : widget->getWidgets())
         {
             auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));
             if (saveFunction)

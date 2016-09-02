@@ -58,7 +58,7 @@ namespace tgui
     {
         void injectRelativePathInTextures(std::set<std::shared_ptr<DataIO::Node>>& handledSections, std::shared_ptr<DataIO::Node> node, const std::string& path)
         {
-            for (auto& pair : node->propertyValuePairs)
+            for (const auto& pair : node->propertyValuePairs)
             {
                 if ((pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture"))
                 {
@@ -72,7 +72,7 @@ namespace tgui
                 }
             }
 
-            for (auto& child : node->children)
+            for (const auto& child : node->children)
             {
                 if (handledSections.find(child) == handledSections.end())
                 {
@@ -86,7 +86,7 @@ namespace tgui
 
         void resolveReferences(std::map<std::string, std::shared_ptr<DataIO::Node>>& sections, std::shared_ptr<DataIO::Node> node)
         {
-            for (auto& pair : node->propertyValuePairs)
+            for (const auto& pair : node->propertyValuePairs)
             {
                 // Check if this property is a reference to another section
                 if (!pair.second->value.isEmpty() && (pair.second->value[0] == '&'))
@@ -107,7 +107,7 @@ namespace tgui
                 }
             }
 
-            for (auto& child : node->children)
+            for (const auto& child : node->children)
                 resolveReferences(sections, child);
         }
 
@@ -165,7 +165,7 @@ namespace tgui
 
             // Get a list of section names and map them to their nodes (needed for resolving references)
             std::map<std::string, std::shared_ptr<DataIO::Node>> sections;
-            for (auto& child : root->children)
+            for (const auto& child : root->children)
             {
                 std::string name = toLower(Deserializer::deserialize(ObjectConverter::Type::String, child->name).getString());
                 sections[name] = child;
@@ -175,14 +175,14 @@ namespace tgui
             resolveReferences(sections, root);
 
             // Cache all propery value pairs
-            for (auto& section : sections)
+            for (const auto& section : sections)
             {
                 auto& child = section.second;
                 const std::string& name = section.first;
-                for (auto& pair : child->propertyValuePairs)
+                for (const auto& pair : child->propertyValuePairs)
                     m_propertiesCache[filename][name][toLower(pair.first)] = pair.second->value;
 
-                for (auto& nestedProperty : child->children)
+                for (const auto& nestedProperty : child->children)
                 {
                     std::stringstream ss;
                     DataIO::emit(nestedProperty, ss);

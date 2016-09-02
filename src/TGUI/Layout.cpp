@@ -87,7 +87,7 @@ namespace
         }
         else
         {
-            for (auto& parent : layout->parents)
+            for (const auto& parent : layout->parents)
                 recalculateLayout(parent);
         }
     }
@@ -99,7 +99,7 @@ namespace
         layout->value = value;
         recalculateLayout(layout.get());
 
-        for (auto& attachedLayout : layout->attachedLayouts)
+        for (const auto& attachedLayout : layout->attachedLayouts)
             attachedLayout->update();
     }
 
@@ -128,7 +128,7 @@ namespace tgui
 
     LayoutImpl::~LayoutImpl()
     {
-        for (auto& operand : operands)
+        for (const auto& operand : operands)
             operand->parents.erase(this);
     }
 
@@ -136,7 +136,7 @@ namespace tgui
 
     void LayoutImpl::recalculate()
     {
-        for (auto& operand : operands)
+        for (const auto& operand : operands)
             operand->recalculate();
 
         switch (operation)
@@ -197,7 +197,7 @@ namespace tgui
         }
 
         // Alert the widgets that are using this layout
-        for (auto& attachedLayout : attachedLayouts)
+        for (const auto& attachedLayout : attachedLayouts)
             attachedLayout->update();
     }
 

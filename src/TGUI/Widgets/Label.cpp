@@ -390,7 +390,7 @@ namespace tgui
         }
 
         // Draw the text
-        for (auto& line : m_lines)
+        for (const auto& line : m_lines)
             line.draw(target, states);
     }
 

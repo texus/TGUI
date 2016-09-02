@@ -387,7 +387,7 @@ namespace tgui
     void ChatBox::recalculateFullTextHeight()
     {
         m_fullTextHeight = 0;
-        for (auto& line : m_lines)
+        for (const auto& line : m_lines)
             m_fullTextHeight += line.text.getSize().y;
 
         // Update the maximum of the scrollbar
@@ -515,7 +515,7 @@ namespace tgui
         if (!m_linesStartFromTop && (m_fullTextHeight < getInnerSize().y - padding.top - padding.bottom))
             states.transform.translate(0, getInnerSize().y - padding.top - padding.bottom - m_fullTextHeight);
 
-        for (auto& line : m_lines)
+        for (const auto& line : m_lines)
         {
             line.text.draw(target, states);
             states.transform.translate(0, line.text.getSize().y);

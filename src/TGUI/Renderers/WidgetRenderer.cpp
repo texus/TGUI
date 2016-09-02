@@ -76,7 +76,7 @@ namespace tgui
 
         m_data->propertyValuePairs[lowercaseProperty] = value;
 
-        for (auto& observer : m_data->observers)
+        for (const auto& observer : m_data->observers)
             observer.second(lowercaseProperty, value);
     }
 

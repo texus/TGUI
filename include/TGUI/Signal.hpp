@@ -324,7 +324,7 @@ namespace tgui
             if (signalNameList.empty())
                 throw Exception{"connect function called with empty string"};
 
-            for (auto& signalName : signalNameList)
+            for (const auto& signalName : signalNameList)
             {
                 if (m_signals.find(toLower(signalName)) != m_signals.end())
                 {
@@ -381,7 +381,7 @@ namespace tgui
             if (signalNameList.empty())
                 throw Exception{"connect function called with empty string"};
 
-            for (auto& name : signalNameList)
+            for (const auto& name : signalNameList)
             {
                 if (m_signals.find(toLower(name)) != m_signals.end())
                 {
@@ -401,7 +401,7 @@ namespace tgui
                     {
                         assert(!m_signals.empty());
 
-                        for (auto& signal : m_signals)
+                        for (const auto& signal : m_signals)
                         {
                             try {
                                 signal.second.connectEx(m_lastId, func, args...);
@@ -479,7 +479,7 @@ namespace tgui
             if (!signal.m_functionsEx.empty())
             {
                 m_callback.trigger = name;
-                for (auto& function : signal.m_functionsEx)
+                for (const auto& function : signal.m_functionsEx)
                     function.second(m_callback);
             }
         }

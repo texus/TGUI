@@ -67,7 +67,7 @@ namespace tgui
         if (!m_primary.empty())
         {
             auto& properties = m_themeLoader->load(m_primary, lowercaseSecondart);
-            for (auto& property : properties)
+            for (const auto& property : properties)
                 m_renderers[lowercaseSecondart]->propertyValuePairs[property.first] = ObjectConverter(property.second);
         }
 
@@ -159,7 +159,7 @@ namespace tgui
         m_widgetTypes.clear();
         m_widgetProperties.clear();
 
-        for (auto& widget : m_widgets)
+        for (const auto& widget : m_widgets)
         {
             std::string widgetType;
             if (m_filename != "")
@@ -198,7 +198,7 @@ namespace tgui
         }
 
         // Reload all the widget that match the old class name
-        for (auto& widget : m_widgets)
+        for (const auto& widget : m_widgets)
         {
             if (widget.second == oldClassName)
             {
@@ -275,7 +275,7 @@ namespace tgui
         className = toLower(className);
         m_widgetProperties[className][toLower(property)] = value;
 
-        for (auto& pair : m_widgets)
+        for (const auto& pair : m_widgets)
         {
             if (pair.second == className)
                 pair.first->getRenderer()->setProperty(property, value);
@@ -289,7 +289,7 @@ namespace tgui
         className = toLower(className);
         m_widgetProperties[className][toLower(property)] = Serializer::serialize(value);
 
-        for (auto& pair : m_widgets)
+        for (const auto& pair : m_widgets)
         {
             if (pair.second == className)
                 pair.first->getRenderer()->setProperty(property, value);
@@ -342,7 +342,7 @@ namespace tgui
 
         try
         {
-            for (auto& property : m_widgetProperties[className])
+            for (const auto& property : m_widgetProperties[className])
                 widget->getRenderer()->setProperty(property.first, property.second);
         }
         catch (Exception& e)
