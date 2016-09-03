@@ -401,7 +401,7 @@ namespace tgui
                     {
                         assert(!m_signals.empty());
 
-                        for (const auto& signal : m_signals)
+                        for (auto& signal : m_signals)
                         {
                             try {
                                 signal.second.connectEx(m_lastId, func, args...);

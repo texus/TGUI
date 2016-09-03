@@ -49,6 +49,7 @@ void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool
     {
         tgui::Theme theme{"resources/Black.txt"};
         widget->setRenderer(theme.getRenderer(name));
+        widget->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     }
 
     auto parent = std::make_shared<tgui::GuiContainer>();

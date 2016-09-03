@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_MENU_BAR_RENDERER_HPP
-#define TGUI_MENU_BAR_RENDERER_HPP
+#ifndef TGUI_TABS_RENDERER_HPP
+#define TGUI_TABS_RENDERER_HPP
 
 
 #include <TGUI/Renderers/WidgetRenderer.hpp>
@@ -33,19 +33,39 @@
 
 namespace tgui
 {
-    struct TGUI_API MenuBarRenderer : public WidgetRenderer
+    struct TGUI_API TabsRenderer : public WidgetRenderer
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the menu bar
+        /// @brief Changes the size of the borders
+        ///
+        /// @param borders  Size of the borders
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setBorders(const Borders& borders);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the size of the borders
+        ///
+        /// @return border size
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Borders getBorders() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the background color of the tabs
         ///
         /// @param backgroundColor  The new background color
+        ///
+        /// Note that this color is ignored when the tab and selected tab image were set.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setBackgroundColor(Color backgroundColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color
+        /// @brief Returns the background color of the tabs
         ///
         /// @return Background color
         ///
@@ -54,18 +74,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the background color of the selected item
+        /// @brief Changes the background color of the selected tab
         ///
-        /// @param backgroundColor  The new selected item background color
+        /// @param backgroundColor  The new selected tab background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedBackgroundColor(Color backgroundColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the background color of the selected item
+        /// @brief Returns the background color of the selected tab
         ///
-        /// @return Selected item background color
+        /// @return Selected tab background color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Color getSelectedBackgroundColor() const;
@@ -90,92 +110,94 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the color of the text from the selected item
+        /// @brief Changes the color of the text from the selected tab
         ///
-        /// @param textColor  The new selected text color
+        /// @param textColor  The new selected tab text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSelectedTextColor(Color textColor);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the color of the text from the selected item
+        /// @brief Returns the color of the text from the selected tab
         ///
-        /// @return Selected text color
+        /// @return Selected tab text color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Color getSelectedTextColor() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image that is used to fill the entire menu bar
+        /// @brief Sets the color of the borders
         ///
-        /// @param texture  The background texture
-        ///
-        /// When this image is set, the background color property will be ignored.
+        /// @param color  The new border color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextureBackground(const Texture& texture);
+        void setBorderColor(Color color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the image that is used to fill the entire menu bar
+        /// @brief Returns the color of the borders
         ///
-        /// @return Background texture
+        /// @return border color
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTextureBackground() const;
+        Color getBorderColor() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image that is displayed when the menu item is not selected
+        /// @brief Change the image of a tab
         ///
-        /// @param texture  New item background texture
+        /// @param texture  The new tab texture
+        ///
+        /// When this image and the selected tab image are set then the background color properties will be ignored.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextureItemBackground(const Texture& texture);
+        void setTextureTab(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the image that is displayed when the menu item is not selected
+        /// @brief Returns the image of a tab
         ///
-        /// @return Item background texture
+        /// @return tab texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTextureItemBackground() const;
+        Texture& getTextureTab() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image that is used as background of the selected menu item
+        /// @brief Change the image of a selected tab
         ///
-        /// @param texture  New selected item background texture
+        /// @param texture  The new selected tab texture
+        ///
+        /// When this image and the tab image are set then the background color properties will be ignored.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTextureSelectedItemBackground(const Texture& texture);
+        void setTextureSelectedTab(const Texture& texture);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the image that is used as background of the selected menu item
+        /// @brief Returns the image of a selected tab
         ///
-        /// @return Selected item background texture
+        /// @return selected tab texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTextureSelectedItemBackground() const;
+        Texture& getTextureSelectedTab() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the distance between the text and the side of the menu item
+        /// @brief Changes the distance between the text and the side of the tab
         ///
-        /// @param distanceToSide  distance between the text and the side of the menu item
+        /// @param distanceToSide  distance between the text and the side of the tab
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setDistanceToSide(float distanceToSide);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the distance between the text and the side of the menu item
+        /// @brief Returns the distance between the text and the side of the tab
         ///
-        /// @return Distance between the text and the side of the menu item
+        /// @return Distance between the text and the side of the tab
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         float getDistanceToSide() const;
@@ -189,4 +211,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_MENU_BAR_RENDERER_HPP
+#endif // TGUI_TABS_RENDERER_HPP

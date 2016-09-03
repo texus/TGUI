@@ -40,6 +40,7 @@ set(TGUI_SRC
     Renderers/ScrollbarRenderer.cpp
     Renderers/SliderRenderer.cpp
     Renderers/SpinButtonRenderer.cpp
+    Renderers/TabsRenderer.cpp
     Renderers/WidgetRenderer.cpp
     Widgets/Button.cpp
     Widgets/Canvas.cpp
@@ -62,7 +63,7 @@ set(TGUI_SRC
     Widgets/Scrollbar.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
-    #Widgets/Tab.cpp
+    Widgets/Tabs.cpp
     #Widgets/TextBox.cpp
     Widgets/ToolTip.cpp
     #Widgets/devel/RichTextLabel.cpp

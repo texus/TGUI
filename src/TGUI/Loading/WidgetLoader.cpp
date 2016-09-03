@@ -42,8 +42,8 @@
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
-#include <TGUI/Widgets/SpinButton.hpp>/**
-#include <TGUI/Widgets/Tab.hpp>
+#include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Tabs.hpp>/**
 #include <TGUI/Widgets/TextBox.hpp>*/
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -834,16 +834,16 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-    TGUI_API Widget::Ptr loadTab(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
-    {
-        Tab::Ptr tab;
-        if (widget)
-            tab = std::static_pointer_cast<Tab>(widget);
-        else
-            tab = std::make_shared<Tab>();
 
-        loadWidget(node, tab);
+    TGUI_API Widget::Ptr loadTabs(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+    {
+        Tabs::Ptr tabs;
+        if (widget)
+            tabs = std::static_pointer_cast<Tabs>(widget);
+        else
+            tabs = std::make_shared<Tabs>();
+
+        loadWidget(node, tabs);
 
         if (node->propertyValuePairs["tabs"])
         {
@@ -851,21 +851,21 @@ namespace tgui
                 throw Exception{"Failed to parse 'Tabs' property, expected a list as value"};
 
             for (const auto& tabText : node->propertyValuePairs["tabs"]->valueList)
-                tab->add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString());
+                tabs->add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString());
         }
 
         if (node->propertyValuePairs["maximumtabwidth"])
-            tab->setMaximumTabWidth(tgui::stof(node->propertyValuePairs["maximumtabwidth"]->value));
+            tabs->setMaximumTabWidth(tgui::stof(node->propertyValuePairs["maximumtabwidth"]->value));
         if (node->propertyValuePairs["textsize"])
-            tab->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+            tabs->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["tabheight"])
-            tab->setTabHeight(tgui::stof(node->propertyValuePairs["tabheight"]->value));
+            tabs->setTabHeight(tgui::stof(node->propertyValuePairs["tabheight"]->value));
         if (node->propertyValuePairs["selected"])
-            tab->select(tgui::stoi(node->propertyValuePairs["selected"]->value));
+            tabs->select(tgui::stoi(node->propertyValuePairs["selected"]->value));
 
-        return tab;
+        return tabs;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadTextBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -929,8 +929,8 @@ namespace tgui
             {"radiobutton", std::bind(loadRadioButton, std::placeholders::_1, std::shared_ptr<RadioButton>{})},
             {"scrollbar", std::bind(loadScrollbar, std::placeholders::_1, std::shared_ptr<Scrollbar>{})},
             {"slider", std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},
-            {"spinbutton", std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})}/**,
-            {"tab", std::bind(loadTab, std::placeholders::_1, std::shared_ptr<Tab>{})},
+            {"spinbutton", std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},
+            {"tabs", std::bind(loadTabs, std::placeholders::_1, std::shared_ptr<Tabs>{})},/**
             {"textbox", std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})}*/
         };
 

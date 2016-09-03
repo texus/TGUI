@@ -41,7 +41,7 @@ set(TEST_SOURCES
     Widgets/Scrollbar.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
-    #Widgets/Tab.cpp
+    Widgets/Tabs.cpp
     #Widgets/TextBox.cpp
     Widgets/ToolTip.cpp
 )

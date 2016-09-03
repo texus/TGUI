@@ -134,12 +134,12 @@ SpinButton {
     SpaceBetweenArrows    = 0;
 }
 
-Tab {
-    NormalImage       = "Black.png" Part(0, 0, 60, 32) Middle(16, 0, 28, 32);
-    SelectedImage     = "Black.png" Part(0, 32, 60, 32) Middle(16, 0, 28, 32);
-    TextColor         = rgb(190, 190, 190);
-    SelectedTextColor = White;
-    DistanceToSide    = 8;
+Tabs {
+    TextureTab         = "Black.png" Part(0, 0, 60, 32) Middle(16, 0, 28, 32);
+    TextureSelectedTab = "Black.png" Part(0, 32, 60, 32) Middle(16, 0, 28, 32);
+    TextColor          = rgb(190, 190, 190);
+    SelectedTextColor  = White;
+    DistanceToSide     = 8;
 }
 
 TextBox {

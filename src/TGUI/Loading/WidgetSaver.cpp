@@ -39,8 +39,8 @@
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
-#include <TGUI/Widgets/SpinButton.hpp>/**
-#include <TGUI/Widgets/Tab.hpp>
+#include <TGUI/Widgets/SpinButton.hpp>
+#include <TGUI/Widgets/Tabs.hpp>/**
 #include <TGUI/Widgets/TextBox.hpp>*/
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -519,34 +519,34 @@ namespace tgui
         SET_PROPERTY("Value", tgui::to_string(spinButton->getValue()));
         return node;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_API std::shared_ptr<DataIO::Node> saveTab(Tab::Ptr tab)
+    TGUI_API std::shared_ptr<DataIO::Node> saveTabs(Tabs::Ptr tabs)
     {
-        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{tab});
+        auto node = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{tabs});
 
-        if (tab->getTabsCount() > 0)
+        if (tabs->getTabsCount() > 0)
         {
-            std::string tabList = "[" + Serializer::serialize(tab->getText(0));
-            for (std::size_t i = 1; i < tab->getTabsCount(); ++i)
-                tabList += ", " + Serializer::serialize(tab->getText(i));
+            std::string tabList = "[" + Serializer::serialize(tabs->getText(0));
+            for (std::size_t i = 1; i < tabs->getTabsCount(); ++i)
+                tabList += ", " + Serializer::serialize(tabs->getText(i));
 
             tabList += "]";
             SET_PROPERTY("Tabs", tabList);
         }
 
-        if (tab->getSelectedIndex() >= 0)
-            SET_PROPERTY("Selected", tgui::to_string(tab->getSelectedIndex()));
+        if (tabs->getSelectedIndex() >= 0)
+            SET_PROPERTY("Selected", tgui::to_string(tabs->getSelectedIndex()));
 
-        if (tab->getMaximumTabWidth() > 0)
-            SET_PROPERTY("MaximumTabWidth", tgui::to_string(tab->getMaximumTabWidth()));
+        if (tabs->getMaximumTabWidth() > 0)
+            SET_PROPERTY("MaximumTabWidth", tgui::to_string(tabs->getMaximumTabWidth()));
 
-        SET_PROPERTY("TextSize", tgui::to_string(tab->getTextSize()));
-        SET_PROPERTY("TabHeight", tgui::to_string(tab->getTabHeight()));
+        SET_PROPERTY("TextSize", tgui::to_string(tabs->getTextSize()));
+        SET_PROPERTY("TabHeight", tgui::to_string(tabs->getTabHeight()));
         return node;
     }
-
+/**
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveTextBox(TextBox::Ptr textBox)
@@ -601,8 +601,8 @@ namespace tgui
             {"radiobutton", saveRadioButton},
             {"scrollbar", saveScrollbar},
             {"slider", saveSlider},
-            {"spinbutton", saveSpinButton}/**,
-            {"tab", saveTab},
+            {"spinbutton", saveSpinButton},
+            {"tabs", saveTabs},/**
             {"textbox", saveTextBox}*/
         };
 
