@@ -261,7 +261,7 @@ namespace tgui
 
         void disconnectAll();
 
-        bool isEmpty();
+        bool isEmpty() const;
 
         void operator()(unsigned int count);
 
@@ -505,16 +505,24 @@ namespace tgui
         void sendSignal(std::string&& name, Args... args)
         {
             assert(m_signals[toLower(name)] != nullptr);
-
             auto& signal = *m_signals[toLower(name)];
-            if (!signal.isEmpty())
-                signal(0, args...);
 
-            m_callback.trigger = name;
-            if (!signal.m_functionsEx.empty())
+            if (signal.m_functionsEx.empty())
             {
-                for (auto& function : signal.m_functionsEx)
+                if (!signal.isEmpty())
+                    signal(0, args...);
+            }
+            else // Legacy functions are used
+            {
+                // Copy signal to avoid problems with lifetime when signal handler destroys this object
+                Signal signalCopy = signal;
+
+                m_callback.trigger = name;
+                for (const auto& function : signalCopy.m_functionsEx)
                     function.second(m_callback);
+
+                if (!signalCopy.isEmpty())
+                    signalCopy(0, args...);
             }
         }
 
