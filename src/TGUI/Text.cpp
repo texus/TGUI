@@ -246,19 +246,14 @@ namespace tgui
                     break;
                 }
                 else if (curChar == '\t')
-                    charWidth = font.getFont()->getGlyph(' ', textSize, bold).bounds.width * 4;
+                    charWidth = font.getFont()->getGlyph(' ', textSize, bold).advance * 4;
                 else
-                    charWidth = font.getFont()->getGlyph(curChar, textSize, bold).bounds.width;
+                    charWidth = font.getFont()->getGlyph(curChar, textSize, bold).advance;
 
                 float kerning = font.getFont()->getKerning(prevChar, curChar, textSize);
                 if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
                 {
-                    // The advance of a glyph can be larger than the width of its bound (e.g. space has width 0 but a positive advance)
-                    if (curChar == '\t')
-                        width += kerning + (font.getFont()->getGlyph(' ', textSize, bold).advance * 4);
-                    else
-                        width += kerning + font.getFont()->getGlyph(curChar, textSize, bold).advance;
-
+                    width += kerning + charWidth;
                     index++;
                 }
                 else

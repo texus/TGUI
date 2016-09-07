@@ -43,6 +43,8 @@ namespace tgui
         setRenderer(m_renderer->getData());
 
         getRenderer()->setBorders({2});
+        getRenderer()->setTextColor(sf::Color::Black);
+        getRenderer()->setSelectedTextColor(sf::Color::White);
         getRenderer()->setDistanceToSide(1);
 
         setTabHeight(30);

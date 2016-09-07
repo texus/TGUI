@@ -43,8 +43,8 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
-#include <TGUI/Widgets/Tabs.hpp>/**
-#include <TGUI/Widgets/TextBox.hpp>*/
+#include <TGUI/Widgets/Tabs.hpp>
+#include <TGUI/Widgets/TextBox.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -165,7 +165,7 @@ namespace tgui
         if (node->propertyValuePairs["size"])
             widget->setSize(parseLayout(node->propertyValuePairs["size"]->value));
 
-        /// TODO: Font and ToolTip
+        /// TODO: ToolTip
         /// TODO: Separate renderer section?
 
         for (const auto& childNode : node->children)
@@ -865,7 +865,7 @@ namespace tgui
 
         return tabs;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadTextBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -886,17 +886,12 @@ namespace tgui
             textBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
         if (node->propertyValuePairs["readonly"])
             textBox->setReadOnly(parseBoolean(node->propertyValuePairs["readonly"]->value));
-
-        for (const auto& childNode : node->children)
-        {
-            if (toLower(childNode->name) == "scrollbar")
-                textBox->setScrollbar(std::static_pointer_cast<Scrollbar>(WidgetLoader::getLoadFunction("scrollbar")(childNode)));
-        }
-        REMOVE_CHILD("scrollbar");
+        if (node->propertyValuePairs["verticalscrollbarpresent"])
+            textBox->setVerticalScrollbarPresent(parseBoolean(node->propertyValuePairs["verticalscrollbarpresent"]->value));
 
         return textBox;
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -930,8 +925,8 @@ namespace tgui
             {"scrollbar", std::bind(loadScrollbar, std::placeholders::_1, std::shared_ptr<Scrollbar>{})},
             {"slider", std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},
             {"spinbutton", std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},
-            {"tabs", std::bind(loadTabs, std::placeholders::_1, std::shared_ptr<Tabs>{})},/**
-            {"textbox", std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})}*/
+            {"tabs", std::bind(loadTabs, std::placeholders::_1, std::shared_ptr<Tabs>{})},
+            {"textbox", std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

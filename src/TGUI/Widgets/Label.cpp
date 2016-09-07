@@ -272,8 +272,8 @@ namespace tgui
         m_lines.clear();
         float width = 0;
         std::size_t searchPosStart = 0;
-        std::size_t newLinePos;
-        do
+        std::size_t newLinePos = 0;
+        while (newLinePos != sf::String::InvalidPos)
         {
             newLinePos = string.find('\n', searchPosStart);
 
@@ -294,7 +294,6 @@ namespace tgui
 
             searchPosStart = newLinePos + 1;
         }
-        while (newLinePos != sf::String::InvalidPos);
 
         std::shared_ptr<sf::Font> font = getRenderer()->getFont();
         Outline outline = getRenderer()->getPadding() + getRenderer()->getBorders();

@@ -602,7 +602,7 @@ namespace tgui
 
     void ListBox::mouseWheelMoved(int delta, int x, int y)
     {
-        if (m_scroll.getLowValue() < m_scroll.getMaximum())
+        if (m_scroll.isShown())
         {
             m_scroll.mouseWheelMoved(delta, 0, 0);
 
@@ -830,7 +830,7 @@ namespace tgui
             // Set the clipping for all draw calls that happen until this clipping object goes out of scope
             Padding padding = getRenderer()->getPadding();
             float maxItemWidth = getInnerSize().x - padding.left - padding.right;
-            if (m_scroll.getLowValue() < m_scroll.getMaximum())
+            if (m_scroll.isShown())
                 maxItemWidth -= m_scroll.getSize().x;
             Clipping clipping{target, states, {padding.left, padding.top}, {maxItemWidth, getInnerSize().y - padding.top - padding.bottom}};
 

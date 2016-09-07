@@ -41,6 +41,7 @@ set(TGUI_SRC
     Renderers/SliderRenderer.cpp
     Renderers/SpinButtonRenderer.cpp
     Renderers/TabsRenderer.cpp
+    Renderers/TextBoxRenderer.cpp
     Renderers/WidgetRenderer.cpp
     Widgets/Button.cpp
     Widgets/Canvas.cpp
@@ -64,7 +65,7 @@ set(TGUI_SRC
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
     Widgets/Tabs.cpp
-    #Widgets/TextBox.cpp
+    Widgets/TextBox.cpp
     Widgets/ToolTip.cpp
     #Widgets/devel/RichTextLabel.cpp
     #Widgets/devel/TableItem.cpp

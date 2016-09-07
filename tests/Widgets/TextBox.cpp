@@ -23,41 +23,152 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "../Tests.hpp"
-#include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
 
-TEST_CASE("[TextBox]") {
+TEST_CASE("[TextBox]")
+{
     tgui::TextBox::Ptr textBox = std::make_shared<tgui::TextBox>();
-    textBox->setFont("resources/DroidSansArmenian.ttf");
+    textBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(textBox->connect("TextChanged", [](){}));
         REQUIRE_NOTHROW(textBox->connect("TextChanged", [](sf::String){}));
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(textBox->getWidgetType() == "TextBox");
     }
 
-    /// TODO: Tests for functions in TextBox class
+    SECTION("Position and Size")
+    {
+        textBox->setPosition(40, 30);
+        textBox->setSize(150, 100);
+        textBox->getRenderer()->setBorders(2);
 
-    SECTION("Scrollbar") {
-        tgui::Scrollbar::Ptr scrollbar = std::make_shared<tgui::Theme>()->load("scrollbar");
-    
-        REQUIRE(textBox->getScrollbar() != nullptr);
-        REQUIRE(textBox->getScrollbar() != scrollbar);
-        textBox->setScrollbar(nullptr);
-        REQUIRE(textBox->getScrollbar() == nullptr);
-        textBox->setScrollbar(scrollbar);
-        REQUIRE(textBox->getScrollbar() != nullptr);
-        REQUIRE(textBox->getScrollbar() == scrollbar);
+        REQUIRE(textBox->getPosition() == sf::Vector2f(40, 30));
+        REQUIRE(textBox->getSize() == sf::Vector2f(150, 100));
+        REQUIRE(textBox->getFullSize() == textBox->getSize());
+        REQUIRE(textBox->getWidgetOffset() == sf::Vector2f(0, 0));
     }
 
-    SECTION("Renderer") {
+    SECTION("Text")
+    {
+        REQUIRE(textBox->getText() == "");
+
+        textBox->setText("Hello");
+        REQUIRE(textBox->getText() == "Hello");
+
+        textBox->setText("World");
+        REQUIRE(textBox->getText() == "World");
+
+        textBox->addText("\n\tText");
+        REQUIRE(textBox->getText() == "World\n\tText");
+    }
+
+    SECTION("TextSize")
+    {
+        textBox->setTextSize(50);
+        REQUIRE(textBox->getTextSize() == 50);
+    }
+
+    SECTION("MaximumCharacters")
+    {
+        SECTION("Limit is set")
+        {
+            textBox->setMaximumCharacters(4);
+            REQUIRE(textBox->getMaximumCharacters() == 4);
+        }
+
+        SECTION("Existing text is cut")
+        {
+            textBox->setText("Hello World!");
+            textBox->setMaximumCharacters(4);
+            REQUIRE(textBox->getText() == "Hell");
+        }
+
+        SECTION("Added text is cut")
+        {
+            textBox->setMaximumCharacters(7);
+            textBox->setText("Hello World!");
+            REQUIRE(textBox->getText() == "Hello W");
+
+            textBox->addText("\nMore Text.");
+            REQUIRE(textBox->getText() == "Hello W");
+
+            textBox->setText("Different Text");
+            REQUIRE(textBox->getText() == "Differe");
+        }
+    }
+
+    SECTION("ReadOnly")
+    {
+        SECTION("Changing the read-only state")
+        {
+            REQUIRE(textBox->isReadOnly() == false);
+
+            textBox->setReadOnly(true);
+            REQUIRE(textBox->isReadOnly() == true);
+
+            textBox->setReadOnly(false);
+            REQUIRE(textBox->isReadOnly() == false);
+        }
+
+        SECTION("Read-only does not affect setText calls")
+        {
+            textBox->setText("Hello");
+            textBox->setReadOnly(true);
+            textBox->setText("World");
+            REQUIRE(textBox->getText() == "World");
+        }
+
+        SECTION("You can't type when the text box is read-only")
+        {
+            textBox->setReadOnly(true);
+            textBox->textEntered('x');
+            REQUIRE(textBox->getText() == "");
+
+            textBox->setReadOnly(false);
+            textBox->textEntered('x');
+            REQUIRE(textBox->getText() == "x");
+        }
+    }
+
+    SECTION("VerticalScrollbarPresent")
+    {
+        REQUIRE(textBox->isVerticalScrollbarPresent() == true);
+
+        textBox->setVerticalScrollbarPresent(false);
+        REQUIRE(textBox->isVerticalScrollbarPresent() == false);
+
+        textBox->setVerticalScrollbarPresent(true);
+        REQUIRE(textBox->isVerticalScrollbarPresent() == true);
+    }
+
+    SECTION("Events / Signals")
+    {
+        SECTION("Widget")
+        {
+            testWidgetSignals(textBox);
+        }
+
+        // TODO
+    }
+
+    testWidgetRenderer(textBox->getRenderer());
+    SECTION("Renderer")
+    {
         auto renderer = textBox->getRenderer();
 
-        SECTION("colored") {
-            SECTION("set serialized property") {
+        SECTION("colored")
+        {
+            auto scrollbarRendererData = std::make_shared<tgui::RendererData>();
+            scrollbarRendererData->propertyValuePairs["trackcolor"] = {sf::Color::Red};
+            scrollbarRendererData->propertyValuePairs["thumbcolor"] = {sf::Color::Blue};
+
+            SECTION("set serialized property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", "rgb(70, 80, 90)"));
@@ -66,9 +177,11 @@ TEST_CASE("[TextBox]") {
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(160, 170, 180)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+                REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", "{ TrackColor = Red; ThumbColor = Blue; }"));
             }
             
-            SECTION("set object property") {
+            SECTION("set object property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", sf::Color{70, 80, 90}));
@@ -77,9 +190,11 @@ TEST_CASE("[TextBox]") {
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{160, 170, 180}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
+                REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRendererData));
             }
 
-            SECTION("functions") {
+            SECTION("functions")
+            {
                 renderer->setBackgroundColor({10, 20, 30});
                 renderer->setTextColor({40, 50, 60});
                 renderer->setSelectedTextColor({70, 80, 90});
@@ -88,19 +203,7 @@ TEST_CASE("[TextBox]") {
                 renderer->setBorderColor({160, 170, 180});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 8);
-                    REQUIRE(pairs["BackgroundColor"].getColor() == sf::Color(10, 20, 30));
-                    REQUIRE(pairs["TextColor"].getColor() == sf::Color(40, 50, 60));
-                    REQUIRE(pairs["SelectedTextColor"].getColor() == sf::Color(70, 80, 90));
-                    REQUIRE(pairs["SelectedTextBackgroundColor"].getColor() == sf::Color(100, 110, 120));
-                    REQUIRE(pairs["CaretColor"].getColor() == sf::Color(130, 140, 150));
-                    REQUIRE(pairs["BorderColor"].getColor() == sf::Color(160, 170, 180));
-                    REQUIRE(pairs["Borders"].getOutline() == tgui::Borders(1, 2, 3, 4));
-                    REQUIRE(pairs["Padding"].getOutline() == tgui::Borders(5, 6, 7, 8));
-                }
+                renderer->setScrollbar(scrollbarRendererData);
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
@@ -111,76 +214,53 @@ TEST_CASE("[TextBox]") {
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(160, 170, 180));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
+
+            scrollbarRendererData = renderer->getProperty("Scrollbar").getRenderer();
+            REQUIRE(scrollbarRendererData->propertyValuePairs.size() == 2);
+            REQUIRE(scrollbarRendererData->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
+            REQUIRE(scrollbarRendererData->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);
         }
 
-        SECTION("textured") {
+        SECTION("textured")
+        {
             tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
-            REQUIRE(!renderer->getProperty("BackgroundImage").getTexture().isLoaded());
-
-            SECTION("set serialized property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", tgui::Serializer::serialize(textureBackground)));
+            SECTION("set serialized property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
             }
 
-            SECTION("set object property") {
-                REQUIRE_NOTHROW(renderer->setProperty("BackgroundImage", textureBackground));
+            SECTION("set object property")
+            {
+                REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
             }
 
-            SECTION("functions") {
-                renderer->setBackgroundTexture(textureBackground);
-
-                SECTION("getPropertyValuePairs") {
-                    auto pairs = renderer->getPropertyValuePairs();
-                    REQUIRE(pairs.size() == 8);
-                    REQUIRE(pairs["BackgroundImage"].getTexture().getData() == textureBackground.getData());
-                }
+            SECTION("functions")
+            {
+                renderer->setTextureBackground(textureBackground);
             }
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
 
-            REQUIRE(renderer->getProperty("BackgroundImage").getTexture().getData() == textureBackground.getData());
+            REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
         }
     }
 
-    SECTION("Saving and loading from file") {
-        REQUIRE_NOTHROW(textBox = std::make_shared<tgui::Theme>()->load("TextBox"));
-
-        auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-        REQUIRE_NOTHROW(textBox = theme->load("TextBox"));
-        REQUIRE(textBox->getPrimaryLoadingParameter() == "resources/Black.txt");
-        REQUIRE(textBox->getSecondaryLoadingParameter() == "textbox");
-
-        auto parent = std::make_shared<tgui::GuiContainer>();
-        parent->add(textBox);
-
-        textBox->setOpacity(0.8f);
+    SECTION("Saving and loading from file")
+    {
         textBox->setText("This is the text in the text box!");
         textBox->setTextSize(25);
         textBox->setMaximumCharacters(16);
         textBox->setReadOnly(true);
+        textBox->setVerticalScrollbarPresent(false);
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTextBox1.txt"));
-        
-        parent->removeAllWidgets();
-        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileTextBox1.txt"));
-
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTextBox2.txt"));
-        REQUIRE(compareFiles("WidgetFileTextBox1.txt", "WidgetFileTextBox2.txt"));
-
-        SECTION("Copying widget") {
-            tgui::TextBox temp;
-            temp = *textBox;
-
-            parent->removeAllWidgets();
-            parent->add(tgui::TextBox::copy(std::make_shared<tgui::TextBox>(temp)));
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileTextBox2.txt"));
-            REQUIRE(compareFiles("WidgetFileTextBox1.txt", "WidgetFileTextBox2.txt"));
-        }
+        testSavingWidget("TextBox", textBox);
     }
 
-    SECTION("Bug Fixes") {
-        SECTION("ctrl+alt+A should not act as ctrl+A (https://github.com/texus/TGUI/issues/43)") {
+    SECTION("Bug Fixes")
+    {
+        SECTION("ctrl+alt+A should not act as ctrl+A (https://github.com/texus/TGUI/issues/43)")
+        {
             sf::Event::KeyEvent event;
             event.control = true;
             event.alt     = false;

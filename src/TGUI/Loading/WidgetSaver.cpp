@@ -40,8 +40,8 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
-#include <TGUI/Widgets/Tabs.hpp>/**
-#include <TGUI/Widgets/TextBox.hpp>*/
+#include <TGUI/Widgets/Tabs.hpp>
+#include <TGUI/Widgets/TextBox.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -105,7 +105,7 @@ namespace tgui
                 SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
         }
 
-        /// TODO: Font and ToolTip
+        /// TODO: ToolTip
         /// TODO: Separate renderer section?
 
         node->children.emplace_back(std::make_shared<DataIO::Node>());
@@ -546,7 +546,7 @@ namespace tgui
         SET_PROPERTY("TabHeight", tgui::to_string(tabs->getTabHeight()));
         return node;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveTextBox(TextBox::Ptr textBox)
@@ -560,16 +560,12 @@ namespace tgui
         if (textBox->isReadOnly())
             SET_PROPERTY("ReadOnly", "true");
 
-        if (textBox->getScrollbar() != nullptr)
-        {
-            node->children.push_back(WidgetSaver::getSaveFunction("scrollbar")(tgui::WidgetConverter{textBox->getScrollbar()}));
-            node->children.back()->parent = node.get();
-            node->children.back()->name = "Scrollbar";
-        }
+        if (!textBox->isVerticalScrollbarPresent())
+            SET_PROPERTY("VerticalScrollbarPresent", "false");
 
         return node;
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -602,8 +598,8 @@ namespace tgui
             {"scrollbar", saveScrollbar},
             {"slider", saveSlider},
             {"spinbutton", saveSpinButton},
-            {"tabs", saveTabs},/**
-            {"textbox", saveTextBox}*/
+            {"tabs", saveTabs},
+            {"textbox", saveTextBox}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
