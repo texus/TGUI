@@ -239,6 +239,15 @@ TEST_CASE("[Texture]")
         REQUIRE(texture.getColor() == sf::Color::Blue);
     }
 
+    SECTION("Opacity")
+    {
+        tgui::Texture texture{"resources/image.png"};
+        REQUIRE(texture.getOpacity() == 1.f);
+
+        texture.setOpacity(0.6f);
+        REQUIRE(texture.getOpacity() == 0.6f);
+    }
+
     SECTION("TextureRect")
     {
         tgui::Texture texture;

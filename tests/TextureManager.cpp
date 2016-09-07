@@ -26,7 +26,8 @@
 #include <TGUI/TextureManager.hpp>
 #include <TGUI/Texture.hpp>
 
-TEST_CASE("[TextureManager]") {
+TEST_CASE("[TextureManager]")
+{
     std::streambuf *oldbuf = sf::err().rdbuf(0);
     tgui::Texture texture;
     REQUIRE(!tgui::TextureManager::getTexture(texture, "NonExistent.png"));

@@ -296,6 +296,8 @@ TEST_CASE("[ListBox]")
                 renderer->setPadding({5, 6, 7, 8});
                 renderer->setTextStyle(sf::Text::Bold);
                 renderer->setSelectedTextStyle(sf::Text::Italic);
+
+                REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 0);
                 renderer->setScrollbar(scrollbarRendererData);
             }
 
@@ -313,7 +315,7 @@ TEST_CASE("[ListBox]")
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Bold);
             REQUIRE(renderer->getProperty("SelectedTextStyle").getTextStyle() == sf::Text::Italic);
 
-            scrollbarRendererData = renderer->getProperty("Scrollbar").getRenderer();
+            scrollbarRendererData = renderer->getScrollbar();
             REQUIRE(scrollbarRendererData->propertyValuePairs.size() == 2);
             REQUIRE(scrollbarRendererData->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
             REQUIRE(scrollbarRendererData->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);

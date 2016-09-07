@@ -130,8 +130,6 @@ TEST_CASE("[Widget]")
     {
         auto renderer = widget->getRenderer();
 
-        // TODO: Other tests with the renderer class (e.g. sharing and copying)
-
         SECTION("Opacity")
         {
             REQUIRE(renderer->getOpacity() == 1.f);
@@ -160,6 +158,7 @@ TEST_CASE("[Widget]")
             REQUIRE(pairs["font"].getFont() != nullptr);
             REQUIRE(renderer->getProperty("font").getFont() != nullptr);
             REQUIRE(renderer->getFont() != nullptr);
+            REQUIRE(renderer->getFont().getId() == "resources/DroidSansArmenian.ttf");
 
             renderer->setFont(nullptr);
             REQUIRE(renderer->getFont() == nullptr);
@@ -167,7 +166,33 @@ TEST_CASE("[Widget]")
             tgui::Gui gui;
             gui.add(widget);
             REQUIRE(renderer->getFont() != nullptr);
+            REQUIRE(renderer->getFont().getId() == "");
         }
+
+        SECTION("Non-existent property")
+        {
+            REQUIRE(renderer->getProperty("NonexistentProperty").getType() == tgui::ObjectConverter::Type::None);
+
+            REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", "Text"), tgui::Exception);
+
+            // It might be unexpected, but the property is still set when an exception is thrown in setProperty.
+            // This is because the property is set before alerting the widget about the property change.
+            REQUIRE(renderer->getProperty("NonexistentProperty").getType() == tgui::ObjectConverter::Type::String);
+            REQUIRE(renderer->getProperty("NonexistentProperty").getString() == "Text");
+        }
+
+        SECTION("Clone")
+        {
+            renderer->setOpacity(0.5f);
+            renderer->setFont("resources/DroidSansArmenian.ttf");
+
+            auto clonedRenderer = renderer->clone();
+            REQUIRE(clonedRenderer != renderer->getData());
+            REQUIRE(clonedRenderer->propertyValuePairs["opacity"].getNumber() == 0.5f);
+            REQUIRE(clonedRenderer->propertyValuePairs["font"].getFont().getId() == "resources/DroidSansArmenian.ttf");
+        }
+
+        // TODO: Other tests with the renderer class (e.g. sharing and copying a renderer when using multiple widgets)
     }
 
     SECTION("Layouts")

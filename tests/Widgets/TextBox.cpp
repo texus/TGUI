@@ -177,6 +177,7 @@ TEST_CASE("[TextBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(160, 170, 180)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
+                REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", "{ TrackColor = Red; ThumbColor = Blue; }"));
             }
             
@@ -190,6 +191,7 @@ TEST_CASE("[TextBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{160, 170, 180}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
+                REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRendererData));
             }
 
@@ -203,6 +205,9 @@ TEST_CASE("[TextBox]")
                 renderer->setBorderColor({160, 170, 180});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
+                renderer->setCaretWidth(2);
+
+                REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 0);
                 renderer->setScrollbar(scrollbarRendererData);
             }
 
@@ -214,8 +219,9 @@ TEST_CASE("[TextBox]")
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(160, 170, 180));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getProperty("CaretWidth").getNumber() == 2);
 
-            scrollbarRendererData = renderer->getProperty("Scrollbar").getRenderer();
+            scrollbarRendererData = renderer->getScrollbar();
             REQUIRE(scrollbarRendererData->propertyValuePairs.size() == 2);
             REQUIRE(scrollbarRendererData->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
             REQUIRE(scrollbarRendererData->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);

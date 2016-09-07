@@ -38,7 +38,7 @@ namespace tgui
     {
         assert(m_type != Type::None);
 
-        if (m_serialized || (m_type == Type::String))
+        if (m_serialized)
             return m_string;
 
         m_string = Serializer::serialize(ObjectConverter{*this});
