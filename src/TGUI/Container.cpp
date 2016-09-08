@@ -686,64 +686,58 @@ namespace tgui
         }
 
         // Check if a mouse button was pressed
-        else if ((event.type == sf::Event::MouseButtonPressed) || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
+        else if (((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))
+              || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
         {
             float mouseX = (event.type == sf::Event::MouseButtonPressed) ? static_cast<float>(event.mouseButton.x) : static_cast<float>(event.touch.x);
             float mouseY = (event.type == sf::Event::MouseButtonPressed) ? static_cast<float>(event.mouseButton.y) : static_cast<float>(event.touch.y);
 
-            // Check if the left mouse was pressed
-            if (event.mouseButton.button == sf::Mouse::Left)
+            // Check if the mouse is on top of a widget
+            Widget::Ptr widget = mouseOnWhichWidget(mouseX, mouseY);
+            if (widget != nullptr)
             {
-                // Check if the mouse is on top of a widget
-                Widget::Ptr widget = mouseOnWhichWidget(mouseX, mouseY);
-                if (widget != nullptr)
+                // Focus the widget
+                focusWidget(widget.get());
+
+                // Check if the widget is a container
+                if (widget->m_containerWidget)
                 {
-                    // Focus the widget
-                    focusWidget(widget.get());
-
-                    // Check if the widget is a container
-                    if (widget->m_containerWidget)
+                    // If another widget was focused then unfocus it now
+                    if ((m_focusedWidget) && (m_widgets[m_focusedWidget-1] != widget))
                     {
-                        // If another widget was focused then unfocus it now
-                        if ((m_focusedWidget) && (m_widgets[m_focusedWidget-1] != widget))
-                        {
-                            m_widgets[m_focusedWidget-1]->m_focused = false;
-                            m_widgets[m_focusedWidget-1]->widgetUnfocused();
-                            m_focusedWidget = 0;
-                        }
+                        m_widgets[m_focusedWidget-1]->m_focused = false;
+                        m_widgets[m_focusedWidget-1]->widgetUnfocused();
+                        m_focusedWidget = 0;
                     }
-
-                    widget->leftMousePressed(mouseX, mouseY);
-                    return true;
                 }
-                else // The mouse did not went down on a widget, so unfocus the focused widget
-                    unfocusWidgets();
+
+                widget->leftMousePressed(mouseX, mouseY);
+                return true;
             }
+            else // The mouse did not went down on a widget, so unfocus the focused widget
+                unfocusWidgets();
 
             return false;
         }
 
         // Check if a mouse button was released
-        else if ((event.type == sf::Event::MouseButtonReleased) || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
+        else if (((event.type == sf::Event::MouseButtonReleased) && (event.mouseButton.button == sf::Mouse::Left))
+              || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
         {
             float mouseX = (event.type == sf::Event::MouseButtonReleased) ? static_cast<float>(event.mouseButton.x) : static_cast<float>(event.touch.x);
             float mouseY = (event.type == sf::Event::MouseButtonReleased) ? static_cast<float>(event.mouseButton.y) : static_cast<float>(event.touch.y);
 
-            // Check if the left mouse was released
-            if (event.mouseButton.button == sf::Mouse::Left)
-            {
-                // Check if the mouse is on top of a widget
-                Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mouseX, mouseY);
-                if (widgetBelowMouse != nullptr)
-                    widgetBelowMouse->leftMouseReleased(mouseX, mouseY);
+            // Check if the mouse is on top of a widget
+            Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mouseX, mouseY);
+            if (widgetBelowMouse != nullptr)
+                widgetBelowMouse->leftMouseReleased(mouseX, mouseY);
 
-                // Tell all widgets that the mouse has gone up
-                for (auto& widget : m_widgets)
-                    widget->mouseNoLongerDown();
+            // Tell all widgets that the mouse has gone up
+            for (auto& widget : m_widgets)
+                widget->mouseNoLongerDown();
 
-                if (widgetBelowMouse != nullptr)
-                    return true;
-            }
+            if (widgetBelowMouse != nullptr)
+                return true;
 
             return false;
         }
