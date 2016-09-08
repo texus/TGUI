@@ -62,32 +62,32 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ClickableWidget::mouseOnWidget(float x, float y) const
+    bool ClickableWidget::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ClickableWidget::leftMousePressed(float x, float y)
+    void ClickableWidget::leftMousePressed(sf::Vector2f pos)
     {
         m_mouseDown = true; /// TODO: Is there any widget for which this can't be in Widget base class?
 
-        m_callback.mouse.x = static_cast<int>(x);
-        m_callback.mouse.y = static_cast<int>(y);
-        sendSignal("MousePressed", sf::Vector2f{x, y});
+        m_callback.mouse.x = static_cast<int>(pos.x);
+        m_callback.mouse.y = static_cast<int>(pos.y);
+        sendSignal("MousePressed", pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ClickableWidget::leftMouseReleased(float x, float y)
+    void ClickableWidget::leftMouseReleased(sf::Vector2f pos)
     {
-        m_callback.mouse.x = static_cast<int>(x);
-        m_callback.mouse.y = static_cast<int>(y);
-        sendSignal("MouseReleased", sf::Vector2f{x, y});
+        m_callback.mouse.x = static_cast<int>(pos.x);
+        m_callback.mouse.y = static_cast<int>(pos.y);
+        sendSignal("MouseReleased", pos);
 
         if (m_mouseDown)
-            sendSignal("Clicked", sf::Vector2f{x, y});
+            sendSignal("Clicked", pos);
 
         m_mouseDown = false; /// TODO: Is there any widget for which this can't be in Widget base class?
     }

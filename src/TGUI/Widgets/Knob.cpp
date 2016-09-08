@@ -185,22 +185,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Knob::mouseOnWidget(float x, float y) const
+    bool Knob::mouseOnWidget(sf::Vector2f pos) const
     {
         // Check if the mouse is on top of the widget
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y))
+        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             if (getRenderer()->getTextureBackground().isLoaded() && getRenderer()->getTextureForeground().isLoaded())
             {
                 // Only return true when the pixel under the mouse isn't transparent
-                if (!getRenderer()->getTextureBackground().isTransparentPixel(x, y))
+                if (!getRenderer()->getTextureBackground().isTransparentPixel(pos))
                     return true;
             }
             else // There is no texture, the widget has a circle shape
             {
                 sf::Vector2f centerPoint = getSize() / 2.f;
-                sf::Vector2f mousePoint = {x, y};
-                float distance = std::sqrt(std::pow(centerPoint.x - mousePoint.x, 2) + std::pow(centerPoint.y - mousePoint.y, 2));
+                float distance = std::sqrt(std::pow(centerPoint.x - pos.x, 2) + std::pow(centerPoint.y - pos.y, 2));
                 return (distance <= std::min(getSize().x, getSize().y));
             }
         }
@@ -210,25 +209,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::leftMousePressed(float x, float y)
+    void Knob::leftMousePressed(sf::Vector2f pos)
     {
         // Set the mouse down flag
         m_mouseDown = true;
 
         // Change the value of the knob depending on where you clicked
-        mouseMoved(x, y);
+        mouseMoved(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::leftMouseReleased(float, float)
+    void Knob::leftMouseReleased(sf::Vector2f)
     {
         m_mouseDown = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::mouseMoved(float x, float y)
+    void Knob::mouseMoved(sf::Vector2f pos)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
@@ -239,16 +238,16 @@ namespace tgui
         if (m_mouseDown)
         {
             // Find out the direction that the knob should now point
-            if (compareFloats(x, centerPosition.x))
+            if (compareFloats(pos.x, centerPosition.x))
             {
-                if (y > centerPosition.y)
+                if (pos.y > centerPosition.y)
                     m_angle = 270;
-                else if (y < centerPosition.y)
+                else if (pos.y < centerPosition.y)
                     m_angle = 90;
             }
             else
             {
-                m_angle = std::atan2(centerPosition.y - y, x - centerPosition.x) * 180.0f / pi;
+                m_angle = std::atan2(centerPosition.y - pos.y, pos.x - centerPosition.x) * 180.0f / pi;
                 if (m_angle < 0)
                     m_angle += 360;
             }

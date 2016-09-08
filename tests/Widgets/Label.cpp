@@ -139,21 +139,21 @@ TEST_CASE("[Label]")
             label->setPosition(40, 30);
             label->setSize(150, 100);
 
-            label->leftMousePressed(115, 80);
-            label->leftMouseReleased(115, 80);
+            label->leftMousePressed({115, 80});
+            label->leftMouseReleased({115, 80});
 
             tgui::Gui gui;
             gui.add(label);
             gui.updateTime(DOUBLE_CLICK_TIMEOUT);
 
-            label->leftMousePressed(115, 80);
-            label->leftMouseReleased(115, 80);
+            label->leftMousePressed({115, 80});
+            label->leftMouseReleased({115, 80});
             REQUIRE(doubleClickedCount == 0);
 
             gui.updateTime(DOUBLE_CLICK_TIMEOUT / 2.f);
 
-            label->leftMousePressed(115, 80);
-            label->leftMouseReleased(115, 80);
+            label->leftMousePressed({115, 80});
+            label->leftMouseReleased({115, 80});
             REQUIRE(doubleClickedCount == 1);
         }
     }

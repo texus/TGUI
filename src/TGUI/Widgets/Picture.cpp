@@ -121,13 +121,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::mouseOnWidget(float x, float y) const
+    bool Picture::mouseOnWidget(sf::Vector2f pos) const
     {
         // Check if the mouse is on top of the picture
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y))
+        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             // We sometimes want clicks to go through transparent parts of the picture
-            if (!m_fullyClickable && m_texture.isTransparentPixel(x, y))
+            if (!m_fullyClickable && m_texture.isTransparentPixel(pos))
                 return false;
             else
                 return true;
@@ -138,11 +138,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::leftMouseReleased(float x, float y)
+    void Picture::leftMouseReleased(sf::Vector2f pos)
     {
         bool mouseDown = m_mouseDown;
 
-        ClickableWidget::leftMouseReleased(x, y);
+        ClickableWidget::leftMouseReleased(pos);
 
         if (mouseDown)
         {
@@ -151,9 +151,9 @@ namespace tgui
             {
                 m_possibleDoubleClick = false;
 
-                m_callback.mouse.x = static_cast<int>(x);
-                m_callback.mouse.y = static_cast<int>(y);
-                sendSignal("DoubleClicked", sf::Vector2f{x, y});
+                m_callback.mouse.x = static_cast<int>(pos.x);
+                m_callback.mouse.y = static_cast<int>(pos.y);
+                sendSignal("DoubleClicked", pos);
             }
             else // This is the first click
             {

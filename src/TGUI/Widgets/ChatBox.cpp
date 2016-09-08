@@ -63,6 +63,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChatBox::setPosition(const Layout2d& position)
+    {
+        Widget::setPosition(position);
+
+        Borders borders = getRenderer()->getBorders();
+        Padding padding = getRenderer()->getPadding();
+        m_scroll.setPosition(getSize().x - borders.right - padding.right - m_scroll.getSize().x, borders.top + padding.top);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChatBox::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
@@ -70,6 +81,7 @@ namespace tgui
         getRenderer()->getTextureBackground().setSize(getInnerSize());
 
         updateRendering();
+        updatePosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -294,41 +306,41 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::mouseOnWidget(float x, float y) const
+    bool ChatBox::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::leftMousePressed(float x, float y)
+    void ChatBox::leftMousePressed(sf::Vector2f pos)
     {
         // Set the mouse down flag to true
         m_mouseDown = true;
 
         // Pass the event to the scrollbar
-        if (m_scroll.mouseOnWidget(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y))
-            m_scroll.leftMousePressed(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y);
+        if (m_scroll.mouseOnWidget(pos - m_scroll.getPosition()))
+            m_scroll.leftMousePressed(pos - m_scroll.getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::leftMouseReleased(float x, float y)
+    void ChatBox::leftMouseReleased(sf::Vector2f pos)
     {
         if (m_scroll.isMouseDown())
-            m_scroll.leftMouseReleased(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y);
+            m_scroll.leftMouseReleased(pos - m_scroll.getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::mouseMoved(float x, float y)
+    void ChatBox::mouseMoved(sf::Vector2f pos)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
 
         // Pass the event to the scrollbar when the mouse is on top of it or when we are dragging its thumb
-        if (((m_scroll.isMouseDown()) && (m_scroll.isMouseDownOnThumb())) || m_scroll.mouseOnWidget(x, y))
-            m_scroll.mouseMoved(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y);
+        if (((m_scroll.isMouseDown()) && (m_scroll.isMouseDownOnThumb())) || m_scroll.mouseOnWidget(pos - m_scroll.getPosition()))
+            m_scroll.mouseMoved(pos - m_scroll.getPosition());
         else
             m_scroll.mouseNoLongerOnWidget();
     }
@@ -484,6 +496,8 @@ namespace tgui
     {
         states.transform.translate(getPosition());
 
+        sf::RenderStates scrollbarStates = states;
+
         // Draw the borders
         Borders borders = getRenderer()->getBorders();
         if (borders != Borders{0})
@@ -502,9 +516,7 @@ namespace tgui
         states.transform.translate({padding.left, padding.top});
 
         // Draw the scrollbar
-        states.transform.translate(getInnerSize().x - padding.left - padding.right - m_scroll.getSize().x, 0);
-        target.draw(m_scroll, states);
-        states.transform.translate(-(getInnerSize().x - padding.left - padding.right - m_scroll.getSize().x), 0);
+        target.draw(m_scroll, scrollbarStates);
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
         Clipping clipping{target, states, {}, {getInnerSize().x - padding.left - padding.right - m_scroll.getSize().x, getInnerSize().y - padding.top - padding.bottom}};

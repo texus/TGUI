@@ -190,16 +190,16 @@ TEST_CASE("[CheckBox]")
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 1);
 
-            checkBox->leftMousePressed(65, 60);
+            checkBox->leftMousePressed({65, 60});
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 1);
 
-            checkBox->leftMouseReleased(65, 60);
+            checkBox->leftMouseReleased({65, 60});
             REQUIRE(checkCount == 2);
             REQUIRE(uncheckCount == 1);
 
-            checkBox->leftMousePressed(65, 60);
-            checkBox->leftMouseReleased(65, 60);
+            checkBox->leftMousePressed({65, 60});
+            checkBox->leftMouseReleased({65, 60});
             REQUIRE(checkCount == 2);
             REQUIRE(uncheckCount == 2);
 

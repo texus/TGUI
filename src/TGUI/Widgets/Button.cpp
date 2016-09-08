@@ -179,21 +179,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::leftMousePressed(float x, float y)
+    void Button::leftMousePressed(sf::Vector2f pos)
     {
-        ClickableWidget::leftMousePressed(x, y);
+        ClickableWidget::leftMousePressed(pos);
 
         updateTextColorAndStyle();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::leftMouseReleased(float x, float y)
+    void Button::leftMouseReleased(sf::Vector2f pos)
     {
         if (m_mouseDown)
             sendSignal("Pressed", m_text.getString());
 
-        ClickableWidget::leftMouseReleased(x, y);
+        ClickableWidget::leftMouseReleased(pos);
 
         updateTextColorAndStyle();
     }

@@ -422,13 +422,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::leftMousePressed(float x, float y)
+    void Container::leftMousePressed(sf::Vector2f pos)
     {
         sf::Event event;
         event.type = sf::Event::MouseButtonPressed;
         event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(x);
-        event.mouseButton.y = static_cast<int>(y);
+        event.mouseButton.x = static_cast<int>(pos.x);
+        event.mouseButton.y = static_cast<int>(pos.y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -436,13 +436,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::leftMouseReleased(float x , float y)
+    void Container::leftMouseReleased(sf::Vector2f pos)
     {
         sf::Event event;
         event.type = sf::Event::MouseButtonReleased;
         event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(x);
-        event.mouseButton.y = static_cast<int>(y);
+        event.mouseButton.x = static_cast<int>(pos.x);
+        event.mouseButton.y = static_cast<int>(pos.y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -450,14 +450,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::mouseMoved(float x, float y)
+    void Container::mouseMoved(sf::Vector2f pos)
     {
-        Widget::mouseMoved(x, y);
+        Widget::mouseMoved(pos);
 
         sf::Event event;
         event.type = sf::Event::MouseMoved;
-        event.mouseMove.x = static_cast<int>(x);
-        event.mouseMove.y = static_cast<int>(y);
+        event.mouseMove.x = static_cast<int>(pos.x);
+        event.mouseMove.y = static_cast<int>(pos.y);
         handleEvent(event);
     }
 
@@ -533,13 +533,13 @@ namespace tgui
 
     Widget::Ptr Container::askToolTip(sf::Vector2f mousePos)
     {
-        if (mouseOnWidget(mousePos.x, mousePos.y))
+        if (mouseOnWidget(mousePos))
         {
             Widget::Ptr toolTip = nullptr;
 
             mousePos -= getChildWidgetsOffset();
 
-            Widget::Ptr widget = mouseOnWhichWidget(mousePos.x, mousePos.y);
+            Widget::Ptr widget = mouseOnWhichWidget(mousePos);
             if (widget)
             {
                 toolTip = widget->askToolTip(mousePos - widget->getPosition());
@@ -656,8 +656,11 @@ namespace tgui
         // Check if a mouse button has moved
         if ((event.type == sf::Event::MouseMoved) || ((event.type == sf::Event::TouchMoved) && (event.touch.finger == 0)))
         {
-            float mouseX = (event.type == sf::Event::MouseMoved) ? static_cast<float>(event.mouseMove.x) : static_cast<float>(event.touch.x);
-            float mouseY = (event.type == sf::Event::MouseMoved) ? static_cast<float>(event.mouseMove.y) : static_cast<float>(event.touch.y);
+            sf::Vector2f mousePos;
+            if (event.type == sf::Event::MouseMoved)
+                mousePos = {static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)};
+            else
+                mousePos = {static_cast<float>(event.touch.x), static_cast<float>(event.touch.y)};
 
             // Loop through all widgets
             for (std::size_t i = 0; i < m_widgets.size(); ++i)
@@ -668,18 +671,18 @@ namespace tgui
                     // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
                     if ((m_widgets[i]->m_draggableWidget) || (m_widgets[i]->m_containerWidget))
                     {
-                        m_widgets[i]->mouseMoved(mouseX - m_widgets[i]->getPosition().x, mouseY - m_widgets[i]->getPosition().y);
+                        m_widgets[i]->mouseMoved(mousePos - m_widgets[i]->getPosition());
                         return true;
                     }
                 }
             }
 
             // Check if the mouse is on top of a widget
-            Widget::Ptr widget = mouseOnWhichWidget(mouseX, mouseY);
+            Widget::Ptr widget = mouseOnWhichWidget(mousePos);
             if (widget != nullptr)
             {
                 // Send the event to the widget
-                widget->mouseMoved(mouseX - widget->getPosition().x, mouseY - widget->getPosition().y);
+                widget->mouseMoved(mousePos - widget->getPosition());
                 return true;
             }
 
@@ -687,64 +690,64 @@ namespace tgui
         }
 
         // Check if a mouse button was pressed
-        else if ((event.type == sf::Event::MouseButtonPressed) || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
+        else if (((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))
+              || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
         {
-            float mouseX = (event.type == sf::Event::MouseButtonPressed) ? static_cast<float>(event.mouseButton.x) : static_cast<float>(event.touch.x);
-            float mouseY = (event.type == sf::Event::MouseButtonPressed) ? static_cast<float>(event.mouseButton.y) : static_cast<float>(event.touch.y);
+            sf::Vector2f mousePos;
+            if (event.type == sf::Event::MouseButtonPressed)
+                mousePos = {static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)};
+            else
+                mousePos = {static_cast<float>(event.touch.x), static_cast<float>(event.touch.y)};
 
-            // Check if the left mouse was pressed
-            if (event.mouseButton.button == sf::Mouse::Left)
+            // Check if the mouse is on top of a widget
+            Widget::Ptr widget = mouseOnWhichWidget(mousePos);
+            if (widget != nullptr)
             {
-                // Check if the mouse is on top of a widget
-                Widget::Ptr widget = mouseOnWhichWidget(mouseX, mouseY);
-                if (widget != nullptr)
+                // Focus the widget
+                focusWidget(widget);
+
+                // Check if the widget is a container
+                if (widget->m_containerWidget)
                 {
-                    // Focus the widget
-                    focusWidget(widget);
-
-                    // Check if the widget is a container
-                    if (widget->m_containerWidget)
+                    // If another widget was focused then unfocus it now
+                    if ((m_focusedWidget) && (m_widgets[m_focusedWidget-1] != widget))
                     {
-                        // If another widget was focused then unfocus it now
-                        if ((m_focusedWidget) && (m_widgets[m_focusedWidget-1] != widget))
-                        {
-                            m_widgets[m_focusedWidget-1]->m_focused = false;
-                            m_widgets[m_focusedWidget-1]->widgetUnfocused();
-                            m_focusedWidget = 0;
-                        }
+                        m_widgets[m_focusedWidget-1]->m_focused = false;
+                        m_widgets[m_focusedWidget-1]->widgetUnfocused();
+                        m_focusedWidget = 0;
                     }
-
-                    widget->leftMousePressed(mouseX - widget->getPosition().x, mouseY - widget->getPosition().y);
-                    return true;
                 }
-                else // The mouse did not went down on a widget, so unfocus the focused widget
-                    unfocusWidgets();
+
+                widget->leftMousePressed(mousePos - widget->getPosition());
+                return true;
             }
+            else // The mouse did not went down on a widget, so unfocus the focused widget
+                unfocusWidgets();
 
             return false;
         }
 
         // Check if a mouse button was released
-        else if ((event.type == sf::Event::MouseButtonReleased) || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
+        else if (((event.type == sf::Event::MouseButtonReleased) && (event.mouseButton.button == sf::Mouse::Left))
+              || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
         {
-            float mouseX = (event.type == sf::Event::MouseButtonReleased) ? static_cast<float>(event.mouseButton.x) : static_cast<float>(event.touch.x);
-            float mouseY = (event.type == sf::Event::MouseButtonReleased) ? static_cast<float>(event.mouseButton.y) : static_cast<float>(event.touch.y);
+            sf::Vector2f mousePos;
+            if (event.type == sf::Event::MouseButtonReleased)
+                mousePos = {static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)};
+            else
+                mousePos = {static_cast<float>(event.touch.x), static_cast<float>(event.touch.y)};
 
-            // Check if the left mouse was released
-            if (event.mouseButton.button == sf::Mouse::Left)
-            {
-                // Check if the mouse is on top of a widget
-                Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mouseX, mouseY);
-                if (widgetBelowMouse != nullptr)
-                    widgetBelowMouse->leftMouseReleased(mouseX - widgetBelowMouse->getPosition().x, mouseY - widgetBelowMouse->getPosition().y);
+            // Check if the mouse is on top of a widget
+            Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mousePos);
+            if (widgetBelowMouse != nullptr)
+                widgetBelowMouse->leftMouseReleased(mousePos - widgetBelowMouse->getPosition());
 
-                // Tell all widgets that the mouse has gone up
-                for (const auto& widget : m_widgets)
-                    widget->mouseNoLongerDown();
+            // Tell all widgets that the mouse has gone up
+            for (const auto& widget : m_widgets)
+                widget->mouseNoLongerDown();
 
-                if (widgetBelowMouse != nullptr)
-                    return true;
-            }
+            if (widgetBelowMouse != nullptr)
+                return true;
 
             return false;
         }
@@ -805,7 +808,7 @@ namespace tgui
         else if (event.type == sf::Event::MouseWheelMoved)
         {
             // Find the widget under the mouse
-            Widget::Ptr widget = mouseOnWhichWidget(static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y));
+            Widget::Ptr widget = mouseOnWhichWidget({static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y)});
             if (widget != nullptr)
             {
                 // Send the event to the widget
@@ -949,14 +952,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Container::mouseOnWhichWidget(float x, float y)
+    Widget::Ptr Container::mouseOnWhichWidget(sf::Vector2f mousePos)
     {
         Widget::Ptr widget = nullptr;
         for (std::vector<Widget::Ptr>::reverse_iterator it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
         {
             if ((*it)->isVisible())
             {
-                if ((*it)->mouseOnWidget(x - (*it)->getPosition().x, y - (*it)->getPosition().y))
+                if ((*it)->mouseOnWidget(mousePos - (*it)->getPosition()))
                 {
                     if ((*it)->isEnabled())
                     {
@@ -1009,7 +1012,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool GuiContainer::mouseOnWidget(float, float) const
+    bool GuiContainer::mouseOnWidget(sf::Vector2f) const
     {
         return true;
     }

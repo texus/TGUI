@@ -178,21 +178,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::leftMousePressed(float x, float y)
+    void SpinButton::leftMousePressed(sf::Vector2f pos)
     {
-        ClickableWidget::leftMousePressed(x, y);
+        ClickableWidget::leftMousePressed(pos);
 
         // Check if the mouse is on top of the upper/right arrow
         if (m_verticalScroll)
         {
-            if (sf::FloatRect{0, 0, getSize().x, getSize().y / 2.0f}.contains(x, y))
+            if (sf::FloatRect{0, 0, getSize().x, getSize().y / 2.0f}.contains(pos))
                 m_mouseDownOnTopArrow = true;
             else
                 m_mouseDownOnTopArrow = false;
         }
         else
         {
-            if (sf::FloatRect{0, 0, getSize().x / 2.0f, getSize().y}.contains(x, y))
+            if (sf::FloatRect{0, 0, getSize().x / 2.0f, getSize().y}.contains(pos))
                 m_mouseDownOnTopArrow = false;
             else
                 m_mouseDownOnTopArrow = true;
@@ -201,7 +201,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::leftMouseReleased(float x, float y)
+    void SpinButton::leftMouseReleased(sf::Vector2f pos)
     {
         // Check if the mouse went down on the spin button
         if (m_mouseDown)
@@ -210,8 +210,8 @@ namespace tgui
             if (m_mouseDownOnTopArrow)
             {
                 // Check if the mouse went up on the same arrow
-                if ((m_verticalScroll && (sf::FloatRect{0, 0, getSize().x, getSize().y / 2.f}.contains(x, y)))
-                 || (!m_verticalScroll && (!sf::FloatRect{0, 0, getSize().x / 2.f, getSize().y}.contains(x, y))))
+                if ((m_verticalScroll && (sf::FloatRect{0, 0, getSize().x, getSize().y / 2.f}.contains(pos)))
+                 || (!m_verticalScroll && (!sf::FloatRect{0, 0, getSize().x / 2.f, getSize().y}.contains(pos))))
                 {
                     // Increment the value
                     if (m_value < m_maximum)
@@ -225,8 +225,8 @@ namespace tgui
             else // The mouse went down on the bottom/left arrow
             {
                 // Check if the mouse went up on the same arrow
-                if ((m_verticalScroll && (!sf::FloatRect{0, 0, getSize().x, getSize().y / 2.f}.contains(x, y)))
-                 || (!m_verticalScroll && (sf::FloatRect{0, 0, getSize().x / 2.f, getSize().y}.contains(x, y))))
+                if ((m_verticalScroll && (!sf::FloatRect{0, 0, getSize().x, getSize().y / 2.f}.contains(pos)))
+                 || (!m_verticalScroll && (sf::FloatRect{0, 0, getSize().x / 2.f, getSize().y}.contains(pos))))
                 {
                     // Decrement the value
                     if (m_value > m_minimum)
@@ -239,24 +239,24 @@ namespace tgui
             }
         }
 
-        ClickableWidget::leftMouseReleased(x, y);
+        ClickableWidget::leftMouseReleased(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::mouseMoved(float x, float y)
+    void SpinButton::mouseMoved(sf::Vector2f pos)
     {
         // Check if the mouse is on top of the upper/right arrow
         if (m_verticalScroll)
         {
-            if (sf::FloatRect{0, 0, getSize().x, getSize().y / 2.0f}.contains(x, y))
+            if (sf::FloatRect{0, 0, getSize().x, getSize().y / 2.0f}.contains(pos))
                 m_mouseHoverOnTopArrow = true;
             else
                 m_mouseHoverOnTopArrow = false;
         }
         else
         {
-            if (sf::FloatRect{0, 0, getSize().x / 2.0f, getSize().y}.contains(x, y))
+            if (sf::FloatRect{0, 0, getSize().x / 2.0f, getSize().y}.contains(pos))
                 m_mouseHoverOnTopArrow = true;
             else
                 m_mouseHoverOnTopArrow = false;

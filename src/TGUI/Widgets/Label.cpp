@@ -182,11 +182,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::leftMouseReleased(float x, float y)
+    void Label::leftMouseReleased(sf::Vector2f pos)
     {
         bool mouseDown = m_mouseDown;
 
-        ClickableWidget::leftMouseReleased(x, y);
+        ClickableWidget::leftMouseReleased(pos);
 
         if (mouseDown)
         {

@@ -190,23 +190,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool RadioButton::mouseOnWidget(float x, float y) const
+    bool RadioButton::mouseOnWidget(sf::Vector2f pos) const
     {
         if (m_allowTextClick && !getText().isEmpty())
         {
             // Check if the mouse is on top of the image or the small gap between image and text
-            if (sf::FloatRect{0, 0, getSize().x + getSize().x * getRenderer()->getTextDistanceRatio(), getSize().y}.contains(x, y))
+            if (sf::FloatRect{0, 0, getSize().x + getSize().x * getRenderer()->getTextDistanceRatio(), getSize().y}.contains(pos))
                 return true;
 
             // Check if the mouse is on top of the text
-            if (sf::FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains(x - (getSize().x + (getSize().x * getRenderer()->getTextDistanceRatio())),
-                                                                                     y - ((getSize().y - m_text.getSize().y) / 2.0f)))
+            if (sf::FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains(pos.x - (getSize().x + (getSize().x * getRenderer()->getTextDistanceRatio())),
+                                                                                     pos.y - ((getSize().y - m_text.getSize().y) / 2.0f)))
                 return true;
         }
         else // You are not allowed to click on the text
         {
             // Check if the mouse is on top of the image
-            if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y))
+            if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
                 return true;
         }
 
@@ -215,11 +215,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::leftMouseReleased(float x, float y)
+    void RadioButton::leftMouseReleased(sf::Vector2f pos)
     {
         bool mouseDown = m_mouseDown;
 
-        ClickableWidget::leftMouseReleased(x, y);
+        ClickableWidget::leftMouseReleased(pos);
 
         // Check the radio button if we clicked on the radio button (not just mouse release)
         if (mouseDown)

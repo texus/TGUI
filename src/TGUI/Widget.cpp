@@ -595,19 +595,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::leftMousePressed(float, float)
+    void Widget::leftMousePressed(sf::Vector2f)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::leftMouseReleased(float, float)
+    void Widget::leftMouseReleased(sf::Vector2f)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::mouseMoved(float, float)
+    void Widget::mouseMoved(sf::Vector2f)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
@@ -668,7 +668,7 @@ namespace tgui
 
     Widget::Ptr Widget::askToolTip(sf::Vector2f mousePos)
     {
-        if (m_toolTip && mouseOnWidget(mousePos.x, mousePos.y))
+        if (m_toolTip && mouseOnWidget(mousePos))
             return getToolTip();
         else
             return nullptr;

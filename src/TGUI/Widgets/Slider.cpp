@@ -241,14 +241,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::mouseOnWidget(float x, float y) const
+    bool Slider::mouseOnWidget(sf::Vector2f pos) const
     {
         // Check if the mouse is on top of the thumb
-        if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(x, y))
+        if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
             return true;
 
         // Check if the mouse is on top of the track
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y))
+        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
             return true;
 
         return false;
@@ -256,17 +256,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::leftMousePressed(float x, float y)
+    void Slider::leftMousePressed(sf::Vector2f pos)
     {
         m_mouseDown = true;
 
         // Refresh the value
-        mouseMoved(x, y);
+        mouseMoved(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::leftMouseReleased(float, float)
+    void Slider::leftMouseReleased(sf::Vector2f)
     {
         // The thumb might have been dragged between two values
         if (m_mouseDown)
@@ -275,7 +275,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::mouseMoved(float x, float y)
+    void Slider::mouseMoved(sf::Vector2f pos)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
@@ -290,18 +290,18 @@ namespace tgui
                 if (!m_mouseDownOnThumb)
                 {
                     m_mouseDownOnThumb = true;
-                    m_mouseDownOnThumbPos.x = x - m_thumb.left;
+                    m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
                     m_mouseDownOnThumbPos.y = m_thumb.height / 2.0f;
                 }
 
                 // Set the new value
-                if (y - m_mouseDownOnThumbPos.y + (m_thumb.height / 2.0f) > 0)
-                    setValue(static_cast<int>((((y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
+                if (pos.y - m_mouseDownOnThumbPos.y + (m_thumb.height / 2.0f) > 0)
+                    setValue(static_cast<int>((((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
                 else
                     setValue(m_minimum);
 
                 // Set the thumb position for smooth scrolling
-                float thumbTop = y - m_mouseDownOnThumbPos.y;
+                float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
                 if ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))
                     m_thumb.top = thumbTop;
                 else
@@ -314,17 +314,17 @@ namespace tgui
                 {
                     m_mouseDownOnThumb = true;
                     m_mouseDownOnThumbPos.x = m_thumb.width / 2.0f;
-                    m_mouseDownOnThumbPos.y = y - m_thumb.top;
+                    m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
                 }
 
                 // Set the new value
-                if (x - m_mouseDownOnThumbPos.x + (m_thumb.width / 2.0f) > 0)
-                    setValue(static_cast<int>((((x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
+                if (pos.x - m_mouseDownOnThumbPos.x + (m_thumb.width / 2.0f) > 0)
+                    setValue(static_cast<int>((((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
                 else
                     setValue(m_minimum);
 
                 // Set the thumb position for smooth scrolling
-                float thumbLeft = x - m_mouseDownOnThumbPos.x;
+                float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
                 if ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))
                     m_thumb.left = thumbLeft;
                 else
@@ -334,11 +334,11 @@ namespace tgui
         else // Normal mouse move
         {
             // Set some variables so that when the mouse goes down we know whether it is on the track or not
-            if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(x, y))
+            if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
             {
                 m_mouseDownOnThumb = true;
-                m_mouseDownOnThumbPos.x = x - m_thumb.left;
-                m_mouseDownOnThumbPos.y = y - m_thumb.top;
+                m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
+                m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
             }
             else // The mouse is not on top of the thumb
                 m_mouseDownOnThumb = false;

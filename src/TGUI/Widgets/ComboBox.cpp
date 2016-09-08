@@ -393,14 +393,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::mouseOnWidget(float x, float y) const
+    bool ComboBox::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::leftMousePressed(float, float)
+    void ComboBox::leftMousePressed(sf::Vector2f)
     {
         m_mouseDown = true;
 

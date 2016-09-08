@@ -311,18 +311,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::mouseOnWidget(float x, float y) const
+    bool Scrollbar::mouseOnWidget(sf::Vector2f pos) const
     {
         // Don't make any calculations when no scrollbar is needed
         if (m_autoHide && (m_maximum <= m_lowValue))
             return false;
 
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::leftMousePressed(float x, float y)
+    void Scrollbar::leftMousePressed(sf::Vector2f pos)
     {
         m_mouseDown = true;
         m_mouseDownOnArrow = false;
@@ -333,7 +333,7 @@ namespace tgui
             if (getSize().y > m_arrowUp.height + m_arrowDown.height)
             {
                 // Check if you clicked on one of the arrows
-                if ((y < m_arrowUp.height) || (y > getSize().y - m_arrowUp.height))
+                if ((pos.y < m_arrowUp.height) || (pos.y > getSize().y - m_arrowUp.height))
                     m_mouseDownOnArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
@@ -345,7 +345,7 @@ namespace tgui
             if (getSize().x > m_arrowUp.height + m_arrowDown.height)
             {
                 // Check if you clicked on one of the arrows
-                if ((x < m_arrowUp.height) || (x > getSize().x - m_arrowUp.height))
+                if ((pos.x < m_arrowUp.height) || (pos.x > getSize().x - m_arrowUp.height))
                     m_mouseDownOnArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
@@ -353,10 +353,10 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the thumb
-        if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(x, y))
+        if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
         {
-            m_mouseDownOnThumbPos.x = x - m_thumb.left;
-            m_mouseDownOnThumbPos.y = y - m_thumb.top;
+            m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
+            m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
 
             m_mouseDownOnThumb = true;
         }
@@ -365,12 +365,12 @@ namespace tgui
 
         // Refresh the scrollbar value
         if (!m_mouseDownOnArrow)
-            mouseMoved(x, y);
+            mouseMoved(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::leftMouseReleased(float x, float y)
+    void Scrollbar::leftMouseReleased(sf::Vector2f pos)
     {
         // Check if one of the arrows was clicked
         if (m_mouseDown && m_mouseDownOnArrow)
@@ -388,17 +388,17 @@ namespace tgui
                     if (getSize().y > m_arrowUp.height + m_arrowDown.height)
                     {
                         // Check if you clicked on the top arrow
-                        if (y < m_arrowUp.height)
+                        if (pos.y < m_arrowUp.height)
                             valueDown = true;
 
                         // Check if you clicked the down arrow
-                        else if (y > getSize().y - m_arrowUp.height)
+                        else if (pos.y > getSize().y - m_arrowUp.height)
                             valueUp = true;
                     }
                     else // The arrows are not drawn at full size
                     {
                         // Check on which arrow you clicked
-                        if (y < getSize().y * 0.5f)
+                        if (pos.y < getSize().y * 0.5f)
                             valueDown = true;
                         else // You clicked on the bottom arrow
                             valueUp = true;
@@ -410,17 +410,17 @@ namespace tgui
                     if (getSize().x > m_arrowUp.height + m_arrowDown.height)
                     {
                         // Check if you clicked on the top arrow
-                        if (x < m_arrowUp.height)
+                        if (pos.x < m_arrowUp.height)
                             valueDown = true;
 
                         // Check if you clicked the down arrow
-                        else if (x > getSize().x - m_arrowUp.height)
+                        else if (pos.x > getSize().x - m_arrowUp.height)
                             valueUp = true;
                     }
                     else // The arrows are not drawn at full size
                     {
                         // Check on which arrow you clicked
-                        if (x < getSize().x * 0.5f)
+                        if (pos.x < getSize().x * 0.5f)
                             valueDown = true;
                         else // You clicked on the bottom arrow
                             valueUp = true;
@@ -461,7 +461,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::mouseMoved(float x, float y)
+    void Scrollbar::mouseMoved(sf::Vector2f pos)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
@@ -480,10 +480,10 @@ namespace tgui
                 if (m_mouseDownOnThumb)
                 {
                     // Set the new value
-                    if ((y - m_mouseDownOnThumbPos.y - m_arrowUp.height) > 0)
+                    if ((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height) > 0)
                     {
                         // Calculate the new value
-                        unsigned int value = static_cast<unsigned int>((((y - m_mouseDownOnThumbPos.y - m_arrowUp.height)
+                        unsigned int value = static_cast<unsigned int>((((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height)
                                                                          / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum) + 0.5f);
 
                         // If the value isn't too high then change it
@@ -496,7 +496,7 @@ namespace tgui
                         setValue(0);
 
                     // Set the thumb position for smooth scrolling
-                    float thumbTop = y - m_mouseDownOnThumbPos.y;
+                    float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
                     if ((thumbTop - m_arrowUp.height > 0) && (thumbTop + m_thumb.height + m_arrowDown.height < getSize().y))
                         m_thumb.top = thumbTop;
                     else // Prevent the thumb from going outside the scrollbar
@@ -505,13 +505,13 @@ namespace tgui
                 else // The click occurred on the track
                 {
                     // If the position is positive then calculate the correct value
-                    if (y > m_arrowUp.height)
+                    if (pos.y > m_arrowUp.height)
                     {
                         // Make sure that you did not click on the down arrow
-                        if (y <= getSize().y - m_arrowUp.height)
+                        if (pos.y <= getSize().y - m_arrowUp.height)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
-                            float value = (((y - m_arrowUp.height) / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum);
+                            float value = (((pos.y - m_arrowUp.height) / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum);
 
                             // Check if you clicked above the thumb
                             if (value <= m_value)
@@ -537,8 +537,8 @@ namespace tgui
                         }
                     }
 
-                    m_mouseDownOnThumbPos.x = x - m_thumb.left;
-                    m_mouseDownOnThumbPos.y = y - m_thumb.top;
+                    m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
+                    m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
                     m_mouseDownOnThumb = true;
                 }
             }
@@ -548,10 +548,10 @@ namespace tgui
                 if (m_mouseDownOnThumb)
                 {
                     // Set the new value
-                    if (x - m_mouseDownOnThumbPos.x - m_arrowUp.width > 0)
+                    if (pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width > 0)
                     {
                         // Calculate the new value
-                        unsigned int value = static_cast<unsigned int>((((x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
+                        unsigned int value = static_cast<unsigned int>((((pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
                                                                          / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum) + 0.5f);
                         // If the value isn't too high then change it
                         if (value <= (m_maximum - m_lowValue))
@@ -563,7 +563,7 @@ namespace tgui
                         setValue(0);
 
                     // Set the thumb position for smooth scrolling
-                    float thumbLeft = x - m_mouseDownOnThumbPos.x;
+                    float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
                     if ((thumbLeft - m_arrowUp.width > 0) && (thumbLeft + m_thumb.width + m_arrowDown.width < getSize().x))
                         m_thumb.left = thumbLeft;
                     else // Prevent the thumb from going outside the scrollbar
@@ -572,13 +572,13 @@ namespace tgui
                 else // The click occurred on the track
                 {
                     // If the position is positive then calculate the correct value
-                    if (x > m_arrowUp.width)
+                    if (pos.x > m_arrowUp.width)
                     {
                         // Make sure that you did not click on the down arrow
-                        if (x <= getSize().x - m_arrowUp.width)
+                        if (pos.x <= getSize().x - m_arrowUp.width)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
-                            float value = (((x - m_arrowUp.width) / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum);
+                            float value = (((pos.x - m_arrowUp.width) / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum);
 
                             // Check if you clicked to the left of the thumb
                             if (value <= m_value)
@@ -604,20 +604,20 @@ namespace tgui
                         }
                     }
 
-                    m_mouseDownOnThumbPos.x = x - m_thumb.left;
-                    m_mouseDownOnThumbPos.y = y - m_thumb.top;
+                    m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
+                    m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
                     m_mouseDownOnThumb = true;
                 }
             }
         }
 
-        if (sf::FloatRect{m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height}.contains(x, y))
+        if (sf::FloatRect{m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height}.contains(pos))
             m_mouseHoverOverPart = Part::Thumb;
-        else if (sf::FloatRect{m_track.left, m_track.top, m_track.width, m_track.height}.contains(x, y))
+        else if (sf::FloatRect{m_track.left, m_track.top, m_track.width, m_track.height}.contains(pos))
             m_mouseHoverOverPart = Part::Track;
-        else if (sf::FloatRect{m_arrowUp.left, m_arrowUp.top, m_arrowUp.width, m_arrowUp.height}.contains(x, y))
+        else if (sf::FloatRect{m_arrowUp.left, m_arrowUp.top, m_arrowUp.width, m_arrowUp.height}.contains(pos))
             m_mouseHoverOverPart = Part::ArrowUp;
-        else if (sf::FloatRect{m_arrowDown.left, m_arrowDown.top, m_arrowDown.width, m_arrowDown.height}.contains(x, y))
+        else if (sf::FloatRect{m_arrowDown.left, m_arrowDown.top, m_arrowDown.width, m_arrowDown.height}.contains(pos))
             m_mouseHoverOverPart = Part::ArrowDown;
     }
 
@@ -631,7 +631,7 @@ namespace tgui
             setValue(static_cast<unsigned int>(m_value - (delta * m_scrollAmount)));
 
         // Update over which part the mouse is hovering
-        mouseMoved(static_cast<float>(x), static_cast<float>(y));
+        mouseMoved({static_cast<float>(x), static_cast<float>(y)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

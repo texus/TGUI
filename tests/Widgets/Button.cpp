@@ -84,16 +84,16 @@ TEST_CASE("[Button]")
 
             SECTION("mouse click")
             {
-                button->leftMouseReleased(115, 80);
+                button->leftMouseReleased({115, 80});
                 REQUIRE(pressedCount == 0);
 
                 SECTION("mouse press")
                 {
-                    button->leftMousePressed(115, 80);
+                    button->leftMousePressed({115, 80});
                     REQUIRE(pressedCount == 0);
                 }
 
-                button->leftMouseReleased(115, 80);
+                button->leftMouseReleased({115, 80});
                 REQUIRE(pressedCount == 1);
             }
 

@@ -200,6 +200,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    sf::Vector2f Texture::getSize() const
+    {
+        return m_size;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Texture::getImageSize() const
+    {
+        return sf::Vector2f{m_data->texture.getSize()};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Texture::setColor(const sf::Color& color)
     {
         m_vertexColor = color;
@@ -233,6 +247,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Texture::setTextureRect(const sf::FloatRect& textureRect)
+    {
+        m_textureRect = textureRect;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::FloatRect Texture::getTextureRect() const
+    {
+        return m_textureRect;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::IntRect Texture::getMiddleRect() const
+    {
+        return m_middleRect;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Texture::setSmooth(bool smooth)
     {
         if (m_loaded)
@@ -241,14 +276,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Texture::isTransparentPixel(float x, float y) const
+    bool Texture::isSmooth() const
+    {
+        return m_data->texture.isSmooth();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Texture::isTransparentPixel(sf::Vector2f pos) const
     {
         if (!m_data->image || (m_size.x == 0) || (m_size.y == 0))
             return false;
 
-        assert((x >= getPosition().x) && (y >= getPosition().y) && (x < getPosition().x + getSize().x) && (y < getPosition().y + getSize().y));
-        x -= getPosition().x;
-        y -= getPosition().y;
+        pos -= getPosition();
+        assert((pos.x >= 0) && (pos.y >= 0) && (pos.x < getSize().x) && (pos.y < getSize().y));
 
         // Find out on which pixel the mouse is standing
         sf::Vector2u pixel;
@@ -256,69 +297,69 @@ namespace tgui
         {
             case ScalingType::Normal:
             {
-                pixel.x = static_cast<unsigned int>(x / m_size.x * m_data->texture.getSize().x);
-                pixel.y = static_cast<unsigned int>(y / m_size.y * m_data->texture.getSize().y);
+                pixel.x = static_cast<unsigned int>(pos.x / m_size.x * m_data->texture.getSize().x);
+                pixel.y = static_cast<unsigned int>(pos.y / m_size.y * m_data->texture.getSize().y);
                 break;
             }
             case ScalingType::Horizontal:
             {
-                if (x >= m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))
+                if (pos.x >= m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))
                 {
-                    float xDiff = (x - (m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y)));
+                    float xDiff = (pos.x - (m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y)));
                     pixel.x = static_cast<unsigned int>(m_middleRect.left + m_middleRect.width + (xDiff / m_size.y * m_data->texture.getSize().y));
                 }
-                else if (x >= m_middleRect.left * (m_size.y / m_data->texture.getSize().y))
+                else if (pos.x >= m_middleRect.left * (m_size.y / m_data->texture.getSize().y))
                 {
-                    float xDiff = x - (m_middleRect.left * (m_size.y / m_data->texture.getSize().y));
+                    float xDiff = pos.x - (m_middleRect.left * (m_size.y / m_data->texture.getSize().y));
                     pixel.x = static_cast<unsigned int>(m_middleRect.left + (xDiff / (m_size.x - ((m_data->texture.getSize().x - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))) * m_middleRect.width));
                 }
                 else // Mouse on the left part
                 {
-                    pixel.x = static_cast<unsigned int>(x / m_size.y * m_data->texture.getSize().y);
+                    pixel.x = static_cast<unsigned int>(pos.x / m_size.y * m_data->texture.getSize().y);
                 }
 
-                pixel.y = static_cast<unsigned int>(y / m_size.y * m_data->texture.getSize().y);
+                pixel.y = static_cast<unsigned int>(pos.y / m_size.y * m_data->texture.getSize().y);
                 break;
             }
             case ScalingType::Vertical:
             {
-                if (y >= m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))
+                if (pos.y >= m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))
                 {
-                    float yDiff = (y - (m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x)));
+                    float yDiff = (pos.y - (m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x)));
                     pixel.y = static_cast<unsigned int>(m_middleRect.top + m_middleRect.height + (yDiff / m_size.x * m_data->texture.getSize().x));
                 }
-                else if (y >= m_middleRect.top * (m_size.x / m_data->texture.getSize().x))
+                else if (pos.y >= m_middleRect.top * (m_size.x / m_data->texture.getSize().x))
                 {
-                    float yDiff = y - (m_middleRect.top * (m_size.x / m_data->texture.getSize().x));
+                    float yDiff = pos.y - (m_middleRect.top * (m_size.x / m_data->texture.getSize().x));
                     pixel.y = static_cast<unsigned int>(m_middleRect.top + (yDiff / (m_size.y - ((m_data->texture.getSize().y - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))) * m_middleRect.height));
                 }
                 else // Mouse on the top part
                 {
-                    pixel.y = static_cast<unsigned int>(y / m_size.x * m_data->texture.getSize().x);
+                    pixel.y = static_cast<unsigned int>(pos.y / m_size.x * m_data->texture.getSize().x);
                 }
 
-                pixel.x = static_cast<unsigned int>(x / m_size.x * m_data->texture.getSize().x);
+                pixel.x = static_cast<unsigned int>(pos.x / m_size.x * m_data->texture.getSize().x);
                 break;
             }
             case ScalingType::NineSlice:
             {
-                if (x < m_middleRect.left)
-                    pixel.x = static_cast<unsigned int>(x);
-                else if (x >= m_size.x - (m_data->texture.getSize().x - m_middleRect.width - m_middleRect.left))
-                    pixel.x = static_cast<unsigned int>(x - m_size.x + m_data->texture.getSize().x);
+                if (pos.x < m_middleRect.left)
+                    pixel.x = static_cast<unsigned int>(pos.x);
+                else if (pos.x >= m_size.x - (m_data->texture.getSize().x - m_middleRect.width - m_middleRect.left))
+                    pixel.x = static_cast<unsigned int>(pos.x - m_size.x + m_data->texture.getSize().x);
                 else
                 {
-                    float xDiff = (x - m_middleRect.left) / (m_size.x - (m_data->texture.getSize().x - m_middleRect.width)) * m_middleRect.width;
+                    float xDiff = (pos.x - m_middleRect.left) / (m_size.x - (m_data->texture.getSize().x - m_middleRect.width)) * m_middleRect.width;
                     pixel.x = static_cast<unsigned int>(m_middleRect.left + xDiff);
                 }
 
-                if (y < m_middleRect.top)
-                    pixel.y = static_cast<unsigned int>(y);
-                else if (y >= m_size.y - (m_data->texture.getSize().y - m_middleRect.height - m_middleRect.top))
-                    pixel.y = static_cast<unsigned int>(y - m_size.y + m_data->texture.getSize().y);
+                if (pos.y < m_middleRect.top)
+                    pixel.y = static_cast<unsigned int>(pos.y);
+                else if (pos.y >= m_size.y - (m_data->texture.getSize().y - m_middleRect.height - m_middleRect.top))
+                    pixel.y = static_cast<unsigned int>(pos.y - m_size.y + m_data->texture.getSize().y);
                 else
                 {
-                    float yDiff = (y - m_middleRect.top) / (m_size.y - (m_data->texture.getSize().y - m_middleRect.height)) * m_middleRect.height;
+                    float yDiff = (pos.y - m_middleRect.top) / (m_size.y - (m_data->texture.getSize().y - m_middleRect.height)) * m_middleRect.height;
                     pixel.y = static_cast<unsigned int>(m_middleRect.top + yDiff);
                 }
 
@@ -331,6 +372,20 @@ namespace tgui
             return true;
         else
             return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Texture::ScalingType Texture::getScalingType() const
+    {
+        return m_scalingType;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Texture::isLoaded() const
+    {
+        return m_loaded;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

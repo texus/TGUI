@@ -333,14 +333,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tabs::mouseOnWidget(float x, float y) const
+    bool Tabs::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::leftMousePressed(float x, float)
+    void Tabs::leftMousePressed(sf::Vector2f pos)
     {
         Borders borders = getRenderer()->getBorders();
         float width = borders.left / 2.f;
@@ -352,7 +352,7 @@ namespace tgui
             width += (borders.left / 2.f) + m_tabWidth[i] + (borders.right / 2.0f);
 
             // If the mouse went down on this tab then select it
-            if (x < width)
+            if (pos.x < width)
             {
                 select(i);
                 break;

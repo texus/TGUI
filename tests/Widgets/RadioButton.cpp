@@ -122,22 +122,22 @@ TEST_CASE("[RadioButton]")
 
             radioButton->setTextClickable(false);
             REQUIRE(!radioButton->isTextClickable());
-            REQUIRE(!radioButton->mouseOnWidget(70, 30));
+            REQUIRE(!radioButton->mouseOnWidget({70, 30}));
 
             radioButton->setTextClickable(true);
             REQUIRE(radioButton->isTextClickable());
-            REQUIRE(radioButton->mouseOnWidget(70, 30));
+            REQUIRE(radioButton->mouseOnWidget({70, 30}));
         }
 
         SECTION("Without text")
         {
             radioButton->setTextClickable(false);
             REQUIRE(!radioButton->isTextClickable());
-            REQUIRE(!radioButton->mouseOnWidget(70, 30));
+            REQUIRE(!radioButton->mouseOnWidget({70, 30}));
 
             radioButton->setTextClickable(true);
             REQUIRE(radioButton->isTextClickable());
-            REQUIRE(!radioButton->mouseOnWidget(70, 30));
+            REQUIRE(!radioButton->mouseOnWidget({70, 30}));
         }
     }
 
@@ -158,17 +158,17 @@ TEST_CASE("[RadioButton]")
             radioButton->connect("Checked", genericCallback, std::ref(checkCount));
             radioButton->connect("Unchecked", genericCallback, std::ref(uncheckCount));
 
-            radioButton->leftMousePressed(65, 60);
+            radioButton->leftMousePressed({65, 60});
             REQUIRE(checkCount == 0);
             REQUIRE(uncheckCount == 0);
 
-            radioButton->leftMouseReleased(65, 60);
+            radioButton->leftMouseReleased({65, 60});
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 0);
 
             // Radio buttons can't be unchecked by user interaction
-            radioButton->leftMousePressed(65, 60);
-            radioButton->leftMouseReleased(65, 60);
+            radioButton->leftMousePressed({65, 60});
+            radioButton->leftMouseReleased({65, 60});
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 0);
 

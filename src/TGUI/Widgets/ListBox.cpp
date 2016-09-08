@@ -450,30 +450,30 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::mouseOnWidget(float x, float y) const
+    bool ListBox::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::leftMousePressed(float x, float y)
+    void ListBox::leftMousePressed(sf::Vector2f pos)
     {
         m_mouseDown = true;
 
-        if (m_scroll.mouseOnWidget(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y))
+        if (m_scroll.mouseOnWidget(pos - m_scroll.getPosition()))
         {
-            m_scroll.leftMousePressed(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y);
+            m_scroll.leftMousePressed(pos - m_scroll.getPosition());
         }
         else
         {
             Borders borders = getRenderer()->getBorders();
             Padding padding = getRenderer()->getPadding();
-            if (sf::FloatRect{borders.left + padding.left, borders.top + padding.top, getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}.contains(x, y))
+            if (sf::FloatRect{borders.left + padding.left, borders.top + padding.top, getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}.contains(pos))
             {
-                y -= borders.top + padding.top;
+                pos.y -= borders.top + padding.top;
 
-                int hoveringItem = static_cast<int>(((y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
+                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
                     updateHoveringItem(hoveringItem);
                 else
@@ -511,7 +511,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::leftMouseReleased(float x, float y)
+    void ListBox::leftMouseReleased(sf::Vector2f pos)
     {
         if (m_mouseDown && !m_scroll.isMouseDown())
         {
@@ -537,12 +537,12 @@ namespace tgui
             }
         }
 
-        m_scroll.leftMouseReleased(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y);
+        m_scroll.leftMouseReleased(pos - m_scroll.getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::mouseMoved(float x, float y)
+    void ListBox::mouseMoved(sf::Vector2f pos)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
@@ -550,9 +550,9 @@ namespace tgui
         updateHoveringItem(-1);
 
         // Check if the mouse event should go to the scrollbar
-        if ((m_scroll.isMouseDown() && m_scroll.isMouseDownOnThumb()) || m_scroll.mouseOnWidget(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y))
+        if ((m_scroll.isMouseDown() && m_scroll.isMouseDownOnThumb()) || m_scroll.mouseOnWidget(pos - m_scroll.getPosition()))
         {
-            m_scroll.mouseMoved(x - m_scroll.getPosition().x, y - m_scroll.getPosition().y);
+            m_scroll.mouseMoved(pos - m_scroll.getPosition());
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
@@ -561,11 +561,11 @@ namespace tgui
             // Find out on which item the mouse is hovering
             Borders borders = getRenderer()->getBorders();
             Padding padding = getRenderer()->getPadding();
-            if (sf::FloatRect{borders.left + padding.left, borders.top + padding.top, getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}.contains(x, y))
+            if (sf::FloatRect{borders.left + padding.left, borders.top + padding.top, getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}.contains(pos))
             {
-                y -= borders.top + padding.top;
+                pos.y -= borders.top + padding.top;
 
-                int hoveringItem = static_cast<int>(((y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
+                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
                     updateHoveringItem(hoveringItem);
                 else
@@ -607,7 +607,7 @@ namespace tgui
             m_scroll.mouseWheelMoved(delta, 0, 0);
 
             // Update on which item the mouse is hovering
-            mouseMoved(static_cast<float>(x), static_cast<float>(y));
+            mouseMoved({static_cast<float>(x), static_cast<float>(y)});
         }
     }
 

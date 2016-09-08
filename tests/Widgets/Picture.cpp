@@ -149,21 +149,21 @@ TEST_CASE("[Picture]")
             unsigned int doubleClickedCount = 0;
             picture->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
 
-            picture->leftMousePressed(115, 80);
-            picture->leftMouseReleased(115, 80);
+            picture->leftMousePressed({115, 80});
+            picture->leftMouseReleased({115, 80});
 
             tgui::Gui gui;
             gui.add(picture);
             gui.updateTime(DOUBLE_CLICK_TIMEOUT);
 
-            picture->leftMousePressed(115, 80);
-            picture->leftMouseReleased(115, 80);
+            picture->leftMousePressed({115, 80});
+            picture->leftMouseReleased({115, 80});
             REQUIRE(doubleClickedCount == 0);
 
             gui.updateTime(DOUBLE_CLICK_TIMEOUT / 2.f);
 
-            picture->leftMousePressed(115, 80);
-            picture->leftMouseReleased(115, 80);
+            picture->leftMousePressed({115, 80});
+            picture->leftMouseReleased({115, 80});
             REQUIRE(doubleClickedCount == 1);
         }
     }

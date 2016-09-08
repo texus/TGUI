@@ -218,22 +218,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::mouseOnWidget(float x, float y) const
+    bool TextBox::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y);
+        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::leftMousePressed(float x, float y)
+    void TextBox::leftMousePressed(sf::Vector2f pos)
     {
         // Set the mouse down flag
         m_mouseDown = true;
 
         // If there is a scrollbar then pass the event
-        if ((m_verticalScroll.isShown()) && (m_verticalScroll.mouseOnWidget(x - m_verticalScroll.getPosition().x, y - m_verticalScroll.getPosition().y)))
+        if ((m_verticalScroll.isShown()) && (m_verticalScroll.mouseOnWidget(pos - m_verticalScroll.getPosition())))
         {
-            m_verticalScroll.leftMousePressed(x - m_verticalScroll.getPosition().x, y - m_verticalScroll.getPosition().y);
+            m_verticalScroll.leftMousePressed(pos - m_verticalScroll.getPosition());
             recalculateVisibleLines();
         }
         else // The click occurred on the text box
@@ -242,7 +242,7 @@ namespace tgui
             if (m_lineHeight == 0)
                 return;
 
-            auto caretPosition = findCaretPosition({x, y});
+            auto caretPosition = findCaretPosition(pos);
 
             // Check if this is a double click
             if ((m_possibleDoubleClick) && (m_selStart == m_selEnd) && (caretPosition == m_selEnd))
@@ -309,7 +309,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::leftMouseReleased(float x, float y)
+    void TextBox::leftMouseReleased(sf::Vector2f pos)
     {
         // If there is a scrollbar then pass it the event
         if (m_verticalScroll.isShown())
@@ -317,7 +317,7 @@ namespace tgui
             // Only pass the event when the scrollbar still thinks the mouse is down
             if (m_verticalScroll.isMouseDown())
             {
-                m_verticalScroll.leftMouseReleased(x - m_verticalScroll.getPosition().x, y - m_verticalScroll.getPosition().y);
+                m_verticalScroll.leftMouseReleased(pos - m_verticalScroll.getPosition());
                 recalculateVisibleLines();
             }
         }
@@ -325,7 +325,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseMoved(float x, float y)
+    void TextBox::mouseMoved(sf::Vector2f pos)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
@@ -334,16 +334,16 @@ namespace tgui
         m_possibleDoubleClick = false;
 
         // Check if the mouse event should go to the scrollbar
-        if (m_verticalScroll.isShown() && ((m_verticalScroll.isMouseDown() && m_verticalScroll.isMouseDownOnThumb()) || m_verticalScroll.mouseOnWidget(x - m_verticalScroll.getPosition().x, y - m_verticalScroll.getPosition().y)))
+        if (m_verticalScroll.isShown() && ((m_verticalScroll.isMouseDown() && m_verticalScroll.isMouseDownOnThumb()) || m_verticalScroll.mouseOnWidget(pos - m_verticalScroll.getPosition())))
         {
-            m_verticalScroll.mouseMoved(x - m_verticalScroll.getPosition().x, y - m_verticalScroll.getPosition().y);
+            m_verticalScroll.mouseMoved(pos - m_verticalScroll.getPosition());
             recalculateVisibleLines();
         }
 
         // If the mouse is held down then you are selecting text
         else if (m_mouseDown)
         {
-            sf::Vector2<std::size_t> caretPosition = findCaretPosition({x, y});
+            sf::Vector2<std::size_t> caretPosition = findCaretPosition(pos);
             if (caretPosition != m_selEnd)
             {
                 m_selEnd = caretPosition;

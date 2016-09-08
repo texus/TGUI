@@ -252,10 +252,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::mouseOnWidget(float x, float y) const
+    bool MenuBar::mouseOnWidget(sf::Vector2f pos) const
     {
         // Check if the mouse is on top of the menu bar
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(x, y))
+        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
             return true;
         else
         {
@@ -276,7 +276,7 @@ namespace tgui
                 }
 
                 // Check if the mouse is on top of the open menu
-                if (sf::FloatRect{left, getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(x, y))
+                if (sf::FloatRect{left, getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
                     return true;
             }
         }
@@ -286,17 +286,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::leftMousePressed(float x, float y)
+    void MenuBar::leftMousePressed(sf::Vector2f pos)
     {
         // Check if a menu should be opened or closed
-        if (y < getSize().y)
+        if (pos.y < getSize().y)
         {
             // Loop through the menus to check if the mouse is on top of them
             float menuWidth = 0;
             for (unsigned int i = 0; i < m_menus.size(); ++i)
             {
                 menuWidth += m_menus[i].text.getSize().x + (2 * getRenderer()->getDistanceToSide());
-                if (x < menuWidth)
+                if (pos.x < menuWidth)
                 {
                     // Close the menu when it was already open
                     if (m_visibleMenu == static_cast<int>(i))
@@ -332,14 +332,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::leftMouseReleased(float, float y)
+    void MenuBar::leftMouseReleased(sf::Vector2f pos)
     {
         if (m_mouseDown)
         {
             // Check if the mouse is on top of one of the menus
-            if (y >= getSize().y)
+            if (pos.y >= getSize().y)
             {
-                unsigned int selectedMenuItem = static_cast<unsigned int>((y - getSize().y) / getSize().y);
+                unsigned int selectedMenuItem = static_cast<unsigned int>((pos.y - getSize().y) / getSize().y);
 
                 if (selectedMenuItem < m_menus[m_visibleMenu].menuItems.size())
                 {
@@ -358,13 +358,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::mouseMoved(float x, float y)
+    void MenuBar::mouseMoved(sf::Vector2f pos)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
 
         // Check if the mouse is on top of the menu bar (not on an open menus)
-        if (y < getSize().y)
+        if (pos.y < getSize().y)
         {
             // Don't open a menu without having clicked first
             if (m_visibleMenu != -1)
@@ -374,7 +374,7 @@ namespace tgui
                 for (unsigned int i = 0; i < m_menus.size(); ++i)
                 {
                     menuWidth += m_menus[i].text.getSize().x + (2 * getRenderer()->getDistanceToSide());
-                    if (x < menuWidth)
+                    if (pos.x < menuWidth)
                     {
                         // Check if the menu is already open
                         if (m_visibleMenu == static_cast<int>(i))
@@ -410,7 +410,7 @@ namespace tgui
         else // The mouse is on top of one of the menus
         {
             // Calculate on what menu item the mouse is located
-            int selectedMenuItem = static_cast<int>((y - getSize().y) / getSize().y);
+            int selectedMenuItem = static_cast<int>((pos.y - getSize().y) / getSize().y);
 
             // Check if the mouse is on a different item than before
             if (selectedMenuItem != m_menus[m_visibleMenu].selectedMenuItem)

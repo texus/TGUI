@@ -128,11 +128,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CheckBox::leftMouseReleased(float x, float y)
+    void CheckBox::leftMouseReleased(sf::Vector2f pos)
     {
         bool mouseDown = m_mouseDown;
 
-        ClickableWidget::leftMouseReleased(x, y);
+        ClickableWidget::leftMouseReleased(pos);
 
         // Check or uncheck when we clicked on the checkbox (not just mouse release)
         if (mouseDown)
