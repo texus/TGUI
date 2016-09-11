@@ -194,7 +194,7 @@ TEST_CASE("[Panel]")
     {
         panel = std::make_shared<tgui::Panel>(400.f, 300.f);
 
-        SECTION("independent panel")
+        SECTION("Only save contents")
         {
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("PanelWidgetFile1.txt"));
             
@@ -206,13 +206,13 @@ TEST_CASE("[Panel]")
             REQUIRE(compareFiles("PanelWidgetFile1.txt", "PanelWidgetFile2.txt"));
         }
 
-        SECTION("panel inside gui")
+        SECTION("Save entire panel")
         {
             auto widget = std::make_shared<tgui::ClickableWidget>();
             widget->setPosition(40, 20);
             panel->add(widget);
 
-            testSavingWidget("Panel", panel, false);
+            testSavingWidget("Panel", panel);
         }
     }
 }

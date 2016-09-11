@@ -25,7 +25,7 @@ set(TEST_SOURCES
     Widgets/Canvas.cpp
     Widgets/ChatBox.cpp
     Widgets/CheckBox.cpp
-    #Widgets/ChildWindow.cpp
+    Widgets/ChildWindow.cpp
     Widgets/ClickableWidget.cpp
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
@@ -45,11 +45,6 @@ set(TEST_SOURCES
     Widgets/TextBox.cpp
     Widgets/ToolTip.cpp
 )
-
-# The tests require c++14
-if(SFML_COMPILER_GCC OR SFML_COMPILER_CLANG)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-endif()
 
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests ${PROJECT_NAME} ${TGUI_EXT_LIBS})

@@ -22,16 +22,16 @@ Checkbox {
 }
 
 ChildWindow {
-    TitlebarImage   = "Black.png" Part(48, 154, 75, 25) Middle(25, 0, 25, 25);
+    TextureTitlebar = "Black.png" Part(48, 154, 75, 25) Middle(25, 0, 25, 25);
     TitleColor      = rgb(190, 190, 190);
     BackgroundColor = rgb( 80,  80,  80);
     BorderColor     = Black;
     Borders         = (1, 1, 1, 1);
     DistanceToSide  = 5;
     CloseButton     = {
-                        NormalImage = "Black.png" Part(48, 179, 15, 15);
-                        HoverImage  = "Black.png" Part(63, 179, 15, 15);
-                        DownImage   = "Black.png" Part(78, 179, 15, 15);
+                        Texture       = "Black.png" Part(48, 179, 15, 15);
+                        TextureHover  = "Black.png" Part(63, 179, 15, 15);
+                        TextureDown   = "Black.png" Part(78, 179, 15, 15);
                       };
 }
 

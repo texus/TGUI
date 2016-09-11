@@ -231,9 +231,9 @@ TEST_CASE("[ComboBox]")
 
         SECTION("colored")
         {
-            auto listBoxRendererData = std::make_shared<tgui::RendererData>();
-            listBoxRendererData->propertyValuePairs["backgroundcolor"] = {sf::Color::Red};
-            listBoxRendererData->propertyValuePairs["textcolor"] = {sf::Color::Blue};
+            tgui::ListBoxRenderer listBoxRenderer;
+            listBoxRenderer.setBackgroundColor(sf::Color::Red);
+            listBoxRenderer.setTextColor(sf::Color::Blue);
 
             SECTION("set serialized property")
             {
@@ -262,7 +262,7 @@ TEST_CASE("[ComboBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Bold));
-                REQUIRE_NOTHROW(renderer->setProperty("ListBox", listBoxRendererData));
+                REQUIRE_NOTHROW(renderer->setProperty("ListBox", listBoxRenderer.getData()));
             }
 
             SECTION("functions")
@@ -279,7 +279,7 @@ TEST_CASE("[ComboBox]")
                 renderer->setTextStyle(sf::Text::Bold);
 
                 REQUIRE(renderer->getListBox()->propertyValuePairs.size() == 0);
-                renderer->setListBox(listBoxRendererData);
+                renderer->setListBox(listBoxRenderer.getData());
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(20, 30, 40));
@@ -293,10 +293,9 @@ TEST_CASE("[ComboBox]")
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Bold);
 
-            listBoxRendererData = renderer->getListBox();
-            REQUIRE(listBoxRendererData->propertyValuePairs.size() == 2);
-            REQUIRE(listBoxRendererData->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Red);
-            REQUIRE(listBoxRendererData->propertyValuePairs["textcolor"].getColor() == sf::Color::Blue);
+            REQUIRE(renderer->getListBox()->propertyValuePairs.size() == 2);
+            REQUIRE(renderer->getListBox()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Red);
+            REQUIRE(renderer->getListBox()->propertyValuePairs["textcolor"].getColor() == sf::Color::Blue);
         }
 
         SECTION("textured")

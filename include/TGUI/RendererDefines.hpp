@@ -115,4 +115,23 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define TGUI_RENDERER_PROPERTY_RENDERER(CLASS, NAME) \
+    std::shared_ptr<RendererData> CLASS::get##NAME() const \
+    { \
+        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        if (it != m_data->propertyValuePairs.end()) \
+            return it->second.getRenderer(); \
+        else \
+        { \
+            m_data->propertyValuePairs[toLower(#NAME)] = {std::make_shared<RendererData>()}; \
+            return m_data->propertyValuePairs[toLower(#NAME)].getRenderer(); \
+        } \
+    } \
+    void CLASS::set##NAME(std::shared_ptr<RendererData> renderer) \
+    { \
+        setProperty(toLower(#NAME), {renderer}); \
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #endif // TGUI_RENDERER_DEFINES_HPP

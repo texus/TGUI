@@ -47,26 +47,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ListBoxRenderer, TextStyle, sf::Text::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ListBoxRenderer, SelectedTextStyle, {})
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ListBoxRenderer::setScrollbar(std::shared_ptr<RendererData> texture)
-    {
-        setProperty("scrollbar", {texture});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<RendererData> ListBoxRenderer::getScrollbar() const
-    {
-        auto it = m_data->propertyValuePairs.find("scrollbar");
-        if (it != m_data->propertyValuePairs.end())
-            return it->second.getRenderer();
-        else
-        {
-            m_data->propertyValuePairs["scrollbar"] = {std::make_shared<RendererData>()};
-            return m_data->propertyValuePairs["scrollbar"].getRenderer();
-        }
-    }
+    TGUI_RENDERER_PROPERTY_RENDERER(ListBoxRenderer, Scrollbar)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

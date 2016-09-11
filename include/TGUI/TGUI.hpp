@@ -44,8 +44,8 @@
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Canvas.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
-#include <TGUI/Widgets/CheckBox.hpp>/**
-#include <TGUI/Widgets/ChildWindow.hpp>*/
+#include <TGUI/Widgets/CheckBox.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>

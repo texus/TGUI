@@ -28,8 +28,8 @@
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Canvas.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
-#include <TGUI/Widgets/CheckBox.hpp>/**
-#include <TGUI/Widgets/ChildWindow.hpp>*/
+#include <TGUI/Widgets/CheckBox.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Knob.hpp>
@@ -325,7 +325,7 @@ namespace tgui
 
         return checkbox;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API Widget::Ptr loadChildWindow(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
@@ -348,6 +348,9 @@ namespace tgui
                 throw Exception{"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
         }
 
+        if (node->propertyValuePairs["titlebuttons"])
+            childWindow->setTitleButtons(tgui::stoi(node->propertyValuePairs["titlebuttons"]->value));
+
         if (node->propertyValuePairs["title"])
             childWindow->setTitle(DESERIALIZE_STRING("title"));
 
@@ -357,12 +360,8 @@ namespace tgui
         if (node->propertyValuePairs["keepinparent"])
             childWindow->keepInParent(parseBoolean(node->propertyValuePairs["keepinparent"]->value));
 
-        for (const auto& childNode : node->children)
-        {
-            if (toLower(childNode->name) == "closebutton")
-                childWindow->setCloseButton(std::static_pointer_cast<Button>(WidgetLoader::getLoadFunction("button")(childNode)));
-        }
-        REMOVE_CHILD("closebutton");
+        if (node->propertyValuePairs["resizable"])
+            childWindow->setResizable(parseBoolean(node->propertyValuePairs["resizable"]->value));
 
         loadContainer(node, childWindow);
 
@@ -370,7 +369,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
+
     TGUI_API Widget::Ptr loadClickableWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
     {
         if (widget)
@@ -909,8 +908,8 @@ namespace tgui
             {"button", std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
             {"canvas", std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
             {"chatbox", std::bind(loadChatBox, std::placeholders::_1, std::shared_ptr<ChatBox>{})},
-            {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},/**
-            {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},*/
+            {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},
+            {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},
             {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},
             {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},
             {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},

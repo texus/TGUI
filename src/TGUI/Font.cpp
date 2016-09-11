@@ -40,7 +40,7 @@ namespace tgui
 
     Font::Font(const std::string& id) :
         m_font{Deserializer::deserialize(ObjectConverter::Type::Font, id).getFont()},
-        m_id  {id}
+        m_id  {Deserializer::deserialize(ObjectConverter::Type::String, id).getString()}
     {
     }
 

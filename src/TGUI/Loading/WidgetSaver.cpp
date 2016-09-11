@@ -26,8 +26,8 @@
 #include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/ChatBox.hpp>/**
-#include <TGUI/Widgets/ChildWindow.hpp>*/
+#include <TGUI/Widgets/ChatBox.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Knob.hpp>
@@ -108,19 +108,22 @@ namespace tgui
         /// TODO: ToolTip
         /// TODO: Separate renderer section?
 
-        node->children.emplace_back(std::make_shared<DataIO::Node>());
-        node->children.back()->name = "Renderer";
-        for (const auto& pair : widget->getRenderer()->getPropertyValuePairs())
+        if (!widget->getRenderer()->getPropertyValuePairs().empty())
         {
-            sf::String value = ObjectConverter{pair.second}.getString();
-            if (pair.second.getType() == ObjectConverter::Type::RendererData)
+            node->children.emplace_back(std::make_shared<DataIO::Node>());
+            node->children.back()->name = "Renderer";
+            for (const auto& pair : widget->getRenderer()->getPropertyValuePairs())
             {
-                std::stringstream ss{value};
-                node->children.back()->children.push_back(DataIO::parse(ss)->children[0]);
-                node->children.back()->children.back()->name = pair.first;
+                sf::String value = ObjectConverter{pair.second}.getString();
+                if (pair.second.getType() == ObjectConverter::Type::RendererData)
+                {
+                    std::stringstream ss{value};
+                    node->children.back()->children.push_back(DataIO::parse(ss)->children[0]);
+                    node->children.back()->children.back()->name = pair.first;
+                }
+                else
+                    node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(value);
             }
-            else
-                node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(value);
         }
 
         return node;
@@ -198,12 +201,14 @@ namespace tgui
 
         return node;
     }
-/**
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveChildWindow(ChildWindow::Ptr childWindow)
     {
         auto node = WidgetSaver::getSaveFunction("container")(tgui::WidgetConverter{childWindow});
+
+        SET_PROPERTY("TitleButtons", Serializer::serialize(childWindow->getTitleButtons()));
 
         if (childWindow->getTitleAlignment() == ChildWindow::TitleAlignment::Left)
             SET_PROPERTY("TitleAlignment", "Left");
@@ -221,13 +226,12 @@ namespace tgui
         if (childWindow->isKeptInParent())
             SET_PROPERTY("KeepInParent", "true");
 
-        node->children.push_back(WidgetSaver::getSaveFunction("button")(tgui::WidgetConverter{childWindow->getCloseButton()}));
-        node->children.back()->parent = node.get();
-        node->children.back()->name = "CloseButton";
+        if (childWindow->isResizable())
+            SET_PROPERTY("Resizable", "true");
 
         return node;
     }
-*/
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TGUI_API std::shared_ptr<DataIO::Node> saveComboBox(ComboBox::Ptr comboBox)
@@ -582,8 +586,8 @@ namespace tgui
             {"button", saveButton},
             {"canvas", saveWidget},
             {"chatbox", saveChatBox},
-            {"checkbox", saveRadioButton},/**
-            {"childwindow", saveChildWindow},*/
+            {"checkbox", saveRadioButton},
+            {"childwindow", saveChildWindow},
             {"clickablewidget", saveWidget},
             {"combobox", saveComboBox},
             {"editbox", saveEditBox},

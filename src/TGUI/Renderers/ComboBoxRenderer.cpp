@@ -48,26 +48,7 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, TextStyle, sf::Text::Regular)
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBoxRenderer::setListBox(std::shared_ptr<RendererData> texture)
-    {
-        setProperty("listbox", {texture});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<RendererData> ComboBoxRenderer::getListBox() const
-    {
-        auto it = m_data->propertyValuePairs.find("listbox");
-        if (it != m_data->propertyValuePairs.end())
-            return it->second.getRenderer();
-        else
-        {
-            m_data->propertyValuePairs["listbox"] = {std::make_shared<RendererData>()};
-            return m_data->propertyValuePairs["listbox"].getRenderer();
-        }
-    }
+    TGUI_RENDERER_PROPERTY_RENDERER(ComboBoxRenderer, ListBox)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -43,26 +43,7 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_NUMBER(TextBoxRenderer, CaretWidth, 1)
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBoxRenderer::setScrollbar(std::shared_ptr<RendererData> texture)
-    {
-        setProperty("scrollbar", {texture});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<RendererData> TextBoxRenderer::getScrollbar() const
-    {
-        auto it = m_data->propertyValuePairs.find("scrollbar");
-        if (it != m_data->propertyValuePairs.end())
-            return it->second.getRenderer();
-        else
-        {
-            m_data->propertyValuePairs["scrollbar"] = {std::make_shared<RendererData>()};
-            return m_data->propertyValuePairs["scrollbar"].getRenderer();
-        }
-    }
+    TGUI_RENDERER_PROPERTY_RENDERER(TextBoxRenderer, Scrollbar)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
