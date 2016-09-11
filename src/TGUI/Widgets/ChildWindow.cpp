@@ -28,6 +28,24 @@
 
 #include <SFML/OpenGL.hpp>
 
+#include <limits>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace
+{
+    float clamp(float value, float lower, float upper)
+    {
+        if (value < lower)
+            return lower;
+
+        if (value > upper)
+            return upper;
+
+        return value;
+    }
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -50,6 +68,8 @@ namespace tgui
         reload();
 
         setSize(400, 300);
+        m_minimumSize = {0, 0};
+        m_maximumSize = {std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,6 +187,46 @@ namespace tgui
     {
         return {getSize().x + getRenderer()->m_borders.left + getRenderer()->m_borders.right,
                 getSize().y + getRenderer()->m_borders.top + getRenderer()->m_borders.bottom + getRenderer()->m_titleBarHeight};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setMaximumSize(sf::Vector2f size)
+    {
+        if ((size.x < getSize().x) || (size.y < getSize().y))
+        {
+            // The window is currently larger than the new maximum size, lets downsize
+            setSize(std::min(size.x, getSize().x), std::min(size.y, getSize().y));
+        }
+
+        m_maximumSize = size;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ChildWindow::getMaximumSize() const
+    {
+        return m_maximumSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setMinimumSize(sf::Vector2f size)
+    {
+        if ((size.x > getSize().x) || (size.y > getSize().y))
+        {
+            // The window is currently smaller than the new minimum size, lets upsize
+            setSize(std::max(size.x, getSize().x), std::max(size.y, getSize().y));
+        }
+
+        m_minimumSize = size;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ChildWindow::getMinimumSize() const
+    {
+        return m_minimumSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -574,26 +634,21 @@ namespace tgui
 
             if ((m_resizeDirection & ResizeLeft) != 0)
             {
-                float diff = x - getPosition().x;
-                if (getSize().x - diff >= minimumWidth)
-                {
-                    setPosition(getPosition().x + diff, getPosition().y);
-                    setSize(getSize().x - diff, getSize().y);
-                }
-                else
-                {
-                    setPosition(getPosition().x + getSize().x - minimumWidth, getPosition().y);
-                    setSize(minimumWidth, getSize().y);
-                }
+                const float diff = clamp(x - getPosition().x, getSize().x - m_maximumSize.x, getSize().x - std::max(minimumWidth, m_minimumSize.x));
+
+                setPosition(getPosition().x + diff, getPosition().y);
+                setSize(getSize().x - diff, getSize().y);
             }
             else if ((m_resizeDirection & ResizeRight) != 0)
             {
-                setSize(std::max(minimumWidth, x - (getPosition().x + getRenderer()->m_borders.left)), getSize().y);
+                const float newX = std::max(0.f, x - (getPosition().x + getRenderer()->m_borders.left));
+                setSize(clamp(newX, std::max(minimumWidth, m_minimumSize.x), m_maximumSize.x), getSize().y);
             }
 
             if ((m_resizeDirection & ResizeBottom) != 0)
             {
-                setSize(getSize().x, std::max(0.f, y - (getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top)));
+                const float newY = std::max(0.f, y - (getPosition().y + getRenderer()->m_titleBarHeight + getRenderer()->m_borders.top));
+                setSize(getSize().x, clamp(newY, m_minimumSize.y, m_maximumSize.y));
             }
         }
 

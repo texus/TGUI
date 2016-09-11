@@ -152,6 +152,52 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the maximum size of the child window.
+        ///
+        /// @param size   Sets the new maximum size of the child window
+        ///
+        /// This function sets the maximum size of the window excluding borders and titlebar.
+        /// If the window is larger than the new maximum size, it will automatically be resized down.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMaximumSize(sf::Vector2f size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the maximum size of the child window.
+        ///
+        /// @return Maximum size of the child window
+        ///
+        /// The size returned by this function is the maximum size of the child window, excluding the title bar and the borders.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::Vector2f getMaximumSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the minimum size of the child window.
+        ///
+        /// @param size   Sets the new minimum size of the child window
+        ///
+        /// This function sets the minimum size of the window excluding borders and titlebar.
+        /// If the window is smaller than the new minimum size, it will automatically be resized up.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMinimumSize(sf::Vector2f size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the minimum size of the child window.
+        ///
+        /// @return Minimum size of the child window
+        ///
+        /// The size returned by this function is the minimum size of the child window, excluding the title bar and the borders.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::Vector2f getMinimumSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the font of the text in the widget and its children.
         ///
         /// @param font  The new font.
@@ -502,6 +548,8 @@ namespace tgui
 
         Label          m_titleText;
         sf::Vector2f   m_draggingPosition;
+        sf::Vector2f   m_maximumSize;
+        sf::Vector2f   m_minimumSize;
         TitleAlignment m_titleAlignment = TitleAlignment::Center;
         TitleButtons   m_titleButtons = TitleButtons::Close;
         sf::String     m_closeButtonText = "x";
