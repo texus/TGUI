@@ -35,6 +35,17 @@ namespace tgui
         const std::string closeButtonText = "x";
         const std::string maximizeButtonText = "+";
         const std::string minimizeButtonText = "-";
+
+        float clamp(float value, float lower, float upper)
+        {
+            if (value < lower)
+                return lower;
+
+            if (value > upper)
+                return upper;
+
+            return value;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,6 +196,46 @@ namespace tgui
         Borders borders = getRenderer()->getBorders();
         return {getSize().x + borders.left + borders.right,
                 getSize().y + borders.top + borders.bottom + getRenderer()->getTitleBarHeight()};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setMaximumSize(sf::Vector2f size)
+    {
+        if ((size.x < getSize().x) || (size.y < getSize().y))
+        {
+            // The window is currently larger than the new maximum size, lets downsize
+            setSize(std::min(size.x, getSize().x), std::min(size.y, getSize().y));
+        }
+
+        m_maximumSize = size;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ChildWindow::getMaximumSize() const
+    {
+        return m_maximumSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setMinimumSize(sf::Vector2f size)
+    {
+        if ((size.x > getSize().x) || (size.y > getSize().y))
+        {
+            // The window is currently smaller than the new minimum size, lets upsize
+            setSize(std::max(size.x, getSize().x), std::max(size.y, getSize().y));
+        }
+
+        m_minimumSize = size;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f ChildWindow::getMinimumSize() const
+    {
+        return m_minimumSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -468,25 +519,20 @@ namespace tgui
 
             if ((m_resizeDirection & ResizeLeft) != 0)
             {
-                if (getSize().x - pos.x >= minimumWidth)
-                {
-                    setPosition(getPosition().x + pos.x, getPosition().y);
-                    setSize(getSize().x - pos.x, getSize().y);
-                }
-                else
-                {
-                    setPosition(getPosition().x + getSize().x - minimumWidth, getPosition().y);
-                    setSize(minimumWidth, getSize().y);
-                }
+                const float diff = clamp(pos.x, getSize().x - m_maximumSize.x, getSize().x - std::max(minimumWidth, m_minimumSize.x));
+
+                setPosition(getPosition().x + diff, getPosition().y);
+                setSize(getSize().x - diff, getSize().y);
             }
             else if ((m_resizeDirection & ResizeRight) != 0)
             {
-                setSize(std::max(minimumWidth, pos.x - getRenderer()->getBorders().left), getSize().y);
+                setSize(clamp(pos.x - getRenderer()->getBorders().left, std::max(minimumWidth, m_minimumSize.x), m_maximumSize.x), getSize().y);
             }
 
             if ((m_resizeDirection & ResizeBottom) != 0)
             {
-                setSize(getSize().x, std::max(0.f, pos.y - getRenderer()->getTitleBarHeight() - getRenderer()->getBorders().top));
+                const float newY = std::max(0.f, pos.y - (getRenderer()->getTitleBarHeight() + getRenderer()->getBorders().top));
+                setSize(getSize().x, clamp(newY, m_minimumSize.y, m_maximumSize.y));
             }
         }
 
