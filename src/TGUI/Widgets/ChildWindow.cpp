@@ -111,8 +111,6 @@ namespace tgui
 
         Widget::setPosition({x, y});
 
-        m_iconTexture.setPosition(distanceToSide, (titleBarHeight - m_iconTexture.getSize().y) / 2.0f);
-
         // Calculate the distance from the right side that the buttons will need
         float buttonOffsetX = 0;
         for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
@@ -127,18 +125,11 @@ namespace tgui
         if (m_titleAlignment == TitleAlignment::Left)
         {
             m_titleText.setPosition(distanceToSide, (titleBarHeight - m_titleText.getSize().y) / 2.0f);
-            if (m_iconTexture.isLoaded())
-                m_titleText.move(m_iconTexture.getSize().x + distanceToSide, 0);
         }
         else if (m_titleAlignment == TitleAlignment::Center)
         {
-            if (m_iconTexture.isLoaded())
-                m_titleText.setPosition((2 * distanceToSide) + m_iconTexture.getSize().x
-                                        + (((getSize().x + borders.left + borders.right) - (3 * distanceToSide) - m_iconTexture.getSize().x - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
-                                        (titleBarHeight - m_titleText.getSize().y) / 2.0f);
-            else
-                m_titleText.setPosition(distanceToSide + (((getSize().x + borders.left + borders.right) - (2 * distanceToSide) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
-                                        (titleBarHeight - m_titleText.getSize().y) / 2.0f);
+            m_titleText.setPosition(distanceToSide + (((getSize().x + borders.left + borders.right) - (2 * distanceToSide) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
+                                    (titleBarHeight - m_titleText.getSize().y) / 2.0f);
         }
         else // if (m_titleAlignment == TitleAlignment::Right)
         {
@@ -165,25 +156,8 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        float titleBarHeight = getRenderer()->getTitleBarHeight();
-        Texture& textureTitleBar = getRenderer()->getTextureTitleBar();
-        if (textureTitleBar.isLoaded())
-        {
-            textureTitleBar.setSize({getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, titleBarHeight});
-
-            // If there is an icon then give it the correct size
-            if (m_iconTexture.isLoaded())
-            {
-                m_iconTexture.setSize({titleBarHeight / textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().x,
-                                       titleBarHeight / textureTitleBar.getImageSize().y * m_iconTexture.getImageSize().y});
-            }
-        }
-        else
-        {
-            // If there is an icon then give it the correct size
-            if (m_iconTexture.isLoaded())
-                m_iconTexture.setSize({((titleBarHeight * 0.8f) / m_iconTexture.getImageSize().y) * m_iconTexture.getImageSize().x, titleBarHeight * 0.8f});
-        }
+        if (getRenderer()->getTextureTitleBar().isLoaded())
+            getRenderer()->getTextureTitleBar().setSize({getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->getTitleBarHeight()});
 
         // Reposition the images and text
         updatePosition();
@@ -316,21 +290,6 @@ namespace tgui
     int ChildWindow::getTitleButtons() const
     {
         return m_titleButtons;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::setIcon(const Texture& icon)
-    {
-        m_iconTexture = icon;
-        updateSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const Texture& ChildWindow::getIcon()
-    {
-        return m_iconTexture;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -717,7 +676,6 @@ namespace tgui
                     button->getRenderer()->setOpacity(opacity);
             }
 
-            m_iconTexture.setOpacity(opacity);
             m_titleText.setOpacity(opacity);
             getRenderer()->getTextureTitleBar().setOpacity(opacity);
         }
@@ -761,10 +719,6 @@ namespace tgui
         else
             drawRectangleShape(target, states, {sizeIncludingBorders.x, getRenderer()->getTitleBarHeight()}, getRenderer()->getTitleBarColor());
 
-        // Draw a window icon if one was set
-        if (m_iconTexture.isLoaded())
-            m_iconTexture.draw(target, states);
-
         // Draw the text in the title bar (after setting the clipping area)
         {
             float buttonOffsetX = 0;
@@ -777,12 +731,7 @@ namespace tgui
             if (buttonOffsetX > 0)
                 buttonOffsetX += getRenderer()->getDistanceToSide();
 
-            float clippingLeft;
-            if (m_iconTexture.isLoaded())
-                clippingLeft = 2 * getRenderer()->getDistanceToSide() + m_iconTexture.getSize().x;
-            else
-                clippingLeft = getRenderer()->getDistanceToSide();
-
+            float clippingLeft = getRenderer()->getDistanceToSide();
             float clippingRight = sizeIncludingBorders.x - getRenderer()->getDistanceToSide() - buttonOffsetX;
 
             Clipping clipping{target, states, {clippingLeft, 0}, {clippingRight - clippingLeft, getRenderer()->getTitleBarHeight()}};

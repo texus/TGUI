@@ -354,9 +354,6 @@ namespace tgui
         if (node->propertyValuePairs["title"])
             childWindow->setTitle(DESERIALIZE_STRING("title"));
 
-        if (node->propertyValuePairs["icon"])
-            childWindow->setIcon(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs["icon"]->value).getTexture());
-
         if (node->propertyValuePairs["keepinparent"])
             childWindow->keepInParent(parseBoolean(node->propertyValuePairs["keepinparent"]->value));
 
