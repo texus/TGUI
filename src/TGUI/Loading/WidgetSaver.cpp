@@ -208,6 +208,7 @@ namespace tgui
     {
         auto node = WidgetSaver::getSaveFunction("container")(tgui::WidgetConverter{childWindow});
 
+        /// TODO: Save as string
         SET_PROPERTY("TitleButtons", Serializer::serialize(childWindow->getTitleButtons()));
 
         if (childWindow->getTitleAlignment() == ChildWindow::TitleAlignment::Left)

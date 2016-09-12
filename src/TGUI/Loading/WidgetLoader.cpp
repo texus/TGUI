@@ -348,6 +348,7 @@ namespace tgui
                 throw Exception{"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
         }
 
+        /// TODO: Load as string
         if (node->propertyValuePairs["titlebuttons"])
             childWindow->setTitleButtons(tgui::stoi(node->propertyValuePairs["titlebuttons"]->value));
 

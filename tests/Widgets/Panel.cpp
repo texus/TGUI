@@ -59,6 +59,8 @@ TEST_CASE("[Panel]")
 
         SECTION("Child widgets")
         {
+            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(0, 0));
+
             auto childWidget = std::make_shared<tgui::ClickableWidget>();
             childWidget->setPosition(60, 50);
             panel->add(childWidget);
@@ -69,6 +71,8 @@ TEST_CASE("[Panel]")
             panel->getRenderer()->setBorders({1, 2, 3, 4});
             REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
             REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(101, 82));
+
+            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(1, 2));
         }
     }
 

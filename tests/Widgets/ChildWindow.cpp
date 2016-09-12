@@ -63,6 +63,8 @@ TEST_CASE("[ChildWindow]")
 
         SECTION("Child widgets")
         {
+            REQUIRE(childWindow->getChildWidgetsOffset() == sf::Vector2f(1, 17));
+
             auto childWidget = std::make_shared<tgui::ClickableWidget>();
             childWidget->setPosition(60, 50);
             childWindow->add(childWidget);
@@ -72,7 +74,92 @@ TEST_CASE("[ChildWindow]")
         }
     }
 
-    /// TODO: Test the functions in the ChildWindow class
+    SECTION("MinimumSize")
+    {
+        childWindow->setSize(25, 25);
+
+        REQUIRE(childWindow->getMinimumSize() == sf::Vector2f(0, 0));
+        childWindow->setMinimumSize({50, 100});
+        REQUIRE(childWindow->getMinimumSize() == sf::Vector2f(50, 100));
+
+        // Window is resized if needed
+        REQUIRE(childWindow->getSize() == sf::Vector2f(50, 100));
+
+        // Size limits are for user interaction and setSize ignores this property
+        childWindow->setSize({40, 30});
+        REQUIRE(childWindow->getSize() == sf::Vector2f(40, 30));
+    }
+
+    SECTION("MaximumSize")
+    {
+        childWindow->setSize(250, 250);
+
+        REQUIRE(childWindow->getMaximumSize() == sf::Vector2f(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()));
+        childWindow->setMaximumSize({100, 50});
+        REQUIRE(childWindow->getMaximumSize() == sf::Vector2f(100, 50));
+
+        // Window is resized if needed
+        REQUIRE(childWindow->getSize() == sf::Vector2f(100, 50));
+
+        // Size limits are for user interaction and setSize ignores this property
+        childWindow->setSize({400, 300});
+        REQUIRE(childWindow->getSize() == sf::Vector2f(400, 300));
+    }
+
+    SECTION("Title")
+    {
+        REQUIRE(childWindow->getTitle() == "");
+        childWindow->setTitle("Title Text");
+        REQUIRE(childWindow->getTitle() == "Title Text");
+    }
+
+    SECTION("TitleAlignment")
+    {
+        REQUIRE(childWindow->getTitleAlignment() == tgui::ChildWindow::TitleAlignment::Center);
+
+        childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
+        REQUIRE(childWindow->getTitleAlignment() == tgui::ChildWindow::TitleAlignment::Left);
+
+        childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Right);
+        REQUIRE(childWindow->getTitleAlignment() == tgui::ChildWindow::TitleAlignment::Right);
+
+        childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Center);
+        REQUIRE(childWindow->getTitleAlignment() == tgui::ChildWindow::TitleAlignment::Center);
+    }
+
+    SECTION("TitleButtons")
+    {
+        REQUIRE(childWindow->getTitleButtons() == tgui::ChildWindow::TitleButtons::Close);
+
+        childWindow->setTitleButtons(tgui::ChildWindow::TitleButtons::None);
+        REQUIRE(childWindow->getTitleButtons() == tgui::ChildWindow::TitleButtons::None);
+
+        int buttons = tgui::ChildWindow::TitleButtons::Close | tgui::ChildWindow::TitleButtons::Maximize | tgui::ChildWindow::TitleButtons::Minimize;
+        childWindow->setTitleButtons(buttons);
+        REQUIRE(childWindow->getTitleButtons() == buttons);
+    }
+
+    SECTION("Resizable")
+    {
+        REQUIRE(childWindow->isResizable() == false);
+
+        childWindow->setResizable(true);
+        REQUIRE(childWindow->isResizable() == true);
+
+        childWindow->setResizable(false);
+        REQUIRE(childWindow->isResizable() == false);
+    }
+
+    SECTION("KeepInParent")
+    {
+        REQUIRE(childWindow->isKeptInParent() == false);
+
+        childWindow->keepInParent(true);
+        REQUIRE(childWindow->isKeptInParent() == true);
+
+        childWindow->keepInParent(false);
+        REQUIRE(childWindow->isKeptInParent() == false);
+    }
 
     SECTION("Events / Signals")
     {
@@ -267,9 +354,12 @@ TEST_CASE("[ChildWindow]")
 
         SECTION("Save entire child window")
         {
+            childWindow->setMinimumSize({40, 30});
+            childWindow->setMaximumSize({200, 150});
             childWindow->setTitle("Title");
             childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
-            childWindow->setIcon({"resources/image.png"});
+            childWindow->setTitleButtons(tgui::ChildWindow::TitleButtons::Close | tgui::ChildWindow::TitleButtons::Minimize);
+            childWindow->setResizable();
             childWindow->keepInParent();
 
             auto widget = std::make_shared<tgui::ClickableWidget>();
