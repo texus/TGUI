@@ -69,10 +69,6 @@ set(TGUI_SRC
     Widgets/Tabs.cpp
     Widgets/TextBox.cpp
     Widgets/ToolTip.cpp
-    #Widgets/devel/RichTextLabel.cpp
-    #Widgets/devel/TableItem.cpp
-    #Widgets/devel/TableRow.cpp
-    #Widgets/devel/Table.cpp
 )
 
 # Determine library suffixes depending on static/shared configuration
