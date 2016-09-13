@@ -26,11 +26,86 @@
 #include <TGUI/Widgets/Grid.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 
-TEST_CASE("[Grid]") {
+TEST_CASE("[Grid]")
+{
     tgui::Grid::Ptr grid = std::make_shared<tgui::Grid>();
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(grid->getWidgetType() == "Grid");
+    }
+
+    SECTION("Adding widgets")
+    {
+        auto widget1 = std::make_shared<tgui::ClickableWidget>();
+        grid->addWidget(widget1, 3, 2);
+
+        REQUIRE(grid->getWidgets().size() == 1);
+        REQUIRE(grid->getWidget(3, 2) == widget1);
+        REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(0));
+        REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::Center);
+
+        // Accessing empty cell
+        REQUIRE(grid->getWidget(0, 0) == nullptr);
+        REQUIRE(grid->getWidgetBorders(0, 0) == tgui::Borders{0});
+        REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::Center);
+
+        auto widget2 = std::make_shared<tgui::ClickableWidget>();
+        grid->add(widget2); // Widget is added before calling addWidget here
+        grid->addWidget(widget2, 0, 0, {1, 2, 3, 4}, tgui::Grid::Alignment::UpperLeft);
+
+        REQUIRE(grid->getWidgets().size() == 2); // addWidget did not add a duplicate or widget2
+        REQUIRE(grid->getWidget(0, 0) == widget2);
+        REQUIRE(grid->getWidgetBorders(0, 0) == tgui::Borders(1, 2, 3, 4));
+        REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::UpperLeft);
+    }
+
+    SECTION("Removing widgets")
+    {
+        auto widget = std::make_shared<tgui::ClickableWidget>();
+        grid->addWidget(widget, 3, 2);
+
+        REQUIRE(grid->getWidget(3, 2) == widget);
+        grid->remove(widget);
+        REQUIRE(grid->getWidget(3, 2) == nullptr);
+
+        grid->addWidget(widget, 1, 5);
+
+        REQUIRE(grid->getWidget(1, 5) == widget);
+        grid->removeAllWidgets();
+        REQUIRE(grid->getWidget(1, 5) == nullptr);
+    }
+
+    SECTION("Borders")
+    {
+        auto widget = std::make_shared<tgui::ClickableWidget>();
+        grid->addWidget(widget, 3, 2, {1, 2, 3, 4});
+
+        REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(1, 2, 3, 4));
+        grid->setWidgetBorders(widget, {});
+        REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(0, 0, 0, 0));
+        grid->setWidgetBorders(3, 2, {5, 6, 7, 8});
+        REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(5, 6, 7, 8));
+
+        // You can't change the borders of an empty cell
+        grid->setWidgetBorders(0, 0, {1, 2, 3, 4});
+        REQUIRE(grid->getWidgetBorders(0, 0) == tgui::Borders(0, 0, 0, 0));
+    }
+
+    SECTION("Alignment")
+    {
+        auto widget = std::make_shared<tgui::ClickableWidget>();
+        grid->addWidget(widget, 3, 2, {}, tgui::Grid::Alignment::BottomRight);
+
+        REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::BottomRight);
+        grid->setWidgetAlignment(widget, tgui::Grid::Alignment::Center);
+        REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::Center);
+        grid->setWidgetAlignment(3, 2, tgui::Grid::Alignment::Up);
+        REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::Up);
+
+        // You can't change the alignment of an empty cell
+        grid->setWidgetAlignment(0, 0, tgui::Grid::Alignment::Left);
+        REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::Center);
     }
 
     /// TODO: Loading from and saving to file

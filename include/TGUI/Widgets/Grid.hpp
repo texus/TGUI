@@ -121,10 +121,7 @@ namespace tgui
         /// @return Size of the grid
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const override
-        {
-            return m_realSize;
-        }
+        virtual sf::Vector2f getSize() const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,37 +148,27 @@ namespace tgui
         /// @param widget    Pointer to a fully created widget that will be added to the grid
         /// @param row       The row in which the widget should be placed
         /// @param column    The column in which the widget should be placed
-        /// @param borders   Distance from the grid square to the widget (left, top, right, bottom)
-        /// @param alignment Where the widget is located in the square
+        /// @param borders   Distance from the grid cell to the widget (left, top, right, bottom)
+        /// @param alignment Where the widget is located in the cell
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addWidget(const Widget::Ptr& widget,
-                       unsigned int       row,
-                       unsigned int       column,
+                       std::size_t        row,
+                       std::size_t        column,
                        const Borders&     borders   = Borders{0},
                        Alignment          alignment = Alignment::Center);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the widget in a specific square of the grid
+        /// @brief Returns the widget in a specific cell of the grid
         ///
         /// @param row     The row that the widget is in
         /// @param column  The column that the widget is in
         ///
-        /// @return The widget inside the given square, or nullptr when the square doesn't contain a widget
+        /// @return The widget inside the given cell, or nullptr when the cell doesn't contain a widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr getWidget(unsigned int row, unsigned int column);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Updates the position and size of the widget
-        ///
-        /// You should no longer have to call this function manually as widgets are supposed to call this function themselves
-        /// when their position or size is changed.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateWidgets();
+        Widget::Ptr getWidget(std::size_t row, std::size_t column) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +178,30 @@ namespace tgui
         /// @param borders The new borders around the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeWidgetBorders(const Widget::Ptr& widget, const Borders& borders = Borders(0, 0, 0, 0));
+        void setWidgetBorders(const Widget::Ptr& widget, const Borders& borders = Borders(0, 0, 0, 0));
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes borders of a widget in a certain cell
+        ///
+        /// @param row     The row that the widget is in
+        /// @param column  The column that the widget is in
+        /// @param borders The new borders around the widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setWidgetBorders(std::size_t row, std::size_t column, const Borders& borders = Borders(0, 0, 0, 0));
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the borders around a widget in a specific cell of the grid
+        ///
+        /// @param row     The row that the widget is in
+        /// @param column  The column that the widget is in
+        ///
+        /// @return The borders inside the given cell, or Borders{0} when the cell doesn't contain a widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Borders getWidgetBorders(std::size_t row, std::size_t column) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -201,7 +211,39 @@ namespace tgui
         /// @param alignment The new alignment
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void changeWidgetAlignment(const Widget::Ptr& widget, Alignment alignment = Alignment::Center);
+        void setWidgetAlignment(const Widget::Ptr& widget, Alignment alignment = Alignment::Center);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the alignment of a given widget in its cell
+        ///
+        /// @param row       The row that the widget is in
+        /// @param column    The column that the widget is in
+        /// @param alignment The new alignment
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setWidgetAlignment(std::size_t row, std::size_t column, Alignment alignment = Alignment::Center);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the alignment of a given widget in its cell
+        ///
+        /// @param row     The row that the widget is in
+        /// @param column  The column that the widget is in
+        ///
+        /// @return The alignment inside the given cell, or Grid::Alignment::Center when the cell doesn't contain a widget
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Alignment getWidgetAlignment(std::size_t row, std::size_t column) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the widgets and their positions in the grid
+        ///
+        /// @return grid of widgets
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const std::vector<std::vector<Widget::Ptr>>& getGridWidgets() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,18 +269,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the widget
+        // Updates the position and size of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Widget::Ptr clone() const override
-        {
-            return std::make_shared<Grid>(*this);
-        }
+        void updateWidgets();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Makes a copy of the widget
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Widget::Ptr clone() const override
+        {
+            return std::make_shared<Grid>(*this);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

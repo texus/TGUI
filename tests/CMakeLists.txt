@@ -30,6 +30,7 @@ set(TEST_SOURCES
     Widgets/ClickableWidget.cpp
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
+    Widgets/Grid.cpp
     Widgets/Knob.cpp
     Widgets/Label.cpp
     Widgets/ListBox.cpp
