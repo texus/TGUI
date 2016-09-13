@@ -84,9 +84,20 @@ MenuBar {
 }
 
 MessageBox {
-    ChildWindow = &ChildWindow;
-    Button      = &Button;
-    TextColor   = rgb(190, 190, 190);
+    TextColor       = rgb(190, 190, 190);
+    Button          = &Button;
+
+    TextureTitlebar = "Black.png" Part(48, 154, 75, 25) Middle(25, 0, 25, 25);
+    TitleColor      = rgb(190, 190, 190);
+    BackgroundColor = rgb( 80,  80,  80);
+    BorderColor     = Black;
+    Borders         = (1, 1, 1, 1);
+    DistanceToSide  = 5;
+    CloseButton     = {
+                        Texture       = "Black.png" Part(48, 179, 15, 15);
+                        TextureHover  = "Black.png" Part(63, 179, 15, 15);
+                        TextureDown   = "Black.png" Part(78, 179, 15, 15);
+                      };
 }
 
 Panel {

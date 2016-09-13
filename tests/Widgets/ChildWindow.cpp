@@ -129,12 +129,12 @@ TEST_CASE("[ChildWindow]")
 
     SECTION("TitleButtons")
     {
-        REQUIRE(childWindow->getTitleButtons() == tgui::ChildWindow::TitleButtons::Close);
+        REQUIRE(childWindow->getTitleButtons() == tgui::ChildWindow::TitleButton::Close);
 
-        childWindow->setTitleButtons(tgui::ChildWindow::TitleButtons::None);
-        REQUIRE(childWindow->getTitleButtons() == tgui::ChildWindow::TitleButtons::None);
+        childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::None);
+        REQUIRE(childWindow->getTitleButtons() == tgui::ChildWindow::TitleButton::None);
 
-        int buttons = tgui::ChildWindow::TitleButtons::Close | tgui::ChildWindow::TitleButtons::Maximize | tgui::ChildWindow::TitleButtons::Minimize;
+        int buttons = tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Maximize | tgui::ChildWindow::TitleButton::Minimize;
         childWindow->setTitleButtons(buttons);
         REQUIRE(childWindow->getTitleButtons() == buttons);
     }
@@ -218,7 +218,7 @@ TEST_CASE("[ChildWindow]")
     {
         auto renderer = childWindow->getRenderer();
 
-        childWindow->setTitleButtons(tgui::ChildWindow::TitleButtons::None);
+        childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::None);
 
         SECTION("colored")
         {
@@ -243,7 +243,7 @@ TEST_CASE("[ChildWindow]")
                 REQUIRE_NOTHROW(renderer->setProperty("MaximizeButton", "{ BackgroundColor = Green; }"));
                 REQUIRE_NOTHROW(renderer->setProperty("MinimizeButton", "{ BackgroundColor = Blue; }"));
             }
-            
+
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
@@ -331,6 +331,10 @@ TEST_CASE("[ChildWindow]")
             SECTION("Fallback to default value")
             {
                 REQUIRE(renderer->getTitleBarHeight() == 20);
+
+                renderer->setTextureTitleBar({"resources/TitleBar.png"});
+                renderer->setTextureTitleBar({});
+                REQUIRE(renderer->getTitleBarHeight() == 20);
             }
         }
     }
@@ -358,7 +362,7 @@ TEST_CASE("[ChildWindow]")
             childWindow->setMaximumSize({200, 150});
             childWindow->setTitle("Title");
             childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
-            childWindow->setTitleButtons(tgui::ChildWindow::TitleButtons::Close | tgui::ChildWindow::TitleButtons::Minimize);
+            childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Minimize);
             childWindow->setResizable();
             childWindow->keepInParent();
 

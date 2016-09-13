@@ -74,13 +74,13 @@ namespace tgui
         };
 
 
-        /// Title buttons (bitwise OR to combine)
-        enum TitleButtons
+        /// Title buttons (use bitwise OR to combine)
+        enum TitleButton
         {
             None     = 0,      ///< No buttons
             Close    = 1 << 0, ///< Include a close button
-            Minimize = 1 << 1, ///< Include a minimize button
-            Maximize = 1 << 2  ///< Include a maximize button
+            Maximize = 1 << 1, ///< Include a maximize button
+            Minimize = 1 << 2  ///< Include a minimize button
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,7 +420,7 @@ namespace tgui
         sf::Vector2f   m_maximumSize    = {std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()};
         sf::Vector2f   m_minimumSize    = {0, 0};
         TitleAlignment m_titleAlignment = TitleAlignment::Center;
-        int            m_titleButtons   = TitleButtons::Close;
+        int            m_titleButtons   = TitleButton::Close;
 
         std::shared_ptr<Button> m_closeButton;
         std::shared_ptr<Button> m_minimizeButton;
@@ -431,8 +431,6 @@ namespace tgui
 
         bool m_resizable = false;
         int m_resizeDirection = ResizeNone;
-
-        friend class ChildWindowRenderer;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

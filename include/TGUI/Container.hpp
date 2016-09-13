@@ -104,7 +104,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const std::vector<sf::String>& getWidgetNames()
         {
-            return m_objName;
+            return m_widgetNames;
         }
 
 
@@ -419,7 +419,7 @@ namespace tgui
       protected:
 
         std::vector<Widget::Ptr> m_widgets;
-        std::vector<sf::String>  m_objName;
+        std::vector<sf::String>  m_widgetNames;
 
         Widget::Ptr m_widgetBelowMouse;
 

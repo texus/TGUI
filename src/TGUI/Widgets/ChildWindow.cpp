@@ -71,7 +71,7 @@ namespace tgui
         getRenderer()->getMaximizeButton()->propertyValuePairs["borders"] = {Borders{1}};
         getRenderer()->getMinimizeButton()->propertyValuePairs["borders"] = {Borders{1}};
 
-        setTitleButtons(TitleButtons::Close);
+        setTitleButtons(TitleButton::Close);
         setSize(400, 300);
     }
 
@@ -252,7 +252,7 @@ namespace tgui
     {
         m_titleButtons = buttons;
 
-        if (m_titleButtons & TitleButtons::Close)
+        if (m_titleButtons & TitleButton::Close)
         {
             m_closeButton = std::make_shared<tgui::Button>();
             m_closeButton->setRenderer(getRenderer()->getCloseButton());
@@ -262,7 +262,7 @@ namespace tgui
         else
             m_closeButton = nullptr;
 
-        if (m_titleButtons & TitleButtons::Maximize)
+        if (m_titleButtons & TitleButton::Maximize)
         {
             m_maximizeButton = std::make_shared<tgui::Button>();
             m_maximizeButton->setRenderer(getRenderer()->getMaximizeButton());
@@ -272,7 +272,7 @@ namespace tgui
         else
             m_maximizeButton = nullptr;
 
-        if (m_titleButtons & TitleButtons::Minimize)
+        if (m_titleButtons & TitleButton::Minimize)
         {
             m_minimizeButton = std::make_shared<tgui::Button>();
             m_minimizeButton->setRenderer(getRenderer()->getMinimizeButton());

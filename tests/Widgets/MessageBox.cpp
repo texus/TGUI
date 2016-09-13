@@ -25,44 +25,91 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/MessageBox.hpp>
 
-TEST_CASE("[MessageBox]") {
+TEST_CASE("[MessageBox]")
+{
     tgui::MessageBox::Ptr messageBox = std::make_shared<tgui::MessageBox>();
-    messageBox->setFont("resources/DroidSansArmenian.ttf");
+    messageBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
-    SECTION("Signals") {
+    SECTION("Signals")
+    {
         REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](){}));
         REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](sf::String){}));
-
     }
 
-    SECTION("WidgetType") {
+    SECTION("WidgetType")
+    {
         REQUIRE(messageBox->getWidgetType() == "MessageBox");
     }
 
-    /// TODO: Test the functions in the MessageBox class
+    SECTION("Text")
+    {
+        REQUIRE(messageBox->getText() == "");
+        messageBox->setText("Some text");
+        REQUIRE(messageBox->getText() == "Some text");
+    }
 
-    SECTION("Renderer") {
+    SECTION("TextSize")
+    {
+        messageBox->setTextSize(17);
+        REQUIRE(messageBox->getTextSize() == 17);
+    }
+
+    SECTION("Buttons")
+    {
+        REQUIRE(messageBox->getButtons().size() == 0);
+
+        messageBox->addButton("First");
+        REQUIRE(messageBox->getButtons().size() == 1);
+        REQUIRE(messageBox->getButtons()[0] == "First");
+
+        messageBox->addButton("Second");
+        REQUIRE(messageBox->getButtons().size() == 2);
+        REQUIRE(messageBox->getButtons()[0] == "First");
+        REQUIRE(messageBox->getButtons()[1] == "Second");
+    }
+
+    testWidgetRenderer(messageBox->getRenderer());
+    SECTION("Renderer")
+    {
         auto renderer = messageBox->getRenderer();
 
-        SECTION("set serialized property") {
+        tgui::ButtonRenderer buttonsRenderer;
+        buttonsRenderer.setBackgroundColor(sf::Color::Cyan);
+
+        SECTION("set serialized property")
+        {
             REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(10, 20, 30)"));
+            REQUIRE_NOTHROW(renderer->setProperty("Button", "{ BackgroundColor = Cyan; }"));
         }
 
-        SECTION("set object property") {
+        SECTION("set object property")
+        {
             REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{10, 20, 30}));
+            REQUIRE_NOTHROW(renderer->setProperty("Button", buttonsRenderer.getData()));
         }
 
-        SECTION("functions") {
+        SECTION("functions")
+        {
             renderer->setTextColor({10, 20, 30});
 
-            SECTION("getPropertyValuePairs") {
-                auto pairs = renderer->getPropertyValuePairs();
-                REQUIRE(pairs["TextColor"].getColor() == sf::Color(10, 20, 30));
-            }
+            REQUIRE(renderer->getButton()->propertyValuePairs.size() == 0);
+            renderer->setButton(buttonsRenderer.getData());
         }
 
         REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(10, 20, 30));
+
+        REQUIRE(renderer->getButton()->propertyValuePairs.size() == 1);
+        REQUIRE(renderer->getButton()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Cyan);
     }
 
-    /// TODO: Saving to and loading from file
+    SECTION("Saving and loading from file")
+    {
+        messageBox->setTitle("Error occured");
+        messageBox->setText("Oh no! Something went wrong.");
+        messageBox->addButton("Reboot");
+        messageBox->addButton("Retry");
+        messageBox->addButton("Ignore");
+
+        testSavingWidget("MessageBox", messageBox);
+    }
 }

@@ -47,13 +47,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Container::Container(const Container& containerToCopy) :
-        Widget                   {containerToCopy},
-        m_focusedWidget          {0}
+    Container::Container(const Container& other) :
+        Widget         {other},
+        m_focusedWidget{0}
     {
         // Copy all the widgets
-        for (std::size_t i = 0; i < containerToCopy.m_widgets.size(); ++i)
-            add(containerToCopy.m_widgets[i]->clone(), containerToCopy.m_objName[i]);
+        for (std::size_t i = 0; i < other.m_widgets.size(); ++i)
+            add(other.m_widgets[i]->clone(), other.m_widgetNames[i]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ namespace tgui
 
             // Copy all the widgets
             for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
-                add(right.m_widgets[i]->clone(), right.m_objName[i]);
+                add(right.m_widgets[i]->clone(), right.m_widgetNames[i]);
         }
 
         return *this;
@@ -102,7 +102,7 @@ namespace tgui
 
         widgetPtr->setParent(this);
         m_widgets.push_back(widgetPtr);
-        m_objName.push_back(widgetName);
+        m_widgetNames.push_back(widgetName);
 
         if (getRenderer()->getOpacity() < 1)
             widgetPtr->getRenderer()->setOpacity(getRenderer()->getOpacity());
@@ -112,9 +112,9 @@ namespace tgui
 
     Widget::Ptr Container::get(const sf::String& widgetName, bool recursive) const
     {
-        for (std::size_t i = 0; i < m_objName.size(); ++i)
+        for (std::size_t i = 0; i < m_widgetNames.size(); ++i)
         {
-            if (m_objName[i] == widgetName)
+            if (m_widgetNames[i] == widgetName)
             {
                 return m_widgets[i];
             }
@@ -156,7 +156,7 @@ namespace tgui
                 // Remove the widget
                 widget->setParent(nullptr);
                 m_widgets.erase(m_widgets.begin() + i);
-                m_objName.erase(m_objName.begin() + i);
+                m_widgetNames.erase(m_widgetNames.begin() + i);
                 return true;
             }
         }
@@ -173,7 +173,7 @@ namespace tgui
 
         // Clear the lists
         m_widgets.clear();
-        m_objName.clear();
+        m_widgetNames.clear();
 
         m_widgetBelowMouse = nullptr;
         m_focusedWidget = 0;
@@ -187,7 +187,7 @@ namespace tgui
         {
             if (m_widgets[i] == widget)
             {
-                m_objName[i] = name;
+                m_widgetNames[i] = name;
                 return true;
             }
         }
@@ -202,7 +202,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             if (m_widgets[i] == widget)
-                return m_objName[i];
+                return m_widgetNames[i];
         }
 
         return "";
@@ -584,7 +584,7 @@ namespace tgui
             {
                 // Copy the widget
                 m_widgets.push_back(m_widgets[i]);
-                m_objName.push_back(m_objName[i]);
+                m_widgetNames.push_back(m_widgetNames[i]);
 
                 // Focus the correct widget
                 if ((m_focusedWidget == 0) || (m_focusedWidget == i+1))
@@ -594,7 +594,7 @@ namespace tgui
 
                 // Remove the old widget
                 m_widgets.erase(m_widgets.begin() + i);
-                m_objName.erase(m_objName.begin() + i);
+                m_widgetNames.erase(m_widgetNames.begin() + i);
 
                 break;
             }
@@ -613,9 +613,9 @@ namespace tgui
             {
                 // Copy the widget
                 Widget::Ptr obj = m_widgets[i];
-                std::string name = m_objName[i];
+                std::string name = m_widgetNames[i];
                 m_widgets.insert(m_widgets.begin(), obj);
-                m_objName.insert(m_objName.begin(), name);
+                m_widgetNames.insert(m_widgetNames.begin(), name);
 
                 // Focus the correct widget
                 if (m_focusedWidget == i + 1)
@@ -625,7 +625,7 @@ namespace tgui
 
                 // Remove the old widget
                 m_widgets.erase(m_widgets.begin() + i + 1);
-                m_objName.erase(m_objName.begin() + i + 1);
+                m_widgetNames.erase(m_widgetNames.begin() + i + 1);
 
                 break;
             }

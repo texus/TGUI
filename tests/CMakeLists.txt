@@ -33,7 +33,7 @@ set(TEST_SOURCES
     Widgets/Label.cpp
     Widgets/ListBox.cpp
     Widgets/MenuBar.cpp
-    #Widgets/MessageBox.cpp
+    Widgets/MessageBox.cpp
     Widgets/Panel.cpp
     Widgets/Picture.cpp
     Widgets/ProgressBar.cpp

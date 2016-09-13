@@ -49,12 +49,12 @@
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/Grid.hpp>
+#include <TGUI/Widgets/Grid.hpp> /// TODO
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
-#include <TGUI/Widgets/MenuBar.hpp>/**
-#include <TGUI/Widgets/MessageBox.hpp>*/
+#include <TGUI/Widgets/MenuBar.hpp>
+#include <TGUI/Widgets/MessageBox.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
