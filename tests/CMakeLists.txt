@@ -14,6 +14,7 @@ set(TEST_SOURCES
     Text.cpp
     Texture.cpp
     TextureManager.cpp
+    ToolTip.cpp
     #VerticalLayout.cpp
     Widget.cpp
     Loading/DataIO.cpp
@@ -43,7 +44,6 @@ set(TEST_SOURCES
     Widgets/SpinButton.cpp
     Widgets/Tabs.cpp
     Widgets/TextBox.cpp
-    Widgets/ToolTip.cpp
 )
 
 add_executable(tests ${TEST_SOURCES})

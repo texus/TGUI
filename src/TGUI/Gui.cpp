@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Clipboard.hpp>
-#include <TGUI/Widgets/ToolTip.hpp>
+#include <TGUI/ToolTip.hpp>
 #include <TGUI/Gui.hpp>
 #include <TGUI/DefaultFont.hpp>
 
@@ -171,7 +171,7 @@ namespace tgui
                 default:
                     break;
             }
-/**
+
             // If a tooltip is visible then hide it now
             if (m_visibleToolTip != nullptr)
             {
@@ -181,7 +181,7 @@ namespace tgui
                 remove(m_visibleToolTip);
                 m_visibleToolTip = nullptr;
             }
-*/
+
             // Reset the data for the tooltip since the mouse has moved
             m_tooltipTime = {};
             m_tooltipPossible = true;
@@ -404,7 +404,7 @@ namespace tgui
     {
         m_container->m_animationTimeElapsed = elapsedTime;
         m_container->update(elapsedTime);
-/**
+
         if (m_tooltipPossible)
         {
             m_tooltipTime += elapsedTime;
@@ -422,7 +422,7 @@ namespace tgui
 
                 m_tooltipPossible = false;
             }
-        }*/
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

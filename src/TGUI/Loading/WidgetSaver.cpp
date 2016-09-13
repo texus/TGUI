@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include <TGUI/ToolTip.hpp>
 #include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Widgets/Button.hpp>
@@ -106,9 +107,21 @@ namespace tgui
                     SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
             }
 
-            /// TODO: ToolTip
-            /// TODO: Separate renderer section?
+            if (widget->getToolTip() != nullptr)
+            {
+                auto toolTipWidgetNode = WidgetSaver::getSaveFunction("widget")(tgui::WidgetConverter{widget->getToolTip()});
 
+                auto toolTipNode = std::make_shared<DataIO::Node>();
+                toolTipNode->name = "ToolTip";
+                toolTipNode->children.emplace_back(toolTipWidgetNode);
+
+                toolTipNode->propertyValuePairs["TimeToDisplay"] = std::make_shared<DataIO::ValueNode>(to_string(ToolTip::getTimeToDisplay().asSeconds()));
+                toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_shared<DataIO::ValueNode>("(" + to_string(ToolTip::getDistanceToMouse().x) + "," + to_string(ToolTip::getDistanceToMouse().y) + ")");
+
+                node->children.emplace_back(toolTipNode);
+            }
+
+            /// TODO: Separate renderer section?
             if (!widget->getRenderer()->getPropertyValuePairs().empty())
             {
                 node->children.emplace_back(std::make_shared<DataIO::Node>());

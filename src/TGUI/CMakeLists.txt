@@ -15,6 +15,7 @@ set(TGUI_SRC
     Text.cpp
     Texture.cpp
     TextureManager.cpp
+    ToolTip.cpp
     Transformable.cpp
     #VerticalLayout.cpp
     Widget.cpp
@@ -68,7 +69,6 @@ set(TGUI_SRC
     Widgets/SpinButton.cpp
     Widgets/Tabs.cpp
     Widgets/TextBox.cpp
-    Widgets/ToolTip.cpp
 )
 
 # Determine library suffixes depending on static/shared configuration

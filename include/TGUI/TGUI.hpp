@@ -30,6 +30,7 @@
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Animation.hpp>
 #include <TGUI/Widget.hpp>
+#include <TGUI/ToolTip.hpp>
 #include <TGUI/Container.hpp>/**
 #include <TGUI/HorizontalLayout.hpp>
 #include <TGUI/VerticalLayout.hpp>*/
@@ -64,7 +65,6 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-#include <TGUI/Widgets/ToolTip.hpp> ///TODO
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

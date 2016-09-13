@@ -24,7 +24,7 @@
 
 
 #include <TGUI/Container.hpp>
-#include <TGUI/Widgets/ToolTip.hpp>
+#include <TGUI/ToolTip.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Loading/WidgetLoader.hpp>

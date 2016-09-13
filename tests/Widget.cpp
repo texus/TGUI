@@ -25,7 +25,6 @@
 #include "Tests.hpp"
 #include <TGUI/Gui.hpp>
 #include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 
 TEST_CASE("[Widget]")
@@ -67,23 +66,6 @@ TEST_CASE("[Widget]")
         REQUIRE(widget->getParent() == panel3.get());
         widget->setParent(nullptr);
         REQUIRE(widget->getParent() == nullptr);
-    }
-
-    SECTION("Tooltip")
-    {
-        auto tooltip1 = std::make_shared<tgui::Label>();
-        tooltip1->setText("some text");
-        widget->setToolTip(tooltip1);
-        REQUIRE(widget->getToolTip() == tooltip1);
-
-        // ToolTip does not has to be a label
-        auto tooltip2 = std::make_shared<tgui::Panel>();
-        widget->setToolTip(tooltip2);
-        REQUIRE(widget->getToolTip() == tooltip2);
-
-        // ToolTip can be removed
-        widget->setToolTip(nullptr);
-        REQUIRE(widget->getToolTip() == nullptr);
     }
 
     SECTION("Move to front/back")

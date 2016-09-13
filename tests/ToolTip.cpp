@@ -22,11 +22,16 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "../Tests.hpp"
-#include <TGUI/Widgets/ToolTip.hpp>
+#include "Tests.hpp"
+#include <TGUI/ToolTip.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 
 TEST_CASE("[ToolTip]")
 {
+    sf::Time oldTimeToDisplay = tgui::ToolTip::getTimeToDisplay();
+    sf::Vector2f oldDistanceToMouse = tgui::ToolTip::getDistanceToMouse();
+
     SECTION("TimeToDisplay")
     {
         tgui::ToolTip::setTimeToDisplay(sf::milliseconds(280));
@@ -38,4 +43,35 @@ TEST_CASE("[ToolTip]")
         tgui::ToolTip::setDistanceToMouse({5, 5});
         REQUIRE(tgui::ToolTip::getDistanceToMouse() == sf::Vector2f(5, 5));
     }
+
+    SECTION("Setting tool tip of widget")
+    {
+        auto widget = std::make_shared<tgui::ClickableWidget>();
+
+        auto tooltip1 = std::make_shared<tgui::Label>();
+        tooltip1->setRenderer(tgui::Theme("resources/Black.txt").getRenderer("ToolTip"));
+        tooltip1->setText("some text");
+        widget->setToolTip(tooltip1);
+        REQUIRE(widget->getToolTip() == tooltip1);
+
+        SECTION("Saving and loading from file")
+        {
+            tgui::ToolTip::setTimeToDisplay(sf::milliseconds(320));
+            tgui::ToolTip::setDistanceToMouse({2, 1});
+
+            testSavingWidget("ToolTip", widget, false);
+        }
+
+        // ToolTip does not has to be a label
+        auto tooltip2 = std::make_shared<tgui::Panel>();
+        widget->setToolTip(tooltip2);
+        REQUIRE(widget->getToolTip() == tooltip2);
+
+        // ToolTip can be removed
+        widget->setToolTip(nullptr);
+        REQUIRE(widget->getToolTip() == nullptr);
+    }
+
+    tgui::ToolTip::setTimeToDisplay(oldTimeToDisplay);
+    tgui::ToolTip::setDistanceToMouse(oldDistanceToMouse);
 }
