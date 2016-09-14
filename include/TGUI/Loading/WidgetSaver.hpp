@@ -27,7 +27,6 @@
 #define TGUI_WIDGET_SAVER_HPP
 
 
-#include <TGUI/Loading/WidgetConverter.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Container.hpp>
 
@@ -42,7 +41,7 @@ namespace tgui
     class TGUI_API WidgetSaver
     {
     public:
-        using SaveFunction = std::function<std::shared_ptr<DataIO::Node>(WidgetConverter)>;
+        using SaveFunction = std::function<std::shared_ptr<DataIO::Node>(Widget::Ptr)>;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

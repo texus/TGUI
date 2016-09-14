@@ -27,7 +27,6 @@
 #define TGUI_WIDGET_LOADER_HPP
 
 
-#include <TGUI/Loading/WidgetConverter.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Container.hpp>
 

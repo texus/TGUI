@@ -24,7 +24,6 @@ set(TGUI_SRC
     Loading/Serializer.cpp
     Loading/Theme.cpp
     Loading/ThemeLoader.cpp
-    Loading/WidgetConverter.cpp
     Loading/WidgetLoader.cpp
     Loading/WidgetSaver.cpp
     Renderers/ButtonRenderer.cpp
