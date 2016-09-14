@@ -20,10 +20,10 @@ matrix:
       directories:
       - $HOME/SFML-2.4.0_LINUX
 
-  - os: osx
-    cache:
-      directories:
-      - $HOME/SFML_OSX
+#  - os: osx
+#    cache:
+#      directories:
+#      - $HOME/SFML_OSX
 
 addons:
   apt:
