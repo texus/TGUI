@@ -9,7 +9,7 @@ namespace tgui
 
     BoxLayout::BoxLayout()
     {
-        setBackgroundColor(sf::Color::Transparent);
+        getRenderer()->setBackgroundColor(sf::Color::Transparent);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,14 +17,6 @@ namespace tgui
     void BoxLayout::setSize(const Layout2d& size)
     {
         Panel::setSize(size);
-        updateWidgetPositions();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BoxLayout::setFont(const Font& font)
-    {
-        Panel::setFont(font);
         updateWidgetPositions();
     }
 
@@ -221,16 +213,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void BoxLayout::rendererChanged(const std::string& property, ObjectConverter& value)
+    {
+        if (property == "font")
+        {
+            updateWidgetPositions();
+            Panel::rendererChanged(property, value);
+        }
+        else
+            Panel::rendererChanged(property, value);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void BoxLayout::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Set the position
         states.transform.translate(getPosition());
 
         // Draw the background
-        if (m_backgroundColor != sf::Color::Transparent)
+        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
         {
             sf::RectangleShape background(getSize());
-            background.setFillColor(m_backgroundColor);
+            background.setFillColor(getRenderer()->getBackgroundColor());
             target.draw(background, states);
         }
 

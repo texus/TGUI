@@ -26,7 +26,8 @@
 #include <TGUI/HorizontalLayout.hpp>
 #include <TGUI/Widgets/Button.hpp>
 
-TEST_CASE("[HorizontalLayout]") {
+TEST_CASE("[HorizontalLayout]")
+{
     auto layout = std::make_shared<tgui::HorizontalLayout>();
     layout->setSize(800, 100);
     layout->setPosition(50, 40);

@@ -26,7 +26,8 @@
 #include <TGUI/VerticalLayout.hpp>
 #include <TGUI/Widgets/Button.hpp>
 
-TEST_CASE("[VerticalLayout]") {
+TEST_CASE("[VerticalLayout]")
+{
     auto layout = std::make_shared<tgui::VerticalLayout>();
     layout->setSize(1000, 800);
     layout->setPosition(50, 40);

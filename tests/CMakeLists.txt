@@ -7,7 +7,7 @@ set(TEST_SOURCES
     CompareFiles.cpp
     Container.cpp
     Font.cpp
-    #HorizontalLayout.cpp
+    HorizontalLayout.cpp
     Layouts.cpp
     Signal.cpp
     Tests.cpp
@@ -15,7 +15,7 @@ set(TEST_SOURCES
     Texture.cpp
     TextureManager.cpp
     ToolTip.cpp
-    #VerticalLayout.cpp
+    VerticalLayout.cpp
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Serializer.cpp

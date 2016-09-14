@@ -57,7 +57,7 @@ namespace tgui
                 if (newSize.x > 0 && newSize.y > 0)
                 {
                     m_widgets[i]->setSize(newSize);
-                    m_widgets[i]->setPosition(m_widgets[i]->getPosition() + m_widgets[i]->getWidgetOffset());
+                    m_widgets[i]->setPosition(m_widgets[i]->getPosition() - m_widgets[i]->getWidgetOffset());
                 }
             }
         }

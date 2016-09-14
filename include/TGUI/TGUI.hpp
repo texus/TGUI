@@ -31,9 +31,9 @@
 #include <TGUI/Animation.hpp>
 #include <TGUI/Widget.hpp>
 #include <TGUI/ToolTip.hpp>
-#include <TGUI/Container.hpp>/**
+#include <TGUI/Container.hpp>
 #include <TGUI/HorizontalLayout.hpp>
-#include <TGUI/VerticalLayout.hpp>*/
+#include <TGUI/VerticalLayout.hpp>
 #include <TGUI/Gui.hpp>
 
 #include <TGUI/Loading/Deserializer.hpp>
@@ -50,7 +50,7 @@
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/Grid.hpp> /// TODO
+#include <TGUI/Widgets/Grid.hpp>
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>

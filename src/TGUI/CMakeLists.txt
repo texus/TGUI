@@ -1,13 +1,13 @@
 set(TGUI_SRC
     Animation.cpp
-    #BoxLayout.cpp
+    BoxLayout.cpp
     Clipboard.cpp
     Color.cpp
     Container.cpp
     Font.cpp
     Global.cpp
     Gui.cpp
-    #HorizontalLayout.cpp
+    HorizontalLayout.cpp
     Layout.cpp
     ObjectConverter.cpp
     Signal.cpp
@@ -17,7 +17,7 @@ set(TGUI_SRC
     TextureManager.cpp
     ToolTip.cpp
     Transformable.cpp
-    #VerticalLayout.cpp
+    VerticalLayout.cpp
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
