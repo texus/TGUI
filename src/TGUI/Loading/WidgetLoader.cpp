@@ -188,7 +188,7 @@ namespace tgui
                         auto toolTipWidgetNode = childNode->children[0];
                         auto& loadFunction = WidgetLoader::getLoadFunction(toolTipWidgetNode->name);
                         if (loadFunction)
-                            widget->setToolTip(loadFunction(toolTipWidgetNode));
+                            widget->setToolTip(loadFunction(toolTipWidgetNode, nullptr));
                         else
                             throw Exception{"No load function exists for widget type '" + toolTipWidgetNode->name + "'."};
                     }
@@ -220,9 +220,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadContainer(std::shared_ptr<DataIO::Node> node, Container::Ptr container)
+        Widget::Ptr loadContainer(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
-            assert(container != nullptr);
+            assert(widget != nullptr);
+            Container::Ptr container = std::static_pointer_cast<Container>(widget);
             loadWidget(node, container);
 
             for (const auto& childNode : node->children)
@@ -236,7 +237,7 @@ namespace tgui
                     if (nameSeparator != std::string::npos)
                         className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
 
-                    tgui::Widget::Ptr childWidget = loadFunction(childNode);
+                    tgui::Widget::Ptr childWidget = loadFunction(childNode, nullptr);
                     container->add(childWidget, className);
                 }
                 else
@@ -248,7 +249,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             Button::Ptr button;
             if (widget)
@@ -267,7 +268,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadCanvas(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadCanvas(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             if (widget)
                 return loadWidget(node, widget);
@@ -277,7 +278,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadChatBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadChatBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             ChatBox::Ptr chatBox;
             if (widget)
@@ -328,7 +329,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadCheckBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadCheckBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             CheckBox::Ptr checkbox;
             if (widget)
@@ -354,7 +355,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadChildWindow(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadChildWindow(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             ChildWindow::Ptr childWindow;
             if (widget)
@@ -408,7 +409,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadClickableWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadClickableWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             if (widget)
                 return loadWidget(node, widget);
@@ -418,7 +419,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadComboBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadComboBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             ComboBox::Ptr comboBox;
             if (widget)
@@ -477,7 +478,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadEditBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadEditBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             EditBox::Ptr editBox;
             if (widget)
@@ -531,7 +532,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadKnob(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadKnob(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             Knob::Ptr knob;
             if (widget)
@@ -558,7 +559,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadLabel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadLabel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             Label::Ptr label;
             if (widget)
@@ -604,7 +605,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadListBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadListBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             ListBox::Ptr listBox;
             if (widget)
@@ -665,7 +666,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadMenuBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadMenuBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             MenuBar::Ptr menuBar;
             if (widget)
@@ -706,7 +707,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadMessageBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadMessageBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             MessageBox::Ptr messageBox;
             if (widget)
@@ -728,7 +729,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadPanel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadPanel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             if (widget)
                 return loadContainer(node, std::static_pointer_cast<Panel>(widget));
@@ -738,7 +739,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadPicture(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadPicture(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             Picture::Ptr picture;
             if (widget)
@@ -759,7 +760,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadProgressBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadProgressBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             ProgressBar::Ptr progressBar;
             if (widget)
@@ -799,7 +800,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadRadioButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadRadioButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             RadioButton::Ptr radioButton;
             if (widget)
@@ -825,7 +826,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadScrollbar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadScrollbar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             Scrollbar::Ptr scrollbar;
             if (widget)
@@ -850,7 +851,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadSlider(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadSlider(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             Slider::Ptr slider;
             if (widget)
@@ -871,7 +872,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadSpinButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadSpinButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             SpinButton::Ptr spinButton;
             if (widget)
@@ -894,7 +895,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadTabs(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadTabs(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             Tabs::Ptr tabs;
             if (widget)
@@ -927,7 +928,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadTextBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget = nullptr)
+        Widget::Ptr loadTextBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             TextBox::Ptr textBox;
             if (widget)
@@ -956,31 +957,30 @@ namespace tgui
 
     std::map<std::string, WidgetLoader::LoadFunction> WidgetLoader::m_loadFunctions =
         {
-            // Using "std::shared_ptr<Widget>{}" instead of "nullptr" to work around internal compiler error with MinGW 4.7.1 TDM
-            {"widget", std::bind(loadWidget, std::placeholders::_1, std::shared_ptr<Widget>{})},
-            {"container", std::bind(loadContainer, std::placeholders::_1, std::shared_ptr<Container>{})},
-            {"button", std::bind(loadButton, std::placeholders::_1, std::shared_ptr<Button>{})},
-            {"canvas", std::bind(loadCanvas, std::placeholders::_1, std::shared_ptr<Canvas>{})},
-            {"chatbox", std::bind(loadChatBox, std::placeholders::_1, std::shared_ptr<ChatBox>{})},
-            {"checkbox", std::bind(loadCheckBox, std::placeholders::_1, std::shared_ptr<CheckBox>{})},
-            {"childwindow", std::bind(loadChildWindow, std::placeholders::_1, std::shared_ptr<ChildWindow>{})},
-            {"clickablewidget", std::bind(loadClickableWidget, std::placeholders::_1, std::shared_ptr<ClickableWidget>{})},
-            {"combobox", std::bind(loadComboBox, std::placeholders::_1, std::shared_ptr<ComboBox>{})},
-            {"editbox", std::bind(loadEditBox, std::placeholders::_1, std::shared_ptr<EditBox>{})},
-            {"knob", std::bind(loadKnob, std::placeholders::_1, std::shared_ptr<Knob>{})},
-            {"label", std::bind(loadLabel, std::placeholders::_1, std::shared_ptr<Label>{})},
-            {"listbox", std::bind(loadListBox, std::placeholders::_1, std::shared_ptr<ListBox>{})},
-            {"menubar", std::bind(loadMenuBar, std::placeholders::_1, std::shared_ptr<MenuBar>{})},
-            {"messagebox", std::bind(loadMessageBox, std::placeholders::_1, std::shared_ptr<MessageBox>{})},
-            {"panel", std::bind(loadPanel, std::placeholders::_1, std::shared_ptr<Panel>{})},
-            {"picture", std::bind(loadPicture, std::placeholders::_1, std::shared_ptr<Picture>{})},
-            {"progressbar", std::bind(loadProgressBar, std::placeholders::_1, std::shared_ptr<ProgressBar>{})},
-            {"radiobutton", std::bind(loadRadioButton, std::placeholders::_1, std::shared_ptr<RadioButton>{})},
-            {"scrollbar", std::bind(loadScrollbar, std::placeholders::_1, std::shared_ptr<Scrollbar>{})},
-            {"slider", std::bind(loadSlider, std::placeholders::_1, std::shared_ptr<Slider>{})},
-            {"spinbutton", std::bind(loadSpinButton, std::placeholders::_1, std::shared_ptr<SpinButton>{})},
-            {"tabs", std::bind(loadTabs, std::placeholders::_1, std::shared_ptr<Tabs>{})},
-            {"textbox", std::bind(loadTextBox, std::placeholders::_1, std::shared_ptr<TextBox>{})}
+            {"widget", loadWidget},
+            {"container", loadContainer},
+            {"button", loadButton},
+            {"canvas", loadCanvas},
+            {"chatbox", loadChatBox},
+            {"checkbox", loadCheckBox},
+            {"childwindow", loadChildWindow},
+            {"clickablewidget", loadClickableWidget},
+            {"combobox", loadComboBox},
+            {"editbox", loadEditBox},
+            {"knob", loadKnob},
+            {"label", loadLabel},
+            {"listbox", loadListBox},
+            {"menubar", loadMenuBar},
+            {"messagebox", loadMessageBox},
+            {"panel", loadPanel},
+            {"picture", loadPicture},
+            {"progressbar", loadProgressBar},
+            {"radiobutton", loadRadioButton},
+            {"scrollbar", loadScrollbar},
+            {"slider", loadSlider},
+            {"spinbutton", loadSpinButton},
+            {"tabs", loadTabs},
+            {"textbox", loadTextBox}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1003,7 +1003,7 @@ namespace tgui
                 if (nameSeparator != std::string::npos)
                     className = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
 
-                tgui::Widget::Ptr widget = loadFunction(node);
+                tgui::Widget::Ptr widget = loadFunction(node, nullptr);
                 parent->add(widget, className);
             }
             else
