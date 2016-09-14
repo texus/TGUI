@@ -28,8 +28,6 @@
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/Clipping.hpp>
 
-#include <cmath>
-
 /// TODO: Where m_selStart and m_selEnd are compared, use std::min and std::max and merge the if and else bodies
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -530,7 +528,7 @@ namespace tgui
                     if (m_textFull.getCharacterSize() > 10)
                     {
                         if (m_textCropPosition > m_textFull.getCharacterSize() / 10)
-                            m_textCropPosition -= static_cast<unsigned int>(std::floor(m_textFull.getCharacterSize() / 10.f + 0.5f));
+                            m_textCropPosition -= static_cast<unsigned int>(m_textFull.getCharacterSize() / 10.f);
                         else
                             m_textCropPosition = 0;
                     }
@@ -547,7 +545,7 @@ namespace tgui
                     if (m_textFull.getCharacterSize() > 10)
                     {
                         if (m_textCropPosition + width < m_textFull.getSize().x + (m_textFull.getCharacterSize() / 10))
-                            m_textCropPosition += static_cast<unsigned int>(std::floor(m_textFull.getCharacterSize() / 10.f + 0.5f));
+                            m_textCropPosition += static_cast<unsigned int>(m_textFull.getCharacterSize() / 10.f);
                         else
                             m_textCropPosition = static_cast<unsigned int>(m_textFull.getSize().x + (m_textFull.getCharacterSize() / 10) - width);
                     }
@@ -1069,6 +1067,8 @@ namespace tgui
             ++lastVisibleChar;
         }
 
+        sf::String displayedString = m_textFull.getString();
+
         // Set the first part of the text
         tempString = m_textFull.getString().substring(0, firstVisibleChar);
         m_textFull.setString(tempString);
@@ -1079,8 +1079,6 @@ namespace tgui
         // for all the other characters, check where you have clicked.
         for (std::size_t i = firstVisibleChar; i < lastVisibleChar; ++i)
         {
-            sf::String displayedString = m_textFull.getString();
-
             // Add the next character to the temporary string
             tempString += displayedString[i];
             m_textFull.setString(tempString);
@@ -1099,6 +1097,7 @@ namespace tgui
         }
 
         // If you pass here then you clicked behind all the characters
+        m_textFull.setString(displayedString);
         return lastVisibleChar;
     }
 
@@ -1162,8 +1161,8 @@ namespace tgui
         float caretLeft = textX;
 
         // Set the text before the selection on the correct position
-        m_textBeforeSelection.setPosition(std::floor(textX + 0.5f), textY);
-        m_defaultText.setPosition(std::floor(textX + 0.5f), textY);
+        m_textBeforeSelection.setPosition(textX, textY);
+        m_defaultText.setPosition(textX, textY);
 
         // Check if there is a selection
         if (m_selChars != 0)
@@ -1172,28 +1171,28 @@ namespace tgui
             if (m_textBeforeSelection.getString().getSize() > 0)
                 textX += getRenderer()->getFont().getKerning(m_textFull.getString()[m_textBeforeSelection.getString().getSize() - 1], m_textFull.getString()[m_textBeforeSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
-            textX += m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x - m_textBeforeSelection.getPosition().x;
+            textX += m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x;
 
             // Set the position and size of the rectangle that gets drawn behind the selected text
-            m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x - m_textSelection.getPosition().x,
+            m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x,
                                               getInnerSize().y - padding.top - padding.bottom});
-            m_selectedTextBackground.setPosition({std::floor(textX + 0.5f), std::floor(padding.top + 0.5f)});
+            m_selectedTextBackground.setPosition({textX, padding.top});
 
             // Set the text selected text on the correct position
-            m_textSelection.setPosition(std::floor(textX + 0.5f), textY);
+            m_textSelection.setPosition(textX, textY);
 
             // Watch out for kerning
             if (m_textFull.getString().getSize() > m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize())
                 textX += getRenderer()->getFont().getKerning(m_textFull.getString()[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize() - 1], m_textFull.getString()[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
             // Set the text selected text on the correct position
-            textX += m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x  - m_textSelection.getPosition().x;
-            m_textAfterSelection.setPosition(std::floor(textX + 0.5f), textY);
+            textX += m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x;
+            m_textAfterSelection.setPosition(textX, textY);
         }
 
         // Set the position of the caret
         caretLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_caret.getSize().x * 0.5f);
-        m_caret.setPosition({std::floor(caretLeft + 0.5f), std::floor(padding.top + 0.5f)});
+        m_caret.setPosition({caretLeft, padding.top});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
