@@ -28,7 +28,7 @@
 
 TEST_CASE("[MenuBar]")
 {
-    tgui::MenuBar::Ptr menuBar = std::make_shared<tgui::MenuBar>();
+    tgui::MenuBar::Ptr menuBar = tgui::MenuBar::create();
     menuBar->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")
@@ -57,7 +57,7 @@ TEST_CASE("[MenuBar]")
 
             SECTION("Width is unchanged when adding to parent")
             {
-                auto parent = std::make_shared<tgui::Panel>();
+                auto parent = tgui::Panel::create();
                 parent->add(menuBar);
 
                 REQUIRE(menuBar->getSize() == sf::Vector2f(150, 100));
@@ -68,7 +68,7 @@ TEST_CASE("[MenuBar]")
         {
             REQUIRE(menuBar->getSize().x == 0);
 
-            auto parent = std::make_shared<tgui::Panel>();
+            auto parent = tgui::Panel::create();
             parent->setSize(400, 300);
             parent->add(menuBar);
 
@@ -196,7 +196,7 @@ TEST_CASE("[MenuBar]")
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", "rgb(100, 110, 120)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
             }
-            
+
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));

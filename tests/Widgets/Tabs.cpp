@@ -27,7 +27,7 @@
 
 TEST_CASE("[Tabs]")
 {
-    tgui::Tabs::Ptr tabs = std::make_shared<tgui::Tabs>();
+    tgui::Tabs::Ptr tabs = tgui::Tabs::create();
     tabs->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")
@@ -76,7 +76,7 @@ TEST_CASE("[Tabs]")
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
             }
-            
+
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));

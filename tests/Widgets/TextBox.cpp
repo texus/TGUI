@@ -27,7 +27,7 @@
 
 TEST_CASE("[TextBox]")
 {
-    tgui::TextBox::Ptr textBox = std::make_shared<tgui::TextBox>();
+    tgui::TextBox::Ptr textBox = tgui::TextBox::create();
     textBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")

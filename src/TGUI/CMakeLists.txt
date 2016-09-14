@@ -1,13 +1,11 @@
 set(TGUI_SRC
     Animation.cpp
-    BoxLayout.cpp
     Clipboard.cpp
     Color.cpp
     Container.cpp
     Font.cpp
     Global.cpp
     Gui.cpp
-    HorizontalLayout.cpp
     Layout.cpp
     ObjectConverter.cpp
     Signal.cpp
@@ -17,7 +15,6 @@ set(TGUI_SRC
     TextureManager.cpp
     ToolTip.cpp
     Transformable.cpp
-    VerticalLayout.cpp
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
@@ -45,6 +42,7 @@ set(TGUI_SRC
     Renderers/TabsRenderer.cpp
     Renderers/TextBoxRenderer.cpp
     Renderers/WidgetRenderer.cpp
+    Widgets/BoxLayout.cpp
     Widgets/Button.cpp
     Widgets/Canvas.cpp
     Widgets/ChatBox.cpp
@@ -54,6 +52,7 @@ set(TGUI_SRC
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
     Widgets/Grid.cpp
+    Widgets/HorizontalLayout.cpp
     Widgets/Knob.cpp
     Widgets/Label.cpp
     Widgets/ListBox.cpp
@@ -68,6 +67,7 @@ set(TGUI_SRC
     Widgets/SpinButton.cpp
     Widgets/Tabs.cpp
     Widgets/TextBox.cpp
+    Widgets/VerticalLayout.cpp
 )
 
 # Determine library suffixes depending on static/shared configuration

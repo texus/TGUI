@@ -27,7 +27,7 @@
 
 TEST_CASE("[ProgressBar]")
 {
-    tgui::ProgressBar::Ptr progressBar = std::make_shared<tgui::ProgressBar>();
+    tgui::ProgressBar::Ptr progressBar = tgui::ProgressBar::create();
     progressBar->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     progressBar->setMinimum(10);
     progressBar->setMaximum(20);

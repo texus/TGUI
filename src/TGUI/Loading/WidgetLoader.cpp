@@ -255,7 +255,7 @@ namespace tgui
             if (widget)
                 button = std::static_pointer_cast<Button>(widget);
             else
-                button = std::make_shared<Button>();
+                button = Button::create();
 
             loadWidget(node, button);
             if (node->propertyValuePairs["text"])
@@ -284,7 +284,7 @@ namespace tgui
             if (widget)
                 chatBox = std::static_pointer_cast<ChatBox>(widget);
             else
-                chatBox = std::make_shared<ChatBox>();
+                chatBox = ChatBox::create();
 
             loadWidget(node, chatBox);
 
@@ -335,7 +335,7 @@ namespace tgui
             if (widget)
                 checkbox = std::static_pointer_cast<CheckBox>(widget);
             else
-                checkbox = std::make_shared<CheckBox>();
+                checkbox = CheckBox::create();
 
             loadWidget(node, checkbox);
             if (node->propertyValuePairs["text"])
@@ -361,7 +361,7 @@ namespace tgui
             if (widget)
                 childWindow = std::static_pointer_cast<ChildWindow>(widget);
             else
-                childWindow = std::make_shared<ChildWindow>();
+                childWindow = ChildWindow::create();
 
             if (node->propertyValuePairs["titlealignment"])
             {
@@ -425,7 +425,7 @@ namespace tgui
             if (widget)
                 comboBox = std::static_pointer_cast<ComboBox>(widget);
             else
-                comboBox = std::make_shared<ComboBox>();
+                comboBox = ComboBox::create();
 
             loadWidget(node, comboBox);
 
@@ -484,7 +484,7 @@ namespace tgui
             if (widget)
                 editBox = std::static_pointer_cast<EditBox>(widget);
             else
-                editBox = std::make_shared<EditBox>();
+                editBox = EditBox::create();
 
             loadWidget(node, editBox);
 
@@ -538,7 +538,7 @@ namespace tgui
             if (widget)
                 knob = std::static_pointer_cast<Knob>(widget);
             else
-                knob = std::make_shared<Knob>();
+                knob = Knob::create();
 
             loadWidget(node, knob);
             if (node->propertyValuePairs["startrotation"])
@@ -565,7 +565,7 @@ namespace tgui
             if (widget)
                 label = std::static_pointer_cast<Label>(widget);
             else
-                label = std::make_shared<Label>();
+                label = Label::create();
 
             loadWidget(node, label);
 
@@ -611,7 +611,7 @@ namespace tgui
             if (widget)
                 listBox = std::static_pointer_cast<ListBox>(widget);
             else
-                listBox = std::make_shared<ListBox>();
+                listBox = ListBox::create();
 
             loadWidget(node, listBox);
 
@@ -672,7 +672,7 @@ namespace tgui
             if (widget)
                 menuBar = std::static_pointer_cast<MenuBar>(widget);
             else
-                menuBar = std::make_shared<MenuBar>();
+                menuBar = MenuBar::create();
 
             loadWidget(node, menuBar);
 
@@ -713,7 +713,7 @@ namespace tgui
             if (widget)
                 messageBox = std::static_pointer_cast<MessageBox>(widget);
             else
-                messageBox = std::make_shared<MessageBox>();
+                messageBox = MessageBox::create();
 
             // Remove the label that the MessageBox constructor creates because it will be created when loading the child window
             messageBox->removeAllWidgets();
@@ -745,7 +745,7 @@ namespace tgui
             if (widget)
                 picture = std::static_pointer_cast<Picture>(widget);
             else
-                picture = std::make_shared<Picture>();
+                picture = Picture::create();
 
             if (node->propertyValuePairs["filename"])
                 picture = std::make_shared<Picture>(DESERIALIZE_STRING("filename"));
@@ -766,7 +766,7 @@ namespace tgui
             if (widget)
                 progressBar = std::static_pointer_cast<ProgressBar>(widget);
             else
-                progressBar = std::make_shared<ProgressBar>();
+                progressBar = ProgressBar::create();
 
             loadWidget(node, progressBar);
             if (node->propertyValuePairs["minimum"])
@@ -806,7 +806,7 @@ namespace tgui
             if (widget)
                 radioButton = std::static_pointer_cast<RadioButton>(widget);
             else
-                radioButton = std::make_shared<RadioButton>();
+                radioButton = RadioButton::create();
 
             loadWidget(node, radioButton);
             if (node->propertyValuePairs["text"])
@@ -832,7 +832,7 @@ namespace tgui
             if (widget)
                 scrollbar = std::static_pointer_cast<Scrollbar>(widget);
             else
-                scrollbar = std::make_shared<Scrollbar>();
+                scrollbar = Scrollbar::create();
 
             loadWidget(node, scrollbar);
             if (node->propertyValuePairs["lowvalue"])
@@ -857,7 +857,7 @@ namespace tgui
             if (widget)
                 slider = std::static_pointer_cast<Slider>(widget);
             else
-                slider = std::make_shared<Slider>();
+                slider = Slider::create();
 
             loadWidget(node, slider);
             if (node->propertyValuePairs["minimum"])
@@ -878,7 +878,7 @@ namespace tgui
             if (widget)
                 spinButton = std::static_pointer_cast<SpinButton>(widget);
             else
-                spinButton = std::make_shared<SpinButton>();
+                spinButton = SpinButton::create();
 
             loadWidget(node, spinButton);
             if (node->propertyValuePairs["minimum"])
@@ -901,7 +901,7 @@ namespace tgui
             if (widget)
                 tabs = std::static_pointer_cast<Tabs>(widget);
             else
-                tabs = std::make_shared<Tabs>();
+                tabs = Tabs::create();
 
             loadWidget(node, tabs);
 
@@ -934,7 +934,7 @@ namespace tgui
             if (widget)
                 textBox = std::static_pointer_cast<TextBox>(widget);
             else
-                textBox = std::make_shared<TextBox>();
+                textBox = TextBox::create();
 
             loadWidget(node, textBox);
 

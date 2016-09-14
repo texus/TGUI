@@ -24,7 +24,7 @@ void testWidgetSignals(tgui::Widget::Ptr widget)
         widget->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
         widget->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
 
-        auto parent = std::make_shared<tgui::Panel>(300, 200);
+        auto parent = tgui::Panel::create({300, 200});
         parent->setPosition({30, 25});
         parent->add(widget);
 
@@ -79,7 +79,7 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
 
     SECTION("mouse click")
     {
-        auto parent = std::make_shared<tgui::Panel>(300, 200);
+        auto parent = tgui::Panel::create({300, 200});
         parent->setPosition({60, 55});
         parent->add(widget);
 

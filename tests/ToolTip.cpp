@@ -46,9 +46,9 @@ TEST_CASE("[ToolTip]")
 
     SECTION("Setting tool tip of widget")
     {
-        auto widget = std::make_shared<tgui::ClickableWidget>();
+        auto widget = tgui::ClickableWidget::create();
 
-        auto tooltip1 = std::make_shared<tgui::Label>();
+        auto tooltip1 = tgui::Label::create();
         tooltip1->setRenderer(tgui::Theme("resources/Black.txt").getRenderer("ToolTip"));
         tooltip1->setText("some text");
         widget->setToolTip(tooltip1);
@@ -63,7 +63,7 @@ TEST_CASE("[ToolTip]")
         }
 
         // ToolTip does not has to be a label
-        auto tooltip2 = std::make_shared<tgui::Panel>();
+        auto tooltip2 = tgui::Panel::create();
         widget->setToolTip(tooltip2);
         REQUIRE(widget->getToolTip() == tooltip2);
 

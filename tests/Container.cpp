@@ -29,11 +29,11 @@ TEST_CASE("[Container]")
 {
     auto container = std::make_shared<tgui::Gui>();
 
-    auto widget1 = std::make_shared<tgui::Label>();
-    auto widget2 = std::make_shared<tgui::Panel>();
-    auto widget3 = std::make_shared<tgui::Label>();
-    auto widget4 = std::make_shared<tgui::Label>();
-    auto widget5 = std::make_shared<tgui::Label>();
+    auto widget1 = tgui::Label::create();
+    auto widget2 = tgui::Panel::create();
+    auto widget3 = tgui::Label::create();
+    auto widget4 = tgui::Label::create();
+    auto widget5 = tgui::Label::create();
     container->add(widget1, "w1");
     container->add(widget2, "w2");
     container->add(widget3, "w3");
@@ -43,16 +43,16 @@ TEST_CASE("[Container]")
     SECTION("default font in gui")
     {
         REQUIRE(std::make_shared<tgui::Gui>()->getFont() != nullptr);
-        REQUIRE(std::make_shared<tgui::Panel>()->getRenderer()->getFont() == nullptr);
+        REQUIRE(tgui::Panel::create()->getRenderer()->getFont() == nullptr);
     }
 
     SECTION("add")
     {
         container->removeAllWidgets();
 
-        auto w1 = std::make_shared<tgui::ClickableWidget>();
-        auto w2 = std::make_shared<tgui::ClickableWidget>();
-        auto w3 = std::make_shared<tgui::ClickableWidget>();
+        auto w1 = tgui::ClickableWidget::create();
+        auto w2 = tgui::ClickableWidget::create();
+        auto w3 = tgui::ClickableWidget::create();
 
         REQUIRE(container->getWidgets().empty());
         REQUIRE(container->getWidgetNames().empty());
@@ -155,7 +155,7 @@ TEST_CASE("[Container]")
         {
             REQUIRE(!container->remove(widget5));
             REQUIRE(!container->remove(nullptr));
-            REQUIRE(!container->remove(std::make_shared<tgui::ClickableWidget>()));
+            REQUIRE(!container->remove(tgui::ClickableWidget::create()));
         }
 
         SECTION("remove all widgets")
@@ -181,14 +181,14 @@ TEST_CASE("[Container]")
         REQUIRE(container->getWidgetName(widget3) == "w3");
 
         REQUIRE(container->getWidgetName(widget4) == "");
-        REQUIRE(container->getWidgetName(std::make_shared<tgui::ClickableWidget>()) == "");
+        REQUIRE(container->getWidgetName(tgui::ClickableWidget::create()) == "");
         REQUIRE(container->getWidgetName(nullptr) == "");
 
         REQUIRE(container->setWidgetName(widget1, "w001"));
         REQUIRE(container->setWidgetName(widget3, "w003"));
 
         REQUIRE(!container->setWidgetName(widget4, "Hello"));
-        REQUIRE(!container->setWidgetName(std::make_shared<tgui::ClickableWidget>(), "Hello"));
+        REQUIRE(!container->setWidgetName(tgui::ClickableWidget::create(), "Hello"));
         REQUIRE(!container->setWidgetName(nullptr, "Hello"));
 
         REQUIRE(container->getWidgetNames()[0] == container->getWidgetName(widget1));
@@ -201,9 +201,9 @@ TEST_CASE("[Container]")
 
     SECTION("focus")
     {
-        auto editBox1 = std::make_shared<tgui::EditBox>();
-        tgui::EditBox::Ptr editBox2 = std::make_shared<tgui::EditBox>();
-        auto editBox3 = std::make_shared<tgui::EditBox>();
+        auto editBox1 = tgui::EditBox::create();
+        tgui::EditBox::Ptr editBox2 = tgui::EditBox::create();
+        auto editBox3 = tgui::EditBox::create();
 
         container->removeAllWidgets();
         container->add(editBox1);

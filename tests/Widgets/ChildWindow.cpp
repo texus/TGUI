@@ -28,7 +28,7 @@
 
 TEST_CASE("[ChildWindow]")
 {
-    tgui::ChildWindow::Ptr childWindow = std::make_shared<tgui::ChildWindow>();
+    tgui::ChildWindow::Ptr childWindow = tgui::ChildWindow::create();
     childWindow->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")
@@ -65,7 +65,7 @@ TEST_CASE("[ChildWindow]")
         {
             REQUIRE(childWindow->getChildWidgetsOffset() == sf::Vector2f(1, 17));
 
-            auto childWidget = std::make_shared<tgui::ClickableWidget>();
+            auto childWidget = tgui::ClickableWidget::create();
             childWidget->setPosition(60, 50);
             childWindow->add(childWidget);
 
@@ -189,7 +189,7 @@ TEST_CASE("[ChildWindow]")
             childWindow->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
             childWindow->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
 
-            auto parent = std::make_shared<tgui::Panel>(300, 200);
+            auto parent = tgui::Panel::create({300, 200});
             parent->setPosition({30, 25});
             parent->add(childWindow);
 
@@ -341,7 +341,7 @@ TEST_CASE("[ChildWindow]")
 
     SECTION("Saving and loading from file")
     {
-        childWindow = std::make_shared<tgui::ChildWindow>();
+        childWindow = tgui::ChildWindow::create();
         childWindow->setSize(400, 300);
 
         SECTION("Only save contents")
@@ -366,7 +366,7 @@ TEST_CASE("[ChildWindow]")
             childWindow->setResizable();
             childWindow->keepInParent();
 
-            auto widget = std::make_shared<tgui::ClickableWidget>();
+            auto widget = tgui::ClickableWidget::create();
             widget->setPosition(40, 20);
             childWindow->add(widget);
 

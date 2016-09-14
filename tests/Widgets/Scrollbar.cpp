@@ -27,7 +27,7 @@
 
 TEST_CASE("[Scrollbar]")
 {
-    tgui::Scrollbar::Ptr scrollbar = std::make_shared<tgui::Scrollbar>();
+    tgui::Scrollbar::Ptr scrollbar = tgui::Scrollbar::create();
     scrollbar->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     scrollbar->setMaximum(20);
     scrollbar->setLowValue(5);

@@ -28,7 +28,7 @@
 
 TEST_CASE("[Grid]")
 {
-    tgui::Grid::Ptr grid = std::make_shared<tgui::Grid>();
+    tgui::Grid::Ptr grid = tgui::Grid::create();
 
     SECTION("WidgetType")
     {
@@ -37,7 +37,7 @@ TEST_CASE("[Grid]")
 
     SECTION("Adding widgets")
     {
-        auto widget1 = std::make_shared<tgui::ClickableWidget>();
+        auto widget1 = tgui::ClickableWidget::create();
         grid->addWidget(widget1, 3, 2);
 
         REQUIRE(grid->getWidgets().size() == 1);
@@ -50,7 +50,7 @@ TEST_CASE("[Grid]")
         REQUIRE(grid->getWidgetBorders(0, 0) == tgui::Borders{0});
         REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::Center);
 
-        auto widget2 = std::make_shared<tgui::ClickableWidget>();
+        auto widget2 = tgui::ClickableWidget::create();
         grid->add(widget2); // Widget is added before calling addWidget here
         grid->addWidget(widget2, 0, 0, {1, 2, 3, 4}, tgui::Grid::Alignment::UpperLeft);
 
@@ -62,7 +62,7 @@ TEST_CASE("[Grid]")
 
     SECTION("Removing widgets")
     {
-        auto widget = std::make_shared<tgui::ClickableWidget>();
+        auto widget = tgui::ClickableWidget::create();
         grid->addWidget(widget, 3, 2);
 
         REQUIRE(grid->getWidget(3, 2) == widget);
@@ -78,7 +78,7 @@ TEST_CASE("[Grid]")
 
     SECTION("Borders")
     {
-        auto widget = std::make_shared<tgui::ClickableWidget>();
+        auto widget = tgui::ClickableWidget::create();
         grid->addWidget(widget, 3, 2, {1, 2, 3, 4});
 
         REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(1, 2, 3, 4));
@@ -94,7 +94,7 @@ TEST_CASE("[Grid]")
 
     SECTION("Alignment")
     {
-        auto widget = std::make_shared<tgui::ClickableWidget>();
+        auto widget = tgui::ClickableWidget::create();
         grid->addWidget(widget, 3, 2, {}, tgui::Grid::Alignment::BottomRight);
 
         REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::BottomRight);

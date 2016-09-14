@@ -27,7 +27,7 @@
 
 TEST_CASE("[MessageBox]")
 {
-    tgui::MessageBox::Ptr messageBox = std::make_shared<tgui::MessageBox>();
+    tgui::MessageBox::Ptr messageBox = tgui::MessageBox::create();
     messageBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")

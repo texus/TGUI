@@ -27,7 +27,7 @@
 
 TEST_CASE("[Canvas]")
 {
-    tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>();
+    tgui::Canvas::Ptr canvas = tgui::Canvas::create();
     canvas->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("WidgetType")
@@ -37,7 +37,7 @@ TEST_CASE("[Canvas]")
 
     SECTION("constructor")
     {
-        canvas = std::make_shared<tgui::Canvas>(200.f, 100.f);
+        canvas = tgui::Canvas::create({200, 100});
         REQUIRE(canvas->getSize() == sf::Vector2f(200, 100));
     }
 
@@ -45,7 +45,7 @@ TEST_CASE("[Canvas]")
 
     SECTION("Saving and loading from file")
     {
-        REQUIRE_NOTHROW(canvas = std::make_shared<tgui::Canvas>(60.f, 40.f));
+        REQUIRE_NOTHROW(canvas = tgui::Canvas::create({60, 40}));
 
         testSavingWidget("Canvas", canvas, false);
     }

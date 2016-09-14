@@ -28,7 +28,7 @@
 
 TEST_CASE("[ClickableWidget]")
 {
-    tgui::ClickableWidget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
+    tgui::ClickableWidget::Ptr widget = tgui::ClickableWidget::create();
 
     SECTION("Signals")
     {
@@ -48,7 +48,7 @@ TEST_CASE("[ClickableWidget]")
 
     SECTION("Constructor")
     {
-        widget = std::make_shared<tgui::ClickableWidget>(200.f, 100.f);
+        widget = tgui::ClickableWidget::create({200, 100});
         REQUIRE(widget->getSize() == sf::Vector2f(200, 100));
     }
 

@@ -28,7 +28,7 @@
 
 TEST_CASE("[Panel]")
 {
-    tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
+    tgui::Panel::Ptr panel = tgui::Panel::create();
     panel->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")
@@ -61,7 +61,7 @@ TEST_CASE("[Panel]")
         {
             REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(0, 0));
 
-            auto childWidget = std::make_shared<tgui::ClickableWidget>();
+            auto childWidget = tgui::ClickableWidget::create();
             childWidget->setPosition(60, 50);
             panel->add(childWidget);
 
@@ -110,7 +110,7 @@ TEST_CASE("[Panel]")
             panel->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
             panel->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
 
-            auto parent = std::make_shared<tgui::Panel>(300, 200);
+            auto parent = tgui::Panel::create({300, 200});
             parent->setPosition({30, 25});
             parent->add(panel);
 
@@ -133,7 +133,8 @@ TEST_CASE("[Panel]")
 
         SECTION("mouse click")
         {
-            auto parent = std::make_shared<tgui::Panel>(300, 200);
+            auto parent = tgui::Panel::create({300, 200});
+
             parent->setPosition(60, 55);
             parent->add(panel);
 
@@ -196,7 +197,7 @@ TEST_CASE("[Panel]")
 
     SECTION("Saving and loading from file")
     {
-        panel = std::make_shared<tgui::Panel>(400.f, 300.f);
+        panel = tgui::Panel::create({400, 300});
 
         SECTION("Only save contents")
         {
@@ -212,7 +213,7 @@ TEST_CASE("[Panel]")
 
         SECTION("Save entire panel")
         {
-            auto widget = std::make_shared<tgui::ClickableWidget>();
+            auto widget = tgui::ClickableWidget::create();
             widget->setPosition(40, 20);
             panel->add(widget);
 

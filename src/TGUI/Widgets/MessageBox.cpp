@@ -104,6 +104,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    MessageBox::Ptr MessageBox::create()
+    {
+        return std::make_shared<MessageBox>();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     MessageBox::Ptr MessageBox::copy(MessageBox::ConstPtr messageBox)
     {
         if (messageBox)
@@ -153,10 +160,9 @@ namespace tgui
 
     void MessageBox::addButton(const sf::String& caption)
     {
-        auto button = std::make_shared<Button>();
+        auto button = Button::create(caption);
         button->setRenderer(getRenderer()->getButton());
         button->setTextSize(m_textSize);
-        button->setText(caption);
         button->connect("Pressed", [=](){ m_callback.text = caption; sendSignal("ButtonPressed", caption); });
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");

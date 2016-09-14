@@ -77,6 +77,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ChildWindow::Ptr ChildWindow::create()
+    {
+        return std::make_shared<ChildWindow>();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     ChildWindow::Ptr ChildWindow::copy(ChildWindow::ConstPtr childWindow)
     {
         if (childWindow)
@@ -254,7 +261,7 @@ namespace tgui
 
         if (m_titleButtons & TitleButton::Close)
         {
-            m_closeButton = std::make_shared<tgui::Button>();
+            m_closeButton = Button::create();
             m_closeButton->setRenderer(getRenderer()->getCloseButton());
             m_closeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
             m_closeButton->connect("pressed", &ChildWindow::titleButtonPressed, this, "closed");
@@ -264,7 +271,7 @@ namespace tgui
 
         if (m_titleButtons & TitleButton::Maximize)
         {
-            m_maximizeButton = std::make_shared<tgui::Button>();
+            m_maximizeButton = Button::create();
             m_maximizeButton->setRenderer(getRenderer()->getMaximizeButton());
             m_maximizeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
             m_maximizeButton->connect("pressed", &ChildWindow::titleButtonPressed, this, "maximized");
@@ -274,7 +281,7 @@ namespace tgui
 
         if (m_titleButtons & TitleButton::Minimize)
         {
-            m_minimizeButton = std::make_shared<tgui::Button>();
+            m_minimizeButton = Button::create();
             m_minimizeButton->setRenderer(getRenderer()->getMinimizeButton());
             m_minimizeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
             m_minimizeButton->connect("pressed", &ChildWindow::titleButtonPressed, this, "minimized");

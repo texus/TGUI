@@ -1,4 +1,29 @@
-#include <TGUI/HorizontalLayout.hpp>
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TGUI - Texus' Graphical User Interface
+// Copyright (C) 2012-2016 Bruno Van de Velde (vdv_b@tgui.eu)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#include <TGUI/Widgets/VerticalLayout.hpp>
 #include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -7,24 +32,31 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    HorizontalLayout::HorizontalLayout()
+    VerticalLayout::VerticalLayout()
     {
-        m_callback.widgetType = "HorizontalLayout";
+        m_callback.widgetType = "VerticalLayout";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    HorizontalLayout::Ptr HorizontalLayout::copy(HorizontalLayout::ConstPtr layout)
+    VerticalLayout::Ptr VerticalLayout::create()
+    {
+        return std::make_shared<VerticalLayout>();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    VerticalLayout::Ptr VerticalLayout::copy(VerticalLayout::ConstPtr layout)
     {
         if (layout)
-            return std::static_pointer_cast<HorizontalLayout>(layout->clone());
+            return std::static_pointer_cast<VerticalLayout>(layout->clone());
         else
             return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void HorizontalLayout::updateWidgetPositions()
+    void VerticalLayout::updateWidgetPositions()
     {
         float sumRatio = 0;
         for (std::size_t i = 0; i < m_widgetsRatio.size(); ++i)
@@ -38,15 +70,15 @@ namespace tgui
         const float sumFixedSize = std::accumulate(m_widgetsFixedSizes.begin(), m_widgetsFixedSizes.end(), 0.f);
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            m_widgets[i]->setPosition((getSize().x - sumFixedSize) * currentRatio + currentOffset, 0.f);
+            m_widgets[i]->setPosition(0.f, (getSize().y - sumFixedSize) * currentRatio + currentOffset);
             if (m_widgetsFixedSizes[i])
             {
-                m_widgets[i]->setSize(m_widgetsFixedSizes[i], getSize().y);
+                m_widgets[i]->setSize(getSize().x, m_widgetsFixedSizes[i]);
                 currentOffset += m_widgetsFixedSizes[i];
             }
             else
             {
-                m_widgets[i]->setSize((getSize().x - sumFixedSize) * m_widgetsRatio[i] / sumRatio, getSize().y);
+                m_widgets[i]->setSize(getSize().x, (getSize().y - sumFixedSize) * m_widgetsRatio[i] / sumRatio);
                 currentRatio += m_widgetsRatio[i] / sumRatio;
             }
 

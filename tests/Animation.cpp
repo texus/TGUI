@@ -32,12 +32,12 @@ bool compareVector2f(sf::Vector2f left, sf::Vector2f right)
 }
 
 TEST_CASE("[Animation]") {
-    tgui::Widget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
+    tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
     widget->setPosition(30, 15);
     widget->setSize(120, 30);
     widget->getRenderer()->setOpacity(0.9f);
 
-    tgui::Panel::Ptr parent = std::make_shared<tgui::Panel>();
+    tgui::Panel::Ptr parent = tgui::Panel::create();
     parent->setSize(480, 360);
     parent->add(widget);
 

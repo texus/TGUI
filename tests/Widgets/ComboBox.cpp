@@ -28,7 +28,7 @@
 
 TEST_CASE("[ComboBox]")
 {
-    tgui::ComboBox::Ptr comboBox = std::make_shared<tgui::ComboBox>();
+    tgui::ComboBox::Ptr comboBox = tgui::ComboBox::create();
     comboBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")

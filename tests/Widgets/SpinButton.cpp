@@ -28,7 +28,7 @@
 
 TEST_CASE("[SpinButton]")
 {
-    tgui::SpinButton::Ptr spinButton = std::make_shared<tgui::SpinButton>();
+    tgui::SpinButton::Ptr spinButton = tgui::SpinButton::create();
     spinButton->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     spinButton->setMinimum(10);
     spinButton->setMaximum(20);
@@ -140,7 +140,7 @@ TEST_CASE("[SpinButton]")
             spinButton->setValue(10);
             REQUIRE(valueChangedCount == 1);
 
-            auto parent = std::make_shared<tgui::Panel>(300, 200);
+            auto parent = tgui::Panel::create({300, 200});
             parent->setPosition(60, 55);
             parent->add(spinButton);
 

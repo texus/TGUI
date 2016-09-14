@@ -29,7 +29,7 @@
 
 TEST_CASE("[Widget]")
 {
-    tgui::Widget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
+    tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
 
     SECTION("Visibile")
     {
@@ -51,10 +51,10 @@ TEST_CASE("[Widget]")
 
     SECTION("Parent")
     {
-        tgui::Panel::Ptr panel1 = std::make_shared<tgui::Panel>();
-        tgui::Panel::Ptr panel2 = std::make_shared<tgui::Panel>();
-        tgui::Panel::Ptr panel3 = std::make_shared<tgui::Panel>();
-        
+        tgui::Panel::Ptr panel1 = tgui::Panel::create();
+        tgui::Panel::Ptr panel2 = tgui::Panel::create();
+        tgui::Panel::Ptr panel3 = tgui::Panel::create();
+
         REQUIRE(widget->getParent() == nullptr);
         panel1->add(widget);
         REQUIRE(widget->getParent() == panel1.get());
@@ -70,10 +70,10 @@ TEST_CASE("[Widget]")
 
     SECTION("Move to front/back")
     {
-        auto container = std::make_shared<tgui::Panel>();
-        auto widget1 = std::make_shared<tgui::ClickableWidget>();
-        auto widget2 = std::make_shared<tgui::ClickableWidget>();
-        auto widget3 = std::make_shared<tgui::ClickableWidget>();
+        auto container = tgui::Panel::create();
+        auto widget1 = tgui::ClickableWidget::create();
+        auto widget2 = tgui::ClickableWidget::create();
+        auto widget3 = tgui::ClickableWidget::create();
         container->add(widget1);
         container->add(widget2);
         container->add(widget3);
@@ -179,8 +179,8 @@ TEST_CASE("[Widget]")
 
     SECTION("Layouts")
     {
-        auto container = std::make_shared<tgui::Panel>();
-        auto widget2 = std::make_shared<tgui::ClickableWidget>();
+        auto container = tgui::Panel::create();
+        auto widget2 = tgui::ClickableWidget::create();
         container->add(widget);
         container->add(widget2, "w2");
 
@@ -251,7 +251,7 @@ TEST_CASE("[Widget]")
 
     SECTION("Saving and loading widget with layouts from file")
     {
-        auto parent = std::make_shared<tgui::Panel>();
+        auto parent = tgui::Panel::create();
         parent->add(widget, "Widget Name.With:Special{Chars}");
 
         SECTION("Without layout bindings")
@@ -362,8 +362,8 @@ TEST_CASE("[Widget]")
     {
         SECTION("Disabled widgets should not be focusable (https://forum.tgui.eu/index.php?topic=384)")
         {
-            tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
-            tgui::EditBox::Ptr editBox = std::make_shared<tgui::EditBox>();
+            tgui::Panel::Ptr panel = tgui::Panel::create();
+            tgui::EditBox::Ptr editBox = tgui::EditBox::create();
             panel->add(editBox);
 
             editBox->focus();

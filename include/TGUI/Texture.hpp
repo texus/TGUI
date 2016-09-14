@@ -77,7 +77,22 @@ namespace tgui
         ///
         /// @param id         Id for the the image to load (for the default loader, the id is the filename)
         /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image
+        /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Texture(const char* id,
+                const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
+                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0))
+            : Texture(sf::String{id}, partRect, middlePart)
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor that created the texture
+        ///
+        /// @param id         Id for the the image to load (for the default loader, the id is the filename)
+        /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
         ///
         /// This constructor just calls the corresponding load function.

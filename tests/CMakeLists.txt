@@ -7,7 +7,6 @@ set(TEST_SOURCES
     CompareFiles.cpp
     Container.cpp
     Font.cpp
-    HorizontalLayout.cpp
     Layouts.cpp
     Signal.cpp
     Tests.cpp
@@ -15,7 +14,6 @@ set(TEST_SOURCES
     Texture.cpp
     TextureManager.cpp
     ToolTip.cpp
-    VerticalLayout.cpp
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Serializer.cpp
@@ -31,6 +29,7 @@ set(TEST_SOURCES
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
     Widgets/Grid.cpp
+    Widgets/HorizontalLayout.cpp
     Widgets/Knob.cpp
     Widgets/Label.cpp
     Widgets/ListBox.cpp
@@ -45,6 +44,7 @@ set(TEST_SOURCES
     Widgets/SpinButton.cpp
     Widgets/Tabs.cpp
     Widgets/TextBox.cpp
+    Widgets/VerticalLayout.cpp
 )
 
 add_executable(tests ${TEST_SOURCES})

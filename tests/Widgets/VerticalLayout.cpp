@@ -22,22 +22,22 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Tests.hpp"
-#include <TGUI/VerticalLayout.hpp>
+#include "../Tests.hpp"
+#include <TGUI/Widgets/VerticalLayout.hpp>
 #include <TGUI/Widgets/Button.hpp>
 
 TEST_CASE("[VerticalLayout]")
 {
-    auto layout = std::make_shared<tgui::VerticalLayout>();
+    auto layout = tgui::VerticalLayout::create();
     layout->setSize(1000, 800);
     layout->setPosition(50, 40);
 
-    auto button1 = std::make_shared<tgui::Button>();
+    auto button1 = tgui::Button::create();
     layout->add(button1);
 
     REQUIRE(button1->getFullSize() == sf::Vector2f(1000, 800));
 
-    auto button2 = std::make_shared<tgui::Button>();
+    auto button2 = tgui::Button::create();
     layout->add(button2);
 
     REQUIRE(button1->getFullSize() == sf::Vector2f(1000, 400));
@@ -46,20 +46,20 @@ TEST_CASE("[VerticalLayout]")
     layout->setRatio(button2, 3);
     REQUIRE(button1->getFullSize() == sf::Vector2f(1000, 200));
     REQUIRE(button2->getFullSize() == sf::Vector2f(1000, 600));
-    
+
     layout->insertSpace(1, 1.5);
     layout->setRatio(0, 3.5);
     REQUIRE(button1->getFullSize() == sf::Vector2f(1000, 350));
     REQUIRE(button2->getFullSize() == sf::Vector2f(1000, 300));
 
-    auto button3 = std::make_shared<tgui::Button>();
+    auto button3 = tgui::Button::create();
     layout->add(button3);
 
     REQUIRE(layout->getRatio(button1) == 3.5);
     REQUIRE(layout->getRatio(button2) == 3);
     REQUIRE(layout->getRatio(button3) == 1);
     REQUIRE(layout->getRatio(nullptr) == 0);
-    REQUIRE(layout->getRatio(std::make_shared<tgui::Button>()) == 0);
+    REQUIRE(layout->getRatio(tgui::Button::create()) == 0);
     REQUIRE(layout->getRatio(0) == 3.5);
     REQUIRE(layout->getRatio(1) == 1.5);
     REQUIRE(layout->getRatio(2) == 3);

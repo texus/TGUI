@@ -27,7 +27,7 @@
 
 TEST_CASE("[RadioButton]")
 {
-    tgui::RadioButton::Ptr radioButton = std::make_shared<tgui::RadioButton>();
+    tgui::RadioButton::Ptr radioButton = tgui::RadioButton::create();
     radioButton->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")
@@ -67,9 +67,9 @@ TEST_CASE("[RadioButton]")
         // Checking a radio button will uncheck all radio buttons with the same parent
         auto parent1 = std::make_shared<tgui::GuiContainer>();
         auto parent2 = std::make_shared<tgui::GuiContainer>();
-        auto radioButton1 = std::make_shared<tgui::RadioButton>();
-        auto radioButton2 = std::make_shared<tgui::RadioButton>();
-        auto radioButton3 = std::make_shared<tgui::RadioButton>();
+        auto radioButton1 = tgui::RadioButton::create();
+        auto radioButton2 = tgui::RadioButton::create();
+        auto radioButton3 = tgui::RadioButton::create();
         parent1->add(radioButton1);
         parent1->add(radioButton2);
         parent2->add(radioButton3);

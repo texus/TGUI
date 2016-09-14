@@ -176,11 +176,11 @@ TEST_CASE("[Layouts]") {
         }
 
         SECTION("bind functions") {
-            auto widget1 = std::make_shared<tgui::ClickableWidget>();
+            auto widget1 = tgui::ClickableWidget::create();
             widget1->setSize(300, 50);
             widget1->setPosition(40, 60);
 
-            auto widget2 = std::make_shared<tgui::ClickableWidget>();
+            auto widget2 = tgui::ClickableWidget::create();
             widget2->setPosition(bindLeft(widget1), bindTop(widget1));
             widget2->setSize(bindWidth(widget1), bindHeight(widget1));
             REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
@@ -193,7 +193,7 @@ TEST_CASE("[Layouts]") {
             widget2->setSize(bindSize(widget1));
             REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
             REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
-            
+
             REQUIRE(bindMin(10, 20).getValue() == 10);
             REQUIRE(bindMin(-50, 5).getValue() == -50);
             REQUIRE(bindMax(-10, -20).getValue() == -10);
@@ -206,13 +206,13 @@ TEST_CASE("[Layouts]") {
             widget1->setPosition(60, 75);
             REQUIRE(widget2->getSize() == sf::Vector2f(400, 40));
             REQUIRE(widget2->getPosition() == sf::Vector2f(60, 75));
-            
+
             widget1->setSize(bindSize(widget2)); // Binding each other only works when value is cached
             REQUIRE(widget1->getSize() == sf::Vector2f(400, 40));
             REQUIRE(widget2->getSize() == sf::Vector2f(400, 40));
 
-            auto widget3 = std::make_shared<tgui::ClickableWidget>();
-            auto panel = std::make_shared<tgui::Panel>();
+            auto widget3 = tgui::ClickableWidget::create();
+            auto panel = tgui::Panel::create();
             panel->setSize(200, 180);
             panel->setPosition(10, 25);
             widget1->setSize(300, 50);
@@ -370,16 +370,16 @@ TEST_CASE("[Layouts]") {
         }
 
         SECTION("bind functions") {
-            auto panel = std::make_shared<tgui::Panel>();
+            auto panel = tgui::Panel::create();
             panel->setSize(200, 180);
             panel->setPosition(10, 25);
-        
-            auto widget1 = std::make_shared<tgui::ClickableWidget>();
+
+            auto widget1 = tgui::ClickableWidget::create();
             widget1->setSize(300, 50);
             widget1->setPosition(40, 60);
             panel->add(widget1, "b1");
-            
-            auto widget2 = std::make_shared<tgui::ClickableWidget>();
+
+            auto widget2 = tgui::ClickableWidget::create();
             widget2->setPosition(bindStr2d("b1.position"));
             widget2->setSize(bindStr2d(std::string{"b1.size"}));
             REQUIRE(widget2->getSize() == sf::Vector2f(0, 0));
@@ -388,43 +388,43 @@ TEST_CASE("[Layouts]") {
             panel->add(widget2, "b2");
             REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
             REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
-            
+
             widget2->setPosition({"b1.p"});
             REQUIRE(widget2->getPosition() == sf::Vector2f(0, 0));
-            
+
             widget2->setPosition({"b1.pos"});
             REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
-            
+
             widget2->setPosition(bindStr("b1.left"), bindStr(std::string{"b1.top"}));
             REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
-            
+
             widget2->setPosition({"b1.x"}, {"b1.y"});
             REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
 
             widget2->setSize({"{b1.width, b1.height}"});
             REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
-            
+
             widget2->setSize({"{b1.wi, b1.he}"});
             REQUIRE(widget2->getSize() == sf::Vector2f(0, 0));
-            
+
             widget2->setSize({"{b1.w, b1.h}"});
             REQUIRE(widget2->getSize() == sf::Vector2f(300, 50));
-            
+
             widget2->setSize({"{b1.right, b1.bottom}"});
             REQUIRE(widget2->getSize() == sf::Vector2f(340, 110));
-            
+
             widget2->setSize({"{b1.r, b1.b}"});
             REQUIRE(widget2->getSize() == sf::Vector2f(0, 0));
-            
+
             widget2->setSize({{"b1.right"}, {"b1.bottom"}});
             REQUIRE(widget2->getSize() == sf::Vector2f(340, 110));
-            
+
             widget2->setSize({"{@, #}"});
             REQUIRE(widget2->getSize() == sf::Vector2f(0, 0));
-            
+
             widget2->setPosition({"parent.x"}, {"&.y"});
             REQUIRE(widget2->getPosition() == sf::Vector2f(10, 25));
-            
+
             widget2->setPosition({"parent.b1.parent.b1.x"}, {"&.b1.&.b1.y"});
             REQUIRE(widget2->getPosition() == sf::Vector2f(40, 60));
 
@@ -434,8 +434,8 @@ TEST_CASE("[Layouts]") {
             widget1->setPosition(60, 75);
             REQUIRE(widget2->getSize() == sf::Vector2f(400, 40));
             REQUIRE(widget2->getPosition() == sf::Vector2f(60, 75));
-            
-            auto widget3 = std::make_shared<tgui::ClickableWidget>();
+
+            auto widget3 = tgui::ClickableWidget::create();
             widget1->setSize(300, 50);
             widget1->setPosition(40, 60);
             widget2->setSize(400, 40);
@@ -448,7 +448,7 @@ TEST_CASE("[Layouts]") {
             widget3->setPosition({"2 * b1.right + b2.x / 4 + b1.w"}, {"50 + b2.bottom % 75 * b2.y"});
             REQUIRE(widget3->getPosition() == sf::Vector2f(995, 3050));
             REQUIRE(widget3->getAbsolutePosition() == sf::Vector2f(1005, 3075));
-            
+
             widget3->setSize({"(if b1.w > b2.h then 2 * b1.w else b2.w / 4) * 3"});
             REQUIRE(widget3->getSize().x == 1800);
             widget1->setSize(30, 10);
@@ -471,7 +471,7 @@ TEST_CASE("[Layouts]") {
             widget1->setPosition(60, 75);
             REQUIRE(widget3->getPosition() == sf::Vector2f(90, 112.5f));
 
-            auto widget4 = std::make_shared<tgui::ClickableWidget>();
+            auto widget4 = tgui::ClickableWidget::create();
             widget4->setSize(200, 50);
 
             panel->add(widget4, "xyzifxyz");
@@ -523,7 +523,7 @@ TEST_CASE("[Layouts]") {
         }
 
         SECTION("No ambiguity with 0") {
-            auto widget = std::make_shared<tgui::ClickableWidget>();
+            auto widget = tgui::ClickableWidget::create();
             widget->setPosition({0, 0});
             widget->setPosition(0,0);
             widget->setPosition({"0","0"});
@@ -535,8 +535,8 @@ TEST_CASE("[Layouts]") {
 
     SECTION("Bug Fixes") {
         SECTION("Setting negative size and reverting back to positive (https://github.com/texus/TGUI/issues/54)") {
-            tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
-            tgui::ClickableWidget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
+            tgui::Panel::Ptr panel = tgui::Panel::create();
+            tgui::ClickableWidget::Ptr widget = tgui::ClickableWidget::create();
             panel->add(widget);
 
             // widget width becomes -10

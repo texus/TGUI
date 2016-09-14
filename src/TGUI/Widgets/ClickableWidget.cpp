@@ -31,7 +31,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableWidget::ClickableWidget(const Layout2d& size)
+    ClickableWidget::ClickableWidget()
     {
         m_type = "ClickableWidget";
         m_callback.widgetType = "ClickableWidget";
@@ -39,15 +39,15 @@ namespace tgui
         addSignal<sf::Vector2f>("MousePressed");
         addSignal<sf::Vector2f>("MouseReleased");
         addSignal<sf::Vector2f>("Clicked");
-
-        setSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ClickableWidget::ClickableWidget(const Layout& width, const Layout& height) :
-        ClickableWidget{Layout2d{width, height}}
+    ClickableWidget::Ptr ClickableWidget::create(Layout2d size)
     {
+        auto widget = std::make_shared<ClickableWidget>();
+        widget->setSize(size);
+        return widget;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

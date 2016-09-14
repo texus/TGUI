@@ -29,7 +29,7 @@
 
 TEST_CASE("[Label]")
 {
-    tgui::Label::Ptr label = std::make_shared<tgui::Label>();
+    tgui::Label::Ptr label = tgui::Label::create();
     label->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")

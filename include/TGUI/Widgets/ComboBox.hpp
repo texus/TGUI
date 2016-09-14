@@ -81,6 +81,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Creates a new combo box widget
+        ///
+        /// @return The new combo box
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static ComboBox::Ptr create();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another combo box
         ///
         /// @param comboBox  The other combo box
@@ -543,7 +552,7 @@ namespace tgui
         std::size_t m_nrOfItemsToDisplay = 0;
 
         // Internally a list box is used to store all items
-        ListBox::Ptr m_listBox = std::make_shared<ListBox>();
+        ListBox::Ptr m_listBox = ListBox::create();
 
         Text m_text;
 

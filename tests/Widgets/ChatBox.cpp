@@ -27,7 +27,7 @@
 
 TEST_CASE("[ChatBox]")
 {
-    tgui::ChatBox::Ptr chatBox = std::make_shared<tgui::ChatBox>();
+    tgui::ChatBox::Ptr chatBox = tgui::ChatBox::create();
     chatBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("WidgetType")
@@ -70,7 +70,7 @@ TEST_CASE("[ChatBox]")
         REQUIRE(chatBox->getLine(2) == "Line 3");
         REQUIRE(chatBox->getLine(3) == "Line 4");
         REQUIRE(chatBox->getLine(4) == "Line 5");
-        
+
         REQUIRE(chatBox->getLineColor(0) == sf::Color::Black);
         REQUIRE(chatBox->getLineColor(1) == sf::Color::Black);
         REQUIRE(chatBox->getLineColor(2) == sf::Color::Green);
@@ -224,7 +224,7 @@ TEST_CASE("[ChatBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", "{ TrackColor = Red; ThumbColor = Blue; }"));
             }
-            
+
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));

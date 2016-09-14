@@ -27,7 +27,7 @@
 
 TEST_CASE("[Knob]")
 {
-    tgui::Knob::Ptr knob = std::make_shared<tgui::Knob>();
+    tgui::Knob::Ptr knob = tgui::Knob::create();
     knob->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
     knob->setMinimum(10);
     knob->setMaximum(20);

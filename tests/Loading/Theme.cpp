@@ -83,7 +83,7 @@ TEST_CASE("[Theme]")
     {
         tgui::Theme theme{"resources/Black.txt"};
 
-        auto label1 = std::make_shared<tgui::Label>();
+        auto label1 = tgui::Label::create();
         label1->getRenderer()->setTextColor("red");
         REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Red);
 
@@ -93,7 +93,7 @@ TEST_CASE("[Theme]")
         label1->getRenderer()->setTextColor("green");
         REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Green);
 
-        auto label2 = std::make_shared<tgui::Label>();
+        auto label2 = tgui::Label::create();
         label2->getRenderer()->setTextColor("blue");
         REQUIRE(label2->getRenderer()->getTextColor() == sf::Color::Blue);
 

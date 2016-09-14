@@ -27,7 +27,7 @@
 
 TEST_CASE("[ListBox]")
 {
-    tgui::ListBox::Ptr listBox = std::make_shared<tgui::ListBox>();
+    tgui::ListBox::Ptr listBox = tgui::ListBox::create();
     listBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")

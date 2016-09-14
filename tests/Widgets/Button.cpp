@@ -27,7 +27,7 @@
 
 TEST_CASE("[Button]")
 {
-    tgui::Button::Ptr button = std::make_shared<tgui::Button>();
+    tgui::Button::Ptr button = tgui::Button::create();
     button->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")

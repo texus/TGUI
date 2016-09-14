@@ -28,7 +28,7 @@
 
 TEST_CASE("[Picture]")
 {
-    tgui::Picture::Ptr picture = std::make_shared<tgui::Picture>();
+    tgui::Picture::Ptr picture = tgui::Picture::create();
 
     SECTION("Signals")
     {
@@ -40,26 +40,20 @@ TEST_CASE("[Picture]")
         REQUIRE(picture->getWidgetType() == "Picture");
     }
 
-    SECTION("Constructor")
+    SECTION("Create")
     {
         sf::Texture texture;
         texture.loadFromFile("resources/image.png");
 
-        SECTION("from file")
+        SECTION("from tgui::Texture")
         {
-            REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>("resources/image.png"));
+            REQUIRE_NOTHROW(picture = tgui::Picture::create("resources/image.png"));
             REQUIRE(picture->getLoadedFilename() == "resources/image.png");
-        }
-
-        SECTION("from texture")
-        {
-            REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>(tgui::Texture{"resources/image.png"}));
-            REQUIRE(picture->getLoadedFilename() == "");
         }
 
         SECTION("from sf::Texture")
         {
-            REQUIRE_NOTHROW(picture = std::make_shared<tgui::Picture>(texture));
+            REQUIRE_NOTHROW(picture = tgui::Picture::create(texture));
             REQUIRE(picture->getLoadedFilename() == "");
         }
 
@@ -81,10 +75,7 @@ TEST_CASE("[Picture]")
     {
         picture->setSize(50, 50);
 
-        sf::Texture texture;
-        texture.loadFromFile("resources/image.png");
-
-        SECTION("from file")
+        SECTION("from tgui::Texture")
         {
             REQUIRE_NOTHROW(picture->setTexture("resources/image.png"));
             REQUIRE(picture->getLoadedFilename() == "resources/image.png");
@@ -95,19 +86,11 @@ TEST_CASE("[Picture]")
             REQUIRE(picture->getSize() == sf::Vector2f(100, 100));
         }
 
-        SECTION("from texture")
-        {
-            REQUIRE_NOTHROW(picture->setTexture(tgui::Texture{"resources/image.png"}));
-            REQUIRE(picture->getLoadedFilename() == "");
-            REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
-
-            picture->setSize(100, 100);
-            REQUIRE_NOTHROW(picture->setTexture(tgui::Texture{"resources/image.png"}));
-            REQUIRE(picture->getSize() == sf::Vector2f(100, 100));
-        }
-
         SECTION("from sf::Texture")
         {
+            sf::Texture texture;
+            texture.loadFromFile("resources/image.png");
+        
             REQUIRE_NOTHROW(picture->setTexture(texture));
             REQUIRE(picture->getLoadedFilename() == "");
             REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
@@ -125,7 +108,7 @@ TEST_CASE("[Picture]")
         picture->setSmooth(true);
         REQUIRE(!picture->isSmooth());
 
-        picture = std::make_shared<tgui::Picture>("resources/image.png");
+        picture = tgui::Picture::create("resources/image.png");
         REQUIRE(!picture->isSmooth());
         picture->setSmooth(true);
         REQUIRE(picture->isSmooth());
@@ -195,7 +178,10 @@ TEST_CASE("[Picture]")
 
     SECTION("Saving and loading from file")
     {
+        picture->setTexture("resources/image.png");
+        picture->setSize(80, 60);
         picture->setSmooth();
+
         testSavingWidget("Picture", picture, false);
     }
 }

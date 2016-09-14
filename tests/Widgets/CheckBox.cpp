@@ -27,7 +27,7 @@
 
 TEST_CASE("[CheckBox]")
 {
-    tgui::CheckBox::Ptr checkBox = std::make_shared<tgui::CheckBox>();
+    tgui::CheckBox::Ptr checkBox = tgui::CheckBox::create();
     checkBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")

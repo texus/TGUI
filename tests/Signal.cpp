@@ -26,7 +26,7 @@
 #include <TGUI/Widgets/Button.hpp>
 
 TEST_CASE("[Signal]") {
-    tgui::Widget::Ptr widget = std::make_shared<tgui::ClickableWidget>();
+    tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
 
 /*
 TODO: More tests:
@@ -98,7 +98,7 @@ TODO: More tests:
         REQUIRE(widget->connect("PositionChanged", [](sf::Vector2f){}) == ++id);
         REQUIRE(widget->connect("SizeChanged", [](sf::Vector2f){}) == ++id);
 
-        tgui::Widget::Ptr widget2 = std::make_shared<tgui::Button>();
+        tgui::Widget::Ptr widget2 = tgui::Button::create();
         REQUIRE(widget2->connect("PositionChanged", [](sf::Vector2f, sf::Vector2f){}, widget2->getPosition()) == ++id);
         REQUIRE(widget2->connect("SizeChanged", [](sf::Vector2f, sf::Vector2f){}, std::bind(&tgui::Widget::getSize, widget2)) == ++id);
         REQUIRE(widget2->connect("Pressed", [](std::string){}, std::bind(&tgui::Button::getText, std::static_pointer_cast<tgui::Button>(widget2))) == ++id);
@@ -121,7 +121,7 @@ TODO: More tests:
         REQUIRE(widget->connectEx("MouseEntered", [](const tgui::Callback&){}) == ++id);
         REQUIRE(widget->connectEx("MouseLeft", [](const tgui::Callback&){}) == ++id);
 
-        tgui::Widget::Ptr widget2 = std::make_shared<tgui::ClickableWidget>();
+        tgui::Widget::Ptr widget2 = tgui::ClickableWidget::create();
         REQUIRE(widget->connectEx("PositionChanged", [](sf::Vector2f, const tgui::Callback&){}, widget2->getPosition()) == ++id);
         REQUIRE(widget->connectEx("SizeChanged", [](sf::Vector2f, const tgui::Callback&){}, std::bind(&tgui::Widget::getSize, widget2)) == ++id);
 

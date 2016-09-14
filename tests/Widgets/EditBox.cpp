@@ -27,7 +27,7 @@
 
 TEST_CASE("[EditBox]")
 {
-    tgui::EditBox::Ptr editBox = std::make_shared<tgui::EditBox>();
+    tgui::EditBox::Ptr editBox = tgui::EditBox::create();
     editBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
 
     SECTION("Signals")

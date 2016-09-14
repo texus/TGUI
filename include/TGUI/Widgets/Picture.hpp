@@ -59,31 +59,20 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructor to creates the picture
-        ///
-        /// @param filename       The absolute or relative filename of the image that should be loaded
-        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
-        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
-        ///
-        /// @throw Exception when the image could not be loaded (probably not found)
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Picture(const sf::String& filename, bool fullyClickable = true);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Constructor to create the picture from an image
+        /// @brief Constructor to create the picture from a texture
         ///
         /// @param texture  The texture to load the picture from
         /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
         ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
         ///
         /// @code
-        /// auto picture1 = std::make_shared<tgui::Picture>(tgui::Texture{"image.png", {10, 10, 80, 80}});
+        /// Picture picture1("image.png");
+        ///
+        /// Picture picture2({"image.png", {20, 15, 60, 40}}); // Only load the part of the image from (20,15) to (80,55)
         ///
         /// sf::Texture texture;
-        /// texture.loadFromFile("image.png", {10, 10, 80, 80});
-        /// auto picture2 = std::make_shared<tgui::Picture>(texture);
+        /// texture.loadFromFile("image.png", {20, 15, 60, 40});
+        /// Picture picture3(texture);
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,35 +80,26 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image
-        ///
-        /// @param filename       The absolute or relative filename of the image that should be loaded
-        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
-        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
-        ///
-        /// @throw Exception when the image could not be loaded (probably not found)
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTexture(const sf::String& filename, bool fullyClickable = true);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image
+        /// @brief Creates a new picture widget
         ///
         /// @param texture  The texture to load the picture from
         /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
         ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
         ///
+        /// @return The new picture
+        ///
         /// @code
-        /// picture1->setTexture({"image.png", {10, 10, 80, 80}});
+        /// auto picture1 = Picture::create("image.png");
+        ///
+        /// auto picture2 = Picture::create({"image.png", {20, 15, 60, 40}}); // Load part of the image from (20,15) to (80,55)
         ///
         /// sf::Texture texture;
-        /// texture.loadFromFile("image.png", {10, 10, 80, 80});
-        /// picture2->setTexture(texture);
+        /// texture.loadFromFile("image.png", {20, 15, 60, 40});
+        /// auto picture3 = Picture::create(texture);
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTexture(const Texture& texture, bool fullyClickable = true);
+        static Picture::Ptr create(const Texture& texture = {}, bool fullyClickable = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,13 +114,34 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the filename of the image that was used to load the widget
+        /// @brief Changes the image
         ///
-        /// @return Filename of loaded image
-        ///         Empty string when no image was loaded yet or when it was loaded directly from a texture.
+        /// @param texture  The texture to load the picture from
+        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
+        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
+        ///
+        /// @code
+        /// picture1->setTexture("image.png");
+        ///
+        /// picture2->setTexture({"image.png", {20, 15, 60, 40}}); // Only load the part of the image from (20,15) to (80,55)
+        ///
+        /// sf::Texture texture;
+        /// texture.loadFromFile("image.png", {20, 15, 60, 40});
+        /// picture3->setTexture(texture);
+        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::String& getLoadedFilename() const;
+        void setTexture(const Texture& texture, bool fullyClickable = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the filename of the image that was used to load the widget
+        ///
+        /// @return Filename of loaded image.
+        ///         Empty string when no image was loaded yet or when it was loaded directly from an sf::Texture.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::String getLoadedFilename() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
