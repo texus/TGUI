@@ -4,21 +4,34 @@ language: cpp
 git:
   depth: 1
 
-os: linux
-compiler: g++-6
-env: COMPILER=g++-6
-cache:
-  directories:
-    - $HOME/SFML_LINUX
+matrix:
+  include:
+  - os: linux
+    compiler: g++-4.7
+    env: COMPILER=g++-4.7
+    cache:
+      directories:
+      - $HOME/SFML_LINUX
+
+  - os: linux
+    compiler: g++-6
+    env: COMPILER=g++-6
+    cache:
+      directories:
+      - $HOME/SFML-2.4.0_LINUX
+
+  - os: osx
+    cache:
+      directories:
+      - $HOME/SFML_OSX
 
 addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
     packages:
+    - g++-4.7
     - g++-6
-    - valgrind
-
     - libfreetype6-dev
     - libjpeg-dev
     - libx11-dev
@@ -35,19 +48,43 @@ addons:
     - libvorbisfile3
     - libopenal-dev
     - libpthread-stubs0-dev
-
     - libglew-dev
     - libgpgme11-dev
     - libsndfile1-dev
     - libudev-dev
 
 script:
-  - CXX=$COMPILER;
-  - chmod +x tests/travis_linux_tests.sh
-  - tests/travis_linux_tests.sh
+  - >
+    CXX=$COMPILER;
+    if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
+      if [[ $CXX == g++-4.7 ]]; then
+        chmod +x tests/travis_linux.sh
+        tests/travis_linux.sh
+      elif [[ $CXX == g++-6 ]]; then
+        chmod +x tests/travis_linux_tests.sh
+        tests/travis_linux_tests.sh
+      else
+        echo 'Invalid compiler'
+        exit 1
+      fi
+    elif [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+      chmod +x tests/travis_osx.sh
+      tests/travis_osx.sh
+    else
+      echo 'Invalid OS'
+      exit 1
+    fi
 
 after_success:
   - >
     if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == g++-6 ]]; then
       bash <(curl -s https://codecov.io/bash) -x gcov-6 -a "-s /home/travis/build/texus/TGUI -pr"
     fi
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/66857e210e9200bcb6b7
+    on_success: change
+    on_failure: always
+    on_start: never

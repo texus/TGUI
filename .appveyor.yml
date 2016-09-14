@@ -1,0 +1,82 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+ 
+version: 0.8-build-{build}
+
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+environment:
+  matrix:
+    - SFML_ROOT:      C:\SFML-VS2015
+      SFML_VERSION:   master
+      GENERATOR:      Visual Studio 14 2015 Win64
+      BUILD_TYPE:     Debug
+      SHARED_LIBS:    FALSE
+      BUILD_TESTS:    TRUE
+      BUILD_EXAMPLES: FALSE
+      BUILD_FOLDER:   build-VS2015-Win64
+
+    - SFML_ROOT:      C:\SFML-VS2013
+      SFML_VERSION:   2.4.0
+      GENERATOR:      Visual Studio 12 2013
+      BUILD_TYPE:     Release
+      SHARED_LIBS:    TRUE
+      BUILD_TESTS:    FALSE
+      BUILD_EXAMPLES: TRUE
+      BUILD_FOLDER:   build-VS2013-Win32
+
+clone_depth: 3
+
+cache:
+  - C:\SFML-VS2013 -> appveyor.yml
+  - C:\SFML-VS2015 -> appveyor.yml
+
+install:
+  - IF NOT EXIST %SFML_ROOT% (
+      cd C:\ &&
+      appveyor DownloadFile https://github.com/SFML/SFML/archive/%SFML_VERSION%.zip -FileName C:\SFML.zip &&
+      7z x C:\SFML.zip &&
+      move SFML-%SFML_VERSION% %SFML_ROOT% &&
+      cd %SFML_ROOT% &&
+      mkdir lib &&
+      mkdir %BUILD_FOLDER% &&
+      cd %BUILD_FOLDER% &&
+      cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% .. &&
+      msbuild SFML.sln /p:Configuration=%BUILD_TYPE% /m &&
+      xcopy lib\%BUILD_TYPE% %SFML_ROOT%\lib\ &&
+      cd ..
+    )
+
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+build_script:
+  - cd C:\projects\tgui
+  - mkdir %BUILD_FOLDER%
+  - cd %BUILD_FOLDER%
+  - cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DSFML_ROOT=%SFML_ROOT% ..
+  - msbuild tgui.sln /p:Configuration=%BUILD_TYPE% /m
+  - cd ..
+  - IF %BUILD_TESTS%==TRUE (
+      cd %BUILD_FOLDER%\tests\%BUILD_TYPE% &&
+      tests.exe &&
+      cd ..\..\..
+    )
+
+
+#---------------------------------#
+#         notifications           #
+#---------------------------------#
+
+notifications:
+  - provider: Webhook
+    url: https://webhooks.gitter.im/e/1feed1f155b2a41e6a62
+    on_build_success: false
+    on_build_failure: true
+    on_build_status_changed: true

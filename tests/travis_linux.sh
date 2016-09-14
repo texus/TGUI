@@ -3,8 +3,8 @@ set -e
 export SFML_ROOT=$HOME/SFML_LINUX
 
 git clone --depth 1 https://github.com/SFML/SFML
-
 cd SFML
+
 if [[ ! -d "$SFML_ROOT/lib" || ! -f "$SFML_ROOT/revision_cache" || `git rev-parse HEAD` != `cat "$SFML_ROOT/revision_cache"` ]]; then
   if [[ ! -d "$SFML_ROOT/lib" ]]; then
     echo "$(tput setaf 3)Rebuilding SFML: no cache available$(tput sgr 0)"
@@ -21,8 +21,8 @@ else
 fi
 cd ..
 
-mkdir build_gcc-4.7
-cd build_gcc-4.7
+mkdir build_gcc-$CXX
+cd build_gcc-$CXX
 cmake -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=TRUE ..
 make -j2
 cd ..
