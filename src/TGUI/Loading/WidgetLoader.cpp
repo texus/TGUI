@@ -200,7 +200,7 @@ namespace tgui
                     auto rendererData = std::make_shared<RendererData>();
 
                     for (const auto& pair : childNode->propertyValuePairs)
-                        rendererData->propertyValuePairs[pair.first] = ObjectConverter{pair.second->value}; // Did not compile in VS2013 when omitting "ObjectConverter"
+                        rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile in VS2013 when just assigning "{pair.second->value}"
 
                     for (const auto& nestedProperty : childNode->children)
                     {
@@ -679,7 +679,7 @@ namespace tgui
             if (node->propertyValuePairs["textsize"])
                 menuBar->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
             if (node->propertyValuePairs["minimumsubmenuwidth"])
-                menuBar->setMinimumSubMenuWidth(tgui::stoi(node->propertyValuePairs["minimumsubmenuwidth"]->value));
+                menuBar->setMinimumSubMenuWidth(tgui::stof(node->propertyValuePairs["minimumsubmenuwidth"]->value));
 
             for (const auto& childNode : node->children)
             {

@@ -107,7 +107,7 @@ if (SFML_OS_ANDROID)
 
     set(CMAKE_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS}")
 
-    tgui_add_cxx_flag(-std=c++14)
+    tgui_add_cxx_flag(-std=c++1y)
     tgui_add_cxx_flag(-fexceptions)
     tgui_add_cxx_flag(-frtti)
 
@@ -119,7 +119,7 @@ elseif(SFML_COMPILER_GCC OR SFML_COMPILER_CLANG)
     tgui_add_cxx_flag(-Wshadow)
     tgui_add_cxx_flag(-Wno-long-long)
     tgui_add_cxx_flag(-pedantic)
-    tgui_add_cxx_flag(-std=c++14)
+    tgui_add_cxx_flag(-std=c++1y)
 
     # On mac, clang needs another parameter
     if (SFML_COMPILER_CLANG AND SFML_OS_MACOSX)
