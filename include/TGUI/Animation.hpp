@@ -79,8 +79,6 @@ namespace tgui
             sf::Time m_elapsedTime;
 
             std::function<void()> m_finishedCallback;
-
-            friend class tgui::Widget;
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

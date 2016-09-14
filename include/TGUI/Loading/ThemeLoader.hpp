@@ -147,7 +147,7 @@ namespace tgui
     private:
         static std::map<std::string, std::map<std::string, std::map<sf::String, sf::String>>> m_propertiesCache;
 
-        friend struct DefaultThemeLoaderTest;
+        friend struct DefaultThemeLoaderTest; // Used for testing m_propertiesCache
     };
 
 

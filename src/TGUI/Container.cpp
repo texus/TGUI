@@ -422,6 +422,66 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Container::moveWidgetToFront(const Widget::Ptr& widget)
+    {
+        // Loop through all widgets
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        {
+            // Check if the widget is found
+            if (m_widgets[i] == widget)
+            {
+                // Copy the widget
+                m_widgets.push_back(m_widgets[i]);
+                m_widgetNames.push_back(m_widgetNames[i]);
+
+                // Focus the correct widget
+                if ((m_focusedWidget == 0) || (m_focusedWidget == i+1))
+                    m_focusedWidget = m_widgets.size()-1;
+                else if (m_focusedWidget > i+1)
+                    --m_focusedWidget;
+
+                // Remove the old widget
+                m_widgets.erase(m_widgets.begin() + i);
+                m_widgetNames.erase(m_widgetNames.begin() + i);
+
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::moveWidgetToBack(const Widget::Ptr& widget)
+    {
+        // Loop through all widgets
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        {
+            // Check if the widget is found
+            if (m_widgets[i] == widget)
+            {
+                // Copy the widget
+                Widget::Ptr obj = m_widgets[i];
+                std::string name = m_widgetNames[i];
+                m_widgets.insert(m_widgets.begin(), obj);
+                m_widgetNames.insert(m_widgetNames.begin(), name);
+
+                // Focus the correct widget
+                if (m_focusedWidget == i + 1)
+                    m_focusedWidget = 1;
+                else if (m_focusedWidget)
+                    ++m_focusedWidget;
+
+                // Remove the old widget
+                m_widgets.erase(m_widgets.begin() + i + 1);
+                m_widgetNames.erase(m_widgetNames.begin() + i + 1);
+
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Container::leftMousePressed(sf::Vector2f pos)
     {
         sf::Event event;
@@ -570,66 +630,6 @@ namespace tgui
         }
         else
             Widget::rendererChanged(property, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::moveWidgetToFront(const Widget::Ptr& widget)
-    {
-        // Loop through all widgets
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            // Check if the widget is found
-            if (m_widgets[i] == widget)
-            {
-                // Copy the widget
-                m_widgets.push_back(m_widgets[i]);
-                m_widgetNames.push_back(m_widgetNames[i]);
-
-                // Focus the correct widget
-                if ((m_focusedWidget == 0) || (m_focusedWidget == i+1))
-                    m_focusedWidget = m_widgets.size()-1;
-                else if (m_focusedWidget > i+1)
-                    --m_focusedWidget;
-
-                // Remove the old widget
-                m_widgets.erase(m_widgets.begin() + i);
-                m_widgetNames.erase(m_widgetNames.begin() + i);
-
-                break;
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::moveWidgetToBack(const Widget::Ptr& widget)
-    {
-        // Loop through all widgets
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            // Check if the widget is found
-            if (m_widgets[i] == widget)
-            {
-                // Copy the widget
-                Widget::Ptr obj = m_widgets[i];
-                std::string name = m_widgetNames[i];
-                m_widgets.insert(m_widgets.begin(), obj);
-                m_widgetNames.insert(m_widgetNames.begin(), name);
-
-                // Focus the correct widget
-                if (m_focusedWidget == i + 1)
-                    m_focusedWidget = 1;
-                else if (m_focusedWidget)
-                    ++m_focusedWidget;
-
-                // Remove the old widget
-                m_widgets.erase(m_widgets.begin() + i + 1);
-                m_widgetNames.erase(m_widgetNames.begin() + i + 1);
-
-                break;
-            }
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
