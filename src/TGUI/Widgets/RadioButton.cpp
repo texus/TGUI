@@ -548,10 +548,10 @@ namespace tgui
             // Draw the check if the radio button is checked
             if (m_checked)
             {
-                sf::CircleShape check{innerRadius * .6f};
-                check.setFillColor(calcColorOpacity(getCurrentCheckColor(), getRenderer()->getOpacity()));
-                check.setPosition({innerRadius - check.getRadius(), innerRadius - check.getRadius()});
-                target.draw(check, states);
+                sf::CircleShape checkShape{innerRadius * .6f};
+                checkShape.setFillColor(calcColorOpacity(getCurrentCheckColor(), getRenderer()->getOpacity()));
+                checkShape.setPosition({innerRadius - checkShape.getRadius(), innerRadius - checkShape.getRadius()});
+                target.draw(checkShape, states);
             }
         }
         states.transform.translate({-borders.left, -borders.left});
