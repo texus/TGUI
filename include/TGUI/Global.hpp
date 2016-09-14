@@ -33,8 +33,6 @@
 #include <TGUI/FloatRect.hpp>
 #include <TGUI/Exception.hpp>
 
-#include <SFML/Graphics.hpp>
-
 #include <iostream>
 #include <string>
 #include <sstream>

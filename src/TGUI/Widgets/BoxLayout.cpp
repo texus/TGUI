@@ -258,11 +258,7 @@ namespace tgui
 
         // Draw the background
         if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-        {
-            sf::RectangleShape background(getSize());
-            background.setFillColor(getRenderer()->getBackgroundColor());
-            target.draw(background, states);
-        }
+            drawRectangleShape(target, states, getSize(), getRenderer()->getBackgroundColor());
 
         // Draw the widgets
         drawWidgetContainer(&target, states);

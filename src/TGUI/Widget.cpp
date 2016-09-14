@@ -26,8 +26,8 @@
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Animation.hpp>
-
-#include <cassert>
+#include <SFML/System/Err.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -25,6 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Gui.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 
 TGUI_IMPORT_LAYOUT_BIND_FUNCTIONS
 using tgui::Layout;

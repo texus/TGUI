@@ -27,6 +27,7 @@
 #include <TGUI/Gui.hpp>
 #include <TGUI/DefaultFont.hpp>
 
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/OpenGL.hpp>
 
 #include <cassert>
