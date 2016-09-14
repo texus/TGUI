@@ -7,8 +7,8 @@ git:
 matrix:
   include:
   - os: linux
-    compiler: g++-4.7
-    env: COMPILER=g++-4.7
+    compiler: g++-4.9
+    env: COMPILER=g++-4.9
     cache:
       directories:
       - $HOME/SFML_LINUX
@@ -30,8 +30,9 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - g++-4.7
+    - g++-4.9
     - g++-6
+    - valgrind
     - libfreetype6-dev
     - libjpeg-dev
     - libx11-dev
@@ -57,7 +58,7 @@ script:
   - >
     CXX=$COMPILER;
     if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
-      if [[ $CXX == g++-4.7 ]]; then
+      if [[ $CXX == g++-4.9 ]]; then
         chmod +x tests/travis_linux.sh
         tests/travis_linux.sh
       elif [[ $CXX == g++-6 ]]; then

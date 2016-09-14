@@ -1103,7 +1103,7 @@ namespace tgui
         // Tell the scrollbar how many pixels the text contains
         bool scrollbarShown = m_verticalScroll.isShown();
 
-        m_verticalScroll.setMaximum(static_cast<unsigned int>(m_lines.size() * m_lineHeight) + Text::calculateExtraVerticalSpace(getRenderer()->getFont(), m_textSize));
+        m_verticalScroll.setMaximum(static_cast<unsigned int>(m_lines.size() * m_lineHeight + Text::calculateExtraVerticalSpace(getRenderer()->getFont(), m_textSize)));
 
         // We may have to recalculate what we just calculated if the scrollbar just appeared or disappeared
         if (scrollbarShown != m_verticalScroll.isShown())

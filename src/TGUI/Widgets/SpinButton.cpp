@@ -53,7 +53,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinButton::Ptr SpinButton::create(float minimum, float maximum)
+    SpinButton::Ptr SpinButton::create(int minimum, int maximum)
     {
         auto spinButton = std::make_shared<SpinButton>();
 

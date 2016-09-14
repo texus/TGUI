@@ -111,7 +111,7 @@ TEST_CASE("[Text]")
 
         SECTION("Updated when string changes")
         {
-            unsigned int height = text.getSize().y;
+            float height = text.getSize().y;
 
             text.setString("a\nb\nc");
             REQUIRE(height < text.getSize().y);

@@ -25,6 +25,11 @@
 #include "../Tests.hpp"
 #include <TGUI/Loading/ThemeLoader.hpp>
 
+// Ignore warning "C4503: decorated name length exceeded, name was truncated" in Visual Studio
+#if defined _MSC_VER
+    #pragma warning(disable : 4503)
+#endif
+
 namespace tgui
 {
     struct DefaultThemeLoaderTest

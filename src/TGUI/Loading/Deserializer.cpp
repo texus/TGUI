@@ -369,7 +369,7 @@ namespace tgui
 
         auto rendererData = std::make_shared<RendererData>();
         for (const auto& pair : node->propertyValuePairs)
-            rendererData->propertyValuePairs[pair.first] = {pair.second->value};
+            rendererData->propertyValuePairs[pair.first] = ObjectConverter{pair.second->value}; // Did not compile in VS2013 when omitting "ObjectConverter"
 
         for (const auto& child : node->children)
         {

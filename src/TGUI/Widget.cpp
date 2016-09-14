@@ -98,7 +98,7 @@ namespace tgui
         Transformable                  {other},
         SignalWidgetBase               {other},
         enable_shared_from_this<Widget>{other},
-        m_type                         {other.m_type},
+        m_type                         (other.m_type), // Did not compile in VS2013 when using braces
         m_disabledBlockingMouseEvents  {other.m_disabledBlockingMouseEvents},
         m_enabled                      {other.m_enabled},
         m_visible                      {other.m_visible},
@@ -134,7 +134,7 @@ namespace tgui
         Transformable                  {std::move(other)},
         SignalWidgetBase               {std::move(other)},
         enable_shared_from_this<Widget>{std::move(other)},
-        m_type                         {std::move(other.m_type)},
+        m_type                         (std::move(other.m_type)), // Did not compile in VS2013 when using braces
         m_disabledBlockingMouseEvents  {std::move(other.m_disabledBlockingMouseEvents)},
         m_enabled                      {std::move(other.m_enabled)},
         m_visible                      {std::move(other.m_visible)},
@@ -148,7 +148,7 @@ namespace tgui
         m_containerWidget              {std::move(other.m_containerWidget)},
         m_toolTip                      {std::move(other.m_toolTip)},
         m_renderer                     {other.m_renderer},
-        m_showAnimations               {std::move(other.m_showAnimations)}
+        m_showAnimations               (std::move(other.m_showAnimations)) // Did not compile in VS2013 when using braces
     {
         m_callback.widget = this;
 

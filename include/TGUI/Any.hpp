@@ -37,12 +37,12 @@ namespace tgui
 
         bool is_null() const
         {
-            return !ptr;
+            return ptr == nullptr;
         }
 
         bool not_null() const
         {
-            return ptr;
+            return ptr != nullptr;
         }
 
         template<typename U>
@@ -80,7 +80,7 @@ namespace tgui
         {
         }
 
-        Any(Any& that)
+        Any(const Any& that)
             : ptr(that.clone())
         {
         }
@@ -89,17 +89,6 @@ namespace tgui
             : ptr(that.ptr)
         {
             that.ptr = nullptr;
-        }
-
-        Any(const Any& that)
-            : ptr(that.clone())
-        {
-
-        }
-
-        Any(const Any&& that)
-            : ptr(that.clone())
-        {
         }
 
         Any& operator=(const Any& a)
