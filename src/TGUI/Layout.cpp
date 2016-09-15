@@ -25,6 +25,7 @@
 
 #include <TGUI/Widget.hpp>
 #include <TGUI/Gui.hpp>
+#include <TGUI/to_string.hpp>
 
 #include <cassert>
 #include <cctype>
@@ -32,98 +33,96 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace
-{
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float getWidgetLeft(tgui::Widget* widget)
-    {
-        return widget->getPosition().x;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float getWidgetTop(tgui::Widget* widget)
-    {
-        return widget->getPosition().y;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float getWidgetWidth(tgui::Widget* widget)
-    {
-        return widget->getSize().x;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float getWidgetHeight(tgui::Widget* widget)
-    {
-        return widget->getSize().y;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float getWidgetRight(tgui::Widget* widget)
-    {
-        return widget->getPosition().x + widget->getSize().x;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float getWidgetBottom(tgui::Widget* widget)
-    {
-        return widget->getPosition().y + widget->getSize().y;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void recalculateLayout(tgui::LayoutImpl* layout)
-    {
-        // Only the roots should be told to update as they will update their children with them
-        if (layout->parents.empty())
-        {
-            layout->recalculate();
-        }
-        else
-        {
-            for (const auto& parent : layout->parents)
-                recalculateLayout(parent);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void resetLayout(std::shared_ptr<tgui::LayoutImpl> layout, float value)
-    {
-        layout->value = value;
-        recalculateLayout(layout.get());
-
-        for (const auto& attachedLayout : layout->attachedLayouts)
-            attachedLayout->update();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    tgui::Layout layoutOperator(tgui::Layout&& left, tgui::Layout&& right, tgui::LayoutImpl::Operation operation)
-    {
-        tgui::Layout result;
-        result.getImpl()->operation = operation;
-        result.getImpl()->operands.push_back(left.getImpl());
-        result.getImpl()->operands.push_back(right.getImpl());
-        left.getImpl()->parents.insert(result.getImpl().get());
-        right.getImpl()->parents.insert(result.getImpl().get());
-        result.getImpl()->recalculate();
-        return result;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 namespace tgui
 {
+    namespace
+    {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        float getWidgetLeft(Widget* widget)
+        {
+            return widget->getPosition().x;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        float getWidgetTop(Widget* widget)
+        {
+            return widget->getPosition().y;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        float getWidgetWidth(Widget* widget)
+        {
+            return widget->getSize().x;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        float getWidgetHeight(Widget* widget)
+        {
+            return widget->getSize().y;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        float getWidgetRight(Widget* widget)
+        {
+            return widget->getPosition().x + widget->getSize().x;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        float getWidgetBottom(Widget* widget)
+        {
+            return widget->getPosition().y + widget->getSize().y;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void recalculateLayout(LayoutImpl* layout)
+        {
+            // Only the roots should be told to update as they will update their children with them
+            if (layout->parents.empty())
+            {
+                layout->recalculate();
+            }
+            else
+            {
+                for (const auto& parent : layout->parents)
+                    recalculateLayout(parent);
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void resetLayout(std::shared_ptr<LayoutImpl> layout, float value)
+        {
+            layout->value = value;
+            recalculateLayout(layout.get());
+
+            for (const auto& attachedLayout : layout->attachedLayouts)
+                attachedLayout->update();
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout layoutOperator(Layout&& left, Layout&& right, LayoutImpl::Operation operation)
+        {
+            Layout result;
+            result.getImpl()->operation = operation;
+            result.getImpl()->operands.push_back(left.getImpl());
+            result.getImpl()->operands.push_back(right.getImpl());
+            left.getImpl()->parents.insert(result.getImpl().get());
+            right.getImpl()->parents.insert(result.getImpl().get());
+            result.getImpl()->recalculate();
+            return result;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     LayoutImpl::~LayoutImpl()
@@ -206,7 +205,7 @@ namespace tgui
     float LayoutImpl::parseLayoutString(std::string expression)
     {
         // Empty strings have value 0 (although this might indicate a mistake in the expression, it also happens on unary plus and minus)
-        expression = tgui::trim(expression);
+        expression = trim(expression);
         if (expression.empty())
             return 0;
 
@@ -237,10 +236,10 @@ namespace tgui
                     }
 
                     maxNum = std::max(maxNum, parseLayoutString(expression.substr(prevPos + 1, closeBracketPos - prevPos - 1)));
-                    newExpression += tgui::to_string(maxNum);
+                    newExpression += to_string(maxNum);
                 }
                 else
-                    newExpression += tgui::to_string(parseLayoutString(expression.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1)));
+                    newExpression += to_string(parseLayoutString(expression.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1)));
             }
             else if ((openBracketPos >= 3) && (expression.substr(openBracketPos - 3, 3) == "min"))
             {
@@ -260,10 +259,10 @@ namespace tgui
                     }
 
                     maxNum = std::min(maxNum, parseLayoutString(expression.substr(prevPos + 1, closeBracketPos - prevPos - 1)));
-                    newExpression += tgui::to_string(maxNum);
+                    newExpression += to_string(maxNum);
                 }
                 else
-                    newExpression += tgui::to_string(parseLayoutString(expression.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1)));
+                    newExpression += to_string(parseLayoutString(expression.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1)));
             }
             else if ((openBracketPos >= 5) && (expression.substr(openBracketPos - 5, 5) == "range"))
             {
@@ -281,7 +280,7 @@ namespace tgui
                             float minValue = parseLayoutString(expression.substr(openBracketPos + 1, firstCommaPos - openBracketPos - 1));
                             float maxValue = parseLayoutString(expression.substr(firstCommaPos + 1, secondCommaPos - firstCommaPos - 1));
                             float wantedValue = parseLayoutString(expression.substr(secondCommaPos + 1, closeBracketPos - secondCommaPos - 1));
-                            newExpression += tgui::to_string(std::max(std::min(wantedValue, maxValue), minValue));
+                            newExpression += to_string(std::max(std::min(wantedValue, maxValue), minValue));
                         }
                         else // There shouldn't be a third comma
                             newExpression += "0";
@@ -295,7 +294,7 @@ namespace tgui
             else // Normal set of brackets
             {
                 newExpression += expression.substr(0, openBracketPos);
-                newExpression += tgui::to_string(parseLayoutString(expression.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1)));
+                newExpression += to_string(parseLayoutString(expression.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1)));
             }
             newExpression += expression.substr(closeBracketPos + 1);
 
@@ -397,9 +396,9 @@ namespace tgui
                     return 0; // 'if' and 'then' found without matching 'else'
 
                 if (parseLayoutString(expression.substr(ifPos + 2, thenPos - ifPos - 2)) != 0)
-                    expression = expression.substr(0, ifPos) + tgui::to_string(parseLayoutString(expression.substr(thenPos + 4, elsePos - thenPos - 4)));
+                    expression = expression.substr(0, ifPos) + to_string(parseLayoutString(expression.substr(thenPos + 4, elsePos - thenPos - 4)));
                 else
-                    expression = expression.substr(0, ifPos) + tgui::to_string(parseLayoutString(expression.substr(elsePos + 4)));
+                    expression = expression.substr(0, ifPos) + to_string(parseLayoutString(expression.substr(elsePos + 4)));
             }
         }
 
@@ -469,7 +468,7 @@ namespace tgui
             else
             {
                 // The minus might be a unary instead of a binary operator
-                auto leftExpr = tgui::trim(expression.substr(0, minusPos));
+                auto leftExpr = trim(expression.substr(0, minusPos));
                 if (leftExpr.empty())
                     return -parseLayoutString(expression.substr(minusPos + 1));
                 else if ((leftExpr.back() == '+') || (leftExpr.back() == '-') || (leftExpr.back() == '*') || (leftExpr.back() == '/') || (leftExpr.back() == '%'))
@@ -515,7 +514,7 @@ namespace tgui
 
         // The expression might reference to a widget instead of being a constant
         assert(!expression.empty());
-        expression = tgui::toLower(tgui::trim(expression));
+        expression = toLower(trim(expression));
         if ((expression.substr(expression.size()-1) == "x")
          || (expression.substr(expression.size()-1) == "y")
          || (expression.substr(expression.size()-1) == "w") // width
@@ -1230,7 +1229,7 @@ namespace tgui
 
     Layout bindIf(Layout condition, Layout trueExpr, Layout falseExpr)
     {
-        tgui::Layout result;
+        Layout result;
         result.getImpl()->operation = LayoutImpl::Operation::Conditional;
         result.getImpl()->operands.push_back(condition.getImpl());
         result.getImpl()->operands.push_back(trueExpr.getImpl());

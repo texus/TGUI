@@ -77,7 +77,7 @@ namespace tgui
 
         getRenderer()->getTextureBackground().setSize(getSize());
 
-        setTextSize(findBestTextSize(getRenderer()->getFont(), getSize().y * 0.8f));
+        setTextSize(Text::findBestTextSize(getRenderer()->getFont(), getSize().y * 0.8f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -541,7 +541,7 @@ namespace tgui
                 m_menus[i].text.setFont(font);
             }
 
-            setTextSize(findBestTextSize(font, getSize().y * 0.8f));
+            setTextSize(Text::findBestTextSize(font, getSize().y * 0.8f));
         }
         else if ((property != "backgroundcolor")
               && (property != "selectedbackgroundcolor")

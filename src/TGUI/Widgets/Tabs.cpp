@@ -278,7 +278,7 @@ namespace tgui
             if (size == 0)
             {
                 Borders borders = getRenderer()->getBorders();
-                m_textSize = findBestTextSize(getRenderer()->getFont(), (m_tabHeight - borders.top - borders.bottom) * 0.8f);
+                m_textSize = Text::findBestTextSize(getRenderer()->getFont(), (m_tabHeight - borders.top - borders.bottom) * 0.8f);
             }
             else // An exact size was given
                 m_textSize = size;

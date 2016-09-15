@@ -378,14 +378,14 @@ namespace tgui
             }
 
             if (m_mouseHover && m_mouseHoverOnTopArrow && getRenderer()->getBackgroundColorHover().isSet())
-                arrowBack.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColorHover(), getRenderer()->getOpacity()));
+                arrowBack.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColorHover(), getRenderer()->getOpacity()));
             else
-                arrowBack.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
+                arrowBack.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
 
             if (m_mouseHover && m_mouseHoverOnTopArrow && getRenderer()->getArrowColorHover().isSet())
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
             else
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
 
             target.draw(arrowBack, states);
             target.draw(arrow, states);
@@ -444,14 +444,14 @@ namespace tgui
             }
 
             if (m_mouseHover && !m_mouseHoverOnTopArrow)
-                arrowBack.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColorHover(), getRenderer()->getOpacity()));
+                arrowBack.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColorHover(), getRenderer()->getOpacity()));
             else
-                arrowBack.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
+                arrowBack.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
 
             if (m_mouseHover && !m_mouseHoverOnTopArrow)
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
             else
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
 
             target.draw(arrowBack, states);
             target.draw(arrow, states);

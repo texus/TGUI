@@ -90,7 +90,7 @@ namespace tgui
         /// @return Vector of all widget pointers
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::vector<Widget::Ptr>& getWidgets()
+        const std::vector<Widget::Ptr>& getWidgets() const
         {
             return m_widgets;
         }
@@ -102,7 +102,7 @@ namespace tgui
         /// @return Vector of all widget names
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::vector<sf::String>& getWidgetNames()
+        const std::vector<sf::String>& getWidgetNames() const
         {
             return m_widgetNames;
         }

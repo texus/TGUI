@@ -140,7 +140,7 @@ namespace tgui
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
-            m_textFull.setCharacterSize(findBestTextSize(getRenderer()->getFont(), (getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.8f));
+            m_textFull.setCharacterSize(Text::findBestTextSize(getRenderer()->getFont(), (getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.8f));
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());

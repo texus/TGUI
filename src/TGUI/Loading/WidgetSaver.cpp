@@ -44,6 +44,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/to_string.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -65,14 +66,14 @@ namespace tgui
             if (layout.x.getImpl()->operation == LayoutImpl::Operation::String)
                 str += "\"" + layout.x.getImpl()->stringExpression + "\"";
             else
-                str += tgui::to_string(layout.x.getValue());
+                str += to_string(layout.x.getValue());
 
             str += ", ";
 
             if (layout.y.getImpl()->operation == LayoutImpl::Operation::String)
                 str += "\"" + layout.y.getImpl()->stringExpression + "\"";
             else
-                str += tgui::to_string(layout.y.getValue());
+                str += to_string(layout.y.getValue());
 
             str += ")";
             return str;
@@ -116,7 +117,7 @@ namespace tgui
                 toolTipNode->children.emplace_back(toolTipWidgetNode);
 
                 toolTipNode->propertyValuePairs["TimeToDisplay"] = std::make_shared<DataIO::ValueNode>(to_string(ToolTip::getTimeToDisplay().asSeconds()));
-                toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_shared<DataIO::ValueNode>("(" + tgui::to_string(ToolTip::getDistanceToMouse().x) + "," + tgui::to_string(ToolTip::getDistanceToMouse().y) + ")");
+                toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_shared<DataIO::ValueNode>("(" + to_string(ToolTip::getDistanceToMouse().x) + "," + to_string(ToolTip::getDistanceToMouse().y) + ")");
 
                 node->children.emplace_back(toolTipNode);
             }
@@ -172,7 +173,7 @@ namespace tgui
             if (!button->getText().isEmpty())
                 SET_PROPERTY("Text", Serializer::serialize(button->getText()));
 
-            SET_PROPERTY("TextSize", tgui::to_string(button->getTextSize()));
+            SET_PROPERTY("TextSize", to_string(button->getTextSize()));
             return node;
         }
 
@@ -183,11 +184,11 @@ namespace tgui
             auto chatBox = std::static_pointer_cast<ChatBox>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(chatBox);
 
-            SET_PROPERTY("TextSize", tgui::to_string(chatBox->getTextSize()));
+            SET_PROPERTY("TextSize", to_string(chatBox->getTextSize()));
             SET_PROPERTY("TextColor", Serializer::serialize(chatBox->getTextColor()));
 
             if (chatBox->getLineLimit())
-                SET_PROPERTY("LineLimit", tgui::to_string(chatBox->getLineLimit()));
+                SET_PROPERTY("LineLimit", to_string(chatBox->getLineLimit()));
 
             if (chatBox->getLinesStartFromTop())
                 SET_PROPERTY("LinesStartFromTop", "true");
@@ -210,7 +211,7 @@ namespace tgui
 
                 lineNode->propertyValuePairs["Text"] = std::make_shared<DataIO::ValueNode>(Serializer::serialize(chatBox->getLine(i)));
                 if (lineTextSize != chatBox->getTextSize())
-                    lineNode->propertyValuePairs["TextSize"] = std::make_shared<DataIO::ValueNode>(tgui::to_string(lineTextSize));
+                    lineNode->propertyValuePairs["TextSize"] = std::make_shared<DataIO::ValueNode>(to_string(lineTextSize));
                 if (lineTextColor != chatBox->getTextColor())
                     lineNode->propertyValuePairs["Color"] = std::make_shared<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
 
@@ -287,9 +288,9 @@ namespace tgui
                 SET_PROPERTY("ItemIds", itemIdList);
             }
 
-            SET_PROPERTY("ItemsToDisplay", tgui::to_string(comboBox->getItemsToDisplay()));
-            SET_PROPERTY("TextSize", tgui::to_string(comboBox->getTextSize()));
-            SET_PROPERTY("MaximumItems", tgui::to_string(comboBox->getMaximumItems()));
+            SET_PROPERTY("ItemsToDisplay", to_string(comboBox->getItemsToDisplay()));
+            SET_PROPERTY("TextSize", to_string(comboBox->getTextSize()));
+            SET_PROPERTY("MaximumItems", to_string(comboBox->getMaximumItems()));
 
             return node;
         }
@@ -328,11 +329,11 @@ namespace tgui
             if (editBox->getPasswordCharacter() != '\0')
                 SET_PROPERTY("PasswordCharacter", Serializer::serialize(sf::String(editBox->getPasswordCharacter())));
             if (editBox->getMaximumCharacters() != 0)
-                SET_PROPERTY("MaximumCharacters", tgui::to_string(editBox->getMaximumCharacters()));
+                SET_PROPERTY("MaximumCharacters", to_string(editBox->getMaximumCharacters()));
             if (editBox->isTextWidthLimited())
                 SET_PROPERTY("TextWidthLimited", "true");
 
-            SET_PROPERTY("TextSize", tgui::to_string(editBox->getTextSize()));
+            SET_PROPERTY("TextSize", to_string(editBox->getTextSize()));
             return node;
         }
 
@@ -348,11 +349,11 @@ namespace tgui
             else
                 SET_PROPERTY("ClockwiseTurning", "false");
 
-            SET_PROPERTY("StartRotation", tgui::to_string(knob->getStartRotation()));
-            SET_PROPERTY("EndRotation", tgui::to_string(knob->getEndRotation()));
-            SET_PROPERTY("Minimum", tgui::to_string(knob->getMinimum()));
-            SET_PROPERTY("Maximum", tgui::to_string(knob->getMaximum()));
-            SET_PROPERTY("Value", tgui::to_string(knob->getValue()));
+            SET_PROPERTY("StartRotation", to_string(knob->getStartRotation()));
+            SET_PROPERTY("EndRotation", to_string(knob->getEndRotation()));
+            SET_PROPERTY("Minimum", to_string(knob->getMinimum()));
+            SET_PROPERTY("Maximum", to_string(knob->getMaximum()));
+            SET_PROPERTY("Value", to_string(knob->getValue()));
             return node;
         }
 
@@ -376,11 +377,11 @@ namespace tgui
             if (!label->getText().isEmpty())
                 SET_PROPERTY("Text", Serializer::serialize(label->getText()));
             if (label->getMaximumTextWidth() > 0)
-                SET_PROPERTY("MaximumTextWidth", tgui::to_string(label->getMaximumTextWidth()));
+                SET_PROPERTY("MaximumTextWidth", to_string(label->getMaximumTextWidth()));
             if (label->getAutoSize())
                 SET_PROPERTY("AutoSize", "true");
 
-            SET_PROPERTY("TextSize", tgui::to_string(label->getTextSize()));
+            SET_PROPERTY("TextSize", to_string(label->getTextSize()));
             return node;
         }
 
@@ -413,9 +414,9 @@ namespace tgui
             if (!listBox->getAutoScroll())
                 SET_PROPERTY("AutoScroll", "false");
 
-            SET_PROPERTY("TextSize", tgui::to_string(listBox->getTextSize()));
-            SET_PROPERTY("ItemHeight", tgui::to_string(listBox->getItemHeight()));
-            SET_PROPERTY("MaximumItems", tgui::to_string(listBox->getMaximumItems()));
+            SET_PROPERTY("TextSize", to_string(listBox->getTextSize()));
+            SET_PROPERTY("ItemHeight", to_string(listBox->getItemHeight()));
+            SET_PROPERTY("MaximumItems", to_string(listBox->getMaximumItems()));
 
             return node;
         }
@@ -450,8 +451,8 @@ namespace tgui
                 node->children.push_back(menuNode);
             }
 
-            SET_PROPERTY("TextSize", tgui::to_string(menuBar->getTextSize()));
-            SET_PROPERTY("MinimumSubMenuWidth", tgui::to_string(menuBar->getMinimumSubMenuWidth()));
+            SET_PROPERTY("TextSize", to_string(menuBar->getTextSize()));
+            SET_PROPERTY("MinimumSubMenuWidth", to_string(menuBar->getMinimumSubMenuWidth()));
 
             return node;
         }
@@ -463,7 +464,7 @@ namespace tgui
             auto messageBox = std::static_pointer_cast<MessageBox>(widget);
             auto node = WidgetSaver::getSaveFunction("childwindow")(messageBox);
 
-            SET_PROPERTY("TextSize", tgui::to_string(messageBox->getTextSize()));
+            SET_PROPERTY("TextSize", to_string(messageBox->getTextSize()));
 
             // Label and buttons are saved indirectly by saving the child window
 
@@ -495,20 +496,20 @@ namespace tgui
             if (!progressBar->getText().isEmpty())
                 SET_PROPERTY("Text", Serializer::serialize(progressBar->getText()));
 
-            if (progressBar->getFillDirection() != tgui::ProgressBar::FillDirection::LeftToRight)
+            if (progressBar->getFillDirection() != ProgressBar::FillDirection::LeftToRight)
             {
-                if (progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::RightToLeft)
+                if (progressBar->getFillDirection() == ProgressBar::FillDirection::RightToLeft)
                     SET_PROPERTY("FillDirection", "RightToLeft");
-                else if (progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::TopToBottom)
+                else if (progressBar->getFillDirection() == ProgressBar::FillDirection::TopToBottom)
                     SET_PROPERTY("FillDirection", "TopToBottom");
-                else if (progressBar->getFillDirection() == tgui::ProgressBar::FillDirection::BottomToTop)
+                else if (progressBar->getFillDirection() == ProgressBar::FillDirection::BottomToTop)
                     SET_PROPERTY("FillDirection", "BottomToTop");
             }
 
-            SET_PROPERTY("Minimum", tgui::to_string(progressBar->getMinimum()));
-            SET_PROPERTY("Maximum", tgui::to_string(progressBar->getMaximum()));
-            SET_PROPERTY("Value", tgui::to_string(progressBar->getValue()));
-            SET_PROPERTY("TextSize", tgui::to_string(progressBar->getTextSize()));
+            SET_PROPERTY("Minimum", to_string(progressBar->getMinimum()));
+            SET_PROPERTY("Maximum", to_string(progressBar->getMaximum()));
+            SET_PROPERTY("Value", to_string(progressBar->getValue()));
+            SET_PROPERTY("TextSize", to_string(progressBar->getTextSize()));
             return node;
         }
 
@@ -526,7 +527,7 @@ namespace tgui
             if (!radioButton->isTextClickable())
                 SET_PROPERTY("TextClickable", "false");
 
-            SET_PROPERTY("TextSize", tgui::to_string(radioButton->getTextSize()));
+            SET_PROPERTY("TextSize", to_string(radioButton->getTextSize()));
             return node;
         }
 
@@ -542,10 +543,10 @@ namespace tgui
             else
                 SET_PROPERTY("AutoHide", "false");
 
-            SET_PROPERTY("LowValue", tgui::to_string(scrollbar->getLowValue()));
-            SET_PROPERTY("Maximum", tgui::to_string(scrollbar->getMaximum()));
-            SET_PROPERTY("Value", tgui::to_string(scrollbar->getValue()));
-            SET_PROPERTY("ScrollAmount", tgui::to_string(scrollbar->getScrollAmount()));
+            SET_PROPERTY("LowValue", to_string(scrollbar->getLowValue()));
+            SET_PROPERTY("Maximum", to_string(scrollbar->getMaximum()));
+            SET_PROPERTY("Value", to_string(scrollbar->getValue()));
+            SET_PROPERTY("ScrollAmount", to_string(scrollbar->getScrollAmount()));
             return node;
         }
 
@@ -556,9 +557,9 @@ namespace tgui
             auto slider = std::static_pointer_cast<Slider>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(slider);
 
-            SET_PROPERTY("Minimum", tgui::to_string(slider->getMinimum()));
-            SET_PROPERTY("Maximum", tgui::to_string(slider->getMaximum()));
-            SET_PROPERTY("Value", tgui::to_string(slider->getValue()));
+            SET_PROPERTY("Minimum", to_string(slider->getMinimum()));
+            SET_PROPERTY("Maximum", to_string(slider->getMaximum()));
+            SET_PROPERTY("Value", to_string(slider->getValue()));
             return node;
         }
 
@@ -574,9 +575,9 @@ namespace tgui
             else
                 SET_PROPERTY("VerticalScroll", "false");
 
-            SET_PROPERTY("Minimum", tgui::to_string(spinButton->getMinimum()));
-            SET_PROPERTY("Maximum", tgui::to_string(spinButton->getMaximum()));
-            SET_PROPERTY("Value", tgui::to_string(spinButton->getValue()));
+            SET_PROPERTY("Minimum", to_string(spinButton->getMinimum()));
+            SET_PROPERTY("Maximum", to_string(spinButton->getMaximum()));
+            SET_PROPERTY("Value", to_string(spinButton->getValue()));
             return node;
         }
 
@@ -598,13 +599,13 @@ namespace tgui
             }
 
             if (tabs->getSelectedIndex() >= 0)
-                SET_PROPERTY("Selected", tgui::to_string(tabs->getSelectedIndex()));
+                SET_PROPERTY("Selected", to_string(tabs->getSelectedIndex()));
 
             if (tabs->getMaximumTabWidth() > 0)
-                SET_PROPERTY("MaximumTabWidth", tgui::to_string(tabs->getMaximumTabWidth()));
+                SET_PROPERTY("MaximumTabWidth", to_string(tabs->getMaximumTabWidth()));
 
-            SET_PROPERTY("TextSize", tgui::to_string(tabs->getTextSize()));
-            SET_PROPERTY("TabHeight", tgui::to_string(tabs->getTabHeight()));
+            SET_PROPERTY("TextSize", to_string(tabs->getTextSize()));
+            SET_PROPERTY("TabHeight", to_string(tabs->getTabHeight()));
             return node;
         }
 
@@ -616,8 +617,8 @@ namespace tgui
             auto node = WidgetSaver::getSaveFunction("widget")(textBox);
 
             SET_PROPERTY("Text", Serializer::serialize(textBox->getText()));
-            SET_PROPERTY("TextSize", tgui::to_string(textBox->getTextSize()));
-            SET_PROPERTY("MaximumCharacters", tgui::to_string(textBox->getMaximumCharacters()));
+            SET_PROPERTY("TextSize", to_string(textBox->getTextSize()));
+            SET_PROPERTY("MaximumCharacters", to_string(textBox->getMaximumCharacters()));
 
             if (textBox->isReadOnly())
                 SET_PROPERTY("ReadOnly", "true");

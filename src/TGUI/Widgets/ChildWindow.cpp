@@ -607,7 +607,7 @@ namespace tgui
         }
 
         // Set the size of the text in the title bar
-        m_titleText.setCharacterSize(findBestTextSize(getRenderer()->getFont(), height * 0.8f));
+        m_titleText.setCharacterSize(Text::findBestTextSize(getRenderer()->getFont(), height * 0.8f));
 
         // Reposition the images and text
         updatePosition();
@@ -697,7 +697,7 @@ namespace tgui
             }
 
             m_titleText.setFont(font);
-            m_titleText.setCharacterSize(findBestTextSize(font, getRenderer()->getTitleBarHeight() * 0.8f));
+            m_titleText.setCharacterSize(Text::findBestTextSize(font, getRenderer()->getTitleBarHeight() * 0.8f));
 
             updatePosition();
 

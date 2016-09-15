@@ -27,8 +27,8 @@
 #define TGUI_THEME_LOADER_HPP
 
 
-#include <TGUI/Widget.hpp>
-
+#include <TGUI/Config.hpp>
+#include <SFML/System/String.hpp>
 #include <memory>
 #include <string>
 #include <vector>
@@ -38,8 +38,6 @@
 
 namespace tgui
 {
-    class Widget;
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Base class for theme loader implementations
     ///

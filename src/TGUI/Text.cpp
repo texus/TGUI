@@ -74,7 +74,7 @@ namespace tgui
     void Text::setColor(Color color)
     {
         m_color = color;
-        m_text.setFillColor(calcColorOpacity(color, m_opacity));
+        m_text.setFillColor(Color::calcColorOpacity(color, m_opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ namespace tgui
     void Text::setOpacity(float opacity)
     {
         m_opacity = opacity;
-        m_text.setFillColor(calcColorOpacity(m_color, opacity));
+        m_text.setFillColor(Color::calcColorOpacity(m_color, opacity));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,6 +194,46 @@ namespace tgui
 
         float extraVerticalSpace = Text::calculateExtraVerticalSpace(m_font, m_text.getCharacterSize(), m_text.getStyle());
         m_size = {std::max(maxWidth, width), lines * font->getLineSpacing(m_text.getCharacterSize()) + extraVerticalSpace};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Text::findBestTextSize(Font fontWrapper, float height, int fit)
+    {
+        std::shared_ptr<sf::Font> font = fontWrapper.getFont();
+        if (!font)
+            return 0;
+
+        if (height < 2)
+            return 1;
+
+        std::vector<unsigned int> textSizes(static_cast<std::size_t>(height));
+        for (unsigned int i = 0; i < static_cast<unsigned int>(height); ++i)
+            textSizes[i] = i + 1;
+
+        auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height,
+                                     [&](unsigned int charSize, float h) { return font->getLineSpacing(charSize) + Text::calculateExtraVerticalSpace(font, charSize) < h; });
+        if (high == textSizes.end())
+            return static_cast<unsigned int>(height);
+
+        float highLineSpacing = font->getLineSpacing(*high);
+        if (highLineSpacing == height)
+            return *high;
+
+        auto low = high - 1;
+        float lowLineSpacing = font->getLineSpacing(*low);
+
+        if (fit < 0)
+            return *low;
+        else if (fit > 0)
+            return *high;
+        else
+        {
+            if (std::abs(height - lowLineSpacing) < std::abs(height - highLineSpacing))
+                return *low;
+            else
+                return *high;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

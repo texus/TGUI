@@ -130,7 +130,7 @@ namespace tgui
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                unsigned int textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.8f);
+                unsigned int textSize = Text::findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.8f);
                 m_text.setCharacterSize(textSize);
 
                 // Make the text smaller when it's too width
@@ -152,7 +152,7 @@ namespace tgui
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                unsigned int textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().x * 0.8f);
+                unsigned int textSize = Text::findBestTextSize(getRenderer()->getFont(), getInnerSize().x * 0.8f);
                 m_text.setCharacterSize(textSize);
 
                 // Make the text smaller when it's too high

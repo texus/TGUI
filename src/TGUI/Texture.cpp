@@ -23,9 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include <TGUI/Color.hpp>
 #include <TGUI/Texture.hpp>
-#include <TGUI/Global.hpp>
 #include <TGUI/Clipping.hpp>
+#include <TGUI/Exception.hpp>
+#include <TGUI/TextureManager.hpp>
 
 #include <cassert>
 
@@ -218,7 +220,7 @@ namespace tgui
     {
         m_vertexColor = color;
 
-        sf::Color vertexColor = calcColorOpacity(m_vertexColor, m_opacity);
+        sf::Color vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
         for (auto& vertex : m_vertices)
             vertex.color = vertexColor;
     }

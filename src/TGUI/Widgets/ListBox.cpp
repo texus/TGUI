@@ -23,12 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <SFML/OpenGL.hpp>
-
-#include <TGUI/Container.hpp>
-#include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
-#include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,7 +369,7 @@ namespace tgui
         m_itemHeight = itemHeight;
         if (m_requestedTextSize == 0)
         {
-            m_textSize = findBestTextSize(getRenderer()->getFont(), itemHeight * 0.8f);
+            m_textSize = Text::findBestTextSize(getRenderer()->getFont(), itemHeight * 0.8f);
             for (auto& item : m_items)
                 item.setCharacterSize(m_textSize);
         }
@@ -400,7 +395,7 @@ namespace tgui
         if (textSize)
             m_textSize = textSize;
         else
-            m_textSize = findBestTextSize(getRenderer()->getFont(), m_itemHeight * 0.8f);
+            m_textSize = Text::findBestTextSize(getRenderer()->getFont(), m_itemHeight * 0.8f);
 
         for (auto& item : m_items)
             item.setCharacterSize(m_textSize);
@@ -695,7 +690,7 @@ namespace tgui
             // Recalculate the text size with the new font
             if (m_requestedTextSize == 0)
             {
-                m_textSize = findBestTextSize(font, m_itemHeight * 0.8f);
+                m_textSize = Text::findBestTextSize(font, m_itemHeight * 0.8f);
                 for (auto& item : m_items)
                     item.setCharacterSize(m_textSize);
             }

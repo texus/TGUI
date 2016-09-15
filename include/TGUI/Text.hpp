@@ -42,6 +42,17 @@ namespace tgui
     {
     public:
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Finds the best character size for the text
+        ///
+        /// @param font    Font of the text
+        /// @param height  Height that the text should fill
+        /// @param fit     0 to choose best fit, 1 to select font of at least that height, -1 to select font of maximum that height
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static unsigned int findBestTextSize(Font font, float height, int fit = 0);
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// The line spacing of a font gives the distance between two lines. There may however be an overlap between the highest
         /// character on the bottom line and the smallest one on the top line. This function calculates that distance.

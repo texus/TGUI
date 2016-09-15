@@ -22,24 +22,28 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_TO_STRING_HPP
+#define TGUI_TO_STRING_HPP
 
-#include <TGUI/Renderers/KnobRenderer.hpp>
-#include <TGUI/RendererDefines.hpp>
+
+#include <sstream>
+#include <locale>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    TGUI_RENDERER_PROPERTY_OUTLINE(KnobRenderer, Borders)
-
-    TGUI_RENDERER_PROPERTY_COLOR(KnobRenderer, BackgroundColor, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(KnobRenderer, ThumbColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(KnobRenderer, BorderColor, sf::Color::Black)
-
-    TGUI_RENDERER_PROPERTY_TEXTURE(KnobRenderer, TextureBackground)
-    TGUI_RENDERER_PROPERTY_TEXTURE(KnobRenderer, TextureForeground)
-
-    TGUI_RENDERER_PROPERTY_NUMBER(KnobRenderer, ImageRotation, 0)
+    template <typename T>
+    std::string to_string(T value)
+    {
+        std::ostringstream oss;
+        oss.imbue(std::locale::classic());
+        oss << value;
+        return oss.str();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif // TGUI_TO_STRING_HPP
+

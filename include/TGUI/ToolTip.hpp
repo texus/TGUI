@@ -26,8 +26,9 @@
 #ifndef TGUI_TOOLTIP_HPP
 #define TGUI_TOOLTIP_HPP
 
-
-#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Config.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/System/Vector2.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

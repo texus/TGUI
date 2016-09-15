@@ -26,219 +26,213 @@
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
+#include <TGUI/Exception.hpp>
+#include <TGUI/to_string.hpp>
 #include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace
-{
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    char decToSingleHex(unsigned char c)
-    {
-        assert(c < 16);
-
-        if (c == 10)
-            return 'A';
-        else if (c == 11)
-            return 'B';
-        else if (c == 12)
-            return 'C';
-        else if (c == 13)
-            return 'D';
-        else if (c == 14)
-            return 'E';
-        else if (c == 15)
-            return 'F';
-        else
-            return static_cast<char>(c + '0');
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string decToHex(unsigned char c)
-    {
-        return {decToSingleHex(c / 16), decToSingleHex(c % 16)};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Hidden functions
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API std::string serializeEmptyObject(ObjectConverter&&)
+    namespace
     {
-        throw Exception{"Can't serialize empty object"};
-    }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API std::string serializeFont(ObjectConverter&& value)
-    {
-        if (value.getFont() && !value.getFont().getId().empty())
-            return Serializer::serialize({sf::String{value.getFont().getId()}});
-        else
-            return "null";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API std::string serializeColor(ObjectConverter&& value)
-    {
-        static std::map<std::string, sf::Color> colorMap =
+        char decToSingleHex(unsigned char c)
         {
-            {"Black", sf::Color::Black},
-            {"White", sf::Color::White},
-            {"Red", sf::Color::Red},
-            {"Yellow", sf::Color::Yellow},
-            {"Green", sf::Color::Green},
-            {"Cyan", sf::Color::Cyan},
-            {"Blue", sf::Color::Blue},
-            {"Magenta", sf::Color::Magenta},
-            {"Transparent", sf::Color::Transparent}
-        };
+            assert(c < 16);
 
-        sf::Color color = value.getColor();
-
-        // Check if the color can be represented by a string with its name
-        for (const auto& pair : colorMap)
-        {
-            if (color == pair.second)
-                return pair.first;
+            if (c == 10)
+                return 'A';
+            else if (c == 11)
+                return 'B';
+            else if (c == 12)
+                return 'C';
+            else if (c == 13)
+                return 'D';
+            else if (c == 14)
+                return 'E';
+            else if (c == 15)
+                return 'F';
+            else
+                return static_cast<char>(c + '0');
         }
 
-        // Return the color by its rgb value
-        return "#" + decToHex(color.r) + decToHex(color.g) + decToHex(color.b) + (color.a < 255 ? decToHex(color.a) : "");
-    }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string decToHex(unsigned char c)
+        {
+            return {decToSingleHex(c / 16), decToSingleHex(c % 16)};
+        }
 
-    TGUI_API std::string serializeString(ObjectConverter&& value)
-    {
-        std::string result = value.getString();
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        auto replace = [&](char from, char to)
+        std::string serializeEmptyObject(ObjectConverter&&)
+        {
+            throw Exception{"Can't serialize empty object"};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string serializeFont(ObjectConverter&& value)
+        {
+            if (value.getFont() && !value.getFont().getId().empty())
+                return Serializer::serialize({sf::String{value.getFont().getId()}});
+            else
+                return "null";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string serializeColor(ObjectConverter&& value)
+        {
+            static std::map<std::string, sf::Color> colorMap =
             {
-                std::size_t pos = 0;
-                while ((pos = result.find(from, pos)) != std::string::npos)
-                {
-                    result[pos] = to;
-                    result.insert(pos, 1, '\\');
-                    pos += 2;
-                }
+                {"Black", sf::Color::Black},
+                {"White", sf::Color::White},
+                {"Red", sf::Color::Red},
+                {"Yellow", sf::Color::Yellow},
+                {"Green", sf::Color::Green},
+                {"Cyan", sf::Color::Cyan},
+                {"Blue", sf::Color::Blue},
+                {"Magenta", sf::Color::Magenta},
+                {"Transparent", sf::Color::Transparent}
             };
 
-        replace('\\', '\\');
-        replace('\"', '\"');
-        replace('\v', 'v');
-        replace('\t', 't');
-        replace('\n', 'n');
-        replace('\0', '0');
+            sf::Color color = value.getColor();
 
-        return "\"" + result + "\"";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API std::string serializeNumber(ObjectConverter&& value)
-    {
-        return tgui::to_string(value.getNumber());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API std::string serializeOutline(ObjectConverter&& value)
-    {
-        Outline outline = value.getOutline();
-        return "(" + tgui::to_string(static_cast<unsigned int>(outline.left)) + ", " + tgui::to_string(static_cast<unsigned int>(outline.top))
-             + ", " + tgui::to_string(static_cast<unsigned int>(outline.right)) + ", " + tgui::to_string(static_cast<unsigned int>(outline.bottom)) + ")";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API std::string serializeTexture(ObjectConverter&& value)
-    {
-        Texture texture = value.getTexture();
-        if (texture.getId().empty())
-            return "None";
-
-        std::string result = "\"" + texture.getId() + "\"";
-
-        if (texture.getData()->rect != sf::IntRect{})
-        {
-            result += " Part(" + tgui::to_string(texture.getData()->rect.left) + ", " + tgui::to_string(texture.getData()->rect.top)
-                        + ", " + tgui::to_string(texture.getData()->rect.width) + ", " + tgui::to_string(texture.getData()->rect.height) + ")";
-        }
-        if (texture.getMiddleRect() != sf::IntRect{0, 0, static_cast<int>(texture.getData()->texture.getSize().x), static_cast<int>(texture.getData()->texture.getSize().y)})
-        {
-            result += " Middle(" + tgui::to_string(texture.getMiddleRect().left) + ", " + tgui::to_string(texture.getMiddleRect().top)
-                          + ", " + tgui::to_string(texture.getMiddleRect().width) + ", " + tgui::to_string(texture.getMiddleRect().height) + ")";
-        }
-
-        return result;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_API std::string serializeTextStyle(ObjectConverter&& value)
-    {
-        sf::Uint32 style = value.getTextStyle();
-
-        if (style == sf::Text::Regular)
-            return "Regular";
-
-        std::string encodedStyle;
-        if (style & sf::Text::Bold)
-            encodedStyle += " | Bold";
-        if (style & sf::Text::Italic)
-            encodedStyle += " | Italic";
-        if (style & sf::Text::Underlined)
-            encodedStyle += " | Underlined";
-        if (style & sf::Text::StrikeThrough)
-            encodedStyle += " | StrikeThrough";
-
-        if (!encodedStyle.empty())
-            return encodedStyle.substr(3);
-        else // Something is wrong with the style parameter
-            return "Regular";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::string serializeRendererData(ObjectConverter&& value)
-    {
-        auto node = std::make_shared<DataIO::Node>();
-        for (const auto& pair : value.getRenderer()->propertyValuePairs)
-        {
-            sf::String strValue;
-            if (pair.second.getType() == ObjectConverter::Type::RendererData)
+            // Check if the color can be represented by a string with its name
+            for (const auto& pair : colorMap)
             {
-                std::stringstream ss{ObjectConverter{pair.second}.getString()};
-                node->children.push_back(DataIO::parse(ss));
-                node->children.back()->name = pair.first;
+                if (color == pair.second)
+                    return pair.first;
             }
-            else
-            {
-                strValue = ObjectConverter{pair.second}.getString();
-                node->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(strValue);
-            }
+
+            // Return the color by its rgb value
+            return "#" + decToHex(color.r) + decToHex(color.g) + decToHex(color.b) + (color.a < 255 ? decToHex(color.a) : "");
         }
 
-        std::stringstream ss;
-        DataIO::emit(node, ss);
-        return ss.str();
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string serializeString(ObjectConverter&& value)
+        {
+            std::string result = value.getString();
+
+            auto replace = [&](char from, char to)
+                {
+                    std::size_t pos = 0;
+                    while ((pos = result.find(from, pos)) != std::string::npos)
+                    {
+                        result[pos] = to;
+                        result.insert(pos, 1, '\\');
+                        pos += 2;
+                    }
+                };
+
+            replace('\\', '\\');
+            replace('\"', '\"');
+            replace('\v', 'v');
+            replace('\t', 't');
+            replace('\n', 'n');
+            replace('\0', '0');
+
+            return "\"" + result + "\"";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string serializeNumber(ObjectConverter&& value)
+        {
+            return to_string(value.getNumber());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string serializeOutline(ObjectConverter&& value)
+        {
+            Outline outline = value.getOutline();
+            return "(" + to_string(static_cast<unsigned int>(outline.left)) + ", " + to_string(static_cast<unsigned int>(outline.top))
+                 + ", " + to_string(static_cast<unsigned int>(outline.right)) + ", " + to_string(static_cast<unsigned int>(outline.bottom)) + ")";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string serializeTexture(ObjectConverter&& value)
+        {
+            Texture texture = value.getTexture();
+            if (texture.getId().empty())
+                return "None";
+
+            std::string result = "\"" + texture.getId() + "\"";
+
+            if (texture.getData()->rect != sf::IntRect{})
+            {
+                result += " Part(" + to_string(texture.getData()->rect.left) + ", " + to_string(texture.getData()->rect.top)
+                            + ", " + to_string(texture.getData()->rect.width) + ", " + to_string(texture.getData()->rect.height) + ")";
+            }
+            if (texture.getMiddleRect() != sf::IntRect{0, 0, static_cast<int>(texture.getData()->texture.getSize().x), static_cast<int>(texture.getData()->texture.getSize().y)})
+            {
+                result += " Middle(" + to_string(texture.getMiddleRect().left) + ", " + to_string(texture.getMiddleRect().top)
+                              + ", " + to_string(texture.getMiddleRect().width) + ", " + to_string(texture.getMiddleRect().height) + ")";
+            }
+
+            return result;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string serializeTextStyle(ObjectConverter&& value)
+        {
+            sf::Uint32 style = value.getTextStyle();
+
+            if (style == sf::Text::Regular)
+                return "Regular";
+
+            std::string encodedStyle;
+            if (style & sf::Text::Bold)
+                encodedStyle += " | Bold";
+            if (style & sf::Text::Italic)
+                encodedStyle += " | Italic";
+            if (style & sf::Text::Underlined)
+                encodedStyle += " | Underlined";
+            if (style & sf::Text::StrikeThrough)
+                encodedStyle += " | StrikeThrough";
+
+            if (!encodedStyle.empty())
+                return encodedStyle.substr(3);
+            else // Something is wrong with the style parameter
+                return "Regular";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string serializeRendererData(ObjectConverter&& value)
+        {
+            auto node = std::make_shared<DataIO::Node>();
+            for (const auto& pair : value.getRenderer()->propertyValuePairs)
+            {
+                sf::String strValue;
+                if (pair.second.getType() == ObjectConverter::Type::RendererData)
+                {
+                    std::stringstream ss{ObjectConverter{pair.second}.getString()};
+                    node->children.push_back(DataIO::parse(ss));
+                    node->children.back()->name = pair.first;
+                }
+                else
+                {
+                    strValue = ObjectConverter{pair.second}.getString();
+                    node->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(strValue);
+                }
+            }
+
+            std::stringstream ss;
+            DataIO::emit(node, ss);
+            return ss.str();
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
-
-namespace tgui
-{
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::map<ObjectConverter::Type, Serializer::SerializeFunc> Serializer::m_serializers =

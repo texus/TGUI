@@ -25,12 +25,11 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Clipboard.hpp>
-#include <TGUI/Texture.hpp>
-#include <TGUI/Loading/Deserializer.hpp>
-
-#include <functional>
-#include <cctype>
-#include <cmath>
+#include <TGUI/Exception.hpp>
+#include <sstream>
+#include <locale>
+#include <cctype> // isspace
+#include <cmath> // abs
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -169,72 +168,6 @@ namespace tgui
         str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
         str.erase(std::find_if(str.rbegin(), str.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), str.end());
         return str;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::vector<std::string> split(const std::string& str, char delim)
-    {
-        std::vector<std::string> tokens;
-
-        std::size_t start = 0;
-        std::size_t end = 0;
-        while ((end = str.find(delim, start)) != std::string::npos) {
-            tokens.push_back(str.substr(start, end - start));
-            start = end + 1;
-        }
-
-        tokens.push_back(str.substr(start));
-        return tokens;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Color calcColorOpacity(const sf::Color& color, float alpha)
-    {
-        if (alpha == 1)
-            return color;
-        else
-            return {color.r, color.g, color.b, static_cast<sf::Uint8>(color.a * alpha)};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int findBestTextSize(const std::shared_ptr<sf::Font>& font, float height, int fit)
-    {
-        if (!font)
-            return 0;
-
-        if (height < 2)
-            return 1;
-
-        std::vector<unsigned int> textSizes(static_cast<std::size_t>(height));
-        for (unsigned int i = 0; i < static_cast<unsigned int>(height); ++i)
-            textSizes[i] = i + 1;
-
-        auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height,
-                                     [&](unsigned int charSize, float h) { return font->getLineSpacing(charSize) + Text::calculateExtraVerticalSpace(font, charSize) < h; });
-        if (high == textSizes.end())
-            return static_cast<unsigned int>(height);
-
-        float highLineSpacing = font->getLineSpacing(*high);
-        if (highLineSpacing == height)
-            return *high;
-
-        auto low = high - 1;
-        float lowLineSpacing = font->getLineSpacing(*low);
-
-        if (fit < 0)
-            return *low;
-        else if (fit > 0)
-            return *high;
-        else
-        {
-            if (std::abs(height - lowLineSpacing) < std::abs(height - highLineSpacing))
-                return *low;
-            else
-                return *high;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

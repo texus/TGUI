@@ -26,10 +26,13 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/ThemeLoader.hpp>
 #include <TGUI/Loading/DataIO.hpp>
+#include <TGUI/Exception.hpp>
+#include <TGUI/Global.hpp>
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
+#include <set>
 
 #ifdef SFML_SYSTEM_ANDROID
     #include <SFML/System/NativeActivity.hpp>

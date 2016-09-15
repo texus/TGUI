@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Container.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Container.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 
 namespace tgui
@@ -155,7 +155,7 @@ namespace tgui
 
         // Set the text size
         if (m_textSize == 0)
-            m_text.setCharacterSize(findBestTextSize(getRenderer()->getFont(), getSize().y * 0.8f));
+            m_text.setCharacterSize(Text::findBestTextSize(getRenderer()->getFont(), getSize().y * 0.8f));
         else
             m_text.setCharacterSize(m_textSize);
     }
@@ -509,7 +509,7 @@ namespace tgui
             sf::CircleShape circle{innerRadius + borders.left};
             circle.setOutlineThickness(-borders.left);
             circle.setFillColor(sf::Color::Transparent);
-            circle.setOutlineColor(calcColorOpacity(getCurrentBorderColor(), getRenderer()->getOpacity()));
+            circle.setOutlineColor(Color::calcColorOpacity(getCurrentBorderColor(), getRenderer()->getOpacity()));
             target.draw(circle, states);
         }
 
@@ -543,14 +543,14 @@ namespace tgui
         else // There are no images
         {
             sf::CircleShape circle{innerRadius};
-            circle.setFillColor(calcColorOpacity(getCurrentBackgroundColor(), getRenderer()->getOpacity()));
+            circle.setFillColor(Color::calcColorOpacity(getCurrentBackgroundColor(), getRenderer()->getOpacity()));
             target.draw(circle, states);
 
             // Draw the check if the radio button is checked
             if (m_checked)
             {
                 sf::CircleShape checkShape{innerRadius * .6f};
-                checkShape.setFillColor(calcColorOpacity(getCurrentCheckColor(), getRenderer()->getOpacity()));
+                checkShape.setFillColor(Color::calcColorOpacity(getCurrentCheckColor(), getRenderer()->getOpacity()));
                 checkShape.setPosition({innerRadius - checkShape.getRadius(), innerRadius - checkShape.getRadius()});
                 target.draw(checkShape, states);
             }

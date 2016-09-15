@@ -29,7 +29,6 @@
 #include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Loading/WidgetLoader.hpp>
 
-#include <stack>
 #include <cassert>
 #include <fstream>
 
@@ -37,6 +36,8 @@
 
 namespace tgui
 {
+    extern TGUI_API bool TGUI_TabKeyUsageEnabled;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Container::Container()

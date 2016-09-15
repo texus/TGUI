@@ -26,7 +26,6 @@
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Clipping.hpp>
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -196,9 +195,9 @@ namespace tgui
         {
             unsigned int textSize;
             if (getRenderer()->getTextureFill().isLoaded())
-               textSize = findBestTextSize(getRenderer()->getFont(), getRenderer()->getTextureFill().getSize().y * 0.8f);
+               textSize = Text::findBestTextSize(getRenderer()->getFont(), getRenderer()->getTextureFill().getSize().y * 0.8f);
             else
-                textSize = findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.8f);
+                textSize = Text::findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.8f);
 
             m_textBack.setCharacterSize(textSize);
 

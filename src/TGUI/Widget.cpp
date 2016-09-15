@@ -722,7 +722,7 @@ namespace tgui
         sf::RectangleShape shape{size};
 
         if (getRenderer()->getOpacity() < 1)
-            shape.setFillColor(calcColorOpacity(color, getRenderer()->getOpacity()));
+            shape.setFillColor(Color::calcColorOpacity(color, getRenderer()->getOpacity()));
         else
             shape.setFillColor(color);
 
@@ -738,7 +738,7 @@ namespace tgui
                              sf::Color color) const
     {
         sf::RectangleShape border;
-        border.setFillColor(calcColorOpacity(color, getRenderer()->getOpacity()));
+        border.setFillColor(Color::calcColorOpacity(color, getRenderer()->getOpacity()));
 
         // If size is too small then draw entire size as border
         if ((size.x <= borders.left + borders.right) || (size.y <= borders.top + borders.bottom))

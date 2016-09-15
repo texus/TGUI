@@ -27,12 +27,13 @@
 #define TGUI_SIGNAL_HPP
 
 
-#include <TGUI/Global.hpp>
 #include <TGUI/Callback.hpp>
-
+#include <TGUI/Exception.hpp>
+#include <TGUI/Global.hpp>
 #include <map>
 #include <deque>
 #include <memory>
+#include <vector>
 #include <cassert>
 #include <functional>
 

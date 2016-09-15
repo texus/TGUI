@@ -378,7 +378,7 @@ namespace tgui
             if (node->propertyValuePairs["titlebuttons"])
             {
                 int decodedTitleButtons = ChildWindow::TitleButton::None;
-                std::vector<std::string> titleButtons = tgui::split(node->propertyValuePairs["titlebuttons"]->value, '|');
+                std::vector<std::string> titleButtons = Deserializer::split(node->propertyValuePairs["titlebuttons"]->value, '|');
                 for (const auto& elem : titleButtons)
                 {
                     std::string requestedTitleButton = toLower(trim(elem));

@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Loading/DataIO.hpp>
+#include <TGUI/Exception.hpp>
 #include <TGUI/Global.hpp>
 
 #include <cctype>

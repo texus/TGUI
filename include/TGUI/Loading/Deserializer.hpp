@@ -47,6 +47,9 @@ namespace tgui
         static void setFunction(ObjectConverter::Type type, const DeserializeFunc& deserializer);
         static const DeserializeFunc& getFunction(ObjectConverter::Type type);
 
+    public:
+        static std::vector<std::string> split(const std::string& str, char delim);
+
     private:
         static std::map<ObjectConverter::Type, DeserializeFunc> m_deserializers;
     };

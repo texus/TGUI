@@ -27,8 +27,9 @@
 #define TGUI_RADIO_BUTTON_HPP
 
 
-#include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Renderers/RadioButtonRenderer.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
+#include <TGUI/Text.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

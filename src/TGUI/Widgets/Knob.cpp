@@ -29,6 +29,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace
+{
+    const constexpr float pi = 3.14159265358979f;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -444,7 +451,7 @@ namespace tgui
 
             sf::CircleShape bordersShape{size / 2};
             bordersShape.setFillColor(sf::Color::Transparent);
-            bordersShape.setOutlineColor(calcColorOpacity(getRenderer()->getBorderColor(), getRenderer()->getOpacity()));
+            bordersShape.setOutlineColor(Color::calcColorOpacity(getRenderer()->getBorderColor(), getRenderer()->getOpacity()));
             bordersShape.setOutlineThickness(borderThickness);
             target.draw(bordersShape, states);
         }
@@ -455,7 +462,7 @@ namespace tgui
         else
         {
             sf::CircleShape background{size / 2};
-            background.setFillColor(calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
+            background.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
             target.draw(background, states);
         }
 
@@ -475,7 +482,7 @@ namespace tgui
         else
         {
             sf::CircleShape thumb{size / 10.0f};
-            thumb.setFillColor(calcColorOpacity(getRenderer()->getThumbColor(), getRenderer()->getOpacity()));
+            thumb.setFillColor(Color::calcColorOpacity(getRenderer()->getThumbColor(), getRenderer()->getOpacity()));
             thumb.setPosition({(size / 2.0f) - thumb.getRadius() + (std::cos(m_angle / 180 * pi) * (size / 2) * 3/5),
                                (size / 2.0f) - thumb.getRadius() + (-std::sin(m_angle / 180 * pi) * (size / 2) * 3/5)});
             target.draw(thumb, states);

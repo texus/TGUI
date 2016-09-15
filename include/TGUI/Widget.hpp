@@ -27,7 +27,6 @@
 #define TGUI_WIDGET_HPP
 
 
-#include <TGUI/Global.hpp>
 #include <TGUI/Signal.hpp>
 #include <TGUI/Transformable.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>

@@ -26,11 +26,10 @@
 #ifndef TGUI_CALLBACK_HPP
 #define TGUI_CALLBACK_HPP
 
-#include <map>
-#include <list>
-#include <functional>
-
-#include <TGUI/Global.hpp>
+#include <TGUI/Config.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <SFML/System/String.hpp>
+#include <string>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

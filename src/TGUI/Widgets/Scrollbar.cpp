@@ -750,9 +750,9 @@ namespace tgui
 
             sf::ConvexShape arrow{3};
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && getRenderer()->getArrowColorHover().isSet())
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
             else
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
 
             if (m_verticalScroll)
             {
@@ -824,9 +824,9 @@ namespace tgui
 
             sf::ConvexShape arrow{3};
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && getRenderer()->getArrowColorHover().isSet())
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
             else
-                arrow.setFillColor(calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
 
             if (m_verticalScroll)
             {
