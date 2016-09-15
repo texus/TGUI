@@ -60,7 +60,7 @@ namespace tgui
 
         void setHorizontalAlign(HorizontalAlign align);
 
-        void setFont(const Font& font);
+        void setFont(const Font& font) override;
 
         virtual void setSize(const Layout2d& size) override;
         using Transformable::setSize;
