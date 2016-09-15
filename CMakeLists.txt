@@ -157,9 +157,10 @@ if (SFML_OS_MACOSX)
     # Add an option to let the user specify a custom directory for framework installation
     tgui_set_option(CMAKE_INSTALL_FRAMEWORK_PREFIX "/Library/Frameworks" STRING "Frameworks installation directory")
 
-    # Set the architecture when none was given
-    if (NOT CMAKE_OSX_ARCHITECTURES)
-        set(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+    # Only the default architecture (i.e. 64-bit) is supported
+    if(CMAKE_OSX_ARCHITECTURES AND NOT "${CMAKE_OSX_ARCHITECTURES}" STREQUAL "x86_64")
+        message(FATAL_ERROR "Only 64-bit architecture is supported")
+        return()
     endif()
 
     # Enable to use of rpath according to CMake Policy CMP0042
