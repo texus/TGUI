@@ -2,7 +2,7 @@ sudo: false
 language: cpp
 
 git:
-  depth: 1
+  depth: 25
 
 matrix:
   include:
@@ -20,10 +20,11 @@ matrix:
       directories:
       - $HOME/SFML-2.4.0_LINUX
 
-#  - os: osx
-#    cache:
-#      directories:
-#      - $HOME/SFML_OSX
+  - os: osx
+    osx_image: xcode7
+    cache:
+      directories:
+      - $HOME/SFML_OSX
 
 addons:
   apt:
