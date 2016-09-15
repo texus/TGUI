@@ -33,42 +33,40 @@ void login(tgui::EditBox::Ptr username, tgui::EditBox::Ptr password)
 
 void loadWidgets( tgui::Gui& gui )
 {
-    // Load the theme for the edit boxes and button
-    tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("../../widgets/Black.txt");
-
-    // Get a bound version of the window size
-    // Passing this to setPosition or setSize will make the widget automatically update when the view of the gui changes
-    auto windowWidth = tgui::bindWidth(gui);
-    auto windowHeight = tgui::bindHeight(gui);
-
-    // Create the background image (picture is of type tgui::Picture::Ptr or std::shared_widget<Picture>)
-    tgui::Picture::Ptr picture = std::make_shared<tgui::Picture>("../xubuntu_bg_aluminium.jpg");
-    picture->setSize(tgui::bindMax(800, windowWidth), tgui::bindMax(600, windowHeight));
+    // Create the background image
+    // The picture is of type tgui::Picture::Ptr which is actually just a typedef for std::shared_widget<Picture>
+    // Instead of setting a fixed size, we are passing a layout represented as a string
+    // The layout will take care of resizing the picture when the parent (here the gui) gets resized
+    // Giving the picture a minimum size of 800x600 is just for show what the layout system can do
+    auto picture = tgui::Picture::create("../xubuntu_bg_aluminium.jpg");
+    picture->setSize({"max(800, parent.width)", "max(600, parent.height)"});
     gui.add(picture);
 
     // Create the username edit box
-    tgui::EditBox::Ptr editBoxUsername = theme->load("EditBox");
-    editBoxUsername->setSize(windowWidth * 2/3, windowHeight / 8);
-    editBoxUsername->setPosition(windowWidth / 6, windowHeight / 6);
+    // Similar to the picture, we set a layout to automatically update the position and size when the size of the gui changes
+    // In case it isn't obvious, the default text is the text that is displayed when the edit box is empty
+    auto editBoxUsername = tgui::EditBox::create();
+    editBoxUsername->setSize({"parent.width * 2/3", "parent.height / 8"});
+    editBoxUsername->setPosition({"parent.width / 6", "parent.height / 6"});
     editBoxUsername->setDefaultText("Username");
-    gui.add(editBoxUsername, "Username");
+    gui.add(editBoxUsername);
 
     // Create the password edit box
-    tgui::EditBox::Ptr editBoxPassword = theme->load("EditBox");
-    editBoxPassword->setSize(windowWidth * 2/3, windowHeight / 8);
-    editBoxPassword->setPosition(windowWidth / 6, windowHeight * 5/12);
+    // We copy the previous edit box here and keep the same size
+    auto editBoxPassword = tgui::EditBox::copy(editBoxUsername);
+    editBoxPassword->setPosition({"parent.width / 6", "parent.height * 5/12"});
     editBoxPassword->setPasswordCharacter('*');
     editBoxPassword->setDefaultText("Password");
-    gui.add(editBoxPassword, "Password");
+    gui.add(editBoxPassword);
 
     // Create the login button
-    tgui::Button::Ptr button = theme->load("Button");
-    button->setSize(windowWidth / 2, windowHeight / 6);
-    button->setPosition(windowWidth / 4, windowHeight * 7/10);
-    button->setText("Login");
+    // Instead of "parent.width" and "parent.width", we use the shorter "&.w" and "&.h" here as an example
+    auto button = tgui::Button::create("Login");
+    button->setSize({"&.w / 2", "&.h / 6"});
+    button->setPosition({"&.w / 4", "&.h * 7/10"});
     gui.add(button);
 
-    // Call the login function when the button is pressed
+    // Call the login function when the button is pressed and pass the edit boxes that we created as parameters
     button->connect("pressed", login, editBoxUsername, editBoxPassword);
 }
 
@@ -80,7 +78,6 @@ int main()
 
     try
     {
-        // Load the widgets
         loadWidgets(gui);
     }
     catch (const tgui::Exception& e)

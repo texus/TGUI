@@ -34,121 +34,138 @@ int main()
 
     try
     {
-        tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("../../widgets/Black.txt");
+        tgui::Theme theme{"../../widgets/Black.txt"};
 
         gui.add(std::make_shared<tgui::Picture>("../RedBackground.jpg"));
 
-        tgui::Tab::Ptr tab = theme->load("tab");
-        tab->setTabHeight(30);
-        tab->setPosition(70, 40);
-        tab->add("Tab - 1");
-        tab->add("Tab - 2");
-        tab->add("Tab - 3");
-        gui.add(tab);
+        auto tabs = tgui::Tabs::create();
+        tabs->setRenderer(theme.getRenderer("Tabs"));
+        tabs->setTabHeight(30);
+        tabs->setPosition(70, 40);
+        tabs->add("Tab - 1");
+        tabs->add("Tab - 2");
+        tabs->add("Tab - 3");
+        gui.add(tabs);
 
-        tgui::MenuBar::Ptr menu = theme->load("MenuBar");
+        auto menu = tgui::MenuBar::create();
+        menu->setRenderer(theme.getRenderer("MenuBar"));
         menu->setSize((float)window.getSize().x, 22.f);
-        menu->addMenu("MenuOption-1");
-        menu->addMenuItem("MenuOption-1", "Load");
-        menu->addMenuItem("MenuOption-1", "Save");
-        menu->addMenuItem("MenuOption-1", "Exit");
-        menu->addMenu("MenuOption-2");
-        menu->addMenuItem("MenuOption-2", "Copy");
-        menu->addMenuItem("MenuOption-2", "Paste");
-        menu->addMenu("MenuOption-3");
-        menu->addMenuItem("MenuOption-3", "About");
+        menu->addMenu("File");
+        menu->addMenuItem("Load");
+        menu->addMenuItem("Save");
+        menu->addMenuItem("Exit");
+        menu->addMenu("Edit");
+        menu->addMenuItem("Copy");
+        menu->addMenuItem("Paste");
+        menu->addMenu("Help");
+        menu->addMenuItem("About");
         gui.add(menu);
 
-        tgui::Label::Ptr label = theme->load("label");
+        auto label = tgui::Label::create();
+        label->setRenderer(theme.getRenderer("Label"));
         label->setText("This is a label.\nAnd these are radio buttons:");
         label->setPosition(10, 90);
         label->setTextSize(18);
         gui.add(label);
 
-        tgui::RadioButton::Ptr radioButton = theme->load("RadioButton");
+        auto radioButton = tgui::RadioButton::create();
+        radioButton->setRenderer(theme.getRenderer("RadioButton"));
         radioButton->setPosition(20, 140);
         radioButton->setText("Yep!");
         radioButton->setSize(25, 25);
         gui.add(radioButton);
 
-        radioButton = theme->load("RadioButton");
+        radioButton = tgui::RadioButton::create();
+        radioButton->setRenderer(theme.getRenderer("RadioButton"));
         radioButton->setPosition(20, 170);
         radioButton->setText("Nope!");
         radioButton->setSize(25, 25);
         gui.add(radioButton);
 
-        radioButton = theme->load("RadioButton");
+        radioButton = tgui::RadioButton::create();
+        radioButton->setRenderer(theme.getRenderer("RadioButton"));
         radioButton->setPosition(20, 200);
         radioButton->setText("Don't know!");
         radioButton->setSize(25, 25);
         gui.add(radioButton);
 
-        label = theme->load("label");
+        label = tgui::Label::create();
+        label->setRenderer(theme.getRenderer("Label"));
         label->setText("We've got some edit boxes:");
         label->setPosition(10, 240);
         label->setTextSize(18);
         gui.add(label);
 
-        tgui::EditBox::Ptr editBox = theme->load("EditBox");
+        auto editBox = tgui::EditBox::create();
+        editBox->setRenderer(theme.getRenderer("EditBox"));
         editBox->setSize(200, 25);
         editBox->setTextSize(18);
         editBox->setPosition(10, 270);
         editBox->setDefaultText("Click to edit text...");
         gui.add(editBox);
 
-        label = theme->load("label");
+        label = tgui::Label::create();
+        label->setRenderer(theme.getRenderer("Label"));
         label->setText("And some list boxes too...");
         label->setPosition(10, 310);
         label->setTextSize(18);
         gui.add(label);
 
-        tgui::ListBox::Ptr listBox = theme->load("ListBox");
+        auto listBox = tgui::ListBox::create();
+        listBox->setRenderer(theme.getRenderer("ListBox"));
         listBox->setSize(250, 120);
-        listBox->setItemHeight(20);
+        listBox->setItemHeight(24);
         listBox->setPosition(10, 340);
         listBox->addItem("Item 1");
         listBox->addItem("Item 2");
         listBox->addItem("Item 3");
         gui.add(listBox);
 
-        label = theme->load("label");
+        label = tgui::Label::create();
+        label->setRenderer(theme.getRenderer("Label"));
         label->setText("It's the progress bar below");
         label->setPosition(10, 470);
         label->setTextSize(18);
         gui.add(label);
 
-        tgui::ProgressBar::Ptr progressBar = theme->load("ProgressBar");
+        auto progressBar = tgui::ProgressBar::create();
+        progressBar->setRenderer(theme.getRenderer("ProgressBar"));
         progressBar->setPosition(10, 500);
         progressBar->setSize(200, 20);
         progressBar->setValue(50);
         gui.add(progressBar);
 
-        label = theme->load("label");
+        label = tgui::Label::create();
+        label->setRenderer(theme.getRenderer("Label"));
         label->setText(std::to_string(progressBar->getValue()) + "%");
         label->setPosition(220, 500);
         label->setTextSize(18);
         gui.add(label);
 
-        label = theme->load("label");
+        label = tgui::Label::create();
+        label->setRenderer(theme.getRenderer("Label"));
         label->setText("That's the slider");
         label->setPosition(10, 530);
         label->setTextSize(18);
         gui.add(label);
 
-        tgui::Slider::Ptr slider = theme->load("slider");
+        auto slider = tgui::Slider::create();
+        slider->setRenderer(theme.getRenderer("Slider"));
         slider->setPosition(10, 560);
         slider->setSize(200, 18);
         slider->setValue(4);
         gui.add(slider);
 
-        tgui::Scrollbar::Ptr scrollbar = theme->load("scrollbar");
+        auto scrollbar = tgui::Scrollbar::create();
+        scrollbar->setRenderer(theme.getRenderer("Scrollbar"));
         scrollbar->setPosition(380, 40);
         scrollbar->setSize(18, 540);
         scrollbar->setMaximum(100);
         scrollbar->setLowValue(70);
         gui.add(scrollbar);
 
-        tgui::ComboBox::Ptr comboBox = theme->load("ComboBox");
+        auto comboBox = tgui::ComboBox::create();
+        comboBox->setRenderer(theme.getRenderer("ComboBox"));
         comboBox->setSize(120, 21);
         comboBox->setPosition(420, 40);
         comboBox->addItem("Item 1");
@@ -157,52 +174,59 @@ int main()
         comboBox->setSelectedItem("Item 2");
         gui.add(comboBox);
 
-        tgui::ChildWindow::Ptr child = theme->load("ChildWindow");
+        auto child = tgui::ChildWindow::create();
+        child->setRenderer(theme.getRenderer("ChildWindow"));
         child->setSize(250, 120);
         child->setPosition(420, 80);
         child->setTitle("Child window");
         gui.add(child);
 
-        label = theme->load("label");
+        label = tgui::Label::create();
+        label->setRenderer(theme.getRenderer("Label"));
         label->setText("Hi! I'm a child window.");
         label->setPosition(30, 30);
         label->setTextSize(15);
         child->add(label);
 
-        tgui::Button::Ptr button = theme->load("button");
+        auto button = tgui::Button::create();
+        button->setRenderer(theme.getRenderer("Button"));
         button->setPosition(75, 70);
         button->setText("OK");
         button->setSize(100, 30);
         button->connect("pressed", [=](){ child->hide(); });
         child->add(button);
 
-        tgui::CheckBox::Ptr checkbox = theme->load("checkbox");
+        auto checkbox = tgui::CheckBox::create();
+        checkbox->setRenderer(theme.getRenderer("CheckBox"));
         checkbox->setPosition(420, 240);
         checkbox->setText("Ok, I got it");
         checkbox->setSize(25, 25);
         gui.add(checkbox);
 
-        checkbox = theme->load("checkbox");
+        checkbox = tgui::CheckBox::create();
+        checkbox->setRenderer(theme.getRenderer("CheckBox"));
         checkbox->setPosition(570, 240);
         checkbox->setText("No, I didn't");
         checkbox->setSize(25, 25);
         gui.add(checkbox);
 
-        label = theme->load("label");
+        label = tgui::Label::create();
+        label->setRenderer(theme.getRenderer("Label"));
         label->setText("Chatbox");
         label->setPosition(420, 280);
         label->setTextSize(18);
         gui.add(label);
 
-        tgui::ChatBox::Ptr chatbox = theme->load("ChatBox");
+        auto chatbox = tgui::ChatBox::create();
+        chatbox->setRenderer(theme.getRenderer("ChatBox"));
         chatbox->setSize(300, 100);
         chatbox->setTextSize(18);
         chatbox->setPosition(420, 310);
         chatbox->setLinesStartFromTop();
-        chatbox->addLine("texus : Hey, this is TGUI!", sf::Color::Green);
-        chatbox->addLine("Me : Looks awesome! ;)", sf::Color::Yellow);
-        chatbox->addLine("texus : Thanks! :)", sf::Color::Green);
-        chatbox->addLine("Me : The widgets rock ^^", sf::Color::Yellow);
+        chatbox->addLine("texus: Hey, this is TGUI!", sf::Color::Green);
+        chatbox->addLine("Me: Looks awesome! ;)", sf::Color::Yellow);
+        chatbox->addLine("texus: Thanks! :)", sf::Color::Green);
+        chatbox->addLine("Me: The widgets rock ^^", sf::Color::Yellow);
         gui.add(chatbox);
 
         sf::Texture texture;
@@ -213,9 +237,9 @@ int main()
 
         sf::Text text{"SFML Canvas", *gui.getFont(), 24};
         text.setPosition(25, 100);
-        text.setColor({200, 200, 200});
+        text.setFillColor({200, 200, 200});
 
-        tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>(200.f, 140.f);
+        auto canvas = tgui::Canvas::create({200, 140});
         canvas->setPosition(420, 430);
         canvas->clear();
         canvas->draw(sprite);
@@ -223,7 +247,8 @@ int main()
         canvas->display();
         gui.add(canvas);
 
-        button = theme->load("button");
+        button = tgui::Button::create();
+        button->setRenderer(theme.getRenderer("Button"));
         button->setPosition(window.getSize().x - 115.f, window.getSize().y - 50.f);
         button->setText("Exit");
         button->setSize(100, 40);

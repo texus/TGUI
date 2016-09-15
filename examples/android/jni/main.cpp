@@ -48,8 +48,6 @@ int main(int argc, char *argv[])
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "");
     tgui::Gui gui(window);
 
-    auto theme = std::make_shared<tgui::Theme>("widgets/Black.txt");
-
     auto picLandscape = std::make_shared<tgui::Picture>("Background-Landscape.png");
     gui.add(picLandscape, "Landscape");
 
@@ -57,15 +55,14 @@ int main(int argc, char *argv[])
     gui.add(picPortrait, "Portrait");
 
     // The button will quit the program
-    tgui::Button::Ptr button = theme->load("button");
-    button->setText("Quit");
+    auto button = tgui::Button::create("Quit");
     button->setPosition(50, 50);
     button->setSize(200, 50);
     button->connect("clicked", [&](){ window.close(); });
     gui.add(button);
 
     // Clicking on this edit box will open the keyboard and allow you to type in it
-    tgui::EditBox::Ptr editBox = theme->load("editbox");
+    auto editBox = tgui::EditBox::create();
     editBox->setPosition(50, 150);
     editBox->setSize(400, 40);
     editBox->setDefaultText("Enter text here...");

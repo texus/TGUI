@@ -30,9 +30,8 @@ macro(tgui_add_example target)
 endmacro()
 
 # Build the examples
-add_subdirectory(full_example)
-add_subdirectory(login_screen)
-add_subdirectory(scalable)
+add_subdirectory(many_different_widgets)
+add_subdirectory(scalable_login_screen)
 
 # install the examples
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/examples/"
