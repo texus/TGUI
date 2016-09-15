@@ -572,7 +572,7 @@ namespace tgui
                 if (m_gridWidgets[row][col].get() != nullptr)
                 {
                     if (m_gridWidgets[row][col]->isVisible())
-                        target.draw(*m_gridWidgets[row][col], states);
+                        m_gridWidgets[row][col]->draw(target, states);
                 }
             }
         }

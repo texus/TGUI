@@ -523,7 +523,7 @@ namespace tgui
         states.transform.translate({padding.left, padding.top});
 
         // Draw the scrollbar
-        target.draw(m_scroll, scrollbarStates);
+        m_scroll.draw(target, scrollbarStates);
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
         Clipping clipping{target, states, {}, {getInnerSize().x - padding.left - padding.right - m_scroll.getSize().x, getInnerSize().y - padding.top - padding.bottom}};

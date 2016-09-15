@@ -750,7 +750,7 @@ namespace tgui
         for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
         {
             if (button)
-                target.draw(*button, states);
+                button->draw(target, states);
         }
 
         states.transform.translate({0, getRenderer()->getTitleBarHeight()});

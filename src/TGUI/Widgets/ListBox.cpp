@@ -879,7 +879,7 @@ namespace tgui
         }
 
         // Draw the scrollbar
-        target.draw(m_scroll, statesForScrollbar);
+        m_scroll.draw(target, statesForScrollbar);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

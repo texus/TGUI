@@ -94,7 +94,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget(const Widget& other) :
-        sf::Drawable                   {other},
         Transformable                  {other},
         SignalWidgetBase               {other},
         enable_shared_from_this<Widget>{other},
@@ -130,7 +129,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget(Widget&& other) :
-        sf::Drawable                   {std::move(other)},
         Transformable                  {std::move(other)},
         SignalWidgetBase               {std::move(other)},
         enable_shared_from_this<Widget>{std::move(other)},
@@ -180,7 +178,6 @@ namespace tgui
             if (m_renderer)
                 m_renderer->unsubscribe(this);
 
-            sf::Drawable::operator=(other);
             Transformable::operator=(other);
             SignalWidgetBase::operator=(other);
             enable_shared_from_this::operator=(other);
@@ -232,7 +229,6 @@ namespace tgui
             if (other.m_renderer)
                 other.m_renderer->unsubscribe(&other);
 
-            sf::Drawable::operator=(std::move(other));
             Transformable::operator=(std::move(other));
             SignalWidgetBase::operator=(std::move(other));
             enable_shared_from_this::operator=(std::move(other));

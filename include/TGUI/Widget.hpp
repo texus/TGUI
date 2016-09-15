@@ -68,7 +68,7 @@ namespace tgui
     ///     - MouseLeft (Mouse cursor left the Widget area)
     ///
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Widget : public sf::Drawable, public Transformable, public SignalWidgetBase, public std::enable_shared_from_this<Widget>
+    class TGUI_API Widget : public Transformable, public SignalWidgetBase, public std::enable_shared_from_this<Widget>
     {
     public:
 
@@ -468,6 +468,18 @@ namespace tgui
         // A nullptr is returned when the mouse is not on top of the widget or when the tool tip is empty.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr askToolTip(sf::Vector2f mousePos);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Draw the widget to a render target
+        ///
+        /// This is a pure virtual function that has to be implemented by the derived class to define how the widget is drawn.
+        ///
+        /// @param target Render target to draw to
+        /// @param states Current render states
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

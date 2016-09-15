@@ -1477,7 +1477,7 @@ namespace tgui
 
         // Draw the scrollbar if needed
         if (m_verticalScroll.isShown())
-            target.draw(m_verticalScroll, statesForScrollbar);
+            m_verticalScroll.draw(target, statesForScrollbar);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
