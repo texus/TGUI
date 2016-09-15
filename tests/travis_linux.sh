@@ -13,7 +13,7 @@ if [[ ! -d "$SFML_ROOT/lib" || ! -f "$SFML_ROOT/revision_cache" || `git rev-pars
   fi
 
   # SFML has to be patched when using GCC 4.9 or GCC 5
-  git apply ../ubuntu_sfml_gcc_patch.diff
+  git apply ../tests/ubuntu_sfml_gcc_patch.diff
 
   git rev-parse HEAD > "$SFML_ROOT/revision_cache"
   cmake -DCMAKE_INSTALL_PREFIX=$SFML_ROOT .
