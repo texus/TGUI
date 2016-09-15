@@ -25,6 +25,11 @@
 #include "../Tests.hpp"
 #include <TGUI/Widgets/RadioButton.hpp>
 
+// Ignore warning "C4800: 'const int': forcing value to bool 'true' or 'false'" in Visual Studio
+#if defined _MSC_VER
+    #pragma warning(disable : 4800)
+#endif
+
 TEST_CASE("[RadioButton]")
 {
     tgui::RadioButton::Ptr radioButton = tgui::RadioButton::create();

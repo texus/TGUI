@@ -25,7 +25,13 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
 
-TEST_CASE("[Signal]") {
+// Ignore warning "C4800: 'const int': forcing value to bool 'true' or 'false'" in Visual Studio
+#if defined _MSC_VER
+    #pragma warning(disable : 4800)
+#endif
+
+TEST_CASE("[Signal]")
+{
     tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
 
 /*
@@ -87,7 +93,8 @@ TODO: More tests:
     // try testing with multiple operator() overloads
 */
 
-    SECTION("connect") {
+    SECTION("connect")
+    {
         unsigned int id = widget->connect("PositionChanged", [](){});
         REQUIRE(widget->connect("SizeChanged", [](){}) == ++id);
         REQUIRE(widget->connect("Focused", [](){}) == ++id);
@@ -113,7 +120,8 @@ TODO: More tests:
         REQUIRE(widget->connect("All", [](){}) > id+3);
     }
 
-    SECTION("connectEx") {
+    SECTION("connectEx")
+    {
         unsigned int id = widget->connectEx("PositionChanged", [](const tgui::Callback&){});
         REQUIRE(widget->connectEx("SizeChanged", [](const tgui::Callback&){}) == ++id);
         REQUIRE(widget->connectEx("Focused", [](const tgui::Callback&){}) == ++id);
@@ -133,7 +141,8 @@ TODO: More tests:
         REQUIRE(widget->connectEx("All", [](const tgui::Callback&){}) > id+5);
     }
 
-    SECTION("disconnect") {
+    SECTION("disconnect")
+    {
         unsigned int i = 0;
         unsigned int id = widget->connect("PositionChanged", [&](){ i++; });
 
