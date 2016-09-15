@@ -24,6 +24,7 @@
 
 
 #include <TGUI/TGUI.hpp>
+#include <iostream>
 
 void login(tgui::EditBox::Ptr username, tgui::EditBox::Ptr password)
 {

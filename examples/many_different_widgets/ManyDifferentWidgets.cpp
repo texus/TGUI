@@ -24,6 +24,7 @@
 
 
 #include <TGUI/TGUI.hpp>
+#include <iostream>
 
 int main()
 {

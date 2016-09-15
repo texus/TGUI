@@ -24,6 +24,7 @@
 
 #include "catch.hpp"
 #include <TGUI/TextureManager.hpp>
+#include <TGUI/Exception.hpp>
 #include <TGUI/Texture.hpp>
 #include <SFML/System/Err.hpp>
 

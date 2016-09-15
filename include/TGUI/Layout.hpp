@@ -29,6 +29,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <TGUI/Config.hpp>
 #include <functional>
+#include <string>
 #include <memory>
 #include <vector>
 #include <set>

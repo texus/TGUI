@@ -235,7 +235,7 @@ namespace tgui
 
             if (m_checked)
             {
-                const constexpr float pi = 3.14159265358979f;
+                const float pi = 3.14159265358979f;
 
                 // Set the clipping for all draw calls that happen until this clipping object goes out of scope
                 Clipping clipping{target, states, {borders.left, borders.top}, getInnerSize()};

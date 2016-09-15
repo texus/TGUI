@@ -22,8 +22,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "catch.hpp"
+#include "Tests.hpp"
+#include <TGUI/Exception.hpp>
 #include <TGUI/Texture.hpp>
+#include <TGUI/TextureManager.hpp>
 #include <SFML/System/Err.hpp>
 
 TEST_CASE("[Texture]")
