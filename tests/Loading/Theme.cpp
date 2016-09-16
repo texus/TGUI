@@ -116,8 +116,14 @@ TEST_CASE("[Theme]")
 
             const std::map<sf::String, sf::String>& load(const std::string& one, const std::string& two) override
             {
-                REQUIRE(one == "resources/Black.txt");
-                REQUIRE(two == "editbox");
+                if (one != "")
+                {
+                    REQUIRE(one == "resources/Black.txt");
+                    REQUIRE(two == "editbox");
+                }
+                else
+                    REQUIRE(two == "button");
+
                 loadCount++;
                 return retVal;
             }
@@ -139,6 +145,6 @@ TEST_CASE("[Theme]")
         tgui::Theme::setThemeLoader(std::make_shared<tgui::DefaultThemeLoader>());
 
         REQUIRE(loader->preloadCount == 1);
-        REQUIRE(loader->loadCount == 1);
+        REQUIRE(loader->loadCount == 2);
     }
 }
