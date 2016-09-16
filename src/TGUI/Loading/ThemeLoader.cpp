@@ -143,6 +143,9 @@ namespace tgui
 
     void DefaultThemeLoader::preload(const std::string& filename)
     {
+        if (filename == "")
+            return;
+
         // Load the file when not already in cache
         if (m_propertiesCache.find(filename) == m_propertiesCache.end())
         {
@@ -202,8 +205,13 @@ namespace tgui
         preload(filename);
 
         std::string lowercaseClassName = toLower(section);
+
+        // An empty filename is not considered an error and will result in an empty property list
+        if (filename == "")
+            return m_propertiesCache[""][lowercaseClassName];
+
         if (m_propertiesCache[filename].find(lowercaseClassName) == m_propertiesCache[filename].end())
-            throw Exception{"No section '" + section + "' was found in " + filename + "."};
+            throw Exception{"No section '" + section + "' was found in file '" + filename + "'."};
 
         return m_propertiesCache[filename][lowercaseClassName];
     }
