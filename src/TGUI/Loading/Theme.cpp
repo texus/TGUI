@@ -76,7 +76,7 @@ namespace tgui
                 oldFont = renderer->propertyValuePairs["font"].getFont();
 
             // Update the property-value pairs of the renderer
-            renderer->propertyValuePairs = {};
+            renderer->propertyValuePairs = std::map<std::string, ObjectConverter>{};
             for (const auto& property : *properties)
                 renderer->propertyValuePairs[property.first] = ObjectConverter(property.second);
 
