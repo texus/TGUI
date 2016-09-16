@@ -49,6 +49,7 @@ namespace tgui
         setRenderer(m_renderer->getData());
 
         getRenderer()->setBorders({2});
+        getRenderer()->setPadding({2, 0, 0, 0});
         getRenderer()->setBackgroundColor({245, 245, 245});
         getRenderer()->setArrowBackgroundColor({245, 245, 245});
         getRenderer()->setArrowBackgroundColorHover(sf::Color::White);
@@ -145,9 +146,8 @@ namespace tgui
 
         getRenderer()->getTextureBackground().setSize(getInnerSize());
 
-        Borders borders = getRenderer()->getBorders();
         Padding padding = getRenderer()->getPadding();
-        float height = getInnerSize().y - borders.top - borders.bottom - padding.top - padding.bottom;
+        float height = getInnerSize().y - padding.top - padding.bottom;
 
         if (height > 0)
         {

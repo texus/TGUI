@@ -22,7 +22,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+#include <iostream>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Clipping.hpp>
 
@@ -651,7 +651,7 @@ namespace tgui
                 m_closeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
             }
 
-            updatePosition();
+            updateTitleBarHeight();
         }
         else if (property == "maximizebutton")
         {
@@ -661,7 +661,7 @@ namespace tgui
                 m_maximizeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
             }
 
-            updatePosition();
+            updateTitleBarHeight();
         }
         else if (property == "minimizebutton")
         {
@@ -671,7 +671,7 @@ namespace tgui
                 m_minimizeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
             }
 
-            updatePosition();
+            updateTitleBarHeight();
         }
         else if (property == "opacity")
         {

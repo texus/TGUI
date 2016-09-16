@@ -208,12 +208,25 @@ namespace tgui
         {
             if (m_checked)
             {
+                Texture* checkedTexture;
                 if (!m_enabled && getRenderer()->getTextureCheckedDisabled().isLoaded())
-                    getRenderer()->getTextureCheckedDisabled().draw(target, states);
+                    checkedTexture = &getRenderer()->getTextureCheckedDisabled();
                 else if (m_mouseHover && getRenderer()->getTextureCheckedHover().isLoaded())
-                    getRenderer()->getTextureCheckedHover().draw(target, states);
+                    checkedTexture = &getRenderer()->getTextureCheckedHover();
                 else
-                    getRenderer()->getTextureChecked().draw(target, states);
+                    checkedTexture = &getRenderer()->getTextureChecked();
+
+                // The image may need to be shifted when the check leaves the box
+                if (getSize().y != checkedTexture->getSize().y)
+                {
+                    float diff = getSize().y - checkedTexture->getSize().y;
+
+                    states.transform.translate({0, diff});
+                    checkedTexture->draw(target, states);
+                    states.transform.translate({0, -diff});
+                }
+                else // Draw the checked texture normally
+                    checkedTexture->draw(target, states);
             }
             else
             {

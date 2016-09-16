@@ -48,6 +48,7 @@ namespace tgui
         setRenderer(m_renderer->getData());
 
         getRenderer()->setBorders({2});
+        getRenderer()->setPadding({2, 0, 0, 0});
         getRenderer()->setBackgroundColor({245, 245, 245});
         getRenderer()->setTextColor({60, 60, 60});
         getRenderer()->setTextColorHover(sf::Color::Black);
