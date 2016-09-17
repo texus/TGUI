@@ -48,10 +48,10 @@ int main(int argc, char *argv[])
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "");
     tgui::Gui gui(window);
 
-    auto picLandscape = std::make_shared<tgui::Picture>("Background-Landscape.png");
+    auto picLandscape = tgui::Picture::create("Background-Landscape.png");
     gui.add(picLandscape, "Landscape");
 
-    auto picPortrait = std::make_shared<tgui::Picture>("Background-Portrait.png");
+    auto picPortrait = tgui::Picture::create("Background-Portrait.png");
     gui.add(picPortrait, "Portrait");
 
     // The button will quit the program

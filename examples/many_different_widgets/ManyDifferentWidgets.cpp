@@ -37,7 +37,7 @@ int main()
     {
         tgui::Theme theme{"../../widgets/Black.txt"};
 
-        gui.add(std::make_shared<tgui::Picture>("../RedBackground.jpg"));
+        gui.add(tgui::Picture::create("../RedBackground.jpg"));
 
         auto tabs = tgui::Tabs::create();
         tabs->setRenderer(theme.getRenderer("Tabs"));
