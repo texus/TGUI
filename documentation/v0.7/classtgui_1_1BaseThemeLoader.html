@@ -4,11 +4,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!-- BEGIN CUSTOM 1 -->
-<!-- --{{}}>
-{% include head.ext %}
-<{{}}!-- -->
-<!-- END CUSTOM 1 -->
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
@@ -23,18 +18,12 @@
   $(document).ready(function() { init_search(); });
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<!-- BEGIN CUSTOM 2 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 1 -->
+<!-- --{{""}}>
+{% include head.ext %}
 <style>
   div {
     margin-bottom: 0
-  }
-  body {
-    background-color: #e0e0e0;
-    background-image: url('/resources/Background.jpg');
-    max-width: 1060px;
-    margin-left: auto;
-    margin-right: auto;
   }
   #contents {
     padding-left: 0;
@@ -59,17 +48,17 @@ function getXPos(item) {
   return x;
 }
 </script>
-<{{}}!-- -->
-<!-- END CUSTOM 2 -->
+<{{""}}!-- -->
+<!-- END CUSTOM 1 -->
 </head>
 <body>
-<!-- BEGIN CUSTOM 3 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 2 -->
+<!-- --{{""}}>
 <div id="body" class="NoMargin">
 {% include navigation.ext %}
 <div id="contents" class="NoMargin">
-<{{}}!-- -->
-<!-- END CUSTOM 3 -->
+<{{""}}!-- {% raw %} -->
+<!-- END CUSTOM 2 -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -77,7 +66,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7.1</span>
+   &#160;<span id="projectnumber">0.7.1</span>
    </div>
   </td>
  </tr>
@@ -169,14 +158,14 @@ Public Member Functions</h2></td></tr>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BaseThemeLoader.html#ab43fb2866b0f51f853446b9bf2c6174c">~BaseThemeLoader</a> ()=default</td></tr>
 <tr class="memdesc:ab43fb2866b0f51f853446b9bf2c6174c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor. <br /></td></tr>
 <tr class="separator:ab43fb2866b0f51f853446b9bf2c6174c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56810ae6ffbb14204c19fe2ad8194e58"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BaseThemeLoader.html#a56810ae6ffbb14204c19fe2ad8194e58">load</a> (const std::string &amp;primary, const std::string &amp;secondary, std::map&lt; std::string, std::string &gt; &amp;properties)=0</td></tr>
-<tr class="memdesc:a56810ae6ffbb14204c19fe2ad8194e58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the property-value pairs from the theme.  <a href="#a56810ae6ffbb14204c19fe2ad8194e58">More...</a><br /></td></tr>
-<tr class="separator:a56810ae6ffbb14204c19fe2ad8194e58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1de5c7b76dce92ce979d85447028d3a"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BaseThemeLoader.html#ae1de5c7b76dce92ce979d85447028d3a">load</a> (const std::string &amp;primary, const std::string &amp;secondary, PropertyValuePairs &amp;properties)=0</td></tr>
+<tr class="memdesc:ae1de5c7b76dce92ce979d85447028d3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the property-value pairs from the theme.  <a href="#ae1de5c7b76dce92ce979d85447028d3a">More...</a><br /></td></tr>
+<tr class="separator:ae1de5c7b76dce92ce979d85447028d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class for theme loader implementations. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a56810ae6ffbb14204c19fe2ad8194e58"></a>
+<a class="anchor" id="ae1de5c7b76dce92ce979d85447028d3a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -198,7 +187,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::map&lt; std::string, std::string &gt; &amp;&#160;</td>
+          <td class="paramtype">PropertyValuePairs &amp;&#160;</td>
           <td class="paramname"><em>properties</em>&#160;</td>
         </tr>
         <tr>
@@ -226,7 +215,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <p>For the default loader, the primary parameter is the filename while the secondary parameter is the class name.</p>
 <dl class="section return"><dt>Returns</dt><dd>Type of the widget </dd></dl>
 
-<p>Implemented in <a class="el" href="classtgui_1_1DefaultThemeLoader.html#a95b85cbff17cb8f5964040345e77aaf5">tgui::DefaultThemeLoader</a>.</p>
+<p>Implemented in <a class="el" href="classtgui_1_1DefaultThemeLoader.html#af836d45354148d4d185104f79f90a8cc">tgui::DefaultThemeLoader</a>.</p>
 
 </div>
 </div>
@@ -237,17 +226,17 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 12 2016 14:56:47 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 17 2016 15:51:03 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
-<!-- BEGIN CUSTOM -->
-<!-- -{{}}-{{}}>
+<!-- BEGIN CUSTOM 3 -->
+<!-- {% endraw %} -{{""}}-{{""}}>
 </div>
 {% include page_footer.ext %}
 </div>
 {% include footer.ext %}
-<{{}}!{{}}-{{}}- -->
-<!-- END CUSTOM -->
+<{{""}}!{{""}}-{{""}}- -->
+<!-- END CUSTOM 3 -->
 </body>
 </html>

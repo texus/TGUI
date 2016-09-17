@@ -4,11 +4,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!-- BEGIN CUSTOM 1 -->
-<!-- --{{}}>
-{% include head.ext %}
-<{{}}!-- -->
-<!-- END CUSTOM 1 -->
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
@@ -23,18 +18,12 @@
   $(document).ready(function() { init_search(); });
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<!-- BEGIN CUSTOM 2 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 1 -->
+<!-- --{{""}}>
+{% include head.ext %}
 <style>
   div {
     margin-bottom: 0
-  }
-  body {
-    background-color: #e0e0e0;
-    background-image: url('/resources/Background.jpg');
-    max-width: 1060px;
-    margin-left: auto;
-    margin-right: auto;
   }
   #contents {
     padding-left: 0;
@@ -59,17 +48,17 @@ function getXPos(item) {
   return x;
 }
 </script>
-<{{}}!-- -->
-<!-- END CUSTOM 2 -->
+<{{""}}!-- -->
+<!-- END CUSTOM 1 -->
 </head>
 <body>
-<!-- BEGIN CUSTOM 3 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 2 -->
+<!-- --{{""}}>
 <div id="body" class="NoMargin">
 {% include navigation.ext %}
 <div id="contents" class="NoMargin">
-<{{}}!-- -->
-<!-- END CUSTOM 3 -->
+<{{""}}!-- {% raw %} -->
+<!-- END CUSTOM 2 -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -77,7 +66,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7.1</span>
+   &#160;<span id="projectnumber">0.7.1</span>
    </div>
   </td>
  </tr>
@@ -156,91 +145,90 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <tr><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a9b0187cd74457415140526ba788504d1">connectEx</a>(const std::string &amp;signalName, Func func, Args...args)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a9971b145a402f8dc201122a8454e8d3b">ConstPtr</a> typedef</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#ab57c053042000054c961f24805a60582">copy</a>(Tab::ConstPtr tab)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a66805715bf7c5ca66cc3ee2811fcf25b">create</a>(const std::string &amp;themeFileFilename=&quot;&quot;, const std::string &amp;section=&quot;Tab&quot;)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#aba82c00981d157a0ae0779c6200abf43">deselect</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a62bbecb4ba75342b22786502e5383ac5">detachTheme</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#afdc703927f1d882741d22169b3ecf640">disable</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a9e13634d49560b2941ebdd2a934b6a16">disconnect</a>(unsigned int id)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a262641681a20ba2c42b9879faf60f857">disconnectAll</a>(const std::string &amp;signalName)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#aee50efdbdbbc1be9418dfbc1549ee4f2">disconnectAll</a>()</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a8f4ded5b008224a33623171ad2558168">enable</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a826330401141b9946307a5f4e3d1e988">focus</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a59112dbb748fa92647ef86b823c227f1">getAbsolutePosition</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#aec2d0dec0156536b93216797de49b497">getFont</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">getFullSize</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a597555cd1399cfa556986c0669801583">getMaximumTabWidth</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a7ab7b54eb87d1c7b28ad36fa5a8281ec">getOpacity</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a0cf4e57ff28230753afe8197e8945a3a">getParent</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a2429a2ff2f3f83b702f20b4a8a0257dc">getPosition</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#aa32ce148343fd2a0f59d6dbcc3028883">getPrimaryLoadingParameter</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a0b6d427700a745d7b5a756936e1c2fd3">getRenderer</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a97e7325f223c7c49105b3b859542b652">getSecondaryLoadingParameter</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#afc201a2c0a1241a93b79795bc0fce713">getSelected</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a60a2c2051801ddceb003d786ea22661c">getSelectedIndex</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a73789802e91596e0a3abb74dbce16747">getSize</a>() const override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a30952836afebeb963af9c4cc0cbb9d67">getTabHeight</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a5f08cf18df3584bc0927e39ed0498724">getTabsCount</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a0e12f6d5a9bdebd654061f89c1512bcd">getText</a>(std::size_t index) const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#affb8c7ab007f3b322e72a7492c0c7d0c">getTextSize</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#ab5bb8483e23d877c386d632ca7ca2879">getTheme</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a0e6e54fbaba931d0bb8eb0404e2e1c22">getToolTip</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#af548e3f4fa5584d2f15f896bc3fc197a">getWidgetOffset</a>() const override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a52f98861e54bde43ccab0abe5733bfff">getWidgetType</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a4234b30173259e7b5082a58a9f0e2ca6">hide</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a9bcb2d85d7e449ef7305771256ec79bf">hideWithEffect</a>(ShowAnimationType type, sf::Time duration)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a080aba34cae9fe00b2cc484e812090ce">insert</a>(std::size_t index, const sf::String &amp;text, bool select=true)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#af6770fc71c644b645bf28f31c4efd2d1">isEnabled</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#af9a2f1246195375dea450655b23cdf6d">isFocused</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#ac30d0e386c262c5e830fdcc994584993">isVisible</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#aff5580e6c49ade969ba71ea1c1330d2b">move</a>(const Layout2d &amp;offset)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a792b77e86e9550b0b2c5912d4d7cebe5">move</a>(const Layout &amp;x, const Layout &amp;y)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a15e7d3570551c72d9a4d9534ac7a7f19">moveToBack</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a98fd0f08b45e3e54b9054965060136dd">moveToFront</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a97362423551dca5b90e86fc63ddc3eca">operator=</a>(const Widget &amp;right)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a657777a2240d69c4be0cf52c977bea0f">tgui::SignalWidgetBase::operator=</a>(const SignalWidgetBase &amp;right)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#ab84d395742e1b0f4eb576a9e0e030087">Ptr</a> typedef</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#ad5ecd21216d8eed81a211329edf72c9e">reload</a>(const std::string &amp;primary=&quot;&quot;, const std::string &amp;secondary=&quot;&quot;, bool force=false) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a62984df9a422ecfffde3936341e6fd5e">remove</a>(const sf::String &amp;text)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a86e01a09bb1eaf6cf50fe32c6ad2067a">remove</a>(std::size_t index)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#ae769ce06da343cd93e48dcbbd24b6f2b">removeAll</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a15575698ad5b40c34bc8c945244ec4d8">scale</a>(const Layout2d &amp;factors)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a074f2ed8b35ede928678339b8f708b1c">scale</a>(const Layout &amp;x, const Layout &amp;y)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a33ce9eaaa8ffe9cb4441902d82c6c9a9">select</a>(const sf::String &amp;text)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a7db6d7ed784fa2c151c99d12e80c2a2c">select</a>(std::size_t index)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a20d0a37af4d2af70bf1b2bcd93178ead">setFont</a>(const Font &amp;font) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a30d0620c1398cbaa96dd177328260f15">setMaximumTabWidth</a>(float maximumWidth)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a79f50d4469aadb318e3e156ccaef087c">setOpacity</a>(float opacity) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#af51601a1692dce56e32490db53249427">setPosition</a>(const Layout2d &amp;position) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a9e34aa4c19ae95ed71052c6409d8fbcc">tgui::Transformable::setPosition</a>(const Layout &amp;x, const Layout &amp;y)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#af18ffe805d49b6bda67268e4343f0bd4">setSize</a>(const Layout2d &amp;size) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a3bae3322ba22993ca9eacad060e3215c">tgui::Transformable::setSize</a>(const Layout &amp;width, const Layout &amp;height)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a86006de1eac88157d2f6dad3e35ad939">setTabHeight</a>(float height)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a8062b3c62d96a190bc3e88a25e65412b">setTextSize</a>(unsigned int size)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#ae4f30ef364bf7594ec209688a9b43ec5">setToolTip</a>(Widget::Ptr toolTip)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#ae3881afdad82cf8c2bd12f36238c04fe">show</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b">showWithEffect</a>(ShowAnimationType type, sf::Time duration)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#ac37f925b9c8d2912db40050e59cb1bc8">SignalWidgetBase</a>()=default</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a57a9f27b40ff6f51583a64333c83405d">SignalWidgetBase</a>(const SignalWidgetBase &amp;copy)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#afc53e1f70feeeb498c042d7d741528c9">unfocus</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a60c5722d15d0733f6743bf57c86d1c6a">Widget</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a662b5e56609f23b2bbff81cbaa5787e2">Widget</a>(const Widget &amp;copy)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#ac735d9fe838286cd51e08ed8678af76e">~Transformable</a>()=default</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#af34221ef4742371e8f7e2c40a8881404">~Widget</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#aba82c00981d157a0ae0779c6200abf43">deselect</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a62bbecb4ba75342b22786502e5383ac5">detachTheme</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a41615622bd4eb42fee629dd408bce7d4">disable</a>(bool blockMouseEvents=true)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a9e13634d49560b2941ebdd2a934b6a16">disconnect</a>(unsigned int id)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a262641681a20ba2c42b9879faf60f857">disconnectAll</a>(const std::string &amp;signalName)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#aee50efdbdbbc1be9418dfbc1549ee4f2">disconnectAll</a>()</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a8f4ded5b008224a33623171ad2558168">enable</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a826330401141b9946307a5f4e3d1e988">focus</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a59112dbb748fa92647ef86b823c227f1">getAbsolutePosition</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#aec2d0dec0156536b93216797de49b497">getFont</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a4f11a7e9d86943a5cc8114b2431c1570">getFullSize</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a597555cd1399cfa556986c0669801583">getMaximumTabWidth</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a7ab7b54eb87d1c7b28ad36fa5a8281ec">getOpacity</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a0cf4e57ff28230753afe8197e8945a3a">getParent</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a2429a2ff2f3f83b702f20b4a8a0257dc">getPosition</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#aa32ce148343fd2a0f59d6dbcc3028883">getPrimaryLoadingParameter</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a0b6d427700a745d7b5a756936e1c2fd3">getRenderer</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a97e7325f223c7c49105b3b859542b652">getSecondaryLoadingParameter</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#afc201a2c0a1241a93b79795bc0fce713">getSelected</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a60a2c2051801ddceb003d786ea22661c">getSelectedIndex</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a73789802e91596e0a3abb74dbce16747">getSize</a>() const override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a30952836afebeb963af9c4cc0cbb9d67">getTabHeight</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a5f08cf18df3584bc0927e39ed0498724">getTabsCount</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a0e12f6d5a9bdebd654061f89c1512bcd">getText</a>(std::size_t index) const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#affb8c7ab007f3b322e72a7492c0c7d0c">getTextSize</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#ab5bb8483e23d877c386d632ca7ca2879">getTheme</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a0e6e54fbaba931d0bb8eb0404e2e1c22">getToolTip</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#af548e3f4fa5584d2f15f896bc3fc197a">getWidgetOffset</a>() const override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a52f98861e54bde43ccab0abe5733bfff">getWidgetType</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a4234b30173259e7b5082a58a9f0e2ca6">hide</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a9bcb2d85d7e449ef7305771256ec79bf">hideWithEffect</a>(ShowAnimationType type, sf::Time duration)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a080aba34cae9fe00b2cc484e812090ce">insert</a>(std::size_t index, const sf::String &amp;text, bool select=true)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#af6770fc71c644b645bf28f31c4efd2d1">isEnabled</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#af9a2f1246195375dea450655b23cdf6d">isFocused</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#ac30d0e386c262c5e830fdcc994584993">isVisible</a>() const </td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#aff5580e6c49ade969ba71ea1c1330d2b">move</a>(const Layout2d &amp;offset)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a792b77e86e9550b0b2c5912d4d7cebe5">move</a>(const Layout &amp;x, const Layout &amp;y)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a15e7d3570551c72d9a4d9534ac7a7f19">moveToBack</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a98fd0f08b45e3e54b9054965060136dd">moveToFront</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a97362423551dca5b90e86fc63ddc3eca">operator=</a>(const Widget &amp;right)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a657777a2240d69c4be0cf52c977bea0f">tgui::SignalWidgetBase::operator=</a>(const SignalWidgetBase &amp;right)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#ab84d395742e1b0f4eb576a9e0e030087">Ptr</a> typedef</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#ad5ecd21216d8eed81a211329edf72c9e">reload</a>(const std::string &amp;primary=&quot;&quot;, const std::string &amp;secondary=&quot;&quot;, bool force=false) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a62984df9a422ecfffde3936341e6fd5e">remove</a>(const sf::String &amp;text)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a86e01a09bb1eaf6cf50fe32c6ad2067a">remove</a>(std::size_t index)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#ae769ce06da343cd93e48dcbbd24b6f2b">removeAll</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a15575698ad5b40c34bc8c945244ec4d8">scale</a>(const Layout2d &amp;factors)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a074f2ed8b35ede928678339b8f708b1c">scale</a>(const Layout &amp;x, const Layout &amp;y)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a33ce9eaaa8ffe9cb4441902d82c6c9a9">select</a>(const sf::String &amp;text)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a7db6d7ed784fa2c151c99d12e80c2a2c">select</a>(std::size_t index)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a20d0a37af4d2af70bf1b2bcd93178ead">setFont</a>(const Font &amp;font) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a30d0620c1398cbaa96dd177328260f15">setMaximumTabWidth</a>(float maximumWidth)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a79f50d4469aadb318e3e156ccaef087c">setOpacity</a>(float opacity) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#af51601a1692dce56e32490db53249427">setPosition</a>(const Layout2d &amp;position) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a9e34aa4c19ae95ed71052c6409d8fbcc">tgui::Transformable::setPosition</a>(const Layout &amp;x, const Layout &amp;y)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#af18ffe805d49b6bda67268e4343f0bd4">setSize</a>(const Layout2d &amp;size) override</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#a3bae3322ba22993ca9eacad060e3215c">tgui::Transformable::setSize</a>(const Layout &amp;width, const Layout &amp;height)</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a86006de1eac88157d2f6dad3e35ad939">setTabHeight</a>(float height)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Tab.html#a8062b3c62d96a190bc3e88a25e65412b">setTextSize</a>(unsigned int size)</td><td class="entry"><a class="el" href="classtgui_1_1Tab.html">tgui::Tab</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#ae4f30ef364bf7594ec209688a9b43ec5">setToolTip</a>(Widget::Ptr toolTip)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#ae3881afdad82cf8c2bd12f36238c04fe">show</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b">showWithEffect</a>(ShowAnimationType type, sf::Time duration)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#ac37f925b9c8d2912db40050e59cb1bc8">SignalWidgetBase</a>()=default</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a57a9f27b40ff6f51583a64333c83405d">SignalWidgetBase</a>(const SignalWidgetBase &amp;copy)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#afc53e1f70feeeb498c042d7d741528c9">unfocus</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a60c5722d15d0733f6743bf57c86d1c6a">Widget</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a662b5e56609f23b2bbff81cbaa5787e2">Widget</a>(const Widget &amp;copy)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Transformable.html#ac735d9fe838286cd51e08ed8678af76e">~Transformable</a>()=default</td><td class="entry"><a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#af34221ef4742371e8f7e2c40a8881404">~Widget</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 12 2016 14:56:47 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 17 2016 15:51:03 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
-<!-- BEGIN CUSTOM -->
-<!-- -{{}}-{{}}>
+<!-- BEGIN CUSTOM 3 -->
+<!-- {% endraw %} -{{""}}-{{""}}>
 </div>
 {% include page_footer.ext %}
 </div>
 {% include footer.ext %}
-<{{}}!{{}}-{{}}- -->
-<!-- END CUSTOM -->
+<{{""}}!{{""}}-{{""}}- -->
+<!-- END CUSTOM 3 -->
 </body>
 </html>

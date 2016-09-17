@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['right',['Right',['../classtgui_1_1ChildWindow.html#a247720248700e8ddbbb4af19bbfad5b8a92b09c7c48c520c3c55e497875da437c',1,'tgui::ChildWindow::Right()'],['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393a92b09c7c48c520c3c55e497875da437c',1,'tgui::EditBox::Right()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9a92b09c7c48c520c3c55e497875da437c',1,'tgui::Grid::Right()'],['../classtgui_1_1Label.html#afcabdb6aa458f5883f6831ccc731cb3ba92b09c7c48c520c3c55e497875da437c',1,'tgui::Label::Right()']]],
-  ['righttoleft',['RightToLeft',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85eab7b0ea3028791689ea070674776855e2',1,'tgui::ProgressBar']]]
+  ['nineslice',['NineSlice',['../classtgui_1_1Texture.html#aaba70370fcc0e5fe13508646d2300014ae04fb02d096d90f7e04135e94eab17f0',1,'tgui::Texture']]],
+  ['none',['None',['../classtgui_1_1ChildWindow.html#aca111dd39a107ca0ca7a19acae891082a1a314ef71a07a25499292ff92c13c775',1,'tgui::ChildWindow']]],
+  ['normal',['Normal',['../classtgui_1_1Texture.html#aaba70370fcc0e5fe13508646d2300014a960b44c579bc2f6818d2daaf9e4c16f0',1,'tgui::Texture']]]
 ];

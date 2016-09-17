@@ -4,11 +4,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!-- BEGIN CUSTOM 1 -->
-<!-- --{{}}>
-{% include head.ext %}
-<{{}}!-- -->
-<!-- END CUSTOM 1 -->
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
@@ -23,18 +18,12 @@
   $(document).ready(function() { init_search(); });
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<!-- BEGIN CUSTOM 2 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 1 -->
+<!-- --{{""}}>
+{% include head.ext %}
 <style>
   div {
     margin-bottom: 0
-  }
-  body {
-    background-color: #e0e0e0;
-    background-image: url('/resources/Background.jpg');
-    max-width: 1060px;
-    margin-left: auto;
-    margin-right: auto;
   }
   #contents {
     padding-left: 0;
@@ -59,17 +48,17 @@ function getXPos(item) {
   return x;
 }
 </script>
-<{{}}!-- -->
-<!-- END CUSTOM 2 -->
+<{{""}}!-- -->
+<!-- END CUSTOM 1 -->
 </head>
 <body>
-<!-- BEGIN CUSTOM 3 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 2 -->
+<!-- --{{""}}>
 <div id="body" class="NoMargin">
 {% include navigation.ext %}
 <div id="contents" class="NoMargin">
-<{{}}!-- -->
-<!-- END CUSTOM 3 -->
+<{{""}}!-- {% raw %} -->
+<!-- END CUSTOM 2 -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -77,7 +66,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7.1</span>
+   &#160;<span id="projectnumber">0.7.1</span>
    </div>
   </td>
  </tr>
@@ -175,24 +164,24 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classtgui_1_1EditBox_html_a3bdf669c969f3002777f84ef6bcc9393"><div class="ttname"><a href="classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393">tgui::EditBox::Alignment</a></div><div class="ttdeci">Alignment</div><div class="ttdoc">The text alignment. </div><div class="ttdef"><b>Definition:</b> EditBox.hpp:65</div></div>
 <div class="ttc" id="classtgui_1_1EditBox_html_adc6995f4d4caa470270b5d1f78fc9d98"><div class="ttname"><a href="classtgui_1_1EditBox.html#adc6995f4d4caa470270b5d1f78fc9d98">tgui::EditBox::clone</a></div><div class="ttdeci">virtual Widget::Ptr clone() const override</div><div class="ttdoc">Makes a copy of the widget if you don&amp;#39;t know its exact type. </div><div class="ttdef"><b>Definition:</b> EditBox.hpp:511</div></div>
 <div class="ttc" id="classtgui_1_1EditBox_html_a260a6d913c6d3059d396e691e64e9da0"><div class="ttname"><a href="classtgui_1_1EditBox.html#a260a6d913c6d3059d396e691e64e9da0">tgui::EditBox::getPasswordCharacter</a></div><div class="ttdeci">char getPasswordCharacter() const </div><div class="ttdoc">Returns the password character. </div><div class="ttdef"><b>Definition:</b> EditBox.hpp:272</div></div>
-<div class="ttc" id="classtgui_1_1WidgetRenderer_html"><div class="ttname"><a href="classtgui_1_1WidgetRenderer.html">tgui::WidgetRenderer</a></div><div class="ttdoc">Base class for all renderer classes. </div><div class="ttdef"><b>Definition:</b> Widget.hpp:670</div></div>
+<div class="ttc" id="classtgui_1_1WidgetRenderer_html"><div class="ttname"><a href="classtgui_1_1WidgetRenderer.html">tgui::WidgetRenderer</a></div><div class="ttdoc">Base class for all renderer classes. </div><div class="ttdef"><b>Definition:</b> Widget.hpp:682</div></div>
 <div class="ttc" id="classtgui_1_1EditBox_html_a470b1187b4ea19e046742ae19948b3f2"><div class="ttname"><a href="classtgui_1_1EditBox.html#a470b1187b4ea19e046742ae19948b3f2">tgui::EditBox::getAlignment</a></div><div class="ttdeci">Alignment getAlignment()</div><div class="ttdoc">Get the current text alignment. </div><div class="ttdef"><b>Definition:</b> EditBox.hpp:319</div></div>
 <div class="ttc" id="classtgui_1_1EditBox_html_a2fba97a088cbc882a9287d39c81af361"><div class="ttname"><a href="classtgui_1_1EditBox.html#a2fba97a088cbc882a9287d39c81af361">tgui::EditBox::getMaximumCharacters</a></div><div class="ttdeci">unsigned int getMaximumCharacters() const </div><div class="ttdoc">Returns the character limit. </div><div class="ttdef"><b>Definition:</b> EditBox.hpp:298</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 12 2016 14:56:47 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 17 2016 15:51:03 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
-<!-- BEGIN CUSTOM -->
-<!-- -{{}}-{{}}>
+<!-- BEGIN CUSTOM 3 -->
+<!-- {% endraw %} -{{""}}-{{""}}>
 </div>
 {% include page_footer.ext %}
 </div>
 {% include footer.ext %}
-<{{}}!{{}}-{{}}- -->
-<!-- END CUSTOM -->
+<{{""}}!{{""}}-{{""}}- -->
+<!-- END CUSTOM 3 -->
 </body>
 </html>

@@ -3,9 +3,15 @@ layout: page
 title: Download
 ---
 
-<div>
-  <h4 class="NoMargin">TGUI 0.7.1</h4>
-  <p>Precompiled windows libraries require matching libraries from <a href="http://www.sfml-dev.org/download/sfml/2.4.0/">SFML 2.4.0</a>.</p>
+### TGUI 0.8-dev
+Development version - only intended for testing
+{% include button.ext text="Get latest version" link="https://github.com/texus/TGUI/tree/0.8-dev" style="Orange" %}
+
+### TGUI 0.7.1
+Latest stable version - <b>recommended</b>
+
+Precompiled windows libraries require matching libraries from <a href="http://www.sfml-dev.org/download/sfml/2.4.0/">SFML 2.4.0</a>.
+<p>
   {% include button.ext text="Visual C++12 (2013) - 32bit" link="https://bintray.com/texus/generic/download_file?file_path=TGUI-0.7.1-vc12-32bit-for-SFML-2.4.0.zip" style="Green" %}
   {% include button.ext text="Visual C++12 (2013) - 64bit" link="https://bintray.com/texus/generic/download_file?file_path=TGUI-0.7.1-vc12-64bit-for-SFML-2.4.0.zip" style="Green" %}<br><br>
   {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://bintray.com/texus/generic/download_file?file_path=TGUI-0.7.1-vc14-32bit-for-SFML-2.4.0.zip" style="Green" %}
@@ -17,9 +23,8 @@ title: Download
   {% include button.ext text="Arch Linux (AUR)" link="https://aur.archlinux.org/packages/tgui-git/" style="Green" %}<br><br>
   {% include button.ext text="Conan.io" link="https://www.conan.io/source/tgui/0.7.1/texus/stable" style="Green" %}<br><br>
   {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.7.1.zip" style="Green" %}
-</div>
+</p>
 
-<div>
-  <h4 class="NoMargin">Older versions</h4>
-  <p>Source code for older versions can be found on <a href="https://github.com/texus/TGUI/tags">GitHub</a>.</p>
-</div>
+### TGUI 0.6.10
+Previous version - lacks many features and is not recommended for new projects
+{% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/v0.6.10.zip" style="White" %}

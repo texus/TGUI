@@ -4,11 +4,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!-- BEGIN CUSTOM 1 -->
-<!-- --{{}}>
-{% include head.ext %}
-<{{}}!-- -->
-<!-- END CUSTOM 1 -->
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
@@ -23,18 +18,12 @@
   $(document).ready(function() { init_search(); });
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<!-- BEGIN CUSTOM 2 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 1 -->
+<!-- --{{""}}>
+{% include head.ext %}
 <style>
   div {
     margin-bottom: 0
-  }
-  body {
-    background-color: #e0e0e0;
-    background-image: url('/resources/Background.jpg');
-    max-width: 1060px;
-    margin-left: auto;
-    margin-right: auto;
   }
   #contents {
     padding-left: 0;
@@ -59,17 +48,17 @@ function getXPos(item) {
   return x;
 }
 </script>
-<{{}}!-- -->
-<!-- END CUSTOM 2 -->
+<{{""}}!-- -->
+<!-- END CUSTOM 1 -->
 </head>
 <body>
-<!-- BEGIN CUSTOM 3 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 2 -->
+<!-- --{{""}}>
 <div id="body" class="NoMargin">
 {% include navigation.ext %}
 <div id="contents" class="NoMargin">
-<{{}}!-- -->
-<!-- END CUSTOM 3 -->
+<{{""}}!-- {% raw %} -->
+<!-- END CUSTOM 2 -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -77,7 +66,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7.1</span>
+   &#160;<span id="projectnumber">0.7.1</span>
    </div>
   </td>
  </tr>
@@ -301,7 +290,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a4234b30173259e7b5082a58a9f0e2ca6 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the widget.  <a href="#a4234b30173259e7b5082a58a9f0e2ca6">More...</a><br /></td></tr>
 <tr class="separator:a4234b30173259e7b5082a58a9f0e2ca6 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bcb2d85d7e449ef7305771256ec79bf inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a9bcb2d85d7e449ef7305771256ec79bf">hideWithEffect</a> (<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da">ShowAnimationType</a> type, sf::Time duration)</td></tr>
-<tr class="memdesc:a9bcb2d85d7e449ef7305771256ec79bf inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows the widget by introducing it with an animation.  <a href="#a9bcb2d85d7e449ef7305771256ec79bf">More...</a><br /></td></tr>
+<tr class="memdesc:a9bcb2d85d7e449ef7305771256ec79bf inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the widget by making it leave with an animation.  <a href="#a9bcb2d85d7e449ef7305771256ec79bf">More...</a><br /></td></tr>
 <tr class="separator:a9bcb2d85d7e449ef7305771256ec79bf inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac30d0e386c262c5e830fdcc994584993 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ac30d0e386c262c5e830fdcc994584993">isVisible</a> () const </td></tr>
 <tr class="memdesc:ac30d0e386c262c5e830fdcc994584993 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true when the widget is visible.  <a href="#ac30d0e386c262c5e830fdcc994584993">More...</a><br /></td></tr>
@@ -309,9 +298,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a8f4ded5b008224a33623171ad2558168 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a8f4ded5b008224a33623171ad2558168">enable</a> ()</td></tr>
 <tr class="memdesc:a8f4ded5b008224a33623171ad2558168 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables the widget.  <a href="#a8f4ded5b008224a33623171ad2558168">More...</a><br /></td></tr>
 <tr class="separator:a8f4ded5b008224a33623171ad2558168 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdc703927f1d882741d22169b3ecf640 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#afdc703927f1d882741d22169b3ecf640">disable</a> ()</td></tr>
-<tr class="memdesc:afdc703927f1d882741d22169b3ecf640 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables the widget.  <a href="#afdc703927f1d882741d22169b3ecf640">More...</a><br /></td></tr>
-<tr class="separator:afdc703927f1d882741d22169b3ecf640 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41615622bd4eb42fee629dd408bce7d4 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a41615622bd4eb42fee629dd408bce7d4">disable</a> (bool blockMouseEvents=true)</td></tr>
+<tr class="memdesc:a41615622bd4eb42fee629dd408bce7d4 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables the widget.  <a href="#a41615622bd4eb42fee629dd408bce7d4">More...</a><br /></td></tr>
+<tr class="separator:a41615622bd4eb42fee629dd408bce7d4 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6770fc71c644b645bf28f31c4efd2d1 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#af6770fc71c644b645bf28f31c4efd2d1">isEnabled</a> () const </td></tr>
 <tr class="memdesc:af6770fc71c644b645bf28f31c4efd2d1 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true when the widget is enabled.  <a href="#af6770fc71c644b645bf28f31c4efd2d1">More...</a><br /></td></tr>
 <tr class="separator:af6770fc71c644b645bf28f31c4efd2d1 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -423,9 +412,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a66805715bf7c5ca66cc3ee2811fcf25b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtgui_1_1Tab.html#ab84d395742e1b0f4eb576a9e0e030087">Tab::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Tab.html#a66805715bf7c5ca66cc3ee2811fcf25b">create</a> (const std::string &amp;themeFileFilename=&quot;&quot;, const std::string &amp;section=&quot;Tab&quot;)</td></tr>
-<tr class="memdesc:a66805715bf7c5ca66cc3ee2811fcf25b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the tab.  <a href="#a66805715bf7c5ca66cc3ee2811fcf25b">More...</a><br /></td></tr>
-<tr class="separator:a66805715bf7c5ca66cc3ee2811fcf25b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab57c053042000054c961f24805a60582"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtgui_1_1Tab.html#ab84d395742e1b0f4eb576a9e0e030087">Tab::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Tab.html#ab57c053042000054c961f24805a60582">copy</a> (<a class="el" href="classtgui_1_1Tab.html#a9971b145a402f8dc201122a8454e8d3b">Tab::ConstPtr</a> tab)</td></tr>
 <tr class="memdesc:ab57c053042000054c961f24805a60582"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of another tab.  <a href="#ab57c053042000054c961f24805a60582">More...</a><br /></td></tr>
 <tr class="separator:ab57c053042000054c961f24805a60582"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -586,58 +572,6 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The new tab </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a66805715bf7c5ca66cc3ee2811fcf25b"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="classtgui_1_1Tab.html#ab84d395742e1b0f4eb576a9e0e030087">Tab::Ptr</a> tgui::Tab::create </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>themeFileFilename</em> = <code>&quot;&quot;</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>section</em> = <code>&quot;Tab&quot;</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Create the tab. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">themeFileFilename</td><td>Filename of the theme file. </td></tr>
-    <tr><td class="paramname">section</td><td>The section in the theme file to read.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classtgui_1_1Exception.html">Exception</a></td><td>when the theme file could not be opened. </td></tr>
-    <tr><td class="paramname"><a class="el" href="classtgui_1_1Exception.html">Exception</a></td><td>when the theme file did not contain the requested section with the needed information. </td></tr>
-    <tr><td class="paramname"><a class="el" href="classtgui_1_1Exception.html">Exception</a></td><td>when one of the images, described in the theme file, could not be loaded.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>When an empty string is passed as filename, the built-in white theme will be used. </p>
 
 </div>
 </div>
@@ -1330,17 +1264,17 @@ setDistanceToSide </dd>
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 12 2016 14:56:47 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 17 2016 15:51:03 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
-<!-- BEGIN CUSTOM -->
-<!-- -{{}}-{{}}>
+<!-- BEGIN CUSTOM 3 -->
+<!-- {% endraw %} -{{""}}-{{""}}>
 </div>
 {% include page_footer.ext %}
 </div>
 {% include footer.ext %}
-<{{}}!{{}}-{{}}- -->
-<!-- END CUSTOM -->
+<{{""}}!{{""}}-{{""}}- -->
+<!-- END CUSTOM 3 -->
 </body>
 </html>

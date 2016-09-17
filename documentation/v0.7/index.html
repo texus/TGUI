@@ -4,11 +4,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!-- BEGIN CUSTOM 1 -->
-<!-- --{{}}>
-{% include head.ext %}
-<{{}}!-- -->
-<!-- END CUSTOM 1 -->
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
@@ -23,18 +18,12 @@
   $(document).ready(function() { init_search(); });
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<!-- BEGIN CUSTOM 2 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 1 -->
+<!-- --{{""}}>
+{% include head.ext %}
 <style>
   div {
     margin-bottom: 0
-  }
-  body {
-    background-color: #e0e0e0;
-    background-image: url('/resources/Background.jpg');
-    max-width: 1060px;
-    margin-left: auto;
-    margin-right: auto;
   }
   #contents {
     padding-left: 0;
@@ -59,17 +48,17 @@ function getXPos(item) {
   return x;
 }
 </script>
-<{{}}!-- -->
-<!-- END CUSTOM 2 -->
+<{{""}}!-- -->
+<!-- END CUSTOM 1 -->
 </head>
 <body>
-<!-- BEGIN CUSTOM 3 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 2 -->
+<!-- --{{""}}>
 <div id="body" class="NoMargin">
 {% include navigation.ext %}
 <div id="contents" class="NoMargin">
-<{{}}!-- -->
-<!-- END CUSTOM 3 -->
+<{{""}}!-- {% raw %} -->
+<!-- END CUSTOM 2 -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -77,7 +66,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7.1</span>
+   &#160;<span id="projectnumber">0.7.1</span>
    </div>
   </td>
  </tr>
@@ -141,17 +130,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 12 2016 14:56:48 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 17 2016 15:51:03 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
-<!-- BEGIN CUSTOM -->
-<!-- -{{}}-{{}}>
+<!-- BEGIN CUSTOM 3 -->
+<!-- {% endraw %} -{{""}}-{{""}}>
 </div>
 {% include page_footer.ext %}
 </div>
 {% include footer.ext %}
-<{{}}!{{}}-{{}}- -->
-<!-- END CUSTOM -->
+<{{""}}!{{""}}-{{""}}- -->
+<!-- END CUSTOM 3 -->
 </body>
 </html>

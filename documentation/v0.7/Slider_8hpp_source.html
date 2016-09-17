@@ -4,11 +4,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!-- BEGIN CUSTOM 1 -->
-<!-- --{{}}>
-{% include head.ext %}
-<{{}}!-- -->
-<!-- END CUSTOM 1 -->
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
@@ -23,18 +18,12 @@
   $(document).ready(function() { init_search(); });
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<!-- BEGIN CUSTOM 2 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 1 -->
+<!-- --{{""}}>
+{% include head.ext %}
 <style>
   div {
     margin-bottom: 0
-  }
-  body {
-    background-color: #e0e0e0;
-    background-image: url('/resources/Background.jpg');
-    max-width: 1060px;
-    margin-left: auto;
-    margin-right: auto;
   }
   #contents {
     padding-left: 0;
@@ -59,17 +48,17 @@ function getXPos(item) {
   return x;
 }
 </script>
-<{{}}!-- -->
-<!-- END CUSTOM 2 -->
+<{{""}}!-- -->
+<!-- END CUSTOM 1 -->
 </head>
 <body>
-<!-- BEGIN CUSTOM 3 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 2 -->
+<!-- --{{""}}>
 <div id="body" class="NoMargin">
 {% include navigation.ext %}
 <div id="contents" class="NoMargin">
-<{{}}!-- -->
-<!-- END CUSTOM 3 -->
+<{{""}}!-- {% raw %} -->
+<!-- END CUSTOM 2 -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -77,7 +66,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7.1</span>
+   &#160;<span id="projectnumber">0.7.1</span>
    </div>
   </td>
  </tr>
@@ -161,23 +150,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classtgui_1_1Slider_html_abd7cb681564984b02d608a613b4a9dbf"><div class="ttname"><a href="classtgui_1_1Slider.html#abd7cb681564984b02d608a613b4a9dbf">tgui::Slider::getMaximum</a></div><div class="ttdeci">int getMaximum() const </div><div class="ttdoc">Returns the maximum value. </div><div class="ttdef"><b>Definition:</b> Slider.hpp:183</div></div>
 <div class="ttc" id="classtgui_1_1SliderRenderer_html_a96e018410e3b29179eafd0321414ca88"><div class="ttname"><a href="classtgui_1_1SliderRenderer.html#a96e018410e3b29179eafd0321414ca88">tgui::SliderRenderer::SliderRenderer</a></div><div class="ttdeci">SliderRenderer(Slider *slider)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> Slider.hpp:328</div></div>
 <div class="ttc" id="classtgui_1_1Slider_html_ad1572b383e89483c4b0da1a37014860c"><div class="ttname"><a href="classtgui_1_1Slider.html#ad1572b383e89483c4b0da1a37014860c">tgui::Slider::clone</a></div><div class="ttdeci">virtual Widget::Ptr clone() const override</div><div class="ttdoc">Makes a copy of the widget if you don&amp;#39;t know its exact type. </div><div class="ttdef"><b>Definition:</b> Slider.hpp:280</div></div>
-<div class="ttc" id="classtgui_1_1WidgetRenderer_html"><div class="ttname"><a href="classtgui_1_1WidgetRenderer.html">tgui::WidgetRenderer</a></div><div class="ttdoc">Base class for all renderer classes. </div><div class="ttdef"><b>Definition:</b> Widget.hpp:670</div></div>
+<div class="ttc" id="classtgui_1_1WidgetRenderer_html"><div class="ttname"><a href="classtgui_1_1WidgetRenderer.html">tgui::WidgetRenderer</a></div><div class="ttdoc">Base class for all renderer classes. </div><div class="ttdef"><b>Definition:</b> Widget.hpp:682</div></div>
 <div class="ttc" id="classtgui_1_1Slider_html_a901ec6d915f6985b2e5deeb9716ae114"><div class="ttname"><a href="classtgui_1_1Slider.html#a901ec6d915f6985b2e5deeb9716ae114">tgui::Slider::ConstPtr</a></div><div class="ttdeci">std::shared_ptr&lt; const Slider &gt; ConstPtr</div><div class="ttdoc">Shared constant widget pointer. </div><div class="ttdef"><b>Definition:</b> Slider.hpp:54</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 12 2016 14:56:47 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 17 2016 15:51:03 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
-<!-- BEGIN CUSTOM -->
-<!-- -{{}}-{{}}>
+<!-- BEGIN CUSTOM 3 -->
+<!-- {% endraw %} -{{""}}-{{""}}>
 </div>
 {% include page_footer.ext %}
 </div>
 {% include footer.ext %}
-<{{}}!{{}}-{{}}- -->
-<!-- END CUSTOM -->
+<{{""}}!{{""}}-{{""}}- -->
+<!-- END CUSTOM 3 -->
 </body>
 </html>

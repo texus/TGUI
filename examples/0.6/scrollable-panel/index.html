@@ -1,0 +1,84 @@
+---
+layout: page
+title: "Scrollable panel"
+breadcrumb: "scrollable panel"
+redirect_from:
+  - /example-code/v06/scrollable-panel/
+  - /example-code/v0.6/scrollable-panel/
+---
+<p>This example code shows how to use a custom scrollbar (i.e. one that is not integrated in the widget like in e.g. ListBox). In this example there will be a panel which contains five images but is only big enough to show two of them. The scrollbar which is added will allow scrolling through those images. The previous scrollbar value is stored in this example in order to know how much to move the widgets inside the panel. Knowing the original position of a single widget would however also be enough to calculate this distance.</p>
+
+{% highlight c++ %}
+#include <TGUI/TGUI.hpp>
+
+int previousScrolbarValue = 0;
+
+// Function that will be called when scrolling
+void scrollPanel(tgui::Panel::Ptr panel, const tgui::Callback& callback)
+{
+    int distanceToMove = previousScrolbarValue - callback.value;
+
+    // Move all widgets that are inside the panel
+    for (auto& widget : panel->getWidgets())
+        widget->setPosition(widget->getPosition().x, widget->getPosition().y + distanceToMove);
+
+    previousScrolbarValue = callback.value;
+}
+
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(800, 600), "TGUI window");
+    tgui::Gui gui(window);
+
+    if (gui.setGlobalFont("TGUI/fonts/DejaVuSans.ttf") == false)
+        return 1;
+
+    // Create the panel
+    tgui::Panel::Ptr panel(gui);
+    panel->setPosition(50, 50);
+    panel->setSize(240, 360);
+    panel->setBackgroundColor(sf::Color(200, 200, 200));
+
+    // Add some widgets to it (image1.png to image5.png)
+    for (unsigned int i = 1; i <= 5; ++i)
+    {
+        tgui::Picture::Ptr pic(*panel);
+        pic->load("image" + std::to_string(i) + ".png");
+        pic->setSize(240, 180);
+        pic->setPosition(0, (i-1) * 180);
+    }
+
+    // Add a scrollbar
+    // Note that we add it to the gui and not to the panel.
+    // Doing so allows us to easily move everything inside the panel when scrolling
+    tgui::Scrollbar::Ptr scrollbar(gui);
+    scrollbar->load("TGUI/widgets/Black.conf");
+    scrollbar->setSize(20, 360);
+    scrollbar->setPosition(panel->getPosition() + sf::Vector2f(panel->getSize().x, 0));
+    scrollbar->setArrowScrollAmount(30);
+    scrollbar->setLowValue(360); // Viewable area (height of the panel)
+    scrollbar->setMaximum(5 * 180); // Total area (height of the 5 images)
+
+    // Call the scrollPanel function that we defined above when scrolling
+    scrollbar->bindCallbackEx(std::bind(scrollPanel, panel, std::placeholders::_1), tgui::Scrollbar::ValueChanged);
+
+    // Mainloop
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            gui.handleEvent(event);
+        }
+
+        window.clear();
+        gui.draw();
+        window.display();
+    }
+
+    return 0;
+}
+{% endhighlight %}

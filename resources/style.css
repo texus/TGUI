@@ -10,7 +10,6 @@ html, body {
 
 body {
   background-color: #e0e0e0;
-  /* background-image: url('/resources/Background.jpg'); */
   max-width: 1060px;
   margin-left: auto;
   margin-right: auto;
@@ -293,6 +292,10 @@ div.SmallerMargin {
   margin: 0;
 }
 
+/* The space that markdown generates between paragraph and header of the next part is too small */
+p + h3, a + h3 {
+  margin-top: 2em;
+}
 
 /* IMAGES */
 

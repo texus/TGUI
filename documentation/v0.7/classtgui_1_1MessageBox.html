@@ -4,11 +4,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!-- BEGIN CUSTOM 1 -->
-<!-- --{{}}>
-{% include head.ext %}
-<{{}}!-- -->
-<!-- END CUSTOM 1 -->
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
@@ -23,18 +18,12 @@
   $(document).ready(function() { init_search(); });
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<!-- BEGIN CUSTOM 2 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 1 -->
+<!-- --{{""}}>
+{% include head.ext %}
 <style>
   div {
     margin-bottom: 0
-  }
-  body {
-    background-color: #e0e0e0;
-    background-image: url('/resources/Background.jpg');
-    max-width: 1060px;
-    margin-left: auto;
-    margin-right: auto;
   }
   #contents {
     padding-left: 0;
@@ -59,17 +48,17 @@ function getXPos(item) {
   return x;
 }
 </script>
-<{{}}!-- -->
-<!-- END CUSTOM 2 -->
+<{{""}}!-- -->
+<!-- END CUSTOM 1 -->
 </head>
 <body>
-<!-- BEGIN CUSTOM 3 -->
-<!-- --{{}}>
+<!-- BEGIN CUSTOM 2 -->
+<!-- --{{""}}>
 <div id="body" class="NoMargin">
 {% include navigation.ext %}
 <div id="contents" class="NoMargin">
-<{{}}!-- -->
-<!-- END CUSTOM 3 -->
+<{{""}}!-- {% raw %} -->
+<!-- END CUSTOM 2 -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -77,7 +66,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">v0.7.1</span>
+   &#160;<span id="projectnumber">0.7.1</span>
    </div>
   </td>
  </tr>
@@ -250,6 +239,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af53cad58fcec4055e16254b349d89644 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#af53cad58fcec4055e16254b349d89644">getFullSize</a> () const override</td></tr>
 <tr class="memdesc:af53cad58fcec4055e16254b349d89644 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the full child window.  <a href="#af53cad58fcec4055e16254b349d89644">More...</a><br /></td></tr>
 <tr class="separator:af53cad58fcec4055e16254b349d89644 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25231af921bbaa58fb403a92dc46b379 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a25231af921bbaa58fb403a92dc46b379">setMaximumSize</a> (sf::Vector2f size)</td></tr>
+<tr class="memdesc:a25231af921bbaa58fb403a92dc46b379 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the maximum size of the child window.  <a href="#a25231af921bbaa58fb403a92dc46b379">More...</a><br /></td></tr>
+<tr class="separator:a25231af921bbaa58fb403a92dc46b379 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13fa8498ace7182d1e9b87ba6e19b62d inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a13fa8498ace7182d1e9b87ba6e19b62d">getMaximumSize</a> () const </td></tr>
+<tr class="memdesc:a13fa8498ace7182d1e9b87ba6e19b62d inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum size of the child window.  <a href="#a13fa8498ace7182d1e9b87ba6e19b62d">More...</a><br /></td></tr>
+<tr class="separator:a13fa8498ace7182d1e9b87ba6e19b62d inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a082acdc88e94fb2e0745ccc632ca601e inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a082acdc88e94fb2e0745ccc632ca601e">setMinimumSize</a> (sf::Vector2f size)</td></tr>
+<tr class="memdesc:a082acdc88e94fb2e0745ccc632ca601e inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the minimum size of the child window.  <a href="#a082acdc88e94fb2e0745ccc632ca601e">More...</a><br /></td></tr>
+<tr class="separator:a082acdc88e94fb2e0745ccc632ca601e inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2890420a07ea9ff9c40335d0421e1d3 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#ab2890420a07ea9ff9c40335d0421e1d3">getMinimumSize</a> () const </td></tr>
+<tr class="memdesc:ab2890420a07ea9ff9c40335d0421e1d3 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the minimum size of the child window.  <a href="#ab2890420a07ea9ff9c40335d0421e1d3">More...</a><br /></td></tr>
+<tr class="separator:ab2890420a07ea9ff9c40335d0421e1d3 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ee553b708634743f62b3e8b594ab75a inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a4ee553b708634743f62b3e8b594ab75a">setOpacity</a> (float opacity) override</td></tr>
 <tr class="memdesc:a4ee553b708634743f62b3e8b594ab75a inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the opacity of the widget.  <a href="#a4ee553b708634743f62b3e8b594ab75a">More...</a><br /></td></tr>
 <tr class="separator:a4ee553b708634743f62b3e8b594ab75a inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -265,6 +266,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a14ec3904fd63861f830c4b6fbecdd446 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1ChildWindow.html#a247720248700e8ddbbb4af19bbfad5b8">TitleAlignment</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a14ec3904fd63861f830c4b6fbecdd446">getTitleAlignment</a> () const </td></tr>
 <tr class="memdesc:a14ec3904fd63861f830c4b6fbecdd446 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the title alignment.  <a href="#a14ec3904fd63861f830c4b6fbecdd446">More...</a><br /></td></tr>
 <tr class="separator:a14ec3904fd63861f830c4b6fbecdd446 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c26a8fdd66d2042c1d09c35737fb023 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a1c26a8fdd66d2042c1d09c35737fb023">setTitleButtons</a> (<a class="el" href="classtgui_1_1ChildWindow.html#aca111dd39a107ca0ca7a19acae891082">TitleButtons</a> buttons)</td></tr>
+<tr class="memdesc:a1c26a8fdd66d2042c1d09c35737fb023 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the title buttons.  <a href="#a1c26a8fdd66d2042c1d09c35737fb023">More...</a><br /></td></tr>
+<tr class="separator:a1c26a8fdd66d2042c1d09c35737fb023 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f7f4003ce2e8edcb361957a9a48cdef inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1ChildWindow.html#aca111dd39a107ca0ca7a19acae891082">TitleButtons</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a1f7f4003ce2e8edcb361957a9a48cdef">getTitleButtons</a> () const </td></tr>
+<tr class="memdesc:a1f7f4003ce2e8edcb361957a9a48cdef inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the title bar buttons.  <a href="#a1f7f4003ce2e8edcb361957a9a48cdef">More...</a><br /></td></tr>
+<tr class="separator:a1f7f4003ce2e8edcb361957a9a48cdef inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8637828b410176c2c866e1fb2f7e5cad inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a8637828b410176c2c866e1fb2f7e5cad">setTitleButtonsText</a> (const sf::String &amp;closeText=&quot;x&quot;, const sf::String &amp;minimizeText=&quot;-&quot;, const sf::String &amp;maximizeText=&quot;+&quot;)</td></tr>
+<tr class="memdesc:a8637828b410176c2c866e1fb2f7e5cad inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the text within the title bar buttons.  <a href="#a8637828b410176c2c866e1fb2f7e5cad">More...</a><br /></td></tr>
+<tr class="separator:a8637828b410176c2c866e1fb2f7e5cad inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90e9b1d3f2261e1cb778e9aec2916bab inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a90e9b1d3f2261e1cb778e9aec2916bab">setIcon</a> (const <a class="el" href="classtgui_1_1Texture.html">Texture</a> &amp;icon)</td></tr>
 <tr class="memdesc:a90e9b1d3f2261e1cb778e9aec2916bab inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the icon in the top left corner of the child window.  <a href="#a90e9b1d3f2261e1cb778e9aec2916bab">More...</a><br /></td></tr>
 <tr class="separator:a90e9b1d3f2261e1cb778e9aec2916bab inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -292,6 +302,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afa2b42d0cd513f4cec36d14a43972b5a inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Button.html#a50f5464cad267b298d16014d027a1eda">Button::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#afa2b42d0cd513f4cec36d14a43972b5a">getCloseButton</a> () const </td></tr>
 <tr class="memdesc:afa2b42d0cd513f4cec36d14a43972b5a inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the close button.  <a href="#afa2b42d0cd513f4cec36d14a43972b5a">More...</a><br /></td></tr>
 <tr class="separator:afa2b42d0cd513f4cec36d14a43972b5a inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5c6bf7fa2bab8a66959169d5742a419 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#ac5c6bf7fa2bab8a66959169d5742a419">setMinimizeButton</a> (<a class="el" href="classtgui_1_1Button.html#a50f5464cad267b298d16014d027a1eda">Button::Ptr</a> minimizeButton)</td></tr>
+<tr class="memdesc:ac5c6bf7fa2bab8a66959169d5742a419 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the minimize button.  <a href="#ac5c6bf7fa2bab8a66959169d5742a419">More...</a><br /></td></tr>
+<tr class="separator:ac5c6bf7fa2bab8a66959169d5742a419 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a992471546c33a4ab552d1c4d9fb3ebe8 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Button.html#a50f5464cad267b298d16014d027a1eda">Button::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a992471546c33a4ab552d1c4d9fb3ebe8">getMinimizeButton</a> () const </td></tr>
+<tr class="memdesc:a992471546c33a4ab552d1c4d9fb3ebe8 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the minimize button.  <a href="#a992471546c33a4ab552d1c4d9fb3ebe8">More...</a><br /></td></tr>
+<tr class="separator:a992471546c33a4ab552d1c4d9fb3ebe8 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94b7b2c061d17e3f4406ef8271a9da97 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a94b7b2c061d17e3f4406ef8271a9da97">setMaximizeButton</a> (<a class="el" href="classtgui_1_1Button.html#a50f5464cad267b298d16014d027a1eda">Button::Ptr</a> maximizeButton)</td></tr>
+<tr class="memdesc:a94b7b2c061d17e3f4406ef8271a9da97 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the maximize button.  <a href="#a94b7b2c061d17e3f4406ef8271a9da97">More...</a><br /></td></tr>
+<tr class="separator:a94b7b2c061d17e3f4406ef8271a9da97 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28487c02abcfad78e073e4da90117814 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Button.html#a50f5464cad267b298d16014d027a1eda">Button::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a28487c02abcfad78e073e4da90117814">getMaximizeButton</a> () const </td></tr>
+<tr class="memdesc:a28487c02abcfad78e073e4da90117814 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximize button.  <a href="#a28487c02abcfad78e073e4da90117814">More...</a><br /></td></tr>
+<tr class="separator:a28487c02abcfad78e073e4da90117814 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39477c19ec1054ee4cb5b2c6eeba1509 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindow.html#a39477c19ec1054ee4cb5b2c6eeba1509">getChildWidgetsOffset</a> () const override</td></tr>
 <tr class="memdesc:a39477c19ec1054ee4cb5b2c6eeba1509 inherit pub_methods_classtgui_1_1ChildWindow"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance between the position of the container and a widget that would be drawn inside this container on relative position (0,0).  <a href="#a39477c19ec1054ee4cb5b2c6eeba1509">More...</a><br /></td></tr>
 <tr class="separator:a39477c19ec1054ee4cb5b2c6eeba1509 inherit pub_methods_classtgui_1_1ChildWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -394,7 +416,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a4234b30173259e7b5082a58a9f0e2ca6 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the widget.  <a href="#a4234b30173259e7b5082a58a9f0e2ca6">More...</a><br /></td></tr>
 <tr class="separator:a4234b30173259e7b5082a58a9f0e2ca6 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bcb2d85d7e449ef7305771256ec79bf inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a9bcb2d85d7e449ef7305771256ec79bf">hideWithEffect</a> (<a class="el" href="namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da">ShowAnimationType</a> type, sf::Time duration)</td></tr>
-<tr class="memdesc:a9bcb2d85d7e449ef7305771256ec79bf inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows the widget by introducing it with an animation.  <a href="#a9bcb2d85d7e449ef7305771256ec79bf">More...</a><br /></td></tr>
+<tr class="memdesc:a9bcb2d85d7e449ef7305771256ec79bf inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the widget by making it leave with an animation.  <a href="#a9bcb2d85d7e449ef7305771256ec79bf">More...</a><br /></td></tr>
 <tr class="separator:a9bcb2d85d7e449ef7305771256ec79bf inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac30d0e386c262c5e830fdcc994584993 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ac30d0e386c262c5e830fdcc994584993">isVisible</a> () const </td></tr>
 <tr class="memdesc:ac30d0e386c262c5e830fdcc994584993 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true when the widget is visible.  <a href="#ac30d0e386c262c5e830fdcc994584993">More...</a><br /></td></tr>
@@ -402,9 +424,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a8f4ded5b008224a33623171ad2558168 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a8f4ded5b008224a33623171ad2558168">enable</a> ()</td></tr>
 <tr class="memdesc:a8f4ded5b008224a33623171ad2558168 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables the widget.  <a href="#a8f4ded5b008224a33623171ad2558168">More...</a><br /></td></tr>
 <tr class="separator:a8f4ded5b008224a33623171ad2558168 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdc703927f1d882741d22169b3ecf640 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#afdc703927f1d882741d22169b3ecf640">disable</a> ()</td></tr>
-<tr class="memdesc:afdc703927f1d882741d22169b3ecf640 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables the widget.  <a href="#afdc703927f1d882741d22169b3ecf640">More...</a><br /></td></tr>
-<tr class="separator:afdc703927f1d882741d22169b3ecf640 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41615622bd4eb42fee629dd408bce7d4 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a41615622bd4eb42fee629dd408bce7d4">disable</a> (bool blockMouseEvents=true)</td></tr>
+<tr class="memdesc:a41615622bd4eb42fee629dd408bce7d4 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables the widget.  <a href="#a41615622bd4eb42fee629dd408bce7d4">More...</a><br /></td></tr>
+<tr class="separator:a41615622bd4eb42fee629dd408bce7d4 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6770fc71c644b645bf28f31c4efd2d1 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#af6770fc71c644b645bf28f31c4efd2d1">isEnabled</a> () const </td></tr>
 <tr class="memdesc:af6770fc71c644b645bf28f31c4efd2d1 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true when the widget is enabled.  <a href="#af6770fc71c644b645bf28f31c4efd2d1">More...</a><br /></td></tr>
 <tr class="separator:af6770fc71c644b645bf28f31c4efd2d1 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -925,17 +947,17 @@ Protected Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 12 2016 14:56:47 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 17 2016 15:51:03 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>
-<!-- BEGIN CUSTOM -->
-<!-- -{{}}-{{}}>
+<!-- BEGIN CUSTOM 3 -->
+<!-- {% endraw %} -{{""}}-{{""}}>
 </div>
 {% include page_footer.ext %}
 </div>
 {% include footer.ext %}
-<{{}}!{{}}-{{}}- -->
-<!-- END CUSTOM -->
+<{{""}}!{{""}}-{{""}}- -->
+<!-- END CUSTOM 3 -->
 </body>
 </html>

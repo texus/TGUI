@@ -6,7 +6,7 @@ var searchData=
   ['deserializer',['Deserializer',['../classtgui_1_1Deserializer.html',1,'tgui']]],
   ['destroy',['destroy',['../classtgui_1_1ChildWindow.html#a7ead33733a59560ac727658bb3c1a153',1,'tgui::ChildWindow']]],
   ['detachtheme',['detachTheme',['../classtgui_1_1Widget.html#a62bbecb4ba75342b22786502e5383ac5',1,'tgui::Widget']]],
-  ['disable',['disable',['../classtgui_1_1Widget.html#afdc703927f1d882741d22169b3ecf640',1,'tgui::Widget']]],
+  ['disable',['disable',['../classtgui_1_1Widget.html#a41615622bd4eb42fee629dd408bce7d4',1,'tgui::Widget']]],
   ['disabletabkeyusage',['disableTabKeyUsage',['../namespacetgui.html#a961d5f6c9743d5c20cfc7872bd2504d2',1,'tgui']]],
   ['disconnect',['disconnect',['../classtgui_1_1SignalWidgetBase.html#a9e13634d49560b2941ebdd2a934b6a16',1,'tgui::SignalWidgetBase']]],
   ['disconnectall',['disconnectAll',['../classtgui_1_1SignalWidgetBase.html#a262641681a20ba2c42b9879faf60f857',1,'tgui::SignalWidgetBase::disconnectAll(const std::string &amp;signalName)'],['../classtgui_1_1SignalWidgetBase.html#aee50efdbdbbc1be9418dfbc1549ee4f2',1,'tgui::SignalWidgetBase::disconnectAll()']]],

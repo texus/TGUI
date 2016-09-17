@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['nineslice',['NineSlice',['../classtgui_1_1Texture.html#aaba70370fcc0e5fe13508646d2300014ae04fb02d096d90f7e04135e94eab17f0',1,'tgui::Texture']]],
-  ['normal',['Normal',['../classtgui_1_1Texture.html#aaba70370fcc0e5fe13508646d2300014a960b44c579bc2f6818d2daaf9e4c16f0',1,'tgui::Texture']]]
+  ['maximize',['Maximize',['../classtgui_1_1ChildWindow.html#aca111dd39a107ca0ca7a19acae891082a7ce61ff022828bf6802248f791596e3a',1,'tgui::ChildWindow']]],
+  ['minimize',['Minimize',['../classtgui_1_1ChildWindow.html#aca111dd39a107ca0ca7a19acae891082ad80f1df381289742e2adbaae76ae0492',1,'tgui::ChildWindow']]]
 ];
