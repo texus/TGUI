@@ -15,5 +15,15 @@ You will have to build the library from source code yourself with CMake.
 [Creating, copying an removing widgets](creating-widgets)
 
 
+### Intermediate tutorials
+[Using themes/skins](using-themes)
+
+[Using renderers](renderers)
+
+
+### Advanced tutorials
+[Custom theme loader](custom-theme-loader)
+
+
 ### More
 For most parts you can still refer to the [0.7 tutorials](/tutorials/v0.7/), the difference with 0.8 is currently mainly the way widgets are constructed.

@@ -4,7 +4,7 @@ title: Creating, copying and removing widgets
 breadcrumb: creating widgets
 ---
 <div>
-<h3 id="creating_widgets">Creating widgets</h3>
+<h3 id="creating-widgets">Creating widgets</h3>
 <p>Creating a widget goes in two steps: creating it and adding it to its parent.</p>
 <p class="SmallBottomMargin">Every widget provides a static create function that you can use. For some widgets the function has optional parameters (e.g. a filename for Picture or a text for Button) but you can always call the create function without parameters and set these properties later.</p>
 {% highlight c++ %}
@@ -22,7 +22,7 @@ gui.add(editBox, "MyWidgetName");
 </div>
 
 <div>
-<h3 id="retrieving_widgets">Retrieving widgets</h3>
+<h3 id="retrieving-widgets">Retrieving widgets</h3>
 <p class="SmallBottomMargin">Once a widget is added to a parent widget (or directly to the gui), you no longer have to store it yourself, you can just let your pointer go out of scope. When you need it later you can always get it back from the parent widget. The name that the get function takes as parameter was the optional parameter of the add function.
 </p>
 {% highlight c++ %}
@@ -38,7 +38,7 @@ widget = gui.get("SomeButton", true);
 </div>
 
 <div>
-<h3 id="copying_widgets">Copying widgets</h3>
+<h3 id="copying-widgets">Copying widgets</h3>
 <p class="SmallBottomMargin">When you know the type of your widget then you can simply use the copy function. The copied widget is however not bound to the same parent widget, you must add it again. This is done so that you can e.g. make a copy of a widget inside a child window and then add the copy to another child window.
 </p>
 {% highlight c++ %}
@@ -56,7 +56,7 @@ for (const auto& widget : oldList)
 </div>
 
 <div>
-<h3 id="removing_widgets">Removing widgets</h3>
+<h3 id="removing-widgets">Removing widgets</h3>
 <p class="SmallBottomMargin">Once a widget is no longer needed, you can remove it from its parent container.</p>
 {% highlight c++ %}
 gui.remove(button);
