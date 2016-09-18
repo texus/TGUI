@@ -1,0 +1,25 @@
+---
+layout: page
+title: connectEx function
+breadcrumb: connectEx
+---
+
+<p>The connectEx function is provided as an alternative to the <a href="../signals-optional-parameters/">optional parameter system</a> so that you can get information from a signal on all compilers. It will removed again in future tgui versions.</p>
+
+<p class="SmallBottomMargin">The last parameter of your connected function should be an unbound tgui::Callback. Here are two examples:</p>
+{% highlight c++ %}
+void function1(const tgui::Callback& callback)
+{
+    std::cout << "You pressed the '" << callback.text.toAnsiString() << "' button." << std::endl;
+}
+
+void function2(tgui::Gui& gui, tgui::Callback callback)
+{
+    std::cout << "Checked? " << std::boolalpha << callback.checked << std::endl;
+}
+
+button->connectEx("pressed", function);
+checkbox->connectEx("checked unchecked", function2, std::ref(gui));
+{% endhighlight %}
+
+<p>If you are wondering which members of the Callback class are used for the signal, you should check the documentation of the widget.</p>

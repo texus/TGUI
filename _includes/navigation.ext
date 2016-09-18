@@ -12,6 +12,7 @@
         <li>
             <a href="{{site.url}}/tutorials/">Tutorials</a>
             <ul>
+                <li><a href="{{site.url}}/tutorials/0.8/">0.8-dev</a></li>
                 <li><a href="{{site.url}}/tutorials/v0.7/">0.7</a></li>
                 <li><a href="{{site.url}}/tutorials/v0.6/">0.6</a></li>
             </ul>
@@ -19,6 +20,7 @@
         <li>
             <a href="{{site.url}}/documentation/">Documentation</a>
             <ul>
+                <li><a href="{{site.url}}/documentation/0.8/">0.8-dev</a></li>
                 <li><a href="{{site.url}}/documentation/v0.7/">0.7</a></li>
                 <li><a href="{{site.url}}/documentation/v0.6/">0.6</a></li>
             </ul>
@@ -26,6 +28,7 @@
         <li>
             <a href="{{site.url}}/examples/">Examples</a>
             <ul>
+                <li><a href="{{site.url}}/examples/0.8/">0.8-dev</a></li>
                 <li><a href="{{site.url}}/examples/0.7/">0.7</a></li>
                 <li><a href="{{site.url}}/examples/0.6/">0.6</a></li>
             </ul>
