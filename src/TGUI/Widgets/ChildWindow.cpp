@@ -255,7 +255,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setTitleButtons(int buttons)
+    void ChildWindow::setTitleButtons(unsigned int buttons)
     {
         m_titleButtons = buttons;
 
@@ -294,7 +294,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int ChildWindow::getTitleButtons() const
+    unsigned int ChildWindow::getTitleButtons() const
     {
         return m_titleButtons;
     }
@@ -549,7 +549,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::mouseWheelMoved(int delta, int x, int y)
+    void ChildWindow::mouseWheelMoved(float delta, int x, int y)
     {
         sf::Vector2f offset = getChildWidgetsOffset();
         Container::mouseWheelMoved(delta, static_cast<int>(x - offset.x), static_cast<int>(y - offset.y));

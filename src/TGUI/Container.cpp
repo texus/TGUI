@@ -548,13 +548,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::mouseWheelMoved(int delta, int x, int y)
+    void Container::mouseWheelMoved(float delta, int x, int y)
     {
         sf::Event event;
-        event.type = sf::Event::MouseWheelMoved;
-        event.mouseWheel.delta = delta;
-        event.mouseWheel.x = static_cast<int>(x);
-        event.mouseWheel.y = static_cast<int>(y);
+        event.type = sf::Event::MouseWheelScrolled;
+        event.mouseWheelScroll.delta = delta;
+        event.mouseWheelScroll.x = static_cast<int>(x);
+        event.mouseWheelScroll.y = static_cast<int>(y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -806,16 +806,16 @@ namespace tgui
         }
 
         // Check for mouse wheel scrolling
-        else if (event.type == sf::Event::MouseWheelMoved)
+        else if ((event.type == sf::Event::MouseWheelScrolled) && (event.mouseWheelScroll.wheel == sf::Mouse::Wheel::VerticalWheel))
         {
             // Find the widget under the mouse
-            Widget::Ptr widget = mouseOnWhichWidget({static_cast<float>(event.mouseWheel.x), static_cast<float>(event.mouseWheel.y)});
+            Widget::Ptr widget = mouseOnWhichWidget({static_cast<float>(event.mouseWheelScroll.x), static_cast<float>(event.mouseWheelScroll.y)});
             if (widget != nullptr)
             {
                 // Send the event to the widget
-                widget->mouseWheelMoved(event.mouseWheel.delta,
-                                        static_cast<int>(event.mouseWheel.x - widget->getPosition().x),
-                                        static_cast<int>(event.mouseWheel.y - widget->getPosition().y));
+                widget->mouseWheelMoved(event.mouseWheelScroll.delta,
+                                        static_cast<int>(event.mouseWheelScroll.x - widget->getPosition().x),
+                                        static_cast<int>(event.mouseWheelScroll.y - widget->getPosition().y));
                 return true;
             }
 

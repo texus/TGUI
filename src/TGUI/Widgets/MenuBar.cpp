@@ -127,7 +127,7 @@ namespace tgui
             pos.x += m_menus[i].text.getSize().x + 2 * getRenderer()->getDistanceToSide();
         }
 
-        // could not find the menu
+        // Could not find the menu
         return false;
     }
 

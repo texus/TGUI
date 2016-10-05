@@ -152,7 +152,7 @@ namespace tgui
 
         // Check if the event has something to do with the mouse
         if ((event.type == sf::Event::MouseMoved) || (event.type == sf::Event::MouseButtonPressed)
-         || (event.type == sf::Event::MouseButtonReleased) || (event.type == sf::Event::MouseWheelMoved))
+         || (event.type == sf::Event::MouseButtonReleased) || (event.type == sf::Event::MouseWheelScrolled))
         {
             sf::Vector2f mouseCoords;
 
@@ -175,11 +175,11 @@ namespace tgui
                     break;
                 }
 
-                case sf::Event::MouseWheelMoved:
+                case sf::Event::MouseWheelScrolled:
                 {
-                    mouseCoords = m_window->mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y}, m_view);
-                    event.mouseWheel.x = static_cast<int>(mouseCoords.x + 0.5f);
-                    event.mouseWheel.y = static_cast<int>(mouseCoords.y + 0.5f);
+                    mouseCoords = m_window->mapPixelToCoords({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, m_view);
+                    event.mouseWheelScroll.x = static_cast<int>(mouseCoords.x + 0.5f);
+                    event.mouseWheelScroll.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
                 }
 
@@ -269,15 +269,6 @@ namespace tgui
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
         else
             glDisable(GL_SCISSOR_TEST);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Gui::getSize() const
-    {
-        assert(m_window != nullptr);
-
-        return sf::Vector2f{m_window->getSize()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

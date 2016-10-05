@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -300,6 +299,9 @@ namespace tgui
         {
             value.getTexture().setSize(getArrowSize());
             value.getTexture().setOpacity(getRenderer()->getOpacity());
+
+            if (!m_verticalScroll)
+                value.getTexture().setRotation(-90);
         }
         else if (property == "opacity")
         {
@@ -408,7 +410,7 @@ namespace tgui
 
             if (spaceBetweenArrows > 0)
             {
-                drawRectangleShape(target, states, {spaceBetweenArrows, arrowSize.y}, getRenderer()->getBorderColor());
+                drawRectangleShape(target, states, {spaceBetweenArrows, arrowSize.x}, getRenderer()->getBorderColor());
                 states.transform.translate({spaceBetweenArrows, 0});
             }
         }

@@ -190,7 +190,6 @@ namespace tgui
         }
 
         // Recalculate the position of the track, thumb and arrows
-        updateThumbPosition();
         if (m_verticalScroll)
         {
             m_arrowDown.left = 0;
@@ -207,6 +206,7 @@ namespace tgui
             m_track.left = m_arrowUp.width;
             m_track.top = 0;
         }
+        updateThumbPosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -631,7 +631,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::mouseWheelMoved(int delta, int x, int y)
+    void Scrollbar::mouseWheelMoved(float delta, int x, int y)
     {
         if (static_cast<int>(m_value) - static_cast<int>(delta * m_scrollAmount) < 0)
             setValue(0);

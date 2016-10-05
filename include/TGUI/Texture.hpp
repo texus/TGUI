@@ -192,7 +192,7 @@ namespace tgui
         /// @return Id of the texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string getId() const;
+        const sf::String& getId() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -472,7 +472,7 @@ namespace tgui
         ScalingType   m_scalingType = ScalingType::Normal;
 
         bool m_loaded = false;
-        std::string m_id;
+        sf::String m_id;
 
         std::function<void(std::shared_ptr<TextureData>)> m_copyCallback;
         std::function<void(std::shared_ptr<TextureData>)> m_destructCallback;

@@ -57,6 +57,9 @@ namespace tgui
         {
             auto& renderer = pair.second;
 
+            /// TODO: Exceptions should not be used for such situations!
+            ///       Add a function to ThemeLoader that lists which sections exist.
+
             // Try to load the new renderer
             const std::map<sf::String, sf::String>* properties;
             try
@@ -97,19 +100,19 @@ namespace tgui
 
     std::shared_ptr<RendererData> Theme::getRenderer(const std::string& id)
     {
-        std::string lowercaseSecondart = toLower(id);
+        std::string lowercaseSecondary = toLower(id);
 
         // If we already have this renderer in cache then just return it
-        auto it = m_renderers.find(lowercaseSecondart);
+        auto it = m_renderers.find(lowercaseSecondary);
         if (it != m_renderers.end())
             return it->second;
 
-        m_renderers[lowercaseSecondart] = std::make_shared<RendererData>();
-        auto& properties = m_themeLoader->load(m_primary, lowercaseSecondart);
+        m_renderers[lowercaseSecondary] = std::make_shared<RendererData>();
+        auto& properties = m_themeLoader->load(m_primary, lowercaseSecondary);
         for (const auto& property : properties)
-            m_renderers[lowercaseSecondart]->propertyValuePairs[property.first] = ObjectConverter(property.second);
+            m_renderers[lowercaseSecondary]->propertyValuePairs[property.first] = ObjectConverter(property.second);
 
-        return m_renderers[lowercaseSecondart];
+        return m_renderers[lowercaseSecondary];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

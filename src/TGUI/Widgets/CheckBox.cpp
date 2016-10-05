@@ -118,7 +118,7 @@ namespace tgui
                 m_text.setStyle(getRenderer()->getTextStyle());
 
             m_callback.checked = true;
-            sendSignal("Checked", m_checked);
+            sendSignal("Checked", static_cast<int>(m_checked));
         }
     }
 
@@ -134,7 +134,7 @@ namespace tgui
             m_text.setStyle(getRenderer()->getTextStyle());
 
             m_callback.checked = false;
-            sendSignal("Unchecked", m_checked);
+            sendSignal("Unchecked", static_cast<int>(m_checked));
         }
     }
 
@@ -251,7 +251,7 @@ namespace tgui
                 const float pi = 3.14159265358979f;
 
                 // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-                Clipping clipping{target, states, {borders.left, borders.top}, getInnerSize()};
+                Clipping clipping{target, states, {}, getInnerSize()};
 
                 sf::Vector2f size = getInnerSize();
 

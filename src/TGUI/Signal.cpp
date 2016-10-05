@@ -99,7 +99,11 @@ namespace tgui
     void SignalWidgetBase::disconnectAll(const std::string& signalName)
     {
         for (const auto& name : extractSignalNames(signalName))
-            m_signals.at(toLower(name)).disconnectAll();
+        {
+            auto it = m_signals.find(toLower(name));
+            if (it != m_signals.end())
+                it->second.disconnectAll();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

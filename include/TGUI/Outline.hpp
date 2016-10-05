@@ -40,6 +40,9 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
+        ///
+        /// @param Width and height of the outline in all directions
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Outline(float size = 0) :
             left  (size),
@@ -69,10 +72,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor that initializes the outline
         ///
-        /// @param leftBorderWidth    Width of the left border
-        /// @param topBorderHeight    Height of the top border
-        /// @param rightBorderWidth   Width of the right border
-        /// @param bottomBorderHeight Height of the bottom border
+        /// @param leftBorderWidth    Width of the left outline
+        /// @param topBorderHeight    Height of the top outline
+        /// @param rightBorderWidth   Width of the right outline
+        /// @param bottomBorderHeight Height of the bottom outline
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Outline(float leftBorderWidth, float topBorderHeight, float rightBorderWidth, float bottomBorderHeight) :
@@ -114,16 +117,16 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// Width of the left border
+        /// Width of the left outline
         float left;
 
-        /// Height of the top border
+        /// Height of the top outline
         float top;
 
-        /// Width of the right border
+        /// Width of the right outline
         float right;
 
-        /// Height of the bottom border
+        /// Height of the bottom outline
         float bottom;
     };
 

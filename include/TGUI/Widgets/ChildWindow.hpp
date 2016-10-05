@@ -251,8 +251,9 @@ namespace tgui
         /// @code
         /// childWindow->setTitleButtons(ChildWindow::TitleButtons::Minimize | ChildWindow::TitleButtons::Close);
         /// @endcode
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTitleButtons(int buttons);
+        void setTitleButtons(unsigned int buttons);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,7 +262,7 @@ namespace tgui
         /// @return Which buttons are available in the title bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int getTitleButtons() const;
+        unsigned int getTitleButtons() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -351,7 +352,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void mouseWheelMoved(int delta, int x, int y) override;
+        virtual void mouseWheelMoved(float delta, int x, int y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -431,7 +432,7 @@ namespace tgui
         sf::Vector2f   m_maximumSize    = {std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()};
         sf::Vector2f   m_minimumSize    = {0, 0};
         TitleAlignment m_titleAlignment = TitleAlignment::Center;
-        int            m_titleButtons   = TitleButton::Close;
+        unsigned int   m_titleButtons   = TitleButton::Close;
 
         std::shared_ptr<Button> m_closeButton;
         std::shared_ptr<Button> m_minimizeButton;

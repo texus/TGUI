@@ -38,9 +38,6 @@ namespace tgui
     ///
     /// Signals:
     ///     - DoubleClicked (double left clicked on top of the picture)
-    ///         * Optional parameter sf::Vector2f: Position where you clicked
-    ///         * Uses Callback member 'mouse'
-    ///
     ///     - Inherited signals from ClickableWidget
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,7 +138,7 @@ namespace tgui
         ///         Empty string when no image was loaded yet or when it was loaded directly from an sf::Texture.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getLoadedFilename() const;
+        const sf::String& getLoadedFilename() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

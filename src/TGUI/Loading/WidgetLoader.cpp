@@ -194,6 +194,8 @@ namespace tgui
                     }
                 }
 
+                /// TODO: Signals?
+
                 /// TODO: Separate renderer section?
                 else if (toLower(childNode->name) == "renderer")
                 {

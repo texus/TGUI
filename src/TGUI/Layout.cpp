@@ -823,6 +823,9 @@ namespace tgui
                 if (closingBracePos == std::string::npos)
                     return; // No matching close brace found
 
+                /// TODO: commaPos may find wrong comma when x or y expression is e.g. "min(1,2)"
+                ///       Neither the first not the last comma is guarenteed to be the correct one
+
                 // There have to be two components
                 auto commaPos = expression.find(',', openingBracePos + 1);
                 if ((commaPos > closingBracePos) || (expression.find(',', commaPos + 1) < closingBracePos))

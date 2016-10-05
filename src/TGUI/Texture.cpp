@@ -168,7 +168,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Texture::getId() const
+    const sf::String& Texture::getId() const
     {
         return m_id;
     }
@@ -193,8 +193,6 @@ namespace tgui
     {
         m_size.x = std::max(size.x, 0.f);
         m_size.y = std::max(size.y, 0.f);
-
-        setOrigin(std::min(m_size.x, m_size.y) / 2.0f, std::min(m_size.x, m_size.y) / 2.0f);
 
         if (m_loaded)
             updateVertices();
@@ -574,7 +572,15 @@ namespace tgui
 
     void Texture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getOrigin());
+        // A rotation can cause the image to be shifted, so we move it upfront so that it ends at the correct location
+        if (getRotation() != 0)
+        {
+            sf::Vector2f pos = {getTransform().transformRect(sf::FloatRect({}, getSize())).left,
+                                getTransform().transformRect(sf::FloatRect({}, getSize())).top};
+
+            states.transform.translate(getPosition() - pos);
+        }
+
         states.transform *= getTransform();
 
         if (m_loaded)

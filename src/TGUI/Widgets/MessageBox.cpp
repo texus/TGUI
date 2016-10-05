@@ -130,7 +130,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String MessageBox::getText() const
+    const sf::String& MessageBox::getText() const
     {
         return m_label->getText();
     }

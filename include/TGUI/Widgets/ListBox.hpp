@@ -44,7 +44,7 @@ namespace tgui
     ///         * Optional parameters sf::String and sf::String: Name and id of the item
     ///         * Uses Callback member 'text' and 'itemId'
     ///
-    ///     - MousePressed (left mouse went down on top of an item
+    ///     - MousePressed (left mouse went down on top of an item)
     ///         * Optional parameter sf::String: Name of the item (the text that is visible)
     ///         * Optional parameters sf::String and sf::String: Name and id of the item
     ///         * Uses Callback member 'text' and 'itemId'
@@ -481,7 +481,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void mouseWheelMoved(int delta, int x, int y) override;
+        virtual void mouseWheelMoved(float delta, int x, int y) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

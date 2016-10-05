@@ -47,7 +47,7 @@ namespace tgui
         SlideFromLeft = SlideToRight, ///< Slide from left to show or to the right to hide
         SlideFromRight = SlideToLeft, ///< Slide from right to show or to the left to hide
         SlideFromTop = SlideToBottom, ///< Slide from top to show or to the bottom to hide
-        SlideFromBottom = SlideToTop, ///< Slide from bottom to show or to the top to hide
+        SlideFromBottom = SlideToTop  ///< Slide from bottom to show or to the top to hide
     };
 
     namespace priv

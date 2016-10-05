@@ -56,9 +56,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider::Ptr Slider::create()
+    Slider::Ptr Slider::create(int minimum, int maximum)
     {
-        return std::make_shared<Slider>();
+        auto slider = std::make_shared<Slider>();
+
+        slider->setMinimum(minimum);
+        slider->setMaximum(maximum);
+
+        return slider;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -354,7 +359,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::mouseWheelMoved(int delta, int, int)
+    void Slider::mouseWheelMoved(float delta, int, int)
     {
         if (m_value - delta < m_minimum)
             setValue(m_minimum);

@@ -136,7 +136,7 @@ namespace tgui
         /// @param states      Render states to use for drawing
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(const sf::Vertex* vertices, unsigned int vertexCount,
+        void draw(const sf::Vertex* vertices, std::size_t vertexCount,
                   sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 
 

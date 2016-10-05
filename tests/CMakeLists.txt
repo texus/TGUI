@@ -73,9 +73,9 @@ install(TARGETS tests
         BUNDLE DESTINATION ${INSTALL_MISC_DIR}/tests/ COMPONENT tests)
 
 # Install the tests
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/tests/"
-        DESTINATION "${INSTALL_MISC_DIR}/tests/"
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/tests/resources"
+        DESTINATION "${INSTALL_MISC_DIR}/tests"
         COMPONENT tests)
-install(FILES "${CMAKE_SOURCE_DIR}/widgets/Black.png" "${CMAKE_SOURCE_DIR}/widgets/Black.txt"
-        DESTINATION "${INSTALL_MISC_DIR}/tests/resources/"
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/widgets/"
+        DESTINATION "${INSTALL_MISC_DIR}/tests/resources"
         COMPONENT tests)

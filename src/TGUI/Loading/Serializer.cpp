@@ -160,7 +160,7 @@ namespace tgui
         std::string serializeTexture(ObjectConverter&& value)
         {
             Texture texture = value.getTexture();
-            if (texture.getId().empty())
+            if (texture.getId().isEmpty())
                 return "None";
 
             std::string result = "\"" + texture.getId() + "\"";

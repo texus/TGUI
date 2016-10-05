@@ -370,7 +370,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::mouseWheelMoved(int delta, int, int)
+    void ChatBox::mouseWheelMoved(float delta, int, int)
     {
         if (m_scroll.getLowValue() < m_scroll.getMaximum())
             m_scroll.mouseWheelMoved(delta, 0, 0);

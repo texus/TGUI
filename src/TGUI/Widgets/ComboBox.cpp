@@ -51,6 +51,7 @@ namespace tgui
         getRenderer()->setBorders({2});
         getRenderer()->setPadding({2, 0, 0, 0});
         getRenderer()->setBackgroundColor({245, 245, 245});
+        getRenderer()->setTextColor(sf::Color::Black);
         getRenderer()->setArrowBackgroundColor({245, 245, 245});
         getRenderer()->setArrowBackgroundColorHover(sf::Color::White);
         getRenderer()->setArrowColor({60, 60, 60});
@@ -428,7 +429,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::mouseWheelMoved(int delta, int, int)
+    void ComboBox::mouseWheelMoved(float delta, int, int)
     {
         // Only act to scrolling when the list is not being shown
         if (!m_listBox->isVisible())
@@ -436,7 +437,7 @@ namespace tgui
             // Check if you are scrolling down
             if (delta < 0)
             {
-                // select the next item
+                // Select the next item
                 if (static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1) < m_listBox->getItemCount())
                 {
                     m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1));
@@ -445,7 +446,7 @@ namespace tgui
             }
             else // You are scrolling up
             {
-                // select the previous item
+                // Select the previous item
                 if (m_listBox->getSelectedItemIndex() > 0)
                 {
                     m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() - 1));

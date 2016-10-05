@@ -52,6 +52,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class Alignment
         {
+            Center,      ///< Center the widget in the cell
             UpperLeft,   ///< Draw the widget in the upper left corner of the cell
             Up,          ///< Draw the widget at the upper side of the cell (horizontally centered)
             UpperRight,  ///< Draw the widget in the upper right corner of the cell
@@ -59,8 +60,7 @@ namespace tgui
             BottomRight, ///< Draw the widget in the bottom right corner of the cell
             Bottom,      ///< Draw the widget at the bottom of the cell (horizontally centered)
             BottomLeft,  ///< Draw the widget in the bottom left corner of the cell
-            Left,        ///< Draw the widget at the left side of the cell (vertically centered)
-            Center       ///< Center the widget in the cell
+            Left         ///< Draw the widget at the left side of the cell (vertically centered)
         };
 
 
@@ -202,6 +202,17 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the borders around a widget
+        ///
+        /// @param widget  The widget to get the borders from
+        ///
+        /// @return The borders inside the around the widget, or Borders{0} when the widget wasn't part of the grid
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Borders getWidgetBorders(const Widget::Ptr& widget) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the borders around a widget in a specific cell of the grid
         ///
         /// @param row     The row that the widget is in
@@ -232,6 +243,17 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setWidgetAlignment(std::size_t row, std::size_t column, Alignment alignment = Alignment::Center);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the alignment of a given widget
+        ///
+        /// @param widget  The widget to get the alignment from
+        ///
+        /// @return The alignment inside the cell, or Grid::Alignment::Center when the widget wasn't part of the grid
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Alignment getWidgetAlignment(const Widget::Ptr& widget) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

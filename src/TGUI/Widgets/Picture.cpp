@@ -82,7 +82,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String Picture::getLoadedFilename() const
+    const sf::String& Picture::getLoadedFilename() const
     {
         return m_texture.getId();
     }

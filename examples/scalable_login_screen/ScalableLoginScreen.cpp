@@ -61,7 +61,7 @@ void loadWidgets( tgui::Gui& gui )
     gui.add(editBoxPassword);
 
     // Create the login button
-    // Instead of "parent.width" and "parent.width", we use the shorter "&.w" and "&.h" here as an example
+    // Instead of "parent.width" and "parent.height", we use the shorter "&.w" and "&.h" here as an example
     auto button = tgui::Button::create("Login");
     button->setSize({"&.w / 2", "&.h / 6"});
     button->setPosition({"&.w / 4", "&.h * 7/10"});

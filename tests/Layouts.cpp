@@ -339,6 +339,7 @@ TEST_CASE("[Layouts]") {
             REQUIRE(Layout("range(10, 20, 5)").getValue() == 10);
             REQUIRE(Layout("range(1, 4, 2, 3)").getValue() == 0);
             REQUIRE(Layout("min(5, 3) + range(10, 20, 12) * 2").getValue() == 27);
+            //REQUIRE(Layout2d("min(8, 2, 5), max(7, 12").getValue() == sf::Vector2f(2, 12)); // TODO
 
             REQUIRE(Layout("1 < 2 ? 5 : 6").getValue() == 5);
             REQUIRE(Layout("1 == 2 ? 5 : 6").getValue() == 6);

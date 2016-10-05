@@ -603,7 +603,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::mouseWheelMoved(int delta, int x, int y)
+    void ListBox::mouseWheelMoved(float delta, int x, int y)
     {
         if (m_scroll.isShown())
         {

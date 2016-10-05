@@ -21,10 +21,6 @@ matrix:
       - $HOME/SFML-2.4.0_LINUX
 
   - os: osx
-    osx_image: xcode7
-    before_install:
-    - brew update
-    - brew install cmake
     cache:
       directories:
       - $HOME/SFML_OSX

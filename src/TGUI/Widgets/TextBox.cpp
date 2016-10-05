@@ -118,7 +118,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String TextBox::getText() const
+    const sf::String& TextBox::getText() const
     {
         return m_text;
     }
@@ -853,7 +853,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseWheelMoved(int delta, int, int)
+    void TextBox::mouseWheelMoved(float delta, int, int)
     {
         if (m_verticalScroll.isShown())
         {

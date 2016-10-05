@@ -274,6 +274,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Borders Grid::getWidgetBorders(const Widget::Ptr& widget) const
+    {
+        // Find the widget in the grid
+        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+        {
+            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
+            {
+                if (m_gridWidgets[row][col] == widget)
+                    return getWidgetBorders(row, col);
+            }
+        }
+
+        return {};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Borders Grid::getWidgetBorders(std::size_t row, std::size_t col) const
     {
         if (((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size())) && (m_gridWidgets[row][col] != nullptr))
@@ -380,6 +397,22 @@ namespace tgui
                 m_gridWidgets[row][col]->setPosition({left, top});
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Grid::Alignment Grid::getWidgetAlignment(const Widget::Ptr& widget) const
+    {
+        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+        {
+            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
+            {
+                if (m_gridWidgets[row][col] == widget)
+                    return getWidgetAlignment(row, col);
+            }
+        }
+
+        return Alignment::Center;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
