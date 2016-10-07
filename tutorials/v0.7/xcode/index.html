@@ -27,17 +27,17 @@ brew install tgui
           If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.</li>
     </ul>
     <p class="SmallBottomMargin">Set the location of the TGUI directory, set the build directory (usually a new empty folder) and press "Configure".</p>
-    <a class="img" href="{{site.url}}/resources/XCode-0.7/CMakeBuildDirectory.jpg"><img alt="CMake Build Directory" src="{{site.url}}/resources/XCode-0.7/CMakeBuildDirectory.jpg" width="692" height="412" /></a>
+    <a class="img" href="/resources/XCode-0.7/CMakeBuildDirectory.jpg"><img alt="CMake Build Directory" src="/resources/XCode-0.7/CMakeBuildDirectory.jpg" width="692" height="412" /></a>
 
     <p class="SmallBottomMargin">Next select your generator, you probably want "Unix Makefiles". Just keep the "Use default native compilers" option checked and ignore the other three options.</p>
-    <a class="img" href="{{site.url}}/resources/XCode-0.7/CMakeSelectGenerator.jpg"><img alt="CMake Select Generator" src="{{site.url}}/resources/XCode-0.7/CMakeSelectGenerator.jpg" width="498" height="244" /></a>
+    <a class="img" href="/resources/XCode-0.7/CMakeSelectGenerator.jpg"><img alt="CMake Select Generator" src="/resources/XCode-0.7/CMakeSelectGenerator.jpg" width="498" height="244" /></a>
 
     <p class="SmallBottomMargin">You can now configure the settings. But watch out for which SFML version was found: if you are planning on using the SFML frameworks in your project, then don't let CMake find the SFML dylibs (or vice versa) because your program will simply not work. Normally you only need to change the TGUI_BUILD_FRAMEWORK option, check it to build frameworks (recommended) or uncheck it to build dylibs.</p>
-    <a class="img" href="{{site.url}}/resources/XCode-0.7/CMakeConfigure.jpg"><img alt="CMake Configure" src="{{site.url}}/resources/XCode-0.7/CMakeConfigure.jpg" width="692" height="608" /></a>
+    <a class="img" href="/resources/XCode-0.7/CMakeConfigure.jpg"><img alt="CMake Configure" src="/resources/XCode-0.7/CMakeConfigure.jpg" width="692" height="608" /></a>
 
     <p class="SmallBottomMargin">After setting the options like you want them you need to press Configure again. Now you should have reached the message "Configuring done" at the bottom. All you have to do now is press Generate.
     </p>
-    <a class="img" href="{{site.url}}/resources/XCode-0.7/CMakeGenerate.jpg"><img alt="CMake Generate" src="{{site.url}}/resources/XCode-0.7/CMakeGenerate.jpg" width="692" height="608" /></a>
+    <a class="img" href="/resources/XCode-0.7/CMakeGenerate.jpg"><img alt="CMake Generate" src="/resources/XCode-0.7/CMakeGenerate.jpg" width="692" height="608" /></a>
 </div>
 
 <div>
@@ -49,21 +49,21 @@ brew install tgui
 <div>
     <h3 id="using_tgui_framework">Using TGUI (framework)</h3>
     <p class="SmallBottomMargin">If you chose to build a framework in cmake then the make install command from the previous step installed the framework to /Library/Frameworks. All you need to do to use it is dragging the TGUI framework into your project.</p>
-    <a class="img" href="{{site.url}}/resources/XCodeDragFramework.jpg"><img alt="XCode drag framework" src="{{site.url}}/resources/XCodeDragFramework.jpg" width="397" height="214" /></a>
+    <a class="img" href="/resources/XCodeDragFramework.jpg"><img alt="XCode drag framework" src="/resources/XCodeDragFramework.jpg" width="397" height="214" /></a>
 
     <p class="SmallBottomMargin">A screen like below will appear where you normally don't need to change anything, just hit "Finish". The "Copy items if needed" can remain unchecked, but it doesn't matter if it is checked.</p>
-    <a class="img" href="{{site.url}}/resources/XCodeAddFramework.jpg"><img alt="XCode add framework" src="{{site.url}}/resources/XCodeAddFramework.jpg" width="732" height="431" /></a>
+    <a class="img" href="/resources/XCodeAddFramework.jpg"><img alt="XCode add framework" src="/resources/XCodeAddFramework.jpg" width="732" height="431" /></a>
 </div>
 
 <div>
     <h3 id="using_tgui_dylib">Using TGUI (dylib)</h3>
 
     <p class="SmallBottomMargin">If you chose to build a dylib in cmake then you have to add the dylib to your linker settings. First, go to the Build Settings.</p>
-    <a class="img" href="{{site.url}}/resources/XCodeBuildSettings.jpg"><img alt="XCode Build Settings" src="{{site.url}}/resources/XCodeBuildSettings.jpg" width="826" height="536" /></a>
+    <a class="img" href="/resources/XCodeBuildSettings.jpg"><img alt="XCode Build Settings" src="/resources/XCodeBuildSettings.jpg" width="826" height="536" /></a>
 
     <p class="SmallBottomMargin">
         Under “Linking” in “Other Linker Flags”, add “-ltgui” or “-ltgui-d”.<br>
         If you don’t see the “Linking” section, then you might need to select “All” instead of “Basic”.
     </p>
-    <a class="img" href="{{site.url}}/resources/XCodeLinkerFlags.jpg"><img alt="XCode Linker Flags" src="{{site.url}}/resources/XCodeLinkerFlags.jpg" width="826" height="522" /></a>
+    <a class="img" href="/resources/XCodeLinkerFlags.jpg"><img alt="XCode Linker Flags" src="/resources/XCodeLinkerFlags.jpg" width="826" height="522" /></a>
 </div>

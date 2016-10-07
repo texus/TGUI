@@ -1,6 +1,6 @@
 <div id="header" class="NoMargin">
 <div id="navbar" class="NoMargin">
-    <a id="navbar-title" href="{{site.url}}/"><h1>TGUI</h1></a>
+    <a id="navbar-title" href="/"><h1>TGUI</h1></a>
     
     <input type="checkbox" id="navbar-check"/>
     <label id="navbar-toggle-closed" class="navbar-toggle" onclick="" title="Menu" for="navbar-check">=</label>
@@ -8,29 +8,29 @@
     
     <div id="navbar-list-div" class="NoMargin">
     <ul>
-        <li><a href="{{site.url}}/download/">Download</a></li>
+        <li><a href="/download/">Download</a></li>
         <li>
-            <a href="{{site.url}}/tutorials/">Tutorials</a>
+            <a href="/tutorials/">Tutorials</a>
             <ul>
-                <li><a href="{{site.url}}/tutorials/v0.7/">0.7</a></li>
-                <li><a href="{{site.url}}/tutorials/v0.6/">0.6</a></li>
+                <li><a href="/tutorials/v0.7/">0.7</a></li>
+                <li><a href="/tutorials/v0.6/">0.6</a></li>
             </ul>
         </li>
         <li>
-            <a href="{{site.url}}/documentation/">Documentation</a>
+            <a href="/documentation/">Documentation</a>
             <ul>
-                <li><a href="{{site.url}}/documentation/v0.7/">0.7</a></li>
-                <li><a href="{{site.url}}/documentation/v0.6/">0.6</a></li>
+                <li><a href="/documentation/v0.7/">0.7</a></li>
+                <li><a href="/documentation/v0.6/">0.6</a></li>
             </ul>
         </li>
         <li>
-            <a href="{{site.url}}/examples/">Examples</a>
+            <a href="/examples/">Examples</a>
             <ul>
-                <li><a href="{{site.url}}/examples/0.7/">0.7</a></li>
-                <li><a href="{{site.url}}/examples/0.6/">0.6</a></li>
+                <li><a href="/examples/0.7/">0.7</a></li>
+                <li><a href="/examples/0.6/">0.6</a></li>
             </ul>
         </li>
-        <li><a href="{{site.url}}/contact/">Contact</a></li>
+        <li><a href="/contact/">Contact</a></li>
     </ul>
     </div>
 </div>

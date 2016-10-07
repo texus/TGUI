@@ -19,13 +19,13 @@ canonical: "/tutorials/v0.7/codeblocks/"
       <li>Set a folder to build TGUI in, usually a new empty folder in the same directory as (1).</li>
       <li>Press this button to start configuring.</li>
     </ol>
-    <a class="img" href="{{site.url}}/resources/CMakeBuildDirectoryWindows.png"><img alt="CMake Build Directory" src="{{site.url}}/resources/CMakeBuildDirectoryWindows.png" width="717" height="529" /></a>
+    <a class="img" href="/resources/CMakeBuildDirectoryWindows.png"><img alt="CMake Build Directory" src="/resources/CMakeBuildDirectoryWindows.png" width="717" height="529" /></a>
 
     <p class="SmallBottomMargin">
         Next select your compiler.<br />
         Just keep the “Use default native compilers” option checked and ignore the other three options.
     </p>
-    <a class="img" href="{{site.url}}/resources/CMakeSelectCompilerWindowsCodeBlocks.jpg"><img alt="CMake Select Compiler" src="{{site.url}}/resources/CMakeSelectCompilerWindowsCodeBlocks.jpg" width="778" height="512" /></a>
+    <a class="img" href="/resources/CMakeSelectCompilerWindowsCodeBlocks.jpg"><img alt="CMake Select Compiler" src="/resources/CMakeSelectCompilerWindowsCodeBlocks.jpg" width="778" height="512" /></a>
 
     <p>It is possible that CMake will not be able to find sfml and will give you an error.<br />
        You will then have to tell CMake where it needs to search for sfml. Change the SFML_ROOT to the correct path. This will be the root path of sfml, which contains the include and lib folders.
@@ -36,7 +36,7 @@ canonical: "/tutorials/v0.7/codeblocks/"
       <li>You probably need to place the lib folder there yourself, with the libraries that you have build.</li>
       <li>If you use static linking then the folder must of course contain the static sfml libraries.</li>
     </ul>
-    <a class="img" href="{{site.url}}/resources/CMakeSfmlNotFoundWindowsCodeBlocks.jpg"><img alt="CMake SFML not found" src="{{site.url}}/resources/CMakeSfmlNotFoundWindowsCodeBlocks.jpg" width="779" height="512" /></a>
+    <a class="img" href="/resources/CMakeSfmlNotFoundWindowsCodeBlocks.jpg"><img alt="CMake SFML not found" src="/resources/CMakeSfmlNotFoundWindowsCodeBlocks.jpg" width="779" height="512" /></a>
 
     <p>Now you can also change the other options. At the end of this CMake part, you can find the explanation of some of the options. Once you are done, you need to press Configure again.</p>
 
@@ -44,7 +44,7 @@ canonical: "/tutorials/v0.7/codeblocks/"
         After you pressed configure, you should have reached the message “Configuring done” at the bottom.<br />
         All you have to do now is press Generate.
     </p>
-    <a class="img" href="{{site.url}}/resources/CMakeGenerateWindowsCodeBlocks.jpg"><img alt="CMake Generate" src="{{site.url}}/resources/CMakeGenerateWindowsCodeBlocks.jpg" width="779" height="512" /></a>
+    <a class="img" href="/resources/CMakeGenerateWindowsCodeBlocks.jpg"><img alt="CMake Generate" src="/resources/CMakeGenerateWindowsCodeBlocks.jpg" width="779" height="512" /></a>
 
     <p>Some last notes about CMake:</p>
     <ul>
@@ -71,13 +71,13 @@ canonical: "/tutorials/v0.7/codeblocks/"
     <h3>Using TGUI</h3>
 
     <p class="SmallBottomMargin">Open the “Project build options” and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.</p>
-    <a class="img" href="{{site.url}}/resources/CodeBlocksProjectBuildOptions.png"><img alt="CodeBlocks Project Build Options" src="{{site.url}}/resources/CodeBlocksProjectBuildOptions.png" width="841" height="514" /></a>
+    <a class="img" href="/resources/CodeBlocksProjectBuildOptions.png"><img alt="CodeBlocks Project Build Options" src="/resources/CodeBlocksProjectBuildOptions.png" width="841" height="514" /></a>
 
     <p class="SmallBottomMargin">In the “Search directories” of the “Compiler” add the path to tgui.</p>
-    <a class="img" href="{{site.url}}/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesCompiler.png"><img alt="CodeBlocks Search Directories Compiler" src="{{site.url}}/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesCompiler.png" width="704" height="521" /></a>
+    <a class="img" href="/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesCompiler.png"><img alt="CodeBlocks Search Directories Compiler" src="/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesCompiler.png" width="704" height="521" /></a>
 
     <p class="SmallBottomMargin">In the “Search directories” of the “Linker” add the path to the tgui libraries.</p>
-    <a class="img" href="{{site.url}}/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesLinker.png"><img alt="CodeBlocks Search Directories Linker" src="{{site.url}}/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesLinker.png" width="704" height="521" /></a>
+    <a class="img" href="/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesLinker.png"><img alt="CodeBlocks Search Directories Linker" src="/resources/CodeBlocksProjectBuildOptionsSearchDirectoriesLinker.png" width="704" height="521" /></a>
 
     <p class="SmallBottomMargin">
         In ‘Release’ settings, add ‘-ltgui’ to the “Linker settings” under “Other linker options”.<br />
@@ -85,13 +85,13 @@ canonical: "/tutorials/v0.7/codeblocks/"
         When linking statically, you have to use ‘-ltgui-s’ and ‘-ltgui-s-d’ of course.<br />
         The order of linking has to be correct: first tgui, then the libraries from sfml, namely graphics, windows and system.
     </p>
-    <a class="img" href="{{site.url}}/resources/CodeBlocksProjectBuildOptionsLinkerSettings.png"><img alt="CodeBlocks Linker Settings" src="{{site.url}}/resources/CodeBlocksProjectBuildOptionsLinkerSettings.png" width="704" height="521" /></a>
+    <a class="img" href="/resources/CodeBlocksProjectBuildOptionsLinkerSettings.png"><img alt="CodeBlocks Linker Settings" src="/resources/CodeBlocksProjectBuildOptionsLinkerSettings.png" width="704" height="521" /></a>
 
     <p class="SmallBottomMargin">
         You must also enable c++11.<br />
         If you have an older compiler version and don’t have the “-std=c++11″ option, then use “-std=c++0x” instead.
     </p>
-    <a class="img" href="{{site.url}}/resources/CodeBlocksCompilerFlags.png"><img alt="CodeBlocks Compiler Flags" src="{{site.url}}/resources/CodeBlocksCompilerFlags.png" width="704" height="521" /></a>
+    <a class="img" href="/resources/CodeBlocksCompilerFlags.png"><img alt="CodeBlocks Compiler Flags" src="/resources/CodeBlocksCompilerFlags.png" width="704" height="521" /></a>
 
     <p>When using shared libraries, don't forget to copy tgui.dll to your project’s folder.</p>
 

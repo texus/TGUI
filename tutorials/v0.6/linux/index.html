@@ -41,18 +41,18 @@ g++ main.cpp -ltgui -lsfml-graphics -lsfml-window -lsfml-system -std=c++11 -o pr
     <h3>Using TGUI (CodeBlocks)</h3>
 
     <p class="SmallBottomMargin">Open the “Project build options” and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.</p>
-    <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg"><img alt="CodeBlocks Project Build Options" src="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptions.jpg" width="641" height="355" /></a>
+    <a class="img" href="/resources/LinuxCodeBlocksProjectBuildOptions.jpg"><img alt="CodeBlocks Project Build Options" src="/resources/LinuxCodeBlocksProjectBuildOptions.jpg" width="641" height="355" /></a>
 
     <p class="SmallBottomMargin">
         Add ‘-ltgui’ to the “Linker settings” under “Other linker options”. The order of linking has to be correct: first tgui, then the libraries from sfml, namely graphics, windows and system. (you might also need to add -lGL to the list)
     </p>
-    <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg"><img alt="CodeBlocks Linker Settings" src="{{site.url}}/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg" width="736" height="324" /></a>
+    <a class="img" href="/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg"><img alt="CodeBlocks Linker Settings" src="/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg" width="736" height="324" /></a>
 
     <p class="SmallBottomMargin">
         You must also enable c++11.<br />
         If you have an older compiler version and don’t have the “-std=c++11″ option, then use “-std=c++0x” instead.
     </p>
-    <a class="img" href="{{site.url}}/resources/LinuxCodeBlocksProjectCompilerFlags.png"><img alt="CodeBlocks Compiler Flags" src="{{site.url}}/resources/LinuxCodeBlocksProjectCompilerFlags.png" width="839" height="741" /></a>
+    <a class="img" href="/resources/LinuxCodeBlocksProjectCompilerFlags.png"><img alt="CodeBlocks Compiler Flags" src="/resources/LinuxCodeBlocksProjectCompilerFlags.png" width="839" height="741" /></a>
 
     <p>You should now be able to use TGUI.</p>
 </div>
