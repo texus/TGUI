@@ -269,9 +269,6 @@ TEST_CASE("[ProgressBar]")
             tgui::Texture textureBack("resources/Black.png", {180, 64, 90, 40}, {20, 0, 50, 40});
             tgui::Texture textureFront("resources/Black.png", {180, 108, 82, 32}, {16, 0, 50, 32});
 
-            REQUIRE(!renderer->getProperty("TextureBackground").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("TextureFill").getTexture().isLoaded());
-
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBack)));
@@ -290,8 +287,8 @@ TEST_CASE("[ProgressBar]")
                 renderer->setTextureFill(textureFront);
             }
 
-            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureFill").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureFill").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureBackground().getData() == textureBack.getData());
             REQUIRE(renderer->getTextureFill().getData() == textureFront.getData());

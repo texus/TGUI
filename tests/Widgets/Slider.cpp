@@ -220,10 +220,10 @@ TEST_CASE("[Slider]")
                 renderer->setTextureThumbHover(textureThumbHover);
             }
 
-            REQUIRE(renderer->getProperty("TextureTrack").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureThumb").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureThumbHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureTrack").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureThumb").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureThumbHover").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getProperty("TextureTrack").getTexture().getData() == textureTrack.getData());
             REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().getData() == textureTrackHover.getData());

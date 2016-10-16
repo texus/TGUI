@@ -389,12 +389,12 @@ TEST_CASE("[RadioButton]")
                 renderer->setTextureCheckedDisabled(textureCheckedDisabled);
             }
 
-            REQUIRE(renderer->getProperty("TextureUnchecked").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureUncheckedHover").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureUncheckedDisabled").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureChecked").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureCheckedHover").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureCheckedDisabled").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureUnchecked").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureUncheckedHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureUncheckedDisabled").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureChecked").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureCheckedHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureCheckedDisabled").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureUnchecked().getData() == textureUncheckedNormal.getData());
             REQUIRE(renderer->getTextureUncheckedHover().getData() == textureUncheckedHover.getData());

@@ -318,6 +318,10 @@ namespace tgui
 
         float m_minimumSubMenuWidth = 125;
 
+        Sprite m_spriteBackground;
+        Sprite m_spriteItemBackground;
+        Sprite m_spriteSelectedItemBackground;
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 

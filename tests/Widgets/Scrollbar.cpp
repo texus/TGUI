@@ -241,14 +241,14 @@ TEST_CASE("[Scrollbar]")
                 renderer->setTextureArrowDownHover(textureArrowDownHover);
             }
 
-            REQUIRE(renderer->getProperty("TextureTrack").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureThumb").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureThumbHover").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureTrack").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureTrackHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureThumb").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureThumbHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureTrack().getData() == textureTrackNormal.getData());
             REQUIRE(renderer->getTextureTrackHover().getData() == textureTrackHover.getData());

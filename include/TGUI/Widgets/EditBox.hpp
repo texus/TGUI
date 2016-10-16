@@ -522,15 +522,20 @@ namespace tgui
         // The blinking caret
         FloatRect     m_caret;
 
-        // We need three SFML texts to draw our text + one for the default text + one more for calculations.
+        // Is there a possibility that the user is going to double click?
+        bool m_possibleDoubleClick = false;
+
+        // We need three texts for drawing + one for the default text + one more for calculations.
         Text m_textBeforeSelection;
         Text m_textSelection;
         Text m_textAfterSelection;
         Text m_defaultText;
         Text m_textFull;
 
-        // Is there a possibility that the user is going to double click?
-        bool m_possibleDoubleClick = false;
+        Sprite m_sprite;
+        Sprite m_spriteHover;
+        Sprite m_spriteDisabled;
+        Sprite m_spriteFocused;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

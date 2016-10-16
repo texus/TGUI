@@ -249,9 +249,9 @@ TEST_CASE("[MenuBar]")
                 renderer->setTextureSelectedItemBackground(textureSelectedItemBackground);
             }
 
-            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureItemBackground").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureSelectedItemBackground").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureItemBackground").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureSelectedItemBackground").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
             REQUIRE(renderer->getTextureItemBackground().getData() == textureItemBackground.getData());

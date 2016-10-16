@@ -232,9 +232,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        sf::String m_loadedFilename;
-
         Texture m_texture;
+        Sprite  m_sprite;
 
         // Set to false when clicks on transparent parts of the picture should go to the widgets behind the picture
         bool m_fullyClickable = true;

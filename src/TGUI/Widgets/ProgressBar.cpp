@@ -76,8 +76,8 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        if (getRenderer()->getTextureBackground().isLoaded())
-            getRenderer()->getTextureBackground().setSize(getInnerSize());
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.setSize(getInnerSize());
 
         // Recalculate the size of the front image
         recalculateFillSize();
@@ -194,8 +194,8 @@ namespace tgui
         if (m_textSize == 0)
         {
             unsigned int textSize;
-            if (getRenderer()->getTextureFill().isLoaded())
-               textSize = Text::findBestTextSize(getRenderer()->getFont(), getRenderer()->getTextureFill().getSize().y * 0.8f);
+            if (m_spriteFill.isSet())
+               textSize = Text::findBestTextSize(getRenderer()->getFont(), m_spriteFill.getSize().y * 0.8f);
             else
                 textSize = Text::findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.8f);
 
@@ -271,13 +271,12 @@ namespace tgui
         }
         else if (property == "texturebackground")
         {
-            value.getTexture().setSize(getInnerSize());
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+            m_spriteBackground.setTexture(value.getTexture());
         }
         else if (property == "texturefill")
         {
+            m_spriteFill.setTexture(value.getTexture());
             recalculateFillSize();
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
         }
         else if (property == "textstyle")
         {
@@ -286,8 +285,8 @@ namespace tgui
         }
         else if (property == "opacity")
         {
-            getRenderer()->getTextureBackground().setOpacity(value.getNumber());
-            getRenderer()->getTextureFill().setOpacity(value.getNumber());
+            m_spriteBackground.setOpacity(value.getNumber());
+            m_spriteFill.setOpacity(value.getNumber());
 
             m_textBack.setOpacity(value.getNumber());
             m_textFront.setOpacity(value.getNumber());
@@ -316,29 +315,29 @@ namespace tgui
     {
         sf::Vector2f size = getInnerSize();
 
-        if (getRenderer()->getTextureFill().isLoaded())
+        if (m_spriteFill.isSet())
         {
             sf::Vector2f frontSize;
-            if (getRenderer()->getTextureBackground().isLoaded())
+            if (m_spriteBackground.isSet())
             {
-                switch (getRenderer()->getTextureBackground().getScalingType())
+                switch (m_spriteBackground.getScalingType())
                 {
-                case Texture::ScalingType::Normal:
+                case Sprite::ScalingType::Normal:
                     frontSize.x = getRenderer()->getTextureFill().getImageSize().x * getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x;
                     frontSize.y = getRenderer()->getTextureFill().getImageSize().y * getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y;
                     break;
 
-                case Texture::ScalingType::Horizontal:
+                case Sprite::ScalingType::Horizontal:
                     frontSize.x = getInnerSize().x - ((getRenderer()->getTextureBackground().getImageSize().x - getRenderer()->getTextureFill().getImageSize().x) * (getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y));
                     frontSize.y = getRenderer()->getTextureFill().getImageSize().y * getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y;
                     break;
 
-                case Texture::ScalingType::Vertical:
+                case Sprite::ScalingType::Vertical:
                     frontSize.x = getRenderer()->getTextureFill().getImageSize().x * getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x;
                     frontSize.y = getInnerSize().y - ((getRenderer()->getTextureBackground().getImageSize().y - getRenderer()->getTextureFill().getImageSize().y) * (getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x));
                     break;
 
-                case Texture::ScalingType::NineSlice:
+                case Sprite::ScalingType::NineSlice:
                     frontSize.x = getInnerSize().x - (getRenderer()->getTextureBackground().getImageSize().x - getRenderer()->getTextureFill().getImageSize().x);
                     frontSize.y = getInnerSize().y - (getRenderer()->getTextureBackground().getImageSize().y - getRenderer()->getTextureFill().getImageSize().y);
                     break;
@@ -347,7 +346,7 @@ namespace tgui
             else // There is a fill texture but not a background one
                 frontSize = getInnerSize();
 
-            getRenderer()->getTextureFill().setSize(frontSize);
+            m_spriteFill.setSize(frontSize);
             size = frontSize;
         }
 
@@ -376,8 +375,8 @@ namespace tgui
                 break;
         }
 
-        if (getRenderer()->getTextureFill().isLoaded())
-            getRenderer()->getTextureFill().setTextureRect(m_frontRect);
+        if (m_spriteFill.isSet())
+            m_spriteFill.setVisibleRect(m_frontRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,8 +394,8 @@ namespace tgui
         }
 
         // Draw the background
-        if (getRenderer()->getTextureBackground().isLoaded())
-            getRenderer()->getTextureBackground().draw(target, states);
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.draw(target, states);
         else
         {
             sf::Vector2f positionOffset = {m_backRect.left, m_backRect.top};
@@ -408,18 +407,18 @@ namespace tgui
 
         // Draw the filled area
         sf::Vector2f imageShift;
-        if (getRenderer()->getTextureFill().isLoaded())
+        if (m_spriteFill.isSet())
         {
-            if (getRenderer()->getTextureBackground().isLoaded() && (getRenderer()->getTextureBackground().getSize() != getRenderer()->getTextureFill().getSize()))
+            if (m_spriteBackground.isSet() && (m_spriteBackground.getSize() != m_spriteFill.getSize()))
             {
-                imageShift = (getRenderer()->getTextureBackground().getSize() - getRenderer()->getTextureFill().getSize()) / 2.f;
+                imageShift = (m_spriteBackground.getSize() - m_spriteFill.getSize()) / 2.f;
 
                 states.transform.translate(imageShift);
-                getRenderer()->getTextureFill().draw(target, states);
+                m_spriteFill.draw(target, states);
                 states.transform.translate(-imageShift);
             }
             else
-                getRenderer()->getTextureFill().draw(target, states);
+                m_spriteFill.draw(target, states);
         }
         else // Using colors instead of a texture
         {

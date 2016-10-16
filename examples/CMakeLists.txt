@@ -13,11 +13,11 @@ macro(tgui_add_example target)
     add_executable(${target} ${THIS_SOURCES})
     target_link_libraries(${target} ${PROJECT_NAME} ${TGUI_EXT_LIBS})
 
-    # for gcc >= 4.0 on Windows, apply the SFML_USE_STATIC_STD_LIBS option if it is enabled
+    # for gcc >= 4.0 on Windows, apply the TGUI_USE_STATIC_STD_LIBS option if it is enabled
     if(SFML_OS_WINDOWS AND SFML_COMPILER_GCC AND NOT SFML_GCC_VERSION VERSION_LESS "4")
-        if(SFML_USE_STATIC_STD_LIBS AND NOT SFML_COMPILER_GCC_TDM)
+        if(TGUI_USE_STATIC_STD_LIBS AND NOT SFML_COMPILER_GCC_TDM)
             set_target_properties(${target} PROPERTIES LINK_FLAGS "-static-libgcc -static-libstdc++")
-        elseif(NOT SFML_USE_STATIC_STD_LIBS AND SFML_COMPILER_GCC_TDM)
+        elseif(NOT TGUI_USE_STATIC_STD_LIBS AND SFML_COMPILER_GCC_TDM)
             set_target_properties(${target} PROPERTIES LINK_FLAGS "-shared-libgcc -shared-libstdc++")
         endif()
     endif()

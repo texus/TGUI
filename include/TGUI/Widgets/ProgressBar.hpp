@@ -313,6 +313,9 @@ namespace tgui
         sf::FloatRect m_frontRect;
 
         FillDirection m_fillDirection = FillDirection::LeftToRight;
+
+        Sprite m_spriteBackground;
+        Sprite m_spriteFill;
     };
 
 

@@ -326,6 +326,15 @@ namespace tgui
         sf::FloatRect m_arrowUp;
         sf::FloatRect m_arrowDown;
 
+        Sprite m_spriteTrack;
+        Sprite m_spriteTrackHover;
+        Sprite m_spriteThumb;
+        Sprite m_spriteThumbHover;
+        Sprite m_spriteArrowUp;
+        Sprite m_spriteArrowUpHover;
+        Sprite m_spriteArrowDown;
+        Sprite m_spriteArrowDownHover;
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 

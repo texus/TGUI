@@ -245,7 +245,7 @@ TEST_CASE("[TextBox]")
                 renderer->setTextureBackground(textureBackground);
             }
 
-            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
         }

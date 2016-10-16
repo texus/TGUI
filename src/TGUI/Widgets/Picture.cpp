@@ -45,7 +45,6 @@ namespace tgui
         Picture{}
     {
         setTexture(texture, fullyClickable);
-        setSize(texture.getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,15 +68,14 @@ namespace tgui
 
     void Picture::setTexture(const Texture& texture, bool fullyClickable)
     {
-        sf::Vector2f size;
-        if (!m_texture.isLoaded())
-            setSize(texture.getSize());
+        if (!m_sprite.isSet())
+            setSize(texture.getImageSize());
 
         m_fullyClickable = fullyClickable;
         m_texture = texture;
-        m_texture.setSize(getSize());
-        m_texture.setPosition(getPosition());
-        m_texture.setOpacity(getRenderer()->getOpacity());
+        m_sprite.setTexture(texture);
+        m_sprite.setPosition(getPosition());
+        m_sprite.setOpacity(getRenderer()->getOpacity());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +91,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        m_texture.setSize(getSize());
+        m_sprite.setSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +116,7 @@ namespace tgui
         if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             // We sometimes want clicks to go through transparent parts of the picture
-            if (!m_fullyClickable && m_texture.isTransparentPixel(pos))
+            if (!m_fullyClickable && m_sprite.isTransparentPixel(pos))
                 return false;
             else
                 return true;
@@ -159,7 +157,7 @@ namespace tgui
     void Picture::rendererChanged(const std::string& property, ObjectConverter& value)
     {
         if (property == "opacity")
-            m_texture.setOpacity(value.getNumber());
+            m_sprite.setOpacity(value.getNumber());
         else
             Widget::rendererChanged(property, value);
     }
@@ -183,7 +181,7 @@ namespace tgui
     void Picture::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
-        m_texture.draw(target, states);
+        m_sprite.draw(target, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

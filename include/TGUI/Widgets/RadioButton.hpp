@@ -327,6 +327,14 @@ namespace tgui
         // This will store the size of the text ( 0 to auto size )
         unsigned int m_textSize = 0;
 
+        Sprite m_spriteUnchecked;
+        Sprite m_spriteChecked;
+        Sprite m_spriteUncheckedHover;
+        Sprite m_spriteCheckedHover;
+        Sprite m_spriteUncheckedDisabled;
+        Sprite m_spriteCheckedDisabled;
+        Sprite m_spriteFocused;
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         friend class CheckBox; // CheckBox accesses m_text and m_checked directly

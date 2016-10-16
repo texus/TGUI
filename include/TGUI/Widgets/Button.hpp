@@ -254,6 +254,12 @@ namespace tgui
 
         // This will store the size of the text (0 to auto-size)
         unsigned int m_textSize = 0;
+
+        Sprite m_sprite;
+        Sprite m_spriteHover;
+        Sprite m_spriteDown;
+        Sprite m_spriteDisabled;
+        Sprite m_spriteFocused;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

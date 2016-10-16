@@ -216,8 +216,8 @@ TEST_CASE("[Knob]")
                 renderer->setImageRotation(90);
             }
 
-            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureForeground").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureForeground").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
             REQUIRE(renderer->getTextureForeground().getData() == textureForeground.getData());

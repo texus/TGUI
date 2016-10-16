@@ -163,8 +163,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        if (getRenderer()->getTextureTitleBar().isLoaded())
-            getRenderer()->getTextureTitleBar().setSize({getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->getTitleBarHeight()});
+        m_spriteTitleBar.setSize({getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->getTitleBarHeight()});
 
         // Reposition the images and text
         updatePosition();
@@ -589,14 +588,14 @@ namespace tgui
 
         Borders borders = getRenderer()->getBorders();
         Texture& textureTitleBar = getRenderer()->getTextureTitleBar();
-        textureTitleBar.setSize({getSize().x + borders.left + borders.right, height});
+        m_spriteTitleBar.setSize({getSize().x + borders.left + borders.right, height});
 
         // Set the size of the buttons in the title bar
         for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
         {
             if (button)
             {
-                if (textureTitleBar.isLoaded() && button->getRenderer()->getTexture().isLoaded())
+                if (m_spriteTitleBar.isSet() && (button->getRenderer()->getTexture().getData() != nullptr))
                 {
                     button->setSize(button->getRenderer()->getTexture().getImageSize().x * (height / textureTitleBar.getImageSize().y),
                                     button->getRenderer()->getTexture().getImageSize().y * (height / textureTitleBar.getImageSize().y));
@@ -627,9 +626,7 @@ namespace tgui
         }
         else if (property == "texturetitlebar")
         {
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
-            value.getTexture().setSize({getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right,
-                                        getRenderer()->getTitleBarHeight()});
+            m_spriteTitleBar.setTexture(value.getTexture());
 
             // If the title bar height is determined by the texture then update it
             if (getRenderer()->getTitleBarHeight() == value.getTexture().getImageSize().y)
@@ -684,7 +681,7 @@ namespace tgui
             }
 
             m_titleText.setOpacity(opacity);
-            getRenderer()->getTextureTitleBar().setOpacity(opacity);
+            m_spriteTitleBar.setOpacity(opacity);
         }
         else if (property == "font")
         {
@@ -721,8 +718,8 @@ namespace tgui
         sf::Vector2f sizeIncludingBorders{getSize().x + borders.left + borders.right, getSize().y + borders.top + borders.bottom};
 
         // Draw the title bar
-        if (getRenderer()->getTextureTitleBar().isLoaded())
-            getRenderer()->getTextureTitleBar().draw(target, states);
+        if (m_spriteTitleBar.isSet())
+            m_spriteTitleBar.draw(target, states);
         else
             drawRectangleShape(target, states, {sizeIncludingBorders.x, getRenderer()->getTitleBarHeight()}, getRenderer()->getTitleBarColor());
 

@@ -296,6 +296,11 @@ namespace tgui
 
         // Does the image lie vertically?
         bool m_verticalImage = false;
+
+        Sprite m_spriteTrack;
+        Sprite m_spriteTrackHover;
+        Sprite m_spriteThumb;
+        Sprite m_spriteThumbHover;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

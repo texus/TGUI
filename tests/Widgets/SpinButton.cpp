@@ -228,11 +228,6 @@ TEST_CASE("[SpinButton]")
             tgui::Texture textureArrowDownNormal("resources/Black.png", {163, 174, 20, 20}, {0, 1, 20, 19});
             tgui::Texture textureArrowDownHover("resources/Black.png", {183, 174, 20, 20}, {0, 1, 20, 19});
 
-            REQUIRE(!renderer->getProperty("TextureArrowUp").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("TextureArrowUpHover").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("TextureArrowDown").getTexture().isLoaded());
-            REQUIRE(!renderer->getProperty("TextureArrowDownHover").getTexture().isLoaded());
-
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUp", tgui::Serializer::serialize(textureArrowUpNormal)));
@@ -257,10 +252,10 @@ TEST_CASE("[SpinButton]")
                 renderer->setTextureArrowDownHover(textureArrowDownHover);
             }
 
-            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureArrowUp().getData() == textureArrowUpNormal.getData());
             REQUIRE(renderer->getTextureArrowUpHover().getData() == textureArrowUpHover.getData());

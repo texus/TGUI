@@ -87,13 +87,13 @@ namespace tgui
         else
             m_verticalScroll = false;
 
-        if (getRenderer()->getTextureTrack().isLoaded() && getRenderer()->getTextureThumb().isLoaded())
+        if (m_spriteTrack.isSet() && m_spriteThumb.isSet())
         {
             float scaleFactor;
             if (m_verticalImage == m_verticalScroll)
             {
-                getRenderer()->getTextureTrack().setSize(getInnerSize());
-                getRenderer()->getTextureTrackHover().setSize(getInnerSize());
+                m_spriteTrack.setSize(getInnerSize());
+                m_spriteTrackHover.setSize(getInnerSize());
 
                 if (m_verticalScroll)
                     scaleFactor = getInnerSize().x / getRenderer()->getTextureTrack().getImageSize().x;
@@ -102,8 +102,8 @@ namespace tgui
             }
             else // The image is rotated
             {
-                getRenderer()->getTextureTrack().setSize({getInnerSize().y, getInnerSize().x});
-                getRenderer()->getTextureTrackHover().setSize({getInnerSize().y, getInnerSize().x});
+                m_spriteTrack.setSize({getInnerSize().y, getInnerSize().x});
+                m_spriteTrackHover.setSize({getInnerSize().y, getInnerSize().x});
 
                 if (m_verticalScroll)
                     scaleFactor = getInnerSize().x / getRenderer()->getTextureTrack().getImageSize().y;
@@ -114,23 +114,23 @@ namespace tgui
             m_thumb.width = scaleFactor * getRenderer()->getTextureThumb().getImageSize().x;
             m_thumb.height = scaleFactor * getRenderer()->getTextureThumb().getImageSize().y;
 
-            getRenderer()->getTextureThumb().setSize({m_thumb.width, m_thumb.height});
-            getRenderer()->getTextureThumbHover().setSize({m_thumb.width, m_thumb.height});
+            m_spriteThumb.setSize({m_thumb.width, m_thumb.height});
+            m_spriteThumbHover.setSize({m_thumb.width, m_thumb.height});
 
             // Apply the rotation now that the size has been set
             if (m_verticalScroll != m_verticalImage)
             {
-                getRenderer()->getTextureTrack().setRotation(-90);
-                getRenderer()->getTextureTrackHover().setRotation(-90);
-                getRenderer()->getTextureThumb().setRotation(-90);
-                getRenderer()->getTextureThumbHover().setRotation(-90);
+                m_spriteTrack.setRotation(-90);
+                m_spriteTrackHover.setRotation(-90);
+                m_spriteThumb.setRotation(-90);
+                m_spriteThumbHover.setRotation(-90);
             }
             else
             {
-                getRenderer()->getTextureTrack().setRotation(0);
-                getRenderer()->getTextureTrackHover().setRotation(0);
-                getRenderer()->getTextureThumb().setRotation(0);
-                getRenderer()->getTextureThumbHover().setRotation(0);
+                m_spriteTrack.setRotation(0);
+                m_spriteTrackHover.setRotation(0);
+                m_spriteThumb.setRotation(0);
+                m_spriteThumbHover.setRotation(0);
             }
         }
         else // There are no textures
@@ -364,7 +364,7 @@ namespace tgui
         if (m_value - delta < m_minimum)
             setValue(m_minimum);
         else
-            setValue(m_value - delta);
+            setValue(static_cast<int>(m_value - delta));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -401,21 +401,29 @@ namespace tgui
             else
                 m_verticalImage = false;
 
+            m_spriteTrack.setTexture(value.getTexture());
             updateSize();
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
         }
-        else if ((property == "texturetrackhover") || (property == "texturethumb") || (property == "texturethumbhover"))
+        else if (property == "texturetrackhover")
         {
+            m_spriteTrackHover.setTexture(value.getTexture());
+        }
+        else if (property == "texturethumb")
+        {
+            m_spriteThumb.setTexture(value.getTexture());
             updateSize();
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+        }
+        else if (property == "texturethumbhover")
+        {
+            m_spriteThumbHover.setTexture(value.getTexture());
         }
         else if (property == "opacity")
         {
             float opacity = value.getNumber();
-            getRenderer()->getTextureTrack().setOpacity(opacity);
-            getRenderer()->getTextureTrackHover().setOpacity(opacity);
-            getRenderer()->getTextureThumb().setOpacity(opacity);
-            getRenderer()->getTextureThumbHover().setOpacity(opacity);
+            m_spriteTrack.setOpacity(opacity);
+            m_spriteTrackHover.setOpacity(opacity);
+            m_spriteThumb.setOpacity(opacity);
+            m_spriteThumbHover.setOpacity(opacity);
         }
         else if ((property != "trackcolor")
               && (property != "trackcolorhover")
@@ -471,12 +479,12 @@ namespace tgui
         }
 
         // Draw the track
-        if (getRenderer()->getTextureTrack().isLoaded() && getRenderer()->getTextureThumb().isLoaded())
+        if (m_spriteTrack.isSet() && m_spriteThumb.isSet())
         {
-            if (m_mouseHover && getRenderer()->getTextureTrackHover().isLoaded())
-                getRenderer()->getTextureTrackHover().draw(target, states);
+            if (m_mouseHover && m_spriteTrackHover.isSet())
+                m_spriteTrackHover.draw(target, states);
             else
-                getRenderer()->getTextureTrack().draw(target, states);
+                m_spriteTrack.draw(target, states);
         }
         else // There are no textures
         {
@@ -500,12 +508,12 @@ namespace tgui
         }
 
         // Draw the thumb
-        if (getRenderer()->getTextureTrack().isLoaded() && getRenderer()->getTextureThumb().isLoaded())
+        if (m_spriteTrack.isSet() && m_spriteThumb.isSet())
         {
-            if (m_mouseHover && getRenderer()->getTextureThumbHover().isLoaded())
-                getRenderer()->getTextureThumbHover().draw(target, states);
+            if (m_mouseHover && m_spriteThumbHover.isSet())
+                m_spriteThumbHover.draw(target, states);
             else
-                getRenderer()->getTextureThumb().draw(target, states);
+                m_spriteThumb.draw(target, states);
         }
         else // There are no textures
         {

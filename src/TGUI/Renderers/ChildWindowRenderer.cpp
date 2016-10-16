@@ -56,7 +56,7 @@ namespace tgui
         else
         {
             it = m_data->propertyValuePairs.find("texturetitlebar");
-            if (it != m_data->propertyValuePairs.end() && it->second.getTexture().isLoaded())
+            if (it != m_data->propertyValuePairs.end() && it->second.getTexture().getData())
                 return it->second.getTexture().getImageSize().y;
             else
                 return 20;

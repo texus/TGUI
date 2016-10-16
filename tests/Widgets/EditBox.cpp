@@ -511,10 +511,10 @@ TEST_CASE("[EditBox]")
                 renderer->setTextureFocused(textureFocused);
             }
 
-            REQUIRE(renderer->getProperty("Texture").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureHover").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureDisabled").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureFocused").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("Texture").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureDisabled").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureFocused").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTexture().getData() == textureNormal.getData());
             REQUIRE(renderer->getTextureHover().getData() == textureHover.getData());

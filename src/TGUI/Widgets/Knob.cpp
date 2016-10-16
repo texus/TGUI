@@ -80,11 +80,11 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        if (getRenderer()->getTextureBackground().isLoaded() && getRenderer()->getTextureForeground().isLoaded())
+        if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
         {
-            getRenderer()->getTextureBackground().setSize(getInnerSize());
-            getRenderer()->getTextureForeground().setSize({getRenderer()->getTextureForeground().getImageSize().x / getRenderer()->getTextureBackground().getImageSize().x * getInnerSize().x,
-                                                           getRenderer()->getTextureForeground().getImageSize().y / getRenderer()->getTextureBackground().getImageSize().y * getInnerSize().y});
+            m_spriteBackground.setSize(getInnerSize());
+            m_spriteForeground.setSize({getRenderer()->getTextureForeground().getImageSize().x / getRenderer()->getTextureBackground().getImageSize().x * getInnerSize().x,
+                                        getRenderer()->getTextureForeground().getImageSize().y / getRenderer()->getTextureBackground().getImageSize().y * getInnerSize().y});
         }
     }
 
@@ -247,10 +247,10 @@ namespace tgui
         // Check if the mouse is on top of the widget
         if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
-            if (getRenderer()->getTextureBackground().isLoaded() && getRenderer()->getTextureForeground().isLoaded())
+            if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
             {
                 // Only return true when the pixel under the mouse isn't transparent
-                if (!getRenderer()->getTextureBackground().isTransparentPixel(pos))
+                if (!m_spriteBackground.isTransparentPixel(pos))
                     return true;
             }
             else // There is no texture, the widget has a circle shape
@@ -448,16 +448,21 @@ namespace tgui
         {
             updateSize();
         }
-        else if ((property == "texturebackground") || (property == "textureforeground"))
+        else if (property == "texturebackground")
         {
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+            m_spriteBackground.setTexture(value.getTexture());
+            updateSize();
+        }
+        else if (property == "textureforeground")
+        {
+            m_spriteForeground.setTexture(value.getTexture());
             updateSize();
         }
         else if (property == "opacity")
         {
             float opacity = value.getNumber();
-            getRenderer()->getTextureBackground().setOpacity(opacity);
-            getRenderer()->getTextureForeground().setOpacity(opacity);
+            m_spriteBackground.setOpacity(opacity);
+            m_spriteForeground.setOpacity(opacity);
         }
         else if ((property != "bordercolor")
               && (property != "backgroundcolor")
@@ -499,8 +504,8 @@ namespace tgui
         }
 
         // Draw the background
-        if (getRenderer()->getTextureBackground().isLoaded())
-            getRenderer()->getTextureBackground().draw(target, states);
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.draw(target, states);
         else
         {
             sf::CircleShape background{size / 2};
@@ -509,17 +514,17 @@ namespace tgui
         }
 
         // Draw the foreground
-        if (getRenderer()->getTextureForeground().isLoaded())
+        if (m_spriteForeground.isSet())
         {
-            states.transform.translate((getInnerSize() - getRenderer()->getTextureForeground().getSize()) / 2.f);
+            states.transform.translate((getInnerSize() - m_spriteForeground.getSize()) / 2.f);
 
             // Give the image the correct rotation
             if (getRenderer()->getImageRotation() > m_angle)
-                states.transform.rotate(getRenderer()->getImageRotation() - m_angle, (getRenderer()->getTextureForeground().getSize() / 2.f));
+                states.transform.rotate(getRenderer()->getImageRotation() - m_angle, (m_spriteForeground.getSize() / 2.f));
             else
-                states.transform.rotate(360 - m_angle + getRenderer()->getImageRotation(), (getRenderer()->getTextureForeground().getSize() / 2.f));
+                states.transform.rotate(360 - m_angle + getRenderer()->getImageRotation(), (m_spriteForeground.getSize() / 2.f));
 
-            getRenderer()->getTextureForeground().draw(target, states);
+            m_spriteForeground.draw(target, states);
         }
         else
         {

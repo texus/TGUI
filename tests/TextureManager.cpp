@@ -32,21 +32,24 @@ TEST_CASE("[TextureManager]")
 {
     std::streambuf *oldbuf = sf::err().rdbuf(0);
     tgui::Texture texture;
-    REQUIRE(!tgui::TextureManager::getTexture(texture, "NonExistent.png"));
+    REQUIRE(tgui::TextureManager::getTexture(texture, "NonExistent.png") == nullptr);
     sf::err().rdbuf(oldbuf);
 
     tgui::Texture texture1;
     tgui::Texture texture2;
-    REQUIRE(tgui::TextureManager::getTexture(texture1, "resources/image.png"));
-    REQUIRE(tgui::TextureManager::getTexture(texture2, "resources/image.png"));
-    REQUIRE(texture1.getData() == texture2.getData());
+    std::shared_ptr<tgui::TextureData> textureData1 = tgui::TextureManager::getTexture(texture1, "resources/image.png");
+    std::shared_ptr<tgui::TextureData> textureData2 = tgui::TextureManager::getTexture(texture2, "resources/image.png");
+    REQUIRE(textureData1 != nullptr);
+    REQUIRE(textureData2 != nullptr);
+    REQUIRE(textureData1 == textureData2);
 
+    REQUIRE_THROWS_AS(tgui::TextureManager::copyTexture(nullptr), tgui::Exception);
     REQUIRE_THROWS_AS(tgui::TextureManager::copyTexture(std::make_shared<tgui::TextureData>()), tgui::Exception);
-    REQUIRE_NOTHROW(tgui::TextureManager::copyTexture(texture1.getData()));
+    REQUIRE_NOTHROW(tgui::TextureManager::copyTexture(textureData1));
 
     REQUIRE_THROWS_AS(tgui::TextureManager::removeTexture(std::make_shared<tgui::TextureData>()), tgui::Exception);
-    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(texture1.getData()));
-    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(texture1.getData()));
-    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(texture1.getData()));
-    REQUIRE_THROWS_AS(tgui::TextureManager::removeTexture(texture1.getData()), tgui::Exception);
+    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(textureData1));
+    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(textureData1));
+    REQUIRE_NOTHROW(tgui::TextureManager::removeTexture(textureData1));
+    REQUIRE_THROWS_AS(tgui::TextureManager::removeTexture(textureData1), tgui::Exception);
 }

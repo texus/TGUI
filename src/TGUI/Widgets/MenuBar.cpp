@@ -75,7 +75,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        getRenderer()->getTextureBackground().setSize(getSize());
+        m_spriteBackground.setSize(getSize());
 
         setTextSize(Text::findBestTextSize(getRenderer()->getFont(), getSize().y * 0.8f));
     }
@@ -513,10 +513,17 @@ namespace tgui
                 }
             }
         }
-        else if ((property == "texturebackground") || (property == "textureitembackground") || (property == "textureselecteditembackground"))
+        else if (property == "texturebackground")
         {
-            value.getTexture().setSize(getSize());
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+            m_spriteBackground.setTexture(value.getTexture());
+        }
+        else if (property == "textureitembackground")
+        {
+            m_spriteItemBackground.setTexture(value.getTexture());
+        }
+        else if (property == "textureselecteditembackground")
+        {
+            m_spriteSelectedItemBackground.setTexture(value.getTexture());
         }
         else if (property == "opacity")
         {
@@ -528,6 +535,8 @@ namespace tgui
 
                 m_menus[i].text.setOpacity(opacity);
             }
+
+            m_spriteBackground.setOpacity(opacity);
         }
         else if (property == "font")
         {
@@ -560,13 +569,13 @@ namespace tgui
         sf::RenderStates textStates = states;
 
         // Draw the background
-        if (getRenderer()->getTextureBackground().isLoaded())
-            getRenderer()->getTextureBackground().draw(target, states);
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.draw(target, states);
         else
             drawRectangleShape(target, states, getSize(), getRenderer()->getBackgroundColor());
 
         // Draw the menu backgrounds
-        Texture backgroundTexture = getRenderer()->getTextureItemBackground();
+        Sprite backgroundSprite = m_spriteItemBackground;
         float distanceToSide = getRenderer()->getDistanceToSide();
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
@@ -580,33 +589,33 @@ namespace tgui
                 for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                     menuWidth = std::max(menuWidth, m_menus[i].menuItems[j].getSize().x + (2 * distanceToSide));
 
-                Texture selectedBackgroundTexture = getRenderer()->getTextureSelectedItemBackground();
-                if (selectedBackgroundTexture.isLoaded() && backgroundTexture.isLoaded())
+                Sprite selectedBackgroundSprite = m_spriteSelectedItemBackground;
+                if (selectedBackgroundSprite.isSet() && backgroundSprite.isSet())
                 {
-                    selectedBackgroundTexture.setSize({m_menus[i].text.getSize().x + (2 * distanceToSide), getSize().y});
-                    selectedBackgroundTexture.draw(target, states);
+                    selectedBackgroundSprite.setSize({m_menus[i].text.getSize().x + (2 * distanceToSide), getSize().y});
+                    selectedBackgroundSprite.draw(target, states);
 
-                    backgroundTexture.setSize({menuWidth, getSize().y});
-                    selectedBackgroundTexture.setSize({menuWidth, getSize().y});
+                    backgroundSprite.setSize({menuWidth, getSize().y});
+                    selectedBackgroundSprite.setSize({menuWidth, getSize().y});
                     for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
                         states.transform.translate({0, getSize().y});
                         if (m_menus[i].selectedMenuItem == static_cast<int>(j))
-                            selectedBackgroundTexture.draw(target, states);
+                            selectedBackgroundSprite.draw(target, states);
                         else
-                            backgroundTexture.draw(target, states);
+                            backgroundSprite.draw(target, states);
                     }
                 }
-                else if (backgroundTexture.isLoaded())
+                else if (backgroundSprite.isSet())
                 {
-                    backgroundTexture.setSize({m_menus[i].text.getSize().x + (2 * distanceToSide), getSize().y});
-                    backgroundTexture.draw(target, states);
+                    backgroundSprite.setSize({m_menus[i].text.getSize().x + (2 * distanceToSide), getSize().y});
+                    backgroundSprite.draw(target, states);
 
-                    backgroundTexture.setSize({menuWidth, getSize().y});
+                    backgroundSprite.setSize({menuWidth, getSize().y});
                     for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
                         states.transform.translate({0, getSize().y});
-                        backgroundTexture.draw(target, states);
+                        backgroundSprite.draw(target, states);
                     }
                 }
                 else // No textures where loaded
@@ -633,10 +642,10 @@ namespace tgui
             }
             else // This menu is not open
             {
-                if (backgroundTexture.isLoaded())
+                if (backgroundSprite.isSet())
                 {
-                    backgroundTexture.setSize({m_menus[i].text.getSize().x + (2 * distanceToSide), getSize().y});
-                    backgroundTexture.draw(target, states);
+                    backgroundSprite.setSize({m_menus[i].text.getSize().x + (2 * distanceToSide), getSize().y});
+                    backgroundSprite.draw(target, states);
                 }
             }
 

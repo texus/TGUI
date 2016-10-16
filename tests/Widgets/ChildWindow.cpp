@@ -308,7 +308,7 @@ TEST_CASE("[ChildWindow]")
                 renderer->setTextureTitleBar(textureTitleBar);
             }
 
-            REQUIRE(renderer->getProperty("TextureTitleBar").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureTitleBar").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureTitleBar().getData() == textureTitleBar.getData());
         }

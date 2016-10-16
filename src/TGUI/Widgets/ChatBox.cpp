@@ -85,7 +85,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        getRenderer()->getTextureBackground().setSize(getInnerSize());
+        m_spriteBackground.setSize(getInnerSize());
 
         updateRendering();
         updatePosition();
@@ -445,8 +445,7 @@ namespace tgui
         }
         else if (property == "texturebackground")
         {
-            value.getTexture().setSize(getInnerSize());
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+            m_spriteBackground.setTexture(value.getTexture());
         }
         else if (property == "scrollbar")
         {
@@ -456,7 +455,7 @@ namespace tgui
         {
             float opacity = value.getNumber();
 
-            getRenderer()->getTextureBackground().setOpacity(opacity);
+            m_spriteBackground.setOpacity(opacity);
             m_scroll.getRenderer()->setOpacity(opacity);
 
             for (auto& line : m_lines)
@@ -514,8 +513,8 @@ namespace tgui
         }
 
         // Draw the background
-        if (getRenderer()->getTextureBackground().isLoaded())
-            getRenderer()->getTextureBackground().draw(target, states);
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.draw(target, states);
         else
             drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColor());
 

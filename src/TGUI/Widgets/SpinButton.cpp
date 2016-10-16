@@ -81,10 +81,10 @@ namespace tgui
         Widget::setSize(size);
 
         sf::Vector2f arrowSize = getArrowSize();
-        getRenderer()->getTextureArrowUp().setSize(arrowSize);
-        getRenderer()->getTextureArrowUpHover().setSize(arrowSize);
-        getRenderer()->getTextureArrowDown().setSize(arrowSize);
-        getRenderer()->getTextureArrowDownHover().setSize(arrowSize);
+        m_spriteArrowUp.setSize(arrowSize);
+        m_spriteArrowUpHover.setSize(arrowSize);
+        m_spriteArrowDown.setSize(arrowSize);
+        m_spriteArrowDownHover.setSize(arrowSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,17 +166,17 @@ namespace tgui
 
         if (verticalScroll)
         {
-            getRenderer()->getTextureArrowUp().setRotation(0);
-            getRenderer()->getTextureArrowUpHover().setRotation(0);
-            getRenderer()->getTextureArrowDown().setRotation(0);
-            getRenderer()->getTextureArrowDownHover().setRotation(0);
+            m_spriteArrowUp.setRotation(0);
+            m_spriteArrowUpHover.setRotation(0);
+            m_spriteArrowDown.setRotation(0);
+            m_spriteArrowDownHover.setRotation(0);
         }
         else
         {
-            getRenderer()->getTextureArrowUp().setRotation(-90);
-            getRenderer()->getTextureArrowUpHover().setRotation(-90);
-            getRenderer()->getTextureArrowDown().setRotation(-90);
-            getRenderer()->getTextureArrowDownHover().setRotation(-90);
+            m_spriteArrowUp.setRotation(-90);
+            m_spriteArrowUpHover.setRotation(-90);
+            m_spriteArrowDown.setRotation(-90);
+            m_spriteArrowDownHover.setRotation(-90);
         }
 
         updateSize();
@@ -295,21 +295,29 @@ namespace tgui
         {
             updateSize();
         }
-        else if ((property == "texturearrowup") || (property == "texturearrowuphover") || (property == "texturearrowdown") || (property == "texturearrowdownhover"))
+        else if (property == "texturearrowup")
         {
-            value.getTexture().setSize(getArrowSize());
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
-
-            if (!m_verticalScroll)
-                value.getTexture().setRotation(-90);
+            m_spriteArrowUp.setTexture(value.getTexture());
+        }
+        else if (property == "texturearrowuphover")
+        {
+            m_spriteArrowUpHover.setTexture(value.getTexture());
+        }
+        else if (property == "texturearrowdown")
+        {
+            m_spriteArrowDown.setTexture(value.getTexture());
+        }
+        else if (property == "texturearrowdownhover")
+        {
+            m_spriteArrowDownHover.setTexture(value.getTexture());
         }
         else if (property == "opacity")
         {
             float opacity = value.getNumber();
-            getRenderer()->getTextureArrowUp().setOpacity(opacity);
-            getRenderer()->getTextureArrowUpHover().setOpacity(opacity);
-            getRenderer()->getTextureArrowDown().setOpacity(opacity);
-            getRenderer()->getTextureArrowDownHover().setOpacity(opacity);
+            m_spriteArrowUp.setOpacity(opacity);
+            m_spriteArrowUpHover.setOpacity(opacity);
+            m_spriteArrowDown.setOpacity(opacity);
+            m_spriteArrowDownHover.setOpacity(opacity);
         }
         else if ((property != "bordercolor")
               && (property != "backgroundcolor")
@@ -350,12 +358,12 @@ namespace tgui
         float spaceBetweenArrows = getRenderer()->getSpaceBetweenArrows();
 
         // Draw the top/left arrow
-        if (getRenderer()->getTextureArrowUp().isLoaded() && getRenderer()->getTextureArrowDown().isLoaded())
+        if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
         {
-            if (m_mouseHover && m_mouseHoverOnTopArrow && getRenderer()->getTextureArrowUpHover().isLoaded())
-                getRenderer()->getTextureArrowUpHover().draw(target, states);
+            if (m_mouseHover && m_mouseHoverOnTopArrow && m_spriteArrowUpHover.isSet())
+                m_spriteArrowUpHover.draw(target, states);
             else
-                getRenderer()->getTextureArrowUp().draw(target, states);
+                m_spriteArrowUp.draw(target, states);
         }
         else
         {
@@ -416,12 +424,12 @@ namespace tgui
         }
 
         // Draw the bottom/right arrow
-        if (getRenderer()->getTextureArrowUp().isLoaded() && getRenderer()->getTextureArrowDown().isLoaded())
+        if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
         {
-            if (m_mouseHover && !m_mouseHoverOnTopArrow && getRenderer()->getTextureArrowDownHover().isLoaded())
-                getRenderer()->getTextureArrowDownHover().draw(target, states);
+            if (m_mouseHover && !m_mouseHoverOnTopArrow && m_spriteArrowDownHover.isSet())
+                m_spriteArrowDownHover.draw(target, states);
             else
-                getRenderer()->getTextureArrowDown().draw(target, states);
+                m_spriteArrowDown.draw(target, states);
         }
         else // There are no images
         {

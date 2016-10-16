@@ -333,11 +333,11 @@ TEST_CASE("[ComboBox]")
                 renderer->setTextureArrowDownHover(textureArrowDownHover);
             }
 
-            REQUIRE(renderer->getProperty("TextureBackground").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
             REQUIRE(renderer->getTextureArrowUp().getData() == textureArrowUp.getData());

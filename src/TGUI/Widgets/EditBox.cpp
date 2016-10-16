@@ -100,10 +100,10 @@ namespace tgui
         if (m_textSize == 0)
             setText(m_text);
 
-        getRenderer()->getTexture().setSize(getInnerSize());
-        getRenderer()->getTextureHover().setSize(getInnerSize());
-        getRenderer()->getTextureDisabled().setSize(getInnerSize());
-        getRenderer()->getTextureFocused().setSize(getInnerSize());
+        m_sprite.setSize(getInnerSize());
+        m_spriteHover.setSize(getInnerSize());
+        m_spriteDisabled.setSize(getInnerSize());
+        m_spriteFocused.setSize(getInnerSize());
 
         // Set the size of the caret
         m_caret.setSize({m_caret.getSize().x, getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
@@ -946,13 +946,22 @@ namespace tgui
         {
             m_defaultText.setColor(value.getColor());
         }
-        else if ((property == "texture") || (property == "texturehover") || (property == "texturedisabled") || (property == "texturefocused"))
+        else if (property == "texture")
         {
-            value.getTexture().setSize(getInnerSize());
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
-
-            if (property == "texturefocused")
-                m_allowFocus = value.getTexture().isLoaded();
+            m_sprite.setTexture(value.getTexture());
+        }
+        else if (property == "texturehover")
+        {
+            m_spriteHover.setTexture(value.getTexture());
+        }
+        else if (property == "texturedisabled")
+        {
+            m_spriteDisabled.setTexture(value.getTexture());
+        }
+        else if (property == "texturefocused")
+        {
+            m_spriteFocused.setTexture(value.getTexture());
+            m_allowFocus = m_spriteFocused.isSet();
         }
         else if (property == "textstyle")
         {
@@ -973,10 +982,10 @@ namespace tgui
             m_textSelection.setOpacity(opacity);
             m_defaultText.setOpacity(opacity);
 
-            getRenderer()->getTexture().setOpacity(opacity);
-            getRenderer()->getTextureHover().setOpacity(opacity);
-            getRenderer()->getTextureDisabled().setOpacity(opacity);
-            getRenderer()->getTextureFocused().setOpacity(opacity);
+            m_sprite.setOpacity(opacity);
+            m_spriteHover.setOpacity(opacity);
+            m_spriteDisabled.setOpacity(opacity);
+            m_spriteFocused.setOpacity(opacity);
         }
         else if (property == "font")
         {
@@ -1252,20 +1261,20 @@ namespace tgui
         }
 
         // Draw the background
-        if (getRenderer()->getTexture().isLoaded())
+        if (m_sprite.isSet())
         {
-            if (getRenderer()->getTextureDisabled().isLoaded())
-                getRenderer()->getTextureDisabled().draw(target, states);
+            if (m_spriteDisabled.isSet())
+                m_spriteDisabled.draw(target, states);
             else
             {
-                if (m_mouseHover && getRenderer()->getTextureHover().isLoaded())
-                    getRenderer()->getTextureHover().draw(target, states);
+                if (m_mouseHover && m_spriteHover.isSet())
+                    m_spriteHover.draw(target, states);
                 else
-                    getRenderer()->getTexture().draw(target, states);
+                    m_sprite.draw(target, states);
 
                 // When the edit box is focused then draw an extra image
-                if (m_focused && getRenderer()->getTextureFocused().isLoaded())
-                    getRenderer()->getTextureFocused().draw(target, states);
+                if (m_focused && m_spriteFocused.isSet())
+                    m_spriteFocused.draw(target, states);
             }
         }
         else // There is no background texture

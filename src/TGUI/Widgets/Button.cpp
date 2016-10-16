@@ -85,10 +85,11 @@ namespace tgui
         Widget::setSize(size);
 
         // Reset the texture sizes
-        getRenderer()->getTexture().setSize(getInnerSize());
-        getRenderer()->getTextureHover().setSize(getInnerSize());
-        getRenderer()->getTextureDown().setSize(getInnerSize());
-        getRenderer()->getTextureFocused().setSize(getInnerSize());
+        m_sprite.setSize(getInnerSize());
+        m_spriteHover.setSize(getInnerSize());
+        m_spriteDown.setSize(getInnerSize());
+        m_spriteDisabled.setSize(getInnerSize());
+        m_spriteFocused.setSize(getInnerSize());
 
         // Recalculate the text size when auto sizing
         if (m_textSize == 0)
@@ -223,7 +224,7 @@ namespace tgui
     void Button::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if (getRenderer()->getTextureFocused().isLoaded())
+        if (getRenderer()->getTextureFocused().getData())
             Widget::widgetFocused();
         else
             unfocus();
@@ -258,22 +259,36 @@ namespace tgui
         {
             updateTextColorAndStyle();
         }
-        else if ((property == "texture") || (property == "texturehover") || (property == "texturedown") || (property == "texturedisabled") || (property == "texturefocused"))
+        else if (property == "texture")
         {
-            value.getTexture().setSize(getInnerSize());
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
-
-            if (property == "texturefocused")
-                m_allowFocus = value.getTexture().isLoaded();
+            m_sprite.setTexture(value.getTexture());
+        }
+        else if (property == "texturehover")
+        {
+            m_spriteHover.setTexture(value.getTexture());
+        }
+        else if (property == "texturedown")
+        {
+            m_spriteDown.setTexture(value.getTexture());
+        }
+        else if (property == "texturedisabled")
+        {
+            m_spriteDisabled.setTexture(value.getTexture());
+        }
+        else if (property == "texturefocused")
+        {
+            m_spriteFocused.setTexture(value.getTexture());
+            m_allowFocus = m_spriteFocused.isSet();
         }
         else if (property == "opacity")
         {
             float opacity = value.getNumber();
 
-            getRenderer()->getTexture().setOpacity(opacity);
-            getRenderer()->getTextureHover().setOpacity(opacity);
-            getRenderer()->getTextureDown().setOpacity(opacity);
-            getRenderer()->getTextureFocused().setOpacity(opacity);
+            m_sprite.setOpacity(opacity);
+            m_spriteHover.setOpacity(opacity);
+            m_spriteDown.setOpacity(opacity);
+            m_spriteDisabled.setOpacity(opacity);
+            m_spriteFocused.setOpacity(opacity);
 
             m_text.setOpacity(opacity);
         }
@@ -358,25 +373,25 @@ namespace tgui
         }
 
         // Check if there is a background texture
-        if (getRenderer()->getTexture().isLoaded())
+        if (m_sprite.isSet())
         {
-            if (!m_enabled && getRenderer()->getTextureDisabled().isLoaded())
-                getRenderer()->getTextureDisabled().draw(target, states);
+            if (!m_enabled && m_spriteDisabled.isSet())
+                m_spriteDisabled.draw(target, states);
             else if (m_mouseHover)
             {
-                if (m_mouseDown && getRenderer()->getTextureDown().isLoaded())
-                    getRenderer()->getTextureDown().draw(target, states);
-                else if (getRenderer()->getTextureHover().isLoaded())
-                    getRenderer()->getTextureHover().draw(target, states);
+                if (m_mouseDown && m_spriteDown.isSet())
+                    m_spriteDown.draw(target, states);
+                else if (m_spriteHover.isSet())
+                    m_spriteHover.draw(target, states);
                 else
-                    getRenderer()->getTexture().draw(target, states);
+                    m_sprite.draw(target, states);
             }
             else
-                getRenderer()->getTexture().draw(target, states);
+                m_sprite.draw(target, states);
 
             // When the edit box is focused then draw an extra image
-            if (m_focused && getRenderer()->getTextureFocused().isLoaded())
-                getRenderer()->getTextureFocused().draw(target, states);
+            if (m_focused && m_spriteFocused.isSet())
+                m_spriteFocused.draw(target, states);
         }
         else // There is no background texture
         {

@@ -145,7 +145,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        getRenderer()->getTextureBackground().setSize(getInnerSize());
+        m_spriteBackground.setSize(getInnerSize());
 
         Padding padding = getRenderer()->getPadding();
         float height = getInnerSize().y - padding.top - padding.bottom;
@@ -156,13 +156,13 @@ namespace tgui
             updateListBoxHeight();
         }
 
-        if (getRenderer()->getTextureArrowUp().isLoaded() && getRenderer()->getTextureArrowDown().isLoaded())
+        if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
         {
-            getRenderer()->getTextureArrowUp().setSize({getRenderer()->getTextureArrowUp().getImageSize().x * (height / getRenderer()->getTextureArrowUp().getImageSize().y), height});
-            getRenderer()->getTextureArrowDown().setSize({getRenderer()->getTextureArrowDown().getImageSize().x * (height / getRenderer()->getTextureArrowDown().getImageSize().y), height});
+            m_spriteArrowUp.setSize({getRenderer()->getTextureArrowUp().getImageSize().x * (height / getRenderer()->getTextureArrowUp().getImageSize().y), height});
+            m_spriteArrowDown.setSize({getRenderer()->getTextureArrowDown().getImageSize().x * (height / getRenderer()->getTextureArrowDown().getImageSize().y), height});
 
-            getRenderer()->getTextureArrowUpHover().setSize(getRenderer()->getTextureArrowUp().getSize());
-            getRenderer()->getTextureArrowDownHover().setSize(getRenderer()->getTextureArrowDown().getSize());
+            m_spriteArrowUpHover.setSize(m_spriteArrowUp.getSize());
+            m_spriteArrowDownHover.setSize(m_spriteArrowDown.getSize());
         }
 
         m_text.setCharacterSize(m_listBox->getTextSize());
@@ -474,13 +474,25 @@ namespace tgui
         }
         else if (property == "texturebackground")
         {
-            value.getTexture().setSize(getInnerSize());
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+            m_spriteBackground.setTexture(value.getTexture());
         }
-        else if ((property == "texturearrowup") || (property == "texturearrowuphover") || (property == "texturearrowdown") || (property == "texturearrowdownhover"))
+        else if (property == "texturearrowup")
         {
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+            m_spriteArrowUp.setTexture(value.getTexture());
             updateSize();
+        }
+        else if (property == "texturearrowuphover")
+        {
+            m_spriteArrowUpHover.setTexture(value.getTexture());
+        }
+        else if (property == "texturearrowdown")
+        {
+            m_spriteArrowDown.setTexture(value.getTexture());
+            updateSize();
+        }
+        else if (property == "texturearrowdownhover")
+        {
+            m_spriteArrowDownHover.setTexture(value.getTexture());
         }
         else if (property == "listbox")
         {
@@ -490,11 +502,11 @@ namespace tgui
         {
             float opacity = value.getNumber();
 
-            getRenderer()->getTextureBackground().setOpacity(opacity);
-            getRenderer()->getTextureArrowUp().setOpacity(opacity);
-            getRenderer()->getTextureArrowUpHover().setOpacity(opacity);
-            getRenderer()->getTextureArrowDown().setOpacity(opacity);
-            getRenderer()->getTextureArrowDownHover().setOpacity(opacity);
+            m_spriteBackground.setOpacity(opacity);
+            m_spriteArrowUp.setOpacity(opacity);
+            m_spriteArrowUpHover.setOpacity(opacity);
+            m_spriteArrowDown.setOpacity(opacity);
+            m_spriteArrowDownHover.setOpacity(opacity);
 
             m_text.setOpacity(opacity);
         }
@@ -627,36 +639,36 @@ namespace tgui
         sf::RenderStates statesForText = states;
 
         // Draw the background
-        if (getRenderer()->getTextureBackground().isLoaded())
-            getRenderer()->getTextureBackground().draw(target, states);
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.draw(target, states);
         else
             drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColor());
 
         // Check if we have textures for the arrow
         float arrowSize;
         Padding padding = getRenderer()->getPadding();
-        if (getRenderer()->getTextureArrowUp().isLoaded() && getRenderer()->getTextureArrowDown().isLoaded())
+        if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
         {
             // Set the arrow like it should (down when list box is invisible, up when it is visible)
             if (m_listBox->isVisible())
             {
-                arrowSize = getRenderer()->getTextureArrowUp().getSize().x;
+                arrowSize = m_spriteArrowUp.getSize().x;
                 states.transform.translate({getInnerSize().x - padding.right - arrowSize, padding.top});
 
-                if (m_mouseHover && getRenderer()->getTextureArrowUpHover().isLoaded())
-                    getRenderer()->getTextureArrowUpHover().draw(target, states);
+                if (m_mouseHover && m_spriteArrowUpHover.isSet())
+                    m_spriteArrowUpHover.draw(target, states);
                 else
-                    getRenderer()->getTextureArrowUp().draw(target, states);
+                    m_spriteArrowUp.draw(target, states);
             }
             else
             {
-                arrowSize = getRenderer()->getTextureArrowDown().getSize().x;
+                arrowSize = m_spriteArrowDown.getSize().x;
                 states.transform.translate({getInnerSize().x - padding.right - arrowSize, padding.top});
 
-                if (m_mouseHover && getRenderer()->getTextureArrowDownHover().isLoaded())
-                    getRenderer()->getTextureArrowDownHover().draw(target, states);
+                if (m_mouseHover && m_spriteArrowDownHover.isSet())
+                    m_spriteArrowDownHover.draw(target, states);
                 else
-                    getRenderer()->getTextureArrowDown().draw(target, states);
+                    m_spriteArrowDown.draw(target, states);
             }
         }
         else // There are no textures for the arrow

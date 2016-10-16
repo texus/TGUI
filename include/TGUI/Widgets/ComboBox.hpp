@@ -560,6 +560,12 @@ namespace tgui
 
         Text m_text;
 
+        Sprite m_spriteBackground;
+        Sprite m_spriteArrowUp;
+        Sprite m_spriteArrowDown;
+        Sprite m_spriteArrowUpHover;
+        Sprite m_spriteArrowDownHover;
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 

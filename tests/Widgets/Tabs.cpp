@@ -131,8 +131,8 @@ TEST_CASE("[Tabs]")
                 renderer->setTextureSelectedTab(textureSelected);
             }
 
-            REQUIRE(renderer->getProperty("TextureTab").getTexture().isLoaded());
-            REQUIRE(renderer->getProperty("TextureSelectedTab").getTexture().isLoaded());
+            REQUIRE(renderer->getProperty("TextureTab").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureSelectedTab").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureTab().getData() == textureNormal.getData());
             REQUIRE(renderer->getTextureSelectedTab().getData() == textureSelected.getData());

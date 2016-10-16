@@ -98,7 +98,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        getRenderer()->getTextureBackground().setSize(getInnerSize());
+        m_spriteBackground.setSize(getInnerSize());
 
         Padding padding = getRenderer()->getPadding();
         m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y - padding.top - padding.bottom)});
@@ -648,8 +648,7 @@ namespace tgui
         }
         else if (property == "texturebackground")
         {
-            value.getTexture().setSize(getInnerSize());
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+            m_spriteBackground.setTexture(value.getTexture());
         }
         else if (property == "textstyle")
         {
@@ -677,7 +676,7 @@ namespace tgui
         {
             float opacity = value.getNumber();
 
-            getRenderer()->getTextureBackground().setOpacity(opacity);
+            m_spriteBackground.setOpacity(opacity);
             m_scroll.getRenderer()->setOpacity(opacity);
             for (auto& item : m_items)
                 item.setOpacity(opacity);
@@ -823,8 +822,8 @@ namespace tgui
         }
 
         // Draw the background
-        if (getRenderer()->getTextureBackground().isLoaded())
-            getRenderer()->getTextureBackground().draw(target, states);
+        if (m_spriteBackground.isSet())
+            m_spriteBackground.draw(target, states);
         else
             drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColor());
 

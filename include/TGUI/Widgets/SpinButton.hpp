@@ -263,6 +263,11 @@ namespace tgui
         // On which arrow is the mouse?
         bool m_mouseHoverOnTopArrow = false;
         bool m_mouseDownOnTopArrow = false;
+
+        Sprite m_spriteArrowUp;
+        Sprite m_spriteArrowUpHover;
+        Sprite m_spriteArrowDown;
+        Sprite m_spriteArrowDownHover;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

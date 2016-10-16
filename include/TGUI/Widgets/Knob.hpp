@@ -326,6 +326,9 @@ namespace tgui
         int m_maximum = 360;
 
         float m_angle = 270;
+
+        Sprite m_spriteBackground;
+        Sprite m_spriteForeground;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

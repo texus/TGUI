@@ -8,6 +8,7 @@ set(TEST_SOURCES
     Container.cpp
     Font.cpp
     Layouts.cpp
+    Sprite.cpp
     Signal.cpp
     Tests.cpp
     Text.cpp

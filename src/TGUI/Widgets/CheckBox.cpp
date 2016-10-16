@@ -66,10 +66,10 @@ namespace tgui
 
     sf::Vector2f CheckBox::getFullSize() const
     {
-        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded()
+        if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
          && (getRenderer()->getTextureUnchecked().getImageSize() != getRenderer()->getTextureChecked().getImageSize()))
         {
-            sf::Vector2f sizeDiff = getRenderer()->getTextureChecked().getSize() - getRenderer()->getTextureUnchecked().getSize();
+            sf::Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
             if (getText().isEmpty())
                 return getSize() + sf::Vector2f{std::max(0.f, sizeDiff.x - getRenderer()->getBorders().right), std::max(0.f, sizeDiff.y - getRenderer()->getBorders().top)};
             else
@@ -89,10 +89,10 @@ namespace tgui
     sf::Vector2f CheckBox::getWidgetOffset() const
     {
         float yOffset = 0;
-        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded()
+        if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
          && (getRenderer()->getTextureUnchecked().getImageSize() != getRenderer()->getTextureChecked().getImageSize()))
         {
-            float sizeDiff = getRenderer()->getTextureChecked().getSize().y - getRenderer()->getTextureUnchecked().getSize().y;
+            float sizeDiff = m_spriteChecked.getSize().y - m_spriteUnchecked.getSize().y;
             if (sizeDiff > getRenderer()->getBorders().top)
                 yOffset = sizeDiff - getRenderer()->getBorders().top;
         }
@@ -174,21 +174,21 @@ namespace tgui
 
     void CheckBox::updateTextureSizes()
     {
-        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
+        if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
-            getRenderer()->getTextureUnchecked().setSize(getInnerSize());
-            getRenderer()->getTextureChecked().setSize(
+            m_spriteUnchecked.setSize(getInnerSize());
+            m_spriteChecked.setSize(
                 {getInnerSize().x + ((getRenderer()->getTextureChecked().getImageSize().x - getRenderer()->getTextureUnchecked().getImageSize().x) * (getInnerSize().x / getRenderer()->getTextureUnchecked().getImageSize().x)),
                  getInnerSize().y + ((getRenderer()->getTextureChecked().getImageSize().y - getRenderer()->getTextureUnchecked().getImageSize().y) * (getInnerSize().y / getRenderer()->getTextureUnchecked().getImageSize().y))}
             );
 
-            getRenderer()->getTextureUncheckedHover().setSize(getRenderer()->getTextureUnchecked().getSize());
-            getRenderer()->getTextureCheckedHover().setSize(getRenderer()->getTextureChecked().getSize());
+            m_spriteUncheckedHover.setSize(m_spriteUnchecked.getSize());
+            m_spriteCheckedHover.setSize(m_spriteChecked.getSize());
 
-            getRenderer()->getTextureUncheckedDisabled().setSize(getRenderer()->getTextureUnchecked().getSize());
-            getRenderer()->getTextureCheckedDisabled().setSize(getRenderer()->getTextureChecked().getSize());
+            m_spriteUncheckedDisabled.setSize(m_spriteUnchecked.getSize());
+            m_spriteCheckedDisabled.setSize(m_spriteChecked.getSize());
 
-            getRenderer()->getTextureFocused().setSize(getRenderer()->getTextureUnchecked().getSize());
+            m_spriteFocused.setSize(m_spriteUnchecked.getSize());
         }
     }
 
@@ -204,43 +204,43 @@ namespace tgui
             drawBorders(target, states, borders, getSize(), getCurrentBorderColor());
 
         states.transform.translate({borders.left, borders.top});
-        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
+        if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
             if (m_checked)
             {
-                Texture* checkedTexture;
-                if (!m_enabled && getRenderer()->getTextureCheckedDisabled().isLoaded())
-                    checkedTexture = &getRenderer()->getTextureCheckedDisabled();
-                else if (m_mouseHover && getRenderer()->getTextureCheckedHover().isLoaded())
-                    checkedTexture = &getRenderer()->getTextureCheckedHover();
+                const Sprite* checkedSprite;
+                if (!m_enabled && m_spriteCheckedDisabled.isSet())
+                    checkedSprite = &m_spriteCheckedDisabled;
+                else if (m_mouseHover && m_spriteCheckedHover.isSet())
+                    checkedSprite = &m_spriteCheckedHover;
                 else
-                    checkedTexture = &getRenderer()->getTextureChecked();
+                    checkedSprite = &m_spriteChecked;
 
                 // The image may need to be shifted when the check leaves the box
-                if (getSize().y != checkedTexture->getSize().y)
+                if (getSize().y != checkedSprite->getSize().y)
                 {
-                    float diff = getSize().y - checkedTexture->getSize().y;
+                    float diff = getSize().y - checkedSprite->getSize().y;
 
                     states.transform.translate({0, diff});
-                    checkedTexture->draw(target, states);
+                    checkedSprite->draw(target, states);
                     states.transform.translate({0, -diff});
                 }
                 else // Draw the checked texture normally
-                    checkedTexture->draw(target, states);
+                    checkedSprite->draw(target, states);
             }
             else
             {
-                if (!m_enabled && getRenderer()->getTextureUncheckedDisabled().isLoaded())
-                    getRenderer()->getTextureUncheckedDisabled().draw(target, states);
-                else if (m_mouseHover && getRenderer()->getTextureUncheckedHover().isLoaded())
-                    getRenderer()->getTextureUncheckedHover().draw(target, states);
+                if (!m_enabled && m_spriteUncheckedDisabled.isSet())
+                    m_spriteUncheckedDisabled.draw(target, states);
+                else if (m_mouseHover && m_spriteUncheckedHover.isSet())
+                    m_spriteUncheckedHover.draw(target, states);
                 else
-                    getRenderer()->getTextureUnchecked().draw(target, states);
+                    m_spriteUnchecked.draw(target, states);
             }
 
             // When the radio button is focused then draw an extra image
-            if (m_focused && getRenderer()->getTextureFocused().isLoaded())
-                getRenderer()->getTextureFocused().draw(target, states);
+            if (m_focused && m_spriteFocused.isSet())
+                m_spriteFocused.draw(target, states);
         }
         else // There are no images
         {

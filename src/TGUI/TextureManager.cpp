@@ -35,7 +35,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextureManager::getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect)
+    std::shared_ptr<TextureData> TextureManager::getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect)
     {
         // Look if we already had this image
         auto imageIt = m_imageMap.find(filename);
@@ -50,12 +50,10 @@ namespace tgui
                     // The texture is now used at multiple places
                     ++(dataIt->users);
 
-                    texture.getData() = dataIt->data;
-
                     // Let the texture alert the texture manager when it is being copied or destroyed
                     texture.setCopyCallback(&TextureManager::copyTexture);
                     texture.setDestructCallback(&TextureManager::removeTexture);
-                    return true;
+                    return dataIt->data;
                 }
             }
         }
@@ -66,31 +64,38 @@ namespace tgui
         }
 
         // Add new data to the list
-        TextureDataHolder data;
-        data.filename = filename;
-        data.users = 1;
-        data.data = texture.getData();
-        data.data->rect = partRect;
-        imageIt->second.push_back(std::move(data));
+        TextureDataHolder dataHolder;
+        dataHolder.filename = filename;
+        dataHolder.users = 1;
+        dataHolder.data = std::make_shared<TextureData>();
+        dataHolder.data->rect = partRect;
+        imageIt->second.push_back(std::move(dataHolder));
 
         // Let the texture alert the texture manager when it is being copied or destroyed
         texture.setCopyCallback(&TextureManager::copyTexture);
         texture.setDestructCallback(&TextureManager::removeTexture);
 
         // Load the image
-        texture.getData()->image = texture.getImageLoader()(filename);
-        if (texture.getData()->image != nullptr)
+        auto data = imageIt->second.back().data;
+        data->image = texture.getImageLoader()(filename);
+        if (data->image != nullptr)
         {
             // Create a texture from the image
+            bool loadFromImageSuccess;
             if (partRect == sf::IntRect{})
-                return texture.getData()->texture.loadFromImage(*texture.getData()->image);
+                loadFromImageSuccess = data->texture.loadFromImage(*data->image);
             else
-                return texture.getData()->texture.loadFromImage(*texture.getData()->image, partRect);
+                loadFromImageSuccess = data->texture.loadFromImage(*data->image, partRect);
+
+            if (loadFromImageSuccess)
+                return data;
+            else
+                return nullptr;
         }
 
         // The image could not be loaded
         m_imageMap.erase(imageIt);
-        return false;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

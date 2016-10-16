@@ -23,9 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Color.hpp>
 #include <TGUI/Texture.hpp>
-#include <TGUI/Clipping.hpp>
 #include <TGUI/Exception.hpp>
 #include <TGUI/TextureManager.hpp>
 
@@ -61,51 +59,49 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture::Texture(const Texture& copy) :
-        sf::Transformable {copy},
-        m_data            (copy.m_data),
-        m_vertices        (copy.m_vertices), // Did not compile in VS2013 when using braces
-        m_size            {copy.m_size},
-        m_middleRect      {copy.m_middleRect},
-        m_textureRect     {copy.m_textureRect},
-        m_vertexColor     {copy.m_vertexColor},
-        m_opacity         {copy.m_opacity},
-        m_scalingType     {copy.m_scalingType},
-        m_loaded          {copy.m_loaded},
-        m_id              (copy.m_id), // Did not compile in VS2013 when using braces
-        m_copyCallback    {copy.m_copyCallback},
-        m_destructCallback{copy.m_destructCallback}
+    Texture::Texture(const Texture& other) :
+        m_data            {other.m_data},
+        m_middleRect      {other.m_middleRect},
+        m_id              (other.m_id), // Did not compile in VS2013 when using braces
+        m_copyCallback    {other.m_copyCallback},
+        m_destructCallback{other.m_destructCallback}
     {
-        if (m_loaded && (m_copyCallback != nullptr))
+        if (getData() && (m_copyCallback != nullptr))
             m_copyCallback(getData());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Texture::Texture(Texture&& other) :
+        m_data            {std::move(other.m_data)},
+        m_middleRect      {std::move(other.m_middleRect)},
+        m_id              (std::move(other.m_id)), // Did not compile in VS2013 when using braces
+        m_copyCallback    {std::move(other.m_copyCallback)},
+        m_destructCallback{std::move(other.m_destructCallback)}
+    {
+        other.m_data = nullptr;
+        other.m_copyCallback = nullptr;
+        other.m_destructCallback = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::~Texture()
     {
-        if (m_loaded && (m_destructCallback != nullptr))
+        if (getData() && (m_destructCallback != nullptr))
             m_destructCallback(getData());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture& Texture::operator=(const Texture& right)
+    Texture& Texture::operator=(const Texture& other)
     {
-        if (this != &right)
+        if (this != &other)
         {
-            Texture temp{right};
-            sf::Transformable::operator=(right);
+            Texture temp{other};
 
             std::swap(m_data,             temp.m_data);
-            std::swap(m_vertices,         temp.m_vertices);
-            std::swap(m_size,             temp.m_size);
             std::swap(m_middleRect,       temp.m_middleRect);
-            std::swap(m_textureRect,      temp.m_textureRect);
-            std::swap(m_vertexColor,      temp.m_vertexColor);
-            std::swap(m_opacity,          temp.m_opacity);
-            std::swap(m_scalingType,      temp.m_scalingType);
-            std::swap(m_loaded,           temp.m_loaded);
             std::swap(m_id,               temp.m_id);
             std::swap(m_copyCallback,     temp.m_copyCallback);
             std::swap(m_destructCallback, temp.m_destructCallback);
@@ -116,28 +112,48 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Texture& Texture::operator=(Texture&& other)
+    {
+        if (this != &other)
+        {
+            m_data             = std::move(other.m_data);
+            m_middleRect       = std::move(other.m_middleRect);
+            m_id               = std::move(other.m_id);
+            m_copyCallback     = std::move(other.m_copyCallback);
+            m_destructCallback = std::move(other.m_destructCallback);
+
+            other.m_data = nullptr;
+            other.m_copyCallback = nullptr;
+            other.m_destructCallback = nullptr;
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Texture::load(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middleRect)
     {
-        if (m_loaded && (m_destructCallback != nullptr))
+        if (getData() && (m_destructCallback != nullptr))
             m_destructCallback(getData());
 
-        m_loaded = false;
-        if (!m_textureLoader(*this, id, partRect))
+        m_data = nullptr;
+        auto data = m_textureLoader(*this, id, partRect);
+        if (!data)
             throw Exception{"Failed to load '" + id + "'"};
 
         m_id = id;
-        setTexture(m_data, middleRect);
+        setTextureData(data, middleRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Texture::load(const sf::Texture& texture, const sf::IntRect& partRect, const sf::IntRect& middleRect)
     {
-        if (m_loaded && (m_destructCallback != nullptr))
+        if (getData() && (m_destructCallback != nullptr))
             m_destructCallback(getData());
 
-        m_loaded = false;
-
+        m_data = nullptr;
         auto data = std::make_shared<TextureData>();
         if (partRect == sf::IntRect{})
             data->texture = texture;
@@ -145,25 +161,7 @@ namespace tgui
             data->texture.loadFromImage(texture.copyToImage(), partRect);
 
         m_id = "";
-        setTexture(data, middleRect);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Texture::setTexture(std::shared_ptr<TextureData> data, const sf::IntRect& middleRect)
-    {
-        if (m_loaded && (m_destructCallback != nullptr))
-            m_destructCallback(getData());
-
-        m_data = data;
-        m_loaded = true;
-
-        if (middleRect == sf::IntRect{})
-            m_middleRect = {0, 0, static_cast<int>(m_data->texture.getSize().x), static_cast<int>(m_data->texture.getSize().y)};
-        else
-            m_middleRect = middleRect;
-
-        setSize(sf::Vector2f{m_data->texture.getSize()});
+        setTextureData(data, middleRect);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,88 +173,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<TextureData>& Texture::getData()
+    std::shared_ptr<TextureData> Texture::getData() const
     {
         return m_data;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    std::shared_ptr<const TextureData> Texture::getData() const
-    {
-        return m_data;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Texture::setSize(const sf::Vector2f& size)
-    {
-        m_size.x = std::max(size.x, 0.f);
-        m_size.y = std::max(size.y, 0.f);
-
-        if (m_loaded)
-            updateVertices();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::Vector2f Texture::getSize() const
-    {
-        return m_size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f Texture::getImageSize() const
     {
-        return sf::Vector2f{m_data->texture.getSize()};
+        if (m_data)
+            return sf::Vector2f{m_data->texture.getSize()};
+        else
+            return {0,0};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setColor(const sf::Color& color)
+    void Texture::setSmooth(bool smooth)
     {
-        m_vertexColor = color;
-
-        sf::Color vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
-        for (auto& vertex : m_vertices)
-            vertex.color = vertexColor;
+        if (m_data)
+            m_data->texture.setSmooth(smooth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Texture::getColor() const
+    bool Texture::isSmooth() const
     {
-        return m_vertexColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Texture::setOpacity(float opacity)
-    {
-        m_opacity = opacity;
-        setColor(getColor());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float Texture::getOpacity() const
-    {
-        return m_opacity;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Texture::setTextureRect(const sf::FloatRect& textureRect)
-    {
-        m_textureRect = textureRect;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    sf::FloatRect Texture::getTextureRect() const
-    {
-        return m_textureRect;
+        if (m_data)
+            return m_data->texture.isSmooth();
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -268,154 +215,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setSmooth(bool smooth)
+    bool Texture::isTransparentPixel(sf::Vector2u pixel) const
     {
-        if (m_loaded)
-            m_data->texture.setSmooth(smooth);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Texture::isSmooth() const
-    {
-        return m_data->texture.isSmooth();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Texture::isTransparentPixel(sf::Vector2f pos) const
-    {
-        if (!m_data->image || (m_size.x == 0) || (m_size.y == 0))
+        if (!m_data || !m_data->image)
             return false;
 
-        pos -= getPosition();
-        assert((pos.x >= 0) && (pos.y >= 0) && (pos.x < getSize().x) && (pos.y < getSize().y));
-
-        // Find out on which pixel the mouse is standing
-        sf::Vector2u pixel;
-        switch (m_scalingType)
-        {
-            case ScalingType::Normal:
-            {
-                pixel.x = static_cast<unsigned int>(pos.x / m_size.x * m_data->texture.getSize().x);
-                pixel.y = static_cast<unsigned int>(pos.y / m_size.y * m_data->texture.getSize().y);
-                break;
-            }
-            case ScalingType::Horizontal:
-            {
-                if (pos.x >= m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))
-                {
-                    float xDiff = (pos.x - (m_size.x - (m_data->texture.getSize().x - m_middleRect.left - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y)));
-                    pixel.x = static_cast<unsigned int>(m_middleRect.left + m_middleRect.width + (xDiff / m_size.y * m_data->texture.getSize().y));
-                }
-                else if (pos.x >= m_middleRect.left * (m_size.y / m_data->texture.getSize().y))
-                {
-                    float xDiff = pos.x - (m_middleRect.left * (m_size.y / m_data->texture.getSize().y));
-                    pixel.x = static_cast<unsigned int>(m_middleRect.left + (xDiff / (m_size.x - ((m_data->texture.getSize().x - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))) * m_middleRect.width));
-                }
-                else // Mouse on the left part
-                {
-                    pixel.x = static_cast<unsigned int>(pos.x / m_size.y * m_data->texture.getSize().y);
-                }
-
-                pixel.y = static_cast<unsigned int>(pos.y / m_size.y * m_data->texture.getSize().y);
-                break;
-            }
-            case ScalingType::Vertical:
-            {
-                if (pos.y >= m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))
-                {
-                    float yDiff = (pos.y - (m_size.y - (m_data->texture.getSize().y - m_middleRect.top - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x)));
-                    pixel.y = static_cast<unsigned int>(m_middleRect.top + m_middleRect.height + (yDiff / m_size.x * m_data->texture.getSize().x));
-                }
-                else if (pos.y >= m_middleRect.top * (m_size.x / m_data->texture.getSize().x))
-                {
-                    float yDiff = pos.y - (m_middleRect.top * (m_size.x / m_data->texture.getSize().x));
-                    pixel.y = static_cast<unsigned int>(m_middleRect.top + (yDiff / (m_size.y - ((m_data->texture.getSize().y - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))) * m_middleRect.height));
-                }
-                else // Mouse on the top part
-                {
-                    pixel.y = static_cast<unsigned int>(pos.y / m_size.x * m_data->texture.getSize().x);
-                }
-
-                pixel.x = static_cast<unsigned int>(pos.x / m_size.x * m_data->texture.getSize().x);
-                break;
-            }
-            case ScalingType::NineSlice:
-            {
-                if (pos.x < m_middleRect.left)
-                    pixel.x = static_cast<unsigned int>(pos.x);
-                else if (pos.x >= m_size.x - (m_data->texture.getSize().x - m_middleRect.width - m_middleRect.left))
-                    pixel.x = static_cast<unsigned int>(pos.x - m_size.x + m_data->texture.getSize().x);
-                else
-                {
-                    float xDiff = (pos.x - m_middleRect.left) / (m_size.x - (m_data->texture.getSize().x - m_middleRect.width)) * m_middleRect.width;
-                    pixel.x = static_cast<unsigned int>(m_middleRect.left + xDiff);
-                }
-
-                if (pos.y < m_middleRect.top)
-                    pixel.y = static_cast<unsigned int>(pos.y);
-                else if (pos.y >= m_size.y - (m_data->texture.getSize().y - m_middleRect.height - m_middleRect.top))
-                    pixel.y = static_cast<unsigned int>(pos.y - m_size.y + m_data->texture.getSize().y);
-                else
-                {
-                    float yDiff = (pos.y - m_middleRect.top) / (m_size.y - (m_data->texture.getSize().y - m_middleRect.height)) * m_middleRect.height;
-                    pixel.y = static_cast<unsigned int>(m_middleRect.top + yDiff);
-                }
-
-                break;
-            }
-        };
-
         assert(pixel.x < m_data->texture.getSize().x && pixel.y < m_data->texture.getSize().y);
+
         if (m_data->image->getPixel(pixel.x + m_data->rect.left, pixel.y + m_data->rect.top).a == 0)
             return true;
         else
             return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Texture::ScalingType Texture::getScalingType() const
-    {
-        return m_scalingType;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Texture::isLoaded() const
-    {
-        return m_loaded;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Texture::setImageLoader(const ImageLoaderFunc& func)
-    {
-        assert(func != nullptr);
-        m_imageLoader = func;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Texture::setTextureLoader(const TextureLoaderFunc& func)
-    {
-        assert(func != nullptr);
-        m_textureLoader = func;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Texture::ImageLoaderFunc Texture::getImageLoader()
-    {
-        return m_imageLoader;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Texture::TextureLoaderFunc Texture::getTextureLoader()
-    {
-        return m_textureLoader;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -434,165 +244,47 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::updateVertices()
+    void Texture::setImageLoader(const ImageLoaderFunc& func)
     {
-        // Figure out how the image is scaled best
-        if (m_middleRect == sf::IntRect(0, 0, m_data->texture.getSize().x, m_data->texture.getSize().y))
-        {
-            m_scalingType = ScalingType::Normal;
-        }
-        else if (m_middleRect.height == static_cast<int>(m_data->texture.getSize().y))
-        {
-            if (m_size.x >= (m_data->texture.getSize().x - m_middleRect.width) * (m_size.y / m_data->texture.getSize().y))
-                m_scalingType = ScalingType::Horizontal;
-            else
-                m_scalingType = ScalingType::Normal;
-        }
-        else if (m_middleRect.width == static_cast<int>(m_data->texture.getSize().x))
-        {
-            if (m_size.y >= (m_data->texture.getSize().y - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))
-                m_scalingType = ScalingType::Vertical;
-            else
-                m_scalingType = ScalingType::Normal;
-        }
-        else
-        {
-            if (m_size.x >= m_data->texture.getSize().x - m_middleRect.width)
-            {
-                if (m_size.y >= m_data->texture.getSize().y - m_middleRect.height)
-                    m_scalingType = ScalingType::NineSlice;
-                else
-                    m_scalingType = ScalingType::Horizontal;
-            }
-            else if (m_size.y >= (m_data->texture.getSize().y - m_middleRect.height) * (m_size.x / m_data->texture.getSize().x))
-                m_scalingType = ScalingType::Vertical;
-            else
-                m_scalingType = ScalingType::Normal;
-        }
-
-        sf::Vector2f textureSize{m_data->texture.getSize()};
-        sf::FloatRect middleRect{m_middleRect};
-
-        // Calculate the vertices based on the way we are scaling
-        switch (m_scalingType)
-        {
-        case ScalingType::Normal:
-            ///////////
-            // 0---1 //
-            // |   | //
-            // 2---3 //
-            ///////////
-            m_vertices.resize(4);
-            m_vertices[0] = {{0, 0}, m_vertexColor, {0, 0}};
-            m_vertices[1] = {{m_size.x, 0}, m_vertexColor, {textureSize.x, 0}};
-            m_vertices[2] = {{0, m_size.y}, m_vertexColor, {0, textureSize.y}};
-            m_vertices[3] = {{m_size.x, m_size.y}, m_vertexColor, {textureSize.x, textureSize.y}};
-            break;
-
-        case ScalingType::Horizontal:
-            ///////////////////////
-            // 0---2-------4---6 //
-            // |   |       |   | //
-            // 1---3-------5---7 //
-            ///////////////////////
-            m_vertices.resize(8);
-            m_vertices[0] = {{0, 0}, m_vertexColor, {0, 0}};
-            m_vertices[1] = {{0, m_size.y}, m_vertexColor, {0, textureSize.y}};
-            m_vertices[2] = {{middleRect.left * (m_size.y / textureSize.y), 0}, m_vertexColor, {middleRect.left, 0}};
-            m_vertices[3] = {{middleRect.left * (m_size.y / textureSize.y), m_size.y}, m_vertexColor, {middleRect.left, textureSize.y}};
-            m_vertices[4] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width) * (m_size.y / textureSize.y), 0}, m_vertexColor, {middleRect.left + middleRect.width, 0}};
-            m_vertices[5] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width) * (m_size.y / textureSize.y), m_size.y}, m_vertexColor, {middleRect.left + middleRect.width, textureSize.y}};
-            m_vertices[6] = {{m_size.x, 0}, m_vertexColor, {textureSize.x, 0}};
-            m_vertices[7] = {{m_size.x, m_size.y}, m_vertexColor, {textureSize.x, textureSize.y}};
-            break;
-
-        case ScalingType::Vertical:
-            ///////////
-            // 0---1 //
-            // |   | //
-            // 2---3 //
-            // |   | //
-            // |   | //
-            // |   | //
-            // 4---5 //
-            // |   | //
-            // 6---7-//
-            ///////////
-            m_vertices.resize(8);
-            m_vertices[0] = {{0, 0}, m_vertexColor, {0, 0}};
-            m_vertices[1] = {{m_size.x, 0}, m_vertexColor, {textureSize.x, 0}};
-            m_vertices[2] = {{0, middleRect.top * (m_size.x / textureSize.x)}, m_vertexColor, {0, middleRect.top}};
-            m_vertices[3] = {{m_size.x, middleRect.top * (m_size.x / textureSize.x)}, m_vertexColor, {textureSize.x, middleRect.top}};
-            m_vertices[4] = {{0, m_size.y - (textureSize.y - middleRect.top - middleRect.height) * (m_size.x / textureSize.x)}, m_vertexColor, {0, middleRect.top + middleRect.height}};
-            m_vertices[5] = {{m_size.x, m_size.y - (textureSize.y - middleRect.top - middleRect.height) * (m_size.x / textureSize.x)}, m_vertexColor, {textureSize.x, middleRect.top + middleRect.height}};
-            m_vertices[6] = {{0, m_size.y}, m_vertexColor, {0, textureSize.y}};
-            m_vertices[7] = {{m_size.x, m_size.y}, m_vertexColor, {textureSize.x, textureSize.y}};
-            break;
-
-        case ScalingType::NineSlice:
-            //////////////////////////////////
-            // 0---1/13-----------14-----15 //
-            // |    |              |     |  //
-            // 2---3/11----------12/16---17 //
-            // |    |              |     |  //
-            // |    |              |     |  //
-            // |    |              |     |  //
-            // 4---5/9-----------10/18---19 //
-            // |    |              |     |  //
-            // 6----7-------------8/20---21 //
-            //////////////////////////////////
-            m_vertices.resize(22);
-            m_vertices[0] = {{0, 0}, m_vertexColor, {0, 0}};
-            m_vertices[1] = {{middleRect.left, 0}, m_vertexColor, {middleRect.left, 0}};
-            m_vertices[2] = {{0, middleRect.top}, m_vertexColor, {0, middleRect.top}};
-            m_vertices[3] = {{middleRect.left, middleRect.top}, m_vertexColor, {middleRect.left, middleRect.top}};
-            m_vertices[4] = {{0, m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, m_vertexColor, {0, middleRect.top + middleRect.height}};
-            m_vertices[5] = {{middleRect.left, m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, m_vertexColor, {middleRect.left, middleRect.top + middleRect.height}};
-            m_vertices[6] = {{0, m_size.y}, m_vertexColor, {0, textureSize.y}};
-            m_vertices[7] = {{middleRect.left, m_size.y}, m_vertexColor, {middleRect.left, textureSize.y}};
-            m_vertices[8] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), m_size.y}, m_vertexColor, {middleRect.left + middleRect.width, textureSize.y}};
-            m_vertices[9] = m_vertices[5];
-            m_vertices[10] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, m_vertexColor, {middleRect.left + middleRect.width, middleRect.top + middleRect.height}};
-            m_vertices[11] = m_vertices[3];
-            m_vertices[12] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), middleRect.top}, m_vertexColor, {middleRect.left + middleRect.width, middleRect.top}};
-            m_vertices[13] = m_vertices[1];
-            m_vertices[14] = {{m_size.x - (textureSize.x - middleRect.left - middleRect.width), 0}, m_vertexColor, {middleRect.left + middleRect.width, 0}};
-            m_vertices[15] = {{m_size.x, 0}, m_vertexColor, {textureSize.x, 0}};
-            m_vertices[16] = m_vertices[12];
-            m_vertices[17] = {{m_size.x, middleRect.top}, m_vertexColor, {textureSize.x, middleRect.top}};
-            m_vertices[18] = m_vertices[10];
-            m_vertices[19] = {{m_size.x, m_size.y - (textureSize.y - middleRect.top - middleRect.height)}, m_vertexColor, {textureSize.x, middleRect.top + middleRect.height}};
-            m_vertices[20] = m_vertices[8];
-            m_vertices[21] = {{m_size.x, m_size.y}, m_vertexColor, {textureSize.x, textureSize.y}};
-            break;
-        };
+        assert(func != nullptr);
+        m_imageLoader = func;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::draw(sf::RenderTarget& target, sf::RenderStates states) const
+    Texture::ImageLoaderFunc Texture::getImageLoader()
     {
-        // A rotation can cause the image to be shifted, so we move it upfront so that it ends at the correct location
-        if (getRotation() != 0)
-        {
-            sf::Vector2f pos = {getTransform().transformRect(sf::FloatRect({}, getSize())).left,
-                                getTransform().transformRect(sf::FloatRect({}, getSize())).top};
+        return m_imageLoader;
+    }
 
-            states.transform.translate(getPosition() - pos);
-        }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        states.transform *= getTransform();
+    void Texture::setTextureLoader(const TextureLoaderFunc& func)
+    {
+        assert(func != nullptr);
+        m_textureLoader = func;
+    }
 
-        if (m_loaded)
-        {
-            // Apply clipping when needed
-            std::unique_ptr<Clipping> clipping;
-            if (m_textureRect != sf::FloatRect{0, 0, 0, 0})
-                clipping = std::make_unique<Clipping>(target, states, sf::Vector2f{m_textureRect.left, m_textureRect.top}, sf::Vector2f{m_textureRect.width, m_textureRect.height});
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            states.texture = &m_data->texture;
-            target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
-        }
+    Texture::TextureLoaderFunc Texture::getTextureLoader()
+    {
+        return m_textureLoader;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::setTextureData(std::shared_ptr<TextureData> data, const sf::IntRect& middleRect)
+    {
+        if (getData() && (m_destructCallback != nullptr))
+            m_destructCallback(getData());
+
+        m_data = data;
+
+        if (middleRect == sf::IntRect{})
+            m_middleRect = {0, 0, static_cast<int>(m_data->texture.getSize().x), static_cast<int>(m_data->texture.getSize().y)};
+        else
+            m_middleRect = middleRect;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

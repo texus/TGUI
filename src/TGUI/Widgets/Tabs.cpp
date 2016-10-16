@@ -412,9 +412,13 @@ namespace tgui
             if (m_selectedTab >= 0)
                 m_tabTexts[m_selectedTab].setColor(value.getColor());
         }
-        else if ((property == "texturetab") || (property == "textureselectedtab"))
+        else if (property == "texturetab")
         {
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+            m_spriteTab.setTexture(value.getTexture());
+        }
+        else if (property == "textureselectedtab")
+        {
+            m_spriteSelectedTab.setTexture(value.getTexture());
         }
         else if (property == "distancetoside")
         {
@@ -424,8 +428,8 @@ namespace tgui
         {
             float opacity = value.getNumber();
 
-            getRenderer()->getTextureTab().setOpacity(opacity);
-            getRenderer()->getTextureSelectedTab().setOpacity(opacity);
+            m_spriteTab.setOpacity(opacity);
+            m_spriteSelectedTab.setOpacity(opacity);
 
             for (auto& tabText : m_tabTexts)
                 tabText.setOpacity(opacity);
@@ -467,8 +471,6 @@ namespace tgui
 
         float usableHeight = m_tabHeight - borders.top - borders.bottom;
         float distanceToSide = getRenderer()->getDistanceToSide();
-        Texture textureTab = getRenderer()->getTextureTab();
-        Texture textureSelectedTab = getRenderer()->getTextureSelectedTab();
         for (unsigned int i = 0; i < m_tabTexts.size(); ++i)
         {
             sf::RenderStates textStates = states;
@@ -476,10 +478,11 @@ namespace tgui
             // Draw the background of the tab
             if (m_selectedTab == static_cast<int>(i))
             {
-                if (textureSelectedTab.isLoaded())
+                if (m_spriteSelectedTab.isSet())
                 {
-                    textureSelectedTab.setSize({m_tabWidth[i], usableHeight});
-                    textureSelectedTab.draw(target, states);
+                    Sprite spriteSelectedTab = m_spriteSelectedTab;
+                    spriteSelectedTab.setSize({m_tabWidth[i], usableHeight});
+                    spriteSelectedTab.draw(target, states);
                 }
                 else // No texture was loaded
                 {
@@ -488,10 +491,11 @@ namespace tgui
             }
             else // This tab is not selected
             {
-                if (textureTab.isLoaded())
+                if (m_spriteTab.isSet())
                 {
-                    textureTab.setSize({m_tabWidth[i], usableHeight});
-                    textureTab.draw(target, states);
+                    Sprite spriteTab = m_spriteTab;
+                    spriteTab.setSize({m_tabWidth[i], usableHeight});
+                    spriteTab.draw(target, states);
                 }
                 else // No texture was loaded
                 {

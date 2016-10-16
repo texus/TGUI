@@ -83,11 +83,8 @@ namespace tgui
             m_verticalScroll = false;
 
         bool textured = false;
-        if (getRenderer()->getTextureTrack().isLoaded() && getRenderer()->getTextureThumb().isLoaded()
-         && getRenderer()->getTextureArrowUp().isLoaded() && getRenderer()->getTextureArrowDown().isLoaded())
-        {
+        if (m_spriteTrack.isSet() && m_spriteThumb.isSet() && m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
             textured = true;
-        }
 
         if (m_verticalScroll)
         {
@@ -142,50 +139,50 @@ namespace tgui
 
         if (textured)
         {
-            getRenderer()->getTextureArrowUp().setSize({m_arrowUp.width, m_arrowUp.height});
-            getRenderer()->getTextureArrowUpHover().setSize({m_arrowUp.width, m_arrowUp.height});
-            getRenderer()->getTextureArrowDown().setSize({m_arrowDown.width, m_arrowDown.height});
-            getRenderer()->getTextureArrowDownHover().setSize({m_arrowDown.width, m_arrowDown.height});
+            m_spriteArrowUp.setSize({m_arrowUp.width, m_arrowUp.height});
+            m_spriteArrowUpHover.setSize({m_arrowUp.width, m_arrowUp.height});
+            m_spriteArrowDown.setSize({m_arrowDown.width, m_arrowDown.height});
+            m_spriteArrowDownHover.setSize({m_arrowDown.width, m_arrowDown.height});
 
             if (m_verticalScroll == m_verticalImage)
             {
-                getRenderer()->getTextureTrack().setSize({m_track.width, m_track.height});
-                getRenderer()->getTextureTrackHover().setSize({m_track.width, m_track.height});
-                getRenderer()->getTextureThumb().setSize({m_thumb.width, m_thumb.height});
-                getRenderer()->getTextureThumbHover().setSize({m_thumb.width, m_thumb.height});
+                m_spriteTrack.setSize({m_track.width, m_track.height});
+                m_spriteTrackHover.setSize({m_track.width, m_track.height});
+                m_spriteThumb.setSize({m_thumb.width, m_thumb.height});
+                m_spriteThumbHover.setSize({m_thumb.width, m_thumb.height});
 
-                getRenderer()->getTextureTrack().setRotation(0);
-                getRenderer()->getTextureTrackHover().setRotation(0);
-                getRenderer()->getTextureThumb().setRotation(0);
-                getRenderer()->getTextureThumbHover().setRotation(0);
+                m_spriteTrack.setRotation(0);
+                m_spriteTrackHover.setRotation(0);
+                m_spriteThumb.setRotation(0);
+                m_spriteThumbHover.setRotation(0);
             }
             else
             {
-                getRenderer()->getTextureTrack().setSize({m_track.height, m_track.width});
-                getRenderer()->getTextureTrackHover().setSize({m_track.height, m_track.width});
-                getRenderer()->getTextureThumb().setSize({m_thumb.height, m_thumb.width});
-                getRenderer()->getTextureThumbHover().setSize({m_thumb.height, m_thumb.width});
+                m_spriteTrack.setSize({m_track.height, m_track.width});
+                m_spriteTrackHover.setSize({m_track.height, m_track.width});
+                m_spriteThumb.setSize({m_thumb.height, m_thumb.width});
+                m_spriteThumbHover.setSize({m_thumb.height, m_thumb.width});
 
-                getRenderer()->getTextureTrack().setRotation(-90);
-                getRenderer()->getTextureTrackHover().setRotation(-90);
-                getRenderer()->getTextureThumb().setRotation(-90);
-                getRenderer()->getTextureThumbHover().setRotation(-90);
+                m_spriteTrack.setRotation(-90);
+                m_spriteTrackHover.setRotation(-90);
+                m_spriteThumb.setRotation(-90);
+                m_spriteThumbHover.setRotation(-90);
             }
 
             // Set the rotation or the arrows now that the size has been set
             if (m_verticalScroll)
             {
-                getRenderer()->getTextureArrowUp().setRotation(0);
-                getRenderer()->getTextureArrowUpHover().setRotation(0);
-                getRenderer()->getTextureArrowDown().setRotation(0);
-                getRenderer()->getTextureArrowDownHover().setRotation(0);
+                m_spriteArrowUp.setRotation(0);
+                m_spriteArrowUpHover.setRotation(0);
+                m_spriteArrowDown.setRotation(0);
+                m_spriteArrowDownHover.setRotation(0);
             }
             else
             {
-                getRenderer()->getTextureArrowUp().setRotation(-90);
-                getRenderer()->getTextureArrowUpHover().setRotation(-90);
-                getRenderer()->getTextureArrowDown().setRotation(-90);
-                getRenderer()->getTextureArrowDownHover().setRotation(-90);
+                m_spriteArrowUp.setRotation(-90);
+                m_spriteArrowUpHover.setRotation(-90);
+                m_spriteArrowDown.setRotation(-90);
+                m_spriteArrowDownHover.setRotation(-90);
             }
         }
 
@@ -665,25 +662,53 @@ namespace tgui
 
     void Scrollbar::rendererChanged(const std::string& property, ObjectConverter& value)
     {
-        if ((property == "texturetrack") || (property == "texturetrackhover")
-              || (property == "texturethumb") || (property == "texturethumbhover")
-              || (property == "texturearrowup") || (property == "texturearrowuphover")
-              || (property == "texturearrowdown") || (property == "texturearrowdownhover"))
+        if (property == "texturetrack")
         {
+            m_spriteTrack.setTexture(value.getTexture());
             updateSize();
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
+        }
+        else if (property == "texturetrackhover")
+        {
+            m_spriteTrackHover.setTexture(value.getTexture());
+        }
+        else if (property == "texturethumb")
+        {
+            m_spriteThumb.setTexture(value.getTexture());
+            updateSize();
+        }
+        else if (property == "texturethumbhover")
+        {
+            m_spriteThumbHover.setTexture(value.getTexture());
+        }
+        else if (property == "texturearrowup")
+        {
+            m_spriteArrowUp.setTexture(value.getTexture());
+            updateSize();
+        }
+        else if (property == "texturearrowuphover")
+        {
+            m_spriteArrowUpHover.setTexture(value.getTexture());
+        }
+        else if (property == "texturearrowdown")
+        {
+            m_spriteArrowDown.setTexture(value.getTexture());
+            updateSize();
+        }
+        else if (property == "texturearrowdownhover")
+        {
+            m_spriteArrowDownHover.setTexture(value.getTexture());
         }
         else if (property == "opacity")
         {
             float opacity = value.getNumber();
-            getRenderer()->getTextureTrack().setOpacity(opacity);
-            getRenderer()->getTextureTrackHover().setOpacity(opacity);
-            getRenderer()->getTextureThumb().setOpacity(opacity);
-            getRenderer()->getTextureThumbHover().setOpacity(opacity);
-            getRenderer()->getTextureArrowUp().setOpacity(opacity);
-            getRenderer()->getTextureArrowUpHover().setOpacity(opacity);
-            getRenderer()->getTextureArrowDown().setOpacity(opacity);
-            getRenderer()->getTextureArrowDownHover().setOpacity(opacity);
+            m_spriteTrack.setOpacity(opacity);
+            m_spriteTrackHover.setOpacity(opacity);
+            m_spriteThumb.setOpacity(opacity);
+            m_spriteThumbHover.setOpacity(opacity);
+            m_spriteArrowUp.setOpacity(opacity);
+            m_spriteArrowUpHover.setOpacity(opacity);
+            m_spriteArrowDown.setOpacity(opacity);
+            m_spriteArrowDownHover.setOpacity(opacity);
         }
         else if ((property != "trackcolor")
               && (property != "trackcolorhover")
@@ -727,19 +752,16 @@ namespace tgui
         states.transform.translate(getPosition());
 
         bool textured = false;
-        if (getRenderer()->getTextureTrack().isLoaded() && getRenderer()->getTextureThumb().isLoaded()
-         && getRenderer()->getTextureArrowUp().isLoaded() && getRenderer()->getTextureArrowDown().isLoaded())
-        {
+        if (m_spriteTrack.isSet() && m_spriteThumb.isSet() && m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
             textured = true;
-        }
 
         // Draw arrow up/left
         if (textured)
         {
-            if (m_mouseHover && getRenderer()->getTextureArrowUpHover().isLoaded() && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp))
-                getRenderer()->getTextureArrowUpHover().draw(target, states);
+            if (m_mouseHover && m_spriteArrowUpHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp))
+                m_spriteArrowUpHover.draw(target, states);
             else
-                getRenderer()->getTextureArrowUp().draw(target, states);
+                m_spriteArrowUp.draw(target, states);
         }
         else
         {
@@ -774,10 +796,10 @@ namespace tgui
         states.transform.translate({m_track.left, m_track.top});
         if (textured)
         {
-            if (m_mouseHover && getRenderer()->getTextureTrackHover().isLoaded() && (m_mouseHoverOverPart == Scrollbar::Part::Track))
-                getRenderer()->getTextureTrackHover().draw(target, states);
+            if (m_mouseHover && m_spriteTrackHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::Track))
+                m_spriteTrackHover.draw(target, states);
             else
-                getRenderer()->getTextureTrack().draw(target, states);
+                m_spriteTrack.draw(target, states);
         }
         else
         {
@@ -792,10 +814,10 @@ namespace tgui
         states.transform.translate({m_thumb.left, m_thumb.top});
         if (textured)
         {
-            if (m_mouseHover && getRenderer()->getTextureThumbHover().isLoaded() && (m_mouseHoverOverPart == Scrollbar::Part::Thumb))
-                getRenderer()->getTextureThumbHover().draw(target, states);
+            if (m_mouseHover && m_spriteThumbHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::Thumb))
+                m_spriteThumbHover.draw(target, states);
             else
-                getRenderer()->getTextureThumb().draw(target, states);
+                m_spriteThumb.draw(target, states);
         }
         else
         {
@@ -810,10 +832,10 @@ namespace tgui
         states.transform.translate({m_arrowDown.left, m_arrowDown.top});
         if (textured)
         {
-            if (m_mouseHover && getRenderer()->getTextureArrowDownHover().isLoaded() && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown))
-                getRenderer()->getTextureArrowDownHover().draw(target, states);
+            if (m_mouseHover && m_spriteArrowDownHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown))
+                m_spriteArrowDownHover.draw(target, states);
             else
-                getRenderer()->getTextureArrowDown().draw(target, states);
+                m_spriteArrowDown.draw(target, states);
         }
         else
         {

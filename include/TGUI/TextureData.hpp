@@ -47,8 +47,8 @@ namespace tgui
     struct TGUI_API TextureData
     {
         std::shared_ptr<sf::Image> image;
-        sf::Texture   texture;
-        sf::IntRect   rect;
+        sf::Texture texture;
+        sf::IntRect rect;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,8 +57,8 @@ namespace tgui
     struct TGUI_API TextureDataHolder
     {
         std::shared_ptr<TextureData> data;
-        std::string   filename;
-        unsigned int  users;
+        std::string  filename;
+        unsigned int users;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

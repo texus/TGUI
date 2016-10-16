@@ -8,6 +8,7 @@ set(TGUI_SRC
     Gui.cpp
     Layout.cpp
     ObjectConverter.cpp
+    Sprite.cpp
     Signal.cpp
     TextStyle.cpp
     Text.cpp

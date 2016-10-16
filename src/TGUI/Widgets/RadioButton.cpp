@@ -247,7 +247,7 @@ namespace tgui
     void RadioButton::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if (getRenderer()->getTextureFocused().isLoaded())
+        if (m_spriteFocused.isSet())
             Widget::widgetFocused();
         else
             unfocus();
@@ -289,27 +289,48 @@ namespace tgui
             else
                 m_text.setStyle(getRenderer()->getTextStyle());
         }
-        else if ((property == "textureunchecked") || (property == "textureuncheckedhover") || (property == "textureuncheckeddisabled")
-              || (property == "texturechecked") || (property == "texturecheckedhover") || (property == "texturecheckeddisabled") || (property == "texturefocused"))
+        else if (property == "textureunchecked")
         {
+            m_spriteUnchecked.setTexture(value.getTexture());
             updateTextureSizes();
-
-            value.getTexture().setOpacity(getRenderer()->getOpacity());
-
-            if (property == "texturefocused")
-                m_allowFocus = value.getTexture().isLoaded();
+        }
+        else if (property == "texturechecked")
+        {
+            m_spriteChecked.setTexture(value.getTexture());
+            updateTextureSizes();
+        }
+        else if (property == "textureuncheckedhover")
+        {
+            m_spriteUncheckedHover.setTexture(value.getTexture());
+        }
+        else if (property == "texturecheckedhover")
+        {
+            m_spriteCheckedHover.setTexture(value.getTexture());
+        }
+        else if (property == "textureuncheckeddisabled")
+        {
+            m_spriteUncheckedDisabled.setTexture(value.getTexture());
+        }
+        else if (property == "texturecheckeddisabled")
+        {
+            m_spriteCheckedDisabled.setTexture(value.getTexture());
+        }
+        else if (property == "texturefocused")
+        {
+            m_spriteFocused.setTexture(value.getTexture());
+            m_allowFocus = m_spriteFocused.isSet();
         }
         else if (property == "opacity")
         {
             float opacity = value.getNumber();
 
-            getRenderer()->getTextureUnchecked().setOpacity(opacity);
-            getRenderer()->getTextureChecked().setOpacity(opacity);
-            getRenderer()->getTextureUncheckedHover().setOpacity(opacity);
-            getRenderer()->getTextureCheckedHover().setOpacity(opacity);
-            getRenderer()->getTextureUncheckedDisabled().setOpacity(opacity);
-            getRenderer()->getTextureCheckedDisabled().setOpacity(opacity);
-            getRenderer()->getTextureFocused().setOpacity(opacity);
+            m_spriteUnchecked.setOpacity(opacity);
+            m_spriteChecked.setOpacity(opacity);
+            m_spriteUncheckedHover.setOpacity(opacity);
+            m_spriteCheckedHover.setOpacity(opacity);
+            m_spriteUncheckedDisabled.setOpacity(opacity);
+            m_spriteCheckedDisabled.setOpacity(opacity);
+            m_spriteFocused.setOpacity(opacity);
 
             m_text.setOpacity(opacity);
         }
@@ -443,16 +464,13 @@ namespace tgui
 
     void RadioButton::updateTextureSizes()
     {
-        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
-        {
-            getRenderer()->getTextureUnchecked().setSize(getInnerSize());
-            getRenderer()->getTextureChecked().setSize(getInnerSize());
-            getRenderer()->getTextureUncheckedHover().setSize(getInnerSize());
-            getRenderer()->getTextureCheckedHover().setSize(getInnerSize());
-            getRenderer()->getTextureUncheckedDisabled().setSize(getInnerSize());
-            getRenderer()->getTextureCheckedDisabled().setSize(getInnerSize());
-            getRenderer()->getTextureFocused().setSize(getInnerSize());
-        }
+        m_spriteUnchecked.setSize(getInnerSize());
+        m_spriteChecked.setSize(getInnerSize());
+        m_spriteUncheckedHover.setSize(getInnerSize());
+        m_spriteCheckedHover.setSize(getInnerSize());
+        m_spriteUncheckedDisabled.setSize(getInnerSize());
+        m_spriteCheckedDisabled.setSize(getInnerSize());
+        m_spriteFocused.setSize(getInnerSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -515,30 +533,30 @@ namespace tgui
 
         // Draw the box
         states.transform.translate({borders.left, borders.left});
-        if (getRenderer()->getTextureUnchecked().isLoaded() && getRenderer()->getTextureChecked().isLoaded())
+        if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
             if (m_checked)
             {
-                if (!m_enabled && getRenderer()->getTextureCheckedDisabled().isLoaded())
-                    getRenderer()->getTextureCheckedDisabled().draw(target, states);
-                else if (m_mouseHover && getRenderer()->getTextureCheckedHover().isLoaded())
-                    getRenderer()->getTextureCheckedHover().draw(target, states);
+                if (!m_enabled && m_spriteCheckedDisabled.isSet())
+                    m_spriteCheckedDisabled.draw(target, states);
+                else if (m_mouseHover && m_spriteCheckedHover.isSet())
+                    m_spriteCheckedHover.draw(target, states);
                 else
-                    getRenderer()->getTextureChecked().draw(target, states);
+                    m_spriteChecked.draw(target, states);
             }
             else
             {
-                if (!m_enabled && getRenderer()->getTextureUncheckedDisabled().isLoaded())
-                    getRenderer()->getTextureUncheckedDisabled().draw(target, states);
-                else if (m_mouseHover && getRenderer()->getTextureUncheckedHover().isLoaded())
-                    getRenderer()->getTextureUncheckedHover().draw(target, states);
+                if (!m_enabled && m_spriteUncheckedDisabled.isSet())
+                    m_spriteUncheckedDisabled.draw(target, states);
+                else if (m_mouseHover && m_spriteUncheckedHover.isSet())
+                    m_spriteUncheckedHover.draw(target, states);
                 else
-                    getRenderer()->getTextureUnchecked().draw(target, states);
+                    m_spriteUnchecked.draw(target, states);
             }
 
             // When the radio button is focused then draw an extra image
-            if (m_focused && getRenderer()->getTextureFocused().isLoaded())
-                getRenderer()->getTextureFocused().draw(target, states);
+            if (m_focused && m_spriteFocused.isSet())
+                m_spriteFocused.draw(target, states);
         }
         else // There are no images
         {

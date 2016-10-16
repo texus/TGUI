@@ -53,10 +53,10 @@ namespace tgui
         ///
         /// The second time you call this function with the same filename, the previously loaded image will be reused.
         ///
-        /// @return False when the image could not be loaded, true otherwise
+        /// @return Texture data when loaded successfully, nullptr otherwise
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static bool getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0));
+        static std::shared_ptr<TextureData> getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
