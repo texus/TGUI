@@ -461,8 +461,10 @@ namespace tgui
         event.mouseButton.x = static_cast<int>(x - getPosition().x);
         event.mouseButton.y = static_cast<int>(y - getPosition().y);
 
-        // Let the event manager handle the event
+        // Let the event manager handle the event, but don't let it call mouseNoLongerDown on all widgets
+        m_handingMouseReleased = true;
         handleEvent(event);
+        m_handingMouseReleased = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -733,8 +735,13 @@ namespace tgui
                 widgetBelowMouse->leftMouseReleased(mouseX, mouseY);
 
             // Tell all widgets that the mouse has gone up
-            for (auto& widget : m_widgets)
-                widget->mouseNoLongerDown();
+            // But don't do this when leftMouseReleased was called on this container because
+            // it will happen afterwards when mouseNoLongerDown is called on it
+            if (m_handingMouseReleased)
+            {
+                for (auto& widget : m_widgets)
+                    widget->mouseNoLongerDown();
+            }
 
             if (widgetBelowMouse != nullptr)
                 return true;
