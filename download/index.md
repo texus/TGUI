@@ -4,8 +4,12 @@ title: Download
 ---
 
 ### TGUI 0.8-dev
-Development version - only intended for testing
-{% include button.ext text="Get latest version" link="https://github.com/texus/TGUI/tree/0.8-dev" style="Orange" %}
+Unstable development version - intended for testing
+<p>
+  {% include button.ext text="Get latest version" link="https://github.com/texus/TGUI/tree/0.8-dev" style="Orange" %}
+  {% include button.ext text="C binding" link="/bindings/c" style="Orange" %}
+  {% include button.ext text=".Net binding" link="/bindings/dotnet" style="Orange" %}
+</p>
 
 ### TGUI 0.7.1
 Latest stable version - <b>recommended</b>
