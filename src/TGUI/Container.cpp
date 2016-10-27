@@ -737,7 +737,7 @@ namespace tgui
             // Tell all widgets that the mouse has gone up
             // But don't do this when leftMouseReleased was called on this container because
             // it will happen afterwards when mouseNoLongerDown is called on it
-            if (m_handingMouseReleased)
+            if (!m_handingMouseReleased)
             {
                 for (auto& widget : m_widgets)
                     widget->mouseNoLongerDown();
