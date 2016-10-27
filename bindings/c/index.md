@@ -11,7 +11,7 @@ Please note that both the binding and TGUI 0.8 are still under development and m
 
 ### Download and install
 
-The latest version can be found [on Github](https://github.com/texus/CTGUI).
+{% include button.ext text="Download source code" link="https://github.com/texus/CTGUI/archive/master.zip" style="Orange" %}
 
 You need to have SFML and CSFML 2.4 installed.
 

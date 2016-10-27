@@ -10,7 +10,7 @@ Please note that both the binding and TGUI 0.8 are still under development and m
 
 ### Download and install
 
-The latest version can be found [on Github](https://github.com/texus/TGUI.Net).
+{% include button.ext text="Download source code" link="https://github.com/texus/TGUI.Net/archive/master.zip" style="Orange" %}
 
 There are currently no precompiled binaries available.
 
