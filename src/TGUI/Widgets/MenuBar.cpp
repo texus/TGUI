@@ -105,8 +105,6 @@ namespace tgui
                 menu = m_menus.back().text.getString();
         }
 
-        sf::Vector2f pos = getPosition();
-
         // Search for the menu
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
@@ -123,8 +121,6 @@ namespace tgui
                 m_menus[i].menuItems.push_back(std::move(menuItem));
                 return true;
             }
-
-            pos.x += m_menus[i].text.getSize().x + 2 * getRenderer()->getDistanceToSide();
         }
 
         // Could not find the menu
