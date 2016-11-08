@@ -426,6 +426,9 @@ namespace tgui
         // The id of the focused widget
         std::size_t m_focusedWidget = 0;
 
+        // Did we enter handleEvent directly or because we got a MouseReleased event?
+        bool m_handingMouseReleased = false;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
