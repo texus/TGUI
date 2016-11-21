@@ -23,12 +23,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <SFML/OpenGL.hpp>
-
 #include <TGUI/Container.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -980,87 +979,54 @@ namespace tgui
         // Draw the background
         getRenderer()->draw(target, states);
 
-        const sf::View& view = target.getView();
-
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / view.getSize().x;
-        float scaleViewY = target.getSize().y / view.getSize().y;
-
-        Padding padding = getRenderer()->getScaledPadding();
-
-        // Get the global position
-        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + padding.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                        ((getAbsolutePosition().y + padding.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-
-        sf::Vector2f bottomRightPosition = {((getAbsolutePosition().x + getSize().x - padding.right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                            ((getAbsolutePosition().y + getSize().y - padding.bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-
-        if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-            bottomRightPosition.x -= m_scroll->getSize().x;
-
-        // Get the old clipping area
-        GLint scissor[4];
-        glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-        // Calculate the clipping area
-        GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-        GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-        if (scissorRight < scissorLeft)
-            scissorRight = scissorLeft;
-        else if (scissorBottom < scissorTop)
-            scissorTop = scissorBottom;
-
-        // Set the clipping area
-        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
-        // Find out which items are visible
-        std::size_t firstItem = 0;
-        std::size_t lastItem = m_items.size();
-        if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
         {
-            firstItem = m_scroll->getValue() / m_itemHeight;
-            lastItem = (m_scroll->getValue() + m_scroll->getLowValue()) / m_itemHeight;
+            // Set the clipping for all draw calls that happen until this clipping object goes out of scope
+            Padding padding = getRenderer()->getScaledPadding();
+            Clipping clipping{target, states, {getPosition().x + padding.left, getPosition().y + padding.top}, {getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}};
 
-            // Show another item when the scrollbar is standing between two items
-            if ((m_scroll->getValue() + m_scroll->getLowValue()) % m_itemHeight != 0)
-                ++lastItem;
-        }
-
-        // Draw the background of the selected item
-        if (m_selectedItem >= 0)
-        {
-            sf::RectangleShape back({getSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)});
-            back.setFillColor(calcColorOpacity(getRenderer()->m_selectedBackgroundColor, getOpacity()));
-            back.setPosition({getPosition().x + padding.left, getPosition().y + padding.top + (m_selectedItem * m_itemHeight)});
-
+            // Find out which items are visible
+            std::size_t firstItem = 0;
+            std::size_t lastItem = m_items.size();
             if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-                back.setPosition({back.getPosition().x, back.getPosition().y - m_scroll->getValue()});
+            {
+                firstItem = m_scroll->getValue() / m_itemHeight;
+                lastItem = (m_scroll->getValue() + m_scroll->getLowValue()) / m_itemHeight;
 
-            target.draw(back, states);
+                // Show another item when the scrollbar is standing between two items
+                if ((m_scroll->getValue() + m_scroll->getLowValue()) % m_itemHeight != 0)
+                    ++lastItem;
+            }
+
+            // Draw the background of the selected item
+            if (m_selectedItem >= 0)
+            {
+                sf::RectangleShape back({getSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)});
+                back.setFillColor(calcColorOpacity(getRenderer()->m_selectedBackgroundColor, getOpacity()));
+                back.setPosition({getPosition().x + padding.left, getPosition().y + padding.top + (m_selectedItem * m_itemHeight)});
+
+                if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
+                    back.setPosition({back.getPosition().x, back.getPosition().y - m_scroll->getValue()});
+
+                target.draw(back, states);
+            }
+
+            // Draw the background of the item on which the mouse is standing
+            if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && (getRenderer()->m_hoverBackgroundColor != sf::Color::Transparent))
+            {
+                sf::RectangleShape back({getSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)});
+                back.setFillColor(calcColorOpacity(getRenderer()->m_hoverBackgroundColor, getOpacity()));
+                back.setPosition({getPosition().x + padding.left, getPosition().y + padding.top + (m_hoveringItem * m_itemHeight)});
+
+                if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
+                    back.setPosition({back.getPosition().x, back.getPosition().y - m_scroll->getValue()});
+
+                target.draw(back, states);
+            }
+
+            // Draw the items
+            for (std::size_t i = firstItem; i < lastItem; ++i)
+                target.draw(m_items[i], states);
         }
-
-        // Draw the background of the item on which the mouse is standing
-        if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && (getRenderer()->m_hoverBackgroundColor != sf::Color::Transparent))
-        {
-            sf::RectangleShape back({getSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)});
-            back.setFillColor(calcColorOpacity(getRenderer()->m_hoverBackgroundColor, getOpacity()));
-            back.setPosition({getPosition().x + padding.left, getPosition().y + padding.top + (m_hoveringItem * m_itemHeight)});
-
-            if ((m_scroll != nullptr) && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-                back.setPosition({back.getPosition().x, back.getPosition().y - m_scroll->getValue()});
-
-            target.draw(back, states);
-        }
-
-        // Draw the items
-        for (std::size_t i = firstItem; i < lastItem; ++i)
-            target.draw(m_items[i], states);
-
-        // Reset the old clipping area
-        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
         // Draw the scrollbar
         if (m_scroll != nullptr)

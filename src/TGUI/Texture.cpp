@@ -528,7 +528,6 @@ namespace tgui
                 float scaleViewX = target.getSize().x / view.getSize().x;
                 float scaleViewY = target.getSize().y / view.getSize().y;
 
-/// TODO: Check this code! Other places don't use transformPoint
                 // Get the global position
                 sf::Vector2f topLeftPosition = states.transform.transformPoint(((m_textureRect.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
                                                                                ((m_textureRect.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top));

@@ -28,8 +28,7 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
-
-#include <SFML/OpenGL.hpp>
+#include <TGUI/Clipping.hpp>
 
 #include <cassert>
 #include <cmath>
@@ -441,7 +440,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::isReadOnly()
+    bool TextBox::isReadOnly() const
     {
         return m_readOnly;
     }
@@ -1747,75 +1746,47 @@ namespace tgui
 
     void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        const sf::View& view = target.getView();
-
-        // Calculate the scale factor of the view
-        float scaleViewX = target.getSize().x / view.getSize().x;
-        float scaleViewY = target.getSize().y / view.getSize().y;
-
-        Padding padding = getRenderer()->getScaledPadding();
-
-        // Get the global position
-        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + padding.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                        ((getAbsolutePosition().y + padding.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - padding.right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                            (getAbsolutePosition().y + getSize().y - padding.bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
-
         // Draw the background and borders
         getRenderer()->draw(target, states);
 
-        // Get the old clipping area
-        GLint scissor[4];
-        glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-        // Calculate the clipping area
-        GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-        GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-        if (scissorRight < scissorLeft)
-            scissorRight = scissorLeft;
-        else if (scissorBottom < scissorTop)
-            scissorTop = scissorBottom;
-
-        // Set the clipping area
-        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
-        // Draw the background of the selected text
-        for (auto& selectionRect : m_selectionRects)
+        // Draw the contents of the text box
         {
-            sf::RectangleShape rect{{selectionRect.width, selectionRect.height}};
-            rect.setPosition({selectionRect.left, selectionRect.top});
-            rect.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextBgrColor, getOpacity()));
-            target.draw(rect, states);
-        }
+            // Set the clipping for all draw calls that happen until this clipping object goes out of scope
+            Padding padding = getRenderer()->getScaledPadding();
+            Clipping clipping{target, states, {getPosition().x + padding.left, getPosition().y + padding.top}, {getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}};
 
-        // Draw the text
-        target.draw(m_textBeforeSelection, states);
-        if (m_selStart != m_selEnd)
-        {
-            target.draw(m_textSelection1, states);
-            target.draw(m_textSelection2, states);
-            target.draw(m_textAfterSelection1, states);
-            target.draw(m_textAfterSelection2, states);
-        }
-
-        // Only draw the caret if it has a width
-        if (getRenderer()->m_caretWidth > 0)
-        {
-            // Only draw it when needed
-            if (m_focused && m_caretVisible && (getRenderer()->m_caretWidth > 0))
+            // Draw the background of the selected text
+            for (auto& selectionRect : m_selectionRects)
             {
-                sf::RectangleShape caret({getRenderer()->m_caretWidth, static_cast<float>(m_lineHeight)});
-                caret.setPosition(m_caretPosition.x - (getRenderer()->m_caretWidth * 0.5f), static_cast<float>(m_caretPosition.y));
-                caret.setFillColor(calcColorOpacity(getRenderer()->m_caretColor, getOpacity()));
-                target.draw(caret, states);
+                sf::RectangleShape rect{{selectionRect.width, selectionRect.height}};
+                rect.setPosition({selectionRect.left, selectionRect.top});
+                rect.setFillColor(calcColorOpacity(getRenderer()->m_selectedTextBgrColor, getOpacity()));
+                target.draw(rect, states);
+            }
+
+            // Draw the text
+            target.draw(m_textBeforeSelection, states);
+            if (m_selStart != m_selEnd)
+            {
+                target.draw(m_textSelection1, states);
+                target.draw(m_textSelection2, states);
+                target.draw(m_textAfterSelection1, states);
+                target.draw(m_textAfterSelection2, states);
+            }
+
+            // Only draw the caret if it has a width
+            if (getRenderer()->m_caretWidth > 0)
+            {
+                // Only draw it when needed
+                if (m_focused && m_caretVisible && (getRenderer()->m_caretWidth > 0))
+                {
+                    sf::RectangleShape caret({getRenderer()->m_caretWidth, static_cast<float>(m_lineHeight)});
+                    caret.setPosition(m_caretPosition.x - (getRenderer()->m_caretWidth * 0.5f), static_cast<float>(m_caretPosition.y));
+                    caret.setFillColor(calcColorOpacity(getRenderer()->m_caretColor, getOpacity()));
+                    target.draw(caret, states);
+                }
             }
         }
-
-        // Reset the old clipping area
-        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
         // Draw the scrollbar if there is one
         if (m_scroll != nullptr)

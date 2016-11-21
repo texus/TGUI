@@ -26,8 +26,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Loading/Theme.hpp>
-
-#include <SFML/OpenGL.hpp>
+#include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -606,15 +605,6 @@ namespace tgui
                 target.draw(m_progressBar->m_textBack, states);
             else
             {
-                // Get the old clipping area
-                GLint scissor[4];
-                glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-                // Calculate the scale factor of the view
-                const sf::View& view = target.getView();
-                float scaleViewX = target.getSize().x / view.getSize().x;
-                float scaleViewY = target.getSize().y / view.getSize().y;
-
                 sf::FloatRect backRect;
                 sf::FloatRect frontRect;
                 frontRect.width = m_progressBar->m_frontRect.width;
@@ -624,8 +614,8 @@ namespace tgui
                 {
                     case ProgressBar::FillDirection::LeftToRight:
                     {
-                        frontRect.left = m_progressBar->getAbsolutePosition().x;
-                        frontRect.top = m_progressBar->getAbsolutePosition().y;
+                        frontRect.left = m_progressBar->getPosition().x;
+                        frontRect.top = m_progressBar->getPosition().y;
 
                         if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
                         {
@@ -645,8 +635,8 @@ namespace tgui
 
                     case ProgressBar::FillDirection::RightToLeft:
                     {
-                        backRect.left = m_progressBar->getAbsolutePosition().x;
-                        backRect.top = m_progressBar->getAbsolutePosition().y;
+                        backRect.left = m_progressBar->getPosition().x;
+                        backRect.top = m_progressBar->getPosition().y;
 
                         if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
                         {
@@ -670,8 +660,8 @@ namespace tgui
 
                     case ProgressBar::FillDirection::TopToBottom:
                     {
-                        frontRect.left = m_progressBar->getAbsolutePosition().x;
-                        frontRect.top = m_progressBar->getAbsolutePosition().y;
+                        frontRect.left = m_progressBar->getPosition().x;
+                        frontRect.top = m_progressBar->getPosition().y;
 
                         if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
                         {
@@ -691,8 +681,8 @@ namespace tgui
 
                     case ProgressBar::FillDirection::BottomToTop:
                     {
-                        backRect.left = m_progressBar->getAbsolutePosition().x;
-                        backRect.top = m_progressBar->getAbsolutePosition().y;
+                        backRect.left = m_progressBar->getPosition().x;
+                        backRect.top = m_progressBar->getPosition().y;
 
                         if (m_textureBack.isLoaded() && m_textureFront.isLoaded())
                         {
@@ -715,42 +705,17 @@ namespace tgui
                     }
                 }
 
-                // Calculate the clipping area for the back text
-                GLint scissorLeft = std::max(static_cast<GLint>(backRect.left * scaleViewX), scissor[0]);
-                GLint scissorTop = std::max(static_cast<GLint>(backRect.top * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-                GLint scissorRight = std::min(static_cast<GLint>((backRect.left + backRect.width) * scaleViewX), scissor[0] + scissor[2]);
-                GLint scissorBottom = std::min(static_cast<GLint>((backRect.top + backRect.height) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-                if (scissorRight < scissorLeft)
-                    scissorRight = scissorLeft;
-                else if (scissorBottom < scissorTop)
-                    scissorTop = scissorBottom;
-
-                // Set the clipping area
-                glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-
                 // Draw the back text
-                target.draw(m_progressBar->m_textBack, states);
-
-                // Calculate the clipping area for the front text
-                scissorLeft = std::max(static_cast<GLint>(frontRect.left * scaleViewX), scissor[0]);
-                scissorTop = std::max(static_cast<GLint>(frontRect.top * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-                scissorRight = std::min(static_cast<GLint>((frontRect.left + frontRect.width) * scaleViewX), scissor[0] + scissor[2]);
-                scissorBottom = std::min(static_cast<GLint>((frontRect.top + frontRect.height) * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-                if (scissorRight < scissorLeft)
-                    scissorRight = scissorLeft;
-                else if (scissorBottom < scissorTop)
-                    scissorTop = scissorBottom;
-
-                // Set the clipping area
-                glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
+                {
+                    Clipping clipping{target, states, {backRect.left, backRect.top}, {backRect.width, backRect.height}};
+                    target.draw(m_progressBar->m_textBack, states);
+                }
 
                 // Draw the front text
-                target.draw(m_progressBar->m_textFront, states);
-
-                // Reset the old clipping area
-                glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+                {
+                    Clipping clipping{target, states, {frontRect.left, frontRect.top}, {frontRect.width, frontRect.height}};
+                    target.draw(m_progressBar->m_textFront, states);
+                }
             }
         }
 

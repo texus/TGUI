@@ -27,8 +27,7 @@
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Clipboard.hpp>
-
-#include <SFML/OpenGL.hpp>
+#include <TGUI/Clipping.hpp>
 
 #include <cmath>
 
@@ -1181,36 +1180,9 @@ namespace tgui
         // Draw the background
         getRenderer()->draw(target, states);
 
-        // Calculate the scale factor of the view
-        const sf::View& view = target.getView();
-        float scaleViewX = target.getSize().x / view.getSize().x;
-        float scaleViewY = target.getSize().y / view.getSize().y;
-
+        // Set the clipping for all draw calls that happen until this clipping object goes out of scope
         Padding padding = getRenderer()->getScaledPadding();
-
-        // Get the global position
-        sf::Vector2f topLeftPosition = {((getAbsolutePosition().x + padding.left - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                        ((getAbsolutePosition().y + padding.top - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-        sf::Vector2f bottomRightPosition = {(getAbsolutePosition().x + getSize().x - padding.right - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                            (getAbsolutePosition().y + getSize().y - padding.bottom - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
-
-        // Get the old clipping area
-        GLint scissor[4];
-        glGetIntegerv(GL_SCISSOR_BOX, scissor);
-
-        // Calculate the clipping area
-        GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), scissor[0]);
-        GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1] - scissor[3]);
-        GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), scissor[0] + scissor[2]);
-        GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - scissor[1]);
-
-        if (scissorRight < scissorLeft)
-            scissorRight = scissorLeft;
-        else if (scissorBottom < scissorTop)
-            scissorTop = scissorBottom;
-
-        // Set the clipping area
-        glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
+        Clipping clipping{target, states, {getPosition().x + padding.left, getPosition().y + padding.top}, {getSize().x - padding.left - padding.right, getSize().y - padding.top - padding.bottom}};
 
         if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
         {
@@ -1232,9 +1204,6 @@ namespace tgui
         // Draw the caret
         if ((m_focused) && (m_caretVisible))
             target.draw(m_caret, states);
-
-        // Reset the old clipping area
-        glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
