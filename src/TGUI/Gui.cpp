@@ -117,11 +117,6 @@ namespace tgui
             m_view = view;
 
             m_container->m_size = view.getSize();
-            m_container->m_position = view.getCenter() - (view.getSize() / 2.0f);
-
-            m_container->m_callback.position = m_container->getPosition();
-            m_container->sendSignal("PositionChanged", m_container->getPosition());
-
             m_container->m_callback.size = m_container->getSize();
             m_container->sendSignal("SizeChanged", m_container->getSize());
         }

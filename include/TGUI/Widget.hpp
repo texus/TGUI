@@ -171,7 +171,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Get the absolute position of the widget on the screen
+        /// @brief Get the absolute position of the widget instead of the relative position to its parent
         ///
         /// @return Position of the widget
         ///
