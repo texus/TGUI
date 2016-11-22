@@ -76,7 +76,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size that the image will have on the screen
+        /// @brief Changes the size that the image will have when drawing
         ///
         /// @param size  Size of the sprite
         ///
@@ -85,7 +85,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size that the image has on the screen
+        /// @brief Returns the size that the image has when drawing
         ///
         /// @return Size of the sprite
         ///

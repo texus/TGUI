@@ -502,25 +502,29 @@ TEST_CASE("[Layouts]") {
                 auto position = bindPosition(gui);
                 auto size = bindSize(gui);
 
-                REQUIRE(left.getValue() == 0);
-                REQUIRE(top.getValue() == 0);
                 REQUIRE(width.getValue() == 20);
                 REQUIRE(height.getValue() == 15);
+                REQUIRE(size.getValue() == sf::Vector2f(20, 15));
+
+                REQUIRE(left.getValue() == 0);
+                REQUIRE(top.getValue() == 0);
                 REQUIRE(right.getValue() == 20);
                 REQUIRE(bottom.getValue() == 15);
                 REQUIRE(position.getValue() == sf::Vector2f(0, 0));
-                REQUIRE(size.getValue() == sf::Vector2f(20, 15));
 
                 gui.setView(sf::View{{4, 3, 40, 30}});
 
-                REQUIRE(left.getValue() == 4);
-                REQUIRE(top.getValue() == 3);
                 REQUIRE(width.getValue() == 40);
                 REQUIRE(height.getValue() == 30);
-                REQUIRE(right.getValue() == 44);
-                REQUIRE(bottom.getValue() == 33);
-                REQUIRE(position.getValue() == sf::Vector2f(4, 3));
                 REQUIRE(size.getValue() == sf::Vector2f(40, 30));
+
+                // The position of the view is not set in the gui
+                // This view position will be applied when rendering and is thus not allowed to be taken into account when positioning widgets
+                REQUIRE(left.getValue() == 0);
+                REQUIRE(top.getValue() == 0);
+                REQUIRE(right.getValue() == 40);
+                REQUIRE(bottom.getValue() == 30);
+                REQUIRE(position.getValue() == sf::Vector2f(0, 0));
             }
         }
 

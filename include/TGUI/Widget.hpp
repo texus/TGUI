@@ -178,9 +178,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Gets the absolute position of the widget on the screen
+        /// @brief Get the absolute position of the widget instead of the relative position to its parent
         ///
-        /// @return Position of the widget
+        /// @return Absolute position of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getAbsolutePosition() const;
