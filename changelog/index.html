@@ -3,6 +3,28 @@ layout: page
 title: Changelog
 ---
 <div>
+    <h3 id="0.7.2">TGUI 0.7.2 <span class="ChangelogDate">(2 December 2016)</span></h3>
+    <ul>
+        <li>EditBox did not send a TextChanged signal when pressing ctrl+X</li>
+        <li>Added optional maximize and minimize buttons to ChildWindow (<a href="https://github.com/texus/TGUI/pull/61">#61</a>)</li>
+        <li>Calling Picture::setTexture yourself now works properly</li>
+        <li>Added optional parameter to Widget::disable to let mouse events pass through to the widgets behind it</li>
+        <li>ChatBox didn't scroll down automatically when size was not a multiple of item heigh</li>
+        <li>Clipping in ChatBox did not take padding into account</li>
+        <li>Mouse wheel scroll on top of combo box changed the item internally but did not display the new item</li>
+        <li>When ComboBox was destroyed while the list was still open then the list remained visible</li>
+        <li>Fixed invalid memory reads when widget gets destroyed from inside a callback function</li>
+        <li>Allow the ChildWindow to have maximum and minimum sizes (<a href="https://github.com/texus/TGUI/pull/64">#64</a>)</li>
+        <li>Removed support for 32-bit on OS X</li>
+        <li>Fixed texture rotation in some rare cases</li>
+        <li>Menus in MenuBar didn't stay open when the menu bar was added inside a Panel</li>
+        <li>Added EditBox::getCaretPosition</li>
+        <li>Fixed clipping issues when not using the default view</li>
+        <li>getAbsolutePosition no longer takes the position of the gui view into account</li>
+    </ul>
+</div>
+
+<div>
     <h3 id="0.7.1">TGUI 0.7.1 <span class="ChangelogDate">(12 June 2016)</span></h3>
     <ul>
         <li>Picture can now be loaded from a part of an sf::Texture</li>

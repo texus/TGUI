@@ -10,6 +10,7 @@ var searchData=
   ['childwindowrenderer',['ChildWindowRenderer',['../classtgui_1_1ChildWindowRenderer.html',1,'tgui']]],
   ['clickablewidget',['ClickableWidget',['../classtgui_1_1ClickableWidget.html',1,'tgui']]],
   ['clipboard',['Clipboard',['../classtgui_1_1Clipboard.html',1,'tgui']]],
+  ['clipping',['Clipping',['../classtgui_1_1Clipping.html',1,'tgui']]],
   ['color',['Color',['../classtgui_1_1Color.html',1,'tgui']]],
   ['combobox',['ComboBox',['../classtgui_1_1ComboBox.html',1,'tgui']]],
   ['comboboxrenderer',['ComboBoxRenderer',['../classtgui_1_1ComboBoxRenderer.html',1,'tgui']]],
