@@ -21,5 +21,6 @@ var searchData=
   ['bottomtotop',['BottomToTop',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85ea63dc349be51108dcfd197c7ab02b486a',1,'tgui::ProgressBar']]],
   ['boxlayout',['BoxLayout',['../classtgui_1_1BoxLayout.html',1,'tgui']]],
   ['boxlayout',['BoxLayout',['../classtgui_1_1BoxLayout.html#a54dff2c0d9103b0a6267b32ba3edec16',1,'tgui::BoxLayout']]],
-  ['button',['Button',['../classtgui_1_1Button.html',1,'tgui']]]
+  ['button',['Button',['../classtgui_1_1Button.html',1,'tgui']]],
+  ['buttonrenderer',['ButtonRenderer',['../structtgui_1_1ButtonRenderer.html',1,'tgui']]]
 ];

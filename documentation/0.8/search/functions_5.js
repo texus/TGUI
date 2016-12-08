@@ -1,7 +1,7 @@
 var searchData=
 [
   ['findbesttextsize',['findBestTextSize',['../classtgui_1_1Text.html#a21f2c9292ab0db2bb31847c8746c6963',1,'tgui::Text']]],
-  ['findcharacterpos',['findCharacterPos',['../classtgui_1_1Text.html#a07a814da6d225319fb0fc261538b86a7',1,'tgui::Text']]],
+  ['findcharacterpos',['findCharacterPos',['../classtgui_1_1Text.html#a5866cd381c505be5f3df0142633f7ce1',1,'tgui::Text']]],
   ['floatrect',['FloatRect',['../classtgui_1_1FloatRect.html#a3790e137e7d0924faef07fed0442c3f7',1,'tgui::FloatRect::FloatRect()=default'],['../classtgui_1_1FloatRect.html#a6e8d11f11fc14a2ce427f8f163c5bff6',1,'tgui::FloatRect::FloatRect(sf::FloatRect rect)']]],
   ['flushcache',['flushCache',['../classtgui_1_1DefaultThemeLoader.html#a9ca655747fb6516a5400e3200fbdc2e9',1,'tgui::DefaultThemeLoader']]],
   ['focus',['focus',['../classtgui_1_1Widget.html#a826330401141b9946307a5f4e3d1e988',1,'tgui::Widget']]],

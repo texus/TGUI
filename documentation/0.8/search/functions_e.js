@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['readfile',['readFile',['../classtgui_1_1DefaultThemeLoader.html#a1326e3f7aba02004646184b603744d1c',1,'tgui::DefaultThemeLoader']]],
+  ['readfile',['readFile',['../classtgui_1_1DefaultThemeLoader.html#ad2f1b07f60bbe018cee832cbc3ecb5aa',1,'tgui::DefaultThemeLoader']]],
   ['remove',['remove',['../classtgui_1_1Container.html#a02b900305e231f6ba0de127712fa3837',1,'tgui::Container::remove()'],['../classtgui_1_1Gui.html#aefa11eac30068c5a795a0a4f6822af7d',1,'tgui::Gui::remove()'],['../classtgui_1_1BoxLayout.html#a511f3f090df459bb80a4d545fea20ccd',1,'tgui::BoxLayout::remove(const tgui::Widget::Ptr &amp;widget) override'],['../classtgui_1_1BoxLayout.html#af35b209a63751c463c17ef3a5b84afcf',1,'tgui::BoxLayout::remove(std::size_t index)'],['../classtgui_1_1Grid.html#af91709f527ecea24e0668a36f202cc4d',1,'tgui::Grid::remove()'],['../classtgui_1_1Tabs.html#aa527012fe583515791036a542e696726',1,'tgui::Tabs::remove(const sf::String &amp;text)'],['../classtgui_1_1Tabs.html#ae9b3f38b5061e8abd4267e627cf66008',1,'tgui::Tabs::remove(std::size_t index)']]],
   ['removeall',['removeAll',['../classtgui_1_1Tabs.html#ad60f6d45675fda3deeefe6ae7060f6b9',1,'tgui::Tabs']]],
   ['removeallitems',['removeAllItems',['../classtgui_1_1ComboBox.html#a889c3695af016a7b9fb5523cd533e897',1,'tgui::ComboBox::removeAllItems()'],['../classtgui_1_1ListBox.html#a76b191bf2f599037d68286acb86864a8',1,'tgui::ListBox::removeAllItems()']]],

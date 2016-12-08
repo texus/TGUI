@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['x',['x',['../classtgui_1_1Layout2d.html#ac796bef9868b040cf29d52cfdc91272a',1,'tgui::Layout2d']]]
+  ['uint',['UInt',['../structtgui_1_1EditBox_1_1Validator.html#a86f672270cc726b8d137979172f09c50',1,'tgui::EditBox::Validator']]]
 ];

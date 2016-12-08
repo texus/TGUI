@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['left',['left',['../classtgui_1_1Outline.html#a6d29871ef0e3994c19e5f9e62016405c',1,'tgui::Outline']]]
+  ['int',['Int',['../structtgui_1_1EditBox_1_1Validator.html#addae7bebf202d82437de4be2d06aec66',1,'tgui::EditBox::Validator']]]
 ];

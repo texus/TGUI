@@ -11,5 +11,6 @@ var searchData=
   ['addtext',['addText',['../classtgui_1_1TextBox.html#ae393071b37327d8a4df03c18f8bd0f84',1,'tgui::TextBox']]],
   ['addwidget',['addWidget',['../classtgui_1_1Grid.html#a2f4565719a147310dc4c388bcf684964',1,'tgui::Grid']]],
   ['alignment',['Alignment',['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393',1,'tgui::EditBox::Alignment()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9',1,'tgui::Grid::Alignment()']]],
+  ['all',['All',['../structtgui_1_1EditBox_1_1Validator.html#aaa5872e41672bfb5e279ffdd5cd34e92',1,'tgui::EditBox::Validator']]],
   ['any',['Any',['../structtgui_1_1Any.html',1,'tgui']]]
 ];
