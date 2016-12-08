@@ -774,6 +774,7 @@ WARN_LOGFILE           =
 INPUT                  = "@DOXYGEN_INPUT_DIR@/include/TGUI" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Loading" \
                          "@DOXYGEN_INPUT_DIR@/include/TGUI/Widgets" \
+                         "@DOXYGEN_INPUT_DIR@/include/TGUI/Renderers" \
                          "@DOXYGEN_INPUT_DIR@/doc/mainpage.hpp"
 
 # This tag can be used to specify the character encoding of the source files
