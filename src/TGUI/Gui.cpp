@@ -146,8 +146,10 @@ namespace tgui
         assert(m_window != nullptr);
 
         // Check if the event has something to do with the mouse
-        if ((event.type == sf::Event::MouseMoved) || (event.type == sf::Event::MouseButtonPressed)
-         || (event.type == sf::Event::MouseButtonReleased) || (event.type == sf::Event::MouseWheelScrolled))
+        if ((event.type == sf::Event::MouseMoved) || (event.type == sf::Event::TouchMoved)
+         || (event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::TouchBegan)
+         || (event.type == sf::Event::MouseButtonReleased) || (event.type == sf::Event::TouchEnded)
+         || (event.type == sf::Event::MouseWheelScrolled))
         {
             sf::Vector2f mouseCoords;
 
@@ -175,6 +177,16 @@ namespace tgui
                     mouseCoords = m_window->mapPixelToCoords({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, m_view);
                     event.mouseWheelScroll.x = static_cast<int>(mouseCoords.x + 0.5f);
                     event.mouseWheelScroll.y = static_cast<int>(mouseCoords.y + 0.5f);
+                    break;
+                }
+
+                case sf::Event::TouchMoved:
+                case sf::Event::TouchBegan:
+                case sf::Event::TouchEnded:
+                {
+                    mouseCoords = m_window->mapPixelToCoords({event.touch.x, event.touch.y}, m_view);
+                    event.touch.x = static_cast<int>(mouseCoords.x + 0.5f);
+                    event.touch.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
                 }
 
