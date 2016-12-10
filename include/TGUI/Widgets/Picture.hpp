@@ -123,6 +123,52 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Creates a new picture widget
+        ///
+        /// @param filename  The filename of the texture to load the picture from
+        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
+        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
+        ///
+        /// @return The new picture
+        ///
+        /// @code
+        /// auto picture1 = Picture::create("image.png");
+        ///
+        /// auto picture2 = Picture::create({"image.png", {20, 15, 60, 40}}); // Load part of the image from (20,15) to (80,55)
+        ///
+        /// sf::Texture texture;
+        /// texture.loadFromFile("image.png", {20, 15, 60, 40});
+        /// auto picture3 = Picture::create(texture);
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static Picture::Ptr create(const char* filename, bool fullyClickable = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Creates a new picture widget
+        ///
+        /// @param texture  The texture to load the picture from
+        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
+        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
+        ///
+        /// @return The new picture
+        ///
+        /// @code
+        /// auto picture1 = Picture::create("image.png");
+        ///
+        /// auto picture2 = Picture::create({"image.png", {20, 15, 60, 40}}); // Load part of the image from (20,15) to (80,55)
+        ///
+        /// sf::Texture texture;
+        /// texture.loadFromFile("image.png", {20, 15, 60, 40});
+        /// auto picture3 = Picture::create(texture);
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static Picture::Ptr create(const Texture& texture = {}, bool fullyClickable = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another picture
         ///
         /// @param picture  The other picture

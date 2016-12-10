@@ -47,6 +47,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    SpinButton::Ptr SpinButton::create(int minimum, int maximum)
+    {
+        auto spinButton = std::make_shared<SpinButton>();
+
+        spinButton->setMinimum(minimum);
+        spinButton->setMaximum(maximum);
+
+        return spinButton;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     SpinButton::Ptr SpinButton::copy(SpinButton::ConstPtr spinButton)
     {
         if (spinButton)
