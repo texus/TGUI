@@ -124,7 +124,7 @@ TEST_CASE("[MenuBar]")
 
             SECTION("Adding menu items to older menu")
             {
-                menuBar->addMenuItem("Quit", "File");
+                REQUIRE(menuBar->addMenuItem("File", "Quit"));
 
                 REQUIRE(menuBar->getMenus().size() == 3);
                 REQUIRE(menuBar->getMenus()["File"].size() == 3);
@@ -156,6 +156,14 @@ TEST_CASE("[MenuBar]")
                 REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
                 REQUIRE(menuBar->getMenus()["Help"].size() == 1);
             }
+        }
+
+        SECTION("Invalid addMenuItem calls")
+        {
+            REQUIRE(!menuBar->addMenuItem("Item"));
+
+            menuBar->addMenu("File");
+            REQUIRE(!menuBar->addMenuItem("Edit", "Item"));
         }
     }
 
