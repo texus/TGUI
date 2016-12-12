@@ -160,6 +160,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds a new menu item to the last added menu.
+        ///
+        /// @param text  The text written on this menu item
+        ///
+        /// @return True when the item was added, false when menu bar doesn't contain any menus yet.
+        ///
+        /// @code
+        /// menuBar->addMenu("File");
+        /// menuBar->addMenuItem("Load");
+        /// menuBar->addMenuItem("Save");
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool addMenuItem(const sf::String& text);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes a menu.
         ///
         /// Any menu items that belong to this menu will be removed as well.
