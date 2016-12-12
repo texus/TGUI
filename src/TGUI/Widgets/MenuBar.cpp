@@ -95,16 +95,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::addMenuItem(const sf::String& text, sf::String menu)
+    bool MenuBar::addMenuItem(const sf::String& menu, const sf::String& text)
     {
-        if (menu.isEmpty())
-        {
-            if (m_menus.empty())
-                return false;
-            else
-                menu = m_menus.back().text.getString();
-        }
-
         // Search for the menu
         for (unsigned int i = 0; i < m_menus.size(); ++i)
         {
@@ -125,6 +117,16 @@ namespace tgui
 
         // Could not find the menu
         return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::addMenuItem(const sf::String& text)
+    {
+        if (!m_menus.empty())
+            return addMenuItem(m_menus.back().text.getString(), text);
+        else
+            return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

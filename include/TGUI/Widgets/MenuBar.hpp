@@ -117,23 +117,40 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a new menu item
         ///
+        /// @param menu  The name of the menu to which the menu item will be added
         /// @param text  The text written on this menu item
-        /// @param menu  The name of the menu to which the menu item will be added, or empty to add to the last menu
         ///
         /// @return True when the item was added, false when menu was not found
         ///
         /// @code
         /// menuBar->addMenu("File");
-        /// menuBar->addMenuItem("Load");
-        /// menuBar->addMenuItem("Seve");
-        ///
-        /// menuBar->addMenu("SomeOtherMenu");
-        ///
-        /// menuBar->addMenuItem("Quit", "File");
+        /// menuBar->addMenu("Edit");
+        /// menuBar->addMenuItem("File", "Load");
+        /// menuBar->addMenuItem("File", "Save");
+        /// menuBar->addMenuItem("Edit", "Undo");
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool addMenuItem(const sf::String& text, sf::String menu = "");
+        bool addMenuItem(const sf::String& menu, const sf::String& text);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds a new menu item to the last added menu
+        ///
+        /// @param text  The text written on this menu item
+        ///
+        /// @return True when the item was added, false when the menu bar doesn't contain any menus yet
+        ///
+        /// @code
+        /// menuBar->addMenu("File");
+        /// menuBar->addMenuItem("Load");
+        /// menuBar->addMenuItem("Save");
+        /// menuBar->addMenu("Edit");
+        /// menuBar->addMenuItem("Undo");
+        /// @endcode
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool addMenuItem(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
