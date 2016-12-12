@@ -10,9 +10,9 @@ int main()
 
     try
     {
-        tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("../../widgets/Black.txt");
+        tgui::Theme::Ptr theme = tgui::Theme::create("../../widgets/Black.txt");
 
-        gui.add(std::make_shared<tgui::Picture>("../RedBackground.jpg"));
+        gui.add(tgui::Picture::create("../RedBackground.jpg"));
 
         tgui::Tab::Ptr tab = theme->load("tab");
         tab->setTabHeight(30);
@@ -191,7 +191,7 @@ int main()
         text.setPosition(25, 100);
         text.setColor({200, 200, 200});
 
-        tgui::Canvas::Ptr canvas = std::make_shared<tgui::Canvas>(200.f, 140.f);
+        tgui::Canvas::Ptr canvas = tgui::Canvas::create({200.f, 140.f});
         canvas->setPosition(420, 430);
         canvas->clear();
         canvas->draw(sprite);

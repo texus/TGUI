@@ -6,7 +6,7 @@ int main()
     tgui::Gui gui(window);
     
     // Create the background image
-    gui.add(std::make_shared<tgui::Picture>("../Linux.jpg"));
+    gui.add(tgui::Picture::create("../Linux.jpg"));
 
     // Get a bound version of the window size
     // Passing this to setPosition or setSize will make the widget automatically update when the view of the gui changes
@@ -18,7 +18,7 @@ int main()
     // Top:    20% of window height
     // Width:  80% of window width
     // Height: 25% of window height
-    tgui::Button::Ptr play = std::make_shared<tgui::Button>();
+    tgui::Button::Ptr play = tgui::Button::create();
     play->setPosition(windowWidth*0.1f, windowHeight*0.2f);
     play->setSize(windowWidth*0.8f, windowHeight*0.25f);
     play->setText("Play");

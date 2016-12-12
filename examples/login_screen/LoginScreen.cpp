@@ -9,7 +9,7 @@ void login(tgui::EditBox::Ptr username, tgui::EditBox::Ptr password)
 void loadWidgets( tgui::Gui& gui )
 {
     // Load the theme for the edit boxes and button
-    tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("../../widgets/Black.txt");
+    tgui::Theme::Ptr theme = tgui::Theme::create("../../widgets/Black.txt");
 
     // Get a bound version of the window size
     // Passing this to setPosition or setSize will make the widget automatically update when the view of the gui changes
@@ -17,7 +17,7 @@ void loadWidgets( tgui::Gui& gui )
     auto windowHeight = tgui::bindHeight(gui);
 
     // Create the background image (picture is of type tgui::Picture::Ptr or std::shared_widget<Picture>)
-    tgui::Picture::Ptr picture = std::make_shared<tgui::Picture>("../xubuntu_bg_aluminium.jpg");
+    tgui::Picture::Ptr picture = tgui::Picture::create("../xubuntu_bg_aluminium.jpg");
     picture->setSize(tgui::bindMax(800, windowWidth), tgui::bindMax(600, windowHeight));
     gui.add(picture);
 
