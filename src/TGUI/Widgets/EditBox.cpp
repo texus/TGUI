@@ -1037,93 +1037,59 @@ namespace tgui
 
     std::size_t EditBox::findCaretPosition(float posX)
     {
-        // This code will crash when the editbox is empty. We need to avoid this.
-        if (m_textFull.getString().isEmpty())
-            return 0;
+        // Take the part outside the edit box into account when the text does not fit inside it
+        posX += m_textCropPosition;
 
-        // Find out what the first visible character is
-        std::size_t firstVisibleChar;
-        if (m_textCropPosition)
-        {
-            // Start searching near the caret to quickly find the character even in a very long string
-            firstVisibleChar = m_selEnd;
-
-            // Go backwards to find the character
-            while (m_textFull.findCharacterPos(firstVisibleChar-1).x > m_textCropPosition)
-                --firstVisibleChar;
-        }
-        else // If the first part is visible then the first character is also visible
-            firstVisibleChar = 0;
-
-        sf::String tempString;
-        float textWidthWithoutLastChar;
-        float fullTextWidth;
-        float halfOfLastCharWidth;
-        std::size_t lastVisibleChar;
-        float width = getVisibleEditBoxWidth();
-
-        // Find out how many pixels the text is moved
-        float pixelsToMove = 0;
+        // If the text is centered or aligned to the right then the position has to be corrected when the edit box is not entirely full
         if (m_textAlignment != Alignment::Left)
         {
-            // Calculate the text width
+            float editBoxWidth = getVisibleEditBoxWidth();
             float textWidth = m_textFull.getSize().x;
 
-            // Check if a layout would make sense
-            if (textWidth < width)
+            if (textWidth < editBoxWidth)
             {
                 // Set the number of pixels to move
                 if (m_textAlignment == Alignment::Center)
-                    pixelsToMove = (width - textWidth) / 2.f;
+                    posX -= (editBoxWidth - textWidth) / 2.f;
                 else // if (textAlignment == Alignment::Right)
-                    pixelsToMove = width - textWidth;
+                    posX -= editBoxWidth - textWidth;
             }
         }
 
-        // Find out what the last visible character is, starting from the caret
-        lastVisibleChar = m_selEnd;
+        float width = 0;
+        sf::Uint32 prevChar = 0;
+        unsigned int textSize = getTextSize();
+        bool bold = (getRenderer()->getTextStyle() & sf::Text::Bold) != 0;
+        std::shared_ptr<sf::Font> font = getRenderer()->getFont();
 
-        // Go forward to find the character
-        while (m_textFull.findCharacterPos(lastVisibleChar+1).x < m_textCropPosition + width)
+        std::size_t index;
+        for (index = 0; index < m_text.getSize(); ++index)
         {
-            if (lastVisibleChar == m_textFull.getString().getSize())
-                break;
+            float charWidth;
+            sf::Uint32 curChar = m_text[index];
+            if (curChar == '\n')
+                width = 0; // This should not happen as edit box is for single line text, but lets try the next line anyway since we haven't found the position yet
+            else if (curChar == '\t')
+                charWidth = static_cast<float>(font->getGlyph(' ', textSize, bold).advance) * 4;
+            else
+                charWidth = static_cast<float>(font->getGlyph(curChar, textSize, bold).advance);
 
-            ++lastVisibleChar;
-        }
-
-        sf::String displayedString = m_textFull.getString();
-
-        // Set the first part of the text
-        tempString = m_textFull.getString().substring(0, firstVisibleChar);
-        m_textFull.setString(tempString);
-
-        // Calculate the first position
-        fullTextWidth = m_textFull.findCharacterPos(firstVisibleChar).x;
-
-        // for all the other characters, check where you have clicked.
-        for (std::size_t i = firstVisibleChar; i < lastVisibleChar; ++i)
-        {
-            // Add the next character to the temporary string
-            tempString += displayedString[i];
-            m_textFull.setString(tempString);
-
-            // Make some calculations
-            textWidthWithoutLastChar = fullTextWidth;
-            fullTextWidth = m_textFull.findCharacterPos(i + 1).x;
-            halfOfLastCharWidth = (fullTextWidth - textWidthWithoutLastChar) / 2.0f;
-
-            // Check if you have clicked on the first halve of that character
-            if (posX < textWidthWithoutLastChar + pixelsToMove + halfOfLastCharWidth - m_textCropPosition)
+            float kerning = static_cast<float>(font->getKerning(prevChar, curChar, textSize));
+            if (width + charWidth < posX)
+                width += charWidth + kerning;
+            else
             {
-                m_textFull.setString(displayedString);
-                return i;
+                // If the mouse is on the second halve of the character then the caret should be on the right of it
+                if (width + charWidth - posX < charWidth / 2.f)
+                    index++;
+
+                break;
             }
+
+            prevChar = curChar;
         }
 
-        // If you pass here then you clicked behind all the characters
-        m_textFull.setString(displayedString);
-        return lastVisibleChar;
+        return index;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
