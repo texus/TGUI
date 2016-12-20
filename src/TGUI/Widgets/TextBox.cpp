@@ -212,6 +212,43 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::setCaretPosition(std::size_t charactersBeforeCaret)
+    {
+        // The caret position has to stay inside the string
+        if (charactersBeforeCaret > m_text.getSize())
+            charactersBeforeCaret = m_text.getSize();
+
+        // Find the line and position on that line on which the caret is located
+        std::size_t count = 0;
+        for (std::size_t i = 0; i < m_lines.size(); ++i)
+        {
+            if (count + m_lines[i].getSize() < charactersBeforeCaret)
+            {
+                count += m_lines[i].getSize();
+                if ((count < m_text.getSize()) && (m_text[count] == '\n'))
+                    count += 1;
+            }
+            else
+            {
+                m_selStart.y = i;
+                m_selStart.x = charactersBeforeCaret - count;
+
+                m_selEnd = m_selStart;
+                updateSelectionTexts();
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t TextBox::getCaretPosition() const
+    {
+        return findTextSelectionPositions().second;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextBox::setReadOnly(bool readOnly)
     {
         m_readOnly = readOnly;
@@ -893,7 +930,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2<std::size_t> TextBox::findCaretPosition(sf::Vector2f position)
+    sf::Vector2<std::size_t> TextBox::findCaretPosition(sf::Vector2f position) const
     {
         Borders borders = getRenderer()->getBorders();
         Padding padding = getRenderer()->getPadding();
@@ -962,7 +999,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::pair<std::size_t, std::size_t> TextBox::findTextSelectionPositions()
+    std::pair<std::size_t, std::size_t> TextBox::findTextSelectionPositions() const
     {
         // This function is used to count the amount of characters spread over several lines
         auto findIndex = [this](std::size_t line)
