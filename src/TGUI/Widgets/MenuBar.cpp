@@ -21,7 +21,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#include <iostream>
 
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Container.hpp>
@@ -229,6 +229,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MenuBar::setInvertedMenuDirection(bool invertDirection)
+    {
+        m_invertedMenuDirection = invertDirection;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::getInvertedMenuDirection() const
+    {
+        return m_invertedMenuDirection;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::map<sf::String, std::vector<sf::String>> MenuBar::getMenus() const
     {
         std::map<sf::String, std::vector<sf::String>> menus;
@@ -281,8 +295,16 @@ namespace tgui
                 }
 
                 // Check if the mouse is on top of the open menu
-                if (sf::FloatRect{left, getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
-                    return true;
+                if (m_invertedMenuDirection)
+                {
+                    if (sf::FloatRect{left, -(getSize().y * m_menus[m_visibleMenu].menuItems.size()), width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
+                        return true;
+                }
+                else
+                {
+                    if (sf::FloatRect{left, getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
+                        return true;
+                }
             }
         }
 
@@ -294,7 +316,7 @@ namespace tgui
     void MenuBar::leftMousePressed(sf::Vector2f pos)
     {
         // Check if a menu should be opened or closed
-        if (pos.y < getSize().y)
+        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             // Loop through the menus to check if the mouse is on top of them
             float menuWidth = 0;
@@ -342,9 +364,13 @@ namespace tgui
         if (m_mouseDown)
         {
             // Check if the mouse is on top of one of the menus
-            if (pos.y >= getSize().y)
+            if (!sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
             {
-                unsigned int selectedMenuItem = static_cast<unsigned int>((pos.y - getSize().y) / getSize().y);
+                std::size_t selectedMenuItem;
+                if (m_invertedMenuDirection)
+                    selectedMenuItem = static_cast<std::size_t>((-pos.y-1) / getSize().y);
+                else
+                    selectedMenuItem = static_cast<std::size_t>((pos.y - getSize().y) / getSize().y);
 
                 if (selectedMenuItem < m_menus[m_visibleMenu].menuItems.size())
                 {
@@ -369,7 +395,7 @@ namespace tgui
             mouseEnteredWidget();
 
         // Check if the mouse is on top of the menu bar (not on an open menus)
-        if (pos.y < getSize().y)
+        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             // Don't open a menu without having clicked first
             if (m_visibleMenu != -1)
@@ -415,7 +441,11 @@ namespace tgui
         else // The mouse is on top of one of the menus
         {
             // Calculate on what menu item the mouse is located
-            int selectedMenuItem = static_cast<int>((pos.y - getSize().y) / getSize().y);
+            int selectedMenuItem;
+            if (m_invertedMenuDirection)
+                selectedMenuItem = static_cast<int>((-pos.y-1) / getSize().y);
+            else
+                selectedMenuItem = static_cast<int>((pos.y - getSize().y) / getSize().y);
 
             // Check if the mouse is on a different item than before
             if (selectedMenuItem != m_menus[m_visibleMenu].selectedMenuItem)
@@ -566,6 +596,12 @@ namespace tgui
 
         sf::RenderStates textStates = states;
 
+        float nextItemDistance;
+        if (m_invertedMenuDirection)
+            nextItemDistance = -getSize().y;
+        else
+            nextItemDistance = getSize().y;
+
         // Draw the background
         if (m_spriteBackground.isSet())
             m_spriteBackground.draw(target, states);
@@ -597,7 +633,7 @@ namespace tgui
                     selectedBackgroundSprite.setSize({menuWidth, getSize().y});
                     for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
-                        states.transform.translate({0, getSize().y});
+                        states.transform.translate({0, nextItemDistance});
                         if (m_menus[i].selectedMenuItem == static_cast<int>(j))
                             selectedBackgroundSprite.draw(target, states);
                         else
@@ -612,7 +648,7 @@ namespace tgui
                     backgroundSprite.setSize({menuWidth, getSize().y});
                     for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
-                        states.transform.translate({0, getSize().y});
+                        states.transform.translate({0, nextItemDistance});
                         backgroundSprite.draw(target, states);
                     }
                 }
@@ -665,7 +701,7 @@ namespace tgui
 
                     for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
-                        textStates.transform.translate({0, getSize().y});
+                        textStates.transform.translate({0, nextItemDistance});
                         m_menus[i].menuItems[j].draw(target, textStates);
                     }
 

@@ -179,6 +179,8 @@ TEST_CASE("[MenuBar]")
         REQUIRE(menuBar->getMinimumSubMenuWidth() == 150);
     }
 
+    // TODO: setInvertedMenuDirection
+
     SECTION("Events / Signals")
     {
         SECTION("Widget")

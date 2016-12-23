@@ -146,6 +146,9 @@ TEST_CASE("[TextBox]")
         REQUIRE(textBox->isVerticalScrollbarPresent() == true);
     }
 
+    // TODO: setCaretPosition
+    // TODO: getLinesCount
+
     SECTION("Events / Signals")
     {
         SECTION("Widget")

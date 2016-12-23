@@ -228,6 +228,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the menus open above or below the menu bar
+        ///
+        /// @param Should the menus open above the bar instead of below like it does by default?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setInvertedMenuDirection(bool invertDirection);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the menus open above or below the menu bar
+        ///
+        /// @param Do menus open above the bar instead of below like it does by default?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getInvertedMenuDirection() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a copy of all the menus and their menu items
         ///
         /// @return Map of menus and their items
@@ -334,6 +352,8 @@ namespace tgui
         unsigned int m_textSize = 0;
 
         float m_minimumSubMenuWidth = 125;
+
+        bool m_invertedMenuDirection = false;
 
         Sprite m_spriteBackground;
         Sprite m_spriteItemBackground;
