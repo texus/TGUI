@@ -664,7 +664,7 @@ namespace tgui
 
                     for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
-                        states.transform.translate({0, getSize().y});
+                        states.transform.translate({0, nextItemDistance});
                         if ((m_menus[i].selectedMenuItem == static_cast<int>(j)) && selectedBackgroundColor.isSet())
                             drawRectangleShape(target, states, {menuWidth, getSize().y}, selectedBackgroundColor);
                         else
