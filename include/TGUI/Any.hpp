@@ -59,7 +59,7 @@ namespace tgui
         }
 
         template<class U>
-        StorageType<U>& as()
+        StorageType<U>& as() const
         {
             typedef StorageType<U> T;
             auto derived = dynamic_cast<Derived<T>*>(ptr);
