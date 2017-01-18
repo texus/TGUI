@@ -414,7 +414,7 @@ namespace tgui
         }
         else if (property == "selectedtextcolor")
         {
-            m_selectedTextColorCached = getRenderer()->getSelectedBackgroundColor();
+            m_selectedTextColorCached = getRenderer()->getSelectedTextColor();
 
             if (m_selectedTab >= 0)
                 m_tabTexts[m_selectedTab].setColor(m_selectedTextColorCached);
@@ -431,6 +431,18 @@ namespace tgui
         {
             m_distanceToSideCached = getRenderer()->getDistanceToSide();
             recalculateTabsWidth();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "selectedbackgroundcolor")
+        {
+            m_selectedBackgroundColorCached = getRenderer()->getSelectedBackgroundColor();
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
         }
         else if (property == "opacity")
         {
@@ -455,12 +467,8 @@ namespace tgui
             else
                 recalculateTabsWidth();
         }
-        else if ((property != "backgroundcolor")
-              && (property != "selectedbackgroundcolor")
-              && (property != "bordercolor"))
-        {
+        else
             Widget::rendererChanged(property);
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
