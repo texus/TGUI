@@ -29,6 +29,17 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{2}},
+                {"bordercolor", Color{60, 60, 60}},
+                {"bordercolorhover", sf::Color::Black},
+                {"trackcolor", Color{245, 245, 245}},
+                {"trackcolorhover", Color{255, 255, 255}},
+                {"thumbcolor", Color{245, 245, 245}},
+                {"thumbcolorhover", Color{255, 255, 255}}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Slider::Slider()
@@ -41,15 +52,7 @@ namespace tgui
         addSignal<int>("ValueChanged");
 
         m_renderer = aurora::makeCopied<SliderRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders({2});
-        getRenderer()->setTrackColor({245, 245, 245});
-        getRenderer()->setTrackColorHover({255, 255, 255});
-        getRenderer()->setThumbColor({245, 245, 245});
-        getRenderer()->setThumbColorHover({255, 255, 255});
-        getRenderer()->setBorderColor({60, 60, 60});
-        getRenderer()->setBorderColorHover(sf::Color::Black);
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize(200, 16);
     }
@@ -96,9 +99,9 @@ namespace tgui
                 m_spriteTrackHover.setSize(getInnerSize());
 
                 if (m_verticalScroll)
-                    scaleFactor = getInnerSize().x / getRenderer()->getTextureTrack().getImageSize().x;
+                    scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().x;
                 else
-                    scaleFactor = getInnerSize().y / getRenderer()->getTextureTrack().getImageSize().y;
+                    scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().y;
             }
             else // The image is rotated
             {
@@ -106,13 +109,13 @@ namespace tgui
                 m_spriteTrackHover.setSize({getInnerSize().y, getInnerSize().x});
 
                 if (m_verticalScroll)
-                    scaleFactor = getInnerSize().x / getRenderer()->getTextureTrack().getImageSize().y;
+                    scaleFactor = getInnerSize().x / m_spriteTrack.getTexture().getImageSize().y;
                 else
-                    scaleFactor = getInnerSize().y / getRenderer()->getTextureTrack().getImageSize().x;
+                    scaleFactor = getInnerSize().y / m_spriteTrack.getTexture().getImageSize().x;
             }
 
-            m_thumb.width = scaleFactor * getRenderer()->getTextureThumb().getImageSize().x;
-            m_thumb.height = scaleFactor * getRenderer()->getTextureThumb().getImageSize().y;
+            m_thumb.width = scaleFactor * m_spriteThumb.getTexture().getImageSize().x;
+            m_thumb.height = scaleFactor * m_spriteThumb.getTexture().getImageSize().y;
 
             m_spriteThumb.setSize({m_thumb.width, m_thumb.height});
             m_spriteThumbHover.setSize({m_thumb.width, m_thumb.height});
@@ -388,60 +391,79 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::rendererChanged(const std::string& property, ObjectConverter& value)
+    void Slider::rendererChanged(const std::string& property)
     {
         if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
             updateSize();
         }
         else if (property == "texturetrack")
         {
-            if (value.getTexture().getImageSize().x < value.getTexture().getImageSize().y)
+            m_spriteTrack.setTexture(getRenderer()->getTextureTrack());
+
+            if (m_spriteTrack.getTexture().getImageSize().x < m_spriteTrack.getTexture().getImageSize().y)
                 m_verticalImage = true;
             else
                 m_verticalImage = false;
 
-            m_spriteTrack.setTexture(value.getTexture());
             updateSize();
         }
         else if (property == "texturetrackhover")
         {
-            m_spriteTrackHover.setTexture(value.getTexture());
+            m_spriteTrackHover.setTexture(getRenderer()->getTextureTrackHover());
         }
         else if (property == "texturethumb")
         {
-            m_spriteThumb.setTexture(value.getTexture());
+            m_spriteThumb.setTexture(getRenderer()->getTextureThumb());
             updateSize();
         }
         else if (property == "texturethumbhover")
         {
-            m_spriteThumbHover.setTexture(value.getTexture());
+            m_spriteThumbHover.setTexture(getRenderer()->getTextureThumbHover());
+        }
+        else if (property == "trackcolor")
+        {
+            m_trackColorCached = getRenderer()->getTrackColor();
+        }
+        else if (property == "trackcolorhover")
+        {
+            m_trackColorHoverCached = getRenderer()->getTrackColorHover();
+        }
+        else if (property == "thumbcolor")
+        {
+            m_thumbColorCached = getRenderer()->getThumbColor();
+        }
+        else if (property == "thumbcolorhover")
+        {
+            m_thumbColorHoverCached = getRenderer()->getThumbColorHover();
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "bordercolorhover")
+        {
+            m_borderColorHoverCached = getRenderer()->getBorderColorHover();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
-            m_spriteTrack.setOpacity(opacity);
-            m_spriteTrackHover.setOpacity(opacity);
-            m_spriteThumb.setOpacity(opacity);
-            m_spriteThumbHover.setOpacity(opacity);
+            Widget::rendererChanged(property);
+
+            m_spriteTrack.setOpacity(m_opacityCached);
+            m_spriteTrackHover.setOpacity(m_opacityCached);
+            m_spriteThumb.setOpacity(m_opacityCached);
+            m_spriteThumbHover.setOpacity(m_opacityCached);
         }
-        else if ((property != "trackcolor")
-              && (property != "trackcolorhover")
-              && (property != "thumbcolor")
-              && (property != "thumbcolorhover")
-              && (property != "bordercolor")
-              && (property != "bordercolorhover"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f Slider::getInnerSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -467,15 +489,14 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the borders around the track
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
-                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColorHover());
+            if (m_mouseHover && m_borderColorHoverCached.isSet())
+                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorHoverCached);
             else
-                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
+                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
 
-            states.transform.translate({borders.left, borders.top});
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Draw the track
@@ -488,23 +509,23 @@ namespace tgui
         }
         else // There are no textures
         {
-            if (m_mouseHover && getRenderer()->getTrackColorHover().isSet())
-                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getTrackColorHover());
+            if (m_mouseHover && m_trackColorHoverCached.isSet())
+                drawRectangleShape(target, states, getInnerSize(), m_trackColorHoverCached);
             else
-                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getTrackColor());
+                drawRectangleShape(target, states, getInnerSize(), m_trackColorCached);
         }
 
-        states.transform.translate({-borders.left + m_thumb.left, -borders.top + m_thumb.top});
+        states.transform.translate({-m_bordersCached.left + m_thumb.left, -m_bordersCached.top + m_thumb.top});
 
         // Draw the borders around the thumb
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
-                drawBorders(target, states, borders, {m_thumb.width, m_thumb.height}, getRenderer()->getBorderColorHover());
+            if (m_mouseHover && m_borderColorHoverCached.isSet())
+                drawBorders(target, states, m_bordersCached, {m_thumb.width, m_thumb.height}, m_borderColorHoverCached);
             else
-                drawBorders(target, states, borders, {m_thumb.width, m_thumb.height}, getRenderer()->getBorderColor());
+                drawBorders(target, states, m_bordersCached, {m_thumb.width, m_thumb.height}, m_borderColorCached);
 
-            states.transform.translate({borders.left, borders.top});
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Draw the thumb
@@ -517,11 +538,11 @@ namespace tgui
         }
         else // There are no textures
         {
-            sf::Vector2f thumbInnerSize = {m_thumb.width - borders.left - borders.right, m_thumb.height - borders.top - borders.bottom};
-            if (m_mouseHover && getRenderer()->getThumbColorHover().isSet())
-                drawRectangleShape(target, states, thumbInnerSize, getRenderer()->getThumbColorHover());
+            sf::Vector2f thumbInnerSize = {m_thumb.width - m_bordersCached.left - m_bordersCached.right, m_thumb.height - m_bordersCached.top - m_bordersCached.bottom};
+            if (m_mouseHover && m_thumbColorHoverCached.isSet())
+                drawRectangleShape(target, states, thumbInnerSize, m_thumbColorHoverCached);
             else
-                drawRectangleShape(target, states, thumbInnerSize, getRenderer()->getThumbColor());
+                drawRectangleShape(target, states, thumbInnerSize, m_thumbColorCached);
         }
     }
 

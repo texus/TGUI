@@ -56,6 +56,7 @@ namespace tgui
         for (auto& pair : m_renderers)
         {
             auto& renderer = pair.second;
+            auto oldData = renderer;
 
             /// TODO: Exceptions should not be used for such situations!
             ///       Add a function to ThemeLoader that lists which sections exist.
@@ -87,11 +88,47 @@ namespace tgui
             if ((properties->find("font") == properties->end()) && (oldFont != nullptr))
                 renderer->propertyValuePairs["font"] = ObjectConverter(oldFont);
 
-            // Reload the widgets that were using the renderer
-            for (const auto& observer : renderer->observers)
+            // Tell the widgets that were using this renderer about all the updated properties, both new ones and old ones that were now reset to their default value
+            auto oldIt = oldData->propertyValuePairs.begin();
+            auto newIt = renderer->propertyValuePairs.begin();
+            while (oldIt != oldData->propertyValuePairs.end() && newIt != renderer->propertyValuePairs.end())
             {
-                for (auto& property : renderer->propertyValuePairs)
-                    observer.second(property.first, property.second);
+                if (oldIt->first < newIt->first)
+                {
+                    // Update values that no longer exist in the new renderer and are now reset to the default value
+                    for (const auto& observer : renderer->observers)
+                        observer.second(oldIt->first);
+
+                    ++oldIt;
+                }
+                else
+                {
+                    // Update changed and new properties
+                    for (const auto& observer : renderer->observers)
+                        observer.second(newIt->first);
+
+                    if (newIt->first < oldIt->first)
+                        ++newIt;
+                    else
+                    {
+                        ++oldIt;
+                        ++newIt;
+                    }
+                }
+            }
+            while (oldIt != oldData->propertyValuePairs.end())
+            {
+                for (const auto& observer : renderer->observers)
+                    observer.second(oldIt->first);
+
+                ++oldIt;
+            }
+            while (newIt != renderer->propertyValuePairs.end())
+            {
+                for (const auto& observer : renderer->observers)
+                    observer.second(newIt->first);
+
+                ++newIt;
             }
         }
     }

@@ -30,6 +30,17 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"trackcolor", Color{245, 245, 245}},
+                {"thumbcolor", Color{220, 220, 220}},
+                {"thumbcolorhover", Color{230, 230, 230}},
+                {"arrowbackgroundcolor", Color{245, 245, 245}},
+                {"arrowbackgroundcolorhover", Color{255, 255, 255}},
+                {"arrowcolor", Color{60, 60, 60}},
+                {"arrowcolorhover", Color{0, 0, 0}}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Scrollbar()
@@ -41,15 +52,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<ScrollbarRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setTrackColor({245, 245, 245});
-        getRenderer()->setThumbColor({220, 220, 220});
-        getRenderer()->setThumbColorHover({230, 230, 230});
-        getRenderer()->setArrowBackgroundColor({245, 245, 245});
-        getRenderer()->setArrowBackgroundColorHover({255, 255, 255});
-        getRenderer()->setArrowColor({60, 60, 60});
-        getRenderer()->setArrowColorHover({0, 0, 0});
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize(16, 160);
     }
@@ -93,8 +96,8 @@ namespace tgui
 
             if (textured)
             {
-                m_arrowUp.height = getSize().x * getRenderer()->getTextureArrowUp().getImageSize().x / getRenderer()->getTextureArrowUp().getImageSize().y;
-                m_arrowDown.height = getSize().x * getRenderer()->getTextureArrowDown().getImageSize().x / getRenderer()->getTextureArrowDown().getImageSize().y;
+                m_arrowUp.height = getSize().x * m_spriteArrowUp.getTexture().getImageSize().x / m_spriteArrowUp.getTexture().getImageSize().y;
+                m_arrowDown.height = getSize().x * m_spriteArrowDown.getTexture().getImageSize().x / m_spriteArrowDown.getTexture().getImageSize().y;
             }
             else
             {
@@ -118,8 +121,8 @@ namespace tgui
 
             if (textured)
             {
-                m_arrowUp.width = getSize().y * getRenderer()->getTextureArrowUp().getImageSize().x / getRenderer()->getTextureArrowUp().getImageSize().y;
-                m_arrowDown.width = getSize().y * getRenderer()->getTextureArrowDown().getImageSize().x / getRenderer()->getTextureArrowDown().getImageSize().y;
+                m_arrowUp.width = getSize().y * m_spriteArrowUp.getTexture().getImageSize().x / m_spriteArrowUp.getTexture().getImageSize().y;
+                m_arrowDown.width = getSize().y * m_spriteArrowDown.getTexture().getImageSize().x / m_spriteArrowDown.getTexture().getImageSize().y;
             }
             else
             {
@@ -660,69 +663,91 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::rendererChanged(const std::string& property, ObjectConverter& value)
+    void Scrollbar::rendererChanged(const std::string& property)
     {
         if (property == "texturetrack")
         {
-            m_spriteTrack.setTexture(value.getTexture());
+            m_spriteTrack.setTexture(getRenderer()->getTextureTrack());
             updateSize();
         }
         else if (property == "texturetrackhover")
         {
-            m_spriteTrackHover.setTexture(value.getTexture());
+            m_spriteTrackHover.setTexture(getRenderer()->getTextureTrackHover());
         }
         else if (property == "texturethumb")
         {
-            m_spriteThumb.setTexture(value.getTexture());
+            m_spriteThumb.setTexture(getRenderer()->getTextureThumb());
             updateSize();
         }
         else if (property == "texturethumbhover")
         {
-            m_spriteThumbHover.setTexture(value.getTexture());
+            m_spriteThumbHover.setTexture(getRenderer()->getTextureThumbHover());
         }
         else if (property == "texturearrowup")
         {
-            m_spriteArrowUp.setTexture(value.getTexture());
+            m_spriteArrowUp.setTexture(getRenderer()->getTextureArrowUp());
             updateSize();
         }
         else if (property == "texturearrowuphover")
         {
-            m_spriteArrowUpHover.setTexture(value.getTexture());
+            m_spriteArrowUpHover.setTexture(getRenderer()->getTextureArrowUpHover());
         }
         else if (property == "texturearrowdown")
         {
-            m_spriteArrowDown.setTexture(value.getTexture());
+            m_spriteArrowDown.setTexture(getRenderer()->getTextureArrowDown());
             updateSize();
         }
         else if (property == "texturearrowdownhover")
         {
-            m_spriteArrowDownHover.setTexture(value.getTexture());
+            m_spriteArrowDownHover.setTexture(getRenderer()->getTextureArrowDownHover());
+        }
+        else if (property == "trackcolor")
+        {
+            m_trackColorCached = getRenderer()->getTrackColor();
+        }
+        else if (property == "trackcolorhover")
+        {
+            m_trackColorHoverCached = getRenderer()->getTrackColorHover();
+        }
+        else if (property == "thumbcolor")
+        {
+            m_thumbColorCached = getRenderer()->getThumbColor();
+        }
+        else if (property == "thumbcolorhover")
+        {
+            m_thumbColorHoverCached = getRenderer()->getThumbColorHover();
+        }
+        else if (property == "arrowbackgroundcolor")
+        {
+            m_arrowBackgroundColorCached = getRenderer()->getArrowBackgroundColor();
+        }
+        else if (property == "arrowbackgroundcolorhover")
+        {
+            m_arrowBackgroundColorHoverCached = getRenderer()->getArrowBackgroundColorHover();
+        }
+        else if (property == "arrowcolor")
+        {
+            m_arrowColorCached = getRenderer()->getArrowColor();
+        }
+        else if (property == "arrowcolorhover")
+        {
+            m_arrowColorHoverCached = getRenderer()->getArrowColorHover();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
-            m_spriteTrack.setOpacity(opacity);
-            m_spriteTrackHover.setOpacity(opacity);
-            m_spriteThumb.setOpacity(opacity);
-            m_spriteThumbHover.setOpacity(opacity);
-            m_spriteArrowUp.setOpacity(opacity);
-            m_spriteArrowUpHover.setOpacity(opacity);
-            m_spriteArrowDown.setOpacity(opacity);
-            m_spriteArrowDownHover.setOpacity(opacity);
+            Widget::rendererChanged(property);
+
+            m_spriteTrack.setOpacity(m_opacityCached);
+            m_spriteTrackHover.setOpacity(m_opacityCached);
+            m_spriteThumb.setOpacity(m_opacityCached);
+            m_spriteThumbHover.setOpacity(m_opacityCached);
+            m_spriteArrowUp.setOpacity(m_opacityCached);
+            m_spriteArrowUpHover.setOpacity(m_opacityCached);
+            m_spriteArrowDown.setOpacity(m_opacityCached);
+            m_spriteArrowDownHover.setOpacity(m_opacityCached);
         }
-        else if ((property != "trackcolor")
-              && (property != "trackcolorhover")
-              && (property != "thumbcolor")
-              && (property != "thumbcolorhover")
-              && (property != "arrowbackgroundcolor")
-              && (property != "arrowbackgroundcolorhover")
-              && (property != "arrowcolor")
-              && (property != "arrowcolorhover")
-              && (property != "bordercolor")
-              && (property != "bordercolorhover"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -765,16 +790,16 @@ namespace tgui
         }
         else
         {
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && getRenderer()->getArrowBackgroundColorHover().isSet())
-                drawRectangleShape(target, states, {m_arrowUp.width, m_arrowUp.height}, getRenderer()->getArrowBackgroundColorHover());
+            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && m_arrowBackgroundColorHoverCached.isSet())
+                drawRectangleShape(target, states, {m_arrowUp.width, m_arrowUp.height}, m_arrowBackgroundColorHoverCached);
             else
-                drawRectangleShape(target, states, {m_arrowUp.width, m_arrowUp.height}, getRenderer()->getArrowBackgroundColor());
+                drawRectangleShape(target, states, {m_arrowUp.width, m_arrowUp.height}, m_arrowBackgroundColorCached);
 
             sf::ConvexShape arrow{3};
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && getRenderer()->getArrowColorHover().isSet())
-                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && m_arrowColorHoverCached.isSet())
+                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorHoverCached, m_opacityCached));
             else
-                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorCached, m_opacityCached));
 
             if (m_verticalScroll)
             {
@@ -803,10 +828,10 @@ namespace tgui
         }
         else
         {
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Track) && getRenderer()->getTrackColorHover().isSet())
-                drawRectangleShape(target, states, {m_track.width, m_track.height}, getRenderer()->getTrackColorHover());
+            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Track) && m_trackColorHoverCached.isSet())
+                drawRectangleShape(target, states, {m_track.width, m_track.height}, m_trackColorHoverCached);
             else
-                drawRectangleShape(target, states, {m_track.width, m_track.height}, getRenderer()->getTrackColor());
+                drawRectangleShape(target, states, {m_track.width, m_track.height}, m_trackColorCached);
         }
         states.transform.translate({-m_track.left, -m_track.top});
 
@@ -821,10 +846,10 @@ namespace tgui
         }
         else
         {
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Thumb) && getRenderer()->getThumbColorHover().isSet())
-                drawRectangleShape(target, states, {m_thumb.width, m_thumb.height}, getRenderer()->getThumbColorHover());
+            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Thumb) && m_thumbColorHoverCached.isSet())
+                drawRectangleShape(target, states, {m_thumb.width, m_thumb.height}, m_thumbColorHoverCached);
             else
-                drawRectangleShape(target, states, {m_thumb.width, m_thumb.height}, getRenderer()->getThumbColor());
+                drawRectangleShape(target, states, {m_thumb.width, m_thumb.height}, m_thumbColorCached);
         }
         states.transform.translate({-m_thumb.left, -m_thumb.top});
 
@@ -839,16 +864,16 @@ namespace tgui
         }
         else
         {
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && getRenderer()->getArrowBackgroundColorHover().isSet())
-                drawRectangleShape(target, states, {m_arrowDown.width, m_arrowDown.height}, getRenderer()->getArrowBackgroundColorHover());
+            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && m_arrowBackgroundColorHoverCached.isSet())
+                drawRectangleShape(target, states, {m_arrowDown.width, m_arrowDown.height}, m_arrowBackgroundColorHoverCached);
             else
-                drawRectangleShape(target, states, {m_arrowDown.width, m_arrowDown.height}, getRenderer()->getArrowBackgroundColor());
+                drawRectangleShape(target, states, {m_arrowDown.width, m_arrowDown.height}, m_arrowBackgroundColorCached);
 
             sf::ConvexShape arrow{3};
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && getRenderer()->getArrowColorHover().isSet())
-                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && m_arrowColorHoverCached.isSet())
+                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorHoverCached, m_opacityCached));
             else
-                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorCached, m_opacityCached));
 
             if (m_verticalScroll)
             {

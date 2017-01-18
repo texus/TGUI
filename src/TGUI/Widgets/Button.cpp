@@ -29,6 +29,21 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{2}},
+                {"bordercolor", Color{60, 60, 60}},
+                {"bordercolorhover", sf::Color::Black},
+                {"bordercolordown", sf::Color::Black},
+                {"textcolor", Color{60, 60, 60}},
+                {"textcolorhover", sf::Color::Black},
+                {"textcolordown", sf::Color::Black},
+                {"backgroundcolor", Color{245, 245, 245}},
+                {"backgroundcolorhover", sf::Color::White},
+                {"backgroundcolordown", sf::Color::White}
+                ///TODO: Define default disabled colors
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button()
@@ -39,19 +54,7 @@ namespace tgui
         addSignal<sf::String>("Pressed");
 
         m_renderer = aurora::makeCopied<ButtonRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders(2);
-        getRenderer()->setTextColor({60, 60, 60});
-        getRenderer()->setTextColorHover(sf::Color::Black);
-        getRenderer()->setTextColorDown(sf::Color::Black);
-        getRenderer()->setBackgroundColor({245, 245, 245});
-        getRenderer()->setBackgroundColorHover(sf::Color::White);
-        getRenderer()->setBackgroundColorDown(sf::Color::White);
-        getRenderer()->setBorderColor({60, 60, 60});
-        getRenderer()->setBorderColorHover(sf::Color::Black);
-        getRenderer()->setBorderColorDown(sf::Color::Black);
-        ///TODO: Disabled colors
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize(120, 30);
     }
@@ -131,7 +134,7 @@ namespace tgui
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                unsigned int textSize = Text::findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.8f);
+                unsigned int textSize = Text::findBestTextSize(m_fontCached, getInnerSize().y * 0.8f);
                 m_text.setCharacterSize(textSize);
 
                 // Make the text smaller when it's too width
@@ -153,7 +156,7 @@ namespace tgui
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                unsigned int textSize = Text::findBestTextSize(getRenderer()->getFont(), getInnerSize().x * 0.8f);
+                unsigned int textSize = Text::findBestTextSize(m_fontCached, getInnerSize().x * 0.8f);
                 m_text.setCharacterSize(textSize);
 
                 // Make the text smaller when it's too high
@@ -224,7 +227,7 @@ namespace tgui
     void Button::widgetFocused()
     {
         // We can't be focused when we don't have a focus image
-        if (getRenderer()->getTextureFocused().getData())
+        if (m_spriteFocused.getTexture().getData())
             Widget::widgetFocused();
         else
             unfocus();
@@ -248,10 +251,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::rendererChanged(const std::string& property, ObjectConverter& value)
+    void Button::rendererChanged(const std::string& property)
     {
         if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
             updateSize();
         }
         else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordown") || (property == "textcolordisabled")
@@ -261,75 +265,113 @@ namespace tgui
         }
         else if (property == "texture")
         {
-            m_sprite.setTexture(value.getTexture());
+            m_sprite.setTexture(getRenderer()->getTexture());
         }
         else if (property == "texturehover")
         {
-            m_spriteHover.setTexture(value.getTexture());
+            m_spriteHover.setTexture(getRenderer()->getTextureHover());
         }
         else if (property == "texturedown")
         {
-            m_spriteDown.setTexture(value.getTexture());
+            m_spriteDown.setTexture(getRenderer()->getTextureDown());
         }
         else if (property == "texturedisabled")
         {
-            m_spriteDisabled.setTexture(value.getTexture());
+            m_spriteDisabled.setTexture(getRenderer()->getTextureDisabled());
         }
         else if (property == "texturefocused")
         {
-            m_spriteFocused.setTexture(value.getTexture());
+            m_spriteFocused.setTexture(getRenderer()->getTextureFocused());
             m_allowFocus = m_spriteFocused.isSet();
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "bordercolorhover")
+        {
+            m_borderColorHoverCached = getRenderer()->getBorderColorHover();
+        }
+        else if (property == "bordercolordown")
+        {
+            m_borderColorDownCached = getRenderer()->getBorderColorDown();
+        }
+        else if (property == "bordercolordisabled")
+        {
+            m_borderColorDisabledCached = getRenderer()->getBorderColorDisabled();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "backgroundcolorhover")
+        {
+            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+        }
+        else if (property == "backgroundcolordown")
+        {
+            m_backgroundColorDownCached = getRenderer()->getBackgroundColorDown();
+        }
+        else if (property == "backgroundcolordisabled")
+        {
+            m_backgroundColorDisabledCached = getRenderer()->getBackgroundColorDisabled();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
+            Widget::rendererChanged(property);
 
-            m_sprite.setOpacity(opacity);
-            m_spriteHover.setOpacity(opacity);
-            m_spriteDown.setOpacity(opacity);
-            m_spriteDisabled.setOpacity(opacity);
-            m_spriteFocused.setOpacity(opacity);
+            m_sprite.setOpacity(m_opacityCached);
+            m_spriteHover.setOpacity(m_opacityCached);
+            m_spriteDown.setOpacity(m_opacityCached);
+            m_spriteDisabled.setOpacity(m_opacityCached);
+            m_spriteFocused.setOpacity(m_opacityCached);
 
-            m_text.setOpacity(opacity);
+            m_text.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            m_text.setFont(value.getFont());
+            Widget::rendererChanged(property);
+
+            m_text.setFont(m_fontCached);
             setText(getText());
         }
-        else if ((property != "bordercolor")
-              && (property != "bordercolorhover")
-              && (property != "bordercolordown")
-              && (property != "bordercolordisabled")
-              && (property != "backgroundcolor")
-              && (property != "backgroundcolorhover")
-              && (property != "backgroundcolordown")
-              && (property != "backgroundcolordisabled"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f Button::getInnerSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Color Button::getCurrentBackgroundColor() const
     {
-        if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
-            return getRenderer()->getBackgroundColorDisabled();
-        else if (m_mouseHover && m_mouseDown && getRenderer()->getBackgroundColorDown().isSet())
-            return getRenderer()->getBackgroundColorDown();
-        else if (m_mouseHover && getRenderer()->getBackgroundColorHover().isSet())
-            return getRenderer()->getBackgroundColorHover();
+        if (!m_enabled && m_backgroundColorDisabledCached.isSet())
+            return m_backgroundColorDisabledCached;
+        else if (m_mouseHover && m_mouseDown && m_backgroundColorDownCached.isSet())
+            return m_backgroundColorDownCached;
+        else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
+            return m_backgroundColorHoverCached;
         else
-            return getRenderer()->getBackgroundColor();
+            return m_backgroundColorCached;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Color Button::getCurrentBorderColor() const
+    {
+        if (!m_enabled && m_borderColorDisabledCached.isSet())
+            return m_borderColorDisabledCached;
+        else if (m_mouseHover && m_mouseDown && m_borderColorDownCached.isSet())
+            return m_borderColorDownCached;
+        else if (m_mouseHover && m_borderColorHoverCached.isSet())
+            return m_borderColorHoverCached;
+        else
+            return m_borderColorCached;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -365,11 +407,10 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
+            drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Check if there is a background texture

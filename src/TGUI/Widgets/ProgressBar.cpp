@@ -30,6 +30,16 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{2}},
+                {"bordercolor", sf::Color::Black},
+                {"textcolor", sf::Color::Black},
+                {"textcolorfilled", sf::Color::White},
+                {"backgroundcolor", Color{245, 245, 245}},
+                {"fillcolor", Color{0, 110, 255}}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ProgressBar::ProgressBar()
@@ -41,14 +51,7 @@ namespace tgui
         addSignal<int>("Full");
 
         m_renderer = aurora::makeCopied<ProgressBarRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders({2});
-        getRenderer()->setTextColor(sf::Color::Black);
-        getRenderer()->setTextColorFilled(sf::Color::White);
-        getRenderer()->setBackgroundColor({245, 245, 245});
-        getRenderer()->setFillColor({0, 110, 255});
-        getRenderer()->setBorderColor(sf::Color::Black);
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize(160, 20);
     }
@@ -195,9 +198,9 @@ namespace tgui
         {
             unsigned int textSize;
             if (m_spriteFill.isSet())
-               textSize = Text::findBestTextSize(getRenderer()->getFont(), m_spriteFill.getSize().y * 0.8f);
+                textSize = Text::findBestTextSize(m_fontCached, m_spriteFill.getSize().y * 0.8f);
             else
-                textSize = Text::findBestTextSize(getRenderer()->getFont(), getInnerSize().y * 0.8f);
+                textSize = Text::findBestTextSize(m_fontCached, getInnerSize().y * 0.8f);
 
             m_textBack.setCharacterSize(textSize);
 
@@ -254,10 +257,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ProgressBar::rendererChanged(const std::string& property, ObjectConverter& value)
+    void ProgressBar::rendererChanged(const std::string& property)
     {
         if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
             updateSize();
         }
         else if ((property == "textcolor") || (property == "textcolorfilled"))
@@ -271,42 +275,57 @@ namespace tgui
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(value.getTexture());
+            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
         }
         else if (property == "texturefill")
         {
-            m_spriteFill.setTexture(value.getTexture());
+            m_spriteFill.setTexture(getRenderer()->getTextureFill());
             recalculateFillSize();
         }
         else if (property == "textstyle")
         {
-            m_textBack.setStyle(value.getTextStyle());
-            m_textFront.setStyle(value.getTextStyle());
+            m_textBack.setStyle(getRenderer()->getTextStyle());
+            m_textFront.setStyle(getRenderer()->getTextStyle());
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "fillcolor")
+        {
+            m_fillColorCached = getRenderer()->getFillColor();
         }
         else if (property == "opacity")
         {
-            m_spriteBackground.setOpacity(value.getNumber());
-            m_spriteFill.setOpacity(value.getNumber());
+            Widget::rendererChanged(property);
 
-            m_textBack.setOpacity(value.getNumber());
-            m_textFront.setOpacity(value.getNumber());
+            m_spriteBackground.setOpacity(m_opacityCached);
+            m_spriteFill.setOpacity(m_opacityCached);
+
+            m_textBack.setOpacity(m_opacityCached);
+            m_textFront.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            m_textBack.setFont(value.getFont());
-            m_textFront.setFont(value.getFont());
+            Widget::rendererChanged(property);
+
+            m_textBack.setFont(m_fontCached);
+            m_textFront.setFont(m_fontCached);
             setText(getText());
         }
-        else if ((property != "bordercolor") && (property != "backgroundcolor") && (property != "fillcolor"))
-            Widget::rendererChanged(property, value);
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f ProgressBar::getInnerSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -323,23 +342,23 @@ namespace tgui
                 switch (m_spriteBackground.getScalingType())
                 {
                 case Sprite::ScalingType::Normal:
-                    frontSize.x = getRenderer()->getTextureFill().getImageSize().x * getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x;
-                    frontSize.y = getRenderer()->getTextureFill().getImageSize().y * getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y;
+                    frontSize.x = m_spriteFill.getTexture().getImageSize().x * getInnerSize().x / m_spriteBackground.getTexture().getImageSize().x;
+                    frontSize.y = m_spriteFill.getTexture().getImageSize().y * getInnerSize().y / m_spriteBackground.getTexture().getImageSize().y;
                     break;
 
                 case Sprite::ScalingType::Horizontal:
-                    frontSize.x = getInnerSize().x - ((getRenderer()->getTextureBackground().getImageSize().x - getRenderer()->getTextureFill().getImageSize().x) * (getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y));
-                    frontSize.y = getRenderer()->getTextureFill().getImageSize().y * getInnerSize().y / getRenderer()->getTextureBackground().getImageSize().y;
+                    frontSize.x = getInnerSize().x - ((m_spriteBackground.getTexture().getImageSize().x - m_spriteFill.getTexture().getImageSize().x) * (getInnerSize().y / m_spriteBackground.getTexture().getImageSize().y));
+                    frontSize.y = m_spriteFill.getTexture().getImageSize().y * getInnerSize().y / m_spriteBackground.getTexture().getImageSize().y;
                     break;
 
                 case Sprite::ScalingType::Vertical:
-                    frontSize.x = getRenderer()->getTextureFill().getImageSize().x * getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x;
-                    frontSize.y = getInnerSize().y - ((getRenderer()->getTextureBackground().getImageSize().y - getRenderer()->getTextureFill().getImageSize().y) * (getInnerSize().x / getRenderer()->getTextureBackground().getImageSize().x));
+                    frontSize.x = m_spriteFill.getTexture().getImageSize().x * getInnerSize().x / m_spriteBackground.getTexture().getImageSize().x;
+                    frontSize.y = getInnerSize().y - ((m_spriteBackground.getTexture().getImageSize().y - m_spriteFill.getTexture().getImageSize().y) * (getInnerSize().x / m_spriteBackground.getTexture().getImageSize().x));
                     break;
 
                 case Sprite::ScalingType::NineSlice:
-                    frontSize.x = getInnerSize().x - (getRenderer()->getTextureBackground().getImageSize().x - getRenderer()->getTextureFill().getImageSize().x);
-                    frontSize.y = getInnerSize().y - (getRenderer()->getTextureBackground().getImageSize().y - getRenderer()->getTextureFill().getImageSize().y);
+                    frontSize.x = getInnerSize().x - (m_spriteBackground.getTexture().getImageSize().x - m_spriteFill.getTexture().getImageSize().x);
+                    frontSize.y = getInnerSize().y - (m_spriteBackground.getTexture().getImageSize().y - m_spriteFill.getTexture().getImageSize().y);
                     break;
                 }
             }
@@ -386,11 +405,10 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
+            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Draw the background
@@ -401,7 +419,7 @@ namespace tgui
             sf::Vector2f positionOffset = {m_backRect.left, m_backRect.top};
 
             states.transform.translate(positionOffset);
-            drawRectangleShape(target, states, {m_backRect.width, m_backRect.height}, getRenderer()->getBackgroundColor());
+            drawRectangleShape(target, states, {m_backRect.width, m_backRect.height}, m_backgroundColorCached);
             states.transform.translate(-positionOffset);
         }
 
@@ -425,7 +443,7 @@ namespace tgui
             sf::Vector2f positionOffset = {m_frontRect.left, m_frontRect.top};
 
             states.transform.translate(positionOffset);
-            drawRectangleShape(target, states, {m_frontRect.width, m_frontRect.height}, getRenderer()->getFillColor());
+            drawRectangleShape(target, states, {m_frontRect.width, m_frontRect.height}, m_fillColorCached);
             states.transform.translate(-positionOffset);
         }
 

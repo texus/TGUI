@@ -320,10 +320,9 @@ namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
-        /// @param value     New value of the property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void rendererChanged(const std::string& property, ObjectConverter& value) override;
+        virtual void rendererChanged(const std::string& property) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,6 +357,13 @@ namespace tgui
         Sprite m_spriteBackground;
         Sprite m_spriteItemBackground;
         Sprite m_spriteSelectedItemBackground;
+
+        // Cached renderer properties
+        Color     m_backgroundColorCached;
+        Color     m_selectedBackgroundColorCached;
+        Color     m_textColorCached;
+        Color     m_selectedTextColorCached;
+        float     m_distanceToSideCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -249,10 +249,9 @@ namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
-        /// @param value     New value of the property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void rendererChanged(const std::string& property, ObjectConverter& value) override;
+        virtual void rendererChanged(const std::string& property) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -313,7 +312,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    protected:
 
         // This is the checked flag. When the radio button is checked then this variable will be true.
         bool m_checked = false;
@@ -335,9 +334,26 @@ namespace tgui
         Sprite m_spriteCheckedDisabled;
         Sprite m_spriteFocused;
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        friend class CheckBox; // CheckBox accesses m_text and m_checked directly
+        // Cached renderer properties
+        Borders   m_bordersCached;
+        float     m_textDistanceRatioCached;
+        TextStyle m_textStyleCached;
+        TextStyle m_textStyleCheckedCached;
+        Color     m_checkColorCached;
+        Color     m_checkColorHoverCached;
+        Color     m_checkColorDisabledCached;
+        Color     m_borderColorCached;
+        Color     m_borderColorHoverCached;
+        Color     m_borderColorDisabledCached;
+        Color     m_borderColorCheckedCached;
+        Color     m_borderColorCheckedHoverCached;
+        Color     m_borderColorCheckedDisabledCached;
+        Color     m_backgroundColorCached;
+        Color     m_backgroundColorHoverCached;
+        Color     m_backgroundColorDisabledCached;
+        Color     m_backgroundColorCheckedCached;
+        Color     m_backgroundColorCheckedHoverCached;
+        Color     m_backgroundColorCheckedDisabledCached;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

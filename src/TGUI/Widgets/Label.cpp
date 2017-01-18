@@ -32,6 +32,14 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{}},
+                {"bordercolor", Color{60, 60, 60}},
+                {"textcolor", Color{60, 60, 60}},
+                {"backgroundcolor", sf::Color::Transparent}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Label::Label()
@@ -42,10 +50,7 @@ namespace tgui
         addSignal<sf::String>("DoubleClicked");
 
         m_renderer = aurora::makeCopied<LabelRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setTextColor({60, 60, 60});
-        getRenderer()->setBorderColor({60, 60, 60});
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,26 +225,51 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::rendererChanged(const std::string& property, ObjectConverter& value)
+    void Label::rendererChanged(const std::string& property)
     {
-        if (property == "textcolor")
+        if (property == "borders")
         {
-            Color color = value.getColor();
-            for (auto& line : m_lines)
-                line.setColor(color);
+            m_bordersCached = getRenderer()->getBorders();
+            rearrangeText();
         }
-        else if ((property == "borders") || (property == "padding") || (property == "font") || (property == "textstyle"))
+        else if (property == "padding")
         {
+            m_paddingCached = getRenderer()->getPadding();
+            rearrangeText();
+        }
+        else if (property == "textstyle")
+        {
+            m_textStyleCached = getRenderer()->getTextStyle();
+            rearrangeText();
+        }
+        else if (property == "textcolor")
+        {
+            m_textColorCached = getRenderer()->getTextColor();
+            for (auto& line : m_lines)
+                line.setColor(m_textColorCached);
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "font")
+        {
+            Widget::rendererChanged(property);
             rearrangeText();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
+            Widget::rendererChanged(property);
+
             for (auto& line : m_lines)
-                line.setOpacity(opacity);
+                line.setOpacity(m_opacityCached);
         }
-        else if ((property != "bordercolor") && (property != "backgroundcolor"))
-            Widget::rendererChanged(property, value);
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +290,7 @@ namespace tgui
 
     void Label::rearrangeText()
     {
-        if (getRenderer()->getFont() == nullptr)
+        if (m_fontCached == nullptr)
             return;
 
         // Find the maximum width of one line
@@ -269,16 +299,14 @@ namespace tgui
             maxWidth = m_maximumTextWidth;
         else
         {
-            Borders borders = getRenderer()->getBorders();
-            Padding padding = getRenderer()->getPadding();
-            if (getSize().x > borders.left + borders.right + padding.left + padding.right)
-                maxWidth = getSize().x - borders.left - borders.right - padding.left - padding.right;
+            if (getSize().x > m_bordersCached.left + m_bordersCached.right + m_paddingCached.left + m_paddingCached.right)
+                maxWidth = getSize().x - m_bordersCached.left - m_bordersCached.right - m_paddingCached.left - m_paddingCached.right;
             else // There is no room for text
                 return;
         }
 
         // Fit the text in the available space
-        sf::String string = Text::wordWrap(maxWidth, m_string, getRenderer()->getFont(), m_textSize, m_textStyle & sf::Text::Bold);
+        sf::String string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & sf::Text::Bold);
 
         // Split the string in multiple lines
         m_lines.clear();
@@ -291,10 +319,10 @@ namespace tgui
 
             m_lines.emplace_back();
             m_lines.back().setCharacterSize(getTextSize());
-            m_lines.back().setFont(getRenderer()->getFont());
-            m_lines.back().setStyle(getRenderer()->getTextStyle());
-            m_lines.back().setColor(getRenderer()->getTextColor());
-            m_lines.back().setOpacity(getRenderer()->getOpacity());
+            m_lines.back().setFont(m_fontCached);
+            m_lines.back().setStyle(m_textStyleCached);
+            m_lines.back().setColor(m_textColorCached);
+            m_lines.back().setOpacity(m_opacityCached);
 
             if (newLinePos != sf::String::InvalidPos)
                 m_lines.back().setString(string.substring(searchPosStart, newLinePos - searchPosStart));
@@ -307,14 +335,13 @@ namespace tgui
             searchPosStart = newLinePos + 1;
         }
 
-        std::shared_ptr<sf::Font> font = getRenderer()->getFont();
-        Outline outline = getRenderer()->getPadding() + getRenderer()->getBorders();
+        Outline outline = m_paddingCached + m_bordersCached;
 
         // Update the size of the label
         if (m_autoSize)
         {
             m_size = {std::max(width, maxWidth) + outline.left + outline.right,
-                      (std::max<std::size_t>(m_lines.size(), 1) * font->getLineSpacing(m_textSize)) + Text::calculateExtraVerticalSpace(font, m_textSize, m_textStyle) + outline.top + outline.bottom};
+                      (std::max<std::size_t>(m_lines.size(), 1) * m_fontCached.getLineSpacing(m_textSize)) + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize, m_textStyleCached) + outline.top + outline.bottom};
         }
 
         // Update the line positions
@@ -322,12 +349,12 @@ namespace tgui
             if ((getSize().x <= outline.left + outline.right) || (getSize().y <= outline.top + outline.bottom))
                 return;
 
-            sf::Vector2f pos{getRenderer()->getBorders().left, getRenderer()->getBorders().top};
+            sf::Vector2f pos{m_bordersCached.left, m_bordersCached.top};
 
             if (m_verticalAlignment != VerticalAlignment::Top)
             {
                 float totalHeight = getSize().y - outline.top - outline.bottom;
-                float totalTextHeight = m_lines.size() * font->getLineSpacing(m_textSize);
+                float totalTextHeight = m_lines.size() * m_fontCached.getLineSpacing(m_textSize);
 
                 if (m_verticalAlignment == VerticalAlignment::Center)
                     pos.y += (totalHeight - totalTextHeight) / 2.f;
@@ -337,7 +364,7 @@ namespace tgui
 
             if (m_horizontalAlignment == HorizontalAlignment::Left)
             {
-                float lineSpacing = font->getLineSpacing(m_textSize);
+                float lineSpacing = m_fontCached.getLineSpacing(m_textSize);
                 for (auto& line : m_lines)
                 {
                     line.setPosition(pos.x, pos.y);
@@ -363,7 +390,7 @@ namespace tgui
                     else if (m_horizontalAlignment == HorizontalAlignment::Right)
                         line.setPosition(pos.x + totalWidth - textWidth, pos.y);
 
-                    pos.y += font->getLineSpacing(m_textSize);
+                    pos.y += m_fontCached.getLineSpacing(m_textSize);
                 }
             }
         }
@@ -375,29 +402,27 @@ namespace tgui
     {
         states.transform.translate(std::round(getPosition().x), std::round(getPosition().y));
 
-        Borders borders = getRenderer()->getBorders();
-        sf::Vector2f innerSize = {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        sf::Vector2f innerSize = {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
 
         // Draw the borders
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
+            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Draw the background
-        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-            drawRectangleShape(target, states, innerSize, getRenderer()->getBackgroundColor());
+        if (m_backgroundColorCached != sf::Color::Transparent)
+            drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         // Apply clipping when needed
         std::unique_ptr<Clipping> clipping;
         if (!m_autoSize)
         {
-            Padding padding = getRenderer()->getPadding();
-            innerSize.x -= padding.left + padding.right;
-            innerSize.y -= padding.top + padding.bottom;
+            innerSize.x -= m_paddingCached.left + m_paddingCached.right;
+            innerSize.y -= m_paddingCached.top + m_paddingCached.bottom;
 
-            clipping = std::make_unique<Clipping>(target, states, sf::Vector2f{padding.left, padding.top}, innerSize);
+            clipping = std::make_unique<Clipping>(target, states, sf::Vector2f{m_paddingCached.left, m_paddingCached.top}, innerSize);
         }
 
         // Draw the text

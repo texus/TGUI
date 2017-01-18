@@ -78,7 +78,7 @@ namespace tgui
         m_data->propertyValuePairs[lowercaseProperty] = value;
 
         for (const auto& observer : m_data->observers)
-            observer.second(lowercaseProperty, value);
+            observer.second(lowercaseProperty);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::subscribe(void* id, const std::function<void(const std::string& property, ObjectConverter& value)>& function)
+    void WidgetRenderer::subscribe(void* id, const std::function<void(const std::string& property)>& function)
     {
         m_data->observers[id] = function;
     }
@@ -111,6 +111,13 @@ namespace tgui
     void WidgetRenderer::unsubscribe(void* id)
     {
         m_data->observers.erase(id);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void WidgetRenderer::setData(std::shared_ptr<RendererData> data)
+    {
+        m_data = data;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

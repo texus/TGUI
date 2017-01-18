@@ -55,7 +55,7 @@ namespace
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
+
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,13 +71,17 @@ namespace tgui
         addSignal("MouseEntered");
         addSignal("MouseLeft");
 
-        m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
+        m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
+
+        // The opacity is 1 by default and thus has to be explicitly initialized
+        m_opacityCached = getRenderer()->getOpacity();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::~Widget()
     {
+        // The renderer will be null when the widget was moved
         if (m_renderer)
             m_renderer->unsubscribe(this);
 
@@ -106,7 +110,10 @@ namespace tgui
         m_draggableWidget              {other.m_draggableWidget},
         m_containerWidget              {other.m_containerWidget},
         m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
-        m_renderer                     {other.m_renderer}
+        m_renderer                     {other.m_renderer},
+        m_showAnimations               {other.m_showAnimations},
+        m_fontCached                   {other.m_fontCached},
+        m_opacityCached                {other.m_opacityCached}
     {
         m_callback.widget = this;
 
@@ -122,8 +129,7 @@ namespace tgui
         m_size.y.getImpl()->parentWidget = this;
         m_size.y.getImpl()->recalculate();
 
-        if (m_renderer)
-            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
+        m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,7 +152,9 @@ namespace tgui
         m_containerWidget              {std::move(other.m_containerWidget)},
         m_toolTip                      {std::move(other.m_toolTip)},
         m_renderer                     {other.m_renderer},
-        m_showAnimations               (std::move(other.m_showAnimations)) // Did not compile in VS2013 when using braces
+        m_showAnimations               (std::move(other.m_showAnimations)), // Did not compile in VS2013 when using braces
+        m_fontCached                   {std::move(other.m_fontCached)},
+        m_opacityCached                {std::move(other.m_opacityCached)}
     {
         m_callback.widget = this;
 
@@ -162,11 +170,10 @@ namespace tgui
         m_size.y.getImpl()->parentWidget = this;
         m_size.y.getImpl()->recalculate();
 
-        if (m_renderer)
-        {
-            other.m_renderer->unsubscribe(&other);
-            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
-        }
+        other.m_renderer->unsubscribe(&other);
+        m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
+
+        other.m_renderer = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,8 +182,7 @@ namespace tgui
     {
         if (this != &other)
         {
-            if (m_renderer)
-                m_renderer->unsubscribe(this);
+            m_renderer->unsubscribe(this);
 
             Transformable::operator=(other);
             SignalWidgetBase::operator=(other);
@@ -198,6 +204,8 @@ namespace tgui
             m_toolTip              = other.m_toolTip ? other.m_toolTip->clone() : nullptr;
             m_renderer             = other.m_renderer;
             m_showAnimations       = {};
+            m_fontCached           = other.m_fontCached;
+            m_opacityCached        = other.m_opacityCached;
 
             m_position.x.getImpl()->parentWidget = this;
             m_position.x.getImpl()->recalculate();
@@ -211,8 +219,7 @@ namespace tgui
             m_size.y.getImpl()->parentWidget = this;
             m_size.y.getImpl()->recalculate();
 
-            if (m_renderer)
-                m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
+            m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
         }
 
         return *this;
@@ -224,10 +231,8 @@ namespace tgui
     {
         if (this != &other)
         {
-            if (m_renderer)
-                m_renderer->unsubscribe(this);
-            if (other.m_renderer)
-                other.m_renderer->unsubscribe(&other);
+            m_renderer->unsubscribe(this);
+            other.m_renderer->unsubscribe(&other);
 
             Transformable::operator=(std::move(other));
             SignalWidgetBase::operator=(std::move(other));
@@ -249,6 +254,8 @@ namespace tgui
             m_toolTip              = std::move(other.m_toolTip);
             m_renderer             = std::move(other.m_renderer);
             m_showAnimations       = std::move(other.m_showAnimations);
+            m_fontCached           = std::move(other.m_fontCached);
+            m_opacityCached        = std::move(other.m_opacityCached);
 
             m_position.x.getImpl()->parentWidget = this;
             m_position.x.getImpl()->recalculate();
@@ -262,8 +269,9 @@ namespace tgui
             m_size.y.getImpl()->parentWidget = this;
             m_size.y.getImpl()->recalculate();
 
-            if (m_renderer)
-                m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
+            m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
+
+            other.m_renderer = nullptr;
         }
 
         return *this;
@@ -273,20 +281,52 @@ namespace tgui
 
     void Widget::setRenderer(std::shared_ptr<RendererData> rendererData)
     {
-        if (m_renderer)
-            m_renderer->unsubscribe(this);
+        std::shared_ptr<RendererData> oldData = m_renderer->getData();
 
-        m_renderer->m_data = rendererData;
+        // If no font is given then try to use the one from the parent
+        if (m_parent && m_parent->getRenderer()->getFont() && (rendererData->propertyValuePairs.find("font") == rendererData->propertyValuePairs.end()))
+            rendererData->propertyValuePairs["font"] = ObjectConverter(m_parent->getRenderer()->getFont());
 
-        if (m_renderer)
-            m_renderer->subscribe(this, [this](const std::string& property, ObjectConverter& value){ rendererChangedCallback(property, value); });
+        // Update the data
+        m_renderer->unsubscribe(this);
+        m_renderer->setData(rendererData);
+        m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
 
-        for (auto& pair : rendererData->propertyValuePairs)
-            rendererChanged(pair.first, pair.second);
+        // Tell the widget about all the updated properties, both new ones and old ones that were now reset to their default value
+        auto oldIt = oldData->propertyValuePairs.begin();
+        auto newIt = rendererData->propertyValuePairs.begin();
+        while (oldIt != oldData->propertyValuePairs.end() && newIt != rendererData->propertyValuePairs.end())
+        {
+            if (oldIt->first < newIt->first)
+            {
+                // Update values that no longer exist in the new renderer and are now reset to the default value
+                rendererChanged(oldIt->first);
+                ++oldIt;
+            }
+            else
+            {
+                // Update changed and new properties
+                rendererChanged(newIt->first);
 
-        // Try to keep a font
-        if (m_parent && !m_renderer->getFont() && m_parent->getRenderer()->getFont())
-            m_renderer->setFont(m_parent->getRenderer()->getFont());
+                if (newIt->first < oldIt->first)
+                    ++newIt;
+                else
+                {
+                    ++oldIt;
+                    ++newIt;
+                }
+            }
+        }
+        while (oldIt != oldData->propertyValuePairs.end())
+        {
+            rendererChanged(oldIt->first);
+            ++oldIt;
+        }
+        while (newIt != rendererData->propertyValuePairs.end())
+        {
+            rendererChanged(newIt->first);
+            ++newIt;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -372,7 +412,7 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, getRenderer()->getOpacity(), duration));
+                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, m_opacityCached, duration));
                 getRenderer()->setOpacity(0);
                 break;
             }
@@ -444,8 +484,8 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                float opacity = getRenderer()->getOpacity();
-                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), getRenderer()->getOpacity(), 0.f, duration, [=](){ hide(); getRenderer()->setOpacity(opacity); }));
+                float opacity = m_opacityCached;
+                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), m_opacityCached, 0.f, duration, [=](){ hide(); getRenderer()->setOpacity(opacity); }));
                 break;
             }
             case ShowAnimationType::Scale:
@@ -672,9 +712,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::rendererChanged(const std::string& property, ObjectConverter&)
+    void Widget::rendererChanged(const std::string& property)
     {
-        if ((property != "opacity") && (property != "font"))
+        if (property == "opacity")
+            m_opacityCached = getRenderer()->getOpacity();
+        else if (property == "font")
+            m_fontCached = getRenderer()->getFont();
+        else
             throw Exception{"Could not set property '" + property + "', widget of type '" + getWidgetType() + "' does not has this property."};
     }
 
@@ -696,9 +740,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::rendererChangedCallback(const std::string& property, ObjectConverter& value)
+    void Widget::rendererChangedCallback(const std::string& property)
     {
-        rendererChanged(property, value);
+        rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -717,8 +761,8 @@ namespace tgui
     {
         sf::RectangleShape shape{size};
 
-        if (getRenderer()->getOpacity() < 1)
-            shape.setFillColor(Color::calcColorOpacity(color, getRenderer()->getOpacity()));
+        if (m_opacityCached < 1)
+            shape.setFillColor(Color::calcColorOpacity(color, m_opacityCached));
         else
             shape.setFillColor(color);
 
@@ -734,7 +778,7 @@ namespace tgui
                              sf::Color color) const
     {
         sf::RectangleShape border;
-        border.setFillColor(Color::calcColorOpacity(color, getRenderer()->getOpacity()));
+        border.setFillColor(Color::calcColorOpacity(color, m_opacityCached));
 
         // If size is too small then draw entire size as border
         if ((size.x <= borders.left + borders.right) || (size.y <= borders.top + borders.bottom))

@@ -32,6 +32,19 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{2}},
+                {"padding", Padding{2, 0, 0, 0}},
+                {"bordercolor", sf::Color::Black},
+                {"textcolor", sf::Color::Black},
+                {"backgroundcolor", Color{245, 245, 245}},
+                {"arrowcolor", Color{60, 60, 60}},
+                {"arrowcolorhover", sf::Color::Black},
+                {"arrowbackgroundcolor", Color{245, 245, 245}},
+                {"arrowbackgroundcolorhover", sf::Color::White}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox()
@@ -46,16 +59,7 @@ namespace tgui
         initListBox();
 
         m_renderer = aurora::makeCopied<ComboBoxRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders({2});
-        getRenderer()->setPadding({2, 0, 0, 0});
-        getRenderer()->setBackgroundColor({245, 245, 245});
-        getRenderer()->setTextColor(sf::Color::Black);
-        getRenderer()->setArrowBackgroundColor({245, 245, 245});
-        getRenderer()->setArrowBackgroundColorHover(sf::Color::White);
-        getRenderer()->setArrowColor({60, 60, 60});
-        getRenderer()->setArrowColorHover(sf::Color::Black);
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize({150, 24});
     }
@@ -63,10 +67,23 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(const ComboBox& other) :
-        Widget              {other},
-        m_nrOfItemsToDisplay{other.m_nrOfItemsToDisplay},
-        m_listBox           {ListBox::copy(other.m_listBox)},
-        m_text              {other.m_text}
+        Widget                           {other},
+        m_nrOfItemsToDisplay             {other.m_nrOfItemsToDisplay},
+        m_listBox                        {ListBox::copy(other.m_listBox)},
+        m_text                           {other.m_text},
+        m_spriteBackground               {other.m_spriteBackground},
+        m_spriteArrowUp                  {other.m_spriteArrowUp},
+        m_spriteArrowDown                {other.m_spriteArrowDown},
+        m_spriteArrowUpHover             {other.m_spriteArrowUpHover},
+        m_spriteArrowDownHover           {other.m_spriteArrowDownHover},
+        m_bordersCached                  {other.m_bordersCached},
+        m_paddingCached                  {other.m_paddingCached},
+        m_borderColorCached              {other.m_borderColorCached},
+        m_backgroundColorCached          {other.m_backgroundColorCached},
+        m_arrowColorCached               {other.m_arrowColorCached},
+        m_arrowColorHoverCached          {other.m_arrowColorHoverCached},
+        m_arrowBackgroundColorCached     {other.m_arrowBackgroundColorCached},
+        m_arrowBackgroundColorHoverCached{other.m_arrowBackgroundColorHoverCached}
     {
         if (m_listBox != nullptr)
         {
@@ -78,10 +95,23 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(ComboBox&& other) :
-        Widget              {std::move(other)},
-        m_nrOfItemsToDisplay{std::move(other.m_nrOfItemsToDisplay)},
-        m_listBox           {std::move(other.m_listBox)},
-        m_text              {std::move(other.m_text)}
+        Widget                           {std::move(other)},
+        m_nrOfItemsToDisplay             {std::move(other.m_nrOfItemsToDisplay)},
+        m_listBox                        {std::move(other.m_listBox)},
+        m_text                           {std::move(other.m_text)},
+        m_spriteBackground               {std::move(other.m_spriteBackground)},
+        m_spriteArrowUp                  {std::move(other.m_spriteArrowUp)},
+        m_spriteArrowDown                {std::move(other.m_spriteArrowDown)},
+        m_spriteArrowUpHover             {std::move(other.m_spriteArrowUpHover)},
+        m_spriteArrowDownHover           {std::move(other.m_spriteArrowDownHover)},
+        m_bordersCached                  {std::move(other.m_bordersCached)},
+        m_paddingCached                  {std::move(other.m_paddingCached)},
+        m_borderColorCached              {std::move(other.m_borderColorCached)},
+        m_backgroundColorCached          {std::move(other.m_backgroundColorCached)},
+        m_arrowColorCached               {std::move(other.m_arrowColorCached)},
+        m_arrowColorHoverCached          {std::move(other.m_arrowColorHoverCached)},
+        m_arrowBackgroundColorCached     {std::move(other.m_arrowBackgroundColorCached)},
+        m_arrowBackgroundColorHoverCached{std::move(other.m_arrowBackgroundColorHoverCached)}
     {
         if (m_listBox != nullptr)
         {
@@ -99,9 +129,22 @@ namespace tgui
             ComboBox temp{other};
             Widget::operator=(other);
 
-            std::swap(m_nrOfItemsToDisplay, temp.m_nrOfItemsToDisplay);
-            std::swap(m_listBox,            temp.m_listBox);
-            std::swap(m_text,               temp.m_text);
+            std::swap(m_nrOfItemsToDisplay,              temp.m_nrOfItemsToDisplay);
+            std::swap(m_listBox,                         temp.m_listBox);
+            std::swap(m_text,                            temp.m_text);
+            std::swap(m_spriteBackground,                temp.m_spriteBackground);
+            std::swap(m_spriteArrowUp,                   temp.m_spriteArrowUp);
+            std::swap(m_spriteArrowDown,                 temp.m_spriteArrowDown);
+            std::swap(m_spriteArrowUpHover,              temp.m_spriteArrowUpHover);
+            std::swap(m_spriteArrowDownHover,            temp.m_spriteArrowDownHover);
+            std::swap(m_bordersCached,                   temp.m_bordersCached);
+            std::swap(m_paddingCached,                   temp.m_paddingCached);
+            std::swap(m_borderColorCached,               temp.m_borderColorCached);
+            std::swap(m_backgroundColorCached,           temp.m_backgroundColorCached);
+            std::swap(m_arrowColorCached,                temp.m_arrowColorCached);
+            std::swap(m_arrowColorHoverCached,           temp.m_arrowColorHoverCached);
+            std::swap(m_arrowBackgroundColorCached,      temp.m_arrowBackgroundColorCached);
+            std::swap(m_arrowBackgroundColorHoverCached, temp.m_arrowBackgroundColorHoverCached);
         }
 
         return *this;
@@ -114,9 +157,22 @@ namespace tgui
         if (this != &other)
         {
             Widget::operator=(std::move(other));
-            std::swap(m_nrOfItemsToDisplay, other.m_nrOfItemsToDisplay);
-            std::swap(m_listBox,            other.m_listBox);
-            std::swap(m_text,               other.m_text);
+            std::swap(m_nrOfItemsToDisplay,              other.m_nrOfItemsToDisplay);
+            std::swap(m_listBox,                         other.m_listBox);
+            std::swap(m_text,                            other.m_text);
+            std::swap(m_spriteBackground,                other.m_spriteBackground);
+            std::swap(m_spriteArrowUp,                   other.m_spriteArrowUp);
+            std::swap(m_spriteArrowDown,                 other.m_spriteArrowDown);
+            std::swap(m_spriteArrowUpHover,              other.m_spriteArrowUpHover);
+            std::swap(m_spriteArrowDownHover,            other.m_spriteArrowDownHover);
+            std::swap(m_bordersCached,                   other.m_bordersCached);
+            std::swap(m_paddingCached,                   other.m_paddingCached);
+            std::swap(m_borderColorCached,               other.m_borderColorCached);
+            std::swap(m_backgroundColorCached,           other.m_backgroundColorCached);
+            std::swap(m_arrowColorCached,                other.m_arrowColorCached);
+            std::swap(m_arrowColorHoverCached,           other.m_arrowColorHoverCached);
+            std::swap(m_arrowBackgroundColorCached,      other.m_arrowBackgroundColorCached);
+            std::swap(m_arrowBackgroundColorHoverCached, other.m_arrowBackgroundColorHoverCached);
         }
 
         return *this;
@@ -147,8 +203,7 @@ namespace tgui
 
         m_spriteBackground.setSize(getInnerSize());
 
-        Padding padding = getRenderer()->getPadding();
-        float height = getInnerSize().y - padding.top - padding.bottom;
+        float height = getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom;
 
         if (height > 0)
         {
@@ -158,8 +213,8 @@ namespace tgui
 
         if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
         {
-            m_spriteArrowUp.setSize({getRenderer()->getTextureArrowUp().getImageSize().x * (height / getRenderer()->getTextureArrowUp().getImageSize().y), height});
-            m_spriteArrowDown.setSize({getRenderer()->getTextureArrowDown().getImageSize().x * (height / getRenderer()->getTextureArrowDown().getImageSize().y), height});
+            m_spriteArrowUp.setSize({m_spriteArrowUp.getTexture().getImageSize().x * (height / m_spriteArrowUp.getTexture().getImageSize().y), height});
+            m_spriteArrowDown.setSize({m_spriteArrowDown.getTexture().getImageSize().x * (height / m_spriteArrowDown.getTexture().getImageSize().y), height});
 
             m_spriteArrowUpHover.setSize(m_spriteArrowUp.getSize());
             m_spriteArrowDownHover.setSize(m_spriteArrowDown.getSize());
@@ -458,84 +513,108 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::rendererChanged(const std::string& property, ObjectConverter& value)
+    void ComboBox::rendererChanged(const std::string& property)
     {
-        if ((property == "borders") || (property == "padding"))
+        if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
+            updateSize();
+        }
+        else if (property == "padding")
+        {
+            m_paddingCached = getRenderer()->getPadding();
             updateSize();
         }
         else if (property == "textcolor")
         {
-            m_text.setColor(value.getColor());
+            m_text.setColor(getRenderer()->getTextColor());
         }
         else if (property == "textstyle")
         {
-            m_text.setStyle(value.getTextStyle());
+            m_text.setStyle(getRenderer()->getTextStyle());
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(value.getTexture());
+            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
         }
         else if (property == "texturearrowup")
         {
-            m_spriteArrowUp.setTexture(value.getTexture());
+            m_spriteArrowUp.setTexture(getRenderer()->getTextureArrowUp());
             updateSize();
         }
         else if (property == "texturearrowuphover")
         {
-            m_spriteArrowUpHover.setTexture(value.getTexture());
+            m_spriteArrowUpHover.setTexture(getRenderer()->getTextureArrowUpHover());
         }
         else if (property == "texturearrowdown")
         {
-            m_spriteArrowDown.setTexture(value.getTexture());
+            m_spriteArrowDown.setTexture(getRenderer()->getTextureArrowDown());
             updateSize();
         }
         else if (property == "texturearrowdownhover")
         {
-            m_spriteArrowDownHover.setTexture(value.getTexture());
+            m_spriteArrowDownHover.setTexture(getRenderer()->getTextureArrowDownHover());
         }
         else if (property == "listbox")
         {
-            m_listBox->setRenderer(value.getRenderer());
+            m_listBox->setRenderer(getRenderer()->getListBox());
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "arrowbackgroundcolor")
+        {
+            m_arrowBackgroundColorCached = getRenderer()->getArrowBackgroundColor();
+        }
+        else if (property == "arrowbackgroundcolorhover")
+        {
+            m_arrowBackgroundColorHoverCached = getRenderer()->getArrowBackgroundColorHover();
+        }
+        else if (property == "arrowcolor")
+        {
+            m_arrowColorCached = getRenderer()->getArrowColor();
+        }
+        else if (property == "arrowcolorhover")
+        {
+            m_arrowColorHoverCached = getRenderer()->getArrowColorHover();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
+            Widget::rendererChanged(property);
 
-            m_spriteBackground.setOpacity(opacity);
-            m_spriteArrowUp.setOpacity(opacity);
-            m_spriteArrowUpHover.setOpacity(opacity);
-            m_spriteArrowDown.setOpacity(opacity);
-            m_spriteArrowDownHover.setOpacity(opacity);
+            m_spriteBackground.setOpacity(m_opacityCached);
+            m_spriteArrowUp.setOpacity(m_opacityCached);
+            m_spriteArrowUpHover.setOpacity(m_opacityCached);
+            m_spriteArrowDown.setOpacity(m_opacityCached);
+            m_spriteArrowDownHover.setOpacity(m_opacityCached);
 
-            m_text.setOpacity(opacity);
+            m_text.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            m_text.setFont(value.getFont());
+            Widget::rendererChanged(property);
+
+            m_text.setFont(m_fontCached);
 
             if (m_listBox->getRenderer()->getFont() == nullptr)
-                m_listBox->getRenderer()->setFont(value.getFont());
+                m_listBox->getRenderer()->setFont(m_fontCached);
 
             updateSize();
         }
-        else if ((property != "bordercolor")
-              && (property != "backgroundcolor")
-              && (property != "arrowbackgroundcolor")
-              && (property != "arrowbackgroundcolorhover")
-              && (property != "arrowcolor")
-              && (property != "arrowcolorhover"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f ComboBox::getInnerSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -567,7 +646,7 @@ namespace tgui
             while (container->getParent() != nullptr)
                 container = container->getParent();
 
-            m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - getRenderer()->getBorders().bottom});
+            m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - m_bordersCached.bottom});
             container->add(m_listBox, "#TGUI_INTERNAL$ComboBoxListBox#");
             m_listBox->focus();
         }
@@ -629,11 +708,10 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
+            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         sf::RenderStates statesForText = states;
@@ -642,18 +720,17 @@ namespace tgui
         if (m_spriteBackground.isSet())
             m_spriteBackground.draw(target, states);
         else
-            drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColor());
+            drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
 
         // Check if we have textures for the arrow
         float arrowSize;
-        Padding padding = getRenderer()->getPadding();
         if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
         {
             // Set the arrow like it should (down when list box is invisible, up when it is visible)
             if (m_listBox->isVisible())
             {
                 arrowSize = m_spriteArrowUp.getSize().x;
-                states.transform.translate({getInnerSize().x - padding.right - arrowSize, padding.top});
+                states.transform.translate({getInnerSize().x - m_paddingCached.right - arrowSize, m_paddingCached.top});
 
                 if (m_mouseHover && m_spriteArrowUpHover.isSet())
                     m_spriteArrowUpHover.draw(target, states);
@@ -663,7 +740,7 @@ namespace tgui
             else
             {
                 arrowSize = m_spriteArrowDown.getSize().x;
-                states.transform.translate({getInnerSize().x - padding.right - arrowSize, padding.top});
+                states.transform.translate({getInnerSize().x - m_paddingCached.right - arrowSize, m_paddingCached.top});
 
                 if (m_mouseHover && m_spriteArrowDownHover.isSet())
                     m_spriteArrowDownHover.draw(target, states);
@@ -673,13 +750,13 @@ namespace tgui
         }
         else // There are no textures for the arrow
         {
-            arrowSize = getInnerSize().y - padding.top - padding.bottom;
-            states.transform.translate({getInnerSize().x - padding.right - arrowSize, padding.top});
+            arrowSize = getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom;
+            states.transform.translate({getInnerSize().x - m_paddingCached.right - arrowSize, m_paddingCached.top});
 
-            if (m_mouseHover && getRenderer()->getArrowBackgroundColorHover().isSet())
-                drawRectangleShape(target, states, {arrowSize, arrowSize}, getRenderer()->getArrowBackgroundColorHover());
+            if (m_mouseHover && m_arrowBackgroundColorHoverCached.isSet())
+                drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorHoverCached);
             else
-                drawRectangleShape(target, states, {arrowSize, arrowSize}, getRenderer()->getArrowBackgroundColor());
+                drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorCached);
 
             sf::ConvexShape arrow{3};
             if (m_listBox->isVisible())
@@ -695,10 +772,10 @@ namespace tgui
                 arrow.setPoint(2, {arrowSize * 4/5, arrowSize / 5});
             }
 
-            if (m_mouseHover && getRenderer()->getArrowColorHover().isSet())
-                arrow.setFillColor(getRenderer()->getArrowColorHover());
+            if (m_mouseHover && m_arrowColorHoverCached.isSet())
+                arrow.setFillColor(m_arrowColorHoverCached);
             else
-                arrow.setFillColor(getRenderer()->getArrowColor());
+                arrow.setFillColor(m_arrowColorCached);
 
             target.draw(arrow, states);
         }
@@ -706,9 +783,9 @@ namespace tgui
         // Draw the selected item
         if (!m_text.getString().isEmpty())
         {
-            Clipping clipping{target, statesForText, {padding.left, padding.top}, {getInnerSize().x - padding.left - padding.right - arrowSize, getInnerSize().y - padding.top - padding.bottom}};
+            Clipping clipping{target, statesForText, {m_paddingCached.left, m_paddingCached.top}, {getInnerSize().x - m_paddingCached.left - m_paddingCached.right - arrowSize, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}};
 
-            statesForText.transform.translate(padding.left, padding.top + (((getInnerSize().y - padding.top - padding.bottom) - m_text.getSize().y) / 2.0f));
+            statesForText.transform.translate(m_paddingCached.left, m_paddingCached.top + (((getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom) - m_text.getSize().y) / 2.0f));
             m_text.draw(target, statesForText);
         }
     }

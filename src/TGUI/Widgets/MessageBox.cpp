@@ -30,6 +30,18 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{1}},
+                {"bordercolor", sf::Color::Black},
+                {"titlecolor", sf::Color::Black},
+                {"titlebarcolor", sf::Color::White},
+                {"backgroundcolor", Color{230, 230, 230}},
+                {"distancetoside", 3},
+                {"paddingbetweenbuttons", 1},
+                {"textcolor", sf::Color::Black}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox()
@@ -40,13 +52,8 @@ namespace tgui
         addSignal<sf::String>("ButtonPressed");
 
         m_renderer = aurora::makeCopied<MessageBoxRenderer>();
-        setRenderer(m_renderer->getData());
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
-        getRenderer()->setTextColor(sf::Color::Black);
-        getRenderer()->setDistanceToSide(3);
-        getRenderer()->setBorders({1});
-        getRenderer()->setBackgroundColor({230, 230, 230});
-        getRenderer()->setTitleColor(sf::Color::Black);
         getRenderer()->getCloseButton()->propertyValuePairs["borders"] = {Borders{1}};
         getRenderer()->getMaximizeButton()->propertyValuePairs["borders"] = {Borders{1}};
         getRenderer()->getMinimizeButton()->propertyValuePairs["borders"] = {Borders{1}};
@@ -190,15 +197,14 @@ namespace tgui
         float buttonHeight = 24;
 
         // Calculate the button size
-        std::shared_ptr<sf::Font> font = getRenderer()->getFont();
-        if (font)
+        if (m_fontCached)
         {
-            buttonWidth = 5.0f * font->getLineSpacing(m_textSize);
-            buttonHeight = font->getLineSpacing(m_textSize) / 0.85f;
+            buttonWidth = 5.0f * m_fontCached.getLineSpacing(m_textSize);
+            buttonHeight = m_fontCached.getLineSpacing(m_textSize) / 0.85f;
 
             for (const auto& button : m_buttons)
             {
-                float width = sf::Text(button->getText(), *font, m_textSize).getLocalBounds().width;
+                float width = sf::Text(button->getText(), *m_fontCached.getFont(), m_textSize).getLocalBounds().width;
                 if (buttonWidth < width * 10.0f / 9.0f)
                     buttonWidth = width * 10.0f / 9.0f;
             }
@@ -239,32 +245,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MessageBox::rendererChanged(const std::string& property, ObjectConverter& value)
+    void MessageBox::rendererChanged(const std::string& property)
     {
         if (property == "textcolor")
         {
-            m_label->getRenderer()->setTextColor(value.getColor());
+            m_label->getRenderer()->setTextColor(getRenderer()->getTextColor());
         }
         else if (property == "button")
         {
-            const auto& renderer = value.getRenderer();
+            const auto& renderer = getRenderer()->getButton();
             for (auto& button : m_buttons)
                 button->setRenderer(renderer);
         }
         else if (property == "font")
         {
-            Font font = value.getFont();
-            m_label->getRenderer()->setFont(font);
+            ChildWindow::rendererChanged(property);
+
+            m_label->getRenderer()->setFont(m_fontCached);
 
             for (auto& button : m_buttons)
-                button->getRenderer()->setFont(font);
+                button->getRenderer()->setFont(m_fontCached);
 
             rearrange();
-
-            ChildWindow::rendererChanged(property, value);
         }
         else
-            ChildWindow::rendererChanged(property, value);
+            ChildWindow::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

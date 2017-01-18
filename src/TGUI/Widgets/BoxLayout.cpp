@@ -238,15 +238,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayout::rendererChanged(const std::string& property, ObjectConverter& value)
+    void BoxLayout::rendererChanged(const std::string& property)
     {
+        Panel::rendererChanged(property);
+
         if (property == "font")
-        {
             updateWidgetPositions();
-            Panel::rendererChanged(property, value);
-        }
-        else
-            Panel::rendererChanged(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

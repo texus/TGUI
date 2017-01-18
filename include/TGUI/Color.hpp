@@ -53,10 +53,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static sf::Color calcColorOpacity(const sf::Color& color, float alpha)
         {
-            if (alpha == 1)
-                return color;
-            else
-                return {color.r, color.g, color.b, static_cast<sf::Uint8>(color.a * alpha)};
+            return {color.r, color.g, color.b, static_cast<sf::Uint8>(color.a * alpha)};
         }
 
 

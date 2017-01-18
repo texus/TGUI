@@ -120,12 +120,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Canvas::rendererChanged(const std::string& property, ObjectConverter& value)
+    void Canvas::rendererChanged(const std::string& property)
     {
+        Widget::rendererChanged(property);
+
         if (property == "opacity")
-            m_sprite.setColor(Color::calcColorOpacity(sf::Color::White, value.getNumber()));
-        else
-            Widget::rendererChanged(property, value);
+            m_sprite.setColor(Color::calcColorOpacity(sf::Color::White, getRenderer()->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -134,6 +134,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief Retrieve a glyph of the font
+        ///
+        /// If the font is a bitmap font, not all character sizes might be available. If the glyph is not available at the
+        /// requested size, an empty glyph is returned.
+        ///
+        /// Be aware that using a negative value for the outline thickness will cause distorted rendering.
+        ///
+        /// \param codePoint        Unicode code point of the character to get
+        /// \param characterSize    Reference character size
+        /// \param bold             Retrieve the bold version or the regular one?
+        /// \param outlineThickness Thickness of outline (when != 0 the glyph will not be filled)
+        ///
+        /// \return The glyph corresponding to \a codePoint and \a characterSize
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const sf::Glyph& getGlyph(sf::Uint32 codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the kerning offset of two glyphs
         ///
         /// The kerning is an extra offset (negative) to apply between two glyphs when rendering them, to make the pair look

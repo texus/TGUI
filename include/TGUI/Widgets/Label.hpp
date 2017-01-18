@@ -296,10 +296,9 @@ namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
-        /// @param value     New value of the property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void rendererChanged(const std::string& property, ObjectConverter& value) override;
+        virtual void rendererChanged(const std::string& property) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -330,7 +329,6 @@ namespace tgui
         std::vector<Text> m_lines;
 
         unsigned int m_textSize = 18;
-        sf::Uint32 m_textStyle = sf::Text::Style::Regular;
         HorizontalAlignment m_horizontalAlignment = HorizontalAlignment::Left;
         VerticalAlignment m_verticalAlignment = VerticalAlignment::Top;
 
@@ -341,6 +339,13 @@ namespace tgui
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
 
+        // Cached renderer properties
+        Borders   m_bordersCached;
+        Padding   m_paddingCached;
+        TextStyle m_textStyleCached;
+        Color     m_textColorCached;
+        Color     m_borderColorCached;
+        Color     m_backgroundColorCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

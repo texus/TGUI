@@ -98,15 +98,15 @@ namespace tgui
         assert(widgetPtr != nullptr);
 
         // Let the widget inherit our font if it did not had a font yet
-        if (!widgetPtr->getRenderer()->getFont() && getRenderer()->getFont())
-            widgetPtr->getRenderer()->setFont(getRenderer()->getFont());
+        if (!widgetPtr->getRenderer()->getFont() && m_fontCached)
+            widgetPtr->getRenderer()->setFont(m_fontCached);
 
         widgetPtr->setParent(this);
         m_widgets.push_back(widgetPtr);
         m_widgetNames.push_back(widgetName);
 
-        if (getRenderer()->getOpacity() < 1)
-            widgetPtr->getRenderer()->setOpacity(getRenderer()->getOpacity());
+        if (m_opacityCached < 1)
+            widgetPtr->getRenderer()->setOpacity(m_opacityCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -619,20 +619,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::rendererChanged(const std::string& property, ObjectConverter& value)
+    void Container::rendererChanged(const std::string& property)
     {
+        Widget::rendererChanged(property);
+
         if (property == "opacity")
         {
             for (std::size_t i = 0; i < m_widgets.size(); ++i)
-                m_widgets[i]->getRenderer()->setOpacity(value.getNumber());
+                m_widgets[i]->getRenderer()->setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            for (const auto& widget : m_widgets)
-                widget->getRenderer()->setFont(value.getFont());
+            // Update the font of child widgets when a font was set (but let them keep their font if the container font was removed)
+            if (m_fontCached != nullptr)
+            {
+                for (const auto& widget : m_widgets)
+                    widget->getRenderer()->setFont(m_fontCached);
+            }
         }
-        else
-            Widget::rendererChanged(property, value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

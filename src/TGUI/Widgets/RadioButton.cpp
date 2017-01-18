@@ -29,6 +29,21 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{3}},
+                {"bordercolor", Color{60, 60, 60}},
+                {"bordercolorhover", sf::Color::Black},
+                {"textcolor", Color{60, 60, 60}},
+                {"textcolorhover", sf::Color::Black},
+                {"backgroundcolor", Color{245, 245, 245}},
+                {"backgroundcolorhover", sf::Color::White},
+                {"checkcolor", Color{60, 60, 60}},
+                {"checkcolorhover", sf::Color::Black},
+                {"textdistanceratio", 0.2f}
+                ///TODO: Define default disabled colors
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RadioButton::RadioButton()
@@ -40,18 +55,7 @@ namespace tgui
         addSignal<int>("Unchecked");
 
         m_renderer = aurora::makeCopied<RadioButtonRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders({3});
-        getRenderer()->setTextColor({60, 60, 60});
-        getRenderer()->setTextColorHover(sf::Color::Black);
-        getRenderer()->setBorderColor({60,  60,  60});
-        getRenderer()->setBorderColorHover(sf::Color::Black);
-        getRenderer()->setBackgroundColor({245, 245, 245});
-        getRenderer()->setBackgroundColorHover(sf::Color::White);
-        getRenderer()->setCheckColor({60,  60,  60});
-        getRenderer()->setCheckColorHover(sf::Color::Black);
-        ///TODO: Disabled colors
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize({24, 24});
     }
@@ -93,7 +97,7 @@ namespace tgui
         if (getText().isEmpty())
             return getSize();
         else
-            return {getSize().x + (getSize().x * getRenderer()->getTextDistanceRatio()) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
+            return {getSize().x + (getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,10 +124,10 @@ namespace tgui
             m_checked = true;
 
             updateTextColor();
-            if (getRenderer()->getTextStyleChecked().isSet())
-                m_text.setStyle(getRenderer()->getTextStyleChecked());
+            if (m_textStyleCheckedCached.isSet())
+                m_text.setStyle(m_textStyleCheckedCached);
             else
-                m_text.setStyle(getRenderer()->getTextStyle());
+                m_text.setStyle(m_textStyleCached);
 
             m_callback.checked = true;
             sendSignal("Checked", static_cast<int>(m_checked));
@@ -139,7 +143,7 @@ namespace tgui
             m_checked = false;
 
             updateTextColor();
-            m_text.setStyle(getRenderer()->getTextStyle());
+            m_text.setStyle(m_textStyleCached);
 
             m_callback.checked = false;
             sendSignal("Unchecked", static_cast<int>(m_checked));
@@ -155,7 +159,7 @@ namespace tgui
 
         // Set the text size
         if (m_textSize == 0)
-            m_text.setCharacterSize(Text::findBestTextSize(getRenderer()->getFont(), getSize().y * 0.8f));
+            m_text.setCharacterSize(Text::findBestTextSize(m_fontCached, getSize().y * 0.8f));
         else
             m_text.setCharacterSize(m_textSize);
     }
@@ -203,11 +207,11 @@ namespace tgui
         if (m_allowTextClick && !getText().isEmpty())
         {
             // Check if the mouse is on top of the image or the small gap between image and text
-            if (sf::FloatRect{0, 0, getSize().x + getSize().x * getRenderer()->getTextDistanceRatio(), getSize().y}.contains(pos))
+            if (sf::FloatRect{0, 0, getSize().x + getSize().x * m_textDistanceRatioCached, getSize().y}.contains(pos))
                 return true;
 
             // Check if the mouse is on top of the text
-            if (sf::FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains(pos.x - (getSize().x + (getSize().x * getRenderer()->getTextDistanceRatio())),
+            if (sf::FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains(pos.x - (getSize().x + (getSize().x * m_textDistanceRatioCached)),
                                                                                      pos.y - ((getSize().y - m_text.getSize().y) / 2.0f)))
                 return true;
         }
@@ -271,10 +275,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::rendererChanged(const std::string& property, ObjectConverter& value)
+    void RadioButton::rendererChanged(const std::string& property)
     {
         if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
             updateTextureSizes();
         }
         else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordisabled")
@@ -282,90 +287,149 @@ namespace tgui
         {
             updateTextColor();
         }
-        else if ((property == "textstyle") || (property == "textstylechecked"))
+        else if (property == "textstyle")
         {
-            if (m_checked && getRenderer()->getTextStyleChecked().isSet())
-                m_text.setStyle(getRenderer()->getTextStyleChecked());
+            m_textStyleCached = getRenderer()->getTextStyle();
+
+            if (m_checked && m_textStyleCheckedCached.isSet())
+                m_text.setStyle(m_textStyleCheckedCached);
             else
-                m_text.setStyle(getRenderer()->getTextStyle());
+                m_text.setStyle(m_textStyleCached);
+        }
+        else if (property == "textstylechecked")
+        {
+            m_textStyleCheckedCached = getRenderer()->getTextStyleChecked();
+
+            if (m_checked && m_textStyleCheckedCached.isSet())
+                m_text.setStyle(m_textStyleCheckedCached);
+            else
+                m_text.setStyle(m_textStyleCached);
         }
         else if (property == "textureunchecked")
         {
-            m_spriteUnchecked.setTexture(value.getTexture());
+            m_spriteUnchecked.setTexture(getRenderer()->getTextureUnchecked());
             updateTextureSizes();
         }
         else if (property == "texturechecked")
         {
-            m_spriteChecked.setTexture(value.getTexture());
+            m_spriteChecked.setTexture(getRenderer()->getTextureChecked());
             updateTextureSizes();
         }
         else if (property == "textureuncheckedhover")
         {
-            m_spriteUncheckedHover.setTexture(value.getTexture());
+            m_spriteUncheckedHover.setTexture(getRenderer()->getTextureUncheckedHover());
         }
         else if (property == "texturecheckedhover")
         {
-            m_spriteCheckedHover.setTexture(value.getTexture());
+            m_spriteCheckedHover.setTexture(getRenderer()->getTextureCheckedHover());
         }
         else if (property == "textureuncheckeddisabled")
         {
-            m_spriteUncheckedDisabled.setTexture(value.getTexture());
+            m_spriteUncheckedDisabled.setTexture(getRenderer()->getTextureUncheckedDisabled());
         }
         else if (property == "texturecheckeddisabled")
         {
-            m_spriteCheckedDisabled.setTexture(value.getTexture());
+            m_spriteCheckedDisabled.setTexture(getRenderer()->getTextureCheckedDisabled());
         }
         else if (property == "texturefocused")
         {
-            m_spriteFocused.setTexture(value.getTexture());
+            m_spriteFocused.setTexture(getRenderer()->getTextureFocused());
             m_allowFocus = m_spriteFocused.isSet();
+        }
+        else if (property == "checkcolor")
+        {
+            m_checkColorCached = getRenderer()->getCheckColor();
+        }
+        else if (property == "checkcolorhover")
+        {
+            m_checkColorHoverCached = getRenderer()->getCheckColorHover();
+        }
+        else if (property == "checkcolordisabled")
+        {
+            m_checkColorDisabledCached = getRenderer()->getCheckColorDisabled();
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "bordercolorhover")
+        {
+            m_borderColorHoverCached = getRenderer()->getBorderColorHover();
+        }
+        else if (property == "bordercolordisabled")
+        {
+            m_borderColorDisabledCached = getRenderer()->getBorderColorDisabled();
+        }
+        else if (property == "bordercolorchecked")
+        {
+            m_borderColorCheckedCached = getRenderer()->getBorderColorChecked();
+        }
+        else if (property == "bordercolorcheckedhover")
+        {
+            m_borderColorCheckedHoverCached = getRenderer()->getBorderColorCheckedHover();
+        }
+        else if (property == "bordercolorcheckeddisabled")
+        {
+            m_borderColorCheckedDisabledCached = getRenderer()->getBorderColorCheckedDisabled();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "backgroundcolorhover")
+        {
+            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+        }
+        else if (property == "backgroundcolordisabled")
+        {
+            m_backgroundColorDisabledCached = getRenderer()->getBackgroundColorDisabled();
+        }
+        else if (property == "backgroundcolorchecked")
+        {
+            m_backgroundColorCheckedCached = getRenderer()->getBackgroundColorChecked();
+        }
+        else if (property == "backgroundcolorcheckedhover")
+        {
+            m_backgroundColorCheckedHoverCached = getRenderer()->getBackgroundColorCheckedHover();
+        }
+        else if (property == "backgroundcolorcheckeddisabled")
+        {
+            m_backgroundColorCheckedDisabledCached = getRenderer()->getBackgroundColorCheckedDisabled();
+        }
+        else if (property == "textdistanceratio")
+        {
+            m_textDistanceRatioCached = getRenderer()->getTextDistanceRatio();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
+            Widget::rendererChanged(property);
 
-            m_spriteUnchecked.setOpacity(opacity);
-            m_spriteChecked.setOpacity(opacity);
-            m_spriteUncheckedHover.setOpacity(opacity);
-            m_spriteCheckedHover.setOpacity(opacity);
-            m_spriteUncheckedDisabled.setOpacity(opacity);
-            m_spriteCheckedDisabled.setOpacity(opacity);
-            m_spriteFocused.setOpacity(opacity);
+            m_spriteUnchecked.setOpacity(m_opacityCached);
+            m_spriteChecked.setOpacity(m_opacityCached);
+            m_spriteUncheckedHover.setOpacity(m_opacityCached);
+            m_spriteCheckedHover.setOpacity(m_opacityCached);
+            m_spriteUncheckedDisabled.setOpacity(m_opacityCached);
+            m_spriteCheckedDisabled.setOpacity(m_opacityCached);
+            m_spriteFocused.setOpacity(m_opacityCached);
 
-            m_text.setOpacity(opacity);
+            m_text.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            m_text.setFont(value.getFont());
+            Widget::rendererChanged(property);
+
+            m_text.setFont(m_fontCached);
             setText(getText());
         }
-        else if ((property != "checkcolor")
-              && (property != "checkcolorhover")
-              && (property != "checkcolordisabled")
-              && (property != "backgroundcolor")
-              && (property != "backgroundcolorhover")
-              && (property != "backgroundcolordisabled")
-              && (property != "backgroundcolorchecked")
-              && (property != "backgroundcolorcheckedhover")
-              && (property != "backgroundcolorcheckeddisabled")
-              && (property != "bordercolor")
-              && (property != "bordercolorhover")
-              && (property != "bordercolordisabled")
-              && (property != "bordercolorchecked")
-              && (property != "bordercolorcheckedhover")
-              && (property != "bordercolorcheckeddisabled")
-              && (property != "textdistanceratio"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f RadioButton::getInnerSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -521,18 +585,17 @@ namespace tgui
 
         // Draw the borders
         float innerRadius = std::min(getInnerSize().x, getInnerSize().y) / 2;
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            sf::CircleShape circle{innerRadius + borders.left};
-            circle.setOutlineThickness(-borders.left);
+            sf::CircleShape circle{innerRadius + m_bordersCached.left};
+            circle.setOutlineThickness(-m_bordersCached.left);
             circle.setFillColor(sf::Color::Transparent);
-            circle.setOutlineColor(Color::calcColorOpacity(getCurrentBorderColor(), getRenderer()->getOpacity()));
+            circle.setOutlineColor(Color::calcColorOpacity(getCurrentBorderColor(), m_opacityCached));
             target.draw(circle, states);
         }
 
         // Draw the box
-        states.transform.translate({borders.left, borders.left});
+        states.transform.translate({m_bordersCached.left, m_bordersCached.left});
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
             if (m_checked)
@@ -561,23 +624,23 @@ namespace tgui
         else // There are no images
         {
             sf::CircleShape circle{innerRadius};
-            circle.setFillColor(Color::calcColorOpacity(getCurrentBackgroundColor(), getRenderer()->getOpacity()));
+            circle.setFillColor(Color::calcColorOpacity(getCurrentBackgroundColor(), m_opacityCached));
             target.draw(circle, states);
 
             // Draw the check if the radio button is checked
             if (m_checked)
             {
                 sf::CircleShape checkShape{innerRadius * .6f};
-                checkShape.setFillColor(Color::calcColorOpacity(getCurrentCheckColor(), getRenderer()->getOpacity()));
+                checkShape.setFillColor(Color::calcColorOpacity(getCurrentCheckColor(), m_opacityCached));
                 checkShape.setPosition({innerRadius - checkShape.getRadius(), innerRadius - checkShape.getRadius()});
                 target.draw(checkShape, states);
             }
         }
-        states.transform.translate({-borders.left, -borders.left});
+        states.transform.translate({-m_bordersCached.left, -m_bordersCached.left});
 
         if (!getText().isEmpty())
         {
-            states.transform.translate({(1 + getRenderer()->getTextDistanceRatio()) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
+            states.transform.translate({(1 + m_textDistanceRatioCached) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
             m_text.draw(target, states);
         }
     }

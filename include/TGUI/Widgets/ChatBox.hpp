@@ -445,10 +445,9 @@ namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
-        /// @param value     New value of the property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void rendererChanged(const std::string& property, ObjectConverter& value) override;
+        virtual void rendererChanged(const std::string& property) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -484,6 +483,12 @@ namespace tgui
         std::deque<Line> m_lines;
 
         Sprite m_spriteBackground;
+
+        // Cached renderer properties
+        Borders m_bordersCached;
+        Padding m_paddingCached;
+        Color   m_backgroundColorCached;
+        Color   m_borderColorCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

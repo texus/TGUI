@@ -30,6 +30,17 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{2}},
+                {"bordercolor", sf::Color::Black},
+                {"backgroundcolor", Color{245, 245, 245}},
+                {"backgroundcolorhover", sf::Color::White},
+                {"arrowcolor", Color{60, 60, 60}},
+                {"arrowcolorhover", sf::Color::Black},
+                {"spacebetweenarrows", 2}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::SpinButton()
@@ -40,14 +51,7 @@ namespace tgui
         addSignal<int>("ValueChanged");
 
         m_renderer = aurora::makeCopied<SpinButtonRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders({2});
-        getRenderer()->setBackgroundColor({245, 245, 245});
-        getRenderer()->setBackgroundColorHover({255, 255, 255});
-        getRenderer()->setArrowColor({60, 60, 60});
-        getRenderer()->setArrowColorHover({0, 0, 0});
-        getRenderer()->setSpaceBetweenArrows(2);
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize(20, 42);
     }
@@ -289,55 +293,75 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::rendererChanged(const std::string& property, ObjectConverter& value)
+    void SpinButton::rendererChanged(const std::string& property)
     {
-        if ((property == "borders") || (property == "spacebetweenarrows"))
+        if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
+            updateSize();
+        }
+        else if (property == "spacebetweenarrows")
+        {
+            m_spaceBetweenArrowsCached = getRenderer()->getSpaceBetweenArrows();
             updateSize();
         }
         else if (property == "texturearrowup")
         {
-            m_spriteArrowUp.setTexture(value.getTexture());
+            m_spriteArrowUp.setTexture(getRenderer()->getTextureArrowUp());
         }
         else if (property == "texturearrowuphover")
         {
-            m_spriteArrowUpHover.setTexture(value.getTexture());
+            m_spriteArrowUpHover.setTexture(getRenderer()->getTextureArrowUpHover());
         }
         else if (property == "texturearrowdown")
         {
-            m_spriteArrowDown.setTexture(value.getTexture());
+            m_spriteArrowDown.setTexture(getRenderer()->getTextureArrowDown());
         }
         else if (property == "texturearrowdownhover")
         {
-            m_spriteArrowDownHover.setTexture(value.getTexture());
+            m_spriteArrowDownHover.setTexture(getRenderer()->getTextureArrowDownHover());
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "backgroundcolorhover")
+        {
+            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+        }
+        else if (property == "arrowcolor")
+        {
+            m_arrowColorCached = getRenderer()->getArrowColor();
+        }
+        else if (property == "arrowcolorhover")
+        {
+            m_arrowColorHoverCached = getRenderer()->getArrowColorHover();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
-            m_spriteArrowUp.setOpacity(opacity);
-            m_spriteArrowUpHover.setOpacity(opacity);
-            m_spriteArrowDown.setOpacity(opacity);
-            m_spriteArrowDownHover.setOpacity(opacity);
+            Widget::rendererChanged(property);
+
+            m_spriteArrowUp.setOpacity(m_opacityCached);
+            m_spriteArrowUpHover.setOpacity(m_opacityCached);
+            m_spriteArrowDown.setOpacity(m_opacityCached);
+            m_spriteArrowDownHover.setOpacity(m_opacityCached);
         }
-        else if ((property != "bordercolor")
-              && (property != "backgroundcolor")
-              && (property != "backgroundcolorhover")
-              && (property != "arrowcolor")
-              && (property != "arrowcolorhover"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f SpinButton::getArrowSize() const
     {
-        Borders borders = getRenderer()->getBorders();
         if (m_verticalScroll)
-            return {getSize().x - borders.left - borders.right, (getSize().y - borders.top - borders.bottom - getRenderer()->getSpaceBetweenArrows()) / 2.0f};
+            return {getSize().x - m_bordersCached.left - m_bordersCached.right, (getSize().y - m_bordersCached.top - m_bordersCached.bottom - m_spaceBetweenArrowsCached) / 2.0f};
         else
-            return {getSize().y - borders.top - borders.bottom, (getSize().x - borders.left - borders.right - getRenderer()->getSpaceBetweenArrows()) / 2.0f};
+            return {getSize().y - m_bordersCached.top - m_bordersCached.bottom, (getSize().x - m_bordersCached.left - m_bordersCached.right - m_spaceBetweenArrowsCached) / 2.0f};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -347,15 +371,13 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
+            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         sf::Vector2f arrowSize = getArrowSize();
-        float spaceBetweenArrows = getRenderer()->getSpaceBetweenArrows();
 
         // Draw the top/left arrow
         if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
@@ -387,15 +409,15 @@ namespace tgui
                 arrow.setPoint(2, {arrowBack.getSize().x * 4/5, arrowBack.getSize().y * 4/5});
             }
 
-            if (m_mouseHover && m_mouseHoverOnTopArrow && getRenderer()->getBackgroundColorHover().isSet())
-                arrowBack.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColorHover(), getRenderer()->getOpacity()));
+            if (m_mouseHover && m_mouseHoverOnTopArrow && m_backgroundColorHoverCached.isSet())
+                arrowBack.setFillColor(Color::calcColorOpacity(m_backgroundColorHoverCached, m_opacityCached));
             else
-                arrowBack.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
+                arrowBack.setFillColor(Color::calcColorOpacity(m_backgroundColorCached, m_opacityCached));
 
-            if (m_mouseHover && m_mouseHoverOnTopArrow && getRenderer()->getArrowColorHover().isSet())
-                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+            if (m_mouseHover && m_mouseHoverOnTopArrow && m_arrowColorHoverCached.isSet())
+                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorHoverCached, m_opacityCached));
             else
-                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorCached, m_opacityCached));
 
             target.draw(arrowBack, states);
             target.draw(arrow, states);
@@ -406,20 +428,20 @@ namespace tgui
         {
             states.transform.translate({0, arrowSize.y});
 
-            if (spaceBetweenArrows > 0)
+            if (m_spaceBetweenArrowsCached > 0)
             {
-                drawRectangleShape(target, states, {arrowSize.x, spaceBetweenArrows}, getRenderer()->getBorderColor());
-                states.transform.translate({0, spaceBetweenArrows});
+                drawRectangleShape(target, states, {arrowSize.x, m_spaceBetweenArrowsCached}, m_borderColorCached);
+                states.transform.translate({0, m_spaceBetweenArrowsCached});
             }
         }
         else // Horizontal orientation
         {
             states.transform.translate({arrowSize.y, 0});
 
-            if (spaceBetweenArrows > 0)
+            if (m_spaceBetweenArrowsCached > 0)
             {
-                drawRectangleShape(target, states, {spaceBetweenArrows, arrowSize.x}, getRenderer()->getBorderColor());
-                states.transform.translate({spaceBetweenArrows, 0});
+                drawRectangleShape(target, states, {m_spaceBetweenArrowsCached, arrowSize.x}, m_borderColorCached);
+                states.transform.translate({m_spaceBetweenArrowsCached, 0});
             }
         }
 
@@ -453,15 +475,15 @@ namespace tgui
                 arrow.setPoint(2, {arrowBack.getSize().x / 5, arrowBack.getSize().y * 4/5});
             }
 
-            if (m_mouseHover && !m_mouseHoverOnTopArrow)
-                arrowBack.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColorHover(), getRenderer()->getOpacity()));
+            if (m_mouseHover && !m_mouseHoverOnTopArrow && m_backgroundColorHoverCached.isSet())
+                arrowBack.setFillColor(Color::calcColorOpacity(m_backgroundColorHoverCached, m_opacityCached));
             else
-                arrowBack.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
+                arrowBack.setFillColor(Color::calcColorOpacity(m_backgroundColorCached, m_opacityCached));
 
-            if (m_mouseHover && !m_mouseHoverOnTopArrow)
-                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColorHover(), getRenderer()->getOpacity()));
+            if (m_mouseHover && !m_mouseHoverOnTopArrow && m_arrowColorHoverCached.isSet())
+                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorHoverCached, m_opacityCached));
             else
-                arrow.setFillColor(Color::calcColorOpacity(getRenderer()->getArrowColor(), getRenderer()->getOpacity()));
+                arrow.setFillColor(Color::calcColorOpacity(m_arrowColorCached, m_opacityCached));
 
             target.draw(arrowBack, states);
             target.draw(arrow, states);

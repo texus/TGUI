@@ -38,6 +38,15 @@ namespace
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{5}},
+                {"imagerotation", 0},
+                {"bordercolor", sf::Color::Black},
+                {"thumbcolor", sf::Color::Black},
+                {"backgroundcolor", sf::Color::White}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Knob::Knob()
@@ -49,10 +58,7 @@ namespace tgui
         addSignal<int>("ValueChanged");
 
         m_renderer = aurora::makeCopied<KnobRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders({5});
-        getRenderer()->setImageRotation(0);
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize(140, 140);
     }
@@ -83,8 +89,8 @@ namespace tgui
         if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
         {
             m_spriteBackground.setSize(getInnerSize());
-            m_spriteForeground.setSize({getRenderer()->getTextureForeground().getImageSize().x / getRenderer()->getTextureBackground().getImageSize().x * getInnerSize().x,
-                                        getRenderer()->getTextureForeground().getImageSize().y / getRenderer()->getTextureBackground().getImageSize().y * getInnerSize().y});
+            m_spriteForeground.setSize({m_spriteForeground.getTexture().getImageSize().x / m_spriteBackground.getTexture().getImageSize().x * getInnerSize().x,
+                                        m_spriteForeground.getTexture().getImageSize().y / m_spriteBackground.getTexture().getImageSize().y * getInnerSize().y});
         }
     }
 
@@ -442,43 +448,55 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::rendererChanged(const std::string& property, ObjectConverter& value)
+    void Knob::rendererChanged(const std::string& property)
     {
         if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
             updateSize();
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(value.getTexture());
+            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
             updateSize();
         }
         else if (property == "textureforeground")
         {
-            m_spriteForeground.setTexture(value.getTexture());
+            m_spriteForeground.setTexture(getRenderer()->getTextureForeground());
             updateSize();
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "thumbcolor")
+        {
+            m_thumbColorCached = getRenderer()->getThumbColor();
+        }
+        else if (property == "imagerotation")
+        {
+            m_imageRotationCached = getRenderer()->getImageRotation();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
-            m_spriteBackground.setOpacity(opacity);
-            m_spriteForeground.setOpacity(opacity);
+            Widget::rendererChanged(property);
+
+            m_spriteBackground.setOpacity(m_opacityCached);
+            m_spriteForeground.setOpacity(m_opacityCached);
         }
-        else if ((property != "bordercolor")
-              && (property != "backgroundcolor")
-              && (property != "thumbcolor")
-              && (property != "imagerotation"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f Knob::getInnerSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -490,15 +508,14 @@ namespace tgui
         float size = std::min(getInnerSize().x, getInnerSize().y);
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        float borderThickness = std::min({borders.left, borders.top, borders.right, borders.bottom});
+        float borderThickness = std::min({m_bordersCached.left, m_bordersCached.top, m_bordersCached.right, m_bordersCached.bottom});
         if (borderThickness > 0)
         {
             states.transform.translate({borderThickness, borderThickness});
 
             sf::CircleShape bordersShape{size / 2};
             bordersShape.setFillColor(sf::Color::Transparent);
-            bordersShape.setOutlineColor(Color::calcColorOpacity(getRenderer()->getBorderColor(), getRenderer()->getOpacity()));
+            bordersShape.setOutlineColor(Color::calcColorOpacity(m_borderColorCached, m_opacityCached));
             bordersShape.setOutlineThickness(borderThickness);
             target.draw(bordersShape, states);
         }
@@ -509,7 +526,7 @@ namespace tgui
         else
         {
             sf::CircleShape background{size / 2};
-            background.setFillColor(Color::calcColorOpacity(getRenderer()->getBackgroundColor(), getRenderer()->getOpacity()));
+            background.setFillColor(Color::calcColorOpacity(m_backgroundColorCached, m_opacityCached));
             target.draw(background, states);
         }
 
@@ -519,17 +536,17 @@ namespace tgui
             states.transform.translate((getInnerSize() - m_spriteForeground.getSize()) / 2.f);
 
             // Give the image the correct rotation
-            if (getRenderer()->getImageRotation() > m_angle)
-                states.transform.rotate(getRenderer()->getImageRotation() - m_angle, (m_spriteForeground.getSize() / 2.f));
+            if (m_imageRotationCached > m_angle)
+                states.transform.rotate(m_imageRotationCached - m_angle, (m_spriteForeground.getSize() / 2.f));
             else
-                states.transform.rotate(360 - m_angle + getRenderer()->getImageRotation(), (m_spriteForeground.getSize() / 2.f));
+                states.transform.rotate(360 - m_angle + m_imageRotationCached, (m_spriteForeground.getSize() / 2.f));
 
             m_spriteForeground.draw(target, states);
         }
         else
         {
             sf::CircleShape thumb{size / 10.0f};
-            thumb.setFillColor(Color::calcColorOpacity(getRenderer()->getThumbColor(), getRenderer()->getOpacity()));
+            thumb.setFillColor(Color::calcColorOpacity(m_thumbColorCached, m_opacityCached));
             thumb.setPosition({(size / 2.0f) - thumb.getRadius() + (std::cos(m_angle / 180 * pi) * (size / 2) * 3/5),
                                (size / 2.0f) - thumb.getRadius() + (-std::sin(m_angle / 180 * pi) * (size / 2) * 3/5)});
             target.draw(thumb, states);

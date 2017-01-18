@@ -388,10 +388,9 @@ namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
-        /// @param value     New value of the property
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void rendererChanged(const std::string& property, ObjectConverter& value) override;
+        virtual void rendererChanged(const std::string& property) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -445,6 +444,16 @@ namespace tgui
         int m_resizeDirection = ResizeNone;
 
         Sprite m_spriteTitleBar;
+
+        // Cached renderer properties
+        Borders m_bordersCached;
+        Color   m_borderColorCached;
+        Color   m_titleColorCached;
+        Color   m_titleBarColorCached;
+        Color   m_backgroundColorCached;
+        float   m_titleBarHeightCached;
+        float   m_distanceToSideCached;
+        float   m_paddingBetweenButtonsCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

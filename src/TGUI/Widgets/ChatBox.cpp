@@ -32,6 +32,14 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{2}},
+                {"padding", Padding{2, 0, 0, 0}},
+                {"bordercolor", sf::Color::Black},
+                {"backgroundcolor", Color{245, 245, 245}}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox()
@@ -41,11 +49,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<ChatBoxRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders({2});
-        getRenderer()->setPadding({2, 0, 0, 0});
-        getRenderer()->setBackgroundColor({245, 245, 245});
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize({200, 126});
         setTextSize(m_textSize);
@@ -74,9 +78,7 @@ namespace tgui
     {
         Widget::setPosition(position);
 
-        Borders borders = getRenderer()->getBorders();
-        Padding padding = getRenderer()->getPadding();
-        m_scroll.setPosition(getSize().x - borders.right - padding.right - m_scroll.getSize().x, borders.top + padding.top);
+        m_scroll.setPosition(getSize().x - m_bordersCached.right - m_paddingCached.right - m_scroll.getSize().x, m_bordersCached.top + m_paddingCached.top);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,10 +130,10 @@ namespace tgui
         Line line;
         line.string = text;
         line.text.setColor(color);
-        line.text.setOpacity(getRenderer()->getOpacity());
+        line.text.setOpacity(m_opacityCached);
         line.text.setCharacterSize(textSize);
         line.text.setString(text);
-        line.text.setFont(font != nullptr ? font : getRenderer()->getFont());
+        line.text.setFont(font != nullptr ? font : m_fontCached);
 
         recalculateLineText(line);
 
@@ -188,7 +190,7 @@ namespace tgui
             return m_lines[lineIndex].text.getFont();
         }
         else // Index too high
-            return getRenderer()->getFont();
+            return m_fontCached;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -383,8 +385,7 @@ namespace tgui
         line.text.setString("");
 
         // Find the maximum width of one line
-        Padding padding = getRenderer()->getPadding();
-        float maxWidth = getInnerSize().x - m_scroll.getSize().x - padding.left - padding.right;
+        float maxWidth = getInnerSize().x - m_scroll.getSize().x - m_paddingCached.left - m_paddingCached.right;
         if (maxWidth < 0)
             return;
 
@@ -428,43 +429,57 @@ namespace tgui
 
     void ChatBox::updateRendering()
     {
-        Padding padding = getRenderer()->getPadding();
-        m_scroll.setSize({m_scroll.getSize().x, getInnerSize().y - padding.top - padding.bottom});
-        m_scroll.setLowValue(static_cast<unsigned int>(getInnerSize().y - padding.top - padding.bottom));
+        m_scroll.setSize({m_scroll.getSize().x, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom});
+        m_scroll.setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom));
 
         recalculateAllLines();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::rendererChanged(const std::string& property, ObjectConverter& value)
+    void ChatBox::rendererChanged(const std::string& property)
     {
-        if ((property == "borders") || (property == "padding"))
+        if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
+            updateSize();
+        }
+        else if (property == "padding")
+        {
+            m_paddingCached = getRenderer()->getPadding();
             updateSize();
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(value.getTexture());
+            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
         }
         else if (property == "scrollbar")
         {
-            m_scroll.setRenderer(value.getRenderer());
+            m_scroll.setRenderer(getRenderer()->getScrollbar());
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
+            Widget::rendererChanged(property);
 
-            m_spriteBackground.setOpacity(opacity);
-            m_scroll.getRenderer()->setOpacity(opacity);
+            m_spriteBackground.setOpacity(m_opacityCached);
+            m_scroll.getRenderer()->setOpacity(m_opacityCached);
 
             for (auto& line : m_lines)
-                line.text.setOpacity(opacity);
+                line.text.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            Font font = value.getFont();
-            if (font != nullptr)
+            Widget::rendererChanged(property);
+
+            if (m_fontCached != nullptr)
             {
                 // Look for lines that did not have a font yet and give them this font
                 bool lineChanged = false;
@@ -472,7 +487,7 @@ namespace tgui
                 {
                     if (line.text.getFont() == nullptr)
                     {
-                        line.text.setFont(font);
+                        line.text.setFont(m_fontCached);
                         lineChanged = true;
                     }
                 }
@@ -481,19 +496,15 @@ namespace tgui
                     recalculateAllLines();
             }
         }
-        else if ((property != "bordercolor")
-              && (property != "backgroundcolor"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f ChatBox::getInnerSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -505,33 +516,31 @@ namespace tgui
         sf::RenderStates scrollbarStates = states;
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
+            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Draw the background
         if (m_spriteBackground.isSet())
             m_spriteBackground.draw(target, states);
         else
-            drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColor());
+            drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
 
-        Padding padding = getRenderer()->getPadding();
-        states.transform.translate({padding.left, padding.top});
+        states.transform.translate({m_paddingCached.left, m_paddingCached.top});
 
         // Draw the scrollbar
         m_scroll.draw(target, scrollbarStates);
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        Clipping clipping{target, states, {}, {getInnerSize().x - padding.left - padding.right - m_scroll.getSize().x, getInnerSize().y - padding.top - padding.bottom}};
+        Clipping clipping{target, states, {}, {getInnerSize().x - m_paddingCached.left - m_paddingCached.right - m_scroll.getSize().x, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}};
 
         states.transform.translate({0, -static_cast<float>(m_scroll.getValue())});
 
         // Put the lines at the bottom of the chat box if needed
-        if (!m_linesStartFromTop && (m_fullTextHeight < getInnerSize().y - padding.top - padding.bottom))
-            states.transform.translate(0, getInnerSize().y - padding.top - padding.bottom - m_fullTextHeight);
+        if (!m_linesStartFromTop && (m_fullTextHeight < getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom))
+            states.transform.translate(0, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom - m_fullTextHeight);
 
         for (const auto& line : m_lines)
         {

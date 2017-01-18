@@ -43,6 +43,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{2}},
+                {"padding", Padding{4, 2, 4, 2}},
+                {"caretwidth", 1},
+                {"caretcolor", sf::Color::Black},
+                {"bordercolor", Color{60, 60, 60}},
+                {"bordercolorhover", sf::Color::Black},
+                {"textcolor", Color{60, 60, 60}},
+                {"selectedtextcolor", sf::Color::White},
+                {"selectedtextbackgroundcolor", Color{0, 110, 255}},
+                {"defaulttextcolor", Color{160, 160, 160}},
+                {"backgroundcolor", Color{245, 245, 245}},
+                {"backgroundcolorhover", sf::Color::White}
+                ///TODO: Define default disabled colors
+            };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     EditBox::EditBox()
     {
         m_callback.widgetType = "EditBox";
@@ -55,20 +74,7 @@ namespace tgui
         m_allowFocus = true;
 
         m_renderer = aurora::makeCopied<EditBoxRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders(2);
-        getRenderer()->setPadding({4, 2, 4, 2});
-        getRenderer()->setCaretWidth(1);
-        getRenderer()->setTextColor({60, 60, 60});
-        getRenderer()->setSelectedTextColor(sf::Color::White);
-        getRenderer()->setBackgroundColor({245, 245, 245});
-        getRenderer()->setBackgroundColorHover(sf::Color::White);
-        getRenderer()->setBorderColor({60, 60, 60});
-        getRenderer()->setBorderColorHover(sf::Color::Black);
-        getRenderer()->setDefaultTextColor({160, 160, 160});
-        getRenderer()->setDefaultTextStyle(sf::Text::Italic);
-        ///TODO: Disabled colors
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize({240, 30});
     }
@@ -106,7 +112,7 @@ namespace tgui
         m_spriteFocused.setSize(getInnerSize());
 
         // Set the size of the caret
-        m_caret.setSize({m_caret.getSize().x, getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
+        m_caret.setSize({m_caret.getSize().x, getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top});
 
         // Recalculate the position of the texts
         recalculateTextPositions();
@@ -142,7 +148,7 @@ namespace tgui
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
-            m_textFull.setCharacterSize(Text::findBestTextSize(getRenderer()->getFont(), (getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top) * 0.8f));
+            m_textFull.setCharacterSize(Text::findBestTextSize(m_fontCached, (getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top) * 0.8f));
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
@@ -185,7 +191,7 @@ namespace tgui
         m_textSelection.setString("");
         m_textAfterSelection.setString("");
 
-        if (!getRenderer()->getFont())
+        if (!m_fontCached)
             return;
 
         // Check if there is a text width limit
@@ -356,7 +362,7 @@ namespace tgui
     {
         m_limitTextWidth = limitWidth;
 
-        if (!getRenderer()->getFont())
+        if (!m_fontCached)
             return;
 
         // Check if the width is being limited
@@ -408,7 +414,7 @@ namespace tgui
         m_textSelection.setString("");
         m_textAfterSelection.setString("");
 
-        if (!getRenderer()->getFont())
+        if (!m_fontCached)
             return;
 
         // Check if scrolling is enabled
@@ -458,7 +464,7 @@ namespace tgui
     void EditBox::leftMousePressed(sf::Vector2f pos)
     {
         // Find the caret position
-        float positionX = pos.x - getRenderer()->getBorders().left - getRenderer()->getPadding().left;
+        float positionX = pos.x - m_bordersCached.left - m_paddingCached.left;
 
         std::size_t caretPosition = findCaretPosition(positionX);
 
@@ -524,21 +530,18 @@ namespace tgui
         // Check if the mouse is hold down (we are selecting multiple characters)
         if (m_mouseDown)
         {
-            Padding padding = getRenderer()->getPadding();
-            Borders borders = getRenderer()->getBorders();
-
             // Check if there is a text width limit
             if (m_limitTextWidth)
             {
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(pos.x - borders.left - padding.left);
+                m_selEnd = findCaretPosition(pos.x - m_bordersCached.left - m_paddingCached.left);
             }
             else // Scrolling is enabled
             {
                 float width = getVisibleEditBoxWidth();
 
                 // Check if the mouse is on the left of the text
-                if (pos.x < borders.left + padding.left)
+                if (pos.x < m_bordersCached.left + m_paddingCached.left)
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -555,7 +558,7 @@ namespace tgui
                     }
                 }
                 // Check if the mouse is on the right of the text AND there is a possibility to scroll
-                else if ((pos.x > borders.left + padding.left + width) && (m_textFull.getSize().x > width))
+                else if ((pos.x > m_bordersCached.left + m_paddingCached.left + width) && (m_textFull.getSize().x > width))
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -573,7 +576,7 @@ namespace tgui
                 }
 
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(pos.x - borders.left - padding.left);
+                m_selEnd = findCaretPosition(pos.x - m_bordersCached.left - m_paddingCached.left);
             }
 
             // Check if we are selecting text from left to right
@@ -908,22 +911,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::rendererChanged(const std::string& property, ObjectConverter& value)
+    void EditBox::rendererChanged(const std::string& property)
     {
         if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
             updateSize();
         }
         else if (property == "padding")
         {
+            m_paddingCached = getRenderer()->getPadding();
+
             setText(m_text);
 
-            m_caret.setSize({m_caret.getSize().x, getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
+            m_caret.setSize({m_caret.getSize().x, getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top});
         }
         else if (property == "caretwidth")
         {
-            m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - value.getNumber()) / 2.0f), m_caret.getPosition().y});
-            m_caret.setSize({value.getNumber(), getInnerSize().y - getRenderer()->getPadding().bottom - getRenderer()->getPadding().top});
+            m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - getRenderer()->getCaretWidth()) / 2.0f), m_caret.getPosition().y});
+            m_caret.setSize({getRenderer()->getCaretWidth(), getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top});
         }
         else if ((property == "textcolor") || (property == "textcolordisabled"))
         {
@@ -940,97 +946,124 @@ namespace tgui
         }
         else if (property == "selectedtextcolor")
         {
-            m_textSelection.setColor(value.getColor());
+            m_textSelection.setColor(getRenderer()->getSelectedTextColor());
         }
         else if (property == "defaulttextcolor")
         {
-            m_defaultText.setColor(value.getColor());
+            m_defaultText.setColor(getRenderer()->getDefaultTextColor());
         }
         else if (property == "texture")
         {
-            m_sprite.setTexture(value.getTexture());
+            m_sprite.setTexture(getRenderer()->getTexture());
         }
         else if (property == "texturehover")
         {
-            m_spriteHover.setTexture(value.getTexture());
+            m_spriteHover.setTexture(getRenderer()->getTextureHover());
         }
         else if (property == "texturedisabled")
         {
-            m_spriteDisabled.setTexture(value.getTexture());
+            m_spriteDisabled.setTexture(getRenderer()->getTextureDisabled());
         }
         else if (property == "texturefocused")
         {
-            m_spriteFocused.setTexture(value.getTexture());
+            m_spriteFocused.setTexture(getRenderer()->getTextureFocused());
             m_allowFocus = m_spriteFocused.isSet();
         }
         else if (property == "textstyle")
         {
-            m_textBeforeSelection.setStyle(value.getTextStyle());
-            m_textAfterSelection.setStyle(value.getTextStyle());
-            m_textSelection.setStyle(value.getTextStyle());
-            m_textFull.setStyle(value.getTextStyle());
+            TextStyle style = getRenderer()->getTextStyle();
+            m_textBeforeSelection.setStyle(style);
+            m_textAfterSelection.setStyle(style);
+            m_textSelection.setStyle(style);
+            m_textFull.setStyle(style);
         }
         else if (property == "defaulttextstyle")
         {
-            m_defaultText.setStyle(value.getTextStyle());
+            m_defaultText.setStyle(getRenderer()->getDefaultTextStyle());
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "bordercolorhover")
+        {
+            m_borderColorHoverCached = getRenderer()->getBorderColorHover();
+        }
+        else if (property == "bordercolordisabled")
+        {
+            m_borderColorDisabledCached = getRenderer()->getBorderColorDisabled();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "backgroundcolorhover")
+        {
+            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+        }
+        else if (property == "backgroundcolordisabled")
+        {
+            m_backgroundColorDisabledCached = getRenderer()->getBackgroundColorDisabled();
+        }
+        else if (property == "caretcolor")
+        {
+            m_caretColorCached = getRenderer()->getCaretColor();
+        }
+        else if (property == "caretcolorhover")
+        {
+            m_caretColorHoverCached = getRenderer()->getCaretColorHover();
+        }
+        else if (property == "caretcolordisabled")
+        {
+            m_caretColorDisabledCached = getRenderer()->getCaretColorDisabled();
+        }
+        else if (property == "selectedtextbackgroundcolor")
+        {
+            m_selectedTextBackgroundColorCached = getRenderer()->getSelectedTextBackgroundColor();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
-            m_textBeforeSelection.setOpacity(opacity);
-            m_textAfterSelection.setOpacity(opacity);
-            m_textSelection.setOpacity(opacity);
-            m_defaultText.setOpacity(opacity);
+            Widget::rendererChanged(property);
 
-            m_sprite.setOpacity(opacity);
-            m_spriteHover.setOpacity(opacity);
-            m_spriteDisabled.setOpacity(opacity);
-            m_spriteFocused.setOpacity(opacity);
+            m_textBeforeSelection.setOpacity(m_opacityCached);
+            m_textAfterSelection.setOpacity(m_opacityCached);
+            m_textSelection.setOpacity(m_opacityCached);
+            m_defaultText.setOpacity(m_opacityCached);
+
+            m_sprite.setOpacity(m_opacityCached);
+            m_spriteHover.setOpacity(m_opacityCached);
+            m_spriteDisabled.setOpacity(m_opacityCached);
+            m_spriteFocused.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            Font font = value.getFont();
-            m_textBeforeSelection.setFont(font);
-            m_textSelection.setFont(font);
-            m_textAfterSelection.setFont(font);
-            m_textFull.setFont(font);
-            m_defaultText.setFont(font);
+            Widget::rendererChanged(property);
+
+            m_textBeforeSelection.setFont(m_fontCached);
+            m_textSelection.setFont(m_fontCached);
+            m_textAfterSelection.setFont(m_fontCached);
+            m_textFull.setFont(m_fontCached);
+            m_defaultText.setFont(m_fontCached);
 
             // Recalculate the text size and position
             setText(m_text);
         }
-        else if ((property != "bordercolor")
-              && (property != "bordercolorhover")
-              && (property != "bordercolordisabled")
-              && (property != "backgroundcolor")
-              && (property != "backgroundcolorhover")
-              && (property != "backgroundcolordisabled")
-              && (property != "caretcolor")
-              && (property != "caretcolorhover")
-              && (property != "caretcolordisabled")
-              && (property != "selectedtextbackgroundcolor"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f EditBox::getInnerSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float EditBox::getVisibleEditBoxWidth() const
     {
-        return std::max(0.f, getSize().x
-                             - getRenderer()->getBorders().left
-                             - getRenderer()->getBorders().right
-                             - getRenderer()->getPadding().left
-                             - getRenderer()->getPadding().right);
+        return std::max(0.f, getSize().x - m_bordersCached.left - m_bordersCached.right - m_paddingCached.left - m_paddingCached.right);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1059,8 +1092,7 @@ namespace tgui
         float width = 0;
         sf::Uint32 prevChar = 0;
         unsigned int textSize = getTextSize();
-        bool bold = (getRenderer()->getTextStyle() & sf::Text::Bold) != 0;
-        std::shared_ptr<sf::Font> font = getRenderer()->getFont();
+        bool bold = (m_textFull.getStyle() & sf::Text::Bold) != 0;
 
         std::size_t index;
         for (index = 0; index < m_text.getSize(); ++index)
@@ -1070,11 +1102,11 @@ namespace tgui
             if (curChar == '\n')
                 width = 0; // This should not happen as edit box is for single line text, but lets try the next line anyway since we haven't found the position yet
             else if (curChar == '\t')
-                charWidth = static_cast<float>(font->getGlyph(' ', textSize, bold).advance) * 4;
+                charWidth = static_cast<float>(m_fontCached.getGlyph(' ', textSize, bold).advance) * 4;
             else
-                charWidth = static_cast<float>(font->getGlyph(curChar, textSize, bold).advance);
+                charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, textSize, bold).advance);
 
-            float kerning = static_cast<float>(font->getKerning(prevChar, curChar, textSize));
+            float kerning = static_cast<float>(m_fontCached.getKerning(prevChar, curChar, textSize));
             if (width + charWidth < posX)
                 width += charWidth + kerning;
             else
@@ -1127,10 +1159,8 @@ namespace tgui
 
     void EditBox::recalculateTextPositions()
     {
-        Padding padding = getRenderer()->getPadding();
-
-        float textX = padding.left - m_textCropPosition;
-        float textY = padding.top + (((getInnerSize().y - padding.bottom - padding.top) - m_textFull.getSize().y) / 2.f);
+        float textX = m_paddingCached.left - m_textCropPosition;
+        float textY = m_paddingCached.top + (((getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top) - m_textFull.getSize().y) / 2.f);
 
         // Check if the layout wasn't left
         if (m_textAlignment != Alignment::Left)
@@ -1160,21 +1190,21 @@ namespace tgui
         {
             // Watch out for the kerning
             if (m_textBeforeSelection.getString().getSize() > 0)
-                textX += getRenderer()->getFont().getKerning(m_textFull.getString()[m_textBeforeSelection.getString().getSize() - 1], m_textFull.getString()[m_textBeforeSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
+                textX += m_fontCached.getKerning(m_textFull.getString()[m_textBeforeSelection.getString().getSize() - 1], m_textFull.getString()[m_textBeforeSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
             textX += m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x;
 
             // Set the position and size of the rectangle that gets drawn behind the selected text
             m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x,
-                                              getInnerSize().y - padding.top - padding.bottom});
-            m_selectedTextBackground.setPosition({textX, padding.top});
+                                              getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom});
+            m_selectedTextBackground.setPosition({textX, m_paddingCached.top});
 
             // Set the text selected text on the correct position
             m_textSelection.setPosition(textX, textY);
 
             // Watch out for kerning
             if (m_textFull.getString().getSize() > m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize())
-                textX += getRenderer()->getFont().getKerning(m_textFull.getString()[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize() - 1], m_textFull.getString()[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
+                textX += m_fontCached.getKerning(m_textFull.getString()[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize() - 1], m_textFull.getString()[m_textBeforeSelection.getString().getSize() + m_textSelection.getString().getSize()], m_textBeforeSelection.getCharacterSize());
 
             // Set the text selected text on the correct position
             textX += m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x;
@@ -1183,7 +1213,7 @@ namespace tgui
 
         // Set the position of the caret
         caretLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_caret.getSize().x * 0.5f);
-        m_caret.setPosition({caretLeft, padding.top});
+        m_caret.setPosition({caretLeft, m_paddingCached.top});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1213,17 +1243,16 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            if (!m_enabled && getRenderer()->getBorderColorDisabled().isSet())
-                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColorDisabled());
-            else if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
-                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColorHover());
+            if (!m_enabled && m_borderColorDisabledCached.isSet())
+                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorDisabledCached);
+            else if (m_mouseHover && m_borderColorHoverCached.isSet())
+                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorHoverCached);
             else
-                drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
+                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
 
-            states.transform.translate({borders.left, borders.top});
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Draw the background
@@ -1245,17 +1274,16 @@ namespace tgui
         }
         else // There is no background texture
         {
-            if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
-                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColorDisabled());
-            else if (m_mouseHover && getRenderer()->getBackgroundColorHover().isSet())
-                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColorHover());
+            if (!m_enabled && m_backgroundColorDisabledCached.isSet())
+                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorDisabledCached);
+            else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
+                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorHoverCached);
             else
-                drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColor());
+                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
         }
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        Padding padding = getRenderer()->getPadding();
-        Clipping clipping{target, states, {padding.left, padding.top}, {getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}};
+        Clipping clipping{target, states, {m_paddingCached.left, m_paddingCached.top}, {getInnerSize().x - m_paddingCached.left - m_paddingCached.right, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}};
 
         if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
         {
@@ -1264,7 +1292,7 @@ namespace tgui
             if (m_textSelection.getString() != "")
             {
                 states.transform.translate(m_selectedTextBackground.getPosition());
-                drawRectangleShape(target, states, m_selectedTextBackground.getSize(), getRenderer()->getSelectedTextBackgroundColor());
+                drawRectangleShape(target, states, m_selectedTextBackground.getSize(), m_selectedTextBackgroundColorCached);
                 states.transform.translate(-m_selectedTextBackground.getPosition());
 
                 m_textSelection.draw(target, states);
@@ -1280,12 +1308,12 @@ namespace tgui
         states.transform.translate(m_caret.getPosition());
         if (m_focused && m_caretVisible)
         {
-            if (!m_enabled && getRenderer()->getCaretColorDisabled().isSet())
-                drawRectangleShape(target, states, m_caret.getSize(), getRenderer()->getCaretColorDisabled());
-            else if (m_mouseHover && getRenderer()->getCaretColorHover().isSet())
-                drawRectangleShape(target, states, m_caret.getSize(), getRenderer()->getCaretColorHover());
+            if (!m_enabled && m_caretColorDisabledCached.isSet())
+                drawRectangleShape(target, states, m_caret.getSize(), m_caretColorDisabledCached);
+            else if (m_mouseHover && m_caretColorHoverCached.isSet())
+                drawRectangleShape(target, states, m_caret.getSize(), m_caretColorHoverCached);
             else
-                drawRectangleShape(target, states, m_caret.getSize(), getRenderer()->getCaretColor());
+                drawRectangleShape(target, states, m_caret.getSize(), m_caretColorCached);
         }
     }
 

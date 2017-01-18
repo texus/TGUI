@@ -456,7 +456,7 @@ namespace tgui
             else
                 output.emplace_back(node->name + " {");
 
-            if (node->propertyValuePairs.size())
+            if (!node->propertyValuePairs.empty())
             {
                 for (const auto& pair : node->propertyValuePairs)
                     output.emplace_back("    " + pair.first + " = " + pair.second->value + ";");
@@ -465,7 +465,7 @@ namespace tgui
             if (node->propertyValuePairs.size() > 0 && node->children.size() > 0)
                 output.emplace_back("");
 
-            if (node->children.size())
+            if (!node->children.empty())
             {
                 for (std::size_t i = 0; i < node->children.size(); ++i)
                 {

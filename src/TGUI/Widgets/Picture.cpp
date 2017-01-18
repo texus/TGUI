@@ -75,7 +75,7 @@ namespace tgui
         m_texture = texture;
         m_sprite.setTexture(texture);
         m_sprite.setPosition(getPosition());
-        m_sprite.setOpacity(getRenderer()->getOpacity());
+        m_sprite.setOpacity(m_opacityCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,12 +154,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::rendererChanged(const std::string& property, ObjectConverter& value)
+    void Picture::rendererChanged(const std::string& property)
     {
+        Widget::rendererChanged(property);
+
         if (property == "opacity")
-            m_sprite.setOpacity(value.getNumber());
-        else
-            Widget::rendererChanged(property, value);
+            m_sprite.setOpacity(m_opacityCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

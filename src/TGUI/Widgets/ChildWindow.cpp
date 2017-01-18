@@ -50,6 +50,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{1}},
+                {"bordercolor", sf::Color::Black},
+                {"titlecolor", sf::Color::Black},
+                {"titlebarcolor", sf::Color::White},
+                {"backgroundcolor", Color{230, 230, 230}},
+                {"distancetoside", 3},
+                {"paddingbetweenbuttons", 1}
+            };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     ChildWindow::ChildWindow()
     {
         m_type = "ChildWindow";
@@ -61,12 +74,8 @@ namespace tgui
         addSignal<ChildWindow::Ptr>("Maximized");
 
         m_renderer = aurora::makeCopied<ChildWindowRenderer>();
-        setRenderer(m_renderer->getData());
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
-        getRenderer()->setDistanceToSide(3);
-        getRenderer()->setBorders({1});
-        getRenderer()->setBackgroundColor({230, 230, 230});
-        getRenderer()->setTitleColor(sf::Color::Black);
         getRenderer()->getCloseButton()->propertyValuePairs["borders"] = {Borders{1}};
         getRenderer()->getMaximizeButton()->propertyValuePairs["borders"] = {Borders{1}};
         getRenderer()->getMinimizeButton()->propertyValuePairs["borders"] = {Borders{1}};
@@ -98,17 +107,13 @@ namespace tgui
     {
         float x = position.getValue().x;
         float y = position.getValue().y;
-        float distanceToSide = getRenderer()->getDistanceToSide();
-        float paddingBetweenButtons = getRenderer()->getPaddingBetweenButtons();
-        float titleBarHeight = getRenderer()->getTitleBarHeight();
-        Borders borders = getRenderer()->getBorders();
 
         if (m_parent && m_keepInParent)
         {
             if (y < 0)
                 y = 0;
-            else if (y > m_parent->getSize().y - titleBarHeight)
-                y = m_parent->getSize().y - titleBarHeight;
+            else if (y > m_parent->getSize().y - m_titleBarHeightCached)
+                y = m_parent->getSize().y - m_titleBarHeightCached;
 
             if (x < 0)
                 x = 0;
@@ -123,36 +128,36 @@ namespace tgui
         for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
         {
             if (button)
-                buttonOffsetX += (buttonOffsetX > 0 ? paddingBetweenButtons : 0) + button->getSize().x;
+                buttonOffsetX += (buttonOffsetX > 0 ? m_paddingBetweenButtonsCached : 0) + button->getSize().x;
         }
 
         if (buttonOffsetX > 0)
-            buttonOffsetX += distanceToSide;
+            buttonOffsetX += m_distanceToSideCached;
 
         if (m_titleAlignment == TitleAlignment::Left)
         {
-            m_titleText.setPosition(distanceToSide, (titleBarHeight - m_titleText.getSize().y) / 2.0f);
+            m_titleText.setPosition(m_distanceToSideCached, (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
         }
         else if (m_titleAlignment == TitleAlignment::Center)
         {
-            m_titleText.setPosition(distanceToSide + (((getSize().x + borders.left + borders.right) - (2 * distanceToSide) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
-                                    (titleBarHeight - m_titleText.getSize().y) / 2.0f);
+            m_titleText.setPosition(m_distanceToSideCached + (((getSize().x + m_bordersCached.left + m_bordersCached.right) - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
+                                    (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
         }
         else // if (m_titleAlignment == TitleAlignment::Right)
         {
-            m_titleText.setPosition((getSize().x + borders.left + borders.right) - distanceToSide - buttonOffsetX - m_titleText.getSize().x,
-                                    (titleBarHeight - m_titleText.getSize().y) / 2.0f);
+            m_titleText.setPosition((getSize().x + m_bordersCached.left + m_bordersCached.right) - m_distanceToSideCached - buttonOffsetX - m_titleText.getSize().x,
+                                    (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
         }
 
-        buttonOffsetX = distanceToSide;
+        buttonOffsetX = m_distanceToSideCached;
         for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
         {
             if (button)
             {
-                button->setPosition((getSize().x + borders.left + borders.right) - buttonOffsetX - button->getSize().x,
-                                    (titleBarHeight - button->getSize().y) / 2.f);
+                button->setPosition((getSize().x + m_bordersCached.left + m_bordersCached.right) - buttonOffsetX - button->getSize().x,
+                                    (m_titleBarHeightCached - button->getSize().y) / 2.f);
 
-                buttonOffsetX += button->getSize().x + paddingBetweenButtons;
+                buttonOffsetX += button->getSize().x + m_paddingBetweenButtonsCached;
             }
         }
     }
@@ -163,7 +168,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        m_spriteTitleBar.setSize({getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->getTitleBarHeight()});
+        m_spriteTitleBar.setSize({getSize().x + m_bordersCached.left + m_bordersCached.right, m_titleBarHeightCached});
 
         // Reposition the images and text
         updatePosition();
@@ -173,9 +178,8 @@ namespace tgui
 
     sf::Vector2f ChildWindow::getFullSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x + borders.left + borders.right,
-                getSize().y + borders.top + borders.bottom + getRenderer()->getTitleBarHeight()};
+        return {getSize().x + m_bordersCached.left + m_bordersCached.right,
+                getSize().y + m_bordersCached.top + m_bordersCached.bottom + m_titleBarHeightCached};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +266,7 @@ namespace tgui
         {
             m_closeButton = Button::create();
             m_closeButton->setRenderer(getRenderer()->getCloseButton());
-            m_closeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
+            m_closeButton->getRenderer()->setOpacity(m_opacityCached);
             m_closeButton->connect("pressed", &ChildWindow::titleButtonPressed, this, "closed");
         }
         else
@@ -272,7 +276,7 @@ namespace tgui
         {
             m_maximizeButton = Button::create();
             m_maximizeButton->setRenderer(getRenderer()->getMaximizeButton());
-            m_maximizeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
+            m_maximizeButton->getRenderer()->setOpacity(m_opacityCached);
             m_maximizeButton->connect("pressed", &ChildWindow::titleButtonPressed, this, "maximized");
         }
         else
@@ -282,7 +286,7 @@ namespace tgui
         {
             m_minimizeButton = Button::create();
             m_minimizeButton->setRenderer(getRenderer()->getMinimizeButton());
-            m_minimizeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
+            m_minimizeButton->getRenderer()->setOpacity(m_opacityCached);
             m_minimizeButton->connect("pressed", &ChildWindow::titleButtonPressed, this, "minimized");
         }
         else
@@ -337,18 +341,15 @@ namespace tgui
 
     sf::Vector2f ChildWindow::getChildWidgetsOffset() const
     {
-        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top + getRenderer()->getTitleBarHeight()};
+        return {m_bordersCached.left, m_bordersCached.top + m_titleBarHeightCached};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool ChildWindow::mouseOnWidget(sf::Vector2f pos) const
     {
-        float titleBarHeight = getRenderer()->getTitleBarHeight();
-        Borders borders = getRenderer()->getBorders();
-
         // Check if the mouse is on top of the title bar
-        if (sf::FloatRect{0, 0, getSize().x + borders.left + borders.right, titleBarHeight}.contains(pos))
+        if (sf::FloatRect{0, 0, getSize().x + m_bordersCached.left + m_bordersCached.right, m_titleBarHeightCached}.contains(pos))
         {
             if (m_widgetBelowMouse)
                 m_widgetBelowMouse->mouseNoLongerOnWidget();
@@ -357,7 +358,7 @@ namespace tgui
         }
 
         // Check if the mouse is inside the child window
-        return sf::FloatRect{0, 0, getSize().x + borders.left + borders.right, getSize().y + borders.top + borders.bottom}.contains(pos.x, pos.y - titleBarHeight);
+        return sf::FloatRect{0, 0, getSize().x + m_bordersCached.left + m_bordersCached.right, getSize().y + m_bordersCached.top + m_bordersCached.bottom}.contains(pos.x, pos.y - m_titleBarHeightCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,9 +375,7 @@ namespace tgui
         sendSignal("MousePressed", pos);
 
         // Check if the mouse is on top of the title bar
-        Borders borders = getRenderer()->getBorders();
-        float titleBarHeight = getRenderer()->getTitleBarHeight();
-        if (sf::FloatRect{0, 0, getSize().x + borders.left + borders.right, titleBarHeight}.contains(pos))
+        if (sf::FloatRect{0, 0, getSize().x + m_bordersCached.left + m_bordersCached.right, m_titleBarHeightCached}.contains(pos))
         {
             // Send the mouse press event to the title buttons
             for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
@@ -397,27 +396,27 @@ namespace tgui
         else // The mouse is not on top of the title bar
         {
             // Check if the mouse is on top of the borders
-            if ((sf::FloatRect{0, 0, getSize().x + borders.left + borders.right, getSize().y + borders.top + borders.bottom + titleBarHeight}.contains(pos))
-             && (!sf::FloatRect{borders.left, titleBarHeight + borders.top, getSize().x, getSize().y}.contains(pos)))
+            if ((sf::FloatRect{0, 0, getSize().x + m_bordersCached.left + m_bordersCached.right, getSize().y + m_bordersCached.top + m_bordersCached.bottom + m_titleBarHeightCached}.contains(pos))
+             && (!sf::FloatRect{m_bordersCached.left, m_titleBarHeightCached + m_bordersCached.top, getSize().x, getSize().y}.contains(pos)))
             {
                 // Check if you start resizing the child window
                 if (m_resizable)
                 {
                     // Check on which border the mouse is standing
-                    if (sf::FloatRect{0, titleBarHeight + borders.top + getSize().y, borders.left, borders.bottom}.contains(pos))
+                    if (sf::FloatRect{0, m_titleBarHeightCached + m_bordersCached.top + getSize().y, m_bordersCached.left, m_bordersCached.bottom}.contains(pos))
                         m_resizeDirection = ResizeLeft | ResizeBottom;
-                    else if (sf::FloatRect{borders.left + getSize().x, titleBarHeight + borders.top + getSize().y, borders.right, borders.bottom}.contains(pos))
+                    else if (sf::FloatRect{m_bordersCached.left + getSize().x, m_titleBarHeightCached + m_bordersCached.top + getSize().y, m_bordersCached.right, m_bordersCached.bottom}.contains(pos))
                         m_resizeDirection = ResizeRight | ResizeBottom;
-                    else if (sf::FloatRect{0, titleBarHeight, borders.left, borders.top + getSize().y}.contains(pos))
+                    else if (sf::FloatRect{0, m_titleBarHeightCached, m_bordersCached.left, m_bordersCached.top + getSize().y}.contains(pos))
                         m_resizeDirection = ResizeLeft;
-                    else if (sf::FloatRect{borders.left + getSize().x, titleBarHeight, borders.right, borders.top + getSize().y}.contains(pos))
+                    else if (sf::FloatRect{m_bordersCached.left + getSize().x, m_titleBarHeightCached, m_bordersCached.right, m_bordersCached.top + getSize().y}.contains(pos))
                         m_resizeDirection = ResizeRight;
-                    else if (sf::FloatRect{borders.left, titleBarHeight + borders.top + getSize().y, getSize().x, borders.bottom}.contains(pos))
+                    else if (sf::FloatRect{m_bordersCached.left, m_titleBarHeightCached + m_bordersCached.top + getSize().y, getSize().x, m_bordersCached.bottom}.contains(pos))
                         m_resizeDirection = ResizeBottom;
                 }
             }
             else // Propagate the event to the child widgets
-                Container::leftMousePressed({pos.x - borders.left, pos.y - (titleBarHeight + borders.top)});
+                Container::leftMousePressed({pos.x - m_bordersCached.left, pos.y - (m_titleBarHeightCached + m_bordersCached.top)});
         }
     }
 
@@ -429,9 +428,7 @@ namespace tgui
         m_resizeDirection = ResizeNone;
 
         // Check if the mouse is on top of the title bar
-        Borders borders = getRenderer()->getBorders();
-        float titleBarHeight = getRenderer()->getTitleBarHeight();
-        if (sf::FloatRect{0, 0, getSize().x + borders.left + borders.right, titleBarHeight}.contains(pos))
+        if (sf::FloatRect{0, 0, getSize().x + m_bordersCached.left + m_bordersCached.right, m_titleBarHeightCached}.contains(pos))
         {
             // Send the mouse release event to the title buttons
             for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
@@ -446,15 +443,15 @@ namespace tgui
         else // The mouse is not on top of the title bar
         {
             // Check if the mouse is on top of the borders
-            if ((sf::FloatRect{0, 0, getSize().x + borders.left + borders.right, getSize().y + borders.top + borders.bottom + titleBarHeight}.contains(pos))
-             && (!sf::FloatRect{borders.left, titleBarHeight + borders.top, getSize().x, getSize().y}.contains(pos)))
+            if ((sf::FloatRect{0, 0, getSize().x + m_bordersCached.left + m_bordersCached.right, getSize().y + m_bordersCached.top + m_bordersCached.bottom + m_titleBarHeightCached}.contains(pos))
+             && (!sf::FloatRect{m_bordersCached.left, m_titleBarHeightCached + m_bordersCached.top, getSize().x, getSize().y}.contains(pos)))
             {
                 // Tell the widgets that the mouse was released
                 for (auto& widget : m_widgets)
                     widget->mouseNoLongerDown();
             }
             else // Propagate the event to the child widgets
-                Container::leftMouseReleased({pos.x - borders.left, pos.y - (titleBarHeight + borders.top)});
+                Container::leftMouseReleased({pos.x - m_bordersCached.left, pos.y - (m_titleBarHeightCached + m_bordersCached.top)});
         }
     }
 
@@ -477,10 +474,10 @@ namespace tgui
             for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
             {
                 if (button)
-                    minimumWidth += (minimumWidth > 0 ? getRenderer()->getPaddingBetweenButtons() : 0) + button->getSize().x;
+                    minimumWidth += (minimumWidth > 0 ? m_paddingBetweenButtonsCached : 0) + button->getSize().x;
             }
 
-            minimumWidth += 2 * getRenderer()->getDistanceToSide() - getRenderer()->getBorders().left - getRenderer()->getBorders().right;
+            minimumWidth += 2 * m_distanceToSideCached - m_bordersCached.left - m_bordersCached.right;
 
             if ((m_resizeDirection & ResizeLeft) != 0)
             {
@@ -491,18 +488,18 @@ namespace tgui
             }
             else if ((m_resizeDirection & ResizeRight) != 0)
             {
-                setSize(clamp(pos.x - getRenderer()->getBorders().left, std::max(minimumWidth, m_minimumSize.x), m_maximumSize.x), getSize().y);
+                setSize(clamp(pos.x - m_bordersCached.left, std::max(minimumWidth, m_minimumSize.x), m_maximumSize.x), getSize().y);
             }
 
             if ((m_resizeDirection & ResizeBottom) != 0)
             {
-                const float newY = std::max(0.f, pos.y - (getRenderer()->getTitleBarHeight() + getRenderer()->getBorders().top));
+                const float newY = std::max(0.f, pos.y - (m_titleBarHeightCached + m_bordersCached.top));
                 setSize(getSize().x, clamp(newY, m_minimumSize.y, m_maximumSize.y));
             }
         }
 
         // Check if the mouse is on top of the title bar
-        else if (sf::FloatRect{0, 0, getSize().x + getRenderer()->getBorders().left + getRenderer()->getBorders().right, getRenderer()->getTitleBarHeight()}.contains(pos))
+        else if (sf::FloatRect{0, 0, getSize().x + m_bordersCached.left + m_bordersCached.right, m_titleBarHeightCached}.contains(pos))
         {
             // Send the hover event to the button inside the title bar
             for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
@@ -531,9 +528,8 @@ namespace tgui
             }
 
             // Check if the mouse is on top of the borders
-            Borders borders = getRenderer()->getBorders();
-            if ((sf::FloatRect{0, 0, getSize().x + borders.left + borders.right, getSize().y + borders.top + borders.bottom + getRenderer()->getTitleBarHeight()}.contains(pos))
-             && (!sf::FloatRect{borders.left, getRenderer()->getTitleBarHeight() + borders.top, getSize().x, getSize().y}.contains(pos)))
+            if ((sf::FloatRect{0, 0, getSize().x + m_bordersCached.left + m_bordersCached.right, getSize().y + m_bordersCached.top + m_bordersCached.bottom + m_titleBarHeightCached}.contains(pos))
+             && (!sf::FloatRect{m_bordersCached.left, m_titleBarHeightCached + m_bordersCached.top, getSize().x, getSize().y}.contains(pos)))
             {
                 if (!m_mouseHover)
                     mouseEnteredWidget();
@@ -543,7 +539,7 @@ namespace tgui
             }
         }
 
-        Container::mouseMoved({pos.x - getRenderer()->getBorders().left, pos.y - getRenderer()->getTitleBarHeight() - getRenderer()->getBorders().top});
+        Container::mouseMoved({pos.x - m_bordersCached.left, pos.y - m_titleBarHeightCached - m_bordersCached.top});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -584,11 +580,7 @@ namespace tgui
 
     void ChildWindow::updateTitleBarHeight()
     {
-        float height = getRenderer()->getTitleBarHeight();
-
-        Borders borders = getRenderer()->getBorders();
-        Texture& textureTitleBar = getRenderer()->getTextureTitleBar();
-        m_spriteTitleBar.setSize({getSize().x + borders.left + borders.right, height});
+        m_spriteTitleBar.setSize({getSize().x + m_bordersCached.left + m_bordersCached.right, m_titleBarHeightCached});
 
         // Set the size of the buttons in the title bar
         for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
@@ -597,16 +589,16 @@ namespace tgui
             {
                 if (m_spriteTitleBar.isSet() && (button->getRenderer()->getTexture().getData() != nullptr))
                 {
-                    button->setSize(button->getRenderer()->getTexture().getImageSize().x * (height / textureTitleBar.getImageSize().y),
-                                    button->getRenderer()->getTexture().getImageSize().y * (height / textureTitleBar.getImageSize().y));
+                    button->setSize(button->getRenderer()->getTexture().getImageSize().x * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y),
+                                    button->getRenderer()->getTexture().getImageSize().y * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y));
                 }
                 else
-                    button->setSize({height * 0.8f, height * 0.8f});
+                    button->setSize({m_titleBarHeightCached * 0.8f, m_titleBarHeightCached * 0.8f});
             }
         }
 
         // Set the size of the text in the title bar
-        m_titleText.setCharacterSize(Text::findBestTextSize(getRenderer()->getFont(), height * 0.8f));
+        m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, m_titleBarHeightCached * 0.8f));
 
         // Reposition the images and text
         updatePosition();
@@ -614,38 +606,47 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::rendererChanged(const std::string& property, ObjectConverter& value)
+    void ChildWindow::rendererChanged(const std::string& property)
     {
         if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
             updateSize();
         }
         else if (property == "titlecolor")
         {
-            m_titleText.setColor(value.getColor());
+            m_titleText.setColor(getRenderer()->getTitleColor());
         }
         else if (property == "texturetitlebar")
         {
-            m_spriteTitleBar.setTexture(value.getTexture());
+            m_spriteTitleBar.setTexture(getRenderer()->getTextureTitleBar());
 
-            // If the title bar height is determined by the texture then update it
-            if (getRenderer()->getTitleBarHeight() == value.getTexture().getImageSize().y)
+            // If the title bar height is determined by the texture then update it (note that getTitleBarHeight has a non-trivial implementation)
+            m_titleBarHeightCached = getRenderer()->getTitleBarHeight();
+            if (m_titleBarHeightCached == m_spriteTitleBar.getTexture().getImageSize().y)
                 updateTitleBarHeight();
         }
         else if (property == "titlebarheight")
         {
+            m_titleBarHeightCached = getRenderer()->getTitleBarHeight();
             updateTitleBarHeight();
         }
-        else if ((property == "distancetoside") || (property == "paddingbetweenbuttons"))
+        else if (property == "distancetoside")
         {
+            m_distanceToSideCached = getRenderer()->getDistanceToSide();
+            updatePosition();
+        }
+        else if (property == "paddingbetweenbuttons")
+        {
+            m_paddingBetweenButtonsCached = getRenderer()->getPaddingBetweenButtons();
             updatePosition();
         }
         else if (property == "closebutton")
         {
             if (m_closeButton)
             {
-                m_closeButton->setRenderer(value.getRenderer());
-                m_closeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
+                m_closeButton->setRenderer(getRenderer()->getCloseButton());
+                m_closeButton->getRenderer()->setOpacity(m_opacityCached);
             }
 
             updateTitleBarHeight();
@@ -654,8 +655,8 @@ namespace tgui
         {
             if (m_maximizeButton)
             {
-                m_maximizeButton->setRenderer(value.getRenderer());
-                m_maximizeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
+                m_maximizeButton->setRenderer(getRenderer()->getMaximizeButton());
+                m_maximizeButton->getRenderer()->setOpacity(m_opacityCached);
             }
 
             updateTitleBarHeight();
@@ -664,48 +665,54 @@ namespace tgui
         {
             if (m_minimizeButton)
             {
-                m_minimizeButton->setRenderer(value.getRenderer());
-                m_minimizeButton->getRenderer()->setOpacity(getRenderer()->getOpacity());
+                m_minimizeButton->setRenderer(getRenderer()->getMinimizeButton());
+                m_minimizeButton->getRenderer()->setOpacity(m_opacityCached);
             }
 
             updateTitleBarHeight();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
+            Container::rendererChanged(property);
 
             for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
             {
                 if (button)
-                    button->getRenderer()->setOpacity(opacity);
+                    button->getRenderer()->setOpacity(m_opacityCached);
             }
 
-            m_titleText.setOpacity(opacity);
-            m_spriteTitleBar.setOpacity(opacity);
+            m_titleText.setOpacity(m_opacityCached);
+            m_spriteTitleBar.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            Font font = value.getFont();
+            Container::rendererChanged(property);
 
             for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
             {
                 if (button)
-                    button->getRenderer()->setFont(font);
+                    button->getRenderer()->setFont(m_fontCached);
             }
 
-            m_titleText.setFont(font);
-            m_titleText.setCharacterSize(Text::findBestTextSize(font, getRenderer()->getTitleBarHeight() * 0.8f));
+            m_titleText.setFont(m_fontCached);
+            m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, getRenderer()->getTitleBarHeight() * 0.8f));
 
             updatePosition();
-
-            Container::rendererChanged(property, value);
         }
-        else if ((property != "backgroundcolor")
-              && (property != "titlebarcolor")
-              && (property != "bordercolor"))
+        else if (property == "backgroundcolor")
         {
-            Container::rendererChanged(property, value);
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
         }
+        else if (property == "titlebarcolor")
+        {
+            m_titleBarColorCached = getRenderer()->getTitleBarColor();
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getTitleBarColor();
+        }
+        else
+            Container::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -714,14 +721,13 @@ namespace tgui
     {
         states.transform.translate(getPosition());
 
-        Borders borders = getRenderer()->getBorders();
-        sf::Vector2f sizeIncludingBorders{getSize().x + borders.left + borders.right, getSize().y + borders.top + borders.bottom};
+        sf::Vector2f sizeIncludingBorders{getSize().x + m_bordersCached.left + m_bordersCached.right, getSize().y + m_bordersCached.top + m_bordersCached.bottom};
 
         // Draw the title bar
         if (m_spriteTitleBar.isSet())
             m_spriteTitleBar.draw(target, states);
         else
-            drawRectangleShape(target, states, {sizeIncludingBorders.x, getRenderer()->getTitleBarHeight()}, getRenderer()->getTitleBarColor());
+            drawRectangleShape(target, states, {sizeIncludingBorders.x, m_titleBarHeightCached}, m_titleBarColorCached);
 
         // Draw the text in the title bar (after setting the clipping area)
         {
@@ -729,16 +735,16 @@ namespace tgui
             for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
             {
                 if (button)
-                    buttonOffsetX += (buttonOffsetX > 0 ? getRenderer()->getPaddingBetweenButtons() : 0) + button->getSize().x;
+                    buttonOffsetX += (buttonOffsetX > 0 ? m_paddingBetweenButtonsCached : 0) + button->getSize().x;
             }
 
             if (buttonOffsetX > 0)
-                buttonOffsetX += getRenderer()->getDistanceToSide();
+                buttonOffsetX += m_distanceToSideCached;
 
-            float clippingLeft = getRenderer()->getDistanceToSide();
-            float clippingRight = sizeIncludingBorders.x - getRenderer()->getDistanceToSide() - buttonOffsetX;
+            float clippingLeft = m_distanceToSideCached;
+            float clippingRight = sizeIncludingBorders.x - m_distanceToSideCached - buttonOffsetX;
 
-            Clipping clipping{target, states, {clippingLeft, 0}, {clippingRight - clippingLeft, getRenderer()->getTitleBarHeight()}};
+            Clipping clipping{target, states, {clippingLeft, 0}, {clippingRight - clippingLeft, m_titleBarHeightCached}};
 
             m_titleText.draw(target, states);
         }
@@ -750,18 +756,18 @@ namespace tgui
                 button->draw(target, states);
         }
 
-        states.transform.translate({0, getRenderer()->getTitleBarHeight()});
+        states.transform.translate({0, m_titleBarHeightCached});
 
         // Draw the borders
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, borders, sizeIncludingBorders, getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
+            drawBorders(target, states, m_bordersCached, sizeIncludingBorders, m_borderColorCached);
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Draw the background
-        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-            drawRectangleShape(target, states, getSize(), getRenderer()->getBackgroundColor());
+        if (m_backgroundColorCached != sf::Color::Transparent)
+            drawRectangleShape(target, states, getSize(), m_backgroundColorCached);
 
         // Draw the widgets in the child window
         Clipping clipping{target, states, {}, {getSize()}};

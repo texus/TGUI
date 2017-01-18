@@ -30,6 +30,13 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{}},
+                {"bordercolor", sf::Color::Black},
+                {"backgroundcolor", sf::Color::Transparent}
+            };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Layout2d& size)
@@ -42,9 +49,7 @@ namespace tgui
         addSignal<sf::Vector2f>("Clicked");
 
         m_renderer = aurora::makeCopied<PanelRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorderColor({220, 220, 220});
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize(size);
     }
@@ -70,7 +75,7 @@ namespace tgui
 
     sf::Vector2f Panel::getChildWidgetsOffset() const
     {
-        return {getRenderer()->getBorders().left, getRenderer()->getBorders().top};
+        return {m_bordersCached.left, m_bordersCached.top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,10 +116,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::rendererChanged(const std::string& property, ObjectConverter& value)
+    void Panel::rendererChanged(const std::string& property)
     {
-        if ((property != "borders") && (property != "bordercolor") && (property != "backgroundcolor"))
-            Container::rendererChanged(property, value);
+        if (property == "borders")
+        {
+            m_bordersCached = getRenderer()->getBorders();
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else
+            Container::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,20 +141,19 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
+            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        sf::Vector2f innerSize = {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
-        Clipping clipping{target, states, {borders.left, borders.top}, innerSize};
+        sf::Vector2f innerSize = {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        Clipping clipping{target, states, {m_bordersCached.left, m_bordersCached.top}, innerSize};
 
         // Draw the background
-        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-            drawRectangleShape(target, states, innerSize, getRenderer()->getBackgroundColor());
+        if (m_backgroundColorCached != sf::Color::Transparent)
+            drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         // Draw the child widgets
         drawWidgetContainer(&target, states);

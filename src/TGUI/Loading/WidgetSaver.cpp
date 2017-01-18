@@ -133,7 +133,12 @@ namespace tgui
                     if (pair.second.getType() == ObjectConverter::Type::RendererData)
                     {
                         std::stringstream ss{value};
-                        node->children.back()->children.push_back(DataIO::parse(ss)->children[0]);
+                        auto rendererRootNode = DataIO::parse(ss);
+                        if (!rendererRootNode->children.empty())
+                            node->children.back()->children.push_back(rendererRootNode->children[0]);
+                        else
+                            node->children.back()->children.push_back(rendererRootNode);
+
                         node->children.back()->children.back()->name = pair.first;
                     }
                     else

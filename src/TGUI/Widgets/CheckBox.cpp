@@ -67,20 +67,20 @@ namespace tgui
     sf::Vector2f CheckBox::getFullSize() const
     {
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
-         && (getRenderer()->getTextureUnchecked().getImageSize() != getRenderer()->getTextureChecked().getImageSize()))
+         && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
         {
             sf::Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
             if (getText().isEmpty())
-                return getSize() + sf::Vector2f{std::max(0.f, sizeDiff.x - getRenderer()->getBorders().right), std::max(0.f, sizeDiff.y - getRenderer()->getBorders().top)};
+                return getSize() + sf::Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.right), std::max(0.f, sizeDiff.y - m_bordersCached.top)};
             else
-                return getSize() + sf::Vector2f{(getSize().x * getRenderer()->getTextDistanceRatio()) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - getRenderer()->getBorders().top))};
+                return getSize() + sf::Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.top))};
         }
         else
         {
             if (getText().isEmpty())
                 return getSize();
             else
-                return {getSize().x + (getSize().x * getRenderer()->getTextDistanceRatio()) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
+                return {getSize().x + (getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
         }
     }
 
@@ -90,11 +90,11 @@ namespace tgui
     {
         float yOffset = 0;
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
-         && (getRenderer()->getTextureUnchecked().getImageSize() != getRenderer()->getTextureChecked().getImageSize()))
+         && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
         {
             float sizeDiff = m_spriteChecked.getSize().y - m_spriteUnchecked.getSize().y;
-            if (sizeDiff > getRenderer()->getBorders().top)
-                yOffset = sizeDiff - getRenderer()->getBorders().top;
+            if (sizeDiff > m_bordersCached.top)
+                yOffset = sizeDiff - m_bordersCached.top;
         }
 
         if (getText().isEmpty() || (getSize().y >= m_text.getSize().y))
@@ -112,29 +112,13 @@ namespace tgui
             m_checked = true;
 
             updateTextColor();
-            if (getRenderer()->getTextStyleChecked().isSet())
-                m_text.setStyle(getRenderer()->getTextStyleChecked());
+            if (m_textStyleCheckedCached.isSet())
+                m_text.setStyle(m_textStyleCheckedCached);
             else
-                m_text.setStyle(getRenderer()->getTextStyle());
+                m_text.setStyle(m_textStyleCached);
 
             m_callback.checked = true;
             sendSignal("Checked", static_cast<int>(m_checked));
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void CheckBox::uncheck()
-    {
-        if (m_checked)
-        {
-            m_checked = false;
-
-            updateTextColor();
-            m_text.setStyle(getRenderer()->getTextStyle());
-
-            m_callback.checked = false;
-            sendSignal("Unchecked", static_cast<int>(m_checked));
         }
     }
 
@@ -172,14 +156,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void CheckBox::rendererChanged(const std::string& property)
+    {
+        if (property == "textureunchecked")
+            m_textureUncheckedCached = getRenderer()->getTextureUnchecked();
+        else if (property == "texturechecked")
+            m_textureCheckedCached = getRenderer()->getTextureChecked();
+
+        RadioButton::rendererChanged(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void CheckBox::updateTextureSizes()
     {
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
             m_spriteUnchecked.setSize(getInnerSize());
             m_spriteChecked.setSize(
-                {getInnerSize().x + ((getRenderer()->getTextureChecked().getImageSize().x - getRenderer()->getTextureUnchecked().getImageSize().x) * (getInnerSize().x / getRenderer()->getTextureUnchecked().getImageSize().x)),
-                 getInnerSize().y + ((getRenderer()->getTextureChecked().getImageSize().y - getRenderer()->getTextureUnchecked().getImageSize().y) * (getInnerSize().y / getRenderer()->getTextureUnchecked().getImageSize().y))}
+                {getInnerSize().x + ((m_textureCheckedCached.getImageSize().x - m_textureUncheckedCached.getImageSize().x) * (getInnerSize().x / m_textureUncheckedCached.getImageSize().x)),
+                 getInnerSize().y + ((m_textureCheckedCached.getImageSize().y - m_textureUncheckedCached.getImageSize().y) * (getInnerSize().y / m_textureUncheckedCached.getImageSize().y))}
             );
 
             m_spriteUncheckedHover.setSize(m_spriteUnchecked.getSize());
@@ -199,11 +195,10 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
-            drawBorders(target, states, borders, getSize(), getCurrentBorderColor());
+        if (m_bordersCached != Borders{0})
+            drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());
 
-        states.transform.translate({borders.left, borders.top});
+        states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
             if (m_checked)
@@ -277,11 +272,11 @@ namespace tgui
                 target.draw(right, states);
             }
         }
-        states.transform.translate({-borders.left, -borders.top});
+        states.transform.translate({-m_bordersCached.left, -m_bordersCached.top});
 
         if (!getText().isEmpty())
         {
-            states.transform.translate({(1 + getRenderer()->getTextDistanceRatio()) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
+            states.transform.translate({(1 + m_textDistanceRatioCached) * getSize().x, (getSize().y - m_text.getSize().y) / 2.0f});
             m_text.draw(target, states);
         }
     }

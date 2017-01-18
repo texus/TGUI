@@ -30,6 +30,20 @@
 
 namespace tgui
 {
+    static std::map<std::string, ObjectConverter> defaultRendererValues =
+            {
+                {"borders", Borders{2}},
+                {"padding", Padding{2, 0, 0, 0}},
+                {"bordercolor", sf::Color::Black},
+                {"textcolor", Color{60, 60, 60}},
+                {"textcolorhover", sf::Color::Black},
+                {"selectedtextcolor", sf::Color::White},
+                {"backgroundcolor", Color{245, 245, 245}},
+                {"backgroundcolorhover", sf::Color::White},
+                {"selectedbackgroundcolor", Color{0, 110, 255}},
+                {"selectedbackgroundcolorhover", Color{30, 150, 255}}
+            };
+
    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ListBox::ListBox()
@@ -45,17 +59,7 @@ namespace tgui
         addSignal<sf::String, TypeSet<sf::String, sf::String>>("DoubleClicked");
 
         m_renderer = aurora::makeCopied<ListBoxRenderer>();
-        setRenderer(m_renderer->getData());
-
-        getRenderer()->setBorders({2});
-        getRenderer()->setPadding({2, 0, 0, 0});
-        getRenderer()->setBackgroundColor({245, 245, 245});
-        getRenderer()->setTextColor({60, 60, 60});
-        getRenderer()->setTextColorHover(sf::Color::Black);
-        getRenderer()->setBackgroundColorHover(sf::Color::White);
-        getRenderer()->setSelectedBackgroundColor({0, 110, 255});
-        getRenderer()->setSelectedBackgroundColorHover({30, 150, 255});
-        getRenderer()->setSelectedTextColor(sf::Color::White);
+        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
 
         setSize({150, 154});
         setItemHeight(m_itemHeight);
@@ -87,9 +91,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_items.size(); ++i)
             m_items[i].setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].getSize().y) / 2.0f)});
 
-        Borders borders = getRenderer()->getBorders();
-        Padding padding = getRenderer()->getPadding();
-        m_scroll.setPosition(getSize().x - borders.right - padding.right - m_scroll.getSize().x, borders.top + padding.top);
+        m_scroll.setPosition(getSize().x - m_bordersCached.right - m_paddingCached.right - m_scroll.getSize().x, m_bordersCached.top + m_paddingCached.top);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,8 +102,7 @@ namespace tgui
 
         m_spriteBackground.setSize(getInnerSize());
 
-        Padding padding = getRenderer()->getPadding();
-        m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y - padding.top - padding.bottom)});
+        m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom)});
         m_scroll.setLowValue(static_cast<unsigned int>(m_scroll.getSize().y));
 
         updatePosition();
@@ -122,10 +123,10 @@ namespace tgui
 
             // Create the new item
             Text newItem;
-            newItem.setFont(getRenderer()->getFont());
-            newItem.setColor(getRenderer()->getTextColor());
-            newItem.setOpacity(getRenderer()->getOpacity());
-            newItem.setStyle(getRenderer()->getTextStyle());
+            newItem.setFont(m_fontCached);
+            newItem.setColor(m_textColorCached);
+            newItem.setOpacity(m_opacityCached);
+            newItem.setStyle(m_textStyleCached);
             newItem.setCharacterSize(m_textSize);
             newItem.setString(itemName);
             newItem.setPosition({0, (m_items.size() * m_itemHeight) + ((m_itemHeight - newItem.getSize().y) / 2.0f)});
@@ -370,7 +371,7 @@ namespace tgui
         m_itemHeight = itemHeight;
         if (m_requestedTextSize == 0)
         {
-            m_textSize = Text::findBestTextSize(getRenderer()->getFont(), itemHeight * 0.8f);
+            m_textSize = Text::findBestTextSize(m_fontCached, itemHeight * 0.8f);
             for (auto& item : m_items)
                 item.setCharacterSize(m_textSize);
         }
@@ -396,7 +397,7 @@ namespace tgui
         if (textSize)
             m_textSize = textSize;
         else
-            m_textSize = Text::findBestTextSize(getRenderer()->getFont(), m_itemHeight * 0.8f);
+            m_textSize = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
 
         for (auto& item : m_items)
             item.setCharacterSize(m_textSize);
@@ -470,11 +471,10 @@ namespace tgui
         }
         else
         {
-            Borders borders = getRenderer()->getBorders();
-            Padding padding = getRenderer()->getPadding();
-            if (sf::FloatRect{borders.left + padding.left, borders.top + padding.top, getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}.contains(pos))
+            if (sf::FloatRect{m_bordersCached.left + m_paddingCached.left, m_bordersCached.top + m_paddingCached.top,
+                              getInnerSize().x - m_paddingCached.left - m_paddingCached.right, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}.contains(pos))
             {
-                pos.y -= borders.top + padding.top;
+                pos.y -= m_bordersCached.top + m_paddingCached.top;
 
                 int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
@@ -562,11 +562,10 @@ namespace tgui
             m_scroll.mouseNoLongerOnWidget();
 
             // Find out on which item the mouse is hovering
-            Borders borders = getRenderer()->getBorders();
-            Padding padding = getRenderer()->getPadding();
-            if (sf::FloatRect{borders.left + padding.left, borders.top + padding.top, getInnerSize().x - padding.left - padding.right, getInnerSize().y - padding.top - padding.bottom}.contains(pos))
+            if (sf::FloatRect{m_bordersCached.left + m_paddingCached.left,
+                              m_bordersCached.top + m_paddingCached.top, getInnerSize().x - m_paddingCached.left - m_paddingCached.right, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}.contains(pos))
             {
-                pos.y -= borders.top + padding.top;
+                pos.y -= m_bordersCached.top + m_paddingCached.top;
 
                 int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
@@ -636,83 +635,123 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::rendererChanged(const std::string& property, ObjectConverter& value)
+    void ListBox::rendererChanged(const std::string& property)
     {
-        if ((property == "borders") || (property == "padding"))
+        if (property == "borders")
         {
+            m_bordersCached = getRenderer()->getBorders();
             updateSize();
         }
-        else if ((property == "textcolor") || (property == "textcolorhover") || (property == "selectedtextcolor") || (property == "selectedtextcolorhover"))
+        else if (property == "padding")
         {
+            m_paddingCached = getRenderer()->getPadding();
+            updateSize();
+        }
+        else if (property == "textcolor")
+        {
+            m_textColorCached = getRenderer()->getTextColor();
+            updateItemColorsAndStyle();
+        }
+        else if (property == "textcolorhover")
+        {
+            m_textColorHoverCached = getRenderer()->getTextColorHover();
+            updateItemColorsAndStyle();
+        }
+        else if (property == "selectedtextcolor")
+        {
+            m_selectedTextColorCached = getRenderer()->getSelectedTextColor();
+            updateItemColorsAndStyle();
+        }
+        else if (property == "selectedtextcolorhover")
+        {
+            m_selectedTextColorHoverCached = getRenderer()->getSelectedTextColorHover();
             updateItemColorsAndStyle();
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(value.getTexture());
+            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
         }
         else if (property == "textstyle")
         {
-            for (auto& item : m_items)
-                item.setStyle(value.getTextStyle());
+            m_textStyleCached = getRenderer()->getTextStyle();
 
-            if ((m_selectedItem >= 0) && (getRenderer()->getSelectedTextStyle().isSet()))
-                m_items[m_selectedItem].setStyle(getRenderer()->getSelectedTextStyle());
+            for (auto& item : m_items)
+                item.setStyle(m_textStyleCached);
+
+            if ((m_selectedItem >= 0) && m_selectedTextStyleCached.isSet())
+                m_items[m_selectedItem].setStyle(m_selectedTextStyleCached);
         }
         else if (property == "selectedtextstyle")
         {
+            m_selectedTextStyleCached = getRenderer()->getSelectedTextStyle();
+
             if (m_selectedItem >= 0)
             {
-                if (value.getTextStyle().isSet())
-                    m_items[m_selectedItem].setStyle(value.getTextStyle());
+                if (m_selectedTextStyleCached.isSet())
+                    m_items[m_selectedItem].setStyle(m_selectedTextStyleCached);
                 else
-                    m_items[m_selectedItem].setStyle(getRenderer()->getTextStyle());
+                    m_items[m_selectedItem].setStyle(m_textStyleCached);
             }
         }
         else if (property == "scrollbar")
         {
-            m_scroll.setRenderer(value.getRenderer());
+            m_scroll.setRenderer(getRenderer()->getScrollbar());
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getBorderColor();
+        }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "backgroundcolorhover")
+        {
+            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+        }
+        else if (property == "selectedbackgroundcolor")
+        {
+            m_selectedBackgroundColorCached = getRenderer()->getSelectedBackgroundColor();
+        }
+        else if (property == "selectedbackgroundcolorhover")
+        {
+            m_selectedBackgroundColorHoverCached = getRenderer()->getSelectedBackgroundColorHover();
         }
         else if (property == "opacity")
         {
-            float opacity = value.getNumber();
+            Widget::rendererChanged(property);
 
-            m_spriteBackground.setOpacity(opacity);
-            m_scroll.getRenderer()->setOpacity(opacity);
+            m_spriteBackground.setOpacity(m_opacityCached);
+            m_scroll.getRenderer()->setOpacity(m_opacityCached);
             for (auto& item : m_items)
-                item.setOpacity(opacity);
+                item.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            std::shared_ptr<sf::Font> font = value.getFont();
+            Widget::rendererChanged(property);
+
             for (auto& item : m_items)
-                item.setFont(font);
+                item.setFont(m_fontCached);
 
             // Recalculate the text size with the new font
             if (m_requestedTextSize == 0)
             {
-                m_textSize = Text::findBestTextSize(font, m_itemHeight * 0.8f);
+                m_textSize = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
                 for (auto& item : m_items)
                     item.setCharacterSize(m_textSize);
             }
 
             updatePosition();
         }
-        else if ((property != "bordercolor")
-              && (property != "backgroundcolor")
-              && (property != "backgroundcolorhover")
-              && (property != "selectedbackgroundcolor")
-              && (property != "selectedbackgroundcolorhover"))
-        {
-            Widget::rendererChanged(property, value);
-        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f ListBox::getInnerSize() const
     {
-        Borders borders = getRenderer()->getBorders();
-        return {getSize().x - borders.left - borders.right, getSize().y - borders.top - borders.bottom};
+        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -721,19 +760,19 @@ namespace tgui
     {
         if (m_selectedItem >= 0)
         {
-            if ((m_selectedItem == m_hoveringItem) && getRenderer()->getSelectedTextColorHover().isSet())
-                m_items[m_selectedItem].setColor(getRenderer()->getSelectedTextColorHover());
-            else if (getRenderer()->getSelectedTextColor().isSet())
-                m_items[m_selectedItem].setColor(getRenderer()->getSelectedTextColor());
+            if ((m_selectedItem == m_hoveringItem) && m_selectedTextColorHoverCached.isSet())
+                m_items[m_selectedItem].setColor(m_selectedTextColorHoverCached);
+            else if (m_selectedTextColorCached.isSet())
+                m_items[m_selectedItem].setColor(m_selectedTextColorCached);
 
-            if (getRenderer()->getSelectedTextStyle().isSet())
-                m_items[m_selectedItem].setStyle(getRenderer()->getSelectedTextStyle());
+            if (m_selectedTextStyleCached.isSet())
+                m_items[m_selectedItem].setStyle(m_selectedTextStyleCached);
         }
 
         if ((m_hoveringItem >= 0) && (m_selectedItem != m_hoveringItem))
         {
-            if (getRenderer()->getTextColorHover().isSet())
-                m_items[m_hoveringItem].setColor(getRenderer()->getTextColorHover());
+            if (m_textColorHoverCached.isSet())
+                m_items[m_hoveringItem].setColor(m_textColorHoverCached);
         }
     }
 
@@ -743,8 +782,8 @@ namespace tgui
     {
         for (auto& item : m_items)
         {
-            item.setColor(getRenderer()->getTextColor());
-            item.setStyle(getRenderer()->getTextStyle());
+            item.setColor(m_textColorCached);
+            item.setStyle(m_textStyleCached);
         }
 
         updateSelectedAndHoveringItemColorsAndStyle();
@@ -758,10 +797,10 @@ namespace tgui
         {
             if (m_hoveringItem >= 0)
             {
-                if ((m_selectedItem == m_hoveringItem) && getRenderer()->getSelectedTextColor().isSet())
-                    m_items[m_hoveringItem].setColor(getRenderer()->getSelectedTextColor());
+                if ((m_selectedItem == m_hoveringItem) && m_selectedTextColorCached.isSet())
+                    m_items[m_hoveringItem].setColor(m_selectedTextColorCached);
                 else
-                    m_items[m_hoveringItem].setColor(getRenderer()->getTextColor());
+                    m_items[m_hoveringItem].setColor(m_textColorCached);
             }
 
             m_hoveringItem = item;
@@ -778,12 +817,12 @@ namespace tgui
         {
             if (m_selectedItem >= 0)
             {
-                if ((m_selectedItem == m_hoveringItem) && getRenderer()->getTextColorHover().isSet())
-                    m_items[m_selectedItem].setColor(getRenderer()->getTextColorHover());
+                if ((m_selectedItem == m_hoveringItem) && m_textColorHoverCached.isSet())
+                    m_items[m_selectedItem].setColor(m_textColorHoverCached);
                 else
-                    m_items[m_selectedItem].setColor(getRenderer()->getTextColor());
+                    m_items[m_selectedItem].setColor(m_textColorCached);
 
-                m_items[m_selectedItem].setStyle(getRenderer()->getTextStyle());
+                m_items[m_selectedItem].setStyle(m_textStyleCached);
             }
 
             m_selectedItem = item;
@@ -814,27 +853,25 @@ namespace tgui
         sf::RenderStates statesForScrollbar = states;
 
         // Draw the borders
-        Borders borders = getRenderer()->getBorders();
-        if (borders != Borders{0})
+        if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, borders, getSize(), getRenderer()->getBorderColor());
-            states.transform.translate({borders.left, borders.top});
+            drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
+            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
         // Draw the background
         if (m_spriteBackground.isSet())
             m_spriteBackground.draw(target, states);
         else
-            drawRectangleShape(target, states, getInnerSize(), getRenderer()->getBackgroundColor());
+            drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
 
         // Draw the items and their selected/hover backgrounds
         {
             // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-            Padding padding = getRenderer()->getPadding();
-            float maxItemWidth = getInnerSize().x - padding.left - padding.right;
+            float maxItemWidth = getInnerSize().x - m_paddingCached.left - m_paddingCached.right;
             if (m_scroll.isShown())
                 maxItemWidth -= m_scroll.getSize().x;
-            Clipping clipping{target, states, {padding.left, padding.top}, {maxItemWidth, getInnerSize().y - padding.top - padding.bottom}};
+            Clipping clipping{target, states, {m_paddingCached.left, m_paddingCached.top}, {maxItemWidth, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}};
 
             // Find out which items are visible
             std::size_t firstItem = 0;
@@ -849,27 +886,27 @@ namespace tgui
                     ++lastItem;
             }
 
-            states.transform.translate({padding.left, padding.top - m_scroll.getValue()});
+            states.transform.translate({m_paddingCached.left, m_paddingCached.top - m_scroll.getValue()});
 
             // Draw the background of the selected item
             if (m_selectedItem >= 0)
             {
                 states.transform.translate({0, static_cast<float>(m_selectedItem * m_itemHeight)});
 
-                sf::Vector2f size = {getInnerSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)};
-                if ((m_selectedItem == m_hoveringItem) && getRenderer()->getSelectedBackgroundColorHover().isSet())
-                    drawRectangleShape(target, states, size, getRenderer()->getSelectedBackgroundColorHover());
+                sf::Vector2f size = {getInnerSize().x - m_paddingCached.left - m_paddingCached.right, static_cast<float>(m_itemHeight)};
+                if ((m_selectedItem == m_hoveringItem) && m_selectedBackgroundColorHoverCached.isSet())
+                    drawRectangleShape(target, states, size, m_selectedBackgroundColorHoverCached);
                 else
-                    drawRectangleShape(target, states, size, getRenderer()->getSelectedBackgroundColor());
+                    drawRectangleShape(target, states, size, m_selectedBackgroundColorCached);
 
                 states.transform.translate({0, -static_cast<float>(m_selectedItem * m_itemHeight)});
             }
 
             // Draw the background of the item on which the mouse is standing
-            if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && getRenderer()->getBackgroundColorHover().isSet())
+            if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
             {
                 states.transform.translate({0, static_cast<float>(m_hoveringItem * m_itemHeight)});
-                drawRectangleShape(target, states, {getInnerSize().x - padding.left - padding.right, static_cast<float>(m_itemHeight)}, getRenderer()->getBackgroundColorHover());
+                drawRectangleShape(target, states, {getInnerSize().x - m_paddingCached.left - m_paddingCached.right, static_cast<float>(m_itemHeight)}, m_backgroundColorHoverCached);
                 states.transform.translate({0, -static_cast<float>(m_hoveringItem * m_itemHeight)});
             }
 
