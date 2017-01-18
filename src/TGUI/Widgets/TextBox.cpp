@@ -38,7 +38,7 @@ namespace tgui
             {
                 {"borders", Borders{2}},
                 {"padding", Padding{2, 0, 0, 0}},
-                {"caretwidth", 1},
+                {"caretwidth", 1.f},
                 {"caretcolor", sf::Color::Black},
                 {"bordercolor", sf::Color::Black},
                 {"textcolor", sf::Color::Black},

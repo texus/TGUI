@@ -38,7 +38,7 @@ namespace tgui
                 {"backgroundcolorhover", sf::Color::White},
                 {"arrowcolor", Color{60, 60, 60}},
                 {"arrowcolorhover", sf::Color::Black},
-                {"spacebetweenarrows", 2}
+                {"spacebetweenarrows", 2.f}
             };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -47,7 +47,7 @@ namespace tgui
             {
                 {"borders", Borders{2}},
                 {"padding", Padding{4, 2, 4, 2}},
-                {"caretwidth", 1},
+                {"caretwidth", 1.f},
                 {"caretcolor", sf::Color::Black},
                 {"bordercolor", Color{60, 60, 60}},
                 {"bordercolorhover", sf::Color::Black},

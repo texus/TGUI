@@ -38,7 +38,7 @@ namespace tgui
                 {"selectedtextcolor", sf::Color::White},
                 {"backgroundcolor", sf::Color::White},
                 {"selectedbackgroundcolor", Color{0, 110, 255}},
-                {"distancetoside", 1}
+                {"distancetoside", 1.f}
             };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

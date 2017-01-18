@@ -334,7 +334,7 @@ namespace tgui
         Color   m_borderColorCached;
         Color   m_backgroundColorCached;
         Color   m_thumbColorCached;
-        float   m_imageRotationCached;
+        float   m_imageRotationCached = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

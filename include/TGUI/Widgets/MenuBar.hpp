@@ -359,11 +359,11 @@ namespace tgui
         Sprite m_spriteSelectedItemBackground;
 
         // Cached renderer properties
-        Color     m_backgroundColorCached;
-        Color     m_selectedBackgroundColorCached;
-        Color     m_textColorCached;
-        Color     m_selectedTextColorCached;
-        float     m_distanceToSideCached;
+        Color m_backgroundColorCached;
+        Color m_selectedBackgroundColorCached;
+        Color m_textColorCached;
+        Color m_selectedTextColorCached;
+        float m_distanceToSideCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

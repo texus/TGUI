@@ -336,7 +336,6 @@ namespace tgui
 
         // Cached renderer properties
         Borders   m_bordersCached;
-        float     m_textDistanceRatioCached;
         TextStyle m_textStyleCached;
         TextStyle m_textStyleCheckedCached;
         Color     m_checkColorCached;
@@ -354,6 +353,7 @@ namespace tgui
         Color     m_backgroundColorCheckedCached;
         Color     m_backgroundColorCheckedHoverCached;
         Color     m_backgroundColorCheckedDisabledCached;
+        float     m_textDistanceRatioCached = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

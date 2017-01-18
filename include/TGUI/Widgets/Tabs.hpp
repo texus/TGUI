@@ -402,7 +402,7 @@ namespace tgui
         Color     m_selectedBackgroundColorCached;
         Color     m_textColorCached;
         Color     m_selectedTextColorCached;
-        float     m_distanceToSideCached;
+        float     m_distanceToSideCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

@@ -41,7 +41,7 @@ namespace tgui
     static std::map<std::string, ObjectConverter> defaultRendererValues =
             {
                 {"borders", Borders{5}},
-                {"imagerotation", 0},
+                {"imagerotation", 0.f},
                 {"bordercolor", sf::Color::Black},
                 {"thumbcolor", sf::Color::Black},
                 {"backgroundcolor", sf::Color::White}

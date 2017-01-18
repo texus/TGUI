@@ -57,8 +57,8 @@ namespace tgui
                 {"titlecolor", sf::Color::Black},
                 {"titlebarcolor", sf::Color::White},
                 {"backgroundcolor", Color{230, 230, 230}},
-                {"distancetoside", 3},
-                {"paddingbetweenbuttons", 1}
+                {"distancetoside", 3.f},
+                {"paddingbetweenbuttons", 1.f}
             };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -671,6 +671,18 @@ namespace tgui
 
             updateTitleBarHeight();
         }
+        else if (property == "backgroundcolor")
+        {
+            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+        }
+        else if (property == "titlebarcolor")
+        {
+            m_titleBarColorCached = getRenderer()->getTitleBarColor();
+        }
+        else if (property == "bordercolor")
+        {
+            m_borderColorCached = getRenderer()->getTitleBarColor();
+        }
         else if (property == "opacity")
         {
             Container::rendererChanged(property);
@@ -698,18 +710,6 @@ namespace tgui
             m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, getRenderer()->getTitleBarHeight() * 0.8f));
 
             updatePosition();
-        }
-        else if (property == "backgroundcolor")
-        {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
-        }
-        else if (property == "titlebarcolor")
-        {
-            m_titleBarColorCached = getRenderer()->getTitleBarColor();
-        }
-        else if (property == "bordercolor")
-        {
-            m_borderColorCached = getRenderer()->getTitleBarColor();
         }
         else
             Container::rendererChanged(property);

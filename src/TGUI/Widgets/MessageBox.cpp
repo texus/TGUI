@@ -37,8 +37,8 @@ namespace tgui
                 {"titlecolor", sf::Color::Black},
                 {"titlebarcolor", sf::Color::White},
                 {"backgroundcolor", Color{230, 230, 230}},
-                {"distancetoside", 3},
-                {"paddingbetweenbuttons", 1},
+                {"distancetoside", 3.f},
+                {"paddingbetweenbuttons", 1.f},
                 {"textcolor", sf::Color::Black}
             };
 

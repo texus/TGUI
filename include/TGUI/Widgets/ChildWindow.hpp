@@ -451,9 +451,9 @@ namespace tgui
         Color   m_titleColorCached;
         Color   m_titleBarColorCached;
         Color   m_backgroundColorCached;
-        float   m_titleBarHeightCached;
-        float   m_distanceToSideCached;
-        float   m_paddingBetweenButtonsCached;
+        float   m_titleBarHeightCached = 20;
+        float   m_distanceToSideCached = 0;
+        float   m_paddingBetweenButtonsCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
