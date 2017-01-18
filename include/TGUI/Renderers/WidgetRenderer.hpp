@@ -42,7 +42,7 @@ namespace tgui
         RendererData() = default;
 
         RendererData(std::map<std::string, ObjectConverter> init) :
-            propertyValuePairs{init}
+            propertyValuePairs(init)
         {
         }
 
