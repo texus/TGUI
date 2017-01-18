@@ -777,35 +777,40 @@ namespace tgui
                              sf::Vector2f size,
                              sf::Color color) const
     {
-        sf::RectangleShape border;
-        border.setFillColor(Color::calcColorOpacity(color, m_opacityCached));
-
         // If size is too small then draw entire size as border
         if ((size.x <= borders.left + borders.right) || (size.y <= borders.top + borders.bottom))
         {
+            sf::RectangleShape border;
+            border.setFillColor(Color::calcColorOpacity(color, m_opacityCached));
             border.setSize({size.x, size.y});
             target.draw(border, states);
         }
         else // Draw borders in the normal way
         {
-            // Draw left border
-            border.setSize({borders.left, size.y - borders.bottom});
-            target.draw(border, states);
+            //////////////////////
+            // 0--1/8---------6 //
+            // |              | //
+            // |   9------7   | //
+            // |   |      |   | //
+            // |   |      |   | //
+            // |   3------5   | //
+            // |              | //
+            // 2--------------4 //
+            //////////////////////
+            std::vector<sf::Vertex> m_vertices = {
+                {{0, 0}, color},
+                {{borders.left, 0}, color},
+                {{0, size.y}, color},
+                {{borders.left, size.y - borders.bottom}, color},
+                {{size.x, size.y}, color},
+                {{size.x - borders.right, size.y - borders.bottom}, color},
+                {{size.x, 0}, color},
+                {{size.x - borders.right, borders.top}, color},
+                {{borders.left, 0}, color},
+                {{borders.left, borders.top}, color},
+            };
 
-            // Draw top border
-            border.setSize({size.x - borders.left, borders.top});
-            border.setPosition(borders.left, 0);
-            target.draw(border, states);
-
-            // Draw right border
-            border.setSize({borders.right, size.y - borders.top});
-            border.setPosition(size.x - borders.right, borders.top);
-            target.draw(border, states);
-
-            // Draw bottom border
-            border.setSize({size.x - borders.right, borders.bottom});
-            border.setPosition(0, size.y - borders.bottom);
-            target.draw(border, states);
+            target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
         }
     }
 
