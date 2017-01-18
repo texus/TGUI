@@ -111,7 +111,7 @@ namespace tgui
         m_containerWidget              {other.m_containerWidget},
         m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
         m_renderer                     {other.m_renderer},
-        m_showAnimations               {other.m_showAnimations},
+        m_showAnimations               (other.m_showAnimations), // Did not compile in VS2013 when using braces
         m_fontCached                   {other.m_fontCached},
         m_opacityCached                {other.m_opacityCached}
     {
