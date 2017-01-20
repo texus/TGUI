@@ -1,7 +1,7 @@
 TGUI - Texus' Graphical User Interface
 ---------------------------------------
 
-TGUI - Copyright (c) 2012-2016 Bruno Van de Velde - vdv_b@tgui.eu
+TGUI - Copyright (c) 2012-2017 Bruno Van de Velde - vdv_b@tgui.eu
 
 This software is provided 'as-is', without any express or
 implied warranty. In no event will the authors be held
