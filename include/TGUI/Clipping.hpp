@@ -45,6 +45,7 @@ namespace tgui
         /// @brief Creates a clipping object which will define a clipping region until the object is destroyed
         ///
         /// @param target  Target to which we are drawing
+        /// @param states  Current render states
         /// @param topLeft Position of the top left corner of the clipping area relative to the view
         /// @param size    Size of the clipping area relative to the view
         ///

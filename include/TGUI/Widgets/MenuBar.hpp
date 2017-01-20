@@ -230,7 +230,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the menus open above or below the menu bar
         ///
-        /// @param Should the menus open above the bar instead of below like it does by default?
+        /// @param invertDirection  Should the menus open above the bar instead of below like it does by default?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setInvertedMenuDirection(bool invertDirection);
@@ -239,7 +239,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the menus open above or below the menu bar
         ///
-        /// @param Do menus open above the bar instead of below like it does by default?
+        /// @return Do menus open above the bar instead of below like it does by default?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getInvertedMenuDirection() const;

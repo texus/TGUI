@@ -164,9 +164,9 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Stores a color object for later retrieval
+        /// @brief Stores a text style for later retrieval
         ///
-        /// @param color  Color to store
+        /// @param style  Text style to store
         ///
         /// To combine multiple text styles, wrap the value inside the TextStyle object before passing it.
         ///
