@@ -14,5 +14,6 @@ var searchData=
   ['bindstr2d',['bindStr2d',['../namespacetgui.html#a6733d3b6d3aa6328a0c47ab0b17b36e2',1,'tgui::bindStr2d(const std::string &amp;expression)'],['../namespacetgui.html#a80788f31a30a310186a554403b59a1a1',1,'tgui::bindStr2d(const char *expression)']]],
   ['bindtop',['bindTop',['../namespacetgui.html#a87c61eb0319debb4329c140542c06446',1,'tgui::bindTop(std::shared_ptr&lt; Widget &gt; widget)'],['../namespacetgui.html#a0a63bccfcb366ec0869b269b5c6b9fa8',1,'tgui::bindTop(Gui &amp;gui)']]],
   ['bindwidth',['bindWidth',['../namespacetgui.html#a8fb205ef056bb9d28c370a68434fcc50',1,'tgui::bindWidth(std::shared_ptr&lt; Widget &gt; widget)'],['../namespacetgui.html#a96d0d7d12ce0cc2a757cfe16533ac9f5',1,'tgui::bindWidth(Gui &amp;gui)']]],
-  ['boxlayout',['BoxLayout',['../classtgui_1_1BoxLayout.html#a54dff2c0d9103b0a6267b32ba3edec16',1,'tgui::BoxLayout']]]
+  ['boxlayout',['BoxLayout',['../classtgui_1_1BoxLayout.html#a54dff2c0d9103b0a6267b32ba3edec16',1,'tgui::BoxLayout']]],
+  ['buttonrenderer',['ButtonRenderer',['../classtgui_1_1ButtonRenderer.html#ab5174e37281d6c2b30d03696aa683c21',1,'tgui::ButtonRenderer::ButtonRenderer()=default'],['../classtgui_1_1ButtonRenderer.html#a1efc1218cd6b9ad66b0b333b639bb5c9',1,'tgui::ButtonRenderer::ButtonRenderer(std::shared_ptr&lt; RendererData &gt; data)']]]
 ];

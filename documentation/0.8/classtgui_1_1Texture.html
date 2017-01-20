@@ -122,6 +122,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a111afcedcf4281e940a63661e7ccd7e9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Texture.html#a111afcedcf4281e940a63661e7ccd7e9">Texture</a> (const char *id, const sf::IntRect &amp;partRect=sf::IntRect(0, 0, 0, 0), const sf::IntRect &amp;middlePart=sf::IntRect(0, 0, 0, 0))</td></tr>
 <tr class="memdesc:a111afcedcf4281e940a63661e7ccd7e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that created the texture.  <a href="#a111afcedcf4281e940a63661e7ccd7e9">More...</a><br /></td></tr>
 <tr class="separator:a111afcedcf4281e940a63661e7ccd7e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee5113678a3c0386dc9ec45acd73c136"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Texture.html#aee5113678a3c0386dc9ec45acd73c136">Texture</a> (std::string id, const sf::IntRect &amp;partRect=sf::IntRect(0, 0, 0, 0), const sf::IntRect &amp;middlePart=sf::IntRect(0, 0, 0, 0))</td></tr>
+<tr class="memdesc:aee5113678a3c0386dc9ec45acd73c136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that created the texture.  <a href="#aee5113678a3c0386dc9ec45acd73c136">More...</a><br /></td></tr>
+<tr class="separator:aee5113678a3c0386dc9ec45acd73c136"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aedb388fbabb82f772ea50e83b00d7ca7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Texture.html#aedb388fbabb82f772ea50e83b00d7ca7">Texture</a> (const sf::String &amp;id, const sf::IntRect &amp;partRect=sf::IntRect(0, 0, 0, 0), const sf::IntRect &amp;middlePart=sf::IntRect(0, 0, 0, 0))</td></tr>
 <tr class="memdesc:aedb388fbabb82f772ea50e83b00d7ca7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that created the texture.  <a href="#aedb388fbabb82f772ea50e83b00d7ca7">More...</a><br /></td></tr>
 <tr class="separator:aedb388fbabb82f772ea50e83b00d7ca7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -199,7 +202,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a111afcedcf4281e940a63661e7ccd7e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a111afcedcf4281e940a63661e7ccd7e9">&sect;&nbsp;</a></span>Texture() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a111afcedcf4281e940a63661e7ccd7e9">&sect;&nbsp;</a></span>Texture() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -250,8 +253,61 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="aee5113678a3c0386dc9ec45acd73c136"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee5113678a3c0386dc9ec45acd73c136">&sect;&nbsp;</a></span>Texture() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">tgui::Texture::Texture </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::IntRect &amp;&#160;</td>
+          <td class="paramname"><em>partRect</em> = <code>sf::IntRect(0,&#160;0,&#160;0,&#160;0)</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::IntRect &amp;&#160;</td>
+          <td class="paramname"><em>middlePart</em> = <code>sf::IntRect(0,&#160;0,&#160;0,&#160;0)</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructor that created the texture. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Id for the the image to load (for the default loader, the id is the filename) </td></tr>
+    <tr><td class="paramname">partRect</td><td>Load only part of the image. Pass an empty rectangle if you want to load the full image </td></tr>
+    <tr><td class="paramname">middlePart</td><td>Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>This constructor just calls the corresponding load function. </p>
+
+</div>
+</div>
 <a id="aedb388fbabb82f772ea50e83b00d7ca7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aedb388fbabb82f772ea50e83b00d7ca7">&sect;&nbsp;</a></span>Texture() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aedb388fbabb82f772ea50e83b00d7ca7">&sect;&nbsp;</a></span>Texture() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -296,7 +352,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="af62b1bfa9b456591074efeeb2393253d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af62b1bfa9b456591074efeeb2393253d">&sect;&nbsp;</a></span>Texture() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af62b1bfa9b456591074efeeb2393253d">&sect;&nbsp;</a></span>Texture() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -778,7 +834,7 @@ Static Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Dec 8 2016 12:34:53 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jan 20 2017 20:11:56 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.12
 </small></address>

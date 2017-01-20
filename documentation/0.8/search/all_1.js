@@ -15,12 +15,13 @@ var searchData=
   ['bindstr2d',['bindStr2d',['../namespacetgui.html#a6733d3b6d3aa6328a0c47ab0b17b36e2',1,'tgui::bindStr2d(const std::string &amp;expression)'],['../namespacetgui.html#a80788f31a30a310186a554403b59a1a1',1,'tgui::bindStr2d(const char *expression)']]],
   ['bindtop',['bindTop',['../namespacetgui.html#a87c61eb0319debb4329c140542c06446',1,'tgui::bindTop(std::shared_ptr&lt; Widget &gt; widget)'],['../namespacetgui.html#a0a63bccfcb366ec0869b269b5c6b9fa8',1,'tgui::bindTop(Gui &amp;gui)']]],
   ['bindwidth',['bindWidth',['../namespacetgui.html#a8fb205ef056bb9d28c370a68434fcc50',1,'tgui::bindWidth(std::shared_ptr&lt; Widget &gt; widget)'],['../namespacetgui.html#a96d0d7d12ce0cc2a757cfe16533ac9f5',1,'tgui::bindWidth(Gui &amp;gui)']]],
-  ['bottom',['bottom',['../classtgui_1_1Outline.html#ae05e7fee6cb64ee5b3fb2f582baa876c',1,'tgui::Outline::bottom()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9a2ad9d63b69c4a10a5cc9cad923133bc4',1,'tgui::Grid::Bottom()'],['../classtgui_1_1Label.html#a2974ef71da25253342a8b3660b6d094ca2ad9d63b69c4a10a5cc9cad923133bc4',1,'tgui::Label::Bottom()']]],
+  ['bottom',['Bottom',['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9a2ad9d63b69c4a10a5cc9cad923133bc4',1,'tgui::Grid::Bottom()'],['../classtgui_1_1Label.html#a2974ef71da25253342a8b3660b6d094ca2ad9d63b69c4a10a5cc9cad923133bc4',1,'tgui::Label::Bottom()'],['../classtgui_1_1Outline.html#ae05e7fee6cb64ee5b3fb2f582baa876c',1,'tgui::Outline::bottom()']]],
   ['bottomleft',['BottomLeft',['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9a98e5a1c44509157ebcaf46c515c78875',1,'tgui::Grid']]],
   ['bottomright',['BottomRight',['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9a9146bfc669fddc88db2c4d89297d0e9a',1,'tgui::Grid']]],
   ['bottomtotop',['BottomToTop',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85ea63dc349be51108dcfd197c7ab02b486a',1,'tgui::ProgressBar']]],
-  ['boxlayout',['BoxLayout',['../classtgui_1_1BoxLayout.html',1,'tgui']]],
   ['boxlayout',['BoxLayout',['../classtgui_1_1BoxLayout.html#a54dff2c0d9103b0a6267b32ba3edec16',1,'tgui::BoxLayout']]],
+  ['boxlayout',['BoxLayout',['../classtgui_1_1BoxLayout.html',1,'tgui']]],
   ['button',['Button',['../classtgui_1_1Button.html',1,'tgui']]],
-  ['buttonrenderer',['ButtonRenderer',['../structtgui_1_1ButtonRenderer.html',1,'tgui']]]
+  ['buttonrenderer',['ButtonRenderer',['../classtgui_1_1ButtonRenderer.html',1,'tgui']]],
+  ['buttonrenderer',['ButtonRenderer',['../classtgui_1_1ButtonRenderer.html#ab5174e37281d6c2b30d03696aa683c21',1,'tgui::ButtonRenderer::ButtonRenderer()=default'],['../classtgui_1_1ButtonRenderer.html#a1efc1218cd6b9ad66b0b333b639bb5c9',1,'tgui::ButtonRenderer::ButtonRenderer(std::shared_ptr&lt; RendererData &gt; data)']]]
 ];

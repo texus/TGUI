@@ -151,6 +151,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#a5a26e1b60fdb9fc320354b4c883a144a">operator!=</a> (std::nullptr_t) const</td></tr>
 <tr class="memdesc:a5a26e1b60fdb9fc320354b4c883a144a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares the font with a nullptr. <br /></td></tr>
 <tr class="separator:a5a26e1b60fdb9fc320354b4c883a144a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fa7472f1bce9d2a39a5afa57fd0a512"><td class="memItemLeft" align="right" valign="top">const sf::Glyph &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#a7fa7472f1bce9d2a39a5afa57fd0a512">getGlyph</a> (sf::Uint32 codePoint, unsigned int characterSize, bool bold, float outlineThickness=0) const</td></tr>
+<tr class="memdesc:a7fa7472f1bce9d2a39a5afa57fd0a512"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve a glyph of the font.  <a href="#a7fa7472f1bce9d2a39a5afa57fd0a512">More...</a><br /></td></tr>
+<tr class="separator:a7fa7472f1bce9d2a39a5afa57fd0a512"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09bb99dcc918302ef509f50355a5ef7a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#a09bb99dcc918302ef509f50355a5ef7a">getKerning</a> (sf::Uint32 first, sf::Uint32 second, unsigned int characterSize) const</td></tr>
 <tr class="memdesc:a09bb99dcc918302ef509f50355a5ef7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the kerning offset of two glyphs.  <a href="#a09bb99dcc918302ef509f50355a5ef7a">More...</a><br /></td></tr>
 <tr class="separator:a09bb99dcc918302ef509f50355a5ef7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -284,6 +287,60 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
+<a id="a7fa7472f1bce9d2a39a5afa57fd0a512"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7fa7472f1bce9d2a39a5afa57fd0a512">&sect;&nbsp;</a></span>getGlyph()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const sf::Glyph&amp; tgui::Font::getGlyph </td>
+          <td>(</td>
+          <td class="paramtype">sf::Uint32&#160;</td>
+          <td class="paramname"><em>codePoint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>characterSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>outlineThickness</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieve a glyph of the font. </p>
+<p>If the font is a bitmap font, not all character sizes might be available. If the glyph is not available at the requested size, an empty glyph is returned.</p>
+<p>Be aware that using a negative value for the outline thickness will cause distorted rendering.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">codePoint</td><td>Unicode code point of the character to get </td></tr>
+    <tr><td class="paramname">characterSize</td><td>Reference character size </td></tr>
+    <tr><td class="paramname">bold</td><td>Retrieve the bold version or the regular one? </td></tr>
+    <tr><td class="paramname">outlineThickness</td><td>Thickness of outline (when != 0 the glyph will not be filled)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The glyph corresponding to <em>codePoint</em> and <em>characterSize</em> </dd></dl>
+
+</div>
+</div>
 <a id="adcb6366e2f77afc500882fd19239268b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adcb6366e2f77afc500882fd19239268b">&sect;&nbsp;</a></span>getId()</h2>
 
@@ -405,7 +462,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Dec 8 2016 12:34:53 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jan 20 2017 20:11:56 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.12
 </small></address>

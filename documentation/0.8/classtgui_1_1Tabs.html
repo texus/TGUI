@@ -153,7 +153,7 @@ typedef std::shared_ptr&lt; const <a class="el" href="classtgui_1_1Widget.html">
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a22734efa45c37f9bb99932cf84faa1d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtgui_1_1TabsRenderer.html">TabsRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Tabs.html#a22734efa45c37f9bb99932cf84faa1d1">getRenderer</a> () const</td></tr>
+<tr class="memitem:a22734efa45c37f9bb99932cf84faa1d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1TabsRenderer.html">TabsRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Tabs.html#a22734efa45c37f9bb99932cf84faa1d1">getRenderer</a> () const</td></tr>
 <tr class="memdesc:a22734efa45c37f9bb99932cf84faa1d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the renderer, which gives access to functions that determine how the widget is displayed.  <a href="#a22734efa45c37f9bb99932cf84faa1d1">More...</a><br /></td></tr>
 <tr class="separator:a22734efa45c37f9bb99932cf84faa1d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03a71f56934dbfa72dbaf08356d2bda3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Tabs.html#a03a71f56934dbfa72dbaf08356d2bda3">setSize</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;size) override</td></tr>
@@ -381,9 +381,9 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:aa44c551059bdcae25ba9ab9db95d9db3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Tabs.html#aa44c551059bdcae25ba9ab9db95d9db3">rendererChanged</a> (const std::string &amp;property, <a class="el" href="classtgui_1_1ObjectConverter.html">ObjectConverter</a> &amp;value) override</td></tr>
-<tr class="memdesc:aa44c551059bdcae25ba9ab9db95d9db3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function called when one of the properties of the renderer is changed.  <a href="#aa44c551059bdcae25ba9ab9db95d9db3">More...</a><br /></td></tr>
-<tr class="separator:aa44c551059bdcae25ba9ab9db95d9db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a464573241d4ae82c95798d5c3bb2c748"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Tabs.html#a464573241d4ae82c95798d5c3bb2c748">rendererChanged</a> (const std::string &amp;property) override</td></tr>
+<tr class="memdesc:a464573241d4ae82c95798d5c3bb2c748"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function called when one of the properties of the renderer is changed.  <a href="#a464573241d4ae82c95798d5c3bb2c748">More...</a><br /></td></tr>
+<tr class="separator:a464573241d4ae82c95798d5c3bb2c748"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafc1c56c47263444e785df1eb0d3344d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Tabs.html#aafc1c56c47263444e785df1eb0d3344d">clone</a> () const override</td></tr>
 <tr class="memdesc:aafc1c56c47263444e785df1eb0d3344d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of the widget if you don't know its exact type.  <a href="#aafc1c56c47263444e785df1eb0d3344d">More...</a><br /></td></tr>
 <tr class="separator:aafc1c56c47263444e785df1eb0d3344d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -657,7 +657,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structtgui_1_1TabsRenderer.html">TabsRenderer</a>* tgui::Tabs::getRenderer </td>
+          <td class="memname"><a class="el" href="classtgui_1_1TabsRenderer.html">TabsRenderer</a>* tgui::Tabs::getRenderer </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -933,8 +933,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
-<a id="aa44c551059bdcae25ba9ab9db95d9db3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa44c551059bdcae25ba9ab9db95d9db3">&sect;&nbsp;</a></span>rendererChanged()</h2>
+<a id="a464573241d4ae82c95798d5c3bb2c748"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a464573241d4ae82c95798d5c3bb2c748">&sect;&nbsp;</a></span>rendererChanged()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -946,18 +946,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
           <td class="memname">virtual void tgui::Tabs::rendererChanged </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>property</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>property</em></td><td>)</td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classtgui_1_1ObjectConverter.html">ObjectConverter</a> &amp;&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -971,12 +961,11 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">property</td><td>Lowercase name of the property that was changed </td></tr>
-    <tr><td class="paramname">value</td><td>New value of the property </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1Widget.html#a48a32eda63027185fd4279ee5d2a01ba">tgui::Widget</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1Widget.html#ac321a037f87f6bbc47dfd125f2df982c">tgui::Widget</a>.</p>
 
 </div>
 </div>
@@ -1165,7 +1154,7 @@ setDistanceToSide </dd>
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Dec 8 2016 12:34:53 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jan 20 2017 20:11:56 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.12
 </small></address>
