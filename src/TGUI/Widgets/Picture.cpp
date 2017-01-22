@@ -72,7 +72,6 @@ namespace tgui
             setSize(texture.getImageSize());
 
         m_fullyClickable = fullyClickable;
-        m_texture = texture;
         m_sprite.setTexture(texture);
         m_sprite.setPosition(getPosition());
         m_sprite.setOpacity(m_opacityCached);
@@ -82,7 +81,7 @@ namespace tgui
 
     const sf::String& Picture::getLoadedFilename() const
     {
-        return m_texture.getId();
+        return m_sprite.getTexture().getId();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,14 +97,14 @@ namespace tgui
 
     void Picture::setSmooth(bool smooth)
     {
-        m_texture.setSmooth(smooth);
+        m_sprite.getTexture().setSmooth(smooth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Picture::isSmooth() const
     {
-        return m_texture.isSmooth();
+        return m_sprite.getTexture().isSmooth();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -231,7 +231,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        Texture m_texture;
         Sprite  m_sprite;
 
         // Set to false when clicks on transparent parts of the picture should go to the widgets behind the picture
