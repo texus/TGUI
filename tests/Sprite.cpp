@@ -36,6 +36,7 @@ TEST_CASE("[Sprite]")
             sprite.setTexture({});
 
             REQUIRE(!sprite.isSet());
+            REQUIRE(sprite.getTexture().getData() == nullptr);
             REQUIRE(sprite.getSize() == sf::Vector2f(0, 0));
         }
 
@@ -44,6 +45,7 @@ TEST_CASE("[Sprite]")
             sprite.setTexture({"resources/image.png"});
 
             REQUIRE(sprite.isSet());
+            REQUIRE(sprite.getTexture().getData() != nullptr);
             REQUIRE(sprite.getSize() == sf::Vector2f(50, 50));
         }
 
@@ -104,7 +106,8 @@ TEST_CASE("[Sprite]")
 
         SECTION("Invalid image")
         {
-            //Size==0 and not loaded yet
+            tgui::Sprite unloadedSprite;
+            REQUIRE(unloadedSprite.isTransparentPixel({0, 0}) == false);
         }
 
         SECTION("Normal Scaling")
@@ -506,5 +509,13 @@ TEST_CASE("[Sprite]")
             sprite.setSize({20, 10});
             REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::NineSlice);
         }
+    }
+
+    SECTION("getTexture has a version to change the texture and a const version")
+    {
+        sprite.getTexture().setSmooth(false);
+
+        const tgui::Sprite sprite2;
+        sprite2.getTexture().isSmooth();
     }
 }

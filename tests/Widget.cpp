@@ -70,10 +70,15 @@ TEST_CASE("[Widget]")
 
     SECTION("Move to front/back")
     {
-        auto container = tgui::Panel::create();
         auto widget1 = tgui::ClickableWidget::create();
         auto widget2 = tgui::ClickableWidget::create();
         auto widget3 = tgui::ClickableWidget::create();
+
+        // Moving to front or back has no effect before widgets are added to a container
+        widget2->moveToFront();
+        widget2->moveToBack();
+
+        auto container = tgui::Panel::create();
         container->add(widget1);
         container->add(widget2);
         container->add(widget3);
@@ -190,7 +195,8 @@ TEST_CASE("[Widget]")
         widget->setPosition(20, 10);
         widget->setSize(100, 30);
 
-        SECTION("Position") {
+        SECTION("Position")
+        {
             REQUIRE(widget->getPosition() == sf::Vector2f(20, 10));
 
             widget->setPosition(tgui::bindLeft(widget2), {"w2.y"});
@@ -217,9 +223,19 @@ TEST_CASE("[Widget]")
             REQUIRE(widget4->getPosition() == sf::Vector2f(100, 30));
             widget4->setSize(60, 70);
             REQUIRE(widget4->getPosition() == sf::Vector2f(60, 70));
+
+            // The move function keeps the bound expression
+            widget->setPosition("{width, height}");
+            widget->setSize(40, 50);
+            widget->move(10, 15);
+            widget->move({25, 15});
+            REQUIRE(widget->getPosition() == sf::Vector2f(75, 80));
+            widget->setSize(20, 30);
+            REQUIRE(widget->getPosition() == sf::Vector2f(55, 60));
         }
 
-        SECTION("Size") {
+        SECTION("Size")
+        {
             REQUIRE(widget->getSize() == sf::Vector2f(100, 30));
 
             widget->setSize({"w2.width"}, tgui::bindHeight(widget2));
@@ -246,6 +262,15 @@ TEST_CASE("[Widget]")
             REQUIRE(widget4->getSize() == sf::Vector2f(20, 10));
             widget4->setPosition(60, 70);
             REQUIRE(widget4->getSize() == sf::Vector2f(60, 70));
+
+            // The scale function keeps the bound expression
+            widget->setSize("position");
+            widget->setPosition(40, 50);
+            widget->scale(2, 5);
+            widget->scale({0.25, 0.1});
+            REQUIRE(widget->getSize() == sf::Vector2f(20, 25));
+            widget->setPosition(20, 30);
+            REQUIRE(widget->getSize() == sf::Vector2f(10, 15));
         }
     }
 
