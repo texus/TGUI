@@ -974,15 +974,9 @@ namespace tgui
                 if ((*it)->mouseOnWidget(mousePos - (*it)->getPosition()))
                 {
                     if ((*it)->isEnabled())
-                    {
                         widget = *it;
-                        break;
-                    }
-                    else // The widget is disabled
-                    {
-                        if ((*it)->isDisabledBlockingMouseEvents())
-                            break;
-                    }
+
+                    break;
                 }
             }
         }

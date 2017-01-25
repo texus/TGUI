@@ -109,9 +109,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::disable(bool blockMouseEvents)
+    void Button::disable()
     {
-        Widget::disable(blockMouseEvents);
+        Widget::disable();
         updateTextColorAndStyle();
     }
 

@@ -102,7 +102,6 @@ namespace tgui
         SignalWidgetBase               {other},
         enable_shared_from_this<Widget>{other},
         m_type                         (other.m_type), // Did not compile in VS2013 when using braces
-        m_disabledBlockingMouseEvents  {other.m_disabledBlockingMouseEvents},
         m_enabled                      {other.m_enabled},
         m_visible                      {other.m_visible},
         m_parent                       {nullptr},
@@ -139,7 +138,6 @@ namespace tgui
         SignalWidgetBase               {std::move(other)},
         enable_shared_from_this<Widget>{std::move(other)},
         m_type                         (std::move(other.m_type)), // Did not compile in VS2013 when using braces
-        m_disabledBlockingMouseEvents  {std::move(other.m_disabledBlockingMouseEvents)},
         m_enabled                      {std::move(other.m_enabled)},
         m_visible                      {std::move(other.m_visible)},
         m_parent                       {nullptr},
@@ -190,7 +188,6 @@ namespace tgui
 
             m_callback.widget      = this;
             m_type                 = other.m_type;
-            m_disabledBlockingMouseEvents = other.m_disabledBlockingMouseEvents;
             m_enabled              = other.m_enabled;
             m_visible              = other.m_visible;
             m_parent               = nullptr;
@@ -240,7 +237,6 @@ namespace tgui
 
             m_callback.widget      = this;
             m_type                 = std::move(other.m_type);
-            m_disabledBlockingMouseEvents = std::move(other.m_disabledBlockingMouseEvents);
             m_enabled              = std::move(other.m_enabled);
             m_visible              = std::move(other.m_visible);
             m_parent               = nullptr;
@@ -534,10 +530,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::disable(bool blockMouseEvents)
+    void Widget::disable()
     {
         m_enabled = false;
-        m_disabledBlockingMouseEvents = blockMouseEvents;
 
         // Change the mouse button state.
         m_mouseHover = false;
@@ -743,13 +738,6 @@ namespace tgui
     void Widget::rendererChangedCallback(const std::string& property)
     {
         rendererChanged(property);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Widget::isDisabledBlockingMouseEvents() const
-    {
-        return m_disabledBlockingMouseEvents;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
