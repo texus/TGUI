@@ -7,12 +7,19 @@ This page contains information about the .Net binding.
 
 Please note that both the binding and TGUI 0.8 are still under development and may change at any time.
 
+The code may or may not crash when closing the window. If it crashes for you then for now you will have to ignore it.
 
-### Download and install
+
+### Option 1: Install prepackaged version (recommended)
+
+{% include button.ext text="Download x64 windows libraries" link="https://www.dropbox.com/s/106qk5tjj13s4kb/TGUI.Net%200.8-dev%202017-02-03.zip?dl=1" style="Orange" %}
+
+All dependencies are included in the download, just unzip, copy the files as described in the README and it should be ready to use.
+
+
+### Option 2: Install from source
 
 {% include button.ext text="Download source code" link="https://github.com/texus/TGUI.Net/archive/master.zip" style="Orange" %}
-
-There are currently no precompiled binaries available.
 
 You need to have [CTGUI](/bindings/c) installed before you can use TGUI.Net.
 
