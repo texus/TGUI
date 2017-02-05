@@ -84,4 +84,71 @@ class Example
 
 
 ### Example code (VB.Net)
-TGUI.Net has not yet been tested with VB.Net.
+``` vbnet
+Imports SFML.System
+Imports SFML.Window
+Imports SFML.Graphics
+Imports TGUI
+
+Module Program
+
+    Dim WithEvents window As RenderWindow
+    Dim gui As Gui
+
+    ''' <summary>
+    ''' Entry point of application
+    ''' </summary>
+    Sub Main()
+        Dim width = 400
+        Dim height = 300
+
+        window = New RenderWindow(New VideoMode(width, height), "TGUI.Net example (Visual Basic)")
+        gui = New Gui(window)
+
+        Dim picture = New Picture("background.jpg")
+        picture.Size = New Vector2f(width, height)
+        gui.Add(picture)
+
+        Dim editBoxUsername = New EditBox()
+        editBoxUsername.Position = New Vector2f(width / 6, height / 6)
+        editBoxUsername.Size = New Vector2f(width * 2 / 3, height / 8)
+        editBoxUsername.DefaultText = "Username"
+        gui.Add(editBoxUsername)
+
+        Dim editBoxPassword = New EditBox(editBoxUsername)
+        editBoxPassword.Position = New Vector2f(width / 6, height * 5 / 12)
+        editBoxPassword.PasswordCharacter = "*"
+        editBoxPassword.DefaultText = "Password"
+        gui.Add(editBoxPassword)
+
+        Dim button = New Button("Login")
+        button.Position = New Vector2f(width / 4, height * 7 / 10)
+        button.Size = New Vector2f(width / 2, height / 6)
+        gui.Add(button)
+
+        AddHandler button.Pressed, Sub()
+                                       System.Console.WriteLine("Username: " + editBoxUsername.Text)
+                                       System.Console.WriteLine("Password: " + editBoxPassword.Text)
+                                   End Sub
+
+        While (window.IsOpen())
+            window.DispatchEvents()
+
+            window.Clear()
+            gui.Draw()
+            window.Display()
+
+        End While
+
+    End Sub
+
+    ''' <summary>
+    ''' Function called when the window is closed
+    ''' </summary>
+    Sub App_Closed(ByVal sender As Object, ByVal e As EventArgs) Handles window.Closed
+        Dim window = CType(sender, RenderWindow)
+        window.Close()
+    End Sub
+
+End Module
+```
