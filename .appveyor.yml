@@ -10,10 +10,9 @@ version: 0.7-build-{build}
 #---------------------------------#
 
 environment:
-  SFML_VERSION: master
-
   matrix:
     - SFML_ROOT:      C:\SFML-VS2015
+      SFML_VERSION:   master
       GENERATOR:      Visual Studio 14 2015 Win64
       BUILD_TYPE:     Debug
       SHARED_LIBS:    FALSE
@@ -22,6 +21,7 @@ environment:
       BUILD_FOLDER:   build-VS2015-Win64
 
     - SFML_ROOT:      C:\SFML-VS2013
+      SFML_VERSION:   2.2
       GENERATOR:      Visual Studio 12 2013
       BUILD_TYPE:     Release
       SHARED_LIBS:    TRUE
@@ -32,24 +32,45 @@ environment:
 clone_depth: 3
 
 cache:
-  - C:\SFML-VS2013 -> appveyor.yml
-  - C:\SFML-VS2015 -> appveyor.yml
+  - C:\SFML-VS2013 -> .appveyor.yml
+  - C:\SFML-VS2015 -> .appveyor.yml
 
 install:
-  - IF NOT EXIST %SFML_ROOT% (
-      cd C:\ &&
-      appveyor DownloadFile https://github.com/SFML/SFML/archive/%SFML_VERSION%.zip -FileName C:\SFML.zip &&
-      7z x C:\SFML.zip &&
-      move SFML-%SFML_VERSION% %SFML_ROOT% &&
+- IF "%SFML_VERSION%" == "master" (
+    git clone --depth 1 https://github.com/SFML/SFML &&
+    cd SFML &&
+    IF EXIST "%SFML_ROOT%\lib" (
+      IF EXIST "%SFML_ROOT%\revision_cache" (
+        git rev-parse HEAD > revision &&
+        fc revision "%SFML_ROOT%\revision_cache" > nul &&
+        IF errorlevel 0 (
+          echo Using cached SFML directory &&
+          goto skip_sfml_build
+        )
+      )
+      else (
+        echo Rebuilding SFML, cached version is out of date
+      )
+    )
+    else (
+      echo Rebuilding SFML, no cache available
+    ) &&
+    cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+    cmake --build . --target install --config %BUILD_TYPE% -- /m &&
+    git rev-parse HEAD > "%SFML_ROOT%\revision_cache" &&
+    :skip_sfml_build
+  )
+  ELSE (
+    IF NOT EXIST %SFML_ROOT% (
+      appveyor DownloadFile https://github.com/SFML/SFML/archive/%SFML_VERSION%.zip -FileName SFML.zip &&
+      7z x SFML.zip > nul &&
+      move SFML-%SFML_VERSION% %SFML_ROOT% > nul &&
       cd %SFML_ROOT% &&
       mkdir lib &&
-      mkdir %BUILD_FOLDER% &&
-      cd %BUILD_FOLDER% &&
-      cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% .. &&
-      msbuild SFML.sln /p:Configuration=%BUILD_TYPE% /m &&
-      xcopy lib\%BUILD_TYPE% %SFML_ROOT%\lib\ &&
-      cd ..
+      cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+      cmake --build . --target install --config %BUILD_TYPE% -- /m
     )
+  )
 
 
 #---------------------------------#
@@ -65,8 +86,7 @@ build_script:
   - cd ..
   - IF %BUILD_TESTS%==TRUE (
       cd %BUILD_FOLDER%\tests\%BUILD_TYPE% &&
-      tests.exe &&
-      cd ..\..\..
+      tests.exe
     )
 
 
