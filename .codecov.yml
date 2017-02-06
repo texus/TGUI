@@ -6,7 +6,7 @@ coverage:
     patch: false
     changes: false
   ignore:
-    - tests/*
+    - tests/.*
     - examples/.*
     - include/TGUI/Aurora/.*
     - include/TGUI/Widgets/devel/.*
