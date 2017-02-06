@@ -12,7 +12,7 @@ The code may or may not crash when closing the window. If it crashes for you the
 
 ### Option 1: Install prepackaged version (recommended)
 
-{% include button.ext text="Download x64 windows libraries" link="https://www.dropbox.com/s/106qk5tjj13s4kb/TGUI.Net%200.8-dev%202017-02-03.zip?dl=1" style="Orange" %}
+{% include button.ext text="Download x64 windows libraries" link="https://www.dropbox.com/s/lsg0svjblxujo4k/TGUI.Net%200.8-dev%202017-02-06.zip?dl=1" style="Orange" %}
 
 All dependencies are included in the download, just unzip, copy the files as described in the README and it should be ready to use.
 
