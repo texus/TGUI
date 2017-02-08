@@ -29,11 +29,18 @@ environment:
       BUILD_EXAMPLES: TRUE
       BUILD_FOLDER:   build-VS2013-Win32
 
+    - SFML_ROOT:      C:\SFML
+      SFML_VERSION:   2.4.1
+
 clone_depth: 3
+
+matrix:
+  fast_finish: true
 
 cache:
   - C:\SFML-VS2013 -> .appveyor.yml
   - C:\SFML-VS2015 -> .appveyor.yml
+  - C:\SFML        -> .appveyor.yml
 
 install:
 - IF "%SFML_VERSION%" == "master" (
@@ -60,7 +67,7 @@ install:
     git rev-parse HEAD > "%SFML_ROOT%\revision_cache" &&
     :skip_sfml_build
   )
-  ELSE (
+  ELSE IF NOT "%SFML_ROOT%" == "C:\SFML" (
     IF NOT EXIST %SFML_ROOT% (
       appveyor DownloadFile https://github.com/SFML/SFML/archive/%SFML_VERSION%.zip -FileName SFML.zip &&
       7z x SFML.zip > nul &&
@@ -71,6 +78,18 @@ install:
       cmake --build . --target install --config %BUILD_TYPE% -- /m
     )
   )
+  ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
+    cd C:\ &&
+    appveyor DownloadFile http://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc14-32-bit.zip -FileName SFML-Win32.zip &&
+    7z x SFML-Win32.zip > nul &&
+    mkdir %SFML_ROOT%\Win32 &&
+    move SFML-%SFML_VERSION% %SFML_ROOT%\Win32\ > nul &&
+    appveyor DownloadFile http://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc14-64-bit.zip -FileName SFML-Win64.zip &&
+    7z x SFML-Win64.zip > nul &&
+    mkdir %SFML_ROOT%\Win64 &&
+    move SFML-%SFML_VERSION% %SFML_ROOT%\Win64\ > nul &&
+    appveyor-retry choco install doxygen.portable
+  )
 
 
 #---------------------------------#
@@ -79,15 +98,85 @@ install:
 
 build_script:
   - cd C:\projects\tgui
-  - mkdir %BUILD_FOLDER%
-  - cd %BUILD_FOLDER%
-  - cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DSFML_ROOT=%SFML_ROOT% ..
-  - msbuild tgui.sln /p:Configuration=%BUILD_TYPE% /m
-  - cd ..
-  - IF %BUILD_TESTS%==TRUE (
-      cd %BUILD_FOLDER%\tests\%BUILD_TYPE% &&
-      tests.exe
+  - IF NOT "%SFML_ROOT%" == "C:\SFML" (
+      mkdir %BUILD_FOLDER% &&
+      cd %BUILD_FOLDER% &&
+      cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DSFML_ROOT=%SFML_ROOT% .. &&
+      msbuild tgui.sln /p:Configuration=%BUILD_TYPE% /m &&
+      cd .. &&
+      IF "%BUILD_TESTS%"=="TRUE" (
+        cd %BUILD_FOLDER%\tests\%BUILD_TYPE% &&
+        tests.exe
+      )
     )
+    ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
+      cd .. &&
+      mkdir build-Win32 &&
+      cd build-Win32 &&
+      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% ..\tgui &&
+      msbuild tgui.sln /p:Configuration=Release /m &&
+      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% ..\tgui &&
+      msbuild tgui.sln /p:Configuration=Debug /m &&
+      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% ..\tgui &&
+      msbuild tgui.sln /p:Configuration=Release /m &&
+      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_DOC=TRUE ..\tgui &&
+      msbuild tgui.sln /p:Configuration=Debug /m &&
+      mkdir ..\tgui\lib &&
+      move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-s-d.lib ..\tgui\lib\ > nul &&
+      move lib\Release\tgui.lib ..\tgui\lib\ > nul &&
+      move lib\Release\tgui.dll ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-d.lib ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-d.dll ..\tgui\lib\ > nul &&
+      move doc\html ..\tgui\doc\ > nul &&
+      cd .. &&
+      echo d | xcopy /s tgui TGUI-0.8-dev > nul &&
+      7z a -tzip TGUI-0.8-dev-%APPVEYOR_REPO_COMMIT:~0,7%-vc14-32bit-for-SFML-%SFML_VERSION%.zip TGUI-0.8-dev > nul &&
+      appveyor PushArtifact TGUI-0.8-dev-%APPVEYOR_REPO_COMMIT:~0,7%-vc14-32bit-for-SFML-%SFML_VERSION%.zip &&
+      rmdir /S /Q TGUI-0.8-dev > nul &&
+      rmdir /S /Q tgui\doc\html > nul &&
+      rmdir /S /Q tgui\lib > nul &&
+      mkdir build-Win64 &&
+      cd build-Win64 &&
+      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% ..\tgui &&
+      msbuild tgui.sln /p:Configuration=Release /m &&
+      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% ..\tgui &&
+      msbuild tgui.sln /p:Configuration=Debug /m &&
+      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% ..\tgui &&
+      msbuild tgui.sln /p:Configuration=Release /m &&
+      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_DOC=TRUE ..\tgui &&
+      msbuild tgui.sln /p:Configuration=Debug /m &&
+      mkdir ..\tgui\lib &&
+      move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-s-d.lib ..\tgui\lib\ > nul &&
+      move lib\Release\tgui.lib ..\tgui\lib\ > nul &&
+      move lib\Release\tgui.dll ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-d.lib ..\tgui\lib\ > nul &&
+      move lib\Debug\tgui-d.dll ..\tgui\lib\ > nul &&
+      move doc\html ..\tgui\doc\ > nul &&
+      cd .. &&
+      echo d | xcopy /s tgui TGUI-0.8-dev > nul &&
+      7z a -tzip TGUI-0.8-dev-%APPVEYOR_REPO_COMMIT:~0,7%-vc14-64bit-for-SFML-%SFML_VERSION%.zip TGUI-0.8-dev > nul &&
+      appveyor PushArtifact TGUI-0.8-dev-%APPVEYOR_REPO_COMMIT:~0,7%-vc14-64bit-for-SFML-%SFML_VERSION%.zip
+    )
+
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+deploy:
+- provider: BinTray
+  username: texus
+  api_key:
+    secure: cSfvMUOUzComX+zv+OqpWsi4NUTZFdH/xq9hbfrqjPMyL6XFdo/Tg41IpleXdIFu
+  subject: texus
+  repo: generic
+  package: TGUI
+  version: 0.8-dev-latest
+  publish: true
+  override: true
+  explode: false
 
 
 #---------------------------------#
