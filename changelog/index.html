@@ -1,372 +1,321 @@
 ---
 layout: page
 title: Changelog
+
+changelog:
+- version: 0
+  minors:
+  - version: 7
+    patches:
+    - version: 2
+      date: 2 December 2016
+      changes: |
+        EditBox did not send a TextChanged signal when pressing ctrl+X
+        Added optional maximize and minimize buttons to ChildWindow (<a href="https://github.com/texus/TGUI/pull/61">#61</a>)
+        Calling Picture::setTexture yourself now works properly
+        Added optional parameter to Widget::disable to let mouse events pass through to the widgets behind it
+        ChatBox didn't scroll down automatically when size was not a multiple of item heigh
+        Clipping in ChatBox did not take padding into account
+        Mouse wheel scroll on top of combo box changed the item internally but did not display the new item
+        When ComboBox was destroyed while the list was still open then the list remained visible
+        Fixed invalid memory reads when widget gets destroyed from inside a callback function
+        Allow the ChildWindow to have maximum and minimum sizes (<a href="https://github.com/texus/TGUI/pull/64">#64</a>)
+        Removed support for 32-bit on OS X
+        Fixed texture rotation in some rare cases
+        Menus in MenuBar didn't stay open when the menu bar was added inside a Panel
+        Added EditBox::getCaretPosition
+        Fixed clipping issues when not using the default view
+        getAbsolutePosition no longer takes the position of the gui view into account
+    - version: 1
+      date: 12 June 2016
+      changes: |
+        Picture can now be loaded from a part of an sf::Texture
+        Any texture in any widget can now be set to an sf::Texture
+        Optimized adding lines to ChatBox
+        You can now pass <i>const char*</i> directly to layout (instead of needing std::string)
+        Panel widgets can now have borders around them
+        Setting texture color did not work when using transparent widgets
+        Passing std::bind expression as parameter to the connect function did not work on VS2013
+        Fixed tab key not working for widgets inside several containers
+        Fixed crash in Signal class under specific circumstances
+    - version: 0
+      date: 4 April 2016
+      changes: |
+        Experimental Android and iOS support
+        Layout system for relative sizes and positions
+        Rewritten callback system
+        New loading system to share theme between widgets and allow customizing loading steps
+        Exceptions are now used for error handing
+        No longer only textured widgets, also colored widgets which do not need external files
+        Many, many more changes
+  - version: 6
+    patches:
+    - version: 10
+      date: 24 January 2016
+      changes: |
+        Improved vertical text alignment in ListBox
+        Fixed RadioButton images being used when CheckBox was loaded from widget file
+    - version: 9
+      date: 11 July 2015
+      changes: |
+        Allow loading custom sections in theme files
+        Smooth scrolling in Slider and Scrollbar
+        Added setAlignment function to EditBox
+        Fixed clipping when drawing on Canvas right before drawing the gui
+        Widget was not given a parent when it was copied
+        SpinButton did not send mouse click callbacks
+        Link to Headers inside mac framework had an absolute path
+        Fixed scaling of form builder window
+        Limit the amount of visible items in the widget selector in form builder
+    - version: 8
+      date: 10 May 2015
+      changes: |
+        Fixed segfault during handleEvent in a rare situation
+        Removed warnings in ListBox when index was too high
+        References from getWidgets and getWidgetNames should be const
+        Worked around a syntax error when using SWIG (<a href="https://github.com/texus/TGUI/issues/37">#37</a>)
+    - version: 7
+      date: 7 February 2015
+      changes: |
+        Added support for frameworks on mac os x
+        Added setTextStyle and getTextStyle to Label
+        Allow widget changes before they are added to the gui
+        Completely cache theme files on first access
+        Fixed loading/saving in form builder on mac os x
+        Fixed potential crash in VS2012
+    - version: 6
+      date: 21 September 2014
+      changes: |
+        Cache theme files for faster loading
+        Added method to load a Picture from an sf::Texture
+        You can no longer try to copy the Gui object
+        First selected newline in TextBox wasn't being copied with ctlr+c
+        Fixed variable in ListBox not being copied
+        Dragging events were not passed through container widgets
+        List from ComboBox did not shrink when removing items
+        Fixed crash when removing widget in a specific situation
+    - version: 5
+      date: 13 August 2014
+      changes: |
+        Added FindTGUI.cmake
+        Added recursive search with widget name
+        Text can now be selected with ctrl+A
+        Lines in ChatBox can now start from bottom
+        Worked around bug in SFML 2.1 in Label
+        Fixed bug in ChatBox with displaying some lines
+        Fixed panel keeping hover state of widget
+        Fixed potential crash when removing a widget
+        Fixed bug with saving and loading in form builder
+    - version: 4
+      date: 28 June 2014
+      changes: |
+        Improved auto-sizing of text
+        Allow rendering to a RenderTarget
+        On windows the system clipboard will be used
+        ListBox and ComboBox now have ids for their items
+        ListBox and ComboBox now have methods to change items
+        Fixed crash in TextBox when no font was set
+        Fixed crash in EditBox when LimitTextWidth was set
+        ScrollAmount now also taken into account when using the mouse wheel
+        Title text in ChildWindow wasn't vertically centered
+        Theme files edited on windows couldn't be loaded on unix
+        ListBox::setSelectedItem should move the scrollbar if needed
+        ChatBox didn't display correctly when text got split over multiple lines
+    - version: 3
+      date: 11 April 2014
+      changes: |
+        Added canvas widget to render sfml inbetween tgui widgets
+        Add a function to TextBox to make it read-only
+        Clipboard calculations didn't take viewport into account
+        Fixed Tab text being wrongly clipped when tab width is too small
+        BabyBlue theme didn't use correct EditBox images
+        SharedWidgetPtr class was lacking a working == and != operator
+    - version: 2
+      date: 14 March 2014
+      changes: |
+        Fixed potential bug in setMaximum and setMinimum in Slider and Knob
+        Fixed Knob widget not being displayed correctly when scaled
+        Fixed invisible title bar of child window when setSize was not called
+    - version: 1
+      date: 9 February 2014
+      changes: |
+        Made several fixes to Scrollbar
+        Checkbox now inherits from RadioButton instead of the other way around
+        Text was also being selected in TextBox when clicking on the scrollbar
+        Some fonts didn't display all lines in ChatBox
+        Allow setting a default text color in ChatBox and passing different parameters to addLine
+        Allow setting the line spacing in ChatBox
+        Added a resetView parameter to handleEvent and set the default value on true (for draw function as well)
+        Implemented getFullSize and thus changed behavior of getSize
+        The TabKeyUsageEnabled property should now be accessed through a function call
+        Implemented setResourcePath function to load everything from a relative path
+        Support clang on linux
+    - version: 0
+      date: 16 January 2014
+      changes: |
+        Many things changed, no list of changes was maintained.
+  - version: 5
+    patches:
+    - version: 2
+      date: 17 May 2013
+      changes: |
+        Added ChatBox class.
+        Fixed a bug in LoadingBar when minimum wasn't 0.
+        Fixed a bug in slider when calling setVerticalScroll after setSize.
+    - version: 1
+      date: 8 February 2013
+      changes: |
+        Added support for changing the title alignment in ChildWindow.
+        Fixed a minor bug with unfocusing objects.
+        Fixed a small bug in the CMake script.
+    - version: 0
+      date: 23 December 2012
+      changes: |
+        New objects: ChildWindow, AnimatedPicture, SpinButton, Tab, Grid and more.
+        Changed the add, get and copy functions from Group. This allows creating custom objects.
+        Serious speed increase, especially with many objects or with ListBox, ComboBox and Label.
+        ComboBox::load now also takes the height as parameter.
+        EditBox and TextBox take the selection point color as extra parameter in changeColors.
+        Improved documentation and tutorials.
+        Panel can optionally load a background image.
+        Objects in panel can now be focused with the tab key.
+        You can now choose to only draw part of the label.
+        Label has an optional background color.
+        Double clicking in EditBox and TextBox now selects the text.
+        Panel and ChildWindow can also load their objects from the Object Files.
+        You can choose to disable the tab key usage.
+        An easy install script was added for linux users.
+        A LoadingBar can now have text on top of it.
+        Callback now contains a pointer to the object.
+        Unicode support through the use of sf::String.
+        Many bug fixes.
+  - version: 4
+    patches:
+    - version: 2
+      date: 16 July 2012
+      changes: |
+        Bug fix: ComboBox wasn't responding correctly when scaled.
+        Bug fix: ComboBox wasn't rendered correctly when using a scrollbar.
+    - version: 1
+      date: 15 July 2012
+      changes: |
+        Bug fix: Slider caused a runtime error on windows.
+        Bug fix: Objects didn't behave correctly when the view was changed.
+        Bug fix: When all the objects were hidding, the first one was still drawn.
+    - version: 0
+      date: 13 July 2012
+      changes: |
+        New objects: Panel, TextBox and SpriteSheet.
+        Objects can be moved to the back or to the front.
+        Scrolling in listbox has been improved (you can now set the scrollbar between two items).
+        The images used in Checkbox can now have a different size.
+        Hover images no longer have to be semi-transparent.
+        Text width can now be limited in EditBox.
+        A maximum item limit was added in ComboBox.
+        You can now disable objects.
+        Many bug fixes.
+  - version: 3
+    patches:
+    - version: 7
+      date: 5 April 2012
+      changes: |
+        Mac OS X is now supported (no libraries yet, but the source code can be used)
+        Changing the global font no longer changes the font of already existing objects.
+        You can now change the global font directly, the setGlobalFont function was removed.
+        All objects now have a getSize and getScaledSize function.
+        Label now sends a callback on click.
+        You have an option too keep the scrollbar visible, even if you can't scroll.
+        Bug fix: The getText function of EditBox returned a sf::String instead of an std::string.
+        Bug fix: Arrow keys were not repeated in EditBox.
+        Bug fix: Texture rect was not updated when calling the load function again.
+        Bug fix: Callback from Picture didn't work with scaling.
+        Bug fix: EditBox and ListBox hung when image was too small.
+        Bug fix: Alpha value in colors was sometimes wrong.
+        Bug fix: The displayed text in EditBox was wrong when calling setMaximumCharacters.
+        Bug fix: ComboBox caused a crash when image was too small.
+    - version: 6
+      date: 13 March 2012
+      changes: |
+        A new object: Label.
+        Bug fix: The draw function was overriding the one from sfml, it is now called drawGUI.
+    - version: 5
+      date: 12 March 2012
+      changes: |
+        The 'm_' prefix was dropped on public members.
+        Picture now has a click callback.
+        The background color of the selected text is now different when the EditBox is not focused.
+        EditBox now also sends a callback when the return key was pressed.
+        A new object: Panel.
+        Bug fix: The text on the button was sometimes blurry with fixed text size.
+        Bug fix: The arrow of ComboBox kept pointing down when the list was shown.
+    - version: 4
+      date: 10 March 2012
+      changes: |
+        setSize function added to all gui objects. It is recommended over the SetScale function.
+        You can now change the font of EditBox, ListBox and ComboBox.
+        A setGlobalFont function was added to Panel (also to Window) to set the font of all the objects.
+        You can now add CallbackID to any object that is loaded from a file.
+        A horizontal scrollbar has been added.
+        Bug fix: Objects behind a picture still received events.
+        Bug fix: Thumb position of Scrollbar was wrong while scaling.
+        Bug fix: The program crashed after calling removeAllObjects.
+    - version: 3
+      date: 6 March 2012
+      changes: |
+        Scrolling was added in EditBox, there is no more text width limit by default.
+        You can now get the colors that are used in EditBox, Listbox and ComboBox.
+        You can now select an item in ListBox with the new setSelectedItem function.
+        You can now use the scrollbar.
+        Panels can now be used, which means that you can create multiple groups of linked radio buttons.
+        You can now load all the objects (except Panel) from a file.
+        Except for the .lib and .so files, I have included .a files.
+        Bug fix: You couldn't call setBorders after setText in EditBox.
+        Bug fix: Changing the maximum items and the item height in ListBox didn't work properly.
+        Bug fix: Scrollbar didn't receive the mouse up event when releasing the mouse on ListBox.
+        Bug fix: Calling a load function with an empty string made the program crash.
+    - version: 2
+      date: 20 February 2012
+      changes: |
+        ComboBox was added
+        Bug fixes in EditBox, ListBox and Scrollbar
+    - version: 1
+      date: 15 February 2012
+      changes: |
+        Namespace was changed to lowercase.
+        A setVerticalScroll function for changing m_VerticalScroll indirectly.
+        Changed the name from setTextColors to changeColors inside EditBox to conform with the ListBox.
+        Small bug fixes in EditBox and Listbox.
+        Fixed wrong behavior of scrollbar.
+        Colors of objects were changed to fit better with each other.
+    - version: 0
+      date: 12 February 2012
+      changes: |
+        First public release.
 ---
-<div>
-    <h3 id="0.7.2">TGUI 0.7.2 <span class="ChangelogDate">(2 December 2016)</span></h3>
-    <ul>
-        <li>EditBox did not send a TextChanged signal when pressing ctrl+X</li>
-        <li>Added optional maximize and minimize buttons to ChildWindow (<a href="https://github.com/texus/TGUI/pull/61">#61</a>)</li>
-        <li>Calling Picture::setTexture yourself now works properly</li>
-        <li>Added optional parameter to Widget::disable to let mouse events pass through to the widgets behind it</li>
-        <li>ChatBox didn't scroll down automatically when size was not a multiple of item heigh</li>
-        <li>Clipping in ChatBox did not take padding into account</li>
-        <li>Mouse wheel scroll on top of combo box changed the item internally but did not display the new item</li>
-        <li>When ComboBox was destroyed while the list was still open then the list remained visible</li>
-        <li>Fixed invalid memory reads when widget gets destroyed from inside a callback function</li>
-        <li>Allow the ChildWindow to have maximum and minimum sizes (<a href="https://github.com/texus/TGUI/pull/64">#64</a>)</li>
-        <li>Removed support for 32-bit on OS X</li>
-        <li>Fixed texture rotation in some rare cases</li>
-        <li>Menus in MenuBar didn't stay open when the menu bar was added inside a Panel</li>
-        <li>Added EditBox::getCaretPosition</li>
-        <li>Fixed clipping issues when not using the default view</li>
-        <li>getAbsolutePosition no longer takes the position of the gui view into account</li>
-    </ul>
-</div>
+<style>
+a.ChangelogLink {
+    color: #000;
+    text-decoration: none;
+}
+</style>
 
-<div>
-    <h3 id="0.7.1">TGUI 0.7.1 <span class="ChangelogDate">(12 June 2016)</span></h3>
-    <ul>
-        <li>Picture can now be loaded from a part of an sf::Texture</li>
-        <li>Any texture in any widget can now be set to an sf::Texture</li>
-        <li>Optimized adding lines to ChatBox</li>
-        <li>You can now pass <i>const char*</i> directly to layout (instead of needing std::string)</li>
-        <li>Panel widgets can now have borders around them</li>
-        <li>Setting texture color did not work when using transparent widgets</li>
-        <li>Passing std::bind expression as parameter to the connect function did not work on VS2013</li>
-        <li>Fixed tab key not working for widgets inside several containers</li>
-        <li>Fixed crash in Signal class under specific circumstances</li>
-    </ul>
-</div>
+{% for major in page.changelog %}
+  {% for minor in major.minors %}
+    {% for patch in minor.patches %}
+    <div>
+      {% capture version %}0.{{minor.version}}.{{patch.version}}{% endcapture %}
+      <h3 id="{{version}}"><a class="ChangelogLink" href="#{{version}}">TGUI {{version}}</a> <span class="ChangelogDate">({{patch.date}})</span></h3>
+      <ul>
+        {% assign changes = patch.changes | newline_to_br | strip_newlines | split: '<br />' %}
+        {% for change in changes %}
+          <li>{{change}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
 
-<div>
-    <h3 id="0.7.0">TGUI 0.7.0 <span class="ChangelogDate">(4 April 2016)</span></h3>
-    <ul>
-        <li>Experimental Android and iOS support</li>
-        <li>Layout system for relative sizes and positions</li>
-        <li>Rewritten callback system</li>
-        <li>New loading system to share theme between widgets and allow customizing loading steps</li>
-        <li>Exceptions are now used for error handing</li>
-        <li>No longer only textured widgets, also colored widgets which do not need external files</li>
-        <li>Many, many more changes</li>
-    </ul>
-</div>
-
-<hr>
-
-<div>
-    <h3 id="0.6.10">TGUI 0.6.10 <span class="ChangelogDate">(24 January 2016)</span></h3>
-    <ul>
-        <li>Improved vertical text alignment in ListBox</li>
-        <li>Fixed RadioButton images being used when CheckBox was loaded from widget file</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.9">TGUI 0.6.9 <span class="ChangelogDate">(11 July 2015)</span></h3>
-    <ul>
-        <li>Allow loading custom sections in theme files</li>
-        <li>Smooth scrolling in Slider and Scrollbar</li>
-        <li>Added setAlignment function to EditBox</li>
-        <li>Fixed clipping when drawing on Canvas right before drawing the gui</li>
-        <li>Widget was not given a parent when it was copied</li>
-        <li>SpinButton did not send mouse click callbacks</li>
-        <li>Link to Headers inside mac framework had an absolute path</li>
-        <li>Fixed scaling of form builder window</li>
-        <li>Limit the amount of visible items in the widget selector in form builder</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.8">TGUI 0.6.8 <span class="ChangelogDate">(10 May 2015)</span></h3>
-    <ul>
-        <li>Fixed segfault during handleEvent in a rare situation</li>
-        <li>Removed warnings in ListBox when index was too high</li>
-        <li>References from getWidgets and getWidgetNames should be const</li>
-        <li>Worked around a syntax error when using SWIG (<a href="https://github.com/texus/TGUI/issues/37">#37</a>)</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.7">TGUI 0.6.7 <span class="ChangelogDate">(7 February 2015)</span></h3>
-    <ul>
-        <li>Added support for frameworks on mac os x</li>
-        <li>Added setTextStyle and getTextStyle to Label</li>
-        <li>Allow widget changes before they are added to the gui</li>
-        <li>Completely cache theme files on first access</li>
-        <li>Fixed loading/saving in form builder on mac os x</li>
-        <li>Fixed potential crash in VS2012</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.6">TGUI 0.6.6 <span class="ChangelogDate">(21 September 2014)</span></h3>
-    <ul>
-        <li>Cache theme files for faster loading</li>
-        <li>Added method to load a Picture from an sf::Texture</li>
-        <li>You can no longer try to copy the Gui object</li>
-        <li>First selected newline in TextBox wasn't being copied with ctlr+c</li>
-        <li>Fixed variable in ListBox not being copied</li>
-        <li>Dragging events were not passed through container widgets</li>
-        <li>List from ComboBox did not shrink when removing items</li>
-        <li>Fixed crash when removing widget in a specific situation</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.5">TGUI 0.6.5 <span class="ChangelogDate">(13 August 2014)</span></h3>
-    <ul>
-        <li>Added FindTGUI.cmake</li>
-        <li>Added recursive search with widget name</li>
-        <li>Text can now be selected with ctrl+A</li>
-        <li>Lines in ChatBox can now start from bottom</li>
-        <li>Worked around bug in SFML 2.1 in Label</li>
-        <li>Fixed bug in ChatBox with displaying some lines</li>
-        <li>Fixed panel keeping hover state of widget</li>
-        <li>Fixed potential crash when removing a widget</li>
-        <li>Fixed bug with saving and loading in form builder</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.4">TGUI 0.6.4 <span class="ChangelogDate">(28 June 2014)</span></h3>
-    <ul>
-        <li>Improved auto-sizing of text</li>
-        <li>Allow rendering to a RenderTarget</li>
-        <li>On windows the system clipboard will be used</li>
-        <li>ListBox and ComboBox now have ids for their items</li>
-        <li>ListBox and ComboBox now have methods to change items</li>
-        <li>Fixed crash in TextBox when no font was set</li>
-        <li>Fixed crash in EditBox when LimitTextWidth was set</li>
-        <li>ScrollAmount now also taken into account when using the mouse wheel</li>
-        <li>Title text in ChildWindow wasn't vertically centered</li>
-        <li>Theme files edited on windows couldn't be loaded on unix</li>
-        <li>ListBox::setSelectedItem should move the scrollbar if needed</li>
-        <li>ChatBox didn't display correctly when text got split over multiple lines</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.3">TGUI 0.6.3 <span class="ChangelogDate">(11 April 2014)</span></h3>
-    <ul>
-        <li>Added canvas widget to render sfml inbetween tgui widgets</li>
-        <li>Add a function to TextBox to make it read-only</li>
-        <li>Clipboard calculations didn't take viewport into account</li>
-        <li>Fixed Tab text being wrongly clipped when tab width is too small</li>
-        <li>BabyBlue theme didn't use correct EditBox images</li>
-        <li>SharedWidgetPtr class was lacking a working == and != operator</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.2">TGUI 0.6.2 <span class="ChangelogDate">(14 March 2014)</span></h3>
-    <ul>
-        <li>Fixed potential bug in setMaximum and setMinimum in Slider and Knob</li>
-        <li>Fixed Knob widget not being displayed correctly when scaled</li>
-        <li>Fixed invisible title bar of child window when setSize was not called</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.1">TGUI 0.6.1 <span class="ChangelogDate">(9 February 2014)</span></h3>
-    <ul>
-        <li>Made several fixes to Scrollbar</li>
-        <li>Checkbox now inherits from RadioButton instead of the other way around</li>
-        <li>Text was also being selected in TextBox when clicking on the scrollbar</li>
-        <li>Some fonts didn't display all lines in ChatBox</li>
-        <li>Allow setting a default text color in ChatBox and passing different parameters to addLine</li>
-        <li>Allow setting the line spacing in ChatBox</li>
-        <li>Added a resetView parameter to handleEvent and set the default value on true (for draw function as well)</li>
-        <li>Implemented getFullSize and thus changed behavior of getSize</li>
-        <li>The TabKeyUsageEnabled property should now be accessed through a function call</li>
-        <li>Implemented setResourcePath function to load everything from a relative path</li>
-        <li>Support clang on linux
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.6.0">TGUI 0.6.0 <span class="ChangelogDate">(16 January 2014)</span></h3>
-    <ul>
-        <li>Many things changed, no list of changes was maintained.</li>
-    </ul>
-</div>
-
-<hr>
-
-<div>
-    <h3 id="0.5.2">TGUI 0.5.2 <span class="ChangelogDate">(17 May 2013)</span></h3>
-    <ul>
-        <li>Added ChatBox class.</li>
-        <li>Fixed a bug in LoadingBar when minimum wasn't 0.</li>
-        <li>Fixed a bug in slider when calling setVerticalScroll after setSize.</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.5.1">TGUI 0.5.1 <span class="ChangelogDate">(8 February 2013)</span></h3>
-    <ul>
-        <li>Added support for changing the title alignment in ChildWindow.</li>
-        <li>Fixed a minor bug with unfocusing objects.</li>
-        <li>Fixed a small bug in the CMake script.</li>
-    </ul>
-
-</div>
-
-<div>
-    <h3 id="0.5">TGUI 0.5 <span class="ChangelogDate">(23 December 2012)</span></h3>
-    <ul>
-        <li>New objects: ChildWindow, AnimatedPicture, SpinButton, Tab, Grid and more.</li>
-        <li>Changed the add, get and copy functions from Group. This allows creating custom objects.</li>
-        <li>Serious speed increase, especially with many objects or with ListBox, ComboBox and Label.</li>
-        <li>ComboBox::load now also takes the height as parameter.</li>
-        <li>EditBox and TextBox take the selection point color as extra parameter in changeColors.</li>
-        <li>Improved documentation and tutorials.</li>
-        <li>Panel can optionally load a background image.</li>
-        <li>Objects in panel can now be focused with the tab key.</li>
-        <li>You can now choose to only draw part of the label.</li>
-        <li>Label has an optional background color.</li>
-        <li>Double clicking in EditBox and TextBox now selects the text.</li>
-        <li>Panel and ChildWindow can also load their objects from the Object Files.</li>
-        <li>You can choose to disable the tab key usage.</li>
-        <li>An easy install script was added for linux users.</li>
-        <li>A LoadingBar can now have text on top of it.</li>
-        <li>Callback now contains a pointer to the object.</li>
-        <li>Unicode support through the use of sf::String.</li>
-        <li>Many bug fixes.</li>
-    </ul>
-</div>
-
-<hr>
-
-<div>
-    <h3 id="0.4.2">TGUI 0.4.2 <span class="ChangelogDate">(16 July 2012)</span></h3>
-    <ul>
-        <li>Bug fix: ComboBox wasn't responding correctly when scaled.</li>
-        <li>Bug fix: ComboBox wasn't rendered correctly when using a scrollbar.</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.4.1">TGUI 0.4.1 <span class="ChangelogDate">(15 July 2012)</span></h3>
-    <ul>
-        <li>Bug fix: Slider caused a runtime error on windows.</li>
-        <li>Bug fix: Objects didn't behave correctly when the view was changed.</li>
-        <li>Bug fix: When all the objects were hidding, the first one was still drawn.</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.4">TGUI 0.4 <span class="ChangelogDate">(13 July 2012)</span></h3>
-    <ul>
-        <li>New objects: Panel, TextBox and SpriteSheet.</li>
-        <li>Objects can be moved to the back or to the front.</li>
-        <li>Scrolling in listbox has been improved (you can now set the scrollbar between two items).</li>
-        <li>The images used in Checkbox can now have a different size.</li>
-        <li>Hover images no longer have to be semi-transparent.</li>
-        <li>Text width can now be limited in EditBox.</li>
-        <li>A maximum item limit was added in ComboBox.</li>
-        <li>You can now disable objects.</li>
-        <li>Many bug fixes.</li>
-    </ul>
-</div>
-
-<hr>
-
-<div>
-    <h3 id="0.3.7">TGUI 0.3.7 <span class="ChangelogDate">(5 April 2012)</span></h3>
-    <ul>
-        <li>Mac OS X is now supported (no libraries yet, but the source code can be used)</li>
-        <li>Changing the global font no longer changes the font of already existing objects.</li>
-        <li>You can now change the global font directly, the setGlobalFont function was removed.</li>
-        <li>All objects now have a getSize and getScaledSize function.</li>
-        <li>Label now sends a callback on click.</li>
-        <li>You have an option too keep the scrollbar visible, even if you can't scroll.<br></li>
-        <li>Bug fix: The getText function of EditBox returned a sf::String instead of an std::string.</li>
-        <li>Bug fix: Arrow keys were not repeated in EditBox.</li>
-        <li>Bug fix: Texture rect was not updated when calling the load function again.</li>
-        <li>Bug fix: Callback from Picture didn't work with scaling.</li>
-        <li>Bug fix: EditBox and ListBox hung when image was too small.</li>
-        <li>Bug fix: Alpha value in colors was sometimes wrong.</li>
-        <li>Bug fix: The displayed text in EditBox was wrong when calling setMaximumCharacters.</li>
-        <li>Bug fix: ComboBox caused a crash when image was too small.</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.3.6">TGUI 0.3.6 <span class="ChangelogDate">(13 March 2012)</span></h3>
-    <ul>
-        <li>A new object: Label.</li>
-        <li>Bug fix: The draw function was overriding the one from sfml, it is now called drawGUI.</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.3.5">TGUI 0.3.5 <span class="ChangelogDate">(12 March 2012)</span></h3>
-    <ul>
-        <li>The ‘m_' prefix was dropped on public members.</li>
-        <li>Picture now has a click callback.</li>
-        <li>The background color of the selected text is now different when the EditBox is not focused.</li>
-        <li>EditBox now also sends a callback when the return key was pressed.</li>
-        <li>A new object: Panel.<br></li>
-        <li>Bug fix: The text on the button was sometimes blurry with fixed text size.</li>
-        <li>Bug fix: The arrow of ComboBox kept pointing down when the list was shown.</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.3.4">TGUI 0.3.4 <span class="ChangelogDate">(10 March 2012)</span></h3>
-    <ul>
-        <li>setSize function added to all gui objects. It is recommended over the SetScale function.</li>
-        <li>You can now change the font of EditBox, ListBox and ComboBox.</li>
-        <li>A setGlobalFont function was added to Panel (also to Window) to set the font of all the objects.</li>
-        <li>You can now add CallbackID to any object that is loaded from a file.</li>
-        <li>A horizontal scrollbar has been added.<br></li>
-        <li>Bug fix: Objects behind a picture still received events.</li>
-        <li>Bug fix: Thumb position of Scrollbar was wrong while scaling.</li>
-        <li>Bug fix: The program crashed after calling removeAllObjects.</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.3.3">TGUI 0.3.3 <span class="ChangelogDate">(6 March 2012)</span></h3>
-    <ul>
-        <li>Scrolling was added in EditBox, there is no more text width limit by default.</li>
-        <li>You can now get the colors that are used in EditBox, Listbox and ComboBox.</li>
-        <li>You can now select an item in ListBox with the new setSelectedItem function.</li>
-        <li>You can now use the scrollbar.</li>
-        <li>Panels can now be used, which means that you can create multiple groups of linked radio buttons.</li>
-        <li>You can now load all the objects (except Panel) from a file.</li>
-        <li>Except for the .lib and .so files, I have included .a files.<br></li>
-        <li>Bug fix: You couldn't call setBorders after setText in EditBox.</li>
-        <li>Bug fix: Changing the maximum items and the item height in ListBox didn't work properly.</li>
-        <li>Bug fix: Scrollbar didn't receive the mouse up event when releasing the mouse on ListBox.</li>
-        <li>Bug fix: Calling a load function with an empty string made the program crash.</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.3.2">TGUI 0.3.2 <span class="ChangelogDate">(20 February 2012)</span></h3>
-    <ul>
-        <li>ComboBox was added</li>
-        <li>Bug fixes in EditBox, ListBox and Scrollbar</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.3.1">TGUI 0.3.1 <span class="ChangelogDate">(15 February 2012)</span></h3>
-    <ul>
-        <li>Namespace was changed to lowercase.</li>
-        <li>A setVerticalScroll function for changing m_VerticalScroll indirectly.</li>
-        <li>Changed the name from setTextColors to changeColors inside EditBox to conform with the ListBox.</li>
-        <li>Small bug fixes in EditBox and Listbox.</li>
-        <li>Fixed wrong behavior of scrollbar.</li>
-        <li>Colors of objects were changed to fit better with each other.</li>
-    </ul>
-</div>
-
-<div>
-    <h3 id="0.3">TGUI 0.3 <span class="ChangelogDate">(12 February 2012)</span></h3>
-    <ul>
-        <li>First public release.</li>
-    </ul>
-</div>
+    {% if forloop.last == false %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endfor %}
