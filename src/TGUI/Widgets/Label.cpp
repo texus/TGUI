@@ -349,7 +349,7 @@ namespace tgui
             if ((getSize().x <= outline.left + outline.right) || (getSize().y <= outline.top + outline.bottom))
                 return;
 
-            sf::Vector2f pos{m_bordersCached.left, m_bordersCached.top};
+            sf::Vector2f pos{outline.left, outline.top};
 
             if (m_verticalAlignment != VerticalAlignment::Top)
             {
