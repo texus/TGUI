@@ -218,4 +218,33 @@ TEST_CASE("[Label]")
 
         testSavingWidget("Label", label);
     }
+
+    SECTION("Draw")
+    {
+        label->setPosition(10, 5);
+        label->getRenderer()->setTextColor(sf::Color::Red);
+
+        SECTION("Simple")
+        {
+            TEST_DRAW_INIT(110, 40, label)
+            label->setText(L"Test gÊ");
+            label->setTextSize(24);
+            label->getRenderer()->setTextStyle(sf::Text::Style::Italic);
+            TEST_DRAW("Label_Simple.png")
+        }
+
+        SECTION("Complex")
+        {
+            TEST_DRAW_INIT(420, 215, label)
+            label->setText("Bacon ipsum dolor amet alcatra jerky turkey ball tip jowl beef. Shank landjaeger frankfurter, doner burgdoggen strip steak chicken pancetta jowl. Pork loin leberkas meatloaf ham shoulder cow hamburger pancetta. Rump turducken ribeye salami pork chop sirloin. Leberkas alcatra filet mignon jerky pork belly.");
+            label->setTextSize(18);
+            label->setSize(400, 205);
+            label->getRenderer()->setBackgroundColor(sf::Color::Blue);
+            label->getRenderer()->setBorderColor(sf::Color::Yellow);
+            label->getRenderer()->setBorders({1, 2, 3, 4});
+            label->getRenderer()->setPadding({4, 3, 2, 1});
+            label->getRenderer()->setOpacity(0.6f);
+            TEST_DRAW("Label_Complex.png")
+        }
+    }
 }

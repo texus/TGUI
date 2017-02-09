@@ -97,4 +97,12 @@ TEST_CASE("[ClickableWidget]")
     {
         testSavingWidget("ClickableWidget", widget, false);
     }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(60, 50, widget)
+        widget->setPosition(15, 10);
+        widget->setSize(25, 20);
+        TEST_DRAW("ClickableWidget.png")
+    }
 }
