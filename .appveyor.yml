@@ -89,7 +89,7 @@ install:
       7z x SFML-Win64.zip > nul &&
       mkdir %SFML_ROOT%\Win64 &&
       move SFML-%SFML_VERSION% %SFML_ROOT%\Win64\ > nul
-    )
+    ) &&
     appveyor-retry choco install doxygen.portable
   )
 
