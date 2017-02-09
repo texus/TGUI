@@ -765,11 +765,13 @@ namespace tgui
                              sf::Vector2f size,
                              sf::Color color) const
     {
+        color = Color::calcColorOpacity(color, m_opacityCached);
+
         // If size is too small then draw entire size as border
         if ((size.x <= borders.left + borders.right) || (size.y <= borders.top + borders.bottom))
         {
             sf::RectangleShape border;
-            border.setFillColor(Color::calcColorOpacity(color, m_opacityCached));
+            border.setFillColor(color);
             border.setSize({size.x, size.y});
             target.draw(border, states);
         }
