@@ -28,7 +28,7 @@
 TEST_CASE("[Scrollbar]")
 {
     tgui::Scrollbar::Ptr scrollbar = tgui::Scrollbar::create();
-    scrollbar->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    scrollbar->getRenderer()->setFont("resources/DejaVuSans.ttf");
     scrollbar->setMaximum(20);
     scrollbar->setLowValue(5);
     scrollbar->setValue(10);

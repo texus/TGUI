@@ -28,7 +28,7 @@
 TEST_CASE("[Canvas]")
 {
     tgui::Canvas::Ptr canvas = tgui::Canvas::create();
-    canvas->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("WidgetType")
     {

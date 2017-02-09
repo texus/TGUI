@@ -29,7 +29,7 @@
 TEST_CASE("[MenuBar]")
 {
     tgui::MenuBar::Ptr menuBar = tgui::MenuBar::create();
-    menuBar->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    menuBar->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

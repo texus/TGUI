@@ -75,7 +75,7 @@ TEST_CASE("[Text]")
 
     SECTION("Size")
     {
-        text.setFont("resources/DroidSansArmenian.ttf");
+        text.setFont("resources/DejaVuSans.ttf");
 
         SECTION("Calculation")
         {
@@ -126,12 +126,12 @@ TEST_CASE("[Text]")
             text.setString(L"Êg");
 
             tgui::Text text2;
-            text2.setFont("resources/DroidSansArmenian.ttf");
+            text2.setFont("resources/DejaVuSans.ttf");
             text2.setString(".");
             REQUIRE(text.getSize().y == text2.getSize().y);
 
             tgui::Text text3;
-            text3.setFont("resources/DroidSansArmenian.ttf");
+            text3.setFont("resources/DejaVuSans.ttf");
             REQUIRE(text.getSize().y == text3.getSize().y);
         }
     }

@@ -29,7 +29,7 @@
 TEST_CASE("[Panel]")
 {
     tgui::Panel::Ptr panel = tgui::Panel::create();
-    panel->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    panel->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

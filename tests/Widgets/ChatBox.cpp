@@ -28,7 +28,7 @@
 TEST_CASE("[ChatBox]")
 {
     tgui::ChatBox::Ptr chatBox = tgui::ChatBox::create();
-    chatBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    chatBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("WidgetType")
     {
@@ -49,8 +49,8 @@ TEST_CASE("[ChatBox]")
 
     SECTION("Adding lines")
     {
-        std::shared_ptr<sf::Font> font1 = tgui::Font{"resources/DroidSansArmenian.ttf"}.getFont();
-        std::shared_ptr<sf::Font> font2 = tgui::Font{"resources/DroidSansArmenian.ttf"}.getFont();
+        std::shared_ptr<sf::Font> font1 = tgui::Font{"resources/DejaVuSans.ttf"}.getFont();
+        std::shared_ptr<sf::Font> font2 = tgui::Font{"resources/DejaVuSans.ttf"}.getFont();
 
         chatBox->setTextColor(sf::Color::Black);
         chatBox->setTextSize(24);
@@ -172,8 +172,8 @@ TEST_CASE("[ChatBox]")
 
     SECTION("Get unexisting line")
     {
-        std::shared_ptr<sf::Font> font1 = tgui::Font{"resources/DroidSansArmenian.ttf"}.getFont();
-        std::shared_ptr<sf::Font> font2 = tgui::Font{"resources/DroidSansArmenian.ttf"}.getFont();
+        std::shared_ptr<sf::Font> font1 = tgui::Font{"resources/DejaVuSans.ttf"}.getFont();
+        std::shared_ptr<sf::Font> font2 = tgui::Font{"resources/DejaVuSans.ttf"}.getFont();
 
         chatBox->setTextColor(sf::Color::Yellow);
         chatBox->setTextSize(26);

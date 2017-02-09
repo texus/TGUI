@@ -28,7 +28,7 @@
 TEST_CASE("[Button]")
 {
     tgui::Button::Ptr button = tgui::Button::create();
-    button->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    button->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

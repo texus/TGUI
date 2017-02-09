@@ -28,7 +28,7 @@
 TEST_CASE("[Knob]")
 {
     tgui::Knob::Ptr knob = tgui::Knob::create();
-    knob->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    knob->getRenderer()->setFont("resources/DejaVuSans.ttf");
     knob->setMinimum(10);
     knob->setMaximum(20);
     knob->setValue(15);

@@ -28,7 +28,7 @@
 TEST_CASE("[ProgressBar]")
 {
     tgui::ProgressBar::Ptr progressBar = tgui::ProgressBar::create();
-    progressBar->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    progressBar->getRenderer()->setFont("resources/DejaVuSans.ttf");
     progressBar->setMinimum(10);
     progressBar->setMaximum(20);
     progressBar->setValue(15);

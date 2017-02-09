@@ -112,26 +112,26 @@ void testWidgetRenderer(tgui::WidgetRenderer* renderer)
         SECTION("set serialized property")
         {
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
-            REQUIRE_NOTHROW(renderer->setProperty("Font", "resources/DroidSansArmenian.ttf"));
+            REQUIRE_NOTHROW(renderer->setProperty("Font", "resources/DejaVuSans.ttf"));
         }
 
         SECTION("set object property")
         {
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
-            REQUIRE_NOTHROW(renderer->setProperty("Font", tgui::Font{"resources/DroidSansArmenian.ttf"}));
+            REQUIRE_NOTHROW(renderer->setProperty("Font", tgui::Font{"resources/DejaVuSans.ttf"}));
         }
 
         SECTION("functions")
         {
             renderer->setOpacity(0.8f);
-            renderer->setFont({"resources/DroidSansArmenian.ttf"});
+            renderer->setFont({"resources/DejaVuSans.ttf"});
         }
 
         REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
         REQUIRE(renderer->getProperty("Font").getFont() != nullptr);
 
         REQUIRE(renderer->getOpacity() == 0.8f);
-        REQUIRE(renderer->getFont().getId() == "resources/DroidSansArmenian.ttf");
+        REQUIRE(renderer->getFont().getId() == "resources/DejaVuSans.ttf");
 
         REQUIRE_THROWS_AS(renderer->setProperty("NonexistentProperty", ""), tgui::Exception);
     }

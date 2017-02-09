@@ -31,8 +31,8 @@ TEST_CASE("[Deserializer]")
 {
     SECTION("deserialize font")
     {
-        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "resources/DroidSansArmenian.ttf").getFont() != nullptr);
-        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "\"resources/DroidSansArmenian.ttf\"").getFont() != nullptr);
+        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "resources/DejaVuSans.ttf").getFont() != nullptr);
+        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "\"resources/DejaVuSans.ttf\"").getFont() != nullptr);
         REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "nullptr").getFont() == nullptr);
         REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "null").getFont() == nullptr);
     }

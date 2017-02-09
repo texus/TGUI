@@ -28,7 +28,7 @@
 TEST_CASE("[Slider]")
 {
     tgui::Slider::Ptr slider = tgui::Slider::create();
-    slider->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    slider->getRenderer()->setFont("resources/DejaVuSans.ttf");
     slider->setMinimum(10);
     slider->setMaximum(20);
     slider->setValue(15);

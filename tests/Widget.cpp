@@ -139,13 +139,13 @@ TEST_CASE("[Widget]")
         {
             REQUIRE(renderer->getFont() == nullptr);
 
-            renderer->setFont("resources/DroidSansArmenian.ttf");
+            renderer->setFont("resources/DejaVuSans.ttf");
 
             auto pairs = renderer->getPropertyValuePairs();
             REQUIRE(pairs["font"].getFont() != nullptr);
             REQUIRE(renderer->getProperty("font").getFont() != nullptr);
             REQUIRE(renderer->getFont() != nullptr);
-            REQUIRE(renderer->getFont().getId() == "resources/DroidSansArmenian.ttf");
+            REQUIRE(renderer->getFont().getId() == "resources/DejaVuSans.ttf");
 
             renderer->setFont(nullptr);
             REQUIRE(renderer->getFont() == nullptr);
@@ -171,12 +171,12 @@ TEST_CASE("[Widget]")
         SECTION("Clone")
         {
             renderer->setOpacity(0.5f);
-            renderer->setFont("resources/DroidSansArmenian.ttf");
+            renderer->setFont("resources/DejaVuSans.ttf");
 
             auto clonedRenderer = renderer->clone();
             REQUIRE(clonedRenderer != renderer->getData());
             REQUIRE(clonedRenderer->propertyValuePairs["opacity"].getNumber() == 0.5f);
-            REQUIRE(clonedRenderer->propertyValuePairs["font"].getFont().getId() == "resources/DroidSansArmenian.ttf");
+            REQUIRE(clonedRenderer->propertyValuePairs["font"].getFont().getId() == "resources/DejaVuSans.ttf");
         }
 
         // TODO: Other tests with the renderer class (e.g. sharing and copying a renderer when using multiple widgets)

@@ -28,7 +28,7 @@
 TEST_CASE("[ListBox]")
 {
     tgui::ListBox::Ptr listBox = tgui::ListBox::create();
-    listBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    listBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

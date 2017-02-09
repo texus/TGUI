@@ -33,7 +33,7 @@
 TEST_CASE("[CheckBox]")
 {
     tgui::CheckBox::Ptr checkBox = tgui::CheckBox::create();
-    checkBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    checkBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

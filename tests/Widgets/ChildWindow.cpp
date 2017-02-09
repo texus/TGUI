@@ -29,7 +29,7 @@
 TEST_CASE("[ChildWindow]")
 {
     tgui::ChildWindow::Ptr childWindow = tgui::ChildWindow::create();
-    childWindow->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    childWindow->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

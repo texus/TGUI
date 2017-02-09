@@ -33,7 +33,7 @@
 TEST_CASE("[RadioButton]")
 {
     tgui::RadioButton::Ptr radioButton = tgui::RadioButton::create();
-    radioButton->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    radioButton->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

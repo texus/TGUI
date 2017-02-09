@@ -29,7 +29,7 @@
 TEST_CASE("[SpinButton]")
 {
     tgui::SpinButton::Ptr spinButton = tgui::SpinButton::create();
-    spinButton->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    spinButton->getRenderer()->setFont("resources/DejaVuSans.ttf");
     spinButton->setMinimum(10);
     spinButton->setMaximum(20);
     spinButton->setValue(15);

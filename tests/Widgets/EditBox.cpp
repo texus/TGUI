@@ -28,7 +28,7 @@
 TEST_CASE("[EditBox]")
 {
     tgui::EditBox::Ptr editBox = tgui::EditBox::create();
-    editBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    editBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

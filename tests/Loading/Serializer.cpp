@@ -34,8 +34,8 @@ TEST_CASE("[Serializer]")
 
     SECTION("serialize font")
     {
-        tgui::Font font{"resources/DroidSansArmenian.ttf"};
-        REQUIRE(tgui::Serializer::serialize(font) == "\"resources/DroidSansArmenian.ttf\"");
+        tgui::Font font{"resources/DejaVuSans.ttf"};
+        REQUIRE(tgui::Serializer::serialize(font) == "\"resources/DejaVuSans.ttf\"");
 
         font = nullptr;
         REQUIRE(tgui::Serializer::serialize(font) == "null");

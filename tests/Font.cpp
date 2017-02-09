@@ -34,5 +34,5 @@ TEST_CASE("[Font]")
     REQUIRE(tgui::Font(nullptr).getFont() == nullptr);
     REQUIRE(tgui::Font(font1).getFont() != nullptr);
     REQUIRE(tgui::Font(font2).getFont() == font2);
-    REQUIRE(tgui::Font("resources/DroidSansArmenian.ttf").getFont() != nullptr);
+    REQUIRE(tgui::Font("resources/DejaVuSans.ttf").getFont() != nullptr);
 }

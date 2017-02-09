@@ -28,7 +28,7 @@
 TEST_CASE("[TextBox]")
 {
     tgui::TextBox::Ptr textBox = tgui::TextBox::create();
-    textBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    textBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

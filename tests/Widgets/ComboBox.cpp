@@ -29,7 +29,7 @@
 TEST_CASE("[ComboBox]")
 {
     tgui::ComboBox::Ptr comboBox = tgui::ComboBox::create();
-    comboBox->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    comboBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

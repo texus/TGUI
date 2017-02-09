@@ -28,7 +28,7 @@
 TEST_CASE("[Tabs]")
 {
     tgui::Tabs::Ptr tabs = tgui::Tabs::create();
-    tabs->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    tabs->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {

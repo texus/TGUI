@@ -23,10 +23,25 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "catch.hpp"
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <TGUI/Gui.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
+
+#define TEST_DRAW_INIT(width, height, widget) \
+            sf::RenderTexture target; \
+            target.create(width, height); \
+            tgui::Gui gui{target}; \
+            gui.add(widget);
+
+#define TEST_DRAW(filename) \
+            target.clear({25, 130, 10}); \
+            gui.draw(); \
+            target.display(); \
+            target.getTexture().copyToImage().saveToFile(filename);/* \
+            REQUIRE(compareFiles(filename, "expected/" filename));*/
 
 static const sf::Time DOUBLE_CLICK_TIMEOUT = sf::milliseconds(500);
 
@@ -49,7 +64,7 @@ void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool
     {
         tgui::Theme theme{"resources/Black.txt"};
         widget->setRenderer(theme.getRenderer(name));
-        widget->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+        widget->getRenderer()->setFont("resources/DejaVuSans.ttf");
     }
 
     auto parent = std::make_shared<tgui::GuiContainer>();

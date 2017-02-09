@@ -30,7 +30,7 @@
 TEST_CASE("[Label]")
 {
     tgui::Label::Ptr label = tgui::Label::create();
-    label->getRenderer()->setFont("resources/DroidSansArmenian.ttf");
+    label->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
     {
