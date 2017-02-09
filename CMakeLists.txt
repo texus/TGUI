@@ -46,7 +46,7 @@ project(tgui)
 # project version
 SET( MAJOR_VERSION 0 )
 SET( MINOR_VERSION 7 )
-SET( PATCH_VERSION 2 )
+SET( PATCH_VERSION 3 )
 
 # Disable deprecated warnings from SFML
 add_definitions(-DSFML_NO_DEPRECATED_WARNINGS)
