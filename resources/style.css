@@ -78,7 +78,7 @@ span.Blue {
 #navbar {
   position: absolute;
   background-color: #333333;
-  z-index: 900;
+  z-index: 10000; /* Get in front of documentation navigation bar */
   
   left: 0;
   top: 0;
