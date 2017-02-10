@@ -46,26 +46,19 @@ install:
 - IF "%SFML_VERSION%" == "master" (
     git clone --depth 1 https://github.com/SFML/SFML &&
     cd SFML &&
-    IF EXIST "%SFML_ROOT%\lib" (
-      IF EXIST "%SFML_ROOT%\revision_cache" (
-        git rev-parse HEAD > revision &&
-        fc revision "%SFML_ROOT%\revision_cache" > nul &&
-        IF errorlevel 0 (
-          echo Using cached SFML directory &&
-          goto skip_sfml_build
-        )
-      )
-      else (
-        echo Rebuilding SFML, cached version is out of date
+    IF EXIST "%SFML_ROOT%\lib" IF EXIST "%SFML_ROOT%\revision_cache" (
+      git rev-parse HEAD > revision &&
+      fc revision "%SFML_ROOT%\revision_cache" > nul &&
+      IF errorlevel 0 (
+        echo Using cached SFML directory
       )
     )
     else (
-      echo Rebuilding SFML, no cache available
-    ) &&
-    cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
-    cmake --build . --target install --config %BUILD_TYPE% -- /m &&
-    git rev-parse HEAD > "%SFML_ROOT%\revision_cache" &&
-    :skip_sfml_build
+      echo Rebuilding SFML, no cache available for latest version &&
+      cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+      cmake --build . --target install --config %BUILD_TYPE% -- /m &&
+      git rev-parse HEAD > "%SFML_ROOT%\revision_cache"
+    )
   )
   ELSE IF NOT "%SFML_ROOT%" == "C:\SFML" (
     IF NOT EXIST %SFML_ROOT% (
