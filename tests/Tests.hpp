@@ -36,12 +36,20 @@
             tgui::Gui gui{target}; \
             gui.add(widget);
 
-#define TEST_DRAW(filename) \
-            target.clear({25, 130, 10}); \
-            gui.draw(); \
-            target.display(); \
-            target.getTexture().copyToImage().saveToFile(filename); \
-            REQUIRE(compareFiles(filename, "expected/" filename));
+#ifdef TGUI_SKIP_DRAW_TESTS
+    #define TEST_DRAW(filename) \
+                target.clear({25, 130, 10}); \
+                gui.draw(); \
+                target.display(); \
+                target.getTexture().copyToImage().saveToFile(filename);
+#else
+    #define TEST_DRAW(filename) \
+                target.clear({25, 130, 10}); \
+                gui.draw(); \
+                target.display(); \
+                target.getTexture().copyToImage().saveToFile(filename); \
+                REQUIRE(compareFiles(filename, "expected/" filename));
+#endif
 
 static const sf::Time DOUBLE_CLICK_TIMEOUT = sf::milliseconds(500);
 

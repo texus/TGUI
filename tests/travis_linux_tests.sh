@@ -21,7 +21,7 @@ fi
 
 mkdir build_$CXX
 cd build_$CXX
-cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_TESTS=TRUE -DTGUI_USE_GCOV=TRUE ..
+CXXFLAGS="-DTGUI_SKIP_DRAW_TESTS" cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_TESTS=TRUE -DTGUI_USE_GCOV=TRUE ..
 make -j2
 cd tests/
 valgrind ./tests
