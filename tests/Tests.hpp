@@ -40,8 +40,8 @@
             target.clear({25, 130, 10}); \
             gui.draw(); \
             target.display(); \
-            target.getTexture().copyToImage().saveToFile(filename);/* \
-            REQUIRE(compareFiles(filename, "expected/" filename));*/
+            target.getTexture().copyToImage().saveToFile(filename); \
+            REQUIRE(compareFiles(filename, "expected/" filename));
 
 static const sf::Time DOUBLE_CLICK_TIMEOUT = sf::milliseconds(500);
 
