@@ -49,7 +49,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<ChatBoxRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize({200, 126});
         setTextSize(m_textSize);

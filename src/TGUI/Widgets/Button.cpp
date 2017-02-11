@@ -54,7 +54,7 @@ namespace tgui
         addSignal<sf::String>("Pressed");
 
         m_renderer = aurora::makeCopied<ButtonRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize(120, 30);
     }

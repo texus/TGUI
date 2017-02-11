@@ -55,7 +55,7 @@ namespace tgui
         addSignal<int>("Unchecked");
 
         m_renderer = aurora::makeCopied<RadioButtonRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize({24, 24});
     }

@@ -59,7 +59,7 @@ namespace tgui
         initListBox();
 
         m_renderer = aurora::makeCopied<ComboBoxRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize({150, 24});
     }

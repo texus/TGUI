@@ -144,7 +144,7 @@ namespace tgui
         if (it != m_renderers.end())
             return it->second;
 
-        m_renderers[lowercaseSecondary] = std::make_shared<RendererData>();
+        m_renderers[lowercaseSecondary] = RendererData::create();
         auto& properties = m_themeLoader->load(m_primary, lowercaseSecondary);
         for (const auto& property : properties)
             m_renderers[lowercaseSecondary]->propertyValuePairs[property.first] = ObjectConverter(property.second);

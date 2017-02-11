@@ -199,7 +199,7 @@ namespace tgui
                 /// TODO: Separate renderer section?
                 else if (toLower(childNode->name) == "renderer")
                 {
-                    auto rendererData = std::make_shared<RendererData>();
+                    auto rendererData = RendererData::create();
 
                     for (const auto& pair : childNode->propertyValuePairs)
                         rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile in VS2013 when just assigning "{pair.second->value}"

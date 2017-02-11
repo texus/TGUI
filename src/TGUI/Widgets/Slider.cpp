@@ -52,7 +52,7 @@ namespace tgui
         addSignal<int>("ValueChanged");
 
         m_renderer = aurora::makeCopied<SliderRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize(200, 16);
     }

@@ -58,7 +58,7 @@ namespace tgui
         addSignal<int>("ValueChanged");
 
         m_renderer = aurora::makeCopied<KnobRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize(140, 140);
     }

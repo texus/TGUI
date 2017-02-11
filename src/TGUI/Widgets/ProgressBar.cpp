@@ -51,7 +51,7 @@ namespace tgui
         addSignal<int>("Full");
 
         m_renderer = aurora::makeCopied<ProgressBarRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize(160, 20);
     }

@@ -52,7 +52,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<ScrollbarRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize(16, 160);
     }

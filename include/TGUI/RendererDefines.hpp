@@ -125,7 +125,7 @@
             return it->second.getRenderer(); \
         else \
         { \
-            m_data->propertyValuePairs[toLower(#NAME)] = {std::make_shared<RendererData>()}; \
+            m_data->propertyValuePairs[toLower(#NAME)] = {RendererData::create()}; \
             return m_data->propertyValuePairs[toLower(#NAME)].getRenderer(); \
         } \
     } \

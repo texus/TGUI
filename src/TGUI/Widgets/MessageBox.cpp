@@ -52,7 +52,7 @@ namespace tgui
         addSignal<sf::String>("ButtonPressed");
 
         m_renderer = aurora::makeCopied<MessageBoxRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         getRenderer()->getCloseButton()->propertyValuePairs["borders"] = {Borders{1}};
         getRenderer()->getMaximizeButton()->propertyValuePairs["borders"] = {Borders{1}};

@@ -51,7 +51,7 @@ namespace tgui
         addSignal<sf::String>("TabSelected");
 
         m_renderer = aurora::makeCopied<TabsRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setTabHeight(30);
     }

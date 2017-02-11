@@ -58,7 +58,7 @@ namespace tgui
         addSignal<sf::String>("TextChanged");
 
         m_renderer = aurora::makeCopied<TextBoxRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize({360, 189});
     }

@@ -41,9 +41,11 @@ namespace tgui
     {
         RendererData() = default;
 
-        RendererData(std::map<std::string, ObjectConverter> init) :
-            propertyValuePairs(init) // Did not compile in VS2013 when using braces
+        static std::shared_ptr<RendererData> create(const std::map<std::string, ObjectConverter>& init = {})
         {
+            auto data = std::make_shared<RendererData>();
+            data->propertyValuePairs = init;
+            return data;
         }
 
         std::map<std::string, ObjectConverter> propertyValuePairs;
@@ -217,7 +219,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::shared_ptr<RendererData> m_data = std::make_shared<RendererData>();
+        std::shared_ptr<RendererData> m_data = RendererData::create();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

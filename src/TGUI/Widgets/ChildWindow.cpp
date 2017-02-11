@@ -74,7 +74,7 @@ namespace tgui
         addSignal<ChildWindow::Ptr>("Maximized");
 
         m_renderer = aurora::makeCopied<ChildWindowRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         getRenderer()->getCloseButton()->propertyValuePairs["borders"] = {Borders{1}};
         getRenderer()->getMaximizeButton()->propertyValuePairs["borders"] = {Borders{1}};

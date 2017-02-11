@@ -50,7 +50,7 @@ namespace tgui
         addSignal<sf::String>("DoubleClicked");
 
         m_renderer = aurora::makeCopied<LabelRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

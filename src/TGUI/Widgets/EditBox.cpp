@@ -74,7 +74,7 @@ namespace tgui
         m_allowFocus = true;
 
         m_renderer = aurora::makeCopied<EditBoxRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize({240, 30});
     }

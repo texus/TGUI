@@ -59,7 +59,7 @@ namespace tgui
         addSignal<sf::String, TypeSet<sf::String, sf::String>>("DoubleClicked");
 
         m_renderer = aurora::makeCopied<ListBoxRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize({150, 154});
         setItemHeight(m_itemHeight);

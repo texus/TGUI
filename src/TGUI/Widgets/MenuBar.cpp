@@ -50,7 +50,7 @@ namespace tgui
         addSignal<std::vector<sf::String>, sf::String>("MenuItemClicked");
 
         m_renderer = aurora::makeCopied<MenuBarRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize({0, 20});
     }

@@ -361,7 +361,7 @@ namespace tgui
             if (node->propertyValuePairs.empty() && (node->children.size() == 1))
                 node = node->children[0];
 
-            auto rendererData = std::make_shared<RendererData>();
+            auto rendererData = RendererData::create();
             for (const auto& pair : node->propertyValuePairs)
                 rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile in VS2013 when just assigning "{pair.second->value}"
 

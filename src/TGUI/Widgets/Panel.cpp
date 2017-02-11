@@ -49,7 +49,7 @@ namespace tgui
         addSignal<sf::Vector2f>("Clicked");
 
         m_renderer = aurora::makeCopied<PanelRenderer>();
-        setRenderer(std::make_shared<RendererData>(defaultRendererValues));
+        setRenderer(RendererData::create(defaultRendererValues));
 
         setSize(size);
     }
