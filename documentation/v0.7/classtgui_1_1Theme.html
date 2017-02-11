@@ -63,7 +63,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.7.2</span>
+   &#160;<span id="projectnumber">0.7.3</span>
    </div>
   </td>
  </tr>
@@ -107,6 +107,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classtgui_1_1Theme-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">tgui::Theme Class Reference</div>  </div>
@@ -184,8 +185,11 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memdesc:a8a6a0cd9615c073b143189a6a1a82a4e inherit pub_methods_classtgui_1_1BaseTheme"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual function that gets called when a widget is connected to this theme.  <a href="classtgui_1_1BaseTheme.html#a8a6a0cd9615c073b143189a6a1a82a4e">More...</a><br /></td></tr>
 <tr class="separator:a8a6a0cd9615c073b143189a6a1a82a4e inherit pub_methods_classtgui_1_1BaseTheme"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a69959a2b8b1dfeae06b7f256e8fa3cbf"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtgui_1_1Theme.html#a6428ad1bf9c7b651f42e4863a91b82bf">Theme::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Theme.html#a69959a2b8b1dfeae06b7f256e8fa3cbf">create</a> (const std::string &amp;filename=&quot;&quot;)</td></tr>
+<tr class="memdesc:a69959a2b8b1dfeae06b7f256e8fa3cbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new theme instance.  <a href="#a69959a2b8b1dfeae06b7f256e8fa3cbf">More...</a><br /></td></tr>
+<tr class="separator:a69959a2b8b1dfeae06b7f256e8fa3cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_classtgui_1_1BaseTheme"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classtgui_1_1BaseTheme')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classtgui_1_1BaseTheme.html">tgui::BaseTheme</a></td></tr>
 <tr class="memitem:a6df0b3356afa3ef601518dbf8b8c52f2 inherit pub_static_methods_classtgui_1_1BaseTheme"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BaseTheme.html#a6df0b3356afa3ef601518dbf8b8c52f2">setConstructFunction</a> (const std::string &amp;type, const std::function&lt; <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>()&gt; &amp;constructor)</td></tr>
 <tr class="memdesc:a6df0b3356afa3ef601518dbf8b8c52f2 inherit pub_static_methods_classtgui_1_1BaseTheme"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the construct function of a specific widget type.  <a href="classtgui_1_1BaseTheme.html#a6df0b3356afa3ef601518dbf8b8c52f2">More...</a><br /></td></tr>
@@ -193,6 +197,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:af7e67bae705f027d34833220bebbc520 inherit pub_static_methods_classtgui_1_1BaseTheme"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BaseTheme.html#af7e67bae705f027d34833220bebbc520">setThemeLoader</a> (const std::shared_ptr&lt; <a class="el" href="classtgui_1_1BaseThemeLoader.html">BaseThemeLoader</a> &gt; &amp;themeLoader)</td></tr>
 <tr class="memdesc:af7e67bae705f027d34833220bebbc520 inherit pub_static_methods_classtgui_1_1BaseTheme"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the function that will load the widget theme data.  <a href="classtgui_1_1BaseTheme.html#af7e67bae705f027d34833220bebbc520">More...</a><br /></td></tr>
 <tr class="separator:af7e67bae705f027d34833220bebbc520 inherit pub_static_methods_classtgui_1_1BaseTheme"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_static_attribs_classtgui_1_1BaseTheme"><td colspan="2" onclick="javascript:toggleInherit('pro_static_attribs_classtgui_1_1BaseTheme')"><img src="closed.png" alt="-"/>&#160;Static Protected Attributes inherited from <a class="el" href="classtgui_1_1BaseTheme.html">tgui::BaseTheme</a></td></tr>
 <tr class="memitem:a11159db7392530214ecc982e9b0f55b8 inherit pro_static_attribs_classtgui_1_1BaseTheme"><td class="memItemLeft" align="right" valign="top"><a id="a11159db7392530214ecc982e9b0f55b8"></a>
 static std::map&lt; std::string, std::function&lt; <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>()&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BaseTheme.html#a11159db7392530214ecc982e9b0f55b8">m_constructors</a></td></tr>
@@ -251,6 +258,35 @@ static std::shared_ptr&lt; <a class="el" href="classtgui_1_1BaseThemeLoader.html
 
 <p>Clone the theme without its connected widgets. </p>
 <p>Any changes made on the returned theme will not have any impact on this theme and vice versa. </p>
+
+</div>
+</div>
+<a id="a69959a2b8b1dfeae06b7f256e8fa3cbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69959a2b8b1dfeae06b7f256e8fa3cbf">&sect;&nbsp;</a></span>create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classtgui_1_1Theme.html#a6428ad1bf9c7b651f42e4863a91b82bf">Theme::Ptr</a> tgui::Theme::create </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>filename</em> = <code>&quot;&quot;</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new theme instance. </p>
+<dl class="section return"><dt>Returns</dt><dd>The new theme </dd></dl>
 
 </div>
 </div>
@@ -717,7 +753,7 @@ static std::shared_ptr&lt; <a class="el" href="classtgui_1_1BaseThemeLoader.html
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Dec 3 2016 00:15:41 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Feb 8 2017 01:57:49 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.12
 </small></address>

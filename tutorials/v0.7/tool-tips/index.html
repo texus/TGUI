@@ -18,7 +18,7 @@ button->setToolTip(toolTip);
   <h3 id="special_tool_tip">Special tool tip</h3>
   <p class="SmallBottomMargin">But the tool tip does not has to be a label, it can be any widget. Here I used a Picture but you could also use a Panel and make the tool tip as complex as you want.</p>
 {% highlight c++ %}
-tgui::Picture::Ptr toolTip = std::make_shared<tgui::Picture>("image.png");
+tgui::Picture::Ptr toolTip = tgui::Picture::create("image.png");
 button->setToolTip(toolTip);
 {% endhighlight %}
   <img src="/resources/Tutorials/ToolTipPicture.jpg" alt="Tool Tip Picture" width="177" height="99" />

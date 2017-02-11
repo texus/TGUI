@@ -7,12 +7,12 @@ redirect_from: "/tutorials/v07/creating-widgets/index.html"
 <div>
 <h3 id="creating_widgets">Creating widgets</h3>
 <p>Creating a widget goes in two steps: creating it and adding it to its parent.</p>
-<p class="SmallBottomMargin">The widgets should always be used as shared pointers so you can just create one with std::make_shared.</p>
+<p class="SmallBottomMargin">Creating widgets is simple, just call the create function:</p>
 {% highlight c++ %}
-tgui::Button::Ptr button = std::make_shared<tgui::Button>();
+tgui::Button::Ptr button = tgui::Button::create();
 {% endhighlight %}
 
-<p>When creating a widget like that, they will make use of the build-in "White" theme. No external resources are needed for them and you have something on your screen immediately. Although you can customize the widgets by changing property by property, you probably want to <a href="../using-themes/">use themes</a> to give your widgets a different look. TGUI already ships with some theme files that you can load and use out of the box.</p>
+<p>When creating a widget like that, they will make use of the built-in "White" theme. No external resources are needed for them and you have something on your screen immediately. Although you can customize the widgets by changing property by property, you probably want to <a href="../using-themes/">use themes</a> to give your widgets a different look. TGUI already ships with some theme files that you can load and use out of the box.</p>
 
 <p class="SmallBottomMargin">The second step is to add the widget to its parent widget. Usually this is the Gui object, but it could also be e.g. a child window.</p>
 {% highlight c++ %}
@@ -26,8 +26,8 @@ gui.add(button2, "MyUniqueName");
 <p class="SmallBottomMargin">Once a widget is added to a parent widget (or directly to the gui), you no longer have to store it yourself, you can just let your pointer go out of scope. When you need it later you can always get it back from the parent widget. The name that the get function takes as parameter was the optional parameter of the add function.
 </p>
 {% highlight c++ %}
-tgui::Button::Ptr button = gui.get<tgui::Button>("MyUniqueName");
 tgui::Widget::Ptr widget = gui.get("MyWidgetName");
+tgui::Button::Ptr button = gui.get<tgui::Button>("MyUniqueName");
 {% endhighlight %}
 
 <p class="SmallBottomMargin">A common mistake is to call the get function on the wrong widget when you have a hierarchy. If you added the button to a child window, which was in turn added to the gui, then the gui will not know about the existence of the button. You should call the get function of the child window or you can alternatively do a recursive search from the gui if the name is unique:</p>

@@ -7,12 +7,12 @@ redirect_from: "/tutorials/v07/using-themes/index.html"
 <div>
   <p class="SmallBottomMargin">In the <a href="../creating-widgets/">creating widgets tutorial</a> you were shown that you can just create a widget without needing any resources.</p>
 {% highlight c++ %}
-tgui::EditBox::Ptr editBox = std::make_shared<tgui::EditBox>();
+tgui::EditBox::Ptr editBox = tgui::EditBox::create();
 {% endhighlight %}
 
   <p class="SmallBottomMargin">But you can of course completely change the look of your widgets. The first thing to do it creating a theme object. The following line will create the theme object based on the Black.txt theme file that is shipped with TGUI.</p>
 {% highlight c++ %}
-tgui::Theme::Ptr theme = std::make_shared<tgui::Theme>("TGUI/widgets/Black.txt");
+tgui::Theme::Ptr theme = tgui::Theme::create("TGUI/widgets/Black.txt");
 {% endhighlight %}
 
   <p class="SmallBottomMargin">The theme object now contains all the information needed to load your widgets. You choose the widget to load by passing the name of the section in the theme file. Unless you e.g. have multiple edit box skins in the same file you will most likely just use the name of the widget like it is done in Black.txt. To load the edit box you can now just write this:</p>

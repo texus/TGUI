@@ -7,6 +7,13 @@ changelog:
   minors:
   - version: 7
     patches:
+    - version: 3
+      date: 9 February 2017
+      changes: |
+        Added create function to widgets and Theme which is now the preferred way to construct them
+        Added setDefaultTextStyle to EditBoxRenderer
+        Touch events were not handled properly when not using the default view
+        Optimized EditBox::findCaretPosition
     - version: 2
       date: 2 December 2016
       changes: |

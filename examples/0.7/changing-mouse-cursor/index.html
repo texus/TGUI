@@ -32,7 +32,7 @@ int main()
     // Show the normal cursor by default
     sf::Sprite sprite(textureCursorNormal);
 
-    auto play = std::make_shared<tgui::Button>();
+    auto play = tgui::Button::create();
     play->setPosition(tgui::bindWidth(gui)*0.15, tgui::bindHeight(gui)*0.125);
     play->setSize(tgui::bindWidth(gui)*0.7, tgui::bindHeight(gui)*0.15);
     play->setText("Play");

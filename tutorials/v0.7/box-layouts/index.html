@@ -7,7 +7,7 @@ breadcrumb: box layouts
   <p>First of all, these box layout classes discussed here have no relation with the <a href="../layouts">Layout</a> class. The HorizontalLayout and VerticalLayout classes exist so that you can easily place widgets below or next each other without having to give them exact positions or sizes.</p>
   <p class="SmallBottomMargin">First you create the layout object and give it the size that you want the widgets to fill. Here the widgets will cover the entire width while having a height of 10% of the window.</p>
 {% highlight c++ %}
-tgui::HorizontalLayout::Ptr layout = std::make_shared<tgui::HorizontalLayout>();
+tgui::HorizontalLayout::Ptr layout = tgui::HorizontalLayout::create();
 layout->setSize(tgui::bindWidth(gui), 0.1f * tgui::bindHeight(gui));
 layout->setPosition(0, 100);
 gui.add(layout);
@@ -15,7 +15,7 @@ gui.add(layout);
 
   <p class="SmallBottomMargin">Let's add some widgets to the currently empty layout.</p>
 {% highlight c++ %}
-tgui::Button::Ptr button1 = std::make_shared<tgui::Button>();
+tgui::Button::Ptr button1 = tgui::Button::create();
 button1->setText("First");
 layout->add(button1);
 

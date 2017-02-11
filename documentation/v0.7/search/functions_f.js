@@ -46,6 +46,7 @@ var searchData=
   ['setcopycallback',['setCopyCallback',['../classtgui_1_1Texture.html#ac4ba6ca2d45b2dc6a4ebbfcace1e77b0',1,'tgui::Texture']]],
   ['setdefaulttext',['setDefaultText',['../classtgui_1_1EditBox.html#ad2d38b2a46950a2cbb1b721459a113f3',1,'tgui::EditBox']]],
   ['setdefaulttextcolor',['setDefaultTextColor',['../classtgui_1_1EditBoxRenderer.html#ab646ee5b69c102a60fb0e8b2c208b30b',1,'tgui::EditBoxRenderer']]],
+  ['setdefaulttextstyle',['setDefaultTextStyle',['../classtgui_1_1EditBoxRenderer.html#a26a77567a6dcb653d6ebe38755d37a17',1,'tgui::EditBoxRenderer']]],
   ['setdestructcallback',['setDestructCallback',['../classtgui_1_1Texture.html#a2c86591900554e80c396af648a3f4464',1,'tgui::Texture']]],
   ['setdistancetomouse',['setDistanceToMouse',['../classtgui_1_1ToolTip.html#a533931cfe2dca980fa11a157968d9da8',1,'tgui::ToolTip']]],
   ['setdistancetoside',['setDistanceToSide',['../classtgui_1_1ChildWindowRenderer.html#af8bda8eed1d8556f2aece629d419ece9',1,'tgui::ChildWindowRenderer::setDistanceToSide()'],['../classtgui_1_1MenuBarRenderer.html#a4860467e0ab918217d6f7c45a53825c5',1,'tgui::MenuBarRenderer::setDistanceToSide()'],['../classtgui_1_1TabRenderer.html#ad35d9874df676e47f1c095d56a1fb462',1,'tgui::TabRenderer::setDistanceToSide()']]],

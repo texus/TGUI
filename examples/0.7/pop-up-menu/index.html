@@ -21,7 +21,7 @@ void popupMenuCallback(std::string item)
 
 void rightClickCallback(tgui::Gui& gui, sf::Vector2f position)
 {
-    popumMenu = std::make_shared<tgui::ListBox>();
+    popumMenu = tgui::ListBox::create();
     popumMenu->addItem("Option 1");
     popumMenu->addItem("Option 2");
     popumMenu->addItem("Option 3");
