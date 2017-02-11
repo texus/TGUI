@@ -997,7 +997,12 @@ namespace tgui
             float charWidth;
             sf::Uint32 curChar = m_text[index];
             if (curChar == '\n')
-                width = 0; // This should not happen as edit box is for single line text, but lets try the next line anyway since we haven't found the position yet
+            {
+                // This should not happen as edit box is for single line text, but lets try the next line anyway since we haven't found the position yet
+                width = 0;
+                prevChar = 0;
+                continue;
+            }
             else if (curChar == '\t')
                 charWidth = static_cast<float>(getFont()->getGlyph(' ', textSize, bold).advance) * 4;
             else
