@@ -87,6 +87,7 @@ install:
   )
   ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
     cd C:\ &&
+    appveyor-retry choco install doxygen.portable &&
     IF NOT EXIST %SFML_ROOT% (
       appveyor DownloadFile http://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc14-32-bit.zip -FileName SFML-Win32.zip &&
       7z x SFML-Win32.zip > nul &&
@@ -96,8 +97,7 @@ install:
       7z x SFML-Win64.zip > nul &&
       mkdir %SFML_ROOT%\Win64 &&
       move SFML-%SFML_VERSION% %SFML_ROOT%\Win64\ > nul
-    ) &&
-    appveyor-retry choco install doxygen.portable
+    )
   )
 
 
