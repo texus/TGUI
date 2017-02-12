@@ -258,7 +258,7 @@ namespace tgui
         m_selChars = m_selEnd - m_selStart;
 
         m_textBeforeSelection.setString(m_textFull.getString().substring(0, m_selStart));
-        m_textSelection.setString(m_textFull.getString().substring(m_selStart, m_selEnd));
+        m_textSelection.setString(m_textFull.getString().substring(m_selStart, m_selEnd - m_selStart));
         m_textAfterSelection.setString(m_textFull.getString().substring(m_selEnd));
 
         recalculateTextPositions();
