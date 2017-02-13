@@ -184,4 +184,15 @@ TEST_CASE("[Picture]")
 
         testSavingWidget("Picture", picture, false);
     }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(60, 40, picture)
+
+        picture->setTexture("resources/image.png");
+        picture->setPosition(10, 5);
+        picture->setSize(40, 30);
+
+        TEST_DRAW("Picture.png")
+    }
 }

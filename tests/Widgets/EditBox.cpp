@@ -118,11 +118,23 @@ TEST_CASE("[EditBox]")
 
     SECTION("LimitTextWidth")
     {
+        editBox->setTextSize(20);
+        editBox->setSize(100, 25);
+        editBox->setText("too long text");
+
         REQUIRE(!editBox->isTextWidthLimited());
         editBox->limitTextWidth(true);
         REQUIRE(editBox->isTextWidthLimited());
+        REQUIRE(editBox->getText() == "too long");
+
+        editBox->setText("some other text");
+        REQUIRE(editBox->getText() == "some ot");
+
         editBox->limitTextWidth(false);
         REQUIRE(!editBox->isTextWidthLimited());
+
+        editBox->setText("yet another text");
+        REQUIRE(editBox->getText() == "yet another text");
     }
 
     SECTION("Input Validator")
@@ -469,10 +481,13 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getDefaultTextColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getCaretColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getCaretColorHover() == sf::Color(110, 120, 130));
+            REQUIRE(renderer->getCaretColorDisabled() == sf::Color(130, 140, 150));
             REQUIRE(renderer->getBackgroundColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getBackgroundColorHover() == sf::Color(80, 90, 100));
+            REQUIRE(renderer->getBackgroundColorDisabled() == sf::Color(140, 150, 160));
             REQUIRE(renderer->getBorderColor() == sf::Color(90, 100, 110));
             REQUIRE(renderer->getBorderColorHover() == sf::Color(100, 110, 120));
+            REQUIRE(renderer->getBorderColorDisabled() == sf::Color(150, 160, 170));
             REQUIRE(renderer->getCaretWidth() == 2);
             REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
             REQUIRE(renderer->getDefaultTextStyle() == (sf::Text::Bold | sf::Text::Underlined));
@@ -482,10 +497,10 @@ TEST_CASE("[EditBox]")
 
         SECTION("textured")
         {
-            tgui::Texture textureNormal("resources/Black.png", {0, 114, 60, 40}, {15, 0, 30, 40});
-            tgui::Texture textureHover("resources/Black.png", {0, 114, 60, 40}, {15, 0, 30, 40});
-            tgui::Texture textureDisabled("resources/Black.png", {0, 114, 60, 40}, {15, 0, 30, 40});
-            tgui::Texture textureFocused("resources/Black.png", {0, 114, 60, 40}, {15, 0, 30, 40});
+            tgui::Texture textureNormal("resources/Texture1.png");
+            tgui::Texture textureHover("resources/Texture2.png");
+            tgui::Texture textureDisabled("resources/Texture3.png");
+            tgui::Texture textureFocused("resources/Texture4.png");
 
             SECTION("set serialized property")
             {
@@ -518,7 +533,7 @@ TEST_CASE("[EditBox]")
 
             REQUIRE(renderer->getTexture().getData() == textureNormal.getData());
             REQUIRE(renderer->getTextureHover().getData() == textureHover.getData());
-            REQUIRE(renderer->getTextureDisabled().getData() == textureHover.getData());
+            REQUIRE(renderer->getTextureDisabled().getData() == textureDisabled.getData());
             REQUIRE(renderer->getTextureFocused().getData() == textureFocused.getData());
         }
     }
@@ -535,6 +550,173 @@ TEST_CASE("[EditBox]")
         editBox->setInputValidator("[0-9a-zA-Z]*");
 
         testSavingWidget("EditBox", editBox);
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(120, 35, editBox)
+
+        editBox->setPosition(10, 5);
+        editBox->setSize(100, 25);
+        editBox->setText("Something");
+        editBox->setTextSize(16);
+
+        tgui::EditBoxRenderer renderer = tgui::RendererData::create();
+        renderer.setTextColor(sf::Color::Blue);
+        renderer.setSelectedTextColor(sf::Color::White);
+        renderer.setSelectedTextBackgroundColor(sf::Color::Green);
+        renderer.setBackgroundColor(sf::Color::Yellow);
+        renderer.setCaretColor(sf::Color::Cyan);
+        renderer.setBorderColor(sf::Color::Red);
+        renderer.setTextStyle(sf::Text::Style::Underlined);
+        renderer.setCaretWidth(1);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setPadding({4, 3, 2, 1});
+        renderer.setOpacity(0.7f);
+        editBox->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+                                        renderer.setCaretColorHover({0, 150, 150});
+                                        renderer.setBackgroundColorHover({150, 150, 0});
+                                        renderer.setBorderColorHover({150, 0, 0});
+                                        if (textured)
+                                            renderer.setTextureHover("resources/Texture2.png");
+                                    };
+
+        auto setDisabledRenderer = [&](bool textured){
+                                        renderer.setTextColorDisabled({0, 0, 80});
+                                        renderer.setCaretColorDisabled({0, 80, 80});
+                                        renderer.setBackgroundColorDisabled({80, 80, 0});
+                                        renderer.setBorderColorDisabled({80, 0, 0});
+                                        if (textured)
+                                            renderer.setTextureDisabled("resources/Texture3.png");
+                                    };
+
+        editBox->selectText(2, 3);
+        editBox->focus();
+
+        SECTION("Colored")
+        {
+            SECTION("NormalState")
+            {
+                TEST_DRAW("EditBox_Normal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("EditBox_Normal_HoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                editBox->mouseMoved({0,0});
+
+                TEST_DRAW("EditBox_Hover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("EditBox_Hover_HoverSet.png")
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                editBox->disable();
+
+                TEST_DRAW("EditBox_Disabled_NormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(false);
+                    TEST_DRAW("EditBox_Disabled_DisabledSet.png")
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTexture("resources/Texture1.png");
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("EditBox_Normal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("EditBox_Normal_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                editBox->mouseMoved({0,0});
+
+                TEST_DRAW("EditBox_Hover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("EditBox_Hover_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                editBox->disable();
+
+                TEST_DRAW("EditBox_Disabled_TextureNormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(true);
+                    TEST_DRAW("EditBox_Disabled_TextureDisabledSet.png")
+                }
+            }
+        }
+
+        SECTION("DefaultText")
+        {
+            editBox->setText("");
+            editBox->setDefaultText("Hello");
+
+            renderer.setDefaultTextColor(sf::Color::Magenta);
+            renderer.setDefaultTextStyle(sf::Text::Style::Italic);
+
+            TEST_DRAW("EditBox_DefaultText.png")
+        }
+
+        SECTION("PasswordCharacter")
+        {
+            editBox->setPasswordCharacter('+');
+            TEST_DRAW("EditBox_PasswordCharacter.png")
+        }
+
+        SECTION("Alignment")
+        {
+            editBox->setText("Short");
+            renderer.setOpacity(1);
+
+            SECTION("Left")
+            {
+                editBox->setAlignment(tgui::EditBox::Alignment::Left);
+                TEST_DRAW("EditBox_Alignment_Left.png")
+            }
+
+            SECTION("Center")
+            {
+                editBox->setAlignment(tgui::EditBox::Alignment::Center);
+                TEST_DRAW("EditBox_Alignment_Center.png")
+            }
+
+            SECTION("Right")
+            {
+                editBox->setAlignment(tgui::EditBox::Alignment::Right);
+                TEST_DRAW("EditBox_Alignment_Right.png")
+            }
+        }
     }
 
     SECTION("Bug Fixes")

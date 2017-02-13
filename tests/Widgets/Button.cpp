@@ -225,11 +225,11 @@ TEST_CASE("[Button]")
 
         SECTION("textured")
         {
-            tgui::Texture textureNormal("resources/Black.png", {0, 64, 45, 50}, {10, 0, 25, 50});
-            tgui::Texture textureHover("resources/Black.png", {45, 64, 45, 50}, {10, 0, 25, 50});
-            tgui::Texture textureDown("resources/Black.png", {90, 64, 45, 50}, {10, 0, 25, 50});
-            tgui::Texture textureDisabled("resources/Black.png", {0, 64, 45, 50}, {10, 0, 25, 50});
-            tgui::Texture textureFocused("resources/Black.png", {0, 64, 45, 50}, {10, 0, 25, 50});
+            tgui::Texture textureNormal("resources/Texture1.png");
+            tgui::Texture textureHover("resources/Texture2.png");
+            tgui::Texture textureDown("resources/Texture3.png");
+            tgui::Texture textureDisabled("resources/Texture4.png");
+            tgui::Texture textureFocused("resources/Texture5.png");
 
             SECTION("set serialized property")
             {
@@ -278,5 +278,201 @@ TEST_CASE("[Button]")
         button->setTextSize(25);
 
         testSavingWidget("Button", button);
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(120, 35, button)
+
+        button->setPosition(10, 5);
+        button->setSize(100, 25);
+        button->setText("Click me!");
+        button->setTextSize(16);
+
+        tgui::ButtonRenderer renderer = tgui::RendererData::create();
+        renderer.setTextColor(sf::Color::Red);
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setTextStyle(sf::Text::Style::Italic);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setOpacity(0.7f);
+        button->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+                                        renderer.setTextColorHover(sf::Color::Magenta);
+                                        renderer.setBackgroundColorHover(sf::Color::Cyan);
+                                        renderer.setBorderColorHover(sf::Color::Yellow);
+                                        renderer.setTextStyleHover(sf::Text::Style::Bold);
+                                        if (textured)
+                                            renderer.setTextureHover("resources/Texture2.png");
+                                     };
+
+        auto setDownRenderer = [&](bool textured){
+                                        renderer.setTextColorDown(sf::Color::Black);
+                                        renderer.setBackgroundColorDown(sf::Color::White);
+                                        renderer.setBorderColorDown({128, 128, 128});
+                                        renderer.setTextStyleDown(sf::Text::Style::Underlined);
+                                        renderer.setTextColorDisabled({128, 128, 0});
+                                        renderer.setBackgroundColorDisabled({0, 128, 128});
+                                        renderer.setBorderColorDisabled({128, 0, 128});
+                                        renderer.setTextStyleDisabled(sf::Text::Style::StrikeThrough);
+                                        if (textured)
+                                            renderer.setTextureDown("resources/Texture3.png");
+                                    };
+
+        auto setDisabledRenderer = [&](bool textured){
+                                        renderer.setTextColorDisabled({128, 128, 0});
+                                        renderer.setBackgroundColorDisabled({0, 128, 128});
+                                        renderer.setBorderColorDisabled({128, 0, 128});
+                                        renderer.setTextStyleDisabled(sf::Text::Style::StrikeThrough);
+                                        if (textured)
+                                            renderer.setTextureDisabled("resources/Texture4.png");
+                                    };
+
+        SECTION("Colored")
+        {
+            SECTION("NormalState")
+            {
+                TEST_DRAW("Button_Normal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Button_Normal_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("Button_Normal_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                button->mouseMoved({0,0});
+
+                TEST_DRAW("Button_Hover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Button_Hover_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("Button_Hover_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DownState")
+            {
+                button->mouseMoved({0,0});
+                button->leftMousePressed({0,0});
+
+                TEST_DRAW("Button_Down_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Button_Down_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("Button_Down_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                button->disable();
+
+                TEST_DRAW("Button_Disabled_NormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(false);
+                    TEST_DRAW("Button_Disabled_DisabledSet.png")
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTexture("resources/Texture1.png");
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("Button_Normal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Button_Normal_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("Button_Normal_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                button->mouseMoved({0,0});
+
+                TEST_DRAW("Button_Hover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Button_Hover_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("Button_Hover_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DownState")
+            {
+                button->mouseMoved({0,0});
+                button->leftMousePressed({0,0});
+
+                TEST_DRAW("Button_Down_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Button_Down_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("Button_Down_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                button->disable();
+
+                TEST_DRAW("Button_Disabled_TextureNormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(true);
+                    TEST_DRAW("Button_Disabled_TextureDisabledSet.png")
+                }
+            }
+        }
     }
 }

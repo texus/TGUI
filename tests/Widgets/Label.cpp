@@ -243,7 +243,7 @@ TEST_CASE("[Label]")
             label->getRenderer()->setBorderColor(sf::Color::Yellow);
             label->getRenderer()->setBorders({1, 2, 3, 4});
             label->getRenderer()->setPadding({4, 3, 2, 1});
-            label->getRenderer()->setOpacity(0.6f);
+            label->getRenderer()->setOpacity(0.7f);
             TEST_DRAW("Label_Complex.png")
         }
     }
