@@ -106,6 +106,8 @@ TEST_CASE("[Serializer]")
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{sf::Text::Regular}) == "Regular");
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{sf::Text::Bold}) == "Bold");
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{sf::Text::Italic | sf::Text::Underlined}) == "Italic | Underlined");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{"bold"}) == "Bold");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{"italic | underlined"}) == "Italic | Underlined");
 
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyle{256}) == "Regular");
     }
