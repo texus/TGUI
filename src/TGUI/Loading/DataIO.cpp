@@ -496,7 +496,7 @@ namespace tgui
             error = parseRootSection(stream, root);
             if (!error.empty())
             {
-                if (stream.tellg() != -1)
+                if (stream.tellg() != std::stringstream::pos_type(-1))
                 {
                     std::string str = stream.str();
                     std::size_t lineNumber = std::count(str.begin(), str.begin() + stream.tellg(), '\n') + 1;
