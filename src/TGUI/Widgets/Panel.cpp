@@ -149,7 +149,7 @@ namespace tgui
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
         sf::Vector2f innerSize = {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
-        Clipping clipping{target, states, {m_bordersCached.left, m_bordersCached.top}, innerSize};
+        Clipping clipping{target, states, {}, innerSize};
 
         // Draw the background
         if (m_backgroundColorCached != sf::Color::Transparent)
