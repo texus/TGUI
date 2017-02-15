@@ -109,8 +109,16 @@ namespace tgui
             }
         }
 
-        if (!error.empty()) {
-            throw Exception{"Error while parsing input. " + error};
+        if (!error.empty())
+        {
+            if (stream.tellg() != std::stringstream::pos_type(-1))
+            {
+                std::string str = stream.str();
+                std::size_t lineNumber = std::count(str.begin(), str.begin() + stream.tellg(), '\n') + 1;
+                throw Exception{"Error while parsing input at line " + std::to_string(lineNumber) + ". " + error};
+            }
+            else
+                throw Exception{"Error while parsing input. " + error};
         }
 
         return root;
