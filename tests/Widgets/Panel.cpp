@@ -24,6 +24,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 
 TEST_CASE("[Panel]")
@@ -219,5 +220,27 @@ TEST_CASE("[Panel]")
 
             testSavingWidget("Panel", panel);
         }
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(200, 150, panel)
+
+        tgui::PanelRenderer renderer = tgui::RendererData::create();
+        renderer.setBackgroundColor(sf::Color::Yellow);
+        renderer.setBorderColor(sf::Color::Red);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setOpacity(0.7f);
+        panel->setRenderer(renderer.getData());
+
+        panel->setSize({180, 140});
+        panel->setPosition({10, 5});
+
+        auto picture = tgui::Picture::create("resources/image.png");
+        picture->setSize({150, 100});
+        picture->setPosition({45, 50});
+        panel->add(picture);
+
+        TEST_DRAW("Panel.png")
     }
 }

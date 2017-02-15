@@ -54,9 +54,12 @@ TEST_CASE("[Canvas]")
     {
         TEST_DRAW_INIT(200, 150, canvas)
 
+        tgui::WidgetRenderer renderer = tgui::RendererData::create();
+        renderer.setOpacity(0.7f);
+        canvas->setRenderer(renderer.getData());
+
         canvas->setSize({180, 140});
         canvas->setPosition({10, 5});
-        canvas->getRenderer()->setOpacity(0.7f);
 
         sf::Texture texture;
         texture.loadFromFile("resources/image.png");
