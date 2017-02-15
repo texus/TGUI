@@ -787,7 +787,7 @@ namespace tgui
             // |              | //
             // 2--------------4 //
             //////////////////////
-            std::vector<sf::Vertex> m_vertices = {
+            std::vector<sf::Vertex> vertices = {
                 {{0, 0}, color},
                 {{borders.left, 0}, color},
                 {{0, size.y}, color},
@@ -797,10 +797,10 @@ namespace tgui
                 {{size.x, 0}, color},
                 {{size.x - borders.right, borders.top}, color},
                 {{borders.left, 0}, color},
-                {{borders.left, borders.top}, color},
+                {{borders.left, borders.top}, color}
             };
 
-            target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
+            target.draw(vertices.data(), vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
         }
     }
 
