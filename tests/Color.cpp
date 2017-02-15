@@ -28,6 +28,10 @@
 TEST_CASE("[Color]")
 {
     sf::Color color{16, 32, 64, 128};
+    REQUIRE(tgui::Color(color).getRed() == 16);
+    REQUIRE(tgui::Color(color).getGreen() == 32);
+    REQUIRE(tgui::Color(color).getBlue() == 64);
+    REQUIRE(tgui::Color(color).getAlpha() == 128);
     REQUIRE(sf::Color(tgui::Color(color)) == color);
     REQUIRE(sf::Color(tgui::Color(16, 32, 64, 128)) == color);
     REQUIRE(sf::Color(tgui::Color("rgba(16, 32, 64, 128)")) == color);
