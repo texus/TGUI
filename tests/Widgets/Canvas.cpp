@@ -49,4 +49,35 @@ TEST_CASE("[Canvas]")
 
         testSavingWidget("Canvas", canvas, false);
     }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(200, 150, canvas)
+
+        canvas->setSize({180, 140});
+        canvas->setPosition({10, 5});
+        canvas->getRenderer()->setOpacity(0.7f);
+
+        sf::Texture texture;
+        texture.loadFromFile("resources/image.png");
+
+        sf::Sprite sprite;
+        sprite.setTexture(texture);
+        sprite.setScale({150.f / texture.getSize().x, 100.f / texture.getSize().y});
+        sprite.setPosition({15, 20});
+
+        std::vector<sf::Vertex> vertices = {
+                {{80, 90}, sf::Color::Red},
+                {{80, 115}, sf::Color::Red},
+                {{100, 90}, sf::Color::Red},
+                {{100, 115}, sf::Color::Red}
+            };
+
+        canvas->clear(sf::Color::Yellow);
+        canvas->draw(sprite);
+        canvas->draw(vertices.data(), vertices.size(), sf::PrimitiveType::TrianglesStrip);
+        canvas->display();
+
+        TEST_DRAW("Canvas.png")
+    }
 }
