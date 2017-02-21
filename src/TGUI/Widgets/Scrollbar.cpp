@@ -631,7 +631,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::mouseWheelMoved(float delta, int x, int y)
+    void Scrollbar::mouseWheelScrolled(float delta, int x, int y)
     {
         if (static_cast<int>(m_value) - static_cast<int>(delta * m_scrollAmount) < 0)
             setValue(0);

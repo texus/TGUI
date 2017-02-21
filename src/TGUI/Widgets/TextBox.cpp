@@ -899,11 +899,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseWheelMoved(float delta, int, int)
+    void TextBox::mouseWheelScrolled(float delta, int, int)
     {
         if (m_verticalScroll.isShown())
         {
-            m_verticalScroll.mouseWheelMoved(delta, 0, 0);
+            m_verticalScroll.mouseWheelScrolled(delta, 0, 0);
             recalculateVisibleLines();
         }
     }

@@ -362,7 +362,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::mouseWheelMoved(float delta, int, int)
+    void Slider::mouseWheelScrolled(float delta, int, int)
     {
         if (m_value - delta < m_minimum)
             setValue(m_minimum);

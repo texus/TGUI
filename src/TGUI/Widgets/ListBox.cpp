@@ -602,11 +602,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::mouseWheelMoved(float delta, int x, int y)
+    void ListBox::mouseWheelScrolled(float delta, int x, int y)
     {
         if (m_scroll.isShown())
         {
-            m_scroll.mouseWheelMoved(delta, 0, 0);
+            m_scroll.mouseWheelScrolled(delta, 0, 0);
 
             // Update on which item the mouse is hovering
             mouseMoved({static_cast<float>(x), static_cast<float>(y)});

@@ -484,7 +484,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::mouseWheelMoved(float delta, int, int)
+    void ComboBox::mouseWheelScrolled(float delta, int, int)
     {
         // Only act to scrolling when the list is not being shown
         if (!m_listBox->isVisible())

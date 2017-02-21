@@ -550,7 +550,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::mouseWheelMoved(float delta, int x, int y)
+    void Container::mouseWheelScrolled(float delta, int x, int y)
     {
         sf::Event event;
         event.type = sf::Event::MouseWheelScrolled;
@@ -824,9 +824,9 @@ namespace tgui
             if (widget != nullptr)
             {
                 // Send the event to the widget
-                widget->mouseWheelMoved(event.mouseWheelScroll.delta,
-                                        static_cast<int>(event.mouseWheelScroll.x - widget->getPosition().x),
-                                        static_cast<int>(event.mouseWheelScroll.y - widget->getPosition().y));
+                widget->mouseWheelScrolled(event.mouseWheelScroll.delta,
+                                           static_cast<int>(event.mouseWheelScroll.x - widget->getPosition().x),
+                                           static_cast<int>(event.mouseWheelScroll.y - widget->getPosition().y));
                 return true;
             }
 
