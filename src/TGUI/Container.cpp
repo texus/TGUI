@@ -488,8 +488,8 @@ namespace tgui
         sf::Event event;
         event.type = sf::Event::MouseButtonPressed;
         event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(pos.x);
-        event.mouseButton.y = static_cast<int>(pos.y);
+        event.mouseButton.x = static_cast<int>(pos.x - getChildWidgetsOffset().x);
+        event.mouseButton.y = static_cast<int>(pos.y - getChildWidgetsOffset().y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -502,8 +502,8 @@ namespace tgui
         sf::Event event;
         event.type = sf::Event::MouseButtonReleased;
         event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(pos.x);
-        event.mouseButton.y = static_cast<int>(pos.y);
+        event.mouseButton.x = static_cast<int>(pos.x - getChildWidgetsOffset().x);
+        event.mouseButton.y = static_cast<int>(pos.y - getChildWidgetsOffset().y);
 
         // Let the event manager handle the event, but don't let it call mouseNoLongerDown on all widgets (it will be done later)
         m_handingMouseReleased = true;
@@ -519,8 +519,8 @@ namespace tgui
 
         sf::Event event;
         event.type = sf::Event::MouseMoved;
-        event.mouseMove.x = static_cast<int>(pos.x);
-        event.mouseMove.y = static_cast<int>(pos.y);
+        event.mouseMove.x = static_cast<int>(pos.x - getChildWidgetsOffset().x);
+        event.mouseMove.y = static_cast<int>(pos.y - getChildWidgetsOffset().y);
         handleEvent(event);
     }
 
@@ -555,8 +555,8 @@ namespace tgui
         sf::Event event;
         event.type = sf::Event::MouseWheelScrolled;
         event.mouseWheelScroll.delta = delta;
-        event.mouseWheelScroll.x = static_cast<int>(x);
-        event.mouseWheelScroll.y = static_cast<int>(y);
+        event.mouseWheelScroll.x = static_cast<int>(x - getChildWidgetsOffset().x);
+        event.mouseWheelScroll.y = static_cast<int>(y - getChildWidgetsOffset().y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -967,7 +967,7 @@ namespace tgui
     Widget::Ptr Container::mouseOnWhichWidget(sf::Vector2f mousePos)
     {
         Widget::Ptr widget = nullptr;
-        for (std::vector<Widget::Ptr>::reverse_iterator it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
+        for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
         {
             if ((*it)->isVisible())
             {

@@ -416,7 +416,7 @@ namespace tgui
                 }
             }
             else // Propagate the event to the child widgets
-                Container::leftMousePressed({pos.x - m_bordersCached.left, pos.y - (m_titleBarHeightCached + m_bordersCached.top)});
+                Container::leftMousePressed(pos);
         }
     }
 
@@ -451,7 +451,7 @@ namespace tgui
                     widget->mouseNoLongerDown();
             }
             else // Propagate the event to the child widgets
-                Container::leftMouseReleased({pos.x - m_bordersCached.left, pos.y - (m_titleBarHeightCached + m_bordersCached.top)});
+                Container::leftMouseReleased(pos);
         }
     }
 
@@ -539,15 +539,14 @@ namespace tgui
             }
         }
 
-        Container::mouseMoved({pos.x - m_bordersCached.left, pos.y - m_titleBarHeightCached - m_bordersCached.top});
+        Container::mouseMoved(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChildWindow::mouseWheelMoved(float delta, int x, int y)
     {
-        sf::Vector2f offset = getChildWidgetsOffset();
-        Container::mouseWheelMoved(delta, static_cast<int>(x - offset.x), static_cast<int>(y - offset.y));
+        Container::mouseWheelMoved(delta, x, y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
