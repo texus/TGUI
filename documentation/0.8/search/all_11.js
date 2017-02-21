@@ -19,7 +19,7 @@ var searchData=
   ['titlealignment',['TitleAlignment',['../classtgui_1_1ChildWindow.html#a247720248700e8ddbbb4af19bbfad5b8',1,'tgui::ChildWindow']]],
   ['titlebutton',['TitleButton',['../classtgui_1_1ChildWindow.html#a745bc87bd3cb52c390cc26ea1e08765d',1,'tgui::ChildWindow']]],
   ['tooltip',['ToolTip',['../classtgui_1_1ToolTip.html',1,'tgui']]],
-  ['top',['Top',['../classtgui_1_1Label.html#a2974ef71da25253342a8b3660b6d094caa4ffdcf0dc1f31b9acaf295d75b51d00',1,'tgui::Label::Top()'],['../classtgui_1_1Outline.html#a2f1dad331114857cb5a3258340070108',1,'tgui::Outline::top()']]],
+  ['top',['top',['../classtgui_1_1Outline.html#a2f1dad331114857cb5a3258340070108',1,'tgui::Outline::top()'],['../classtgui_1_1Label.html#a2974ef71da25253342a8b3660b6d094caa4ffdcf0dc1f31b9acaf295d75b51d00',1,'tgui::Label::Top()']]],
   ['toptobottom',['TopToBottom',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85eaf2b1a19a8d0f523d042f9ede79a80804',1,'tgui::ProgressBar']]],
   ['transformable',['Transformable',['../classtgui_1_1Transformable.html',1,'tgui']]]
 ];
