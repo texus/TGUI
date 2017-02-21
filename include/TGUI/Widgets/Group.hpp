@@ -23,73 +23,60 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_PANEL_HPP
-#define TGUI_PANEL_HPP
+#ifndef TGUI_GROUP_HPP
+#define TGUI_GROUP_HPP
 
 
-#include <TGUI/Widgets/Group.hpp>
-#include <TGUI/Renderers/PanelRenderer.hpp>
+#include <TGUI/Container.hpp>
+#include <TGUI/Renderers/GroupRenderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Group of widgets that has a background color and optional borders.
+    /// @brief Group widget
     ///
-    /// Signals:
-    ///     - MousePressed (the left mouse button was pressed on top of the panel)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the panel position
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - MouseReleased (the left mouse button was released on top of the panel)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the panel position
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - Clicked (you left clicked the panel)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the panel position
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - Inherited signals from Container
+    /// Invisible container used to group widgets.
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Panel : public Group
+    class TGUI_API Group : public Container
     {
     public:
 
-        typedef std::shared_ptr<Panel> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const Panel> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<Group> Ptr; ///< Shared widget pointer
+        typedef std::shared_ptr<const Group> ConstPtr; ///< Shared constant widget pointer
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         ///
-        /// @param size  Size of the panel
+        /// @param size  Size of the group
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Panel(const Layout2d& size = {100, 100});
+        Group(const Layout2d& size = {100, 100});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates a new panel widget
+        /// @brief Creates a new group
         ///
-        /// @param size  Size of the panel
+        /// @param size  Size of the group
         ///
-        /// @return The new panel
+        /// @return The new group
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Panel::Ptr create(Layout2d size = {100, 100});
+        static Group::Ptr create(Layout2d size = {100, 100});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Makes a copy of another panel
+        /// @brief Makes a copy of another group
         ///
-        /// @param panel  The other panel
+        /// @param group  The other group
         ///
-        /// @return The new panel
+        /// @return The new group
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Panel::Ptr copy(Panel::ConstPtr panel);
+        static Group::Ptr copy(Group::ConstPtr group);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,9 +85,9 @@ namespace tgui
         /// @return Temporary pointer to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        PanelRenderer* getRenderer() const
+        GroupRenderer* getRenderer() const
         {
-            return aurora::downcast<PanelRenderer*>(m_renderer.get());
+            return aurora::downcast<GroupRenderer*>(m_renderer.get());
         }
 
 
@@ -119,19 +106,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(sf::Vector2f pos) const override;
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void leftMousePressed(sf::Vector2f pos) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void leftMouseReleased(sf::Vector2f pos) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draw the widget to a render target
+        /// @brief Draw the child widgets to a render target
         ///
         /// @param target Render target to draw to
         /// @param states Current render states
@@ -157,17 +134,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() const override
         {
-            return std::make_shared<Panel>(*this);
+            return std::make_shared<Group>(*this);
         }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    protected:
 
         // Cached renderer properties
-        Borders m_bordersCached;
-        Color   m_borderColorCached;
-        Color   m_backgroundColorCached;
+        Padding m_paddingCached;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,4 +153,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_PANEL_HPP
+#endif // TGUI_GROUP_HPP

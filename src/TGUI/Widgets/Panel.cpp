@@ -32,7 +32,6 @@ namespace tgui
 {
     static std::map<std::string, ObjectConverter> defaultRendererValues =
             {
-                {"borders", Borders{}},
                 {"bordercolor", sf::Color::Black},
                 {"backgroundcolor", sf::Color::Transparent}
             };
@@ -75,7 +74,7 @@ namespace tgui
 
     sf::Vector2f Panel::getChildWidgetsOffset() const
     {
-        return {m_bordersCached.left, m_bordersCached.top};
+        return {m_paddingCached.left + m_bordersCached.left, m_paddingCached.top + m_bordersCached.top};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +130,7 @@ namespace tgui
             m_backgroundColorCached = getRenderer()->getBackgroundColor();
         }
         else
-            Container::rendererChanged(property);
+            Group::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,15 +146,16 @@ namespace tgui
             states.transform.translate({m_bordersCached.left, m_bordersCached.top});
         }
 
-        // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        sf::Vector2f innerSize = {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
-        Clipping clipping{target, states, {}, innerSize};
-
         // Draw the background
-        if (m_backgroundColorCached != sf::Color::Transparent)
-            drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
+        sf::Vector2f innerSize = {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
+
+        states.transform.translate(m_paddingCached.left, m_paddingCached.top);
+        innerSize.x -= m_paddingCached.left + m_paddingCached.right;
+        innerSize.y -= m_paddingCached.top + m_paddingCached.bottom;
 
         // Draw the child widgets
+        Clipping clipping{target, states, {}, innerSize};
         drawWidgetContainer(&target, states);
     }
 

@@ -29,6 +29,7 @@ set(TEST_SOURCES
     Widgets/ClickableWidget.cpp
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
+    Widgets/Group.cpp
     Widgets/Grid.cpp
     Widgets/HorizontalLayout.cpp
     Widgets/Knob.cpp
@@ -40,6 +41,7 @@ set(TEST_SOURCES
     Widgets/Picture.cpp
     Widgets/ProgressBar.cpp
     Widgets/RadioButton.cpp
+    Widgets/RadioButtonGroup.cpp
     Widgets/Scrollbar.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp

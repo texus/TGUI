@@ -29,6 +29,7 @@ set(TGUI_SRC
     Renderers/ChildWindowRenderer.cpp
     Renderers/ComboBoxRenderer.cpp
     Renderers/EditBoxRenderer.cpp
+    Renderers/GroupRenderer.cpp
     Renderers/KnobRenderer.cpp
     Renderers/LabelRenderer.cpp
     Renderers/ListBoxRenderer.cpp
@@ -52,6 +53,7 @@ set(TGUI_SRC
     Widgets/ClickableWidget.cpp
     Widgets/ComboBox.cpp
     Widgets/EditBox.cpp
+    Widgets/Group.cpp
     Widgets/Grid.cpp
     Widgets/HorizontalLayout.cpp
     Widgets/Knob.cpp
@@ -63,6 +65,7 @@ set(TGUI_SRC
     Widgets/Picture.cpp
     Widgets/ProgressBar.cpp
     Widgets/RadioButton.cpp
+    Widgets/RadioButtonGroup.cpp
     Widgets/Scrollbar.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp

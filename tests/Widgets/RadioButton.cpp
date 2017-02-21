@@ -29,6 +29,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/RadioButtonGroup.hpp>
 
 TEST_CASE("[RadioButton]")
 {
@@ -70,8 +71,8 @@ TEST_CASE("[RadioButton]")
         REQUIRE(!radioButton->isChecked());
 
         // Checking a radio button will uncheck all radio buttons with the same parent
-        auto parent1 = std::make_shared<tgui::GuiContainer>();
-        auto parent2 = std::make_shared<tgui::GuiContainer>();
+        auto parent1 = tgui::RadioButtonGroup::create();
+        auto parent2 = tgui::RadioButtonGroup::create();
         auto radioButton1 = tgui::RadioButton::create();
         auto radioButton2 = tgui::RadioButton::create();
         auto radioButton3 = tgui::RadioButton::create();

@@ -33,6 +33,7 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Group.hpp>
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
@@ -42,6 +43,7 @@
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/RadioButtonGroup.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
@@ -534,6 +536,16 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        Widget::Ptr loadGroup(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        {
+            if (widget)
+                return loadContainer(node, std::static_pointer_cast<Group>(widget));
+            else
+                return loadContainer(node, std::make_shared<Group>());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         Widget::Ptr loadKnob(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             Knob::Ptr knob;
@@ -828,6 +840,16 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        Widget::Ptr loadRadioButtonGroup(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        {
+            if (widget)
+                return loadContainer(node, std::static_pointer_cast<RadioButtonGroup>(widget));
+            else
+                return loadContainer(node, std::make_shared<RadioButtonGroup>());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         Widget::Ptr loadScrollbar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
         {
             Scrollbar::Ptr scrollbar;
@@ -969,6 +991,7 @@ namespace tgui
             {"clickablewidget", loadClickableWidget},
             {"combobox", loadComboBox},
             {"editbox", loadEditBox},
+            {"group", loadGroup},
             {"knob", loadKnob},
             {"label", loadLabel},
             {"listbox", loadListBox},
@@ -978,6 +1001,7 @@ namespace tgui
             {"picture", loadPicture},
             {"progressbar", loadProgressBar},
             {"radiobutton", loadRadioButton},
+            {"radiobuttongroup", loadRadioButtonGroup},
             {"scrollbar", loadScrollbar},
             {"slider", loadSlider},
             {"spinbutton", loadSpinButton},

@@ -63,8 +63,6 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget);
 
 void testWidgetRenderer(tgui::WidgetRenderer* renderer);
 
-void testSavingWidget(std::string name, tgui::Widget::Ptr widget);
-
 template <typename WidgetType>
 void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool loadFromTheme = true)
 {

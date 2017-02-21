@@ -48,6 +48,7 @@
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Group.hpp>
 #include <TGUI/Widgets/Grid.hpp>
 #include <TGUI/Widgets/HorizontalLayout.hpp>
 #include <TGUI/Widgets/Knob.hpp>
@@ -59,6 +60,7 @@
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/RadioButtonGroup.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>

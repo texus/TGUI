@@ -53,15 +53,29 @@ TEST_CASE("[Panel]")
         panel->setPosition(40, 30);
         panel->setSize(150, 100);
 
-        REQUIRE(panel->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(panel->getSize() == sf::Vector2f(150, 100));
-        REQUIRE(panel->getFullSize() == panel->getSize());
-        REQUIRE(panel->getWidgetOffset() == sf::Vector2f(0, 0));
+        SECTION("Without outline")
+        {
+            REQUIRE(panel->getPosition() == sf::Vector2f(40, 30));
+            REQUIRE(panel->getSize() == sf::Vector2f(150, 100));
+            REQUIRE(panel->getFullSize() == panel->getSize());
+            REQUIRE(panel->getWidgetOffset() == sf::Vector2f(0, 0));
+            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(0, 0));
+        }
+
+        SECTION("With outline")
+        {
+            panel->getRenderer()->setBorders({1, 2, 3, 4});
+            panel->getRenderer()->setPadding({5, 6, 7, 8});
+
+            REQUIRE(panel->getPosition() == sf::Vector2f(40, 30));
+            REQUIRE(panel->getSize() == sf::Vector2f(150, 100));
+            REQUIRE(panel->getFullSize() == panel->getSize());
+            REQUIRE(panel->getWidgetOffset() == sf::Vector2f(0, 0));
+            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(6, 8));
+        }
 
         SECTION("Child widgets")
         {
-            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(0, 0));
-
             auto childWidget = tgui::ClickableWidget::create();
             childWidget->setPosition(60, 50);
             panel->add(childWidget);
@@ -72,8 +86,6 @@ TEST_CASE("[Panel]")
             panel->getRenderer()->setBorders({1, 2, 3, 4});
             REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
             REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(101, 82));
-
-            REQUIRE(panel->getChildWidgetsOffset() == sf::Vector2f(1, 2));
         }
     }
 
@@ -171,6 +183,7 @@ TEST_CASE("[Panel]")
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(10, 20, 30)"));
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(40, 50, 60)"));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
+            REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
         }
 
         SECTION("set object property")
@@ -178,6 +191,7 @@ TEST_CASE("[Panel]")
             REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{10, 20, 30}));
             REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{40, 50, 60}));
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
+            REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Padding{5, 6, 7, 8}));
         }
 
         SECTION("functions")
@@ -185,26 +199,35 @@ TEST_CASE("[Panel]")
             renderer->setBackgroundColor({10, 20, 30});
             renderer->setBorderColor({40, 50, 60});
             renderer->setBorders({1, 2, 3, 4});
+            renderer->setPadding({5, 6, 7, 8});
         }
 
         REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
         REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+        REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
 
         REQUIRE(renderer->getBackgroundColor() == sf::Color(10, 20, 30));
         REQUIRE(renderer->getBorderColor() == sf::Color(40, 50, 60));
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
+        REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
     }
 
     SECTION("Saving and loading from file")
     {
         panel = tgui::Panel::create({400, 300});
 
+        auto widget = tgui::ClickableWidget::create();
+        widget->setPosition({20, 10});
+        widget->setSize({150, 100});
+        panel->add(widget);
+
         SECTION("Only save contents")
         {
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("PanelWidgetFile1.txt"));
             
             panel->setSize(200, 100);
+            panel->removeAllWidgets();
             REQUIRE_NOTHROW(panel->loadWidgetsFromFile("PanelWidgetFile1.txt"));
             REQUIRE(panel->getSize() == sf::Vector2f(200, 100)); // The Panel itself is not saved, only its children
 
@@ -214,10 +237,6 @@ TEST_CASE("[Panel]")
 
         SECTION("Save entire panel")
         {
-            auto widget = tgui::ClickableWidget::create();
-            widget->setPosition(40, 20);
-            panel->add(widget);
-
             testSavingWidget("Panel", panel);
         }
     }
@@ -230,6 +249,7 @@ TEST_CASE("[Panel]")
         renderer.setBackgroundColor(sf::Color::Yellow);
         renderer.setBorderColor(sf::Color::Red);
         renderer.setBorders({1, 2, 3, 4});
+        renderer.setPadding({5, 6, 7, 8});
         renderer.setOpacity(0.7f);
         panel->setRenderer(renderer.getData());
 
@@ -238,7 +258,7 @@ TEST_CASE("[Panel]")
 
         auto picture = tgui::Picture::create("resources/image.png");
         picture->setSize({150, 100});
-        picture->setPosition({45, 50});
+        picture->setPosition({50, 55});
         panel->add(picture);
 
         TEST_DRAW("Panel.png")
