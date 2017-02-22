@@ -785,6 +785,8 @@ namespace tgui
                     updatePosition();
                     mouseOnScrollbar = true;
                 }
+                else
+                    m_scroll->m_mouseHover = false;
             }
         }
 
