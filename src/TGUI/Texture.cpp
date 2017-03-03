@@ -230,14 +230,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setCopyCallback(const std::function<void(std::shared_ptr<TextureData>)> func)
+    void Texture::setCopyCallback(const CallbackFunc& func)
     {
         m_copyCallback = func;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::setDestructCallback(const std::function<void(std::shared_ptr<TextureData>)> func)
+    void Texture::setDestructCallback(const CallbackFunc& func)
     {
         m_destructCallback = func;
     }
@@ -252,7 +252,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture::ImageLoaderFunc Texture::getImageLoader()
+    const Texture::ImageLoaderFunc& Texture::getImageLoader()
     {
         return m_imageLoader;
     }
@@ -267,7 +267,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture::TextureLoaderFunc Texture::getTextureLoader()
+    const Texture::TextureLoaderFunc& Texture::getTextureLoader()
     {
         return m_textureLoader;
     }
