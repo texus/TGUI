@@ -803,8 +803,8 @@ namespace tgui
                     progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
                 else if (requestedStyle == "toptobottom")
                     progressBar->setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
-                else if (requestedStyle == "toptobottom")
-                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
+                else if (requestedStyle == "bottomtotop")
+                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::BottomToTop);
                 else
                     throw Exception{"Failed to parse FillDirection property, found unknown value."};
             }
