@@ -12,7 +12,7 @@ breadcrumb: "0.8"
 <div>
   <h3 id="introduction-tutorials">Introduction tutorials</h3>
   <p><a href="minimal-code">Minimal code</a></p>
-  <p><a href="creating-widgets">Creating, copying an removing widgets</a></p>
+  <p><a href="creating-widgets">Creating, copying and removing widgets</a></p>
   <p><a href="basic-widget-functions">Basic widget functions</a></p>
   <p><a href="signals-introduction">Introduction to signals</a></p>
 </div>
