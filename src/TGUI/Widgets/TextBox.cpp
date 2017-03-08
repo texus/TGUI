@@ -134,31 +134,9 @@ namespace tgui
 
     void TextBox::setPosition(const Layout2d& position)
     {
-        // When the position is changed we just have to move the stuff. Otherwise it means we have to recalculate things.
-        if (getPosition() != position.getValue())
-        {
-            sf::Vector2f diff = position.getValue() - getPosition();
+        Widget::setPosition(position);
 
-            Widget::setPosition(position);
-
-            getRenderer()->m_backgroundTexture.setPosition(getPosition());
-
-            m_caretPosition += diff;
-
-            // Just move everything
-            m_textBeforeSelection.setPosition(m_textBeforeSelection.getPosition() + diff);
-            if (m_selStart != m_selEnd)
-            {
-                m_textSelection1.setPosition(m_textSelection1.getPosition() + diff);
-                m_textSelection2.setPosition(m_textSelection2.getPosition() + diff);
-                m_textAfterSelection1.setPosition(m_textAfterSelection1.getPosition() + diff);
-                m_textAfterSelection2.setPosition(m_textAfterSelection2.getPosition() + diff);
-            }
-
-            if (m_scroll)
-                m_scroll->setPosition(m_scroll->getPosition() + diff);
-        }
-        else if (m_font) // Recalculate everything
+        if (m_font)
         {
             getRenderer()->m_backgroundTexture.setPosition(getPosition());
 
