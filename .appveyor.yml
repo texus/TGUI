@@ -44,21 +44,28 @@ install:
         git rev-parse HEAD > revision &&
         fc revision "%SFML_ROOT%\revision_cache" > nul &&
         IF errorlevel 0 (
-          echo Using cached SFML directory &&
-          goto skip_sfml_build
+          echo Using cached SFML directory
+        )
+        else (
+          echo Rebuilding SFML, cached version is out of date &&
+          cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+          cmake --build . --target install --config %BUILD_TYPE% -- /m &&
+          git rev-parse HEAD > "%SFML_ROOT%\revision_cache"
         )
       )
       else (
-        echo Rebuilding SFML, cached version is out of date
+        echo Rebuilding SFML, cached version is missing revision_cache file &&
+        cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+        cmake --build . --target install --config %BUILD_TYPE% -- /m &&
+        git rev-parse HEAD > "%SFML_ROOT%\revision_cache"
       )
     )
     else (
-      echo Rebuilding SFML, no cache available
-    ) &&
-    cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
-    cmake --build . --target install --config %BUILD_TYPE% -- /m &&
-    git rev-parse HEAD > "%SFML_ROOT%\revision_cache" &&
-    :skip_sfml_build
+      echo Rebuilding SFML, no cache available &&
+      cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+      cmake --build . --target install --config %BUILD_TYPE% -- /m &&
+      git rev-parse HEAD > "%SFML_ROOT%\revision_cache"
+    )
   )
   ELSE (
     IF NOT EXIST %SFML_ROOT% (
