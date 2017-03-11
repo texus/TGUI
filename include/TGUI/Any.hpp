@@ -24,6 +24,9 @@
 
 // Code based on http://codereview.stackexchange.com/questions/20058/c11-any-class
 
+#ifndef TGUI_ANY_HPP
+#define TGUI_ANY_HPP
+
 #include <type_traits>
 #include <utility>
 #include <typeinfo>
@@ -156,3 +159,5 @@ namespace tgui
         Base* ptr;
     };
 }
+
+#endif // TGUI_ANY_HPP
