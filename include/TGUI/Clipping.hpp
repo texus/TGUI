@@ -52,30 +52,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Clipping(const sf::RenderTarget& target, const sf::RenderStates& states, sf::Vector2f topLeft, sf::Vector2f size)
         {
-            const sf::View& view = target.getView();
-            sf::Vector2f bottomRight = topLeft + size;
-
-            // Calculate the scale factor of the view
-            float scaleViewX = target.getSize().x / view.getSize().x;
-            float scaleViewY = target.getSize().y / view.getSize().y;
-
-            // Get the global position
-            sf::Vector2f topLeftPosition = {((topLeft.x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width) + (view.getSize().x * view.getViewport().left),
-                                            ((topLeft.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height) + (view.getSize().y * view.getViewport().top)};
-            sf::Vector2f bottomRightPosition = {(bottomRight.x - view.getCenter().x + (view.getSize().x / 2.f)) * view.getViewport().width + (view.getSize().x * view.getViewport().left),
-                                                (bottomRight.y - view.getCenter().y + (view.getSize().y / 2.f)) * view.getViewport().height + (view.getSize().y * view.getViewport().top)};
-
-            topLeftPosition = states.transform.transformPoint(topLeftPosition);
-            bottomRightPosition = states.transform.transformPoint(bottomRightPosition);
+            sf::Vector2i topLeftPosition = target.mapCoordsToPixel(states.transform.transformPoint(topLeft));
+            sf::Vector2i bottomRightPosition = target.mapCoordsToPixel(states.transform.transformPoint(topLeft + size));
 
             // Get the old clipping area
             glGetIntegerv(GL_SCISSOR_BOX, m_scissor);
 
             // Calculate the clipping area
-            GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x * scaleViewX), m_scissor[0]);
-            GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - m_scissor[1] - m_scissor[3]);
-            GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x * scaleViewX), m_scissor[0] + m_scissor[2]);
-            GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y * scaleViewY), static_cast<GLint>(target.getSize().y) - m_scissor[1]);
+            GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x), m_scissor[0]);
+            GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y), static_cast<GLint>(target.getSize().y) - m_scissor[1] - m_scissor[3]);
+            GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x), m_scissor[0] + m_scissor[2]);
+            GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y), static_cast<GLint>(target.getSize().y) - m_scissor[1]);
 
             // If the object outside the window then don't draw anything
             if (scissorRight < scissorLeft)
