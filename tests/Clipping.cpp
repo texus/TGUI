@@ -46,7 +46,7 @@ TEST_CASE("[Clipping]")
     background->moveToBack();
 
     sf::View view = gui.getView();
-    view.setViewport({0.1, 0.2, 0.8, 0.6});
+    view.setViewport({0.1f, 0.2f, 0.8f, 0.6f});
     view.setCenter(415, 320);
     view.setSize(80, 40);
     gui.setView(view);
