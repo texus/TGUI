@@ -9,25 +9,27 @@ version: 0.8-build-{build}
 #    environment configuration    #
 #---------------------------------#
 
+image: Visual Studio 2017
+
 environment:
   matrix:
-    - SFML_ROOT:      C:\SFML-VS2015
+    - SFML_ROOT:      C:\SFML-VS2017
       SFML_VERSION:   master
-      GENERATOR:      Visual Studio 14 2015 Win64
+      GENERATOR:      Visual Studio 15 2017 Win64
       BUILD_TYPE:     Debug
       SHARED_LIBS:    FALSE
       BUILD_TESTS:    TRUE
       BUILD_EXAMPLES: FALSE
-      BUILD_FOLDER:   build-VS2015-Win64
+      BUILD_FOLDER:   build-VS2017-Win64
 
-    - SFML_ROOT:      C:\SFML-VS2013
+    - SFML_ROOT:      C:\SFML-VS2015
       SFML_VERSION:   2.4.0
-      GENERATOR:      Visual Studio 12 2013
+      GENERATOR:      Visual Studio 14 2015
       BUILD_TYPE:     Release
       SHARED_LIBS:    TRUE
       BUILD_TESTS:    FALSE
       BUILD_EXAMPLES: TRUE
-      BUILD_FOLDER:   build-VS2013-Win32
+      BUILD_FOLDER:   build-VS2015-Win32
 
     - SFML_ROOT:      C:\SFML
       SFML_VERSION:   2.4.2
@@ -38,8 +40,8 @@ matrix:
   fast_finish: true
 
 cache:
-  - C:\SFML-VS2013 -> .appveyor.yml
   - C:\SFML-VS2015 -> .appveyor.yml
+  - C:\SFML-VS2017 -> .appveyor.yml
   - C:\SFML        -> .appveyor.yml
 
 install:
