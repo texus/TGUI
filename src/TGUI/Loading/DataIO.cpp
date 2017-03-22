@@ -499,7 +499,8 @@ namespace tgui
                 if (stream.tellg() != std::stringstream::pos_type(-1))
                 {
                     std::string str = stream.str();
-                    std::size_t lineNumber = std::count(str.begin(), str.begin() + stream.tellg(), '\n') + 1;
+                    auto position = static_cast<std::iterator_traits<std::string::const_iterator>::difference_type>(stream.tellg());
+                    std::size_t lineNumber = std::count(str.begin(), str.begin() + position, '\n') + 1;
                     throw Exception{"Error while parsing input at line " + std::to_string(lineNumber) + ". " + error};
                 }
                 else
