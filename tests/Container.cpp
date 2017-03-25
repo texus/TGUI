@@ -76,48 +76,58 @@ TEST_CASE("[Container]")
     {
         SECTION("normal function")
         {
-            SECTION("default non-recursive")
-            {
-                REQUIRE(container->get("w0") == nullptr);
-                REQUIRE(container->get("w1") == widget1);
-                REQUIRE(container->get("w2") == widget2);
-                REQUIRE(container->get("w3") == widget3);
-                REQUIRE(container->get("w4") == nullptr);
-                REQUIRE(container->get("w5") == nullptr);
-            }
-
-            SECTION("recursive")
-            {
-                REQUIRE(container->get("w0", true) == nullptr);
-                REQUIRE(container->get("w1", true) == widget1);
-                REQUIRE(container->get("w2", true) == widget2);
-                REQUIRE(container->get("w3", true) == widget3);
-                REQUIRE(container->get("w4", true) == widget4);
-                REQUIRE(container->get("w5", true) == widget5);
-            }
+            REQUIRE(container->get("w0") == nullptr); // non-existing child
+            REQUIRE(container->get("w1") == widget1); // direct child
+            REQUIRE(container->get("w5") == widget5); // indirect child
         }
 
         SECTION("templated function")
         {
-            SECTION("default non-recursive")
-            {
-                REQUIRE(container->get<tgui::Picture>("w0") == nullptr);
-                REQUIRE(container->get<tgui::Label>("w1") == widget1);
-                REQUIRE(container->get<tgui::Panel>("w2") == widget2);
-                REQUIRE(container->get<tgui::Label>("w3") == widget3);
-                REQUIRE(container->get<tgui::Label>("w4") == nullptr);
-                REQUIRE(container->get<tgui::Label>("w5") == nullptr);
-            }
+            REQUIRE(container->get<tgui::Label>("w6") == nullptr); // non-existing child
+            REQUIRE(container->get<tgui::Panel>("w2") == widget2); // direct child
+            REQUIRE(container->get<tgui::Label>("w4") == widget4); // indirect child
+        }
 
-            SECTION("recursive")
-            {
-                REQUIRE(container->get<tgui::Picture>("w0", true) == nullptr);
-                REQUIRE(container->get<tgui::Label>("w1", true) == widget1);
-                REQUIRE(container->get<tgui::Panel>("w2", true) == widget2);
-                REQUIRE(container->get<tgui::Label>("w3", true) == widget3);
-                REQUIRE(container->get<tgui::Label>("w4", true) == widget4);
-                REQUIRE(container->get<tgui::Label>("w5", true) == widget5);
-            }
+        SECTION("reusing name")
+        {
+            container->removeAllWidgets();
+
+            auto child1 = tgui::Panel::create();
+            auto child2 = tgui::Panel::create();
+            auto child3 = tgui::Panel::create();
+            auto child4 = tgui::Panel::create();
+
+            // Container does not contain a widget with this name yet
+            container->add(child1);
+            REQUIRE(container->get("name") == nullptr);
+
+            // The indirect child is found
+            child1->add(child4, "name");
+            REQUIRE(container->get("name") == child4);
+
+            // The direct child is found
+            container->add(child2, "name");
+            REQUIRE(container->get("name") == child2);
+
+            // The first direct child is still found
+            container->add(child3, "name");
+            REQUIRE(container->get("name") == child2);
+
+            // The second direct child can be found if the order is manipulated
+            child3->moveToBack();
+            REQUIRE(container->get("name") == child3);
+
+            // Removing the found child allows the previous child to be found again
+            container->remove(child3);
+            REQUIRE(container->get("name") == child2);
+
+            // Removing the found child allows the indirect child to be found again
+            container->remove(child2);
+            REQUIRE(container->get("name") == child4);
+
+            // Removing the found indirect child means that there is no more widget with that name
+            child1->remove(child4);
+            REQUIRE(container->get("name") == nullptr);
         }
     }
 

@@ -126,12 +126,15 @@ namespace tgui
         /// @param widgetName The name that was given to the widget when it was added to the container
         /// @param recursive  Should the function also search for widgets inside containers that are inside this container?
         ///
+        /// The container will first search for widgets that are direct children of it, but when none of the child widgets match
+        /// the given name, a recursive search will be performed.
+        ///
         /// @return Pointer to the earlier created widget
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr get(const sf::String& widgetName, bool recursive = false) const;
+        Widget::Ptr get(const sf::String& widgetName) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,13 +146,16 @@ namespace tgui
         /// @return Pointer to the earlier created widget.
         ///         The pointer will already be casted to the desired type
         ///
+        /// The container will first search for widgets that are direct children of it, but when none of the child widgets match
+        /// the given name, a recursive search will be performed.
+        ///
         /// @warning This function will return nullptr when an unknown widget name was passed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class T>
-        typename T::Ptr get(const sf::String& widgetName, bool recursive = false) const
+        typename T::Ptr get(const sf::String& widgetName) const
         {
-            return std::dynamic_pointer_cast<T>(get(widgetName, recursive));
+            return std::dynamic_pointer_cast<T>(get(widgetName));
         }
 
 

@@ -111,17 +111,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Container::get(const sf::String& widgetName, bool recursive) const
+    Widget::Ptr Container::get(const sf::String& widgetName) const
     {
         for (std::size_t i = 0; i < m_widgetNames.size(); ++i)
         {
             if (m_widgetNames[i] == widgetName)
-            {
                 return m_widgets[i];
-            }
-            else if (recursive && m_widgets[i]->m_containerWidget)
+        }
+
+        for (std::size_t i = 0; i < m_widgetNames.size(); ++i)
+        {
+            if (m_widgets[i]->m_containerWidget)
             {
-                Widget::Ptr widget = std::static_pointer_cast<Container>(m_widgets[i])->get(widgetName, true);
+                Widget::Ptr widget = std::static_pointer_cast<Container>(m_widgets[i])->get(widgetName);
                 if (widget != nullptr)
                     return widget;
             }

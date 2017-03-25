@@ -208,13 +208,6 @@ namespace tgui
         /// @param widgetPtr   Pointer to the widget you would like to add
         /// @param widgetName  If you want to access the widget later then you must do this with this name
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container); // Create a picture and add it to the container
-        /// container.remove(pic);             // Remove the picture from the container
-        /// container.add(pic);                // Add the picture to the container again
-        /// @endcode
-        ///
         /// @warning The widget name should not contain whitespace
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,16 +222,13 @@ namespace tgui
         ///
         /// @return Pointer to the earlier created widget
         ///
+        /// The gui will first search for widgets that are direct children of it, but when none of the child widgets match
+        /// the given name, a recursive search will be performed.
+        ///
         /// @warning This function will return nullptr when an unknown widget name was passed
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2 = container.get("picName");
-        /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr get(const sf::String& widgetName, bool recursive = false) const;
+        Widget::Ptr get(const sf::String& widgetName) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,19 +240,16 @@ namespace tgui
         /// @return Pointer to the earlier created widget.
         ///         The pointer will already be casted to the desired type
         ///
-        /// @warning This function will return nullptr when an unknown widget name was passed
+        /// The gui will first search for widgets that are direct children of it, but when none of the child widgets match
+        /// the given name, a recursive search will be performed.
         ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2 = container.get<tgui::Picture>("picName");
-        /// @endcode
+        /// @warning This function will return nullptr when an unknown widget name was passed
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class T>
-        typename T::Ptr get(const sf::String& widgetName, bool recursive = false) const
+        typename T::Ptr get(const sf::String& widgetName) const
         {
-            return m_container->get<T>(widgetName, recursive);
+            return m_container->get<T>(widgetName);
         }
 
 
@@ -270,14 +257,6 @@ namespace tgui
         /// @brief Removes a single widget that was added to the container
         ///
         /// @param widget  Pointer to the widget to remove
-        ///
-        /// Usage example:
-        /// @code
-        /// tgui::Picture::Ptr pic(container, "picName");
-        /// tgui::Picture::Ptr pic2(container, "picName2");
-        /// container.remove(pic);
-        /// container.remove(container.get("picName2"));
-        /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool remove(const Widget::Ptr& widget);
