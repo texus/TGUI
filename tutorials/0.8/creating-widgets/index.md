@@ -29,12 +29,6 @@ gui.add(editBox, "MyWidgetName");
 tgui::EditBox::Ptr editBox = gui.get<tgui::EditBox>("MyWidgetName");
 tgui::Widget::Ptr widget = gui.get("MyWidgetName");
 {% endhighlight %}
-
-<p class="SmallBottomMargin">A common mistake is to call the get function on the wrong widget when you have a hierarchy. If you added the button to a child window, which was in turn added to the gui, then the gui will not know about the existence of the button. You should call the get function of the child window or you can alternatively do a recursive search from the gui if the name is unique:</p>
-{% highlight c++ %}
-widget = childWindow->get("SomeButton");
-widget = gui.get("SomeButton", true);
-{% endhighlight %}
 </div>
 
 <div>
