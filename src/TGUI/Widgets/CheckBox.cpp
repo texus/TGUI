@@ -76,7 +76,7 @@ namespace tgui
             m_checked = true;
 
             m_callback.checked = true;
-            sendSignal("Checked", m_checked);
+            sendSignal("Checked", static_cast<int>(m_checked));
         }
     }
 
@@ -89,7 +89,7 @@ namespace tgui
             m_checked = false;
 
             m_callback.checked = false;
-            sendSignal("Unchecked", m_checked);
+            sendSignal("Unchecked", static_cast<int>(m_checked));
         }
     }
 
