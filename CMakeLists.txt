@@ -48,9 +48,6 @@ SET( MAJOR_VERSION 0 )
 SET( MINOR_VERSION 8 )
 SET( PATCH_VERSION 0 )
 
-# Disable deprecated warnings from SFML
-add_definitions(-DSFML_NO_DEPRECATED_WARNINGS)
-
 # Include the configuration file
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 

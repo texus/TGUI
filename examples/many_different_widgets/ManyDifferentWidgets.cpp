@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#define SFML_NO_DEPRECATED_WARNINGS
 #include <TGUI/TGUI.hpp>
 #include <iostream>
 
@@ -238,7 +239,7 @@ int main()
 
         sf::Text text{"SFML Canvas", *gui.getFont(), 24};
         text.setPosition(25, 100);
-        text.setFillColor({200, 200, 200});
+        text.setColor({200, 200, 200});
 
         auto canvas = tgui::Canvas::create({200, 140});
         canvas->setPosition(420, 430);
