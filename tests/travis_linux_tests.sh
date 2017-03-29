@@ -1,6 +1,6 @@
 set -eo pipefail
 
-export SFML_VERSION=2.4.0
+export SFML_VERSION=2.3
 export SFML_ROOT=$HOME/SFML-${SFML_VERSION}_LINUX
 export DISPLAY=:99.0
 sh -e /etc/init.d/xvfb start

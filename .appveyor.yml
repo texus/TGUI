@@ -23,7 +23,7 @@ environment:
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       SFML_ROOT:      C:\SFML-VS2013
-      SFML_VERSION:   2.4.0
+      SFML_VERSION:   2.3
       GENERATOR:      Visual Studio 12 2013
       BUILD_TYPE:     Release
       SHARED_LIBS:    TRUE

@@ -74,7 +74,12 @@ namespace tgui
     void Text::setColor(Color color)
     {
         m_color = color;
+
+    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         m_text.setFillColor(Color::calcColorOpacity(color, m_opacity));
+    #else
+        m_text.setColor(Color::calcColorOpacity(color, m_opacity));
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +94,12 @@ namespace tgui
     void Text::setOpacity(float opacity)
     {
         m_opacity = opacity;
+
+    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         m_text.setFillColor(Color::calcColorOpacity(m_color, opacity));
+    #else
+        m_text.setColor(Color::calcColorOpacity(m_color, opacity));
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
