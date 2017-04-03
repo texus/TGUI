@@ -44,9 +44,9 @@ tgui_set_option(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ST
 project(tgui)
 
 # project version
-SET( MAJOR_VERSION 0 )
-SET( MINOR_VERSION 7 )
-SET( PATCH_VERSION 3 )
+SET(MAJOR_VERSION 0)
+SET(MINOR_VERSION 7)
+SET(PATCH_VERSION 4)
 
 # Disable deprecated warnings from SFML
 add_definitions(-DSFML_NO_DEPRECATED_WARNINGS)
