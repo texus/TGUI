@@ -112,8 +112,6 @@ var searchData=
   ['getwidgets',['getWidgets',['../classtgui_1_1Container.html#a1fa7f1a5d1d0cc97e0fb31df5f4835ae',1,'tgui::Container::getWidgets()'],['../classtgui_1_1Gui.html#aa444668dc32aee8e867566feb74729ca',1,'tgui::Gui::getWidgets()']]],
   ['getwidgettype',['getWidgetType',['../classtgui_1_1Widget.html#a74f39d58b9fee9233d1c9235d466f56a',1,'tgui::Widget']]],
   ['getwindow',['getWindow',['../classtgui_1_1Gui.html#acf7827159b401a69881d9d418a9c2ca8',1,'tgui::Gui']]],
-  ['grid',['Grid',['../classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c',1,'tgui::Grid']]],
-  ['grid',['Grid',['../classtgui_1_1Grid.html',1,'tgui']]],
-  ['gui',['Gui',['../classtgui_1_1Gui.html',1,'tgui']]],
-  ['gui',['Gui',['../classtgui_1_1Gui.html#a50f9bf863bc443a6ae8add6e7a8ec7c9',1,'tgui::Gui::Gui()'],['../classtgui_1_1Gui.html#abf97d08aeedabec1fb61a01f87b6fa14',1,'tgui::Gui::Gui(sf::RenderWindow &amp;window)'],['../classtgui_1_1Gui.html#aa555f782ab60f3d521775688f8b23c14',1,'tgui::Gui::Gui(sf::RenderTarget &amp;window)']]]
+  ['grid',['Grid',['../classtgui_1_1Grid.html',1,'tgui::Grid'],['../classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c',1,'tgui::Grid::Grid()']]],
+  ['gui',['Gui',['../classtgui_1_1Gui.html',1,'tgui::Gui'],['../classtgui_1_1Gui.html#a50f9bf863bc443a6ae8add6e7a8ec7c9',1,'tgui::Gui::Gui()'],['../classtgui_1_1Gui.html#abf97d08aeedabec1fb61a01f87b6fa14',1,'tgui::Gui::Gui(sf::RenderWindow &amp;window)'],['../classtgui_1_1Gui.html#aa555f782ab60f3d521775688f8b23c14',1,'tgui::Gui::Gui(sf::RenderTarget &amp;window)']]]
 ];
