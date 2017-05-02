@@ -264,6 +264,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MenuBar::closeMenu()
+    {
+        // Check if there is still a menu open
+        if (m_visibleMenu != -1)
+        {
+            // If an item in that menu was selected then unselect it first
+            if (m_menus[m_visibleMenu].selectedMenuItem != -1)
+            {
+                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColorCached);
+                m_menus[m_visibleMenu].selectedMenuItem = -1;
+            }
+
+            m_menus[m_visibleMenu].text.setColor(m_textColorCached);
+            m_visibleMenu = -1;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MenuBar::setParent(Container* parent)
     {
         Widget::setParent(parent);
@@ -384,7 +403,7 @@ namespace tgui
                                std::vector<sf::String>{m_menus[m_visibleMenu].text.getString(), m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString()},
                                m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString());
 
-                    closeVisibleMenu();
+                    closeMenu();
                 }
             }
         }
@@ -423,7 +442,7 @@ namespace tgui
                         else // The menu isn't open yet
                         {
                             // If there is another menu open then close it first
-                            closeVisibleMenu();
+                            closeMenu();
 
                             // If this menu can be opened then do so
                             if (!m_menus[i].menuItems.empty())
@@ -472,7 +491,7 @@ namespace tgui
     void MenuBar::mouseNoLongerDown()
     {
         if (!m_mouseDown)
-            closeVisibleMenu();
+            closeMenu();
 
         Widget::mouseNoLongerDown();
     }
@@ -489,25 +508,6 @@ namespace tgui
         }
 
         Widget::mouseLeftWidget();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MenuBar::closeVisibleMenu()
-    {
-        // Check if there is still a menu open
-        if (m_visibleMenu != -1)
-        {
-            // If an item in that menu was selected then unselect it first
-            if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-            {
-                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColorCached);
-                m_menus[m_visibleMenu].selectedMenuItem = -1;
-            }
-
-            m_menus[m_visibleMenu].text.setColor(m_textColorCached);
-            m_visibleMenu = -1;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
