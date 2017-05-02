@@ -1,3 +1,13 @@
+TGUI 0.7.4  (3 April 2017)
+--------------------------
+
+- Theme and widget file parser now provides line number on error
+- Scrollbar in ListBox remained in hover state until mouse left the ListBox
+- The position of TextBox could be wrong when using layouts
+- Fixed incorrect clipping when the viewport was changed
+- Optional parameter from Checked/Unchecked signal could have been wrong
+
+
 TGUI 0.7.3  (9 February 2017)
 -----------------------------
 
