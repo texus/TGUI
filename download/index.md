@@ -15,7 +15,7 @@ Unstable development version - intended for testing
   {% include button.ext text="Visual C++14 (2015) - 64bit" link="https://bintray.com/texus/generic/download_file?file_path=TGUI-0.8-dev-vc14-64bit-for-SFML-2.4.2.zip" style="Orange" %}
 </p>
 
-### TGUI 0.7.4 <span class="ChangelogDate">(released on 3 April 2017)</span>
+### TGUI 0.7.4
 Latest stable version - <b>recommended</b>
 <p>
   {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.7.4.zip" style="Green" %}<br><br>
