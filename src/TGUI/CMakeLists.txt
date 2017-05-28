@@ -8,6 +8,7 @@ set(TGUI_SRC
     Global.cpp
     Gui.cpp
     HorizontalLayout.cpp
+    HorizontalWrap.cpp
     Layout.cpp
     Signal.cpp
     Texture.cpp

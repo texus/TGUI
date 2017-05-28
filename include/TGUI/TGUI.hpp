@@ -32,6 +32,7 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/HorizontalLayout.hpp>
+#include <TGUI/HorizontalWrap.hpp>
 #include <TGUI/VerticalLayout.hpp>
 #include <TGUI/Gui.hpp>
 
