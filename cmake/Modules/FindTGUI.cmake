@@ -78,10 +78,17 @@ if(TGUI_INCLUDE_DIR)
 
         # transform version numbers to an integer
         math(EXPR TGUI_VERSION "${TGUI_VERSION_MAJOR} * 10000 + ${TGUI_VERSION_MINOR} * 100 + ${TGUI_VERSION_PATCH}")
+        math(EXPR TGUI_VERSION_NOPATCH "${TGUI_VERSION_MAJOR} * 10000 + ${TGUI_VERSION_MINOR} * 100")
 
         # compare them
-        if(NOT TGUI_VERSION EQUAL TGUI_REQUESTED_VERSION)
-            set(TGUI_VERSION_OK FALSE)
+        if(TGUI_FIND_VERSION_PATCH)
+            if(NOT TGUI_VERSION EQUAL TGUI_REQUESTED_VERSION)
+                set(TGUI_VERSION_OK FALSE)
+            endif()
+        else()
+            if(NOT TGUI_VERSION_NOPATCH EQUAL TGUI_REQUESTED_VERSION)
+                set(TGUI_VERSION_OK FALSE)
+            endif()
         endif()
     endif()
 endif()
