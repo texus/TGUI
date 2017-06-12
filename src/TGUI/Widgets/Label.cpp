@@ -474,8 +474,8 @@ namespace tgui
 
         if (m_autoSize)
         {
-            m_size = {std::max(calculatedLabelWidth, maxWidth) + getRenderer()->getPadding().left + getRenderer()->getPadding().right,
-                      (lineCount * getFont()->getLineSpacing(m_textSize)) + getRenderer()->getPadding().top + getRenderer()->getPadding().bottom};
+            Widget::setSize({std::max(calculatedLabelWidth, maxWidth) + getRenderer()->getPadding().left + getRenderer()->getPadding().right,
+                             (lineCount * getFont()->getLineSpacing(m_textSize)) + getRenderer()->getPadding().top + getRenderer()->getPadding().bottom});
 
             m_background.setSize(getSize());
         }
