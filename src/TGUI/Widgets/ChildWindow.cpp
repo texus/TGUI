@@ -341,7 +341,8 @@ namespace tgui
 
     void ChildWindow::destroy()
     {
-        m_parent->remove(shared_from_this());
+        if (m_parent)
+            m_parent->remove(shared_from_this());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
