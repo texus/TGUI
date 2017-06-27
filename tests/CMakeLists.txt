@@ -70,8 +70,7 @@ add_custom_command(TARGET tests
                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/tests/resources $<TARGET_FILE_DIR:tests>/resources
                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/widgets/Knob $<TARGET_FILE_DIR:tests>/resources/Knob
                    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/widgets/Black.png $<TARGET_FILE_DIR:tests>/resources
-                   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/widgets/Black.txt $<TARGET_FILE_DIR:tests>/resources
-                   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/fonts/DejaVuSans.ttf $<TARGET_FILE_DIR:tests>/resources)
+                   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/widgets/Black.txt $<TARGET_FILE_DIR:tests>/resources)
 
 # Add the install rule for the executable
 install(TARGETS tests
