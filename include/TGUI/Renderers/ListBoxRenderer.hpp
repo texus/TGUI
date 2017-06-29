@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ListBoxRenderer(std::shared_ptr<RendererData> data)
+        ListBoxRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

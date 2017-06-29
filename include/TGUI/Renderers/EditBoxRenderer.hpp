@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        EditBoxRenderer(std::shared_ptr<RendererData> data)
+        EditBoxRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

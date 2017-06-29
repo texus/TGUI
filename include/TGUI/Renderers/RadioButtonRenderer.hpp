@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        RadioButtonRenderer(std::shared_ptr<RendererData> data)
+        RadioButtonRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

@@ -72,7 +72,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        WidgetRenderer(std::shared_ptr<RendererData> data)
+        WidgetRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }
@@ -196,7 +196,7 @@ namespace tgui
         /// You are not supposed to call this function yourself, use the setRenderer function of the widget instead.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setData(std::shared_ptr<RendererData> data);
+        void setData(const std::shared_ptr<RendererData>& data);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

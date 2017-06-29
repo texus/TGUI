@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ButtonRenderer(std::shared_ptr<RendererData> data)
+        ButtonRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

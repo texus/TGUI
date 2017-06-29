@@ -61,7 +61,7 @@ namespace tgui
         #define DESERIALIZE_STRING(property) Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[property]->value).getString()
 
         #define REMOVE_CHILD(childName) node->children.erase(std::remove_if(node->children.begin(), node->children.end(), \
-                                            [](std::shared_ptr<DataIO::Node> child){ return toLower(child->name) == childName; }), node->children.end());
+                                            [](const std::unique_ptr<DataIO::Node>& child){ return toLower(child->name) == childName; }), node->children.end());
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -100,7 +100,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadWidget(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             assert(widget != nullptr);
 
@@ -143,8 +143,8 @@ namespace tgui
                         if (childNode->children.size() > 1)
                             throw Exception{"ToolTip section contained multiple children."};
 
-                        auto toolTipWidgetNode = childNode->children[0];
-                        auto& loadFunction = WidgetLoader::getLoadFunction(toolTipWidgetNode->name);
+                        const auto& toolTipWidgetNode = childNode->children[0];
+                        const auto& loadFunction = WidgetLoader::getLoadFunction(toolTipWidgetNode->name);
                         if (loadFunction)
                             widget->setToolTip(loadFunction(toolTipWidgetNode, nullptr));
                         else
@@ -180,7 +180,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadContainer(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadContainer(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             assert(widget != nullptr);
             Container::Ptr container = std::static_pointer_cast<Container>(widget);
@@ -188,9 +188,9 @@ namespace tgui
 
             for (const auto& childNode : node->children)
             {
-                auto nameSeparator = childNode->name.find('.');
-                auto widgetType = childNode->name.substr(0, nameSeparator);
-                auto& loadFunction = WidgetLoader::getLoadFunction(widgetType);
+                const auto nameSeparator = childNode->name.find('.');
+                const auto widgetType = childNode->name.substr(0, nameSeparator);
+                const auto& loadFunction = WidgetLoader::getLoadFunction(widgetType);
                 if (loadFunction)
                 {
                     std::string className;
@@ -209,7 +209,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadButton(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             Button::Ptr button;
             if (widget)
@@ -228,7 +228,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadCanvas(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadCanvas(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             if (widget)
                 return loadWidget(node, widget);
@@ -238,7 +238,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadChatBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadChatBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             ChatBox::Ptr chatBox;
             if (widget)
@@ -289,7 +289,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadCheckBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadCheckBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             CheckBox::Ptr checkbox;
             if (widget)
@@ -315,7 +315,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadChildWindow(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadChildWindow(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             ChildWindow::Ptr childWindow;
             if (widget)
@@ -369,7 +369,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadClickableWidget(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadClickableWidget(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             if (widget)
                 return loadWidget(node, widget);
@@ -379,7 +379,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadComboBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadComboBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             ComboBox::Ptr comboBox;
             if (widget)
@@ -438,7 +438,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadEditBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadEditBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             EditBox::Ptr editBox;
             if (widget)
@@ -492,7 +492,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadGroup(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadGroup(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             if (widget)
                 return loadContainer(node, std::static_pointer_cast<Group>(widget));
@@ -502,7 +502,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadKnob(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadKnob(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             Knob::Ptr knob;
             if (widget)
@@ -529,7 +529,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadLabel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadLabel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             Label::Ptr label;
             if (widget)
@@ -575,7 +575,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadListBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadListBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             ListBox::Ptr listBox;
             if (widget)
@@ -636,7 +636,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadMenuBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadMenuBar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             MenuBar::Ptr menuBar;
             if (widget)
@@ -677,7 +677,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadMessageBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadMessageBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             MessageBox::Ptr messageBox;
             if (widget)
@@ -699,7 +699,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadPanel(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadPanel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             if (widget)
                 return loadContainer(node, std::static_pointer_cast<Panel>(widget));
@@ -709,7 +709,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadPicture(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadPicture(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             Picture::Ptr picture;
             if (widget)
@@ -730,7 +730,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadProgressBar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadProgressBar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             ProgressBar::Ptr progressBar;
             if (widget)
@@ -770,7 +770,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadRadioButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadRadioButton(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             RadioButton::Ptr radioButton;
             if (widget)
@@ -796,7 +796,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadRadioButtonGroup(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadRadioButtonGroup(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             if (widget)
                 return loadContainer(node, std::static_pointer_cast<RadioButtonGroup>(widget));
@@ -806,7 +806,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadScrollbar(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadScrollbar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             Scrollbar::Ptr scrollbar;
             if (widget)
@@ -831,7 +831,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadSlider(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadSlider(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             Slider::Ptr slider;
             if (widget)
@@ -852,7 +852,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadSpinButton(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadSpinButton(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             SpinButton::Ptr spinButton;
             if (widget)
@@ -875,7 +875,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadTabs(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadTabs(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             Tabs::Ptr tabs;
             if (widget)
@@ -908,7 +908,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadTextBox(std::shared_ptr<DataIO::Node> node, Widget::Ptr widget)
+        Widget::Ptr loadTextBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             TextBox::Ptr textBox;
             if (widget)

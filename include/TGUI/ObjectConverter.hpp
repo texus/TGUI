@@ -198,7 +198,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(std::shared_ptr<RendererData> data) :
             m_type {Type::RendererData},
-            m_value{data}
+            m_value{std::move(data)}
         {
         }
 

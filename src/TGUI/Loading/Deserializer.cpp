@@ -359,7 +359,7 @@ namespace tgui
 
             // The root node should contain exactly one child which is the node we need
             if (node->propertyValuePairs.empty() && (node->children.size() == 1))
-                node = node->children[0];
+                node = std::move(node->children[0]);
 
             auto rendererData = RendererData::create();
             for (const auto& pair : node->propertyValuePairs)

@@ -208,7 +208,7 @@ namespace tgui
 
         std::string serializeRendererData(ObjectConverter&& value)
         {
-            auto node = std::make_shared<DataIO::Node>();
+            auto node = std::make_unique<DataIO::Node>();
             for (const auto& pair : value.getRenderer()->propertyValuePairs)
             {
                 sf::String strValue;
@@ -221,7 +221,7 @@ namespace tgui
                 else
                 {
                     strValue = ObjectConverter{pair.second}.getString();
-                    node->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(strValue);
+                    node->propertyValuePairs[pair.first] = std::make_unique<DataIO::ValueNode>(strValue);
                 }
             }
 

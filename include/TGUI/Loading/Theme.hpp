@@ -117,6 +117,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
+
         static std::shared_ptr<BaseThemeLoader> m_themeLoader;  ///< Theme loader which will do the actual loading
         std::map<std::string, std::shared_ptr<RendererData>> m_renderers; ///< Maps ids to renderer datas
         std::string m_primary;

@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        PanelRenderer(std::shared_ptr<RendererData> data)
+        PanelRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

@@ -82,7 +82,7 @@ TEST_CASE("[DataIO]")
         {
             std::stringstream input("\"SpecialChars.{}=:;/*#//\\t\\\"\\\\\" { Property\r\n//txt\n = \"\\\\\\\"Value\\\"\\\\\"; }");
 
-            std::shared_ptr<tgui::DataIO::Node> rootNode;
+            std::unique_ptr<tgui::DataIO::Node> rootNode;
             REQUIRE_NOTHROW(rootNode = tgui::DataIO::parse(input));
 
             REQUIRE(rootNode->children.size() == 1);
@@ -206,28 +206,29 @@ TEST_CASE("[DataIO]")
 
         SECTION("emit")
         {
-            auto root = std::make_shared<tgui::DataIO::Node>();
+            auto root = std::make_unique<tgui::DataIO::Node>();
             root->name = "Root";
-            root->propertyValuePairs["GlobalProperty1"] = std::make_shared<tgui::DataIO::ValueNode>("GlobalValue1");
-            root->propertyValuePairs["GlobalProperty2"] = std::make_shared<tgui::DataIO::ValueNode>("GlobalValue2");
+            root->propertyValuePairs["GlobalProperty1"] = std::make_unique<tgui::DataIO::ValueNode>("GlobalValue1");
+            root->propertyValuePairs["GlobalProperty2"] = std::make_unique<tgui::DataIO::ValueNode>("GlobalValue2");
 
-            auto child1 = std::make_shared<tgui::DataIO::Node>();
+            auto child1 = std::make_unique<tgui::DataIO::Node>();
             child1->name = "Child1";
-            child1->propertyValuePairs["Property"] = std::make_shared<tgui::DataIO::ValueNode>("Value");
+            child1->propertyValuePairs["Property"] = std::make_unique<tgui::DataIO::ValueNode>("Value");
             child1->parent = root.get();
-            root->children.push_back(child1);
 
-            auto child2 = std::make_shared<tgui::DataIO::Node>();
+            auto child2 = std::make_unique<tgui::DataIO::Node>();
             child2->parent = root.get();
-            root->children.push_back(child2);
 
-            auto nestedChild = std::make_shared<tgui::DataIO::Node>();
+            auto nestedChild = std::make_unique<tgui::DataIO::Node>();
             nestedChild->name = "NestedChild";
-            nestedChild->propertyValuePairs["PropertyA"] = std::make_shared<tgui::DataIO::ValueNode>("ValueA");
-            nestedChild->propertyValuePairs["PropertyB"] = std::make_shared<tgui::DataIO::ValueNode>("[]");
-            nestedChild->propertyValuePairs["PropertyC"] = std::make_shared<tgui::DataIO::ValueNode>("[X, Y, Z]");
+            nestedChild->propertyValuePairs["PropertyA"] = std::make_unique<tgui::DataIO::ValueNode>("ValueA");
+            nestedChild->propertyValuePairs["PropertyB"] = std::make_unique<tgui::DataIO::ValueNode>("[]");
+            nestedChild->propertyValuePairs["PropertyC"] = std::make_unique<tgui::DataIO::ValueNode>("[X, Y, Z]");
             nestedChild->parent = root.get();
-            child1->children.push_back(nestedChild);
+            child1->children.push_back(std::move(nestedChild));
+
+            root->children.push_back(std::move(child1));
+            root->children.push_back(std::move(child2));
 
             tgui::DataIO::emit(root, stream);
         }

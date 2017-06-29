@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        MenuBarRenderer(std::shared_ptr<RendererData> data)
+        MenuBarRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

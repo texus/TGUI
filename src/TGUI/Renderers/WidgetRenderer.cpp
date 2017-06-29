@@ -115,7 +115,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::setData(std::shared_ptr<RendererData> data)
+    void WidgetRenderer::setData(const std::shared_ptr<RendererData>& data)
     {
         m_data = data;
     }

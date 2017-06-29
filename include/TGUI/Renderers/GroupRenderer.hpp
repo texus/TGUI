@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        GroupRenderer(std::shared_ptr<RendererData> data)
+        GroupRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

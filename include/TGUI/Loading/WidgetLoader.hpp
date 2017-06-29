@@ -41,7 +41,7 @@ namespace tgui
     class TGUI_API WidgetLoader
     {
     public:
-        using LoadFunction = std::function<Widget::Ptr(std::shared_ptr<DataIO::Node>, Widget::Ptr)>;
+        using LoadFunction = std::function<Widget::Ptr(const std::unique_ptr<DataIO::Node>&, Widget::Ptr)>;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

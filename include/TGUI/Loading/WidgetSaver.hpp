@@ -41,7 +41,7 @@ namespace tgui
     class TGUI_API WidgetSaver
     {
     public:
-        using SaveFunction = std::function<std::shared_ptr<DataIO::Node>(Widget::Ptr)>;
+        using SaveFunction = std::function<std::unique_ptr<DataIO::Node>(Widget::Ptr)>;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

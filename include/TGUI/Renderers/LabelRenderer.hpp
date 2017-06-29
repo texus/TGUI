@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        LabelRenderer(std::shared_ptr<RendererData> data)
+        LabelRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

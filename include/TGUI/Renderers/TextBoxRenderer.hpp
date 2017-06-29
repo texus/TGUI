@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TextBoxRenderer(std::shared_ptr<RendererData> data)
+        TextBoxRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

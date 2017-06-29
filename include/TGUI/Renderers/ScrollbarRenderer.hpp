@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ScrollbarRenderer(std::shared_ptr<RendererData> data)
+        ScrollbarRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

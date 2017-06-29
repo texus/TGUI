@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ChatBoxRenderer(std::shared_ptr<RendererData> data)
+        ChatBoxRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

@@ -92,7 +92,7 @@ namespace tgui
     namespace
     {
         // Forward declare one of the functions to solve circular dependency
-        std::string parseSection(std::stringstream& stream, std::shared_ptr<DataIO::Node> node, const std::string& sectionName);
+        std::string parseSection(std::stringstream& stream, std::unique_ptr<DataIO::Node>& node, const std::string& sectionName);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -267,7 +267,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::string parseKeyValue(std::stringstream& stream, std::shared_ptr<DataIO::Node> node, const std::string& key)
+        std::string parseKeyValue(std::stringstream& stream, std::unique_ptr<DataIO::Node>& node, const std::string& key)
         {
             // Read the assignment symbol from the stream and remove the whitespace behind it
             char chr;
@@ -288,9 +288,8 @@ namespace tgui
                     stream.read(&chr, 1);
 
                 // Create a value node to store the value
-                auto valueNode = std::make_shared<DataIO::ValueNode>();
+                auto valueNode = std::make_unique<DataIO::ValueNode>();
                 valueNode->value = line;
-                node->propertyValuePairs[toLower(key)] = valueNode;
 
                 // It might be a list node
                 if ((line.size() >= 2) && (line[0] == '[') && (line.back() == ']'))
@@ -344,6 +343,7 @@ namespace tgui
                     }
                 }
 
+                node->propertyValuePairs[toLower(key)] = std::move(valueNode);
                 return "";
             }
             else
@@ -365,14 +365,12 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::string parseSection(std::stringstream& stream, std::shared_ptr<DataIO::Node> node, const std::string& sectionName)
+        std::string parseSection(std::stringstream& stream, std::unique_ptr<DataIO::Node>& node, const std::string& sectionName)
         {
             // Create a new node for this section
-            auto sectionNode = std::make_shared<DataIO::Node>();
+            auto sectionNode = std::make_unique<DataIO::Node>();
             sectionNode->parent = node.get();
             sectionNode->name = sectionName;
-            node->children.push_back(sectionNode);
-            node = sectionNode;
 
             // Read the brace from the stream
             char chr;
@@ -389,6 +387,8 @@ namespace tgui
                         return "Found EOF while trying to read property or nested section name.";
                     else if (stream.peek() == '}')
                     {
+                        node->children.push_back(std::move(sectionNode));
+
                         stream.read(&chr, 1);
 
                         // Ignore semicolon behind closing brace
@@ -406,13 +406,13 @@ namespace tgui
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
                 if (stream.peek() == '{')
                 {
-                    std::string error = parseSection(stream, node, word);
+                    std::string error = parseSection(stream, sectionNode, word);
                     if (!error.empty())
                         return error;
                 }
                 else if (stream.peek() == '=')
                 {
-                    std::string error = parseKeyValue(stream, node, word);
+                    std::string error = parseKeyValue(stream, sectionNode, word);
                     if (!error.empty())
                         return error;
                 }
@@ -425,7 +425,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::string parseRootSection(std::stringstream& stream, std::shared_ptr<DataIO::Node> root)
+        std::string parseRootSection(std::stringstream& stream, std::unique_ptr<DataIO::Node>& root)
         {
             REMOVE_WHITESPACE_AND_COMMENTS(false)
 
@@ -448,7 +448,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::vector<std::string> convertNodesToLines(std::shared_ptr<DataIO::Node> node)
+        std::vector<std::string> convertNodesToLines(const std::unique_ptr<DataIO::Node>& node)
         {
             std::vector<std::string> output;
             if (node->name.empty())
@@ -486,9 +486,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<DataIO::Node> DataIO::parse(std::stringstream& stream)
+    std::unique_ptr<DataIO::Node> DataIO::parse(std::stringstream& stream)
     {
-        auto root = std::make_shared<Node>();
+        auto root = std::make_unique<Node>();
 
         std::string error;
         while (stream.peek() != EOF)
@@ -513,7 +513,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void DataIO::emit(std::shared_ptr<Node> rootNode, std::stringstream& stream)
+    void DataIO::emit(const std::unique_ptr<Node>& rootNode, std::stringstream& stream)
     {
         for (const auto& pair : rootNode->propertyValuePairs)
             stream << pair.first << " = " << pair.second->value.toAnsiString() << ";" << std::endl;

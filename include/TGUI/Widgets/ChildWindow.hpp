@@ -433,9 +433,9 @@ namespace tgui
         TitleAlignment m_titleAlignment = TitleAlignment::Center;
         unsigned int   m_titleButtons   = TitleButton::Close;
 
-        std::shared_ptr<Button> m_closeButton;
-        std::shared_ptr<Button> m_minimizeButton;
-        std::shared_ptr<Button> m_maximizeButton;
+        Button::Ptr m_closeButton;
+        Button::Ptr m_minimizeButton;
+        Button::Ptr m_maximizeButton;
 
         bool m_mouseDownOnTitleBar = false;
         bool m_keepInParent = false;

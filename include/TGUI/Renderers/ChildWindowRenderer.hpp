@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ChildWindowRenderer(std::shared_ptr<RendererData> data)
+        ChildWindowRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

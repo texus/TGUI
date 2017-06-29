@@ -59,7 +59,7 @@ namespace tgui
 
     namespace
     {
-        void injectRelativePathInTextures(std::set<std::shared_ptr<DataIO::Node>>& handledSections, std::shared_ptr<DataIO::Node> node, const std::string& path)
+        void injectRelativePathInTextures(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const std::string& path)
         {
             for (const auto& pair : node->propertyValuePairs)
             {
@@ -77,9 +77,9 @@ namespace tgui
 
             for (const auto& child : node->children)
             {
-                if (handledSections.find(child) == handledSections.end())
+                if (handledSections.find(child.get()) == handledSections.end())
                 {
-                    handledSections.insert(child);
+                    handledSections.insert(child.get());
                     injectRelativePathInTextures(handledSections, child, path);
                 }
             }
@@ -87,7 +87,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void resolveReferences(std::map<std::string, std::shared_ptr<DataIO::Node>>& sections, std::shared_ptr<DataIO::Node> node)
+        void resolveReferences(std::map<std::string, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>& sections, const std::unique_ptr<DataIO::Node>& node)
         {
             for (const auto& pair : node->propertyValuePairs)
             {
@@ -157,7 +157,7 @@ namespace tgui
             std::stringstream fileContents;
             readFile(filename, fileContents);
 
-            std::shared_ptr<DataIO::Node> root = DataIO::parse(fileContents);
+            std::unique_ptr<DataIO::Node> root = DataIO::parse(fileContents);
 
             if (root->propertyValuePairs.size() != 0)
                 throw Exception{"Unexpected result while loading theme file '" + filename + "'. Root property-value pair found."};
@@ -165,16 +165,16 @@ namespace tgui
             // Inject relative path to the theme file into texture filenames
             if (!resourcePath.empty())
             {
-                std::set<std::shared_ptr<DataIO::Node>> handledSections;
+                std::set<const DataIO::Node*> handledSections;
                 injectRelativePathInTextures(handledSections, root, resourcePath);
             }
 
             // Get a list of section names and map them to their nodes (needed for resolving references)
-            std::map<std::string, std::shared_ptr<DataIO::Node>> sections;
+            std::map<std::string, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>> sections;
             for (const auto& child : root->children)
             {
                 std::string name = toLower(Deserializer::deserialize(ObjectConverter::Type::String, child->name).getString());
-                sections[name] = child;
+                sections.emplace(name, std::cref(child));
             }
 
             // Resolve references to sections
@@ -185,10 +185,10 @@ namespace tgui
             {
                 auto& child = section.second;
                 const std::string& name = section.first;
-                for (const auto& pair : child->propertyValuePairs)
+                for (const auto& pair : child.get()->propertyValuePairs)
                     m_propertiesCache[filename][name][toLower(pair.first)] = pair.second->value;
 
-                for (const auto& nestedProperty : child->children)
+                for (const auto& nestedProperty : child.get()->children)
                 {
                     std::stringstream ss;
                     DataIO::emit(nestedProperty, ss);

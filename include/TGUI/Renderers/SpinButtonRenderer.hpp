@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SpinButtonRenderer(std::shared_ptr<RendererData> data)
+        SpinButtonRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

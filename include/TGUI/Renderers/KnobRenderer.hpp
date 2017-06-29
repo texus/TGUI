@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        KnobRenderer(std::shared_ptr<RendererData> data)
+        KnobRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

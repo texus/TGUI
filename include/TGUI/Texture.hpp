@@ -78,7 +78,7 @@ namespace tgui
         /// This constructor just calls the corresponding load function.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture(std::string id,
+        Texture(const std::string& id,
                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
                 const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0))
             : Texture(sf::String{id}, partRect, middlePart)

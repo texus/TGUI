@@ -49,7 +49,7 @@ namespace tgui
         /// @param data  Renderer data to initialize the renderer with
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        SliderRenderer(std::shared_ptr<RendererData> data)
+        SliderRenderer(const std::shared_ptr<RendererData>& data)
         {
             setData(data);
         }

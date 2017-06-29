@@ -54,7 +54,7 @@ namespace tgui
 
     namespace
     {
-        #define SET_PROPERTY(property, value) node->propertyValuePairs[property] = std::make_shared<DataIO::ValueNode>(value)
+        #define SET_PROPERTY(property, value) node->propertyValuePairs[property] = std::make_unique<DataIO::ValueNode>(value)
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,13 +81,13 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveWidget(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveWidget(Widget::Ptr widget)
         {
             sf::String widgetName;
             if (widget->getParent())
                 widgetName = widget->getParent()->getWidgetName(widget);
 
-            auto node = std::make_shared<DataIO::Node>();
+            auto node = std::make_unique<DataIO::Node>();
             if (widgetName.isEmpty())
                 node->name = widget->getWidgetType();
             else
@@ -112,20 +112,20 @@ namespace tgui
             {
                 auto toolTipWidgetNode = WidgetSaver::getSaveFunction("widget")(widget->getToolTip());
 
-                auto toolTipNode = std::make_shared<DataIO::Node>();
+                auto toolTipNode = std::make_unique<DataIO::Node>();
                 toolTipNode->name = "ToolTip";
-                toolTipNode->children.emplace_back(toolTipWidgetNode);
+                toolTipNode->children.emplace_back(std::move(toolTipWidgetNode));
 
-                toolTipNode->propertyValuePairs["TimeToDisplay"] = std::make_shared<DataIO::ValueNode>(to_string(ToolTip::getTimeToDisplay().asSeconds()));
-                toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_shared<DataIO::ValueNode>("(" + to_string(ToolTip::getDistanceToMouse().x) + "," + to_string(ToolTip::getDistanceToMouse().y) + ")");
+                toolTipNode->propertyValuePairs["TimeToDisplay"] = std::make_unique<DataIO::ValueNode>(to_string(ToolTip::getTimeToDisplay().asSeconds()));
+                toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_unique<DataIO::ValueNode>("(" + to_string(ToolTip::getDistanceToMouse().x) + "," + to_string(ToolTip::getDistanceToMouse().y) + ")");
 
-                node->children.emplace_back(toolTipNode);
+                node->children.emplace_back(std::move(toolTipNode));
             }
 
             /// TODO: Separate renderer section?
             if (!widget->getRenderer()->getPropertyValuePairs().empty())
             {
-                node->children.emplace_back(std::make_shared<DataIO::Node>());
+                node->children.emplace_back(std::make_unique<DataIO::Node>());
                 node->children.back()->name = "Renderer";
                 for (const auto& pair : widget->getRenderer()->getPropertyValuePairs())
                 {
@@ -135,14 +135,14 @@ namespace tgui
                         std::stringstream ss{value};
                         auto rendererRootNode = DataIO::parse(ss);
                         if (!rendererRootNode->children.empty())
-                            node->children.back()->children.push_back(rendererRootNode->children[0]);
+                            node->children.back()->children.push_back(std::move(rendererRootNode->children[0]));
                         else
-                            node->children.back()->children.push_back(rendererRootNode);
+                            node->children.back()->children.push_back(std::move(rendererRootNode));
 
                         node->children.back()->children.back()->name = pair.first;
                     }
                     else
-                        node->children.back()->propertyValuePairs[pair.first] = std::make_shared<DataIO::ValueNode>(value);
+                        node->children.back()->propertyValuePairs[pair.first] = std::make_unique<DataIO::ValueNode>(value);
                 }
             }
 
@@ -151,7 +151,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveContainer(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveContainer(Widget::Ptr widget)
         {
             auto container = std::static_pointer_cast<Container>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(container);
@@ -170,7 +170,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveButton(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveButton(Widget::Ptr widget)
         {
             auto button = std::static_pointer_cast<Button>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(button);
@@ -184,7 +184,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveChatBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveChatBox(Widget::Ptr widget)
         {
             auto chatBox = std::static_pointer_cast<ChatBox>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(chatBox);
@@ -210,17 +210,17 @@ namespace tgui
                 unsigned int lineTextSize = chatBox->getLineTextSize(i);
                 sf::Color lineTextColor = chatBox->getLineColor(i);
 
-                auto lineNode = std::make_shared<DataIO::Node>();
+                auto lineNode = std::make_unique<DataIO::Node>();
                 lineNode->parent = node.get();
                 lineNode->name = "Line";
 
-                lineNode->propertyValuePairs["Text"] = std::make_shared<DataIO::ValueNode>(Serializer::serialize(chatBox->getLine(i)));
+                lineNode->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(chatBox->getLine(i)));
                 if (lineTextSize != chatBox->getTextSize())
-                    lineNode->propertyValuePairs["TextSize"] = std::make_shared<DataIO::ValueNode>(to_string(lineTextSize));
+                    lineNode->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(lineTextSize));
                 if (lineTextColor != chatBox->getTextColor())
-                    lineNode->propertyValuePairs["Color"] = std::make_shared<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
+                    lineNode->propertyValuePairs["Color"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
 
-                node->children.push_back(lineNode);
+                node->children.push_back(std::move(lineNode));
             }
 
             return node;
@@ -228,7 +228,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveChildWindow(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveChildWindow(Widget::Ptr widget)
         {
             auto childWindow = std::static_pointer_cast<ChildWindow>(widget);
             auto node = WidgetSaver::getSaveFunction("container")(childWindow);
@@ -269,7 +269,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveComboBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveComboBox(Widget::Ptr widget)
         {
             auto comboBox = std::static_pointer_cast<ComboBox>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(comboBox);
@@ -302,7 +302,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveEditBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveEditBox(Widget::Ptr widget)
         {
             auto editBox = std::static_pointer_cast<EditBox>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(editBox);
@@ -344,7 +344,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveKnob(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveKnob(Widget::Ptr widget)
         {
             auto knob = std::static_pointer_cast<Knob>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(knob);
@@ -364,7 +364,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveLabel(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveLabel(Widget::Ptr widget)
         {
             auto label = std::static_pointer_cast<Label>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(label);
@@ -392,7 +392,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveListBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveListBox(Widget::Ptr widget)
         {
             auto listBox = std::static_pointer_cast<ListBox>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(listBox);
@@ -428,7 +428,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveMenuBar(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveMenuBar(Widget::Ptr widget)
         {
             auto menuBar = std::static_pointer_cast<MenuBar>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(menuBar);
@@ -436,11 +436,11 @@ namespace tgui
             std::map<sf::String, std::vector<sf::String>> menus = menuBar->getMenus();
             for (const auto& menu : menus)
             {
-                auto menuNode = std::make_shared<DataIO::Node>();
+                auto menuNode = std::make_unique<DataIO::Node>();
                 menuNode->parent = node.get();
                 menuNode->name = "Menu";
 
-                menuNode->propertyValuePairs["Name"] = std::make_shared<DataIO::ValueNode>(Serializer::serialize(menu.first));
+                menuNode->propertyValuePairs["Name"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu.first));
 
                 auto& items = menu.second;
                 if (!items.empty())
@@ -450,10 +450,10 @@ namespace tgui
                         itemList += ", " + Serializer::serialize(items[i]);
                     itemList += "]";
 
-                    menuNode->propertyValuePairs["Items"] = std::make_shared<DataIO::ValueNode>(itemList);
+                    menuNode->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
                 }
 
-                node->children.push_back(menuNode);
+                node->children.push_back(std::move(menuNode));
             }
 
             SET_PROPERTY("TextSize", to_string(menuBar->getTextSize()));
@@ -464,7 +464,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveMessageBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveMessageBox(Widget::Ptr widget)
         {
             auto messageBox = std::static_pointer_cast<MessageBox>(widget);
             auto node = WidgetSaver::getSaveFunction("childwindow")(messageBox);
@@ -478,7 +478,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> savePicture(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> savePicture(Widget::Ptr widget)
         {
             auto picture = std::static_pointer_cast<Picture>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(picture);
@@ -493,7 +493,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveProgressBar(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveProgressBar(Widget::Ptr widget)
         {
             auto progressBar = std::static_pointer_cast<ProgressBar>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(progressBar);
@@ -520,7 +520,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveRadioButton(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveRadioButton(Widget::Ptr widget)
         {
             auto radioButton = std::static_pointer_cast<RadioButton>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(radioButton);
@@ -538,7 +538,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveScrollbar(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveScrollbar(Widget::Ptr widget)
         {
             auto scrollbar = std::static_pointer_cast<Scrollbar>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(scrollbar);
@@ -557,7 +557,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveSlider(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveSlider(Widget::Ptr widget)
         {
             auto slider = std::static_pointer_cast<Slider>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(slider);
@@ -570,7 +570,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveSpinButton(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveSpinButton(Widget::Ptr widget)
         {
             auto spinButton = std::static_pointer_cast<SpinButton>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(spinButton);
@@ -588,7 +588,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveTabs(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveTabs(Widget::Ptr widget)
         {
             auto tabs = std::static_pointer_cast<Tabs>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(tabs);
@@ -616,7 +616,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::shared_ptr<DataIO::Node> saveTextBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveTextBox(Widget::Ptr widget)
         {
             auto textBox = std::static_pointer_cast<TextBox>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(textBox);
@@ -671,7 +671,7 @@ namespace tgui
 
     void WidgetSaver::save(Container::Ptr widget, std::stringstream& stream)
     {
-        auto node = std::make_shared<DataIO::Node>();
+        auto node = std::make_unique<DataIO::Node>();
         for (const auto& child : widget->getWidgets())
         {
             auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));
