@@ -184,7 +184,7 @@ TEST_CASE("[Texture]")
         unsigned int count = 0;
         auto oldImageLoader = tgui::Texture::getImageLoader();
 
-        auto func = [&](const sf::String&){ auto image=std::make_shared<sf::Image>(); image->create(1,1); count++; return image; };
+        auto func = [&](const sf::String&){ auto image=std::make_unique<sf::Image>(); image->create(1,1); count++; return image; };
         tgui::Texture::setImageLoader(func);
         REQUIRE_NOTHROW(tgui::Texture{"resources/image.png"});
         REQUIRE(count == 1);

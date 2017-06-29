@@ -41,7 +41,7 @@ namespace tgui
     public:
 
         using CallbackFunc = std::function<void(std::shared_ptr<TextureData>)>;
-        using ImageLoaderFunc = std::function<std::shared_ptr<sf::Image>(const sf::String&)>;
+        using ImageLoaderFunc = std::function<std::unique_ptr<sf::Image>(const sf::String&)>;
         using TextureLoaderFunc = std::function<std::shared_ptr<TextureData>(Texture&, const sf::String&, const sf::IntRect&)>;
 
 

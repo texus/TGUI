@@ -46,7 +46,7 @@ namespace tgui
     // Used by the Texture class
     struct TGUI_API TextureData
     {
-        std::shared_ptr<sf::Image> image;
+        std::unique_ptr<sf::Image> image;
         sf::Texture texture;
         sf::IntRect rect;
     };
