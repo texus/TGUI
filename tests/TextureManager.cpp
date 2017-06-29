@@ -33,7 +33,6 @@ TEST_CASE("[TextureManager]")
     std::streambuf *oldbuf = sf::err().rdbuf(0);
     tgui::Texture texture;
     REQUIRE(tgui::TextureManager::getTexture(texture, "NonExistent.png") == nullptr);
-    REQUIRE(tgui::TextureManager::getTexture(texture, "resources/image.png", {-10, -5, -20, -30}) == nullptr);
     sf::err().rdbuf(oldbuf);
 
     tgui::Texture texture1;
