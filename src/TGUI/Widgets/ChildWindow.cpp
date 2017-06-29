@@ -681,7 +681,7 @@ namespace tgui
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getTitleBarColor();
+            m_borderColorCached = getRenderer()->getBorderColor();
         }
         else if (property == "opacity")
         {
