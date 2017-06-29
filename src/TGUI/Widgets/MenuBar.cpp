@@ -630,7 +630,7 @@ namespace tgui
             // Is the menu open?
             if (m_visibleMenu == static_cast<int>(i))
             {
-                sf::RenderStates oldStates = states;
+                const sf::RenderStates oldStates = states;
 
                 // Find out what the width of the menu should be
                 float menuWidth = m_minimumSubMenuWidth;
@@ -708,7 +708,7 @@ namespace tgui
                 // Draw the menu items when the menu is open
                 if (m_visibleMenu == static_cast<int>(i))
                 {
-                    sf::RenderStates oldStates = textStates;
+                    const sf::RenderStates oldStates = textStates;
 
                     for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {

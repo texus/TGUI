@@ -43,7 +43,7 @@ namespace tgui
         Container {gridToCopy},
         m_realSize{gridToCopy.m_realSize}
     {
-        const std::vector<Widget::Ptr>& widgets = gridToCopy.m_widgets;
+        const auto& widgets = gridToCopy.m_widgets;
 
         for (std::size_t row = 0; row < gridToCopy.m_gridWidgets.size(); ++row)
         {

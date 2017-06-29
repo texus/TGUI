@@ -91,7 +91,7 @@ namespace tgui
     {
         m_vertexColor = color;
 
-        sf::Color vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
+        const sf::Color vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
         for (auto& vertex : m_vertices)
             vertex.color = vertexColor;
     }

@@ -150,7 +150,7 @@ namespace tgui
 
         std::string serializeOutline(ObjectConverter&& value)
         {
-            Outline outline = value.getOutline();
+            const Outline outline = value.getOutline();
             return "(" + to_string(static_cast<unsigned int>(outline.left)) + ", " + to_string(static_cast<unsigned int>(outline.top))
                  + ", " + to_string(static_cast<unsigned int>(outline.right)) + ", " + to_string(static_cast<unsigned int>(outline.bottom)) + ")";
         }
@@ -183,7 +183,7 @@ namespace tgui
 
         std::string serializeTextStyle(ObjectConverter&& value)
         {
-            sf::Uint32 style = value.getTextStyle();
+            const sf::Uint32 style = value.getTextStyle();
 
             if (style == sf::Text::Regular)
                 return "Regular";

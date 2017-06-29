@@ -850,7 +850,7 @@ namespace tgui
     void ListBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
-        sf::RenderStates statesForScrollbar = states;
+        const sf::RenderStates statesForScrollbar = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})

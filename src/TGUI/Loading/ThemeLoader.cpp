@@ -183,7 +183,7 @@ namespace tgui
             // Cache all propery value pairs
             for (const auto& section : sections)
             {
-                auto& child = section.second;
+                const auto& child = section.second;
                 const std::string& name = section.first;
                 for (const auto& pair : child.get()->propertyValuePairs)
                     m_propertiesCache[filename][name][toLower(pair.first)] = pair.second->value;

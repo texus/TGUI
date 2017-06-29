@@ -92,7 +92,7 @@ namespace tgui
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
          && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
         {
-            float sizeDiff = m_spriteChecked.getSize().y - m_spriteUnchecked.getSize().y;
+            const float sizeDiff = m_spriteChecked.getSize().y - m_spriteUnchecked.getSize().y;
             if (sizeDiff > m_bordersCached.top)
                 yOffset = sizeDiff - m_bordersCached.top;
         }
@@ -126,7 +126,7 @@ namespace tgui
 
     void CheckBox::leftMouseReleased(sf::Vector2f pos)
     {
-        bool mouseDown = m_mouseDown;
+        const bool mouseDown = m_mouseDown;
 
         ClickableWidget::leftMouseReleased(pos);
 

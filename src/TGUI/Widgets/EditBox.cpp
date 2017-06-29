@@ -195,7 +195,7 @@ namespace tgui
             return;
 
         // Check if there is a text width limit
-        float width = getVisibleEditBoxWidth();
+        const float width = getVisibleEditBoxWidth();
         if (m_limitTextWidth)
         {
             // Now check if the text fits into the EditBox
@@ -212,7 +212,7 @@ namespace tgui
         }
         else // There is no text cropping
         {
-            float textWidth = m_textFull.getSize().x;
+            const float textWidth = m_textFull.getSize().x;
 
             // If the text can be moved to the right then do so
             if (textWidth > width)
@@ -369,7 +369,7 @@ namespace tgui
         if (m_limitTextWidth)
         {
             // Delete the last characters when the text no longer fits inside the edit box
-            float width = getVisibleEditBoxWidth();
+            const float width = getVisibleEditBoxWidth();
             while (m_textFull.getSize().x > width)
             {
                 sf::String displayedString = m_textFull.getString();
@@ -421,7 +421,7 @@ namespace tgui
         if (!m_limitTextWidth)
         {
             // Find out the position of the caret
-            float caretPosition = m_textFull.findCharacterPos(m_selEnd).x;
+            const float caretPosition = m_textFull.findCharacterPos(m_selEnd).x;
 
             // If the caret is too far on the right then adjust the cropping
             if (m_textCropPosition + getVisibleEditBoxWidth() < caretPosition)
@@ -538,7 +538,7 @@ namespace tgui
             }
             else // Scrolling is enabled
             {
-                float width = getVisibleEditBoxWidth();
+                const float width = getVisibleEditBoxWidth();
 
                 // Check if the mouse is on the left of the text
                 if (pos.x < m_bordersCached.left + m_paddingCached.left)
@@ -711,10 +711,10 @@ namespace tgui
                 // Set the caret back on the correct position
                 setCaretPosition(m_selEnd - 1);
 
-                float width = getVisibleEditBoxWidth();
+                const float width = getVisibleEditBoxWidth();
 
                 // Calculate the text width
-                float textWidth = m_textFull.getSize().x;
+                const float textWidth = m_textFull.getSize().x;
 
                 // If the text can be moved to the right then do so
                 if (textWidth > width)
@@ -754,10 +754,10 @@ namespace tgui
                 setCaretPosition(m_selEnd);
 
                 // Calculate the text width
-                float textWidth = m_textFull.getSize().x;
+                const float textWidth = m_textFull.getSize().x;
 
                 // If the text can be moved to the right then do so
-                float width = getVisibleEditBoxWidth();
+                const float width = getVisibleEditBoxWidth();
                 if (textWidth > width)
                 {
                     if (textWidth - m_textCropPosition < width)
@@ -1076,8 +1076,8 @@ namespace tgui
         // If the text is centered or aligned to the right then the position has to be corrected when the edit box is not entirely full
         if (m_textAlignment != Alignment::Left)
         {
-            float editBoxWidth = getVisibleEditBoxWidth();
-            float textWidth = m_textFull.getSize().x;
+            const float editBoxWidth = getVisibleEditBoxWidth();
+            const float textWidth = m_textFull.getSize().x;
 
             if (textWidth < editBoxWidth)
             {
@@ -1091,8 +1091,8 @@ namespace tgui
 
         float width = 0;
         sf::Uint32 prevChar = 0;
-        unsigned int textSize = getTextSize();
-        bool bold = (m_textFull.getStyle() & sf::Text::Bold) != 0;
+        const unsigned int textSize = getTextSize();
+        const bool bold = (m_textFull.getStyle() & sf::Text::Bold) != 0;
 
         std::size_t index;
         for (index = 0; index < m_text.getSize(); ++index)
@@ -1111,7 +1111,7 @@ namespace tgui
             else
                 charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, textSize, bold).advance);
 
-            float kerning = static_cast<float>(m_fontCached.getKerning(prevChar, curChar, textSize));
+            const float kerning = static_cast<float>(m_fontCached.getKerning(prevChar, curChar, textSize));
             if (width + charWidth < posX)
                 width += charWidth + kerning;
             else
@@ -1149,8 +1149,8 @@ namespace tgui
         setCaretPosition(pos);
 
         // If the text can be moved to the right then do so
-        float width = getVisibleEditBoxWidth();
-        float textWidth = m_textFull.getSize().x;
+        const float width = getVisibleEditBoxWidth();
+        const float textWidth = m_textFull.getSize().x;
         if (textWidth > width)
         {
             if (textWidth - m_textCropPosition < width)
@@ -1171,7 +1171,7 @@ namespace tgui
         if (m_textAlignment != Alignment::Left)
         {
             // Calculate the text width
-            float textWidth = m_textFull.getSize().x;
+            const float textWidth = m_textFull.getSize().x;
 
             // Check if a layout would make sense
             if (textWidth < getVisibleEditBoxWidth())

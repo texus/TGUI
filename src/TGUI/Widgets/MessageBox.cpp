@@ -204,14 +204,14 @@ namespace tgui
 
             for (const auto& button : m_buttons)
             {
-                float width = sf::Text(button->getText(), *m_fontCached.getFont(), m_textSize).getLocalBounds().width;
+                const float width = sf::Text(button->getText(), *m_fontCached.getFont(), m_textSize).getLocalBounds().width;
                 if (buttonWidth < width * 10.0f / 9.0f)
                     buttonWidth = width * 10.0f / 9.0f;
             }
         }
 
         // Calculate the space needed for the buttons
-        float distance = buttonHeight * 2.0f / 3.0f;
+        const float distance = buttonHeight * 2.0f / 3.0f;
         float buttonsAreaWidth = distance;
         for (auto& button : m_buttons)
         {
@@ -234,7 +234,7 @@ namespace tgui
 
         // Set the buttons on the correct position
         float leftPosition = 0;
-        float topPosition = 2*distance + m_label->getSize().y;
+        const float topPosition = 2*distance + m_label->getSize().y;
         for (auto& button : m_buttons)
         {
             leftPosition += distance + ((size.x - buttonsAreaWidth) / (m_buttons.size()+1));

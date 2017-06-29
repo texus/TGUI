@@ -35,7 +35,7 @@ namespace
 {
     void addAnimation(std::vector<std::shared_ptr<tgui::priv::Animation>>& existingAnimations, std::shared_ptr<tgui::priv::Animation> newAnimation)
     {
-        auto type = newAnimation->getType();
+        const auto type = newAnimation->getType();
 
         // If another animation is already running with the same type then instantly finish it
         unsigned int i = 0;

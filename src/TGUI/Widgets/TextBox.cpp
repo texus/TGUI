@@ -298,7 +298,7 @@ namespace tgui
             if (m_lineHeight == 0)
                 return;
 
-            auto caretPosition = findCaretPosition(pos);
+            const auto caretPosition = findCaretPosition(pos);
 
             // Check if this is a double click
             if ((m_possibleDoubleClick) && (m_selStart == m_selEnd) && (caretPosition == m_selEnd))
@@ -399,7 +399,7 @@ namespace tgui
         // If the mouse is held down then you are selecting text
         else if (m_mouseDown)
         {
-            sf::Vector2<std::size_t> caretPosition = findCaretPosition(pos);
+            const sf::Vector2<std::size_t> caretPosition = findCaretPosition(pos);
             if (caretPosition != m_selEnd)
             {
                 m_selEnd = caretPosition;
@@ -872,8 +872,8 @@ namespace tgui
         {
             // Store the data so that it can be reverted
             sf::String oldText = m_text;
-            auto oldSelStart = m_selStart;
-            auto oldSelEnd = m_selEnd;
+            const auto oldSelStart = m_selStart;
+            const auto oldSelEnd = m_selEnd;
 
             // Try to insert the character
             insert();
@@ -984,7 +984,7 @@ namespace tgui
             else
                 charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, getTextSize(), false).advance);
 
-            float kerning = static_cast<float>(m_fontCached.getKerning(prevChar, curChar, getTextSize()));
+            const float kerning = static_cast<float>(m_fontCached.getKerning(prevChar, curChar, getTextSize()));
             if (width + charWidth + kerning <= position.x)
                 width += charWidth + kerning;
             else
@@ -1143,7 +1143,7 @@ namespace tgui
         }
 
         // Tell the scrollbar how many pixels the text contains
-        bool scrollbarShown = m_verticalScroll.isShown();
+        const bool scrollbarShown = m_verticalScroll.isShown();
 
         m_verticalScroll.setMaximum(static_cast<unsigned int>(m_lines.size() * m_lineHeight + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)));
 
@@ -1476,7 +1476,7 @@ namespace tgui
     void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
-        sf::RenderStates statesForScrollbar = states;
+        const sf::RenderStates statesForScrollbar = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})

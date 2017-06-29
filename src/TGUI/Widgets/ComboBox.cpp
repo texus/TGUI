@@ -262,7 +262,7 @@ namespace tgui
 
     bool ComboBox::setSelectedItem(const sf::String& itemName)
     {
-        bool ret = m_listBox->setSelectedItem(itemName);
+        const bool ret = m_listBox->setSelectedItem(itemName);
         m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
@@ -271,7 +271,7 @@ namespace tgui
 
     bool ComboBox::setSelectedItemById(const sf::String& id)
     {
-        bool ret = m_listBox->setSelectedItemById(id);
+        const bool ret = m_listBox->setSelectedItemById(id);
         m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
@@ -280,7 +280,7 @@ namespace tgui
 
     bool ComboBox::setSelectedItemByIndex(std::size_t index)
     {
-        bool ret = m_listBox->setSelectedItemByIndex(index);
+        const bool ret = m_listBox->setSelectedItemByIndex(index);
         m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
@@ -299,7 +299,7 @@ namespace tgui
     {
         // Implemented like removeItemByIndex instead of like removeItemById because m_listBox->getItems() may be slow
 
-        bool ret = m_listBox->removeItem(itemName);
+        const bool ret = m_listBox->removeItem(itemName);
 
         m_text.setString(m_listBox->getSelectedItem());
 
@@ -328,7 +328,7 @@ namespace tgui
 
     bool ComboBox::removeItemByIndex(std::size_t index)
     {
-        bool ret = m_listBox->removeItemByIndex(index);
+        const bool ret = m_listBox->removeItemByIndex(index);
 
         m_text.setString(m_listBox->getSelectedItem());
 
@@ -381,7 +381,7 @@ namespace tgui
 
     bool ComboBox::changeItem(const sf::String& originalValue, const sf::String& newValue)
     {
-        bool ret = m_listBox->changeItem(originalValue, newValue);
+        const bool ret = m_listBox->changeItem(originalValue, newValue);
         m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
@@ -390,7 +390,7 @@ namespace tgui
 
     bool ComboBox::changeItemById(const sf::String& id, const sf::String& newValue)
     {
-        bool ret = m_listBox->changeItemById(id, newValue);
+        const bool ret = m_listBox->changeItemById(id, newValue);
         m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }
@@ -399,7 +399,7 @@ namespace tgui
 
     bool ComboBox::changeItemByIndex(std::size_t index, const sf::String& newValue)
     {
-        bool ret = m_listBox->changeItemByIndex(index, newValue);
+        const bool ret = m_listBox->changeItemByIndex(index, newValue);
         m_text.setString(m_listBox->getSelectedItem());
         return ret;
     }

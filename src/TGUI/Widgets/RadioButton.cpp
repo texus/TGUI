@@ -229,7 +229,7 @@ namespace tgui
 
     void RadioButton::leftMouseReleased(sf::Vector2f pos)
     {
-        bool mouseDown = m_mouseDown;
+        const bool mouseDown = m_mouseDown;
 
         ClickableWidget::leftMouseReleased(pos);
 

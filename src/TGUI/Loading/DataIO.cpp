@@ -92,7 +92,7 @@ namespace tgui
     namespace
     {
         // Forward declare one of the functions to solve circular dependency
-        std::string parseSection(std::stringstream& stream, std::unique_ptr<DataIO::Node>& node, const std::string& sectionName);
+        std::string parseSection(std::stringstream& stream, const std::unique_ptr<DataIO::Node>& node, const std::string& sectionName);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -365,7 +365,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::string parseSection(std::stringstream& stream, std::unique_ptr<DataIO::Node>& node, const std::string& sectionName)
+        std::string parseSection(std::stringstream& stream, const std::unique_ptr<DataIO::Node>& node, const std::string& sectionName)
         {
             // Create a new node for this section
             auto sectionNode = std::make_unique<DataIO::Node>();

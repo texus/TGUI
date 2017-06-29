@@ -442,7 +442,7 @@ namespace tgui
 
                 menuNode->propertyValuePairs["Name"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu.first));
 
-                auto& items = menu.second;
+                const auto& items = menu.second;
                 if (!items.empty())
                 {
                     std::string itemList = "[" + Serializer::serialize(items[0]);

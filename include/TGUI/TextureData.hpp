@@ -58,7 +58,7 @@ namespace tgui
     {
         std::shared_ptr<TextureData> data;
         std::string  filename;
-        unsigned int users;
+        unsigned int users = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

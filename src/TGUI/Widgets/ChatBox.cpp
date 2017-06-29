@@ -385,7 +385,7 @@ namespace tgui
         line.text.setString("");
 
         // Find the maximum width of one line
-        float maxWidth = getInnerSize().x - m_scroll.getSize().x - m_paddingCached.left - m_paddingCached.right;
+        const float maxWidth = getInnerSize().x - m_scroll.getSize().x - m_paddingCached.left - m_paddingCached.right;
         if (maxWidth < 0)
             return;
 
@@ -411,7 +411,7 @@ namespace tgui
             m_fullTextHeight += line.text.getSize().y;
 
         // Update the maximum of the scrollbar
-        unsigned int oldMaximum = m_scroll.getMaximum();
+        const unsigned int oldMaximum = m_scroll.getMaximum();
         m_scroll.setMaximum(static_cast<unsigned int>(m_fullTextHeight));
 
         // Scroll down to the last item when there is a scrollbar and it is at the bottom
@@ -513,7 +513,7 @@ namespace tgui
     {
         states.transform.translate(getPosition());
 
-        sf::RenderStates scrollbarStates = states;
+        const sf::RenderStates scrollbarStates = states;
 
         // Draw the borders
         if (m_bordersCached != Borders{0})

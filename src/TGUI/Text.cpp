@@ -183,11 +183,11 @@ namespace tgui
         unsigned int lines = 1;
         sf::Uint32 prevChar = 0;
         const sf::String& string = m_text.getString();
-        bool bold = (m_text.getStyle() & sf::Text::Bold) != 0;
-        unsigned int textSize = m_text.getCharacterSize();
+        const bool bold = (m_text.getStyle() & sf::Text::Bold) != 0;
+        const unsigned int textSize = m_text.getCharacterSize();
         for (std::size_t i = 0; i < string.getSize(); ++i)
         {
-            float kerning = static_cast<float>(font->getKerning(prevChar, string[i], textSize));
+            const float kerning = static_cast<float>(font->getKerning(prevChar, string[i], textSize));
             if (string[i] == '\n')
             {
                 maxWidth = std::max(maxWidth, width);
@@ -221,17 +221,17 @@ namespace tgui
         for (unsigned int i = 0; i < static_cast<unsigned int>(height); ++i)
             textSizes[i] = i + 1;
 
-        auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height,
-                                     [&](unsigned int charSize, float h) { return font->getLineSpacing(charSize) + Text::calculateExtraVerticalSpace(font, charSize) < h; });
+        const auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height,
+                                           [&](unsigned int charSize, float h) { return font->getLineSpacing(charSize) + Text::calculateExtraVerticalSpace(font, charSize) < h; });
         if (high == textSizes.end())
             return static_cast<unsigned int>(height);
 
-        float highLineSpacing = font->getLineSpacing(*high);
+        const float highLineSpacing = font->getLineSpacing(*high);
         if (highLineSpacing == height)
             return *high;
 
         auto low = high - 1;
-        float lowLineSpacing = font->getLineSpacing(*low);
+        const float lowLineSpacing = font->getLineSpacing(*low);
 
         if (fit < 0)
             return *low;
@@ -250,15 +250,15 @@ namespace tgui
 
     float Text::calculateExtraVerticalSpace(Font font, unsigned int characterSize, TextStyle style)
     {
-        bool bold = (style & sf::Text::Bold) != 0;
+        const bool bold = (style & sf::Text::Bold) != 0;
 
         // Calculate the height of the first line (char size = everything above baseline, height + top = part below baseline)
-        float lineHeight = characterSize
-                           + font.getFont()->getGlyph('g', characterSize, bold).bounds.height
-                           + font.getFont()->getGlyph('g', characterSize, bold).bounds.top;
+        const float lineHeight = characterSize
+                                 + font.getFont()->getGlyph('g', characterSize, bold).bounds.height
+                                 + font.getFont()->getGlyph('g', characterSize, bold).bounds.top;
 
         // Get the line spacing sfml returns
-        float lineSpacing = font.getFont()->getLineSpacing(characterSize);
+        const float lineSpacing = font.getFont()->getLineSpacing(characterSize);
 
         // Calculate the offset of the text
         return lineHeight - lineSpacing;
