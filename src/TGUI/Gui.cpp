@@ -124,9 +124,13 @@ namespace tgui
         {
             m_view = view;
 
-            m_container->m_size = view.getSize();
+            const sf::Vector2f containerSize = view.getSize();
+            m_container->m_size = containerSize;
             m_container->m_callback.size = m_container->getSize();
             m_container->sendSignal("SizeChanged", m_container->getSize());
+
+            for (auto& widget : m_container->m_widgets)
+                widget->updateParentSize(containerSize);
         }
         else // Set it anyway in case something changed that we didn't care to check
             m_view = view;
