@@ -631,8 +631,16 @@ namespace tgui
 
     void Widget::updateParentSize(sf::Vector2f size)
     {
+        sf::Vector2f oldPosition = m_position.getValue();
+        sf::Vector2f oldSize = m_size.getValue();
+
         m_position.updateParentSize(size);
         m_size.updateParentSize(size);
+
+        if (oldPosition != m_position.getValue())
+            updatePosition();
+        if (oldSize != m_size.getValue())
+            updateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
