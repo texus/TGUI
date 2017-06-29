@@ -17,35 +17,32 @@ void loadWidgets( tgui::Gui& gui )
 {
     // Create the background image
     // The picture is of type tgui::Picture::Ptr which is actually just a typedef for std::shared_widget<Picture>
-    // Instead of setting a fixed size, we are passing a layout represented as a string
-    // The layout will take care of resizing the picture when the parent (here the gui) gets resized
-    // Giving the picture a minimum size of 800x600 is just for show what the layout system can do
+    // The picture will fit the entire window and will scale with it
     auto picture = tgui::Picture::create("../xubuntu_bg_aluminium.jpg");
-    picture->setSize({"max(800, parent.width)", "max(600, parent.height)"});
+    picture->setSize({"100%", "100%"});
     gui.add(picture);
 
     // Create the username edit box
-    // Similar to the picture, we set a layout to automatically update the position and size when the size of the gui changes
+    // Similar to the picture, we set a relative position and size
     // In case it isn't obvious, the default text is the text that is displayed when the edit box is empty
     auto editBoxUsername = tgui::EditBox::create();
-    editBoxUsername->setSize({"parent.width * 2/3", "parent.height / 8"});
-    editBoxUsername->setPosition({"parent.width / 6", "parent.height / 6"});
+    editBoxUsername->setSize({"66.67%", "12.5%"});
+    editBoxUsername->setPosition({"16.67%", "16.67%"});
     editBoxUsername->setDefaultText("Username");
     gui.add(editBoxUsername);
 
     // Create the password edit box
     // We copy the previous edit box here and keep the same size
     auto editBoxPassword = tgui::EditBox::copy(editBoxUsername);
-    editBoxPassword->setPosition({"parent.width / 6", "parent.height * 5/12"});
+    editBoxPassword->setPosition({"16.67%", "41.6%"});
     editBoxPassword->setPasswordCharacter('*');
     editBoxPassword->setDefaultText("Password");
     gui.add(editBoxPassword);
 
     // Create the login button
-    // Instead of "parent.width" and "parent.width", we use the shorter "&.w" and "&.h" here as an example
     auto button = tgui::Button::create("Login");
-    button->setSize({"&.w / 2", "&.h / 6"});
-    button->setPosition({"&.w / 4", "&.h * 7/10"});
+    button->setSize({"50%", "16.67%"});
+    button->setPosition({"25%", "70%"});
     gui.add(button);
 
     // Call the login function when the button is pressed and pass the edit boxes that we created as parameters

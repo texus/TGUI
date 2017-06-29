@@ -2,6 +2,7 @@
 layout: page
 title: Basic widget functions
 breadcrumb: "basic widget functions"
+redirect_from: "/tutorials/0.8/layouts/"
 ---
 This tutorial is about the functions that you find in the Widget base class. These functions are available for all widgets.
 
@@ -19,7 +20,11 @@ sf::Vector2f size = widget->getSize();
 
 <p>Some widgets are larger than their size. Let's take a slider as an example. The size respresents the size of its track, but the thumb might be outside of this area. The getWidgetOffset() function returns the negative offset that the position of the thumb has. The getFullSize() function will return the entire size of the widget (in case of the slider it will include the area where the thumb could be).</p>
 
-<p>Instead of constants, the setPosition and setSize functions can also be given <a href="../layouts/">layouts</a> as argument so that you can give your widget a relative position or size. You can tell widget B to have the same size as widget A and widget B will automatically change size when you give widget A a new size.</p>
+<p class="SmallBottomMargin">Instead of constants, the setPosition and setSize functions can also be given percentages as argument so that you can give your widget a position or size that is relative to the size of its parent.</p>
+{% highlight c++ %}
+widget->setPosition("10%", "5%");
+widget->setSize("30%", "10%");
+{% endhighlight %}
 
 ### Visible and enabled
 The enabled property determines if a widget receives events. If a widget is disabled, it will still be drawn but it will be unresponsive to your mouse clicks.
@@ -39,7 +44,7 @@ widget->isEnabled();
 ```
 
 ### Overlapping widgets
-What happens when widgets overlap? Which is the topmost widget? The answer is simple: the last widget that you added to the parent. You can manipulate the order in which widgets are drawn by using the moveToFront and moveToBack functions though.
+What happens when widgets overlap? Which is the topmost widget? By default the answer is simple: the last widget that you added to the parent. You can manipulate the order in which widgets are drawn by using the moveToFront and moveToBack functions though.
 
 ``` c++
 widget->moveToFront();

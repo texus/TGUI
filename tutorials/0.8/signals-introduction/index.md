@@ -96,7 +96,7 @@ button->disconnect(id-1); // disconnect "checked" signal
 button->disconnect(id); // disconnect "unchecked" signal
 {% endhighlight %}
 
-<p class="SmallBottomMargin">It is also possible to disconnect all function that connected to a specific signal or even all signals. Be aware that this might disconnect internally used signals as well (e.g. <a href="../layouts/">layouts</a> rely on PositionChanged and SizeChanged of widgets, if you disconnect them then other widgets that depend on the position or size will no longer receive updates).</p>
+<p class="SmallBottomMargin">It is also possible to disconnect all function that connected to a specific signal or even all signals.</p>
 {% highlight c++ %}
 picture->disconnectAll("clicked");
 button->disconnectAll();

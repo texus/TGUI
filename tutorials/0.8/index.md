@@ -19,7 +19,6 @@ breadcrumb: "0.8"
 
 <div>
   <h3 id="intermediate-tutorials">Intermediate tutorials</h3>
-  <p><a href="layouts">Layouts</a></p>
   <p><a href="renderers">Renderers</a></p>
   <p><a href="using-themes">Using themes/skins</a></p>
   <p><a href="signals-optional-parameters">Optional parameters in signals</a> (not supported by VS2013)<br>
