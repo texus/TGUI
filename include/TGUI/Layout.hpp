@@ -89,15 +89,15 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Layout(const std::string& expression)
         {
-            if (!expression.empty() && (expression.back() == '%'))
+            if (!expression.empty())
             {
-                m_constant = false;
-                m_ratio    = std::stof(expression.substr(0, expression.length()-1)) / 100.f;
-            }
-            else
-            {
-                m_constant = true;
-                m_value    = std::stof(expression.substr(0, expression.length()));
+                if (expression.back() == '%')
+                {
+                    m_constant = false;
+                    m_ratio    = std::stof(expression.substr(0, expression.length()-1)) / 100.f;
+                }
+                else
+                    m_value = std::stof(expression.substr(0, expression.length()));
             }
         }
 

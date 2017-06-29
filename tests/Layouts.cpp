@@ -56,7 +56,8 @@ TEST_CASE("[Layouts]")
         REQUIRE(l5.y.isConstant());
         REQUIRE(l5.getValue() == sf::Vector2f(10, -50));
 
-        SECTION("updating parent size") {
+        SECTION("updating parent size")
+        {
             l1.updateParentSize(110);
             l2.updateParentSize(120);
             l3.updateParentSize(130);
@@ -105,5 +106,12 @@ TEST_CASE("[Layouts]")
             REQUIRE(l3.x.getValue() == 40);
             REQUIRE(l3.y.getValue() == 506*0.253f);
         }
+    }
+
+    SECTION("empty string")
+    {
+        Layout l{""};
+        REQUIRE(l.isConstant());
+        REQUIRE(l.getValue() == 0);
     }
 }
