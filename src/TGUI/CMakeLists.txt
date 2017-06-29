@@ -6,7 +6,6 @@ set(TGUI_SRC
     Font.cpp
     Global.cpp
     Gui.cpp
-    Layout.cpp
     ObjectConverter.cpp
     Sprite.cpp
     Signal.cpp
@@ -15,7 +14,6 @@ set(TGUI_SRC
     Texture.cpp
     TextureManager.cpp
     ToolTip.cpp
-    Transformable.cpp
     Widget.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp

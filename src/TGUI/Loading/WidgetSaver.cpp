@@ -63,17 +63,17 @@ namespace tgui
             std::string str;
             str += "(";
 
-            if (layout.x.getImpl()->operation == LayoutImpl::Operation::String)
-                str += "\"" + layout.x.getImpl()->stringExpression + "\"";
-            else
+            if (layout.x.isConstant())
                 str += to_string(layout.x.getValue());
+            else
+                str += to_string(layout.x.getRatio() * 100) + '%';
 
             str += ", ";
 
-            if (layout.y.getImpl()->operation == LayoutImpl::Operation::String)
-                str += "\"" + layout.y.getImpl()->stringExpression + "\"";
-            else
+            if (layout.y.isConstant())
                 str += to_string(layout.y.getValue());
+            else
+                str += to_string(layout.y.getRatio() * 100) + '%';
 
             str += ")";
             return str;

@@ -288,7 +288,7 @@ namespace tgui
         Widget::setParent(parent);
 
         if ((m_parent != nullptr) && (getSize().x == 0))
-            setSize(bindWidth(m_parent->shared_from_this()), m_size.y);
+            setSize("100%", m_size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -113,6 +113,104 @@ TEST_CASE("[Widget]")
         REQUIRE(container->getWidgets()[2] == widget3);
     }
 
+    SECTION("Position")
+    {
+        auto container = tgui::Panel::create();
+        container->setSize(400, 300);
+        container->add(widget);
+
+        widget->setPosition(20, 10);
+        widget->setSize(100, 30);
+
+        // Position can be absolute
+        REQUIRE(widget->getPosition() == sf::Vector2f(20, 10));
+
+        // Position can be relative to the size of the parent
+        widget->setPosition("20%", "10%");
+        REQUIRE(widget->getPosition() == sf::Vector2f(400*0.2f, 300*0.1f));
+
+        // Relative positions are updated when the parent changes size
+        container->setSize(800, 150);
+        REQUIRE(widget->getPosition() == sf::Vector2f(800*0.2f, 150*0.1f));
+
+        auto widget2 = widget->clone();
+        auto widget3 = widget->clone();
+
+        // Widget clones are unaffected by changes to the original widget
+        widget->setPosition("60%", "15%");
+        REQUIRE(widget2->getPosition() == sf::Vector2f(800*0.2f, 150*0.1f));
+
+        // Relative positions of cloned widgets are still updated when the size of the parent changes
+        container->add(widget2);
+        container->setSize(400, 300);
+        REQUIRE(widget2->getPosition() == sf::Vector2f(400*0.2f, 300*0.1f));
+
+        // There is however no relation with the old parent anymore unless the widget is added again
+        REQUIRE(widget3->getPosition() == sf::Vector2f(800*0.2f, 150*0.1f));
+        container->add(widget3);
+        REQUIRE(widget3->getPosition() == sf::Vector2f(400*0.2f, 300*0.1f));
+
+        // The position can be changed from a relative to an absolute value at any time
+        widget2->setPosition(60, 70);
+        REQUIRE(widget2->getPosition() == sf::Vector2f(60, 70));
+
+        // Relative positions only work with a parent
+        auto widget4 = std::make_shared<tgui::ClickableWidget>();
+        widget4->setPosition("20%", "10%");
+        REQUIRE(widget4->getPosition() == sf::Vector2f(0, 0));
+        container->add(widget4);
+        REQUIRE(widget4->getPosition() == sf::Vector2f(400*0.2f, 300*0.1f));
+    }
+
+    SECTION("Size")
+    {
+        auto container = tgui::Panel::create();
+        container->setSize(400, 300);
+        container->add(widget);
+
+        widget->setPosition(20, 10);
+        widget->setSize(100, 30);
+
+        // Size can be absolute
+        REQUIRE(widget->getSize() == sf::Vector2f(100, 30));
+
+        // Size can be relative to the size of the parent
+        widget->setSize("30%", "5%");
+        REQUIRE(widget->getSize() == sf::Vector2f(400*0.3f, 300*0.05f));
+
+        // Relative sizes are updated when the parent changes size
+        container->setSize(800, 150);
+        REQUIRE(widget->getSize() == sf::Vector2f(800*0.3f, 150*0.05f));
+
+        auto widget2 = widget->clone();
+        auto widget3 = widget->clone();
+
+        // Widget clones are unaffected by changes to the original widget
+        widget->setSize("60%", "15%");
+        REQUIRE(widget2->getSize() == sf::Vector2f(800*0.3f, 150*0.05f));
+
+        // Relative sizes of cloned widgets are still updated when the size of the parent changes
+        container->add(widget2);
+        container->setSize(400, 300);
+        REQUIRE(widget2->getSize() == sf::Vector2f(400*0.3f, 300*0.05f));
+
+        // There is however no relation with the old parent anymore unless the widget is added again
+        REQUIRE(widget3->getSize() == sf::Vector2f(800*0.3f, 150*0.05f));
+        container->add(widget3);
+        REQUIRE(widget3->getSize() == sf::Vector2f(400*0.3f, 300*0.05f));
+
+        // The size can be changed from a relative to an absolute value at any time
+        widget2->setSize(70, 20);
+        REQUIRE(widget2->getSize() == sf::Vector2f(70, 20));
+
+        // Relative sizes only work with a parent
+        auto widget4 = std::make_shared<tgui::ClickableWidget>();
+        widget4->setSize("30%", "5%");
+        REQUIRE(widget4->getSize() == sf::Vector2f(0, 0));
+        container->add(widget4);
+        REQUIRE(widget4->getSize() == sf::Vector2f(400*0.3f, 300*0.05f));
+    }
+
     SECTION("Renderer")
     {
         auto renderer = widget->getRenderer();
@@ -182,205 +280,26 @@ TEST_CASE("[Widget]")
         // TODO: Other tests with the renderer class (e.g. sharing and copying a renderer when using multiple widgets)
     }
 
-    SECTION("Layouts")
-    {
-        auto container = tgui::Panel::create();
-        auto widget2 = tgui::ClickableWidget::create();
-        container->add(widget);
-        container->add(widget2, "w2");
-
-        widget2->setPosition(100, 50);
-        widget2->setSize(600, 150);
-
-        widget->setPosition(20, 10);
-        widget->setSize(100, 30);
-
-        SECTION("Position")
-        {
-            REQUIRE(widget->getPosition() == sf::Vector2f(20, 10));
-
-            widget->setPosition(tgui::bindLeft(widget2), {"w2.y"});
-            REQUIRE(widget->getPosition() == sf::Vector2f(100, 50));
-
-            widget2->setPosition(50, 30);
-            REQUIRE(widget->getPosition() == sf::Vector2f(50, 30));
-
-            // String layout only works after adding widget to parent
-            auto widget3 = widget->clone();
-            REQUIRE(widget3->getPosition() == sf::Vector2f(50, 0));
-            container->add(widget3);
-            REQUIRE(widget3->getPosition() == sf::Vector2f(50, 30));
-
-            // Layout can only be copied when it is a string
-            widget2->setPosition(20, 40);
-            REQUIRE(widget3->getPosition() == sf::Vector2f(50, 40));
-
-            // String is re-evaluated and new widgets are bound after copying
-            widget->setPosition({"{width, height}"});
-            REQUIRE(widget->getPosition() == sf::Vector2f(100, 30));
-            auto widget4 = widget->clone();
-            widget->setSize(40, 50);
-            REQUIRE(widget4->getPosition() == sf::Vector2f(100, 30));
-            widget4->setSize(60, 70);
-            REQUIRE(widget4->getPosition() == sf::Vector2f(60, 70));
-
-            // The move function keeps the bound expression
-            widget->setPosition("{width, height}");
-            widget->setSize(40, 50);
-            widget->move(10, 15);
-            widget->move({25, 15});
-            REQUIRE(widget->getPosition() == sf::Vector2f(75, 80));
-            widget->setSize(20, 30);
-            REQUIRE(widget->getPosition() == sf::Vector2f(55, 60));
-        }
-
-        SECTION("Size")
-        {
-            REQUIRE(widget->getSize() == sf::Vector2f(100, 30));
-
-            widget->setSize({"w2.width"}, tgui::bindHeight(widget2));
-            REQUIRE(widget->getSize() == sf::Vector2f(600, 150));
-
-            widget2->setSize(50, 30);
-            REQUIRE(widget->getSize() == sf::Vector2f(50, 30));
-
-            // String layout only works after adding widget to parent
-            auto widget3 = widget->clone();
-            REQUIRE(widget3->getSize() == sf::Vector2f(0, 30));
-            container->add(widget3);
-            REQUIRE(widget3->getSize() == sf::Vector2f(50, 30));
-
-            // Layout can only be copied when it is a string
-            widget2->setSize(20, 40);
-            REQUIRE(widget3->getSize() == sf::Vector2f(20, 30));
-
-            // String is re-evaluated and new widgets are bound after copying
-            widget->setSize({"position"});
-            REQUIRE(widget->getSize() == sf::Vector2f(20, 10));
-            auto widget4 = widget->clone();
-            widget->setPosition(40, 50);
-            REQUIRE(widget4->getSize() == sf::Vector2f(20, 10));
-            widget4->setPosition(60, 70);
-            REQUIRE(widget4->getSize() == sf::Vector2f(60, 70));
-
-            // The scale function keeps the bound expression
-            widget->setSize("position");
-            widget->setPosition(40, 50);
-            widget->scale(2, 5);
-            widget->scale({0.25, 0.1});
-            REQUIRE(widget->getSize() == sf::Vector2f(20, 25));
-            widget->setPosition(20, 30);
-            REQUIRE(widget->getSize() == sf::Vector2f(10, 15));
-        }
-    }
-
-    SECTION("Saving and loading widget with layouts from file")
+    SECTION("Saving and loading widget from file")
     {
         auto parent = tgui::Panel::create();
         parent->add(widget, "Widget Name.With:Special{Chars}");
 
-        SECTION("Without layout bindings")
-        {
-            widget->hide();
-            widget->disable();
+        widget->hide();
+        widget->disable();
+        widget->setPosition(50, "15%");
+        widget->setSize("30%", "70");
 
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget1.txt"));
+        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget1.txt"));
 
-            parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt"));
+        parent->removeAllWidgets();
+        REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt"));
 
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
-            REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
+        REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileClickableWidget2.txt"));
+        REQUIRE(compareFiles("WidgetFileClickableWidget1.txt", "WidgetFileClickableWidget2.txt"));
 
-            REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isVisible());
-            REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isEnabled());
-        }
-
-        SECTION("Bind 2d non-string")
-        {
-            widget->setPosition(tgui::bindPosition(parent));
-            widget->setSize(tgui::bindSize(parent));
-
-            parent->setSize(400, 300);
-            parent->setPosition(50, 50);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget1.txt"));
-            parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
-            REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
-            widget = parent->get("Widget Name.With:Special{Chars}");
-
-            // Non-string layouts cannot be saved yet!
-            parent->setPosition(100, 100);
-            parent->setSize(800, 600);
-            REQUIRE(widget->getPosition() == sf::Vector2f(50, 50));
-            REQUIRE(widget->getSize() == sf::Vector2f(400, 300));
-        }
-
-        SECTION("Bind 1d non-strings and string combination")
-        {
-            widget->setPosition(tgui::bindLeft(parent), {"parent.top"});
-            widget->setSize({"parent.width"}, tgui::bindHeight(parent));
-
-            parent->setSize(400, 300);
-            parent->setPosition(50, 50);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget1.txt"));
-            parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
-            REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
-            widget = parent->get("Widget Name.With:Special{Chars}");
-
-            // Non-string layout cannot be saved yet, string layout will have been saved correctly!
-            parent->setPosition(100, 100);
-            parent->setSize(800, 600);
-            REQUIRE(widget->getPosition() == sf::Vector2f(50, 100));
-            REQUIRE(widget->getSize() == sf::Vector2f(800, 300));
-        }
-
-        SECTION("Bind 1d strings")
-        {
-            widget->setPosition({"&.x"}, {"&.y"});
-            widget->setSize({"&.w"}, {"&.h"});
-
-            parent->setSize(400, 300);
-            parent->setPosition(50, 50);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget1.txt"));
-            parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
-            REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
-            widget = parent->get("Widget Name.With:Special{Chars}");
-
-            parent->setPosition(100, 100);
-            parent->setSize(800, 600);
-            REQUIRE(widget->getPosition() == sf::Vector2f(100, 100));
-            REQUIRE(widget->getSize() == sf::Vector2f(800, 600));
-        }
-
-        SECTION("Bind 2d strings")
-        {
-            widget->setPosition({"{&.x, &.y}"});
-            widget->setSize({"parent.size"});
-
-            parent->setSize(400, 300);
-            parent->setPosition(50, 50);
-
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget1.txt"));
-            parent->removeAllWidgets();
-            REQUIRE_NOTHROW(parent->loadWidgetsFromFile("WidgetFileWidget1.txt"));
-            REQUIRE_NOTHROW(parent->saveWidgetsToFile("WidgetFileWidget2.txt"));
-            REQUIRE(compareFiles("WidgetFileWidget1.txt", "WidgetFileWidget2.txt"));
-            widget = parent->get("Widget Name.With:Special{Chars}");
-
-            parent->setPosition(100, 100);
-            parent->setSize(800, 600);
-            REQUIRE(widget->getPosition() == sf::Vector2f(100, 100));
-            REQUIRE(widget->getSize() == sf::Vector2f(800, 600));
-        }
+        REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isVisible());
+        REQUIRE(!parent->get("Widget Name.With:Special{Chars}")->isEnabled());
     }
 
     SECTION("Bug Fixes")

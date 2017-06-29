@@ -84,15 +84,6 @@ namespace tgui
         // The renderer will be null when the widget was moved
         if (m_renderer)
             m_renderer->unsubscribe(this);
-
-        if (m_position.x.getImpl()->parentWidget == this)
-            m_position.x.getImpl()->parentWidget = nullptr;
-        if (m_position.y.getImpl()->parentWidget == this)
-            m_position.y.getImpl()->parentWidget = nullptr;
-        if (m_size.x.getImpl()->parentWidget == this)
-            m_size.x.getImpl()->parentWidget = nullptr;
-        if (m_size.y.getImpl()->parentWidget == this)
-            m_size.y.getImpl()->parentWidget = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,18 +106,6 @@ namespace tgui
         m_opacityCached                {other.m_opacityCached}
     {
         m_callback.widget = this;
-
-        m_position.x.getImpl()->parentWidget = this;
-        m_position.x.getImpl()->recalculate();
-
-        m_position.y.getImpl()->parentWidget = this;
-        m_position.y.getImpl()->recalculate();
-
-        m_size.x.getImpl()->parentWidget = this;
-        m_size.x.getImpl()->recalculate();
-
-        m_size.y.getImpl()->parentWidget = this;
-        m_size.y.getImpl()->recalculate();
 
         m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
     }
@@ -155,18 +134,6 @@ namespace tgui
         m_opacityCached                {std::move(other.m_opacityCached)}
     {
         m_callback.widget = this;
-
-        m_position.x.getImpl()->parentWidget = this;
-        m_position.x.getImpl()->recalculate();
-
-        m_position.y.getImpl()->parentWidget = this;
-        m_position.y.getImpl()->recalculate();
-
-        m_size.x.getImpl()->parentWidget = this;
-        m_size.x.getImpl()->recalculate();
-
-        m_size.y.getImpl()->parentWidget = this;
-        m_size.y.getImpl()->recalculate();
 
         other.m_renderer->unsubscribe(&other);
         m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
@@ -204,18 +171,6 @@ namespace tgui
             m_fontCached           = other.m_fontCached;
             m_opacityCached        = other.m_opacityCached;
 
-            m_position.x.getImpl()->parentWidget = this;
-            m_position.x.getImpl()->recalculate();
-
-            m_position.y.getImpl()->parentWidget = this;
-            m_position.y.getImpl()->recalculate();
-
-            m_size.x.getImpl()->parentWidget = this;
-            m_size.x.getImpl()->recalculate();
-
-            m_size.y.getImpl()->parentWidget = this;
-            m_size.y.getImpl()->recalculate();
-
             m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
         }
 
@@ -252,18 +207,6 @@ namespace tgui
             m_showAnimations       = std::move(other.m_showAnimations);
             m_fontCached           = std::move(other.m_fontCached);
             m_opacityCached        = std::move(other.m_opacityCached);
-
-            m_position.x.getImpl()->parentWidget = this;
-            m_position.x.getImpl()->recalculate();
-
-            m_position.y.getImpl()->parentWidget = this;
-            m_position.y.getImpl()->recalculate();
-
-            m_size.x.getImpl()->parentWidget = this;
-            m_size.x.getImpl()->recalculate();
-
-            m_size.y.getImpl()->parentWidget = this;
-            m_size.y.getImpl()->recalculate();
 
             m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
 
@@ -336,18 +279,10 @@ namespace tgui
 
     void Widget::setPosition(const Layout2d& position)
     {
-        if (position.x.getImpl()->parentWidget != this)
-        {
-            position.x.getImpl()->parentWidget = this;
-            position.x.getImpl()->recalculate();
-        }
-        if (position.y.getImpl()->parentWidget != this)
-        {
-            position.y.getImpl()->parentWidget = this;
-            position.y.getImpl()->recalculate();
-        }
-
         Transformable::setPosition(position);
+
+        if (m_parent)
+            updateParentSize(m_parent->getSize());
 
         m_callback.position = getPosition();
         sendSignal("PositionChanged", getPosition());
@@ -357,18 +292,10 @@ namespace tgui
 
     void Widget::setSize(const Layout2d& size)
     {
-        if (size.x.getImpl()->parentWidget != this)
-        {
-            size.x.getImpl()->parentWidget = this;
-            size.x.getImpl()->recalculate();
-        }
-        if (size.y.getImpl()->parentWidget != this)
-        {
-            size.y.getImpl()->parentWidget = this;
-            size.y.getImpl()->recalculate();
-        }
-
         Transformable::setSize(size);
+
+        if (m_parent)
+            updateParentSize(m_parent->getSize());
 
         m_callback.size = getSize();
         sendSignal("SizeChanged", getSize());
@@ -601,12 +528,7 @@ namespace tgui
     {
         m_parent = parent;
         if (m_parent)
-        {
-            m_position.x.getImpl()->recalculate();
-            m_position.y.getImpl()->recalculate();
-            m_size.x.getImpl()->recalculate();
-            m_size.y.getImpl()->recalculate();
-        }
+            updateParentSize(m_parent->getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -703,6 +625,14 @@ namespace tgui
             return getToolTip();
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::updateParentSize(sf::Vector2f size)
+    {
+        m_position.updateParentSize(size);
+        m_size.updateParentSize(size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

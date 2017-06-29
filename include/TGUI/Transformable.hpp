@@ -37,28 +37,6 @@ namespace tgui
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Default constructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transformable() = default;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Copy constructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transformable(const Transformable& copy);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Copy assignment operator
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transformable& operator=(const Transformable& right);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Virtual destructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~Transformable() = default;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the position of the widget
         ///
         /// This function completely overwrites the previous position.
@@ -74,15 +52,15 @@ namespace tgui
         /// // Place the widget on an exact position
         /// widget->setPosition({40, 30});
         ///
-        /// // Place the widget 50 pixels below another widget
-        /// widget->setPosition(otherWidget->getPosition() + sf::Vector2f{0, otherWidget->getSize().y + 50});
-        ///
-        /// // Place the widget 50 pixels below another widget and automatically move it when the other widget moves
-        /// widget->setPosition({tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50});
+        /// // Place the widget relative to the size of its parent
+        /// widget->setPosition({"5%", "10%"});
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const Layout2d& position);
+        virtual void setPosition(const Layout2d& position)
+        {
+            m_position = position;
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,17 +80,14 @@ namespace tgui
         /// // Place the widget on an exact position
         /// widget->setPosition(40, 30);
         ///
-        /// // Place the widget 50 pixels below another widget
-        /// widget->setPosition(otherWidget->getPosition().x, otherWidget->getPosition().y + otherWidget->getSize().y + 50);
-        ///
-        /// // Place the widget 50 pixels below another widget and automatically move it when the other widget moves
-        /// widget->setPosition(tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50);
+        /// // Place the widget relative to the size of its parent
+        /// widget->setPosition("5%", "10%");
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setPosition(const Layout& x, const Layout& y)
+        void setPosition(Layout x, Layout y)
         {
-            setPosition({x, y});
+            setPosition({std::move(x), std::move(y)});
         }
 
 
@@ -131,41 +106,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Moves the widget by a given offset
-        ///
-        /// This function adds to the current position of the widget, unlike setPosition which overwrites it.
-        /// Thus, it is equivalent to the following code:
-        /// @code
-        /// widget.setPosition(widget.getPosition() + offset);
-        /// @endcode
-        ///
-        /// @param offset Offset
-        ///
-        /// @see setPosition
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void move(const Layout2d& offset);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Moves the widget by a given offset
-        ///
-        /// This function adds to the current position of the widget, unlike setPosition which overwrites it.
-        /// Thus, it is equivalent to the following code:
-        /// @code
-        /// widget.setPosition(widget.getPosition().x + x, widget.getPosition().y + y);
-        /// @endcode
-        ///
-        /// @param x  Horizontal offset
-        /// @param y  Vertical offset
-        ///
-        /// @see setPosition
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void move(const Layout& x, const Layout& y);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the widget
         ///
         /// @param size  Size of the widget
@@ -173,17 +113,17 @@ namespace tgui
         /// Usage examples:
         /// @code
         /// // Give the widget an exact size
-        /// widget->setSize({40, 30});
+        /// widget->setSize({100, 25});
         ///
-        /// // Make the widget 50 pixels higher than some other widget
-        /// widget->setSize(otherWidget->getSize() + sf::Vector2f{0, 50});
-        ///
-        /// // Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes
-        /// widget->setSize(tgui::bindSize(otherWidget) + sf::Vector2f{0, 50});
+        /// // Give the widget a size relative to the size of its parent
+        /// widget->setPosition({"20%", "5%"});
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const Layout2d& size);
+        virtual void setSize(const Layout2d& size)
+        {
+            m_size = size;
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,19 +135,16 @@ namespace tgui
         /// Usage examples:
         /// @code
         /// // Give the widget an exact size
-        /// widget->setSize(40, 30);
+        /// widget->setSize(100, 25);
         ///
-        /// // Make the widget 50 pixels higher than some other widget
-        /// widget->setSize(otherWidget->getSize().x, otherWidget->getSize().y + 50);
-        ///
-        /// // Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes
-        /// widget->setSize(tgui::bindWidth(otherWidget), tgui::bindHeight(otherWidget) + 50);
+        /// // Give the widget a size relative to the size of its parent
+        /// widget->setPosition("20%", "5%");
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(const Layout& width, const Layout& height)
+        void setSize(Layout width, Layout height)
         {
-            setSize({width, height});
+            setSize({std::move(width), std::move(height)});
         }
 
 
@@ -217,7 +154,7 @@ namespace tgui
         /// @return Size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const
+        virtual sf::Vector2f getSize() const    /// TODO: Fix Grid and Tab to no longer override the getSize function
         {
             return m_size.getValue();
         }
@@ -236,37 +173,6 @@ namespace tgui
         {
             return getSize();
         }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Scales the widget
-        ///
-        /// @param factors  Scale factors
-        ///
-        /// This function multiplies the current size of the widget with the given scale factors.
-        /// Thus, it is equivalent to the following code:
-        /// @code
-        /// widget.setSize({getSize().x * factors.x, getSize().y * factors.y});
-        /// @endcode
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void scale(const Layout2d& factors);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Scales the widget
-        ///
-        /// @param x  horizontal scale factor
-        /// @param y  vertical scale factor
-        ///
-        /// This function multiplies the current size of the widget with the given scale factors.
-        /// Thus, it is equivalent to the following code:
-        /// @code
-        /// widget.setSize(getSize().x * factors.x, getSize().y * factors.y);
-        /// @endcode
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void scale(const Layout& x, const Layout& y);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -297,13 +203,19 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // @brief Updates the position
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updatePosition(bool forceUpdate = true);
+        void updatePosition()
+        {
+            setPosition(m_position);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // @brief Updates the size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateSize(bool forceUpdate = true);
+        void updateSize()
+        {
+            setSize(m_size);
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,9 +223,6 @@ namespace tgui
 
         Layout2d m_position;
         Layout2d m_size;
-
-        sf::Vector2f m_prevPosition;
-        sf::Vector2f m_prevSize;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
