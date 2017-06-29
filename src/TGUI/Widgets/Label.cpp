@@ -340,8 +340,8 @@ namespace tgui
         // Update the size of the label
         if (m_autoSize)
         {
-            m_size = {std::max(width, maxWidth) + outline.left + outline.right,
-                      (std::max<std::size_t>(m_lines.size(), 1) * m_fontCached.getLineSpacing(m_textSize)) + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize, m_textStyleCached) + outline.top + outline.bottom};
+            Widget::setSize({std::max(width, maxWidth) + outline.left + outline.right,
+                            (std::max<std::size_t>(m_lines.size(), 1) * m_fontCached.getLineSpacing(m_textSize)) + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize, m_textStyleCached) + outline.top + outline.bottom});
         }
 
         // Update the line positions
