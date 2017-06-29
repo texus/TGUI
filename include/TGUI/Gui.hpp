@@ -408,8 +408,10 @@ namespace tgui
         // The sfml window or other target to draw on
         sf::RenderTarget* m_window;
 
+    #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
         // Does m_Window contains a sf::RenderWindow?
         bool m_accessToWindow;
+    #endif
 
         // Internal container to store all widgets
         GuiContainer::Ptr m_container = std::make_shared<GuiContainer>();

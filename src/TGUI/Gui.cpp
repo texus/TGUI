@@ -39,8 +39,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui() :
+    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
+        m_window(nullptr)
+    #else
         m_window        (nullptr),
         m_accessToWindow(false)
+    #endif
     {
         m_container->m_focused = true;
 
@@ -52,13 +56,19 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui(sf::RenderWindow& window) :
+    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
+        m_window(&window)
+    #else
         m_window        (&window),
         m_accessToWindow(true)
+    #endif
     {
         m_container->m_window = &window;
         m_container->m_focused = true;
 
+    #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
         Clipboard::setWindowHandle(window.getSystemHandle());
+    #endif
 
         setView(window.getDefaultView());
 
@@ -70,8 +80,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Gui::Gui(sf::RenderTarget& window) :
+    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
+        m_window(&window)
+    #else
         m_window        (&window),
         m_accessToWindow(false)
+    #endif
     {
         m_container->m_window = &window;
         m_container->m_focused = true;
@@ -87,12 +101,13 @@ namespace tgui
 
     void Gui::setWindow(sf::RenderWindow& window)
     {
-        m_accessToWindow = true;
-
         m_window = &window;
         m_container->m_window = &window;
 
+    #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
+        m_accessToWindow = true;
         Clipboard::setWindowHandle(window.getSystemHandle());
+    #endif
 
         setView(window.getDefaultView());
     }
@@ -101,7 +116,9 @@ namespace tgui
 
     void Gui::setWindow(sf::RenderTarget& window)
     {
+    #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
         m_accessToWindow = false;
+    #endif
 
         m_window = &window;
         m_container->m_window = &window;
@@ -222,9 +239,10 @@ namespace tgui
         else if (event.type == sf::Event::GainedFocus)
         {
             m_container->m_focused = true;
-
+        #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
             if (m_accessToWindow)
                 Clipboard::setWindowHandle(static_cast<sf::RenderWindow*>(m_window)->getSystemHandle());
+        #endif
         }
 
         // Let the event manager handle the event
