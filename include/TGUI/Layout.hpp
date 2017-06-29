@@ -49,7 +49,7 @@ namespace tgui
         /// @brief Default constructor
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr Layout() :
+        /*constexpr*/ Layout() :
             Layout{0}
         {
         }
@@ -62,7 +62,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-        constexpr Layout(T constant) :
+        /*constexpr*/ Layout(T constant) :
             m_constant{true},
             m_value   {static_cast<float>(constant)}
         {
@@ -108,7 +108,7 @@ namespace tgui
         /// @return Value of the layout
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr float getValue() const
+        /*constexpr*/ float getValue() const
         {
             return m_value;
         }
@@ -121,7 +121,7 @@ namespace tgui
         /// @return Is the layout value constant?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr bool isConstant() const
+        /*constexpr*/ bool isConstant() const
         {
             return m_constant;
         }
@@ -136,7 +136,7 @@ namespace tgui
         /// This function should only be called when the layout does not contain a constant value.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr float getRatio() const
+        /*constexpr*/ float getRatio() const
         {
             return m_ratio;
         }
@@ -149,7 +149,7 @@ namespace tgui
         /// @param newParentSize  New size from which to take the relative value
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr void updateParentSize(float newParentSize)
+        /*constexpr*/ void updateParentSize(float newParentSize)
         {
             if (!m_constant)
             {
