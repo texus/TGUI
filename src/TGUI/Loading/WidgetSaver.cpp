@@ -58,29 +58,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::string emitLayout(Layout2d layout)
-        {
-            std::string str;
-            str += "(";
-
-            if (layout.x.isConstant())
-                str += to_string(layout.x.getValue());
-            else
-                str += to_string(layout.x.getRatio() * 100) + '%';
-
-            str += ", ";
-
-            if (layout.y.isConstant())
-                str += to_string(layout.y.getValue());
-            else
-                str += to_string(layout.y.getRatio() * 100) + '%';
-
-            str += ")";
-            return str;
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         std::unique_ptr<DataIO::Node> saveWidget(Widget::Ptr widget)
         {
             sf::String widgetName;
@@ -98,14 +75,14 @@ namespace tgui
             if (!widget->isEnabled())
                 SET_PROPERTY("Enabled", "false");
             if (widget->getPosition() != sf::Vector2f{})
-                SET_PROPERTY("Position", emitLayout(widget->getPositionLayout()));
+                SET_PROPERTY("Position", widget->getPositionLayout().toString());
             if (widget->getSize() != sf::Vector2f{})
             {
                 /// TODO: Fix Grid and Tab to no longer override the getSize function
                 if (widget->getSize() != widget->getSizeLayout().getValue())
-                    SET_PROPERTY("Size", emitLayout({widget->getSize()}));
+                    SET_PROPERTY("Size", Layout2d{widget->getSize()}.toString());
                 else
-                    SET_PROPERTY("Size", emitLayout(widget->getSizeLayout()));
+                    SET_PROPERTY("Size", widget->getSizeLayout().toString());
             }
 
             if (widget->getToolTip() != nullptr)
@@ -669,7 +646,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetSaver::save(Container::Ptr widget, std::stringstream& stream)
+    void WidgetSaver::save(Container::ConstPtr widget, std::stringstream& stream)
     {
         auto node = std::make_unique<DataIO::Node>();
         for (const auto& child : widget->getWidgets())

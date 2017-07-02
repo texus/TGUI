@@ -102,6 +102,9 @@ namespace tgui
     {
         Widget::setSize(size);
 
+        m_bordersCached.updateParentSize(getSize());
+        m_paddingCached.updateParentSize(getSize());
+
         // Recalculate the text size when auto scaling
         if (m_textSize == 0)
             setText(m_text);
@@ -112,7 +115,7 @@ namespace tgui
         m_spriteFocused.setSize(getInnerSize());
 
         // Set the size of the caret
-        m_caret.setSize({m_caret.getSize().x, getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top});
+        m_caret.setSize({m_caret.getSize().x, getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
 
         // Recalculate the position of the texts
         recalculateTextPositions();
@@ -148,7 +151,7 @@ namespace tgui
         // Check if the text is auto sized
         if (m_textSize == 0)
         {
-            m_textFull.setCharacterSize(Text::findBestTextSize(m_fontCached, (getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top) * 0.8f));
+            m_textFull.setCharacterSize(Text::findBestTextSize(m_fontCached, (getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) * 0.8f));
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
@@ -464,7 +467,7 @@ namespace tgui
     void EditBox::leftMousePressed(sf::Vector2f pos)
     {
         // Find the caret position
-        float positionX = pos.x - m_bordersCached.left - m_paddingCached.left;
+        const float positionX = pos.x - m_bordersCached.getLeft() - m_paddingCached.getLeft();
 
         std::size_t caretPosition = findCaretPosition(positionX);
 
@@ -534,14 +537,14 @@ namespace tgui
             if (m_limitTextWidth)
             {
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(pos.x - m_bordersCached.left - m_paddingCached.left);
+                m_selEnd = findCaretPosition(pos.x - m_bordersCached.getLeft() - m_paddingCached.getLeft());
             }
             else // Scrolling is enabled
             {
                 const float width = getVisibleEditBoxWidth();
 
                 // Check if the mouse is on the left of the text
-                if (pos.x < m_bordersCached.left + m_paddingCached.left)
+                if (pos.x < m_bordersCached.getLeft() + m_paddingCached.getLeft())
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -558,7 +561,7 @@ namespace tgui
                     }
                 }
                 // Check if the mouse is on the right of the text AND there is a possibility to scroll
-                else if ((pos.x > m_bordersCached.left + m_paddingCached.left + width) && (m_textFull.getSize().x > width))
+                else if ((pos.x > m_bordersCached.getLeft() + m_paddingCached.getLeft() + width) && (m_textFull.getSize().x > width))
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -576,7 +579,7 @@ namespace tgui
                 }
 
                 // Find out between which characters the mouse is standing
-                m_selEnd = findCaretPosition(pos.x - m_bordersCached.left - m_paddingCached.left);
+                m_selEnd = findCaretPosition(pos.x - m_bordersCached.getLeft() - m_paddingCached.getLeft());
             }
 
             // Check if we are selecting text from left to right
@@ -787,14 +790,14 @@ namespace tgui
                 }
                 else if (event.code == sf::Keyboard::V)
                 {
-                    auto clipboardContents = Clipboard::get();
+                    const auto clipboardContents = Clipboard::get();
 
                     // Only continue pasting if you actually have to do something
                     if ((m_selChars > 0) || (clipboardContents.getSize() > 0))
                     {
                         deleteSelectedCharacters();
 
-                        std::size_t oldCaretPos = m_selEnd;
+                        const std::size_t oldCaretPos = m_selEnd;
 
                         if (m_text.getSize() > m_selEnd)
                             setText(m_text.toWideString().substr(0, m_selEnd) + Clipboard::get() + m_text.toWideString().substr(m_selEnd, m_text.getSize() - m_selEnd));
@@ -921,15 +924,16 @@ namespace tgui
         else if (property == "padding")
         {
             m_paddingCached = getRenderer()->getPadding();
+            m_paddingCached.updateParentSize(getSize());
 
             setText(m_text);
 
-            m_caret.setSize({m_caret.getSize().x, getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top});
+            m_caret.setSize({m_caret.getSize().x, getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
         }
         else if (property == "caretwidth")
         {
             m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - getRenderer()->getCaretWidth()) / 2.0f), m_caret.getPosition().y});
-            m_caret.setSize({getRenderer()->getCaretWidth(), getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top});
+            m_caret.setSize({getRenderer()->getCaretWidth(), getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
         }
         else if ((property == "textcolor") || (property == "textcolordisabled"))
         {
@@ -971,7 +975,7 @@ namespace tgui
         }
         else if (property == "textstyle")
         {
-            TextStyle style = getRenderer()->getTextStyle();
+            const TextStyle style = getRenderer()->getTextStyle();
             m_textBeforeSelection.setStyle(style);
             m_textAfterSelection.setStyle(style);
             m_textSelection.setStyle(style);
@@ -1056,14 +1060,15 @@ namespace tgui
 
     sf::Vector2f EditBox::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float EditBox::getVisibleEditBoxWidth() const
     {
-        return std::max(0.f, getSize().x - m_bordersCached.left - m_bordersCached.right - m_paddingCached.left - m_paddingCached.right);
+        return std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1137,7 +1142,7 @@ namespace tgui
         if (m_selChars == 0)
             return;
 
-        std::size_t pos = std::min(m_selStart, m_selEnd);
+        const std::size_t pos = std::min(m_selStart, m_selEnd);
 
         // Erase the characters
         sf::String displayedString = m_textFull.getString();
@@ -1164,8 +1169,8 @@ namespace tgui
 
     void EditBox::recalculateTextPositions()
     {
-        float textX = m_paddingCached.left - m_textCropPosition;
-        float textY = m_paddingCached.top + (((getInnerSize().y - m_paddingCached.bottom - m_paddingCached.top) - m_textFull.getSize().y) / 2.f);
+        float textX = m_paddingCached.getLeft() - m_textCropPosition;
+        const float textY = m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) - m_textFull.getSize().y) / 2.f);
 
         // Check if the layout wasn't left
         if (m_textAlignment != Alignment::Left)
@@ -1201,8 +1206,8 @@ namespace tgui
 
             // Set the position and size of the rectangle that gets drawn behind the selected text
             m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_textSelection.getString().getSize()).x,
-                                              getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom});
-            m_selectedTextBackground.setPosition({textX, m_paddingCached.top});
+                                              getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()});
+            m_selectedTextBackground.setPosition({textX, m_paddingCached.getTop()});
 
             // Set the text selected text on the correct position
             m_textSelection.setPosition(textX, textY);
@@ -1218,7 +1223,7 @@ namespace tgui
 
         // Set the position of the caret
         caretLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_caret.getSize().x * 0.5f);
-        m_caret.setPosition({caretLeft, m_paddingCached.top});
+        m_caret.setPosition({caretLeft, m_paddingCached.getTop()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1257,7 +1262,7 @@ namespace tgui
             else
                 drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
 
-            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         // Draw the background
@@ -1288,7 +1293,7 @@ namespace tgui
         }
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        Clipping clipping{target, states, {m_paddingCached.left, m_paddingCached.top}, {getInnerSize().x - m_paddingCached.left - m_paddingCached.right, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}};
+        const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
         if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
         {

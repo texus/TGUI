@@ -85,6 +85,8 @@ namespace tgui
     {
         Widget::setSize(size);
 
+        m_bordersCached.updateParentSize(getSize());
+
         if (getSize().x < getSize().y)
             m_verticalScroll = true;
         else
@@ -463,7 +465,8 @@ namespace tgui
 
     sf::Vector2f Slider::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -496,7 +499,7 @@ namespace tgui
             else
                 drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
 
-            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         // Draw the track
@@ -515,7 +518,7 @@ namespace tgui
                 drawRectangleShape(target, states, getInnerSize(), m_trackColorCached);
         }
 
-        states.transform.translate({-m_bordersCached.left + m_thumb.left, -m_bordersCached.top + m_thumb.top});
+        states.transform.translate({-m_bordersCached.getLeft() + m_thumb.left, -m_bordersCached.getTop() + m_thumb.top});
 
         // Draw the borders around the thumb
         if (m_bordersCached != Borders{0})
@@ -525,7 +528,7 @@ namespace tgui
             else
                 drawBorders(target, states, m_bordersCached, {m_thumb.width, m_thumb.height}, m_borderColorCached);
 
-            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         // Draw the thumb
@@ -538,7 +541,9 @@ namespace tgui
         }
         else // There are no textures
         {
-            sf::Vector2f thumbInnerSize = {m_thumb.width - m_bordersCached.left - m_bordersCached.right, m_thumb.height - m_bordersCached.top - m_bordersCached.bottom};
+            const sf::Vector2f thumbInnerSize = {m_thumb.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                                                 m_thumb.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+
             if (m_mouseHover && m_thumbColorHoverCached.isSet())
                 drawRectangleShape(target, states, thumbInnerSize, m_thumbColorHoverCached);
             else

@@ -83,6 +83,8 @@ namespace tgui
     {
         Widget::setSize(size);
 
+        m_bordersCached.updateParentSize(getSize());
+
         // If the text is auto sized then recalculate the size
         if (m_textSize == 0)
             setText(getText());
@@ -280,6 +282,7 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached.updateParentSize(getSize());
             updateTextureSizes();
         }
         else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordisabled")
@@ -429,7 +432,8 @@ namespace tgui
 
     sf::Vector2f RadioButton::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -584,18 +588,18 @@ namespace tgui
         states.transform.translate(getPosition());
 
         // Draw the borders
-        float innerRadius = std::min(getInnerSize().x, getInnerSize().y) / 2;
+        const float innerRadius = std::min(getInnerSize().x, getInnerSize().y) / 2;
         if (m_bordersCached != Borders{0})
         {
-            sf::CircleShape circle{innerRadius + m_bordersCached.left};
-            circle.setOutlineThickness(-m_bordersCached.left);
+            sf::CircleShape circle{innerRadius + m_bordersCached.getLeft()};
+            circle.setOutlineThickness(-m_bordersCached.getLeft());
             circle.setFillColor(sf::Color::Transparent);
             circle.setOutlineColor(Color::calcColorOpacity(getCurrentBorderColor(), m_opacityCached));
             target.draw(circle, states);
         }
 
         // Draw the box
-        states.transform.translate({m_bordersCached.left, m_bordersCached.left});
+        states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getLeft()});
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
             if (m_checked)
@@ -636,7 +640,7 @@ namespace tgui
                 target.draw(checkShape, states);
             }
         }
-        states.transform.translate({-m_bordersCached.left, -m_bordersCached.left});
+        states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getLeft()});
 
         if (!getText().isEmpty())
         {

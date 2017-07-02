@@ -86,6 +86,9 @@ namespace tgui
     {
         Widget::setSize(size);
 
+        m_bordersCached.updateParentSize(getSize());
+        m_paddingCached.updateParentSize(getSize());
+
         m_spriteBackground.setSize(getInnerSize());
 
         // Don't continue when line height is 0
@@ -95,8 +98,8 @@ namespace tgui
         // If there is a scrollbar then reinitialize it
         if (isVerticalScrollbarPresent())
         {
-            m_verticalScroll.setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom));
-            m_verticalScroll.setSize({m_verticalScroll.getSize().x, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom});
+            m_verticalScroll.setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+            m_verticalScroll.setSize({m_verticalScroll.getSize().x, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()});
         }
 
         // The size of the text box has changed, update the text
@@ -642,7 +645,7 @@ namespace tgui
                 else
                 {
                     // Scroll up when we already where at the top line
-                    auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom) / m_lineHeight);
+                    const auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight);
                     if (m_topLine < visibleLines - 1)
                         m_selEnd.y = 0;
                     else
@@ -668,7 +671,7 @@ namespace tgui
                 else
                 {
                     // Scroll down when we already where at the bottom line
-                    auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom) / m_lineHeight);
+                    const auto visibleLines = static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight);
                     if (m_selEnd.y + visibleLines >= m_lines.size() + 2)
                         m_selEnd.y = m_lines.size() - 1;
                     else
@@ -698,7 +701,7 @@ namespace tgui
                 // Check that we did not select any characters
                 if (m_selStart == m_selEnd)
                 {
-                    std::size_t pos = findTextSelectionPositions().second;
+                    const std::size_t pos = findTextSelectionPositions().second;
                     if (pos > 0)
                     {
                         if (m_selEnd.x > 0)
@@ -806,7 +809,7 @@ namespace tgui
             {
                 if (event.control && !event.alt && !event.shift && !event.system && !m_readOnly)
                 {
-                    sf::String clipboardContents = Clipboard::get();
+                    const sf::String clipboardContents = Clipboard::get();
 
                     // Only continue pasting if you actually have to do something
                     if ((m_selStart != m_selEnd) || (clipboardContents != ""))
@@ -852,7 +855,7 @@ namespace tgui
         {
             deleteSelectedCharacters();
 
-            std::size_t caretPosition = findTextSelectionPositions().first;
+            const std::size_t caretPosition = findTextSelectionPositions().first;
 
             m_text.insert(caretPosition, key);
             m_lines[m_selEnd.y].insert(m_selEnd.x, key);
@@ -941,8 +944,8 @@ namespace tgui
 
     sf::Vector2<std::size_t> TextBox::findCaretPosition(sf::Vector2f position) const
     {
-        position.x -= m_bordersCached.left + m_paddingCached.left;
-        position.y -= m_bordersCached.top + m_paddingCached.top;
+        position.x -= m_bordersCached.getLeft() + m_paddingCached.getLeft();
+        position.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
         // Don't continue when line height is 0 or when there is no font yet
         if ((m_lineHeight == 0) || (m_fontCached == nullptr))
@@ -975,7 +978,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_lines[lineNumber].getSize(); ++i)
         {
             float charWidth;
-            sf::Uint32 curChar = m_lines[lineNumber][i];
+            const sf::Uint32 curChar = m_lines[lineNumber][i];
             //if (curChar == '\n')
             //    return sf::Vector2<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextBox strips newlines but this code is kept for when this function is generalized
             //else
@@ -1055,7 +1058,7 @@ namespace tgui
             return;
 
         // Find the maximum width of one line
-        float maxLineWidth = getInnerSize().x - m_paddingCached.left - m_paddingCached.right;
+        float maxLineWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
         if (m_verticalScroll.isShown())
             maxLineWidth -= m_verticalScroll.getSize().x;
 
@@ -1069,7 +1072,7 @@ namespace tgui
             textSelectionPositions = findTextSelectionPositions();
 
         // Fit the text in the available space
-        sf::String string = Text::wordWrap(maxLineWidth, m_text, m_fontCached, m_textSize, false, false);
+        const sf::String string = Text::wordWrap(maxLineWidth, m_text, m_fontCached, m_textSize, false, false);
 
         // Split the string in multiple lines
         m_lines.clear();
@@ -1242,7 +1245,8 @@ namespace tgui
 
     sf::Vector2f TextBox::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1371,23 +1375,23 @@ namespace tgui
 
     void TextBox::recalculateVisibleLines()
     {
-        m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom) / m_lineHeight), m_lines.size());
+        m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight), m_lines.size());
 
         // Store which area is visible
         if (m_verticalScroll.isShown())
         {
-            m_verticalScroll.setPosition({getSize().x - m_bordersCached.right - m_paddingCached.right - m_verticalScroll.getSize().x, m_bordersCached.top + m_paddingCached.top});
+            m_verticalScroll.setPosition({getSize().x - m_bordersCached.getRight() - m_paddingCached.getRight() - m_verticalScroll.getSize().x, m_bordersCached.getTop() + m_paddingCached.getTop()});
 
             m_topLine = m_verticalScroll.getValue() / m_lineHeight;
 
             // The scrollbar may be standing between lines in which case one more line is visible
-            if (((static_cast<unsigned int>(getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom) % m_lineHeight) != 0) || ((m_verticalScroll.getValue() % m_lineHeight) != 0))
+            if (((static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) % m_lineHeight) != 0) || ((m_verticalScroll.getValue() % m_lineHeight) != 0))
                 m_visibleLines++;
         }
         else // There is no scrollbar
         {
             m_topLine = 0;
-            m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom) / m_lineHeight), m_lines.size());
+            m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight), m_lines.size());
         }
     }
 
@@ -1482,7 +1486,7 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
-            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         // Draw the background
@@ -1493,14 +1497,14 @@ namespace tgui
 
         // Draw the contents of the text box
         {
-            states.transform.translate({m_paddingCached.left, m_paddingCached.top});
+            states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
 
-            float maxLineWidth = getInnerSize().x - m_paddingCached.left - m_paddingCached.right;
+            float maxLineWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
             if (m_verticalScroll.isShown())
                 maxLineWidth -= m_verticalScroll.getSize().x;
 
             // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-            Clipping clipping{target, states, {}, {maxLineWidth, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}};
+            const Clipping clipping{target, states, {}, {maxLineWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
             // Move the text according to the vertical scrollar
             states.transform.translate({0, -static_cast<float>(m_verticalScroll.getValue())});

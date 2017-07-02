@@ -106,7 +106,7 @@ namespace tgui
             if (!str.empty())
             {
                 // Check if the color is represented by a string with its name
-                auto it = colorMap.find(toLower(str));
+                const auto it = colorMap.find(toLower(str));
                 if (it != colorMap.end())
                     return Color(it->second);
 
@@ -161,7 +161,7 @@ namespace tgui
                 if ((str[0] == '(') && (str[str.length()-1] == ')'))
                     str = str.substr(1, str.length()-2);
 
-                std::vector<std::string> tokens = Deserializer::split(str, ',');
+                const std::vector<std::string> tokens = Deserializer::split(str, ',');
                 if (tokens.size() == 3 || tokens.size() == 4)
                 {
                     return Color{static_cast<sf::Uint8>(tgui::stoi(tokens[0])),
@@ -217,23 +217,25 @@ namespace tgui
         {
             std::string str = trim(value);
 
-            // Make sure that the line isn't empty
-            if (!str.empty())
-            {
-                // Remove the first and last characters when they are brackets
-                if ((str[0] == '(') && (str[str.length()-1] == ')'))
-                    str = str.substr(1, str.length()-2);
+            if (str.empty())
+                throw Exception{"Failed to deserialize outline '" + value + "'. String was empty."};
 
-                std::vector<std::string> tokens = Deserializer::split(str, ',');
-                if (tokens.size() == 1)
-                    return Outline{tgui::stof(tokens[0])};
-                else if (tokens.size() == 2)
-                    return Outline{tgui::stof(tokens[0]), tgui::stof(tokens[1])};
-                else if (tokens.size() == 4)
-                    return Outline{tgui::stof(tokens[0]), tgui::stof(tokens[1]), tgui::stof(tokens[2]), tgui::stof(tokens[3])};
-            }
+            // Remove the brackets around the value
+            if (((str.front() == '(') && (str.back() == ')')) || ((str.front() == '{') && (str.back() == '}')))
+                str = str.substr(1, str.length() - 2);
 
-            throw Exception{"Failed to deserialize outlines '" + value + "'."};
+            if (str.empty())
+                return {Outline{0}};
+
+            const std::vector<std::string> tokens = Deserializer::split(str, ',');
+            if (tokens.size() == 1)
+                return {Outline{tokens[0]}};
+            else if (tokens.size() == 2)
+                return {Outline{tokens[0], tokens[1]}};
+            else if (tokens.size() == 4)
+                return {Outline{tokens[0], tokens[1], tokens[2], tokens[3]}};
+            else
+                throw tgui::Exception{"Failed to deserialize outline '" + value + "'. Expected numbers separated with a comma."};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,7 +338,7 @@ namespace tgui
             std::vector<std::string> styles = Deserializer::split(style, '|');
             for (const auto& elem : styles)
             {
-                std::string requestedStyle = toLower(trim(elem));
+                std::string requestedStyle = toLower(elem);
                 if (requestedStyle == "bold")
                     decodedStyle |= sf::Text::Bold;
                 else if (requestedStyle == "italic")
@@ -423,11 +425,11 @@ namespace tgui
         std::size_t start = 0;
         std::size_t end = 0;
         while ((end = str.find(delim, start)) != std::string::npos) {
-            tokens.push_back(str.substr(start, end - start));
+            tokens.push_back(trim(str.substr(start, end - start)));
             start = end + 1;
         }
 
-        tokens.push_back(str.substr(start));
+        tokens.push_back(trim(str.substr(start)));
         return tokens;
     }
 

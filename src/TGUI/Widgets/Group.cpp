@@ -62,9 +62,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Group::setSize(const Layout2d& size)
+    {
+        m_paddingCached.updateParentSize(size.getValue());
+
+        Container::setSize(size);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Vector2f Group::getContentSize() const
+    {
+        return {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+                getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f Group::getChildWidgetsOffset() const
     {
-        return {m_paddingCached.left, m_paddingCached.top};
+        return {m_paddingCached.getLeft(), m_paddingCached.getTop()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +107,7 @@ namespace tgui
         if (property == "padding")
         {
             m_paddingCached = getRenderer()->getPadding();
+            updateSize();
         }
         else
             Container::rendererChanged(property);
@@ -99,10 +117,10 @@ namespace tgui
 
     void Group::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(getPosition().x + m_paddingCached.left, getPosition().y + m_paddingCached.top);
+        states.transform.translate(getPosition().x + m_paddingCached.getLeft(), getPosition().y + m_paddingCached.getTop());
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        sf::Vector2f innerSize = {getSize().x - m_paddingCached.left - m_paddingCached.right, getSize().y - m_paddingCached.top - m_paddingCached.bottom};
+        sf::Vector2f innerSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
         Clipping clipping{target, states, {}, innerSize};
 
         // Draw the child widgets

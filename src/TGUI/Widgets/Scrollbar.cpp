@@ -491,8 +491,8 @@ namespace tgui
                     if ((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height) > 0)
                     {
                         // Calculate the new value
-                        unsigned int value = static_cast<unsigned int>((((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height)
-                                                                         / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum) + 0.5f);
+                        const unsigned int value = static_cast<unsigned int>((((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height)
+                                                                               / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum) + 0.5f);
 
                         // If the value isn't too high then change it
                         if (value <= (m_maximum - m_lowValue))
@@ -519,12 +519,12 @@ namespace tgui
                         if (pos.y <= getSize().y - m_arrowUp.height)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
-                            float value = (((pos.y - m_arrowUp.height) / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum);
+                            const float value = (((pos.y - m_arrowUp.height) / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum);
 
                             // Check if you clicked above the thumb
                             if (value <= m_value)
                             {
-                                float subtractValue = m_lowValue / 3.0f;
+                                const float subtractValue = m_lowValue / 3.0f;
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value >= subtractValue)
@@ -534,7 +534,7 @@ namespace tgui
                             }
                             else // The click occurred below the thumb
                             {
-                                float subtractValue = m_lowValue * 2.0f / 3.0f;
+                                const float subtractValue = m_lowValue * 2.0f / 3.0f;
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value <= (m_maximum - m_lowValue + subtractValue))
@@ -559,8 +559,8 @@ namespace tgui
                     if (pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width > 0)
                     {
                         // Calculate the new value
-                        unsigned int value = static_cast<unsigned int>((((pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
-                                                                         / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum) + 0.5f);
+                        const unsigned int value = static_cast<unsigned int>((((pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
+                                                                               / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum) + 0.5f);
                         // If the value isn't too high then change it
                         if (value <= (m_maximum - m_lowValue))
                             setValue(value);
@@ -586,12 +586,12 @@ namespace tgui
                         if (pos.x <= getSize().x - m_arrowUp.width)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
-                            float value = (((pos.x - m_arrowUp.width) / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum);
+                            const float value = (((pos.x - m_arrowUp.width) / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum);
 
                             // Check if you clicked to the left of the thumb
                             if (value <= m_value)
                             {
-                                float subtractValue = m_lowValue / 3.0f;
+                                const float subtractValue = m_lowValue / 3.0f;
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value >= subtractValue)
@@ -601,7 +601,7 @@ namespace tgui
                             }
                             else // The click occurred to the right of the thumb
                             {
-                                float subtractValue = m_lowValue * 2.0f / 3.0f;
+                                const float subtractValue = m_lowValue * 2.0f / 3.0f;
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value <= (m_maximum - m_lowValue + subtractValue))

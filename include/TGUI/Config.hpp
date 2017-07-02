@@ -63,5 +63,11 @@
 #define TGUI_VERSION_MINOR 8
 #define TGUI_VERSION_PATCH 0
 
+// The constexpr keyword is not widely supported enough to be enabled by default
+#ifdef TGUI_ENABLE_CONSTEXPR
+    #define TGUI_CONSTEXPR constexpr
+#else
+    #define TGUI_CONSTEXPR
+#endif
 
 #endif // TGUI_CONFIG_HPP

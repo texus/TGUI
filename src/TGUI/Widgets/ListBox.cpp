@@ -91,7 +91,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_items.size(); ++i)
             m_items[i].setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].getSize().y) / 2.0f)});
 
-        m_scroll.setPosition(getSize().x - m_bordersCached.right - m_paddingCached.right - m_scroll.getSize().x, m_bordersCached.top + m_paddingCached.top);
+        m_scroll.setPosition(getSize().x - m_bordersCached.getRight() - m_paddingCached.getRight() - m_scroll.getSize().x, m_bordersCached.getTop() + m_paddingCached.getTop());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,9 +100,12 @@ namespace tgui
     {
         Widget::setSize(size);
 
+        m_bordersCached.updateParentSize(getSize());
+        m_paddingCached.updateParentSize(getSize());
+
         m_spriteBackground.setSize(getInnerSize());
 
-        m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom)});
+        m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom())});
         m_scroll.setLowValue(static_cast<unsigned int>(m_scroll.getSize().y));
 
         updatePosition();
@@ -471,10 +474,10 @@ namespace tgui
         }
         else
         {
-            if (sf::FloatRect{m_bordersCached.left + m_paddingCached.left, m_bordersCached.top + m_paddingCached.top,
-                              getInnerSize().x - m_paddingCached.left - m_paddingCached.right, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}.contains(pos))
+            if (sf::FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
+                              getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
             {
-                pos.y -= m_bordersCached.top + m_paddingCached.top;
+                pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
                 int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
@@ -562,10 +565,10 @@ namespace tgui
             m_scroll.mouseNoLongerOnWidget();
 
             // Find out on which item the mouse is hovering
-            if (sf::FloatRect{m_bordersCached.left + m_paddingCached.left,
-                              m_bordersCached.top + m_paddingCached.top, getInnerSize().x - m_paddingCached.left - m_paddingCached.right, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}.contains(pos))
+            if (sf::FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+                              m_bordersCached.getTop() + m_paddingCached.getTop(), getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
             {
-                pos.y -= m_bordersCached.top + m_paddingCached.top;
+                pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
                 int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
@@ -751,7 +754,7 @@ namespace tgui
 
     sf::Vector2f ListBox::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(), getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -856,7 +859,7 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
-            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         // Draw the background
@@ -868,10 +871,10 @@ namespace tgui
         // Draw the items and their selected/hover backgrounds
         {
             // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-            float maxItemWidth = getInnerSize().x - m_paddingCached.left - m_paddingCached.right;
+            float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
             if (m_scroll.isShown())
                 maxItemWidth -= m_scroll.getSize().x;
-            Clipping clipping{target, states, {m_paddingCached.left, m_paddingCached.top}, {maxItemWidth, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}};
+            const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
             // Find out which items are visible
             std::size_t firstItem = 0;
@@ -886,14 +889,14 @@ namespace tgui
                     ++lastItem;
             }
 
-            states.transform.translate({m_paddingCached.left, m_paddingCached.top - m_scroll.getValue()});
+            states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop() - m_scroll.getValue()});
 
             // Draw the background of the selected item
             if (m_selectedItem >= 0)
             {
                 states.transform.translate({0, static_cast<float>(m_selectedItem * m_itemHeight)});
 
-                sf::Vector2f size = {getInnerSize().x - m_paddingCached.left - m_paddingCached.right, static_cast<float>(m_itemHeight)};
+                const sf::Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
                 if ((m_selectedItem == m_hoveringItem) && m_selectedBackgroundColorHoverCached.isSet())
                     drawRectangleShape(target, states, size, m_selectedBackgroundColorHoverCached);
                 else
@@ -906,7 +909,7 @@ namespace tgui
             if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
             {
                 states.transform.translate({0, static_cast<float>(m_hoveringItem * m_itemHeight)});
-                drawRectangleShape(target, states, {getInnerSize().x - m_paddingCached.left - m_paddingCached.right, static_cast<float>(m_itemHeight)}, m_backgroundColorHoverCached);
+                drawRectangleShape(target, states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, m_backgroundColorHoverCached);
                 states.transform.translate({0, -static_cast<float>(m_hoveringItem * m_itemHeight)});
             }
 

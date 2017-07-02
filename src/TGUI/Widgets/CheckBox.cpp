@@ -71,9 +71,9 @@ namespace tgui
         {
             sf::Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
             if (getText().isEmpty())
-                return getSize() + sf::Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.right), std::max(0.f, sizeDiff.y - m_bordersCached.top)};
+                return getSize() + sf::Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.getRight()), std::max(0.f, sizeDiff.y - m_bordersCached.getTop())};
             else
-                return getSize() + sf::Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.top))};
+                return getSize() + sf::Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()))};
         }
         else
         {
@@ -93,8 +93,8 @@ namespace tgui
          && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
         {
             const float sizeDiff = m_spriteChecked.getSize().y - m_spriteUnchecked.getSize().y;
-            if (sizeDiff > m_bordersCached.top)
-                yOffset = sizeDiff - m_bordersCached.top;
+            if (sizeDiff > m_bordersCached.getTop())
+                yOffset = sizeDiff - m_bordersCached.getTop();
         }
 
         if (getText().isEmpty() || (getSize().y >= m_text.getSize().y))
@@ -198,7 +198,7 @@ namespace tgui
         if (m_bordersCached != Borders{0})
             drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());
 
-        states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+        states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
             if (m_checked)
@@ -244,15 +244,10 @@ namespace tgui
             if (m_checked)
             {
                 const float pi = 3.14159265358979f;
-
-                // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-                Clipping clipping{target, states, {}, getInnerSize()};
-
-                sf::Vector2f size = getInnerSize();
-
-                sf::Vector2f leftPoint = {0, size.y * 5.f/12.f};
-                sf::Vector2f middlePoint = {size.x / 2, size.y};
-                sf::Vector2f rightPoint = {size.x, 0};
+                const sf::Vector2f size = getInnerSize();
+                const sf::Vector2f leftPoint = {0, size.y * 5.f/12.f};
+                const sf::Vector2f middlePoint = {size.x / 2, size.y};
+                const sf::Vector2f rightPoint = {size.x, 0};
 
                 sf::RectangleShape left{{std::min(size.x, size.y) / 6, static_cast<float>(std::sqrt(std::pow(middlePoint.x - leftPoint.x, 2) + std::pow(middlePoint.y - leftPoint.y, 2)))}};
                 left.setPosition(leftPoint);
@@ -264,15 +259,18 @@ namespace tgui
                 right.setOrigin({left.getSize().x / 2, 0});
                 right.setRotation(-90 + (std::atan2(rightPoint.y - middlePoint.y, rightPoint.x - middlePoint.x) / pi * 180));
 
-                sf::Color checkColor = getCurrentCheckColor();
+                const sf::Color checkColor = getCurrentCheckColor();
                 left.setFillColor(checkColor);
                 right.setFillColor(checkColor);
+
+                // Set the clipping for all draw calls that happen until this clipping object goes out of scope
+                const Clipping clipping{target, states, {}, size};
 
                 target.draw(left, states);
                 target.draw(right, states);
             }
         }
-        states.transform.translate({-m_bordersCached.left, -m_bordersCached.top});
+        states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getTop()});
 
         if (!getText().isEmpty())
         {

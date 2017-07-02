@@ -85,7 +85,7 @@ namespace tgui
             // Correct the size for widgets that have borders around it or a text next to them
             if (m_widgets[i]->getFullSize() != m_widgets[i]->getSize())
             {
-                sf::Vector2f newSize = m_widgets[i]->getSize() - (m_widgets[i]->getFullSize() - m_widgets[i]->getSize());
+                const sf::Vector2f newSize = m_widgets[i]->getSize() - (m_widgets[i]->getFullSize() - m_widgets[i]->getSize());
                 if (newSize.x > 0 && newSize.y > 0)
                 {
                     m_widgets[i]->setSize(newSize);

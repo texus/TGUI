@@ -201,9 +201,12 @@ namespace tgui
     {
         Widget::setSize(size);
 
+        m_bordersCached.updateParentSize(getSize());
+        m_paddingCached.updateParentSize(getSize());
+
         m_spriteBackground.setSize(getInnerSize());
 
-        float height = getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom;
+        const float height = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom();
 
         if (height > 0)
         {
@@ -614,22 +617,23 @@ namespace tgui
 
     sf::Vector2f ComboBox::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ComboBox::updateListBoxHeight()
     {
-        Borders borders = m_listBox->getRenderer()->getBorders();
-        Padding padding = m_listBox->getRenderer()->getPadding();
+        const Borders borders = m_listBox->getRenderer()->getBorders();
+        const Padding padding = m_listBox->getRenderer()->getPadding();
 
         if (m_nrOfItemsToDisplay > 0)
             m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * (std::min<std::size_t>(m_nrOfItemsToDisplay, std::max<std::size_t>(m_listBox->getItemCount(), 1))))
-                                             + borders.top + borders.bottom + padding.top + padding.bottom});
+                                             + borders.getTop() + borders.getBottom() + padding.getTop() + padding.getBottom()});
         else
             m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1))
-                                             + borders.top + borders.bottom + padding.top + padding.bottom});
+                                             + borders.getTop() + borders.getBottom() + padding.getTop() + padding.getBottom()});
 
     }
 
@@ -646,7 +650,7 @@ namespace tgui
             while (container->getParent() != nullptr)
                 container = container->getParent();
 
-            m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - m_bordersCached.bottom});
+            m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - m_bordersCached.getBottom()});
             container->add(m_listBox, "#TGUI_INTERNAL$ComboBoxListBox#");
             m_listBox->focus();
         }
@@ -711,7 +715,7 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
-            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         sf::RenderStates statesForText = states;
@@ -730,7 +734,7 @@ namespace tgui
             if (m_listBox->isVisible())
             {
                 arrowSize = m_spriteArrowUp.getSize().x;
-                states.transform.translate({getInnerSize().x - m_paddingCached.right - arrowSize, m_paddingCached.top});
+                states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
 
                 if (m_mouseHover && m_spriteArrowUpHover.isSet())
                     m_spriteArrowUpHover.draw(target, states);
@@ -740,7 +744,7 @@ namespace tgui
             else
             {
                 arrowSize = m_spriteArrowDown.getSize().x;
-                states.transform.translate({getInnerSize().x - m_paddingCached.right - arrowSize, m_paddingCached.top});
+                states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
 
                 if (m_mouseHover && m_spriteArrowDownHover.isSet())
                     m_spriteArrowDownHover.draw(target, states);
@@ -750,8 +754,8 @@ namespace tgui
         }
         else // There are no textures for the arrow
         {
-            arrowSize = getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom;
-            states.transform.translate({getInnerSize().x - m_paddingCached.right - arrowSize, m_paddingCached.top});
+            arrowSize = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom();
+            states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
 
             if (m_mouseHover && m_arrowBackgroundColorHoverCached.isSet())
                 drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorHoverCached);
@@ -783,9 +787,9 @@ namespace tgui
         // Draw the selected item
         if (!m_text.getString().isEmpty())
         {
-            Clipping clipping{target, statesForText, {m_paddingCached.left, m_paddingCached.top}, {getInnerSize().x - m_paddingCached.left - m_paddingCached.right - arrowSize, getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom}};
+            const Clipping clipping{target, statesForText, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - arrowSize, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
-            statesForText.transform.translate(m_paddingCached.left, m_paddingCached.top + (((getInnerSize().y - m_paddingCached.top - m_paddingCached.bottom) - m_text.getSize().y) / 2.0f));
+            statesForText.transform.translate(m_paddingCached.getLeft(), m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) - m_text.getSize().y) / 2.0f));
             m_text.draw(target, statesForText);
         }
     }

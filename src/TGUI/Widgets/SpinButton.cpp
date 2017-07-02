@@ -84,7 +84,9 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        sf::Vector2f arrowSize = getArrowSize();
+        m_bordersCached.updateParentSize(getSize());
+
+        const sf::Vector2f arrowSize = getArrowSize();
         m_spriteArrowUp.setSize(arrowSize);
         m_spriteArrowUpHover.setSize(arrowSize);
         m_spriteArrowDown.setSize(arrowSize);
@@ -359,9 +361,11 @@ namespace tgui
     sf::Vector2f SpinButton::getArrowSize() const
     {
         if (m_verticalScroll)
-            return {getSize().x - m_bordersCached.left - m_bordersCached.right, (getSize().y - m_bordersCached.top - m_bordersCached.bottom - m_spaceBetweenArrowsCached) / 2.0f};
+            return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                    (getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_spaceBetweenArrowsCached) / 2.0f};
         else
-            return {getSize().y - m_bordersCached.top - m_bordersCached.bottom, (getSize().x - m_bordersCached.left - m_bordersCached.right - m_spaceBetweenArrowsCached) / 2.0f};
+            return {getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom(),
+                    (getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_spaceBetweenArrowsCached) / 2.0f};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,10 +378,10 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
-            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
-        sf::Vector2f arrowSize = getArrowSize();
+        const sf::Vector2f arrowSize = getArrowSize();
 
         // Draw the top/left arrow
         if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())

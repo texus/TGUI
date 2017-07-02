@@ -449,7 +449,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::saveWidgetsToStream(std::stringstream& stream)
+    void Gui::loadWidgetsFromStream(std::stringstream&& stream)
+    {
+        loadWidgetsFromStream(stream);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::saveWidgetsToStream(std::stringstream& stream) const
     {
         m_container->saveWidgetsToStream(stream);
     }

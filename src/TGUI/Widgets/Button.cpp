@@ -87,6 +87,8 @@ namespace tgui
     {
         Widget::setSize(size);
 
+        m_bordersCached.updateParentSize(getSize());
+
         // Reset the texture sizes
         m_sprite.setSize(getInnerSize());
         m_spriteHover.setSize(getInnerSize());
@@ -134,7 +136,7 @@ namespace tgui
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
-                unsigned int textSize = Text::findBestTextSize(m_fontCached, getInnerSize().y * 0.8f);
+                const unsigned int textSize = Text::findBestTextSize(m_fontCached, getInnerSize().y * 0.8f);
                 m_text.setCharacterSize(textSize);
 
                 // Make the text smaller when it's too width
@@ -343,7 +345,8 @@ namespace tgui
 
     sf::Vector2f Button::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -410,7 +413,7 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());
-            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
         // Check if there is a background texture

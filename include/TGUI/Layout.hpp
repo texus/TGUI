@@ -26,8 +26,9 @@
 #ifndef TGUI_LAYOUT_HPP
 #define TGUI_LAYOUT_HPP
 
-#include <SFML/System/Vector2.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/to_string.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <type_traits>
 #include <string>
 
@@ -36,7 +37,7 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Class to store the left, top, width or height of a widget
+    /// @brief Class to store the left, top, width or height of something
     ///
     /// You don't have to explicitly create an instance of this class, numbers and strings are implicitly cast.
     ///
@@ -49,10 +50,7 @@ namespace tgui
         /// @brief Default constructor
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*constexpr*/ Layout() :
-            Layout{0}
-        {
-        }
+        TGUI_CONSTEXPR Layout() = default;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +60,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-        /*constexpr*/ Layout(T constant) :
+        TGUI_CONSTEXPR Layout(T constant) :
             m_constant{true},
             m_value   {static_cast<float>(constant)}
         {
@@ -108,7 +106,7 @@ namespace tgui
         /// @return Value of the layout
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*constexpr*/ float getValue() const
+        TGUI_CONSTEXPR float getValue() const
         {
             return m_value;
         }
@@ -121,7 +119,7 @@ namespace tgui
         /// @return Is the layout value constant?
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*constexpr*/ bool isConstant() const
+        TGUI_CONSTEXPR bool isConstant() const
         {
             return m_constant;
         }
@@ -136,7 +134,7 @@ namespace tgui
         /// This function should only be called when the layout does not contain a constant value.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*constexpr*/ float getRatio() const
+        TGUI_CONSTEXPR float getRatio() const
         {
             return m_ratio;
         }
@@ -149,7 +147,7 @@ namespace tgui
         /// @param newParentSize  New size from which to take the relative value
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*constexpr*/ void updateParentSize(float newParentSize)
+        TGUI_CONSTEXPR void updateParentSize(float newParentSize)
         {
             if (!m_constant)
             {
@@ -160,12 +158,41 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+        /// @internal
+        /// @brief Converts the layout to a string representation
+        ///
+        /// @return String representation of layout
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string toString() const
+        {
+            if (m_constant)
+                return to_string(m_value);
+            else
+                return to_string(m_ratio * 100) + '%';
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
 
         bool  m_constant    = true;
         float m_value       = 0;
         float m_ratio       = 0;
         float m_parentValue = 0;
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Class to create a relative layout without using a string
+    ///
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    struct TGUI_API RelLayout : Layout
+    {
+        explicit TGUI_CONSTEXPR RelLayout(float constant)
+        {
+            m_constant = false;
+            m_ratio    = constant;
+        }
     };
 
 
@@ -199,7 +226,7 @@ namespace tgui
         /// @param layoutY  y component
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Layout2d(Layout layoutX, Layout layoutY) :
+        TGUI_CONSTEXPR Layout2d(Layout layoutX, Layout layoutY) :
             x{std::move(layoutX)},
             y{std::move(layoutY)}
         {
@@ -229,6 +256,19 @@ namespace tgui
         {
             x.updateParentSize(newParentSize.x);
             y.updateParentSize(newParentSize.y);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Converts the layout to a string representation
+        ///
+        /// @return String representation of layout
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string toString() const
+        {
+            return "(" + x.toString() + ", " + y.toString() + ")";
         }
 
 

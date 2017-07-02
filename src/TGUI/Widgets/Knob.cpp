@@ -86,6 +86,8 @@ namespace tgui
     {
         Widget::setSize(size);
 
+        m_bordersCached.updateParentSize(getSize());
+
         if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
         {
             m_spriteBackground.setSize(getInnerSize());
@@ -295,7 +297,7 @@ namespace tgui
         if (!m_mouseHover)
             mouseEnteredWidget();
 
-        sf::Vector2f centerPosition = getSize() / 2.0f;
+        const sf::Vector2f centerPosition = getSize() / 2.0f;
 
         // Check if the mouse button is down
         if (m_mouseDown)
@@ -496,7 +498,7 @@ namespace tgui
 
     sf::Vector2f Knob::getInnerSize() const
     {
-        return {getSize().x - m_bordersCached.left - m_bordersCached.right, getSize().y - m_bordersCached.top - m_bordersCached.bottom};
+        return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(), getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -505,10 +507,10 @@ namespace tgui
     {
         states.transform.translate(getPosition());
 
-        float size = std::min(getInnerSize().x, getInnerSize().y);
+        const float size = std::min(getInnerSize().x, getInnerSize().y);
 
         // Draw the borders
-        float borderThickness = std::min({m_bordersCached.left, m_bordersCached.top, m_bordersCached.right, m_bordersCached.bottom});
+        const float borderThickness = std::min({m_bordersCached.getLeft(), m_bordersCached.getTop(), m_bordersCached.getRight(), m_bordersCached.getBottom()});
         if (borderThickness > 0)
         {
             states.transform.translate({borderThickness, borderThickness});

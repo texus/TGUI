@@ -77,6 +77,7 @@ namespace tgui
 
     void Tabs::setSize(const Layout2d&)
     {
+        //m_bordersCached.updateParentSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +115,9 @@ namespace tgui
         if (m_tabWidth.empty())
             m_width += tabWidth;
         else
-            m_width += tabWidth + ((m_bordersCached.left + m_bordersCached.right) / 2.f);
+            m_width += tabWidth + ((m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f);
+
+        m_bordersCached.updateParentSize(getSize());
 
         m_tabWidth.insert(m_tabWidth.begin() + index, tabWidth);
         m_tabTexts.insert(m_tabTexts.begin() + index, std::move(newTab));
@@ -154,6 +157,8 @@ namespace tgui
 
             m_width -= m_tabWidth[index];
             m_width += tabWidth;
+
+            m_bordersCached.updateParentSize(getSize());
         }
 
         return true;
@@ -230,9 +235,11 @@ namespace tgui
             return;
 
         if (m_tabWidth.size() > 1)
-            m_width -= m_tabWidth[index] + ((m_bordersCached.left + m_bordersCached.right) / 2.0f);
+            m_width -= m_tabWidth[index] + ((m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.0f);
         else
             m_width -= m_tabWidth[index];
+
+        m_bordersCached.updateParentSize(getSize());
 
         // Remove the tab
         m_tabTexts.erase(m_tabTexts.begin() + index);
@@ -253,7 +260,8 @@ namespace tgui
         m_tabWidth.clear();
         m_selectedTab = -1;
 
-        m_width = m_bordersCached.left + m_bordersCached.right;
+        m_width = m_bordersCached.getLeft() + m_bordersCached.getRight();
+        m_bordersCached.updateParentSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -283,7 +291,7 @@ namespace tgui
 
             if (size == 0)
             {
-                m_textSize = Text::findBestTextSize(m_fontCached, (m_tabHeight - m_bordersCached.top - m_bordersCached.bottom) * 0.8f);
+                m_textSize = Text::findBestTextSize(m_fontCached, (m_tabHeight - m_bordersCached.getTop() - m_bordersCached.getBottom()) * 0.8f);
             }
             else // An exact size was given
                 m_textSize = size;
@@ -307,6 +315,7 @@ namespace tgui
     void Tabs::setTabHeight(float height)
     {
         m_tabHeight = height;
+        m_bordersCached.updateParentSize(getSize());
 
         // Recalculate the size when auto sizing
         if (m_requestedTextSize == 0)
@@ -354,13 +363,13 @@ namespace tgui
 
     void Tabs::leftMousePressed(sf::Vector2f pos)
     {
-        float width = m_bordersCached.left / 2.f;
+        float width = m_bordersCached.getLeft() / 2.f;
 
         // Loop through all tabs
         for (unsigned int i = 0; i < m_tabWidth.size(); ++i)
         {
             // Append the width of the tab
-            width += (m_bordersCached.left / 2.f) + m_tabWidth[i] + (m_bordersCached.right / 2.0f);
+            width += (m_bordersCached.getLeft() / 2.f) + m_tabWidth[i] + (m_bordersCached.getRight() / 2.0f);
 
             // If the mouse went down on this tab then select it
             if (pos.x < width)
@@ -388,9 +397,11 @@ namespace tgui
 
         // Now add the borders to the tabs
         if (!m_tabWidth.empty())
-            m_width += (m_tabWidth.size() + 1) * ((m_bordersCached.left + m_bordersCached.right) / 2.f);
+            m_width += (m_tabWidth.size() + 1) * ((m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f);
         else
-            m_width = m_bordersCached.left + m_bordersCached.right;
+            m_width = m_bordersCached.getLeft() + m_bordersCached.getRight();
+
+        m_bordersCached.updateParentSize(getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -400,6 +411,7 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached.updateParentSize(getSize());
             updateSize();
         }
         else if (property == "textcolor")
@@ -482,10 +494,10 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
-            states.transform.translate({m_bordersCached.left, m_bordersCached.top});
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
-        float usableHeight = m_tabHeight - m_bordersCached.top - m_bordersCached.bottom;
+        const float usableHeight = m_tabHeight - m_bordersCached.getTop() - m_bordersCached.getBottom();
         for (unsigned int i = 0; i < m_tabTexts.size(); ++i)
         {
             sf::RenderStates textStates = states;
@@ -532,8 +544,8 @@ namespace tgui
             states.transform.translate({m_tabWidth[i], 0});
             if ((m_bordersCached != Borders{0}) && (i < m_tabWidth.size() - 1))
             {
-                drawRectangleShape(target, states, {(m_bordersCached.left + m_bordersCached.right) / 2.f, usableHeight}, m_borderColorCached);
-                states.transform.translate({(m_bordersCached.left + m_bordersCached.right) / 2.f, 0});
+                drawRectangleShape(target, states, {(m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f, usableHeight}, m_borderColorCached);
+                states.transform.translate({(m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f, 0});
             }
         }
     }

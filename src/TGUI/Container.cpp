@@ -97,9 +97,9 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        const sf::Vector2f containerSize = getSize();
+        const sf::Vector2f innerSize = getContentSize();
         for (auto& widget : m_widgets)
-            widget->updateParentSize(containerSize);
+            widget->updateParentSize(innerSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -429,9 +429,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::saveWidgetsToStream(std::stringstream& stream)
+    void Container::loadWidgetsFromStream(std::stringstream&& stream)
     {
-        WidgetSaver::save(std::static_pointer_cast<Container>(shared_from_this()), stream);
+        loadWidgetsFromStream(stream);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::saveWidgetsToStream(std::stringstream& stream) const
+    {
+        WidgetSaver::save(std::static_pointer_cast<const Container>(shared_from_this()), stream);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -474,8 +481,8 @@ namespace tgui
             if (m_widgets[i] == widget)
             {
                 // Copy the widget
-                Widget::Ptr obj = m_widgets[i];
-                std::string name = m_widgetNames[i];
+                const Widget::Ptr obj = m_widgets[i];
+                const std::string name = m_widgetNames[i];
                 m_widgets.insert(m_widgets.begin(), obj);
                 m_widgetNames.insert(m_widgetNames.begin(), name);
 

@@ -29,6 +29,7 @@
 
 using tgui::Layout;
 using tgui::Layout2d;
+using tgui::RelLayout;
 
 TEST_CASE("[Layouts]")
 {
@@ -90,6 +91,10 @@ TEST_CASE("[Layouts]")
         REQUIRE(l3.x.getValue() == 40);
         REQUIRE(l3.y.getRatio() == 25.3f/100.f);
 
+        Layout l4{RelLayout{0.35f}};
+        REQUIRE(!l4.isConstant());
+        REQUIRE(l4.getRatio() == 0.35f);
+
         SECTION("updating parent size")
         {
             REQUIRE(l1.getValue() == 0);
@@ -105,6 +110,9 @@ TEST_CASE("[Layouts]")
             l3.updateParentSize({300, 506});
             REQUIRE(l3.x.getValue() == 40);
             REQUIRE(l3.y.getValue() == 506*0.253f);
+
+            l4.updateParentSize(40);
+            REQUIRE(l4.getValue() == 14);
         }
     }
 
@@ -113,5 +121,48 @@ TEST_CASE("[Layouts]")
         Layout l{""};
         REQUIRE(l.isConstant());
         REQUIRE(l.getValue() == 0);
+    }
+
+    SECTION("toString")
+    {
+        Layout l1;
+        REQUIRE(l1.toString() == "0");
+
+        Layout l2(-20.3f);
+        REQUIRE(l2.toString() == "-20.3");
+
+        Layout l3{"40"};
+        REQUIRE(l3.toString() == "40");
+
+        Layout l4{"60%"};
+        REQUIRE(l4.toString() == "60%");
+
+        Layout l5{RelLayout{0.35f}};
+        REQUIRE(l5.toString() == "35%");
+
+        Layout2d l6{40, "25.3%"};
+        REQUIRE(l6.toString() == "(40, 25.3%)");
+
+        Layout2d l7{RelLayout{0.13f}, "12"};
+        REQUIRE(l7.toString() == "(13%, 12)");
+
+        SECTION("unchanged after updating parent size")
+        {
+            l1.updateParentSize(110);
+            l2.updateParentSize(120);
+            l3.updateParentSize(130);
+            l4.updateParentSize(140);
+            l5.updateParentSize(150);
+            l6.updateParentSize({161, 162});
+            l7.updateParentSize({173, 174});
+
+            REQUIRE(l1.toString() == "0");
+            REQUIRE(l2.toString() == "-20.3");
+            REQUIRE(l3.toString() == "40");
+            REQUIRE(l4.toString() == "60%");
+            REQUIRE(l5.toString() == "35%");
+            REQUIRE(l6.toString() == "(40, 25.3%)");
+            REQUIRE(l7.toString() == "(13%, 12)");
+        }
     }
 }

@@ -282,7 +282,15 @@ namespace tgui
         Transformable::setPosition(position);
 
         if (m_parent)
-            updateParentSize(m_parent->getSize());
+        {
+            const sf::Vector2f oldPosition = m_position.getValue();
+            m_position.updateParentSize(m_parent->getContentSize());
+            if (oldPosition != m_position.getValue())
+            {
+                updatePosition();
+                return;
+            }
+        }
 
         m_callback.position = getPosition();
         sendSignal("PositionChanged", getPosition());
@@ -295,7 +303,15 @@ namespace tgui
         Transformable::setSize(size);
 
         if (m_parent)
-            updateParentSize(m_parent->getSize());
+        {
+            const sf::Vector2f oldSize = m_size.getValue();
+            m_size.updateParentSize(m_parent->getContentSize());
+            if (oldSize != m_size.getValue())
+            {
+                updateSize();
+                return;
+            }
+        }
 
         m_callback.size = getSize();
         sendSignal("SizeChanged", getSize());
@@ -400,8 +416,8 @@ namespace tgui
 
     void Widget::hideWithEffect(ShowAnimationType type, sf::Time duration)
     {
-        auto position = getPosition();
-        auto size = getSize();
+        const auto position = getPosition();
+        const auto size = getSize();
 
         switch (type)
         {
@@ -528,7 +544,7 @@ namespace tgui
     {
         m_parent = parent;
         if (m_parent)
-            updateParentSize(m_parent->getSize());
+            updateParentSize(m_parent->getContentSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -631,8 +647,8 @@ namespace tgui
 
     void Widget::updateParentSize(sf::Vector2f size)
     {
-        sf::Vector2f oldPosition = m_position.getValue();
-        sf::Vector2f oldSize = m_size.getValue();
+        const sf::Vector2f oldPosition = m_position.getValue();
+        const sf::Vector2f oldSize = m_size.getValue();
 
         m_position.updateParentSize(size);
         m_size.updateParentSize(size);
@@ -701,12 +717,12 @@ namespace tgui
                              const sf::RenderStates& states,
                              const Borders& borders,
                              sf::Vector2f size,
-                             sf::Color color) const
+                             sf::Color borderColor) const
     {
-        color = Color::calcColorOpacity(color, m_opacityCached);
+        const sf::Color color = Color::calcColorOpacity(borderColor, m_opacityCached);
 
         // If size is too small then draw entire size as border
-        if ((size.x <= borders.left + borders.right) || (size.y <= borders.top + borders.bottom))
+        if ((size.x <= borders.getLeft() + borders.getRight()) || (size.y <= borders.getTop() + borders.getBottom()))
         {
             sf::RectangleShape border;
             border.setFillColor(color);
@@ -725,17 +741,17 @@ namespace tgui
             // |              | //
             // 2--------------4 //
             //////////////////////
-            std::vector<sf::Vertex> vertices = {
+            const std::vector<sf::Vertex> vertices = {
                 {{0, 0}, color},
-                {{borders.left, 0}, color},
+                {{borders.getLeft(), 0}, color},
                 {{0, size.y}, color},
-                {{borders.left, size.y - borders.bottom}, color},
+                {{borders.getLeft(), size.y - borders.getBottom()}, color},
                 {{size.x, size.y}, color},
-                {{size.x - borders.right, size.y - borders.bottom}, color},
+                {{size.x - borders.getRight(), size.y - borders.getBottom()}, color},
                 {{size.x, 0}, color},
-                {{size.x - borders.right, borders.top}, color},
-                {{borders.left, 0}, color},
-                {{borders.left, borders.top}, color}
+                {{size.x - borders.getRight(), borders.getTop()}, color},
+                {{borders.getLeft(), 0}, color},
+                {{borders.getLeft(), borders.getTop()}, color}
             };
 
             target.draw(vertices.data(), vertices.size(), sf::PrimitiveType::TrianglesStrip, states);

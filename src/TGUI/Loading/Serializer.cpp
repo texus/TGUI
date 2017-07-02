@@ -150,9 +150,7 @@ namespace tgui
 
         std::string serializeOutline(ObjectConverter&& value)
         {
-            const Outline outline = value.getOutline();
-            return "(" + to_string(static_cast<unsigned int>(outline.left)) + ", " + to_string(static_cast<unsigned int>(outline.top))
-                 + ", " + to_string(static_cast<unsigned int>(outline.right)) + ", " + to_string(static_cast<unsigned int>(outline.bottom)) + ")";
+            return value.getOutline().toString();
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

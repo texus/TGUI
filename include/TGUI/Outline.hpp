@@ -26,7 +26,7 @@
 #ifndef TGUI_OUTLINE_HPP
 #define TGUI_OUTLINE_HPP
 
-#include <TGUI/Config.hpp>
+#include <TGUI/Layout.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,19 +36,35 @@ namespace tgui
 
     class TGUI_API Outline
     {
-      public:
+    public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor
+        /// @brief Default constructor that initializes the outline
         ///
         /// @param size  Width and height of the outline in all directions
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Outline(float size = 0) :
-            left  (size),
-            top   (size),
-            right (size),
-            bottom(size)
+        TGUI_CONSTEXPR Outline(Layout size = 0) :
+            m_left  {size},
+            m_top   {size},
+            m_right {size},
+            m_bottom{size}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor that initializes the outline
+        ///
+        /// @param size  Width and height of the outline in all directions
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+        TGUI_CONSTEXPR Outline(T size) :
+            m_left  {size},
+            m_top   {size},
+            m_right {size},
+            m_bottom{size}
         {
         }
 
@@ -60,11 +76,11 @@ namespace tgui
         /// @param height  Height of the top and bottom outline
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Outline(float width, float height) :
-            left  (width),
-            top   (height),
-            right (width),
-            bottom(height)
+        TGUI_CONSTEXPR Outline(Layout width, Layout height) :
+            m_left  {width},
+            m_top   {height},
+            m_right {width},
+            m_bottom{height}
         {
         }
 
@@ -78,12 +94,60 @@ namespace tgui
         /// @param bottomBorderHeight Height of the bottom outline
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Outline(float leftBorderWidth, float topBorderHeight, float rightBorderWidth, float bottomBorderHeight) :
-            left  (leftBorderWidth),
-            top   (topBorderHeight),
-            right (rightBorderWidth),
-            bottom(bottomBorderHeight)
+        TGUI_CONSTEXPR Outline(Layout leftBorderWidth, Layout topBorderHeight, Layout rightBorderWidth, Layout bottomBorderHeight) :
+            m_left  {leftBorderWidth},
+            m_top   {topBorderHeight},
+            m_right {rightBorderWidth},
+            m_bottom{bottomBorderHeight}
         {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returnes the width of the left border
+        ///
+        /// @return Left border width
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_CONSTEXPR float getLeft() const
+        {
+            return m_left.getValue();
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returnes the height of the top border
+        ///
+        /// @return Top border height
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_CONSTEXPR float getTop() const
+        {
+            return m_top.getValue();
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returnes the width of the right border
+        ///
+        /// @return Right border width
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_CONSTEXPR float getRight() const
+        {
+            return m_right.getValue();
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returnes the height of the bottom border
+        ///
+        /// @return Bottom border height
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_CONSTEXPR float getBottom() const
+        {
+            return m_bottom.getValue();
         }
 
 
@@ -95,9 +159,9 @@ namespace tgui
         /// @return Whether the outlines are equal or not
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool operator==(const Outline& outline) const
+        TGUI_CONSTEXPR bool operator==(const Outline& outline) const
         {
-            return (left == outline.left) && (top == outline.top) && (right == outline.right) && (bottom == outline.bottom);
+            return (getLeft() == outline.getLeft()) && (getTop() == outline.getTop()) && (getRight() == outline.getRight()) && (getBottom() == outline.getBottom());
         }
 
 
@@ -109,44 +173,50 @@ namespace tgui
         /// @return Whether the outlines are equal or not
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool operator!=(const Outline& outline) const
+        TGUI_CONSTEXPR bool operator!=(const Outline& outline) const
         {
             return !(*this == outline);
         }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Update the size to which the outline depends on if its values are relative
+        ///
+        /// @param newParentSize  New size from which to take the relative value
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateParentSize(sf::Vector2f newParentSize)
+        {
+            m_left.updateParentSize(newParentSize.x);
+            m_top.updateParentSize(newParentSize.y);
+            m_right.updateParentSize(newParentSize.x);
+            m_bottom.updateParentSize(newParentSize.y);
+        }
 
-        /// Width of the left outline
-        float left;
 
-        /// Height of the top outline
-        float top;
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Converts the outline to a string representation
+        ///
+        /// @return String representation of outline
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string toString() const
+        {
+            return "(" + m_left.toString() + ", " + m_top.toString() + ", " + m_right.toString() + ", " + m_bottom.toString() + ")";
+        }
 
-        /// Width of the right outline
-        float right;
 
-        /// Height of the bottom outline
-        float bottom;
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        Layout m_left = 0;      ///< Width of the left outline
+        Layout m_top = 0;       ///< Height of the top outline
+        Layout m_right = 0;     ///< Width of the right outline
+        Layout m_bottom = 0;    ///< Height of the bottom outline
     };
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Adds two outlines
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    inline Outline operator+(const Outline& left, const Outline& right)
-    {
-        return {left.left + right.left, left.top + right.top, left.right + right.right, left.bottom + right.bottom};
-    }
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Subtracts two outlines
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    inline Outline operator-(const Outline& left, const Outline& right)
-    {
-        return {left.left - right.left, left.top - right.top, left.right - right.right, left.bottom - right.bottom};
-    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

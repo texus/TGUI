@@ -89,7 +89,7 @@ namespace tgui
 
     bool BoxLayout::insertSpace(std::size_t index, float ratio)
     {
-        bool success = insert(index, ClickableWidget::create(), "");
+        const bool success = insert(index, ClickableWidget::create(), "");
         setRatio(index, ratio);
         return success;
     }

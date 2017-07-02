@@ -1,7 +1,6 @@
 set(TEST_SOURCES
     main.cpp
     Animation.cpp
-    Borders.cpp
     Clipboard.cpp
     Clipping.cpp
     Color.cpp
@@ -9,6 +8,7 @@ set(TEST_SOURCES
     Container.cpp
     Font.cpp
     Layouts.cpp
+    Outline.cpp
     Sprite.cpp
     Signal.cpp
     Tests.cpp
