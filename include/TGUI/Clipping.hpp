@@ -52,17 +52,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Clipping(const sf::RenderTarget& target, const sf::RenderStates& states, sf::Vector2f topLeft, sf::Vector2f size)
         {
-            sf::Vector2i topLeftPosition = target.mapCoordsToPixel(states.transform.transformPoint(topLeft));
-            sf::Vector2i bottomRightPosition = target.mapCoordsToPixel(states.transform.transformPoint(topLeft + size));
+            const sf::Vector2i topLeftPosition = target.mapCoordsToPixel(states.transform.transformPoint(topLeft));
+            const sf::Vector2i bottomRightPosition = target.mapCoordsToPixel(states.transform.transformPoint(topLeft + size));
 
             // Get the old clipping area
             glGetIntegerv(GL_SCISSOR_BOX, m_scissor);
 
             // Calculate the clipping area
-            GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x), m_scissor[0]);
+            const GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x), m_scissor[0]);
+            const GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y), static_cast<GLint>(target.getSize().y) - m_scissor[1]);
             GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y), static_cast<GLint>(target.getSize().y) - m_scissor[1] - m_scissor[3]);
             GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x), m_scissor[0] + m_scissor[2]);
-            GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y), static_cast<GLint>(target.getSize().y) - m_scissor[1]);
 
             // If the object outside the window then don't draw anything
             if (scissorRight < scissorLeft)

@@ -34,7 +34,7 @@
 #define TGUI_RENDERER_PROPERTY_OUTLINE(CLASS, NAME) \
     Outline CLASS::get##NAME() const \
     { \
-        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        const auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
             return it->second.getOutline(); \
         else \
@@ -50,7 +50,7 @@
 #define TGUI_RENDERER_PROPERTY_COLOR(CLASS, NAME, DEFAULT) \
     Color CLASS::get##NAME() const \
     { \
-        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        const auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
             return it->second.getColor(); \
         else \
@@ -66,7 +66,7 @@
 #define TGUI_RENDERER_PROPERTY_TEXT_STYLE(CLASS, NAME, DEFAULT) \
     TextStyle CLASS::get##NAME() const \
     { \
-        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        const auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
             return it->second.getTextStyle(); \
         else \
@@ -82,7 +82,7 @@
 #define TGUI_RENDERER_PROPERTY_GET_NUMBER(CLASS, NAME, DEFAULT) \
     float CLASS::get##NAME() const \
     { \
-        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        const auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
             return it->second.getNumber(); \
         else \
@@ -101,7 +101,7 @@
 #define TGUI_RENDERER_PROPERTY_TEXTURE(CLASS, NAME) \
     Texture& CLASS::get##NAME() const \
     { \
-        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        const auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
             return it->second.getTexture(); \
         else \
@@ -120,7 +120,7 @@
 #define TGUI_RENDERER_PROPERTY_RENDERER(CLASS, NAME) \
     std::shared_ptr<RendererData> CLASS::get##NAME() const \
     { \
-        auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        const auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
         if (it != m_data->propertyValuePairs.end()) \
             return it->second.getRenderer(); \
         else \

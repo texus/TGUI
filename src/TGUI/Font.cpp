@@ -55,7 +55,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Font::Font(std::shared_ptr<sf::Font> font) :
+    Font::Font(const std::shared_ptr<sf::Font>& font) :
         m_font{font}
     {
     }

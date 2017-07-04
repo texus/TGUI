@@ -61,7 +61,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Button::Ptr Button::create(sf::String text)
+    Button::Ptr Button::create(const sf::String& text)
     {
         auto button = std::make_shared<Button>();
 

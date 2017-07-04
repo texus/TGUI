@@ -171,7 +171,7 @@ namespace tgui
 
     void Text::recalculateSize()
     {
-        std::shared_ptr<sf::Font> font = m_font;
+        const std::shared_ptr<sf::Font> font = m_font;
         if (font == nullptr)
         {
             m_size = {0, 0};
@@ -202,7 +202,7 @@ namespace tgui
             prevChar = string[i];
         }
 
-        float extraVerticalSpace = Text::calculateExtraVerticalSpace(m_font, m_text.getCharacterSize(), m_text.getStyle());
+        const float extraVerticalSpace = Text::calculateExtraVerticalSpace(m_font, m_text.getCharacterSize(), m_text.getStyle());
         m_size = {std::max(maxWidth, width), lines * font->getLineSpacing(m_text.getCharacterSize()) + extraVerticalSpace};
     }
 
@@ -210,7 +210,7 @@ namespace tgui
 
     unsigned int Text::findBestTextSize(Font fontWrapper, float height, int fit)
     {
-        std::shared_ptr<sf::Font> font = fontWrapper.getFont();
+        const std::shared_ptr<sf::Font> font = fontWrapper.getFont();
         if (!font)
             return 0;
 
@@ -230,7 +230,7 @@ namespace tgui
         if (highLineSpacing == height)
             return *high;
 
-        auto low = high - 1;
+        const auto low = high - 1;
         const float lowLineSpacing = font->getLineSpacing(*low);
 
         if (fit < 0)
@@ -275,7 +275,7 @@ namespace tgui
         std::size_t index = 0;
         while (index < text.getSize())
         {
-            std::size_t oldIndex = index;
+            const std::size_t oldIndex = index;
 
             // Find out how many characters we can get on this line
             float width = 0;
@@ -283,7 +283,7 @@ namespace tgui
             for (std::size_t i = index; i < text.getSize(); ++i)
             {
                 float charWidth;
-                sf::Uint32 curChar = text[i];
+                const sf::Uint32 curChar = text[i];
                 if (curChar == '\n')
                 {
                     index++;
@@ -294,7 +294,7 @@ namespace tgui
                 else
                     charWidth = font.getFont()->getGlyph(curChar, textSize, bold).advance;
 
-                float kerning = font.getFont()->getKerning(prevChar, curChar, textSize);
+                const float kerning = font.getFont()->getKerning(prevChar, curChar, textSize);
                 if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
                 {
                     width += kerning + charWidth;
@@ -313,7 +313,7 @@ namespace tgui
             // Implement the word-wrap by removing the last few characters from the line
             if (text[index-1] != '\n')
             {
-                std::size_t indexWithoutWordWrap = index;
+                const std::size_t indexWithoutWordWrap = index;
                 if ((index < text.getSize()) && (!isWhitespace(text[index])))
                 {
                     std::size_t wordWrapCorrection = 0;
