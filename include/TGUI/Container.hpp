@@ -503,8 +503,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// Returns false.
+        /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
+        ///
+        /// @return Is the mouse on top of the widget?
+        ///
+        /// This function always returns false.
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(sf::Vector2f pos) const override;
 
