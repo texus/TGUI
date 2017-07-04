@@ -1,8 +1,7 @@
 var searchData=
 [
   ['incrementvalue',['incrementValue',['../classtgui_1_1ProgressBar.html#aa3fe640b75753e5e9353b1b754202d37',1,'tgui::ProgressBar']]],
-  ['insert',['insert',['../classtgui_1_1BoxLayout.html#a525eeff4bb35fd1b466d4cb6c24a3b87',1,'tgui::BoxLayout::insert()'],['../classtgui_1_1Tabs.html#a393fd1ff44ccd470a039e42d53a86c4d',1,'tgui::Tabs::insert()']]],
-  ['insertspace',['insertSpace',['../classtgui_1_1BoxLayout.html#a1e890475ac21562461e3c789e3d1d510',1,'tgui::BoxLayout']]],
+  ['insert',['insert',['../classtgui_1_1BoxLayout.html#aa13ab97044e8288bb5dcc3ad9e1000c4',1,'tgui::BoxLayout::insert()'],['../classtgui_1_1Tabs.html#a393fd1ff44ccd470a039e42d53a86c4d',1,'tgui::Tabs::insert()']]],
   ['int',['Int',['../structtgui_1_1EditBox_1_1Validator.html#addae7bebf202d82437de4be2d06aec66',1,'tgui::EditBox::Validator']]],
   ['ischecked',['isChecked',['../classtgui_1_1RadioButton.html#a0bd329e6a6fdafe65031f17ec856f257',1,'tgui::RadioButton']]],
   ['isenabled',['isEnabled',['../classtgui_1_1Widget.html#aa1dcaa2bb45dd0b16b66095c1d197e36',1,'tgui::Widget']]],

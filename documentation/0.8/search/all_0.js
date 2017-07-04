@@ -7,7 +7,6 @@ var searchData=
   ['addmenu',['addMenu',['../classtgui_1_1MenuBar.html#a0c396d8974348871bd19957b6108d3e2',1,'tgui::MenuBar']]],
   ['addmenuitem',['addMenuItem',['../classtgui_1_1MenuBar.html#a6e06072507a5085cec4e3a06a5ae3ed8',1,'tgui::MenuBar::addMenuItem(const sf::String &amp;menu, const sf::String &amp;text)'],['../classtgui_1_1MenuBar.html#ac5eadf1233b439a0a1aa4f6f6f987004',1,'tgui::MenuBar::addMenuItem(const sf::String &amp;text)']]],
   ['addrenderer',['addRenderer',['../classtgui_1_1Theme.html#afaf85705c14acc2910e7282765cc317a',1,'tgui::Theme']]],
-  ['addspace',['addSpace',['../classtgui_1_1BoxLayout.html#ada9db30453caa2c93707f1bbc35ea62e',1,'tgui::BoxLayout']]],
   ['addtext',['addText',['../classtgui_1_1TextBox.html#ae393071b37327d8a4df03c18f8bd0f84',1,'tgui::TextBox']]],
   ['addwidget',['addWidget',['../classtgui_1_1Grid.html#a2f4565719a147310dc4c388bcf684964',1,'tgui::Grid']]],
   ['alignment',['Alignment',['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393',1,'tgui::EditBox::Alignment()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9',1,'tgui::Grid::Alignment()']]],
