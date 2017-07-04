@@ -83,11 +83,14 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        m_renderTexture.create(static_cast<unsigned int>(getSize().x), static_cast<unsigned int>(getSize().y));
-        m_sprite.setTexture(m_renderTexture.getTexture(), true);
+        if (getSize() != sf::Vector2f{})
+        {
+            m_renderTexture.create(static_cast<unsigned int>(getSize().x), static_cast<unsigned int>(getSize().y));
+            m_sprite.setTexture(m_renderTexture.getTexture(), true);
 
-        m_renderTexture.clear();
-        m_renderTexture.display();
+            m_renderTexture.clear();
+            m_renderTexture.display();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
