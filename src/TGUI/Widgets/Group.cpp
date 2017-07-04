@@ -45,7 +45,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Group::Ptr Group::create(Layout2d size)
+    Group::Ptr Group::create(const Layout2d& size)
     {
         return std::make_shared<Group>(size);
     }
@@ -88,16 +88,28 @@ namespace tgui
 
     bool Group::mouseOnWidget(sf::Vector2f pos) const
     {
-        for (const auto& widget : m_widgets)
+        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
-            if (widget->isVisible())
+            const sf::Vector2f offset = getChildWidgetsOffset();
+            for (const auto& widget : m_widgets)
             {
-                if (widget->mouseOnWidget(pos - widget->getPosition()))
-                    return true;
+                if (widget->isVisible())
+                {
+                    if (widget->mouseOnWidget(pos - widget->getPosition() - offset))
+                        return true;
+                }
             }
         }
 
         return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Group::leftMousePressed(sf::Vector2f pos)
+    {
+        m_mouseDown = true;
+        Container::leftMousePressed(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,8 +132,9 @@ namespace tgui
         states.transform.translate(getPosition().x + m_paddingCached.getLeft(), getPosition().y + m_paddingCached.getTop());
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        sf::Vector2f innerSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
-        Clipping clipping{target, states, {}, innerSize};
+        const sf::Vector2f innerSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+                                        getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+        const Clipping clipping{target, states, {}, innerSize};
 
         // Draw the child widgets
         drawWidgetContainer(&target, states);

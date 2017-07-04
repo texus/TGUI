@@ -26,7 +26,8 @@
 #ifndef TGUI_BOX_LAYOUT_HPP
 #define TGUI_BOX_LAYOUT_HPP
 
-#include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Group.hpp>
+#include <TGUI/Renderers/BoxLayoutRenderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,7 +37,7 @@ namespace tgui
     /// @brief Abstract class for box layout containers
     ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API BoxLayout : public Panel
+    class TGUI_API BoxLayout : public Group
     {
     public:
 
@@ -45,20 +46,41 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor
-        ///
+        // Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BoxLayout();
+        BoxLayout(const Layout2d& size = {RelLayout{1}, RelLayout{1}});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the layout
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @param size  The new size of the layout
+        /// @return Temporary pointer to the renderer
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BoxLayoutRenderer* getRenderer() const
+        {
+            return aurora::downcast<BoxLayoutRenderer*>(m_renderer.get());
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the size of the group
+        ///
+        /// @param size  The new size of the group
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(const Layout2d& size) override;
         using Transformable::setSize;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds a widget at the end of the layout
+        ///
+        /// @param widget      Pointer to the widget you would like to add
+        /// @param widgetName  An identifier to access to the widget later
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void add(const tgui::Widget::Ptr& widget, const sf::String& widgetName = "") override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,49 +90,10 @@ namespace tgui
         /// @param index       Index of the widget in the container
         /// @param widgetName  An identifier to access to the widget later
         ///
-        /// The widget will have a ratio of 1.
-        ///
         /// If the index is too high, the widget will simply be added at the end of the list.
         ///
-        /// @return False if the index was too high
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool insert(std::size_t index, const tgui::Widget::Ptr& widget, const sf::String& widgetName = "");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a widget at the end of the layout
-        ///
-        /// @param widget      Pointer to the widget you would like to add
-        /// @param widgetName  An identifier to access to the widget later
-        ///
-        /// The widget will have a ratio of 1.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void add(const tgui::Widget::Ptr& widget, const sf::String& widgetName = "") override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a space at the end of the layout and immediately set its ratio
-        ///
-        /// @param ratio  Ratio for the space
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addSpace(float ratio = 1);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Inserts a space to the layout and immediately set its ratio
-        ///
-        /// @param index  Index of the space in the container
-        /// @param ratio  Ratio for the space
-        ///
-        /// If the index is too high, the space will simply be added at the end of the list.
-        ///
-        /// @return False if the index was too high
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool insertSpace(std::size_t index, float ratio = 1);
+        void insert(std::size_t index, const tgui::Widget::Ptr& widget, const sf::String& widgetName = "");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,155 +126,12 @@ namespace tgui
         /// @return Widget of given index, or nullptr if index was too high
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Widget::Ptr get(std::size_t index);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the ratio of a widget
-        ///
-        /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
-        ///
-        /// So setting a ratio to 2 means that the widget will be 2 times larger than widgets with a ratio equal to 1.
-        ///
-        /// @param widget  Pointer to the widget
-        /// @param ratio   New ratio to set to the widget
-        ///
-        /// @return True if the ratio was changed, false if the widget was not found
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setRatio(const Widget::Ptr& widget, float ratio);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the ratio of a widget
-        /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
-        ///
-        /// So setting a ratio to 2 means that the widget will be 2 times larger than widgets with a ratio equal to 1.
-        ///
-        /// @param index  Index of the widget in the layout
-        /// @param ratio  New ratio to set to the widget
-        ///
-        /// If the index was too high then no change will be made
-        ///
-        /// @return False if the index was too high
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setRatio(std::size_t index, float ratio);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the ratio of a widget
-        ///
-        /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
-        ///
-        /// So setting a ratio to 2 means that the widget will be 2 times larger than widgets with a ratio equal to 1.
-        ///
-        /// @param widget  Pointer to the widget
-        ///
-        /// @return Ratio given to the widget
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getRatio(const Widget::Ptr& widget);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the ratio of a widget
-        ///
-        /// The ratio is the size that will have a widget relatively to others. By default, the ratio is equal to 1.
-        ///
-        /// So setting a ratio to 2 means that the widget will be 2 times larger than widgets with a ratio equal to 1.
-        ///
-        /// @param index  Index of the widget in the layout
-        ///
-        /// @return Ratio given to the widget or 0 if the index was too high
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getRatio(std::size_t index);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the size of a widget to a constant value
-        ///
-        /// Setting a fixed size cancels the effect of the ratio.
-        /// If you want to get a variable size again for a widget, set the fixed size to 0.
-        ///
-        /// @param widget Pointer to the widget
-        /// @param size   New fixed size of the widget
-        ///
-        /// @return False if the widget was not found
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setFixedSize(const Widget::Ptr& widget, float size);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the size of a widget to a constant value
-        ///
-        /// Setting a fixed size cancels the effect of the ratio.
-        /// If you want to get a variable size again for a widget, set the fixed size to 0.
-        ///
-        /// @param index  Index of the widget in the layout
-        /// @param size   New fixed size of the widget
-        ///
-        /// @return False if the index was too high
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setFixedSize(std::size_t index, float size);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of a widget when it has a constant value
-        ///
-        /// Having a fixed size cancels the effect of the ratio.
-        /// When 0 is returned then the size of the widget is variable and determined by the ratio.
-        ///
-        /// @param widget Pointer to the widget
-        ///
-        /// @return Fixed size of the widget or 0 if size is variable
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getFixedSize(const Widget::Ptr& widget);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of a widget when it has a constant value
-        ///
-        /// Having a fixed size cancels the effect of the ratio.
-        /// When 0 is returned then the size of the widget is variable and determined by the ratio.
-        ///
-        /// @param index  Index of the widget in the layout
-        ///
-        /// @return Fixed size of the widget or 0 if size is variable or index is too high
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getFixedSize(std::size_t index);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all widgets that were added to the container
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeAllWidgets() override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draw the widget to a render target
-        ///
-        /// @param target Render target to draw to
-        /// @param states Current render states
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+        Widget::Ptr get(std::size_t index) const;
+        using Container::get;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Repositions all the widgets.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void updateWidgetPositions() = 0;
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
@@ -303,10 +143,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // @brief Repositions and resize the widgets
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void updateWidgets() = 0;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::vector<float> m_widgetsRatio;              ///< The ratio of each widget
-        std::vector<float> m_widgetsFixedSizes;         ///< The fixed size of each widget. 0 means a variable size
+        Layout m_spaceBetweenWidgetsCached;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

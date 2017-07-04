@@ -96,6 +96,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    const Layout& ObjectConverter::getLayout()
+    {
+        assert(m_type != Type::None);
+        assert(m_type == Type::Number || m_type == Type::String || m_type == Type::Layout);
+
+        if (m_type == Type::String)
+        {
+            m_value = Layout{m_string};
+            m_type = Type::Layout;
+        }
+        else if (m_type == Type::Number)
+        {
+            m_value = Layout{m_value.as<float>()};
+            m_type = Type::Layout;
+        }
+
+        return m_value.as<Layout>();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     const Outline& ObjectConverter::getOutline()
     {
         assert(m_type != Type::None);

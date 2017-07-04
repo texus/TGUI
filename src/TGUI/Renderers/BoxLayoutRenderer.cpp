@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Widgets/HorizontalLayout.hpp>
-#include <numeric>
+#include <TGUI/Renderers/BoxLayoutRenderer.hpp>
+#include <TGUI/RendererDefines.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,57 +32,28 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    HorizontalLayout::HorizontalLayout(const Layout2d& size) :
-        BoxLayout{size}
+    void BoxLayoutRenderer::setSpaceBetweenWidgets(const Layout& distance)
     {
-        m_callback.widgetType = "HorizontalLayout";
+        setProperty("spacebetweenwidgets", ObjectConverter{distance});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    HorizontalLayout::Ptr HorizontalLayout::create(const Layout2d& size)
+    Layout BoxLayoutRenderer::getSpaceBetweenWidgets() const
     {
-        return std::make_shared<HorizontalLayout>(size);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    HorizontalLayout::Ptr HorizontalLayout::copy(HorizontalLayout::ConstPtr layout)
-    {
-        if (layout)
-            return std::static_pointer_cast<HorizontalLayout>(layout->clone());
+        auto it = m_data->propertyValuePairs.find("spacebetweenwidgets");
+        if (it != m_data->propertyValuePairs.end())
+            return it->second.getLayout();
         else
-            return nullptr;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void HorizontalLayout::updateWidgets()
-    {
-        const sf::Vector2f contentSize = getContentSize();
-        const float spaceBetweenWidgets = m_spaceBetweenWidgetsCached.getValue();
-        const float totalSpaceBetweenWidgets = (spaceBetweenWidgets * m_widgets.size()) - spaceBetweenWidgets;
-
-        float currentOffset = 0;
-        for (auto& widget : m_widgets)
         {
-            const float width = (contentSize.x - totalSpaceBetweenWidgets) / m_widgets.size();
-
-            widget->setSize({width, contentSize.y});
-            widget->setPosition({currentOffset, 0});
-
-            // Correct the size for widgets that are bigger than what you set (e.g. have borders around it or a text next to them)
-            if (widget->getFullSize() != widget->getSize())
+            it = m_data->propertyValuePairs.find("padding");
+            if (it != m_data->propertyValuePairs.end())
             {
-                const sf::Vector2f newSize = widget->getSize() - (widget->getFullSize() - widget->getSize());
-                if (newSize.x > 0 && newSize.y > 0)
-                {
-                    widget->setSize(newSize);
-                    widget->setPosition(widget->getPosition() - widget->getWidgetOffset());
-                }
+                const Padding padding = it->second.getOutline();
+                return std::max(std::min(padding.getLeft(), padding.getRight()), std::min(padding.getTop(), padding.getBottom()));
             }
-
-            currentOffset += width + spaceBetweenWidgets;
+            else
+                return 0;
         }
     }
 

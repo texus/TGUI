@@ -32,42 +32,20 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BoxLayout::BoxLayout()
+    BoxLayout::BoxLayout(const Layout2d& size) :
+        Group{size}
     {
-        getRenderer()->setBackgroundColor(sf::Color::Transparent);
+        m_renderer = aurora::makeCopied<BoxLayoutRenderer>();
+        setRenderer(RendererData::create());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BoxLayout::setSize(const Layout2d& size)
     {
-        Panel::setSize(size);
-        updateWidgetPositions();
-    }
+        Container::setSize(size);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool BoxLayout::insert(std::size_t index, const tgui::Widget::Ptr& widget, const sf::String& widgetName)
-    {
-        Container::add(widget, widgetName);
-
-        if (index >= m_widgets.size())
-        {
-            m_widgetsRatio.emplace_back(1.f);
-            m_widgetsFixedSizes.emplace_back(0.f);
-            updateWidgetPositions();
-            return false;
-        }
-        else
-        {
-            m_widgets.insert(m_widgets.begin() + index, widget);
-            m_widgets.pop_back(); // The widget was added at the back with Container::add
-
-            m_widgetsRatio.insert(m_widgetsRatio.begin() + index, 1.f);
-            m_widgetsFixedSizes.insert(m_widgetsFixedSizes.begin() + index, 0.f);
-            updateWidgetPositions();
-            return true;
-        }
+        updateWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,19 +57,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayout::addSpace(float ratio)
+    void BoxLayout::insert(std::size_t index, const tgui::Widget::Ptr& widget, const sf::String& widgetName)
     {
-        add(ClickableWidget::create(), "");
-        setRatio(m_widgets.size()-1, ratio);
-    }
+        // Move the widget to the right position
+        if (index < m_widgets.size())
+        {
+            Group::add(widget, widgetName);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            unfocusWidgets();
 
-    bool BoxLayout::insertSpace(std::size_t index, float ratio)
-    {
-        const bool success = insert(index, ClickableWidget::create(), "");
-        setRatio(index, ratio);
-        return success;
+            m_widgets.pop_back();
+            m_widgetNames.pop_back();
+
+            m_widgets.insert(m_widgets.begin() + index, widget);
+            m_widgetNames.insert(m_widgetNames.begin() + index, widgetName);
+        }
+        else // Just add the widget to the back
+            Group::add(widget, widgetName);
+
+        updateWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,16 +98,15 @@ namespace tgui
         if (index >= m_widgets.size())
             return false;
 
-        Container::remove(m_widgets[index]);
-        m_widgetsRatio.erase(m_widgetsRatio.begin() + index);
-        m_widgetsFixedSizes.erase(m_widgetsFixedSizes.begin() + index);
-        updateWidgetPositions();
+        Group::remove(m_widgets[index]);
+
+        updateWidgets();
         return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr BoxLayout::get(std::size_t index)
+    Widget::Ptr BoxLayout::get(std::size_t index) const
     {
         if (index < m_widgets.size())
             return m_widgets[index];
@@ -133,132 +116,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BoxLayout::setRatio(const Widget::Ptr& widget, float ratio)
-    {
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            if (m_widgets[i] == widget)
-                return setRatio(i, ratio);
-        }
-
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool BoxLayout::setRatio(std::size_t index, float ratio)
-    {
-        if (index >= m_widgets.size())
-            return false;
-
-        m_widgetsRatio[index] = ratio;
-        updateWidgetPositions();
-        return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float BoxLayout::getRatio(const Widget::Ptr& widget)
-    {
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            if (m_widgets[i] == widget)
-                return getRatio(i);
-        }
-
-        return 0;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float BoxLayout::getRatio(std::size_t index)
-    {
-        if (index >= m_widgets.size())
-            return 0;
-
-        return m_widgetsRatio[index];
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool BoxLayout::setFixedSize(const Widget::Ptr& widget, float size)
-    {
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            if (m_widgets[i] == widget)
-                return setFixedSize(i, size);
-        }
-
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool BoxLayout::setFixedSize(std::size_t index, float size)
-    {
-        if (index >= m_widgets.size())
-            return false;
-
-        m_widgetsFixedSizes[index] = size;
-        updateWidgetPositions();
-        return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float BoxLayout::getFixedSize(const Widget::Ptr& widget)
-    {
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            if (m_widgets[i] == widget)
-                return getFixedSize(i);
-        }
-
-        return 0;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float BoxLayout::getFixedSize(std::size_t index)
-    {
-        if (index >= m_widgets.size())
-            return 0;
-
-        return m_widgetsFixedSizes[index];
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BoxLayout::removeAllWidgets()
-    {
-        Container::removeAllWidgets();
-        m_widgetsRatio.clear();
-        m_widgetsFixedSizes.clear();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void BoxLayout::rendererChanged(const std::string& property)
     {
-        Panel::rendererChanged(property);
+        if (property == "spacebetweenwidgets")
+        {
+            m_spaceBetweenWidgetsCached = getRenderer()->getSpaceBetweenWidgets();
+            updateWidgets();
+        }
+        else if (property == "padding")
+        {
+            Group::rendererChanged(property);
 
-        if (property == "font")
-            updateWidgetPositions();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void BoxLayout::draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        // Set the position
-        states.transform.translate(getPosition());
-
-        // Draw the background
-        if (getRenderer()->getBackgroundColor() != sf::Color::Transparent)
-            drawRectangleShape(target, states, getSize(), getRenderer()->getBackgroundColor());
-
-        // Draw the widgets
-        drawWidgetContainer(&target, states);
+            m_spaceBetweenWidgetsCached = getRenderer()->getSpaceBetweenWidgets();
+            updateWidgets();
+        }
+        else
+            Group::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

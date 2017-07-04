@@ -138,7 +138,7 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
-            m_bordersCached.updateParentSize(getSize());
+            updateSize();
         }
         else if (property == "bordercolor")
         {

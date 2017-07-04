@@ -29,42 +29,72 @@
 TEST_CASE("[HorizontalLayout]")
 {
     auto layout = tgui::HorizontalLayout::create();
-    layout->setSize(800, 100);
-    layout->setPosition(50, 40);
+    layout->setSize(800, 1000);
+    layout->setPosition(40, 50);
 
-    auto button1 = tgui::Button::create();
-    layout->add(button1);
+    SECTION("Positions and sizes")
+    {
+        auto button1 = tgui::Button::create();
+        layout->add(button1);
 
-    REQUIRE(button1->getFullSize() == sf::Vector2f(800, 100));
+        REQUIRE(button1->getPosition() == sf::Vector2f(0, 0));
+        REQUIRE(button1->getFullSize() == sf::Vector2f(800, 1000));
 
-    auto button2 = tgui::Button::create();
-    layout->add(button2);
+        auto button2 = tgui::Button::create();
+        layout->add(button2);
 
-    REQUIRE(button1->getFullSize() == sf::Vector2f(400, 100));
-    REQUIRE(button2->getFullSize() == sf::Vector2f(400, 100));
+        REQUIRE(button2->getPosition() == sf::Vector2f(400, 0));
+        REQUIRE(button1->getFullSize() == sf::Vector2f(400, 1000));
+        REQUIRE(button2->getFullSize() == sf::Vector2f(400, 1000));
 
-    layout->setRatio(button2, 3);
-    REQUIRE(button1->getFullSize() == sf::Vector2f(200, 100));
-    REQUIRE(button2->getFullSize() == sf::Vector2f(600, 100));
+        layout->getRenderer()->setPadding({10});
+        REQUIRE(button1->getPosition() == sf::Vector2f(0, 0));
+        REQUIRE(button2->getPosition() == sf::Vector2f(395, 0));
+        REQUIRE(button1->getFullSize() == sf::Vector2f(385, 980));
+        REQUIRE(button2->getFullSize() == sf::Vector2f(385, 980));
 
-    layout->insertSpace(1, 1.5);
-    layout->setRatio(0, 3.5);
-    REQUIRE(button1->getFullSize() == sf::Vector2f(350, 100));
-    REQUIRE(button2->getFullSize() == sf::Vector2f(300, 100));
+        layout->getRenderer()->setSpaceBetweenWidgets(30);
+        REQUIRE(button1->getPosition() == sf::Vector2f(0, 0));
+        REQUIRE(button2->getPosition() == sf::Vector2f(405, 0));
+        REQUIRE(button1->getFullSize() == sf::Vector2f(375, 980));
+        REQUIRE(button2->getFullSize() == sf::Vector2f(375, 980));
 
-    auto button3 = tgui::Button::create();
-    layout->add(button3);
+        auto button3 = tgui::Button::create();
+        layout->add(button3);
 
-    REQUIRE(layout->getRatio(button1) == 3.5);
-    REQUIRE(layout->getRatio(button2) == 3);
-    REQUIRE(layout->getRatio(button3) == 1);
-    REQUIRE(layout->getRatio(nullptr) == 0);
-    REQUIRE(layout->getRatio(tgui::Button::create()) == 0);
-    REQUIRE(layout->getRatio(0) == 3.5);
-    REQUIRE(layout->getRatio(1) == 1.5);
-    REQUIRE(layout->getRatio(2) == 3);
-    REQUIRE(layout->getRatio(3) == 1);
-    REQUIRE(layout->getRatio(4) == 0);
+        REQUIRE(button1->getPosition() == sf::Vector2f(0, 0));
+        REQUIRE(button2->getPosition() == sf::Vector2f(270, 0));
+        REQUIRE(button3->getPosition() == sf::Vector2f(540, 0));
+        REQUIRE(button1->getFullSize() == sf::Vector2f(240, 980));
+        REQUIRE(button2->getFullSize() == sf::Vector2f(240, 980));
+        REQUIRE(button3->getFullSize() == sf::Vector2f(240, 980));
+    }
 
-    // TODO: Add fixed size tests
+    SECTION("Order")
+    {
+        REQUIRE(layout->get(0) == nullptr);
+
+        layout->add(tgui::Button::create(), "1");
+        layout->add(tgui::Button::create(), "2");
+        layout->insert(1, tgui::Button::create(), "3");
+        layout->insert(0, tgui::Button::create(), "4");
+        layout->insert(4, tgui::Button::create(), "5");
+
+        REQUIRE(layout->getWidgetName(layout->get(0)) == "4");
+        REQUIRE(layout->getWidgetName(layout->get(1)) == "1");
+        REQUIRE(layout->getWidgetName(layout->get(2)) == "3");
+        REQUIRE(layout->getWidgetName(layout->get(3)) == "2");
+        REQUIRE(layout->getWidgetName(layout->get(4)) == "5");
+        REQUIRE(layout->get(5) == nullptr);
+
+        REQUIRE(layout->remove(layout->get("2")) == true);
+        REQUIRE(layout->remove(1) == true);
+        REQUIRE(layout->remove(5) == false);
+        REQUIRE(layout->remove(tgui::Button::create()) == false);
+
+        REQUIRE(layout->getWidgetName(layout->get(0)) == "4");
+        REQUIRE(layout->getWidgetName(layout->get(1)) == "3");
+        REQUIRE(layout->getWidgetName(layout->get(2)) == "5");
+        REQUIRE(layout->get(5) == nullptr);
+    }
 }
