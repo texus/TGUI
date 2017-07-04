@@ -23,8 +23,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_WINDOW_HPP
-#define TGUI_WINDOW_HPP
+#ifndef TGUI_GUI_HPP
+#define TGUI_GUI_HPP
 
 
 #include <TGUI/Container.hpp>
@@ -46,32 +46,32 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         ///
-        /// If you use this constructor then you will still have to call the setWindow yourself.
+        /// If you use this constructor then you will still have to call the setTarget yourself.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Gui();
 
-
+#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs the gui and set the window on which the gui should be drawn
         ///
         /// @param window  The sfml window that will be used by the gui
         ///
-        /// If you use this constructor then you will no longer have to call setWindow yourself.
+        /// If you use this constructor then you will no longer have to call setTarget yourself.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Gui(sf::RenderWindow& window);
-
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs the gui and set the target on which the gui should be drawn
         ///
-        /// @param window  The render target that will be used by the gui
+        /// @param target  The render target (typically sf::RenderWindow) that will be used by the gui
         ///
-        /// If you use this constructor then you will no longer have to call setWindow yourself.
+        /// If you use this constructor then you will no longer have to call setTarget yourself.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Gui(sf::RenderTarget& window);
+        Gui(sf::RenderTarget& target);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,32 +85,32 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Gui& operator=(const Gui& right) = delete;
 
-
+#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the window on which the gui should be drawn
         ///
         /// @param window  The sfml window that will be used by the gui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setWindow(sf::RenderWindow& window);
-
+        void setTarget(sf::RenderWindow& window);
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the target on which the gui should be drawn
         ///
-        /// @param window  The render target that will be used by the gui
+        /// @param target  The render target (typically sf::RenderWindow) that will be used by the gui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setWindow(sf::RenderTarget& window);
+        void setTarget(sf::RenderTarget& target);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the window on which the gui is being drawn
+        /// @brief Returns the render target on which the gui is being drawn
         ///
-        /// @return The sfml that is used by the gui
+        /// @return The sfml render target that is used by the gui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::RenderTarget* getWindow() const;
+        sf::RenderTarget* getTarget() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,11 +414,11 @@ namespace tgui
         // The internal clock which is used for animation of widgets
         sf::Clock m_clock;
 
-        // The sfml window or other target to draw on
-        sf::RenderTarget* m_window;
+        // The sfml render target to draw on
+        sf::RenderTarget* m_target;
 
     #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        // Does m_Window contains a sf::RenderWindow?
+        // Does m_target contains a sf::RenderWindow?
         bool m_accessToWindow;
     #endif
 
@@ -442,4 +442,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_WINDOW_HPP
+#endif // TGUI_GUI_HPP

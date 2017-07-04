@@ -531,7 +531,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       protected:
 
-        sf::RenderTarget* m_window = nullptr;
+        sf::RenderTarget* m_target = nullptr;
 
         friend class Gui; // Required to let Gui access protected members from container and Widget
 

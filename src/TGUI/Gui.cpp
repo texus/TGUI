@@ -40,9 +40,9 @@ namespace tgui
 
     Gui::Gui() :
     #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
-        m_window(nullptr)
+        m_target(nullptr)
     #else
-        m_window        (nullptr),
+        m_target        (nullptr),
         m_accessToWindow(false)
     #endif
     {
@@ -55,82 +55,78 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
     Gui::Gui(sf::RenderWindow& window) :
-    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
-        m_window(&window)
-    #else
-        m_window        (&window),
+        m_target        (&window),
         m_accessToWindow(true)
-    #endif
     {
-        m_container->m_window = &window;
+        m_container->m_target = &window;
         m_container->m_focused = true;
 
-    #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
         Clipboard::setWindowHandle(window.getSystemHandle());
-    #endif
 
         setView(window.getDefaultView());
 
-        sf::Font defaultFont;
-        if (defaultFont.loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
+        auto defaultFont = std::make_shared<sf::Font>();
+        if (defaultFont->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
             setFont(defaultFont);
     }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Gui::Gui(sf::RenderTarget& window) :
+    Gui::Gui(sf::RenderTarget& target) :
     #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
-        m_window(&window)
+        m_target(&target)
     #else
-        m_window        (&window),
+        m_target        (&target),
         m_accessToWindow(false)
     #endif
     {
-        m_container->m_window = &window;
+        m_container->m_target = &target;
         m_container->m_focused = true;
 
-        setView(window.getDefaultView());
+        setView(target.getDefaultView());
 
-        sf::Font defaultFont;
-        if (defaultFont.loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
+        auto defaultFont = std::make_shared<sf::Font>();
+        if (defaultFont->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
             setFont(defaultFont);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::setWindow(sf::RenderWindow& window)
+#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
+    void Gui::setTarget(sf::RenderWindow& window)
     {
-        m_window = &window;
-        m_container->m_window = &window;
+        m_target = &window;
+        m_container->m_target = &window;
 
-    #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
         m_accessToWindow = true;
         Clipboard::setWindowHandle(window.getSystemHandle());
-    #endif
 
         setView(window.getDefaultView());
     }
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::setWindow(sf::RenderTarget& window)
+    void Gui::setTarget(sf::RenderTarget& target)
     {
     #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
         m_accessToWindow = false;
     #endif
 
-        m_window = &window;
-        m_container->m_window = &window;
+        m_target = &target;
+        m_container->m_target = &target;
 
-        setView(window.getDefaultView());
+        setView(target.getDefaultView());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::RenderTarget* Gui::getWindow() const
+    sf::RenderTarget* Gui::getTarget() const
     {
-        return m_window;
+        return m_target;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +160,7 @@ namespace tgui
 
     bool Gui::handleEvent(sf::Event event)
     {
-        assert(m_window != nullptr);
+        assert(m_target != nullptr);
 
         // Check if the event has something to do with the mouse
         if ((event.type == sf::Event::MouseMoved) || (event.type == sf::Event::TouchMoved)
@@ -178,7 +174,7 @@ namespace tgui
             {
                 case sf::Event::MouseMoved:
                 {
-                    mouseCoords = m_window->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_view);
+                    mouseCoords = m_target->mapPixelToCoords({event.mouseMove.x, event.mouseMove.y}, m_view);
                     event.mouseMove.x = static_cast<int>(mouseCoords.x + 0.5f);
                     event.mouseMove.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
@@ -187,7 +183,7 @@ namespace tgui
                 case sf::Event::MouseButtonPressed:
                 case sf::Event::MouseButtonReleased:
                 {
-                    mouseCoords = m_window->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_view);
+                    mouseCoords = m_target->mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}, m_view);
                     event.mouseButton.x = static_cast<int>(mouseCoords.x + 0.5f);
                     event.mouseButton.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
@@ -195,7 +191,7 @@ namespace tgui
 
                 case sf::Event::MouseWheelScrolled:
                 {
-                    mouseCoords = m_window->mapPixelToCoords({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, m_view);
+                    mouseCoords = m_target->mapPixelToCoords({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, m_view);
                     event.mouseWheelScroll.x = static_cast<int>(mouseCoords.x + 0.5f);
                     event.mouseWheelScroll.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
@@ -205,7 +201,7 @@ namespace tgui
                 case sf::Event::TouchBegan:
                 case sf::Event::TouchEnded:
                 {
-                    mouseCoords = m_window->mapPixelToCoords({event.touch.x, event.touch.y}, m_view);
+                    mouseCoords = m_target->mapPixelToCoords({event.touch.x, event.touch.y}, m_view);
                     event.touch.x = static_cast<int>(mouseCoords.x + 0.5f);
                     event.touch.y = static_cast<int>(mouseCoords.y + 0.5f);
                     break;
@@ -241,7 +237,7 @@ namespace tgui
             m_container->m_focused = true;
         #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
             if (m_accessToWindow)
-                Clipboard::setWindowHandle(static_cast<sf::RenderWindow*>(m_window)->getSystemHandle());
+                Clipboard::setWindowHandle(static_cast<sf::RenderWindow*>(m_target)->getSystemHandle());
         #endif
         }
 
@@ -253,13 +249,18 @@ namespace tgui
 
     void Gui::draw()
     {
-        assert(m_window != nullptr);
+        assert(m_target != nullptr);
 
         // Make sure the right opengl context is set when clipping
-        if (dynamic_cast<sf::RenderWindow*>(m_window))
-            dynamic_cast<sf::RenderWindow*>(m_window)->setActive(true);
-        else if (dynamic_cast<sf::RenderTexture*>(m_window))
-            dynamic_cast<sf::RenderTexture*>(m_window)->setActive(true);
+        // This is necessary when something is drawn to a RenderTexture directly before calling gui.draw()
+#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
+        if (dynamic_cast<sf::RenderWindow*>(m_target))
+            dynamic_cast<sf::RenderWindow*>(m_target)->setActive(true);
+        else if (dynamic_cast<sf::RenderTexture*>(m_target))
+            dynamic_cast<sf::RenderTexture*>(m_target)->setActive(true);
+#else
+        m_target->setActive(true);
+#endif
 
         // Update the time
         if (m_container->m_focused)
@@ -268,7 +269,7 @@ namespace tgui
             m_clock.restart();
 
         // Check if clipping is enabled
-        GLboolean clippingEnabled = glIsEnabled(GL_SCISSOR_TEST);
+        const GLboolean clippingEnabled = glIsEnabled(GL_SCISSOR_TEST);
         GLint scissor[4];
 
         if (clippingEnabled)
@@ -280,18 +281,18 @@ namespace tgui
         {
             // Enable clipping
             glEnable(GL_SCISSOR_TEST);
-            glScissor(0, 0, m_window->getSize().x, m_window->getSize().y);
+            glScissor(0, 0, m_target->getSize().x, m_target->getSize().y);
         }
 
         // Change the view
-        sf::View oldView = m_window->getView();
-        m_window->setView(m_view);
+        const sf::View oldView = m_target->getView();
+        m_target->setView(m_view);
 
-        // Draw the window with all widgets inside it
-        m_container->drawWidgetContainer(m_window, sf::RenderStates::Default);
+        // Draw the widgets
+        m_container->drawWidgetContainer(m_target, sf::RenderStates::Default);
 
         // Restore the old view
-        m_window->setView(oldView);
+        m_target->setView(oldView);
 
         // Reset clipping to its original state
         if (clippingEnabled)
