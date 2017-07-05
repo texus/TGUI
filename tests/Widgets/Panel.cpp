@@ -104,11 +104,11 @@ TEST_CASE("[Panel]")
 
         SECTION("mouseOnWidget")
         {
-            REQUIRE(!panel->mouseOnWidget({-1, -1}));
-            REQUIRE(panel->mouseOnWidget({0, 0}));
-            REQUIRE(panel->mouseOnWidget({75, 50}));
-            REQUIRE(panel->mouseOnWidget({149, 99}));
-            REQUIRE(!panel->mouseOnWidget({150, 100}));
+            REQUIRE(!panel->mouseOnWidget({39, 29}));
+            REQUIRE(panel->mouseOnWidget({40, 30}));
+            REQUIRE(panel->mouseOnWidget({115, 80}));
+            REQUIRE(panel->mouseOnWidget({189, 129}));
+            REQUIRE(!panel->mouseOnWidget({190, 130}));
 
             REQUIRE(mousePressedCount == 0);
             REQUIRE(mouseReleasedCount == 0);
@@ -127,19 +127,19 @@ TEST_CASE("[Panel]")
             parent->setPosition({30, 25});
             parent->add(panel);
 
-            parent->mouseMoved({10, 15});
+            parent->mouseMoved({40, 40});
             REQUIRE(mouseEnteredCount == 0);
             REQUIRE(mouseLeftCount == 0);
 
-            parent->mouseMoved({40, 30});
+            parent->mouseMoved({70, 55});
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 0);
 
-            parent->mouseMoved({189, 129});
+            parent->mouseMoved({219, 154});
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 0);
 
-            parent->mouseMoved({190, 130});
+            parent->mouseMoved({220, 155});
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 1);
         }
@@ -151,21 +151,21 @@ TEST_CASE("[Panel]")
             parent->setPosition(60, 55);
             parent->add(panel);
 
-            parent->leftMouseReleased({115, 80});
+            parent->leftMouseReleased({175, 135});
 
             REQUIRE(mouseReleasedCount == 1);
             REQUIRE(clickedCount == 0);
 
             SECTION("mouse press")
             {
-                parent->leftMousePressed({115, 80});
+                parent->leftMousePressed({175, 135});
 
                 REQUIRE(mousePressedCount == 1);
                 REQUIRE(mouseReleasedCount == 1);
                 REQUIRE(clickedCount == 0);
             }
 
-            parent->leftMouseReleased({115, 80});
+            parent->leftMouseReleased({175, 135});
 
             REQUIRE(mousePressedCount == 1);
             REQUIRE(mouseReleasedCount == 2);

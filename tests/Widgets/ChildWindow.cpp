@@ -174,11 +174,11 @@ TEST_CASE("[ChildWindow]")
 
         SECTION("mouseOnWidget")
         {
-            REQUIRE(!childWindow->mouseOnWidget({-1, -1}));
-            REQUIRE(childWindow->mouseOnWidget({0, 0}));
-            REQUIRE(childWindow->mouseOnWidget({75, 50}));
-            REQUIRE(childWindow->mouseOnWidget({153, 123}));
-            REQUIRE(!childWindow->mouseOnWidget({154, 124}));
+            REQUIRE(!childWindow->mouseOnWidget({39, 29}));
+            REQUIRE(childWindow->mouseOnWidget({40, 30}));
+            REQUIRE(childWindow->mouseOnWidget({115, 80}));
+            REQUIRE(childWindow->mouseOnWidget({193, 153}));
+            REQUIRE(!childWindow->mouseOnWidget({194, 154}));
         }
 
         SECTION("mouse move")
@@ -193,19 +193,19 @@ TEST_CASE("[ChildWindow]")
             parent->setPosition({30, 25});
             parent->add(childWindow);
 
-            parent->mouseMoved({10, 15});
+            parent->mouseMoved({40, 40});
             REQUIRE(mouseEnteredCount == 0);
             REQUIRE(mouseLeftCount == 0);
 
-            parent->mouseMoved({40, 30});
+            parent->mouseMoved({70, 55});
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 0);
 
-            parent->mouseMoved({193, 153});
+            parent->mouseMoved({223, 178});
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 0);
 
-            parent->mouseMoved({194, 154});
+            parent->mouseMoved({224, 179});
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 1);
         }

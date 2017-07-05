@@ -31,19 +31,19 @@ void testWidgetSignals(tgui::Widget::Ptr widget)
         widget->setPosition({40, 30});
         widget->setSize({150, 100});
 
-        parent->mouseMoved({10, 15});
+        parent->mouseMoved({40, 40});
         REQUIRE(mouseEnteredCount == 0);
         REQUIRE(mouseLeftCount == 0);
 
-        parent->mouseMoved({40, 30});
+        parent->mouseMoved({70, 55});
         REQUIRE(mouseEnteredCount == 1);
         REQUIRE(mouseLeftCount == 0);
 
-        parent->mouseMoved({189, 129});
+        parent->mouseMoved({219, 154});
         REQUIRE(mouseEnteredCount == 1);
         REQUIRE(mouseLeftCount == 0);
 
-        parent->mouseMoved({190, 130});
+        parent->mouseMoved({220, 155});
         REQUIRE(mouseEnteredCount == 1);
         REQUIRE(mouseLeftCount == 1);
     }
@@ -66,11 +66,11 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
 
     SECTION("mouseOnWidget")
     {
-        REQUIRE(!widget->mouseOnWidget({-1, -1}));
-        REQUIRE(widget->mouseOnWidget({0, 0}));
-        REQUIRE(widget->mouseOnWidget({75, 50}));
-        REQUIRE(widget->mouseOnWidget({149, 99}));
-        REQUIRE(!widget->mouseOnWidget({150, 100}));
+        REQUIRE(!widget->mouseOnWidget({39, 29}));
+        REQUIRE(widget->mouseOnWidget({40, 30}));
+        REQUIRE(widget->mouseOnWidget({115, 80}));
+        REQUIRE(widget->mouseOnWidget({189, 129}));
+        REQUIRE(!widget->mouseOnWidget({190, 130}));
 
         REQUIRE(mousePressedCount == 0);
         REQUIRE(mouseReleasedCount == 0);
@@ -83,21 +83,21 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
         parent->setPosition({60, 55});
         parent->add(widget);
 
-        parent->leftMouseReleased({115, 80});
+        parent->leftMouseReleased({175, 135});
 
         REQUIRE(mouseReleasedCount == 1);
         REQUIRE(clickedCount == 0);
 
         SECTION("mouse press")
         {
-            parent->leftMousePressed({115, 80});
+            parent->leftMousePressed({175, 135});
 
             REQUIRE(mousePressedCount == 1);
             REQUIRE(mouseReleasedCount == 1);
             REQUIRE(clickedCount == 0);
         }
 
-        parent->leftMouseReleased({115, 80});
+        parent->leftMouseReleased({175, 135});
 
         REQUIRE(mousePressedCount == 1);
         REQUIRE(mouseReleasedCount == 2);

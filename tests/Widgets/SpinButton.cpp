@@ -144,21 +144,21 @@ TEST_CASE("[SpinButton]")
             parent->setPosition(60, 55);
             parent->add(spinButton);
 
-            parent->leftMousePressed({50, 45});
+            parent->leftMousePressed({110, 100});
             REQUIRE(valueChangedCount == 1);
             REQUIRE(spinButton->getValue() == 10);
 
-            parent->leftMouseReleased({50, 45});
+            parent->leftMouseReleased({110, 100});
             REQUIRE(valueChangedCount == 2);
             REQUIRE(spinButton->getValue() == 11);
 
-            parent->leftMousePressed({50, 75});
-            parent->leftMouseReleased({50, 75});
+            parent->leftMousePressed({110, 135});
+            parent->leftMouseReleased({110, 135});
             REQUIRE(valueChangedCount == 3);
             REQUIRE(spinButton->getValue() == 10);
 
-            parent->leftMousePressed({50, 75});
-            parent->leftMouseReleased({50, 75});
+            parent->leftMousePressed({110, 135});
+            parent->leftMouseReleased({110, 135});
             REQUIRE(valueChangedCount == 3);
             REQUIRE(spinButton->getValue() == 10);
         }
