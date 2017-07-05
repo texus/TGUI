@@ -1,57 +1,92 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TGUI - Texus' Graphical User Interface
+// Copyright (C) 2012-2017 Bruno Van de Velde (vdv_b@tgui.eu)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 #include <TGUI/Widgets/HorizontalWrap.hpp>
+#include <algorithm>  // std::max
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	HorizontalWrap::HorizontalWrap()
-	{
-		m_callback.widgetType = "HorizontalWrap";
-	}
+    HorizontalWrap::HorizontalWrap(const Layout2d& size) :
+        BoxLayout{size}
+    {
+        m_type = "HorizontalWrap";
+        m_callback.widgetType = "HorizontalWrap";
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	HorizontalWrap::Ptr HorizontalWrap::create()
-	{
-		return std::make_shared<HorizontalWrap>();
-	}
+    HorizontalWrap::Ptr HorizontalWrap::create(const Layout2d& size)
+    {
+        return std::make_shared<HorizontalWrap>(size);
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	HorizontalWrap::Ptr HorizontalWrap::copy(HorizontalWrap::ConstPtr layout)
-	{
-		if (layout)
-			return std::static_pointer_cast<HorizontalWrap>(layout->clone());
-		else
-			return nullptr;
-	}
+    HorizontalWrap::Ptr HorizontalWrap::copy(HorizontalWrap::ConstPtr layout)
+    {
+        if (layout)
+            return std::static_pointer_cast<HorizontalWrap>(layout->clone());
+        else
+            return nullptr;
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void HorizontalWrap::updateWidgetPositions()
-	{
-		float currentHoriOffset = 0.f, currentVertOffset = 0.f;
-		float currentLineMaxVertOffset = 0.f;
-		for (std::size_t i = 0; i < m_widgets.size(); ++i)
-		{
-			auto size = m_widgets[i]->getSize();
+    void HorizontalWrap::updateWidgets()
+    {
+        const sf::Vector2f contentSize = getContentSize();
+        const float spaceBetweenWidgets = m_spaceBetweenWidgetsCached.getValue();
 
-			if (currentHoriOffset + size.x > getSize().x)
-			{
-				currentVertOffset += currentLineMaxVertOffset;
-				currentHoriOffset = currentLineMaxVertOffset = 0.f;
-			}
+        float currentHorizontalOffset = 0;
+        float currentVerticalOffset = 0;
+        float lineHeight = 0;
+        for (const auto& widget : m_widgets)
+        {
+            const auto size = widget->getSize();
 
-			m_widgets[i]->setPosition(currentHoriOffset, currentVertOffset);
+            if (currentHorizontalOffset + size.x > contentSize.x)
+            {
+                currentVerticalOffset += lineHeight + spaceBetweenWidgets;
+                currentHorizontalOffset = 0;
+                lineHeight = 0;
+            }
 
-			currentHoriOffset += size.x;
-			currentLineMaxVertOffset = std::max(currentLineMaxVertOffset, size.y);
-		}
-	}
+            widget->setPosition({currentHorizontalOffset, currentVerticalOffset});
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            currentHorizontalOffset += size.x + spaceBetweenWidgets;
+
+            if (lineHeight < size.y)
+                lineHeight = size.y;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
