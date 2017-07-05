@@ -33,6 +33,7 @@ set(TEST_SOURCES
     Widgets/Group.cpp
     Widgets/Grid.cpp
     Widgets/HorizontalLayout.cpp
+    Widgets/HorizontalWrap.cpp
     Widgets/Knob.cpp
     Widgets/Label.cpp
     Widgets/ListBox.cpp
