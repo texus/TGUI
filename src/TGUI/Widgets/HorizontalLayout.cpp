@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/HorizontalLayout.hpp>
-#include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,6 +34,7 @@ namespace tgui
     HorizontalLayout::HorizontalLayout(const Layout2d& size) :
         BoxLayout{size}
     {
+        m_type = "HorizontalLayout";
         m_callback.widgetType = "HorizontalLayout";
     }
 

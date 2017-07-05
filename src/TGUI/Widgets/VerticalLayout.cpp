@@ -24,7 +24,6 @@
 
 
 #include <TGUI/Widgets/VerticalLayout.hpp>
-#include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,6 +34,7 @@ namespace tgui
     VerticalLayout::VerticalLayout(const Layout2d& size) :
         BoxLayout{size}
     {
+        m_type = "VerticalLayout";
         m_callback.widgetType = "VerticalLayout";
     }
 
