@@ -11,7 +11,7 @@ Status
 
 | Linux & OS X | Windows | Test coverage |
 |--------------|---------|---------------|
-| [![Build Status](https://travis-ci.org/texus/TGUI.svg?branch=master)](https://travis-ci.org/texus/TGUI) | [![Build status](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/master?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/master) | [![codecov](https://codecov.io/gh/texus/TGUI/branch/master/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/master) |
+| [![Build Status](https://travis-ci.org/texus/TGUI.svg?branch=0.7)](https://travis-ci.org/texus/TGUI) | [![Build status](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/0.7?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/0.7) | [![codecov](https://codecov.io/gh/texus/TGUI/branch/0.7/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.7) |
 
 
 Download
