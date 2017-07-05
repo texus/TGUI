@@ -325,13 +325,15 @@ namespace tgui
         if (m_autoHide && (m_maximum <= m_lowValue))
             return false;
 
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Scrollbar::leftMousePressed(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         m_mouseDown = true;
         m_mouseDownOnArrow = false;
 
@@ -373,7 +375,7 @@ namespace tgui
 
         // Refresh the scrollbar value
         if (!m_mouseDownOnArrow)
-            mouseMoved(pos);
+            mouseMoved(pos + getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -388,6 +390,8 @@ namespace tgui
             {
                 bool valueDown = false;
                 bool valueUp = false;
+
+                pos -= getPosition();
 
                 // Check in which direction the scrollbar lies
                 if (m_verticalScroll)
@@ -471,6 +475,8 @@ namespace tgui
 
     void Scrollbar::mouseMoved(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         if (!m_mouseHover)
             mouseEnteredWidget();
 
@@ -504,7 +510,7 @@ namespace tgui
                         setValue(0);
 
                     // Set the thumb position for smooth scrolling
-                    float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
+                    const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
                     if ((thumbTop - m_arrowUp.height > 0) && (thumbTop + m_thumb.height + m_arrowDown.height < getSize().y))
                         m_thumb.top = thumbTop;
                     else // Prevent the thumb from going outside the scrollbar
@@ -571,7 +577,7 @@ namespace tgui
                         setValue(0);
 
                     // Set the thumb position for smooth scrolling
-                    float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
+                    const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
                     if ((thumbLeft - m_arrowUp.width > 0) && (thumbLeft + m_thumb.width + m_arrowDown.width < getSize().x))
                         m_thumb.left = thumbLeft;
                     else // Prevent the thumb from going outside the scrollbar
@@ -631,7 +637,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::mouseWheelScrolled(float delta, int x, int y)
+    void Scrollbar::mouseWheelScrolled(float delta, sf::Vector2f pos)
     {
         if (static_cast<int>(m_value) - static_cast<int>(delta * m_scrollAmount) < 0)
             setValue(0);
@@ -639,7 +645,7 @@ namespace tgui
             setValue(static_cast<unsigned int>(m_value - (delta * m_scrollAmount)));
 
         // Update over which part the mouse is hovering
-        mouseMoved({static_cast<float>(x), static_cast<float>(y)});
+        mouseMoved(pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

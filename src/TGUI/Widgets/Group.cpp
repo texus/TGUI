@@ -88,6 +88,8 @@ namespace tgui
 
     bool Group::mouseOnWidget(sf::Vector2f pos) const
     {
+        pos -= getPosition();
+
         if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             const sf::Vector2f offset = getChildWidgetsOffset();
@@ -95,7 +97,7 @@ namespace tgui
             {
                 if (widget->isVisible())
                 {
-                    if (widget->mouseOnWidget(pos - widget->getPosition() - offset))
+                    if (widget->mouseOnWidget(pos - offset))
                         return true;
                 }
             }

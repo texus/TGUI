@@ -466,6 +466,8 @@ namespace tgui
 
     void EditBox::leftMousePressed(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         // Find the caret position
         const float positionX = pos.x - m_bordersCached.getLeft() - m_paddingCached.getLeft();
 
@@ -524,6 +526,8 @@ namespace tgui
 
     void EditBox::mouseMoved(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         if (!m_mouseHover)
             mouseEnteredWidget();
 

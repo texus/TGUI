@@ -352,7 +352,7 @@ namespace tgui
     bool ChildWindow::mouseOnWidget(sf::Vector2f pos) const
     {
         // Check if the mouse is on top of the title bar
-        if (sf::FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
+        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
         {
             if (m_widgetBelowMouse)
                 m_widgetBelowMouse->mouseNoLongerOnWidget();
@@ -361,13 +361,19 @@ namespace tgui
         }
 
         // Check if the mouse is inside the child window
-        return sf::FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), getSize().y + m_bordersCached.getTop() + m_bordersCached.getBottom()}.contains(pos.x, pos.y - m_titleBarHeightCached);
+        return sf::FloatRect{getPosition().x,
+                             getPosition().y,
+                             getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(),
+                             getSize().y + m_bordersCached.getTop() + m_bordersCached.getBottom()}
+                            .contains(pos.x, pos.y - m_titleBarHeightCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChildWindow::leftMousePressed(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         m_mouseDown = true;
 
         // Move the child window to the front
@@ -383,9 +389,9 @@ namespace tgui
             // Send the mouse press event to the title buttons
             for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
             {
-                if (button && button->mouseOnWidget(pos - button->getPosition()))
+                if (button && button->mouseOnWidget(pos))
                 {
-                    button->leftMousePressed(pos - button->getPosition());
+                    button->leftMousePressed(pos);
                     return;
                 }
             }
@@ -419,7 +425,7 @@ namespace tgui
                 }
             }
             else // Propagate the event to the child widgets
-                Container::leftMousePressed(pos);
+                Container::leftMousePressed(pos + getPosition());
         }
     }
 
@@ -427,6 +433,8 @@ namespace tgui
 
     void ChildWindow::leftMouseReleased(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         m_mouseDownOnTitleBar = false;
         m_resizeDirection = ResizeNone;
 
@@ -436,9 +444,9 @@ namespace tgui
             // Send the mouse release event to the title buttons
             for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
             {
-                if (button && button->mouseOnWidget(pos - button->getPosition()))
+                if (button && button->mouseOnWidget(pos))
                 {
-                    button->leftMouseReleased(pos - button->getPosition());
+                    button->leftMouseReleased(pos);
                     break;
                 }
             }
@@ -454,7 +462,7 @@ namespace tgui
                     widget->mouseNoLongerDown();
             }
             else // Propagate the event to the child widgets
-                Container::leftMouseReleased(pos);
+                Container::leftMouseReleased(pos + getPosition());
         }
     }
 
@@ -462,6 +470,8 @@ namespace tgui
 
     void ChildWindow::mouseMoved(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         // Check if you are dragging the child window
         if (m_mouseDown && m_mouseDownOnTitleBar)
         {
@@ -509,8 +519,8 @@ namespace tgui
             {
                 if (button)
                 {
-                    if (button->mouseOnWidget(pos - button->getPosition()))
-                        button->mouseMoved(pos - button->getPosition());
+                    if (button->mouseOnWidget(pos))
+                        button->mouseMoved(pos);
                     else
                         button->mouseNoLongerOnWidget();
                 }
@@ -542,14 +552,7 @@ namespace tgui
             }
         }
 
-        Container::mouseMoved(pos);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::mouseWheelScrolled(float delta, int x, int y)
-    {
-        Container::mouseWheelScrolled(delta, x, y);
+        Container::mouseMoved(pos + getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

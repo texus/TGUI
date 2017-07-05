@@ -462,7 +462,7 @@ namespace tgui
 
     bool ComboBox::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -487,7 +487,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::mouseWheelScrolled(float delta, int, int)
+    void ComboBox::mouseWheelScrolled(float delta, sf::Vector2f)
     {
         // Only act to scrolling when the list is not being shown
         if (!m_listBox->isVisible())

@@ -459,18 +459,20 @@ namespace tgui
 
     bool ListBox::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ListBox::leftMousePressed(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         m_mouseDown = true;
 
-        if (m_scroll.mouseOnWidget(pos - m_scroll.getPosition()))
+        if (m_scroll.mouseOnWidget(pos))
         {
-            m_scroll.leftMousePressed(pos - m_scroll.getPosition());
+            m_scroll.leftMousePressed(pos);
         }
         else
         {
@@ -543,22 +545,24 @@ namespace tgui
             }
         }
 
-        m_scroll.leftMouseReleased(pos - m_scroll.getPosition());
+        m_scroll.leftMouseReleased(pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ListBox::mouseMoved(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         if (!m_mouseHover)
             mouseEnteredWidget();
 
         updateHoveringItem(-1);
 
         // Check if the mouse event should go to the scrollbar
-        if ((m_scroll.isMouseDown() && m_scroll.isMouseDownOnThumb()) || m_scroll.mouseOnWidget(pos - m_scroll.getPosition()))
+        if ((m_scroll.isMouseDown() && m_scroll.isMouseDownOnThumb()) || m_scroll.mouseOnWidget(pos))
         {
-            m_scroll.mouseMoved(pos - m_scroll.getPosition());
+            m_scroll.mouseMoved(pos);
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
@@ -605,14 +609,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::mouseWheelScrolled(float delta, int x, int y)
+    void ListBox::mouseWheelScrolled(float delta, sf::Vector2f pos)
     {
         if (m_scroll.isShown())
         {
-            m_scroll.mouseWheelScrolled(delta, 0, 0);
+            m_scroll.mouseWheelScrolled(delta, pos - getPosition());
 
             // Update on which item the mouse is hovering
-            mouseMoved({static_cast<float>(x), static_cast<float>(y)});
+            mouseMoved(pos);
         }
     }
 

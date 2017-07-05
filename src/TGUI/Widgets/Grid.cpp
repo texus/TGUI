@@ -436,7 +436,7 @@ namespace tgui
 
     bool Grid::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, m_realSize.x, m_realSize.y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, m_realSize.x, m_realSize.y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -321,7 +321,7 @@ namespace tgui
 
     bool ChatBox::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,8 +332,8 @@ namespace tgui
         m_mouseDown = true;
 
         // Pass the event to the scrollbar
-        if (m_scroll.mouseOnWidget(pos - m_scroll.getPosition()))
-            m_scroll.leftMousePressed(pos - m_scroll.getPosition());
+        if (m_scroll.mouseOnWidget(pos - getPosition()))
+            m_scroll.leftMousePressed(pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +341,7 @@ namespace tgui
     void ChatBox::leftMouseReleased(sf::Vector2f pos)
     {
         if (m_scroll.isMouseDown())
-            m_scroll.leftMouseReleased(pos - m_scroll.getPosition());
+            m_scroll.leftMouseReleased(pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -352,8 +352,8 @@ namespace tgui
             mouseEnteredWidget();
 
         // Pass the event to the scrollbar when the mouse is on top of it or when we are dragging its thumb
-        if (((m_scroll.isMouseDown()) && (m_scroll.isMouseDownOnThumb())) || m_scroll.mouseOnWidget(pos - m_scroll.getPosition()))
-            m_scroll.mouseMoved(pos - m_scroll.getPosition());
+        if (((m_scroll.isMouseDown()) && (m_scroll.isMouseDownOnThumb())) || m_scroll.mouseOnWidget(pos - getPosition()))
+            m_scroll.mouseMoved(pos - getPosition());
         else
             m_scroll.mouseNoLongerOnWidget();
     }
@@ -376,10 +376,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::mouseWheelScrolled(float delta, int, int)
+    void ChatBox::mouseWheelScrolled(float delta, sf::Vector2f pos)
     {
         if (m_scroll.getLowValue() < m_scroll.getMaximum())
-            m_scroll.mouseWheelScrolled(delta, 0, 0);
+            m_scroll.mouseWheelScrolled(delta, pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

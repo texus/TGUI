@@ -206,6 +206,8 @@ namespace tgui
 
     bool RadioButton::mouseOnWidget(sf::Vector2f pos) const
     {
+        pos -= getPosition();
+
         if (m_allowTextClick && !getText().isEmpty())
         {
             // Check if the mouse is on top of the image or the small gap between image and text

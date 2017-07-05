@@ -64,7 +64,7 @@ namespace tgui
 
     bool ClickableWidget::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +73,7 @@ namespace tgui
     {
         m_mouseDown = true; /// TODO: Is there any widget for which this can't be in Widget base class?
 
+        pos -= getPosition();
         m_callback.mouse.x = static_cast<int>(pos.x);
         m_callback.mouse.y = static_cast<int>(pos.y);
         sendSignal("MousePressed", pos);
@@ -82,6 +83,7 @@ namespace tgui
 
     void ClickableWidget::leftMouseReleased(sf::Vector2f pos)
     {
+        pos -= getPosition();
         m_callback.mouse.x = static_cast<int>(pos.x);
         m_callback.mouse.y = static_cast<int>(pos.y);
         sendSignal("MouseReleased", pos);

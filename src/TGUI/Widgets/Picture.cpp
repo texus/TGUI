@@ -111,6 +111,8 @@ namespace tgui
 
     bool Picture::mouseOnWidget(sf::Vector2f pos) const
     {
+        pos -= getPosition();
+
         // Check if the mouse is on top of the picture
         if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
@@ -139,6 +141,7 @@ namespace tgui
             {
                 m_possibleDoubleClick = false;
 
+                pos -= getPosition();
                 m_callback.mouse.x = static_cast<int>(pos.x);
                 m_callback.mouse.y = static_cast<int>(pos.y);
                 sendSignal("DoubleClicked", pos);

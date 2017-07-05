@@ -279,20 +279,22 @@ namespace tgui
 
     bool TextBox::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextBox::leftMousePressed(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         // Set the mouse down flag
         m_mouseDown = true;
 
         // If there is a scrollbar then pass the event
-        if ((m_verticalScroll.isShown()) && (m_verticalScroll.mouseOnWidget(pos - m_verticalScroll.getPosition())))
+        if ((m_verticalScroll.isShown()) && (m_verticalScroll.mouseOnWidget(pos)))
         {
-            m_verticalScroll.leftMousePressed(pos - m_verticalScroll.getPosition());
+            m_verticalScroll.leftMousePressed(pos);
             recalculateVisibleLines();
         }
         else // The click occurred on the text box
@@ -376,7 +378,7 @@ namespace tgui
             // Only pass the event when the scrollbar still thinks the mouse is down
             if (m_verticalScroll.isMouseDown())
             {
-                m_verticalScroll.leftMouseReleased(pos - m_verticalScroll.getPosition());
+                m_verticalScroll.leftMouseReleased(pos - getPosition());
                 recalculateVisibleLines();
             }
         }
@@ -386,6 +388,8 @@ namespace tgui
 
     void TextBox::mouseMoved(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         if (!m_mouseHover)
             mouseEnteredWidget();
 
@@ -393,9 +397,9 @@ namespace tgui
         m_possibleDoubleClick = false;
 
         // Check if the mouse event should go to the scrollbar
-        if (m_verticalScroll.isShown() && ((m_verticalScroll.isMouseDown() && m_verticalScroll.isMouseDownOnThumb()) || m_verticalScroll.mouseOnWidget(pos - m_verticalScroll.getPosition())))
+        if (m_verticalScroll.isShown() && ((m_verticalScroll.isMouseDown() && m_verticalScroll.isMouseDownOnThumb()) || m_verticalScroll.mouseOnWidget(pos)))
         {
-            m_verticalScroll.mouseMoved(pos - m_verticalScroll.getPosition());
+            m_verticalScroll.mouseMoved(pos);
             recalculateVisibleLines();
         }
 
@@ -902,11 +906,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseWheelScrolled(float delta, int, int)
+    void TextBox::mouseWheelScrolled(float delta, sf::Vector2f pos)
     {
         if (m_verticalScroll.isShown())
         {
-            m_verticalScroll.mouseWheelScrolled(delta, 0, 0);
+            m_verticalScroll.mouseWheelScrolled(delta, pos - getPosition());
             recalculateVisibleLines();
         }
     }

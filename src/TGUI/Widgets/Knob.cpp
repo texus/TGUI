@@ -252,6 +252,8 @@ namespace tgui
 
     bool Knob::mouseOnWidget(sf::Vector2f pos) const
     {
+        pos -= getPosition();
+
         // Check if the mouse is on top of the widget
         if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
@@ -294,6 +296,8 @@ namespace tgui
 
     void Knob::mouseMoved(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         if (!m_mouseHover)
             mouseEnteredWidget();
 

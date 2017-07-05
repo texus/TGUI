@@ -260,6 +260,8 @@ namespace tgui
 
     bool Slider::mouseOnWidget(sf::Vector2f pos) const
     {
+        pos -= getPosition();
+
         // Check if the mouse is on top of the thumb
         if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
             return true;
@@ -294,6 +296,8 @@ namespace tgui
 
     void Slider::mouseMoved(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         if (!m_mouseHover)
             mouseEnteredWidget();
 
@@ -364,7 +368,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::mouseWheelScrolled(float delta, int, int)
+    void Slider::mouseWheelScrolled(float delta, sf::Vector2f)
     {
         if (m_value - delta < m_minimum)
             setValue(m_minimum);

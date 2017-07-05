@@ -99,7 +99,7 @@ namespace tgui
 
     bool Panel::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,17 +108,19 @@ namespace tgui
     {
         m_mouseDown = true;
 
+        pos -= getPosition();
         m_callback.mouse.x = static_cast<int>(pos.x);
         m_callback.mouse.y = static_cast<int>(pos.y);
         sendSignal("MousePressed", pos);
 
-        Container::leftMousePressed(pos);
+        Container::leftMousePressed(pos + getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Panel::leftMouseReleased(sf::Vector2f pos)
     {
+        pos -= getPosition();
         m_callback.mouse.x = static_cast<int>(pos.x);
         m_callback.mouse.y = static_cast<int>(pos.y);
         sendSignal("MouseReleased", pos);
@@ -128,7 +130,7 @@ namespace tgui
 
         m_mouseDown = false;
 
-        Container::leftMouseReleased(pos);
+        Container::leftMouseReleased(pos + getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

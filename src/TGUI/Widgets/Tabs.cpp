@@ -356,13 +356,15 @@ namespace tgui
 
     bool Tabs::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Tabs::leftMousePressed(sf::Vector2f pos)
     {
+        pos -= getPosition();
+
         float width = m_bordersCached.getLeft() / 2.f;
 
         // Loop through all tabs

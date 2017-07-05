@@ -386,10 +386,10 @@ namespace tgui
     void Container::uncheckRadioButtons()
     {
         // Loop through all radio buttons and uncheck them
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        for (auto& widget : m_widgets)
         {
-            if (m_widgets[i]->m_type == "RadioButton")
-                std::static_pointer_cast<RadioButton>(m_widgets[i])->uncheck();
+            if (widget->getWidgetType() == "RadioButton")
+                std::static_pointer_cast<RadioButton>(widget)->uncheck();
         }
     }
 
@@ -508,8 +508,8 @@ namespace tgui
         sf::Event event;
         event.type = sf::Event::MouseButtonPressed;
         event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(pos.x - getChildWidgetsOffset().x);
-        event.mouseButton.y = static_cast<int>(pos.y - getChildWidgetsOffset().y);
+        event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
+        event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -522,8 +522,8 @@ namespace tgui
         sf::Event event;
         event.type = sf::Event::MouseButtonReleased;
         event.mouseButton.button = sf::Mouse::Left;
-        event.mouseButton.x = static_cast<int>(pos.x - getChildWidgetsOffset().x);
-        event.mouseButton.y = static_cast<int>(pos.y - getChildWidgetsOffset().y);
+        event.mouseButton.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
+        event.mouseButton.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
 
         // Let the event manager handle the event, but don't let it call mouseNoLongerDown on all widgets (it will be done later)
         m_handingMouseReleased = true;
@@ -539,8 +539,8 @@ namespace tgui
 
         sf::Event event;
         event.type = sf::Event::MouseMoved;
-        event.mouseMove.x = static_cast<int>(pos.x - getChildWidgetsOffset().x);
-        event.mouseMove.y = static_cast<int>(pos.y - getChildWidgetsOffset().y);
+        event.mouseMove.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
+        event.mouseMove.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
         handleEvent(event);
     }
 
@@ -570,13 +570,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::mouseWheelScrolled(float delta, int x, int y)
+    void Container::mouseWheelScrolled(float delta, sf::Vector2f pos)
     {
         sf::Event event;
         event.type = sf::Event::MouseWheelScrolled;
         event.mouseWheelScroll.delta = delta;
-        event.mouseWheelScroll.x = static_cast<int>(x - getChildWidgetsOffset().x);
-        event.mouseWheelScroll.y = static_cast<int>(y - getChildWidgetsOffset().y);
+        event.mouseWheelScroll.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
+        event.mouseWheelScroll.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
 
         // Let the event manager handle the event
         handleEvent(event);
@@ -601,8 +601,8 @@ namespace tgui
     {
         Widget::mouseNoLongerDown();
 
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-            m_widgets[i]->mouseNoLongerDown();
+        for (auto& widget : m_widgets)
+            widget->mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -620,12 +620,12 @@ namespace tgui
         {
             Widget::Ptr toolTip = nullptr;
 
-            mousePos -= getChildWidgetsOffset();
+            mousePos -= getPosition() + getChildWidgetsOffset();
 
             Widget::Ptr widget = mouseOnWhichWidget(mousePos);
             if (widget)
             {
-                toolTip = widget->askToolTip(mousePos - widget->getPosition());
+                toolTip = widget->askToolTip(mousePos);
                 if (toolTip)
                     return toolTip;
             }
@@ -690,15 +690,15 @@ namespace tgui
                 mousePos = {static_cast<float>(event.touch.x), static_cast<float>(event.touch.y)};
 
             // Loop through all widgets
-            for (std::size_t i = 0; i < m_widgets.size(); ++i)
+            for (auto& widget : m_widgets)
             {
                 // Check if the mouse went down on the widget
-                if (m_widgets[i]->m_mouseDown)
+                if (widget->m_mouseDown)
                 {
                     // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
-                    if ((m_widgets[i]->m_draggableWidget) || (m_widgets[i]->m_containerWidget))
+                    if ((widget->m_draggableWidget) || (widget->m_containerWidget))
                     {
-                        m_widgets[i]->mouseMoved(mousePos - m_widgets[i]->getPosition());
+                        widget->mouseMoved(mousePos);
                         return true;
                     }
                 }
@@ -709,7 +709,7 @@ namespace tgui
             if (widget != nullptr)
             {
                 // Send the event to the widget
-                widget->mouseMoved(mousePos - widget->getPosition());
+                widget->mouseMoved(mousePos);
                 return true;
             }
 
@@ -745,7 +745,7 @@ namespace tgui
                     }
                 }
 
-                widget->leftMousePressed(mousePos - widget->getPosition());
+                widget->leftMousePressed(mousePos);
                 return true;
             }
             else // The mouse did not went down on a widget, so unfocus the focused widget
@@ -767,7 +767,7 @@ namespace tgui
             // Check if the mouse is on top of a widget
             Widget::Ptr widgetBelowMouse = mouseOnWhichWidget(mousePos);
             if (widgetBelowMouse != nullptr)
-                widgetBelowMouse->leftMouseReleased(mousePos - widgetBelowMouse->getPosition());
+                widgetBelowMouse->leftMouseReleased(mousePos);
 
             // Tell all widgets that the mouse has gone up
             // But don't do this when leftMouseReleased was called on this container because
@@ -844,9 +844,7 @@ namespace tgui
             if (widget != nullptr)
             {
                 // Send the event to the widget
-                widget->mouseWheelScrolled(event.mouseWheelScroll.delta,
-                                           static_cast<int>(event.mouseWheelScroll.x - widget->getPosition().x),
-                                           static_cast<int>(event.mouseWheelScroll.y - widget->getPosition().y));
+                widget->mouseWheelScrolled(event.mouseWheelScroll.delta, {static_cast<float>(event.mouseWheelScroll.x), static_cast<float>(event.mouseWheelScroll.y)});
                 return true;
             }
 
@@ -875,7 +873,7 @@ namespace tgui
             if (m_widgets[i]->m_allowFocus)
             {
                 // Make sure that the widget is visible and enabled
-                if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
+                if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
                 {
                     // Container widgets can only be focused it they contain focusable widgets
                     if ((!m_widgets[i]->m_containerWidget) || (std::static_pointer_cast<Container>(m_widgets[i])->focusNextWidgetInContainer()))
@@ -929,7 +927,7 @@ namespace tgui
             if (m_widgets[i]->m_allowFocus)
             {
                 // Make sure that the widget is visible and enabled
-                if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
+                if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
                 {
                     if (m_focusedWidget)
                     {
@@ -956,7 +954,7 @@ namespace tgui
                 if (m_widgets[i]->m_allowFocus)
                 {
                     // Make sure that the widget is visible and enabled
-                    if ((m_widgets[i]->m_visible) && (m_widgets[i]->m_enabled))
+                    if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
                     {
                         // unfocus the current widget
                         m_widgets[m_focusedWidget-1]->m_focused = false;
@@ -991,7 +989,7 @@ namespace tgui
         {
             if ((*it)->isVisible())
             {
-                if ((*it)->mouseOnWidget(mousePos - (*it)->getPosition()))
+                if ((*it)->mouseOnWidget(mousePos))
                 {
                     if ((*it)->isEnabled())
                         widget = *it;
@@ -1014,10 +1012,10 @@ namespace tgui
     void Container::drawWidgetContainer(sf::RenderTarget* target, const sf::RenderStates& states) const
     {
         // Draw all widgets when they are visible
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
+        for (const auto& widget : m_widgets)
         {
-            if (m_widgets[i]->m_visible)
-                m_widgets[i]->draw(*target, states);
+            if (widget->isVisible())
+                widget->draw(*target, states);
         }
     }
 
