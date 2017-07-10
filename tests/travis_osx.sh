@@ -1,7 +1,7 @@
 set -e
 mkdir build
 
-export SFML_VERSION=2.4.0
+export SFML_VERSION=2.3.2
 export SFML_ROOT=$HOME/SFML_OSX
 
 if [[ ! -d "$SFML_ROOT/lib" ]]; then
