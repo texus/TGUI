@@ -83,7 +83,7 @@ namespace tgui
         Transformable                  {other},
         SignalWidgetBase               {other},
         enable_shared_from_this<Widget>{other},
-        m_type                         (other.m_type), // Did not compile in VS2013 when using braces
+        m_type                         {other.m_type},
         m_enabled                      {other.m_enabled},
         m_visible                      {other.m_visible},
         m_parent                       {nullptr},
@@ -92,7 +92,7 @@ namespace tgui
         m_containerWidget              {other.m_containerWidget},
         m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
         m_renderer                     {other.m_renderer},
-        m_showAnimations               (other.m_showAnimations), // Did not compile in VS2013 when using braces
+        m_showAnimations               {other.m_showAnimations},
         m_fontCached                   {other.m_fontCached},
         m_opacityCached                {other.m_opacityCached}
     {
@@ -111,7 +111,7 @@ namespace tgui
         onUnfocus                      {std::move(other.onUnfocus)},
         onMouseEnter                   {std::move(other.onMouseEnter)},
         onMouseLeave                   {std::move(other.onMouseLeave)},
-        m_type                         (std::move(other.m_type)), // Did not compile in VS2013 when using braces
+        m_type                         {std::move(other.m_type)},
         m_enabled                      {std::move(other.m_enabled)},
         m_visible                      {std::move(other.m_visible)},
         m_parent                       {nullptr},
@@ -124,7 +124,7 @@ namespace tgui
         m_containerWidget              {std::move(other.m_containerWidget)},
         m_toolTip                      {std::move(other.m_toolTip)},
         m_renderer                     {other.m_renderer},
-        m_showAnimations               (std::move(other.m_showAnimations)), // Did not compile in VS2013 when using braces
+        m_showAnimations               {std::move(other.m_showAnimations)},
         m_fontCached                   {std::move(other.m_fontCached)},
         m_opacityCached                {std::move(other.m_opacityCached)}
     {

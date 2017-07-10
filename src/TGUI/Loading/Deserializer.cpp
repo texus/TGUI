@@ -364,7 +364,7 @@ namespace tgui
 
             auto rendererData = RendererData::create();
             for (const auto& pair : node->propertyValuePairs)
-                rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile in VS2013 when just assigning "{pair.second->value}"
+                rendererData->propertyValuePairs[pair.first] = {pair.second->value};
 
             for (const auto& child : node->children)
             {

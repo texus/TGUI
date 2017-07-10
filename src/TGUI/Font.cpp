@@ -42,7 +42,7 @@ namespace tgui
 
     Font::Font(const std::string& id) :
         m_font{Deserializer::deserialize(ObjectConverter::Type::Font, id).getFont()},
-        m_id  (Deserializer::deserialize(ObjectConverter::Type::String, id).getString()) // Did not compile in VS2013 when using braces
+        m_id  {Deserializer::deserialize(ObjectConverter::Type::String, id).getString()}
     {
     }
 

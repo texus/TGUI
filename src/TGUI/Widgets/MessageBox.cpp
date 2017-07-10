@@ -67,8 +67,8 @@ namespace tgui
     MessageBox::MessageBox(const MessageBox& other) :
         ChildWindow      {other},
         onButtonPress    {other.onButtonPress},
-        m_loadedThemeFile(other.m_loadedThemeFile), // Did not compile in VS2013 when using braces
-        m_buttonClassName(other.m_buttonClassName), // Did not compile in VS2013 when using braces
+        m_loadedThemeFile{other.m_loadedThemeFile},
+        m_buttonClassName{other.m_buttonClassName},
         m_textSize       {other.m_textSize}
     {
         m_label = get<tgui::Label>("#TGUI_INTERNAL$MessageBoxText#");

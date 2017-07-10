@@ -62,7 +62,7 @@ namespace tgui
     Texture::Texture(const Texture& other) :
         m_data            {other.m_data},
         m_middleRect      {other.m_middleRect},
-        m_id              (other.m_id), // Did not compile in VS2013 when using braces
+        m_id              {other.m_id},
         m_copyCallback    {other.m_copyCallback},
         m_destructCallback{other.m_destructCallback}
     {
@@ -75,7 +75,7 @@ namespace tgui
     Texture::Texture(Texture&& other) :
         m_data            {std::move(other.m_data)},
         m_middleRect      {std::move(other.m_middleRect)},
-        m_id              (std::move(other.m_id)), // Did not compile in VS2013 when using braces
+        m_id              {std::move(other.m_id)},
         m_copyCallback    {std::move(other.m_copyCallback)},
         m_destructCallback{std::move(other.m_destructCallback)}
     {

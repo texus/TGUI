@@ -21,15 +21,15 @@ environment:
       BUILD_EXAMPLES: FALSE
       BUILD_FOLDER:   build-VS2017-Win64
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      SFML_ROOT:      C:\SFML-VS2013
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      SFML_ROOT:      C:\SFML-VS2015
       SFML_VERSION:   2.3
-      GENERATOR:      Visual Studio 12 2013
+      GENERATOR:      Visual Studio 14 2015
       BUILD_TYPE:     Release
       SHARED_LIBS:    TRUE
       BUILD_TESTS:    FALSE
       BUILD_EXAMPLES: TRUE
-      BUILD_FOLDER:   build-VS2013-Win32
+      BUILD_FOLDER:   build-VS2015-Win32
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       SFML_ROOT:      C:\SFML
@@ -42,7 +42,7 @@ matrix:
 
 cache:
   - C:\SFML-VS2017 -> .appveyor.yml
-  - C:\SFML-VS2013 -> .appveyor.yml
+  - C:\SFML-VS2015 -> .appveyor.yml
   - C:\SFML        -> .appveyor.yml
 
 install:
