@@ -573,14 +573,32 @@ namespace tgui
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
         /// @param signalName   Name of the signal
-        /// @param handler      Callback function
+        /// @param handler      Callback function that is giventhe extra arguments provided to this function as arguments
+        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename SignalType, typename Func>
-        unsigned int connect(std::string signalName, const Func& handler)
+        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(Args...)>>::value>::type* = nullptr>
+        unsigned int connect(std::string signalName, Func&& handler, Args&&... args)
         {
-            return static_cast<SignalType&>(getSignal(toLower(std::move(signalName)))).connect(handler);
+            return getSignal(toLower(std::move(signalName))).connect([=](){ handler(args...); });
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param signalName   Name of the signal
+        /// @param handler      Callback function that is given a pointer to the widget, the name of the signal and the extra
+        ///                     arguments provided to this function as arguments
+        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(std::shared_ptr<Widget>, const std::string&, Args...)>>::value>::type* = nullptr>
+        unsigned int connect(std::string signalName, Func&& handler, Args&&... args)
+        {
+            return getSignal(toLower(std::move(signalName))).connect([=](const std::shared_ptr<Widget>& w, const std::string& s){ handler(w, s, args...); });
         }
 
 
