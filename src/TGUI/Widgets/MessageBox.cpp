@@ -47,9 +47,6 @@ namespace tgui
     MessageBox::MessageBox()
     {
         m_type = "MessageBox";
-        m_callback.widgetType = "MessageBox";
-
-        addSignal<sf::String>("ButtonPressed");
 
         m_renderer = aurora::makeCopied<MessageBoxRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -69,6 +66,7 @@ namespace tgui
 
     MessageBox::MessageBox(const MessageBox& other) :
         ChildWindow      {other},
+        onButtonPress    {other.onButtonPress},
         m_loadedThemeFile(other.m_loadedThemeFile), // Did not compile in VS2013 when using braces
         m_buttonClassName(other.m_buttonClassName), // Did not compile in VS2013 when using braces
         m_textSize       {other.m_textSize}
@@ -81,8 +79,8 @@ namespace tgui
             {
                 auto button = std::dynamic_pointer_cast<Button>(m_widgets[i]);
 
-                button->disconnectAll("Pressed");
-                button->connect("Pressed", [=]() { m_callback.text = button->getText(); sendSignal("ButtonPressed", button->getText()); });
+                button->onPress->disconnectAll();
+                button->onPress->connect([=]() { onButtonPress->emit(this, button->getText()); });
                 m_buttons.push_back(button);
             }
         }
@@ -99,6 +97,7 @@ namespace tgui
             MessageBox temp(other);
             ChildWindow::operator=(temp);
 
+            std::swap(onButtonPress,     temp.onButtonPress);
             std::swap(m_loadedThemeFile, temp.m_loadedThemeFile);
             std::swap(m_buttonClassName, temp.m_buttonClassName);
             std::swap(m_buttons,         temp.m_buttons);
@@ -170,7 +169,7 @@ namespace tgui
         auto button = Button::create(caption);
         button->setRenderer(getRenderer()->getButton());
         button->setTextSize(m_textSize);
-        button->connect("Pressed", [=](){ m_callback.text = caption; sendSignal("ButtonPressed", caption); });
+        button->onPress->connect([=]() { onButtonPress->emit(this, caption); });
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
         m_buttons.push_back(button);
@@ -241,6 +240,16 @@ namespace tgui
             button->setPosition({leftPosition, topPosition});
             leftPosition += button->getSize().x;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& MessageBox::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onButtonPress->getName()))
+            return *onButtonPress;
+        else
+            return ChildWindow::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

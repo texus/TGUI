@@ -35,7 +35,11 @@ TEST_CASE("[Label]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(label->connect("DoubleClicked", [](){}));
-        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](sf::String){}));
+        REQUIRE_NOTHROW(label->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(label->onDoubleClick->connect([](){}));
+        REQUIRE_NOTHROW(label->onDoubleClick->connect([](sf::String){}));
+        REQUIRE_NOTHROW(label->onDoubleClick->connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(label->onDoubleClick->connect([](tgui::Widget::Ptr, std::string, sf::String){}));
     }
 
     SECTION("WidgetType")
@@ -134,7 +138,7 @@ TEST_CASE("[Label]")
         SECTION("Double click")
         {
             unsigned int doubleClickedCount = 0;
-            label->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
+            label->onDoubleClick->connect([&]{ genericCallback(doubleClickedCount); });
 
             label->setPosition(40, 30);
             label->setSize(150, 100);

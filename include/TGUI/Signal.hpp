@@ -26,16 +26,16 @@
 #ifndef TGUI_SIGNAL_HPP
 #define TGUI_SIGNAL_HPP
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Callback.hpp>
-#include <TGUI/Exception.hpp>
 #include <TGUI/Global.hpp>
-#include <map>
-#include <deque>
+#include <SFML/System/String.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <functional>
+#include <cstddef>
 #include <memory>
 #include <vector>
-#include <cassert>
-#include <functional>
+#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,472 +45,566 @@ namespace tgui
     class ChildWindow;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    template <typename... Types>
-    struct TypeSet;
-
+    /// @internal
+    /// @brief Helper function to dereference a void* back to its correct type
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    namespace priv
+    template <typename Type>
+    const Type& dereference(const void* obj)
     {
-        extern TGUI_API std::deque<const void*> data;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        template <typename T>
-        std::string convertTypeToString();
-
-        template <> inline std::string convertTypeToString<int>() { return "int"; }
-        template <> inline std::string convertTypeToString<sf::Vector2f>() { return "sf::Vector2f"; }
-        template <> inline std::string convertTypeToString<sf::String>() { return "sf::String"; }
-        template <> inline std::string convertTypeToString<std::vector<sf::String>>() { return "std::vector<sf::String>"; }
-        template <> inline std::string convertTypeToString<std::shared_ptr<ChildWindow>>() { return "std::shared_ptr<ChildWindow>"; }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        template <typename... Types>
-        struct extractTypes
-        {
-            static std::vector<std::vector<std::string>> get() { return {}; }
-            static std::vector<std::string> getRow() { return {}; }
-        };
-
-        template <typename Type>
-        struct extractTypes<Type>
-        {
-            static std::vector<std::vector<std::string>> get() { return {{convertTypeToString<Type>()}}; }
-            static std::vector<std::string> getRow() { return {convertTypeToString<Type>()}; }
-        };
-
-        template <typename Type, typename... OtherTypes>
-        struct extractTypes<Type, OtherTypes...>
-        {
-            static std::vector<std::vector<std::string>> get()
-            {
-                auto types = extractTypes<OtherTypes...>::get();
-                types.insert(types.begin(), {convertTypeToString<Type>()});
-                return types;
-            }
-
-            static std::vector<std::string> getRow()
-            {
-                auto types = extractTypes<OtherTypes...>::getRow();
-                types.insert(types.begin(), convertTypeToString<Type>());
-                return types;
-            }
-        };
-
-        template <typename... T>
-        struct extractTypes<TypeSet<T...>>
-        {
-            static std::vector<std::vector<std::string>> get() { return {extractTypes<T...>::getRow()}; }
-        };
-
-        template <typename... T, typename... U>
-        struct extractTypes<TypeSet<T...>, U...>
-        {
-            static std::vector<std::vector<std::string>> get()
-            {
-                auto types = {extractTypes<T...>::getRow()};
-                types.insert(types.end(), extractTypes<U...>::get());
-                return types;
-            }
-        };
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        template <typename Func, typename TypeA, typename TypeB, typename... Args>
-        struct isConvertible;
-
-        template <typename Func, typename... TypesA, typename... TypesB, typename... Args>
-        struct isConvertible<Func, TypeSet<TypesA...>, TypeSet<TypesB...>, Args...>
-        {
-            using type = typename std::conditional<std::is_convertible<Func, std::function<void(Args..., TypesA...)>>::value, TypeSet<TypesA...>, TypeSet<TypesB...>>::type;
-        };
-
-        template <typename Func, typename... Type, typename... Args>
-        struct isConvertible<Func, TypeSet<>, TypeSet<Type...>, Args...>
-        {
-            using type = typename std::conditional<std::is_convertible<Func, std::function<void(Args...)>>::value || std::is_convertible<Func, std::function<void(Args...)>>::value, TypeSet<>, TypeSet<Type...>>::type;
-        };
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        template <typename Type>
-        const Type& dereference(const void* obj)
-        {
-            return *static_cast<const Type*>(obj);
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        template <typename... T>
-        struct connector;
-
-        template <typename Func, typename... Args>
-        struct connector<TypeSet<>, Func, Args...>
-        {
-            static std::function<void()> connect(Func func, std::size_t, Args... args)
-            {
-                return std::bind(func, args...);
-            }
-        };
-
-        template <typename Func, typename... Args, typename Type>
-        struct connector<TypeSet<Type>, Func, Args...>
-        {
-            static std::function<void()> connect(Func func, std::size_t argPos, Args... args)
-            {
-                return std::bind(func, args..., std::bind(dereference<Type>, std::cref(data[argPos])));
-            }
-        };
-
-        template <typename Func, typename... Args, typename TypeA, typename TypeB>
-        struct connector<TypeSet<TypeA, TypeB>, Func, Args...>
-        {
-            static std::function<void()> connect(Func func, std::size_t argPos, Args... args)
-            {
-                return std::bind(func, args...,
-                                 std::bind(dereference<TypeA>, std::cref(data[argPos])),
-                                 std::bind(dereference<TypeB>, std::cref(data[argPos+1])));
-            }
-        };
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // If the argument is not a bind expression then we already know the type
-        template <typename Arg, typename = void>
-        struct bindRemover
-        {
-            static Arg remove(Arg);
-        };
-
-        // If the argument is a bind expression then extract the return type from the bound function
-        template <typename Arg>
-        struct bindRemover<Arg, typename std::enable_if<std::is_bind_expression<Arg>::value>::type>
-        {
-            static auto remove(Arg) -> decltype(std::declval<Arg>()());
-        };
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        template <typename Func, typename... Args>
-        struct isFunctionConvertible
-        {
-            using type = typename isConvertible<Func, TypeSet<>,
-                            typename isConvertible<Func, TypeSet<int>,
-                                typename isConvertible<Func, TypeSet<sf::Vector2f>,
-                                    typename isConvertible<Func, TypeSet<sf::String>,
-                                        typename isConvertible<Func, TypeSet<std::vector<sf::String>>,
-                                            typename isConvertible<Func, TypeSet<std::shared_ptr<ChildWindow>>,
-                                                typename isConvertible<Func, TypeSet<sf::String, sf::String>,
-                                                    TypeSet<void>,
-                                                    Args...>::type,
-                                                Args...>::type,
-                                            Args...>::type,
-                                        Args...>::type,
-                                    Args...>::type,
-                                Args...>::type,
-                            Args...>::type;
-        };
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        return *static_cast<const Type*>(obj);
     }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @internal
-    // Stores the actual callback functions and checks if their parameters are valid
+    /// @brief Signal to which the user can subscribe to get callbacks from
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Signal
     {
     public:
 
-        Signal() {};
+        using Delegate = std::function<void()>;
+        using DelegateEx = std::function<void(std::shared_ptr<Widget>, const std::string&)>;
 
-        Signal(std::vector<std::vector<std::string>>&& types);
+        Signal(const Signal& other) = delete;
+        Signal(Signal&&) = delete;
+        Signal& operator=(const Signal& other) = delete;
+        Signal& operator=(Signal&&) = delete;
 
-        template <typename Func, typename... Args>
-        void connect(unsigned int id, Func func, Args... args)
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        ///
+        /// @param name             Name of the signal
+        /// @param extraParameters  Amount of extra parameters to reserve space for
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Signal(std::string&& name, std::size_t extraParameters = 0) :
+            m_name{std::move(name)}
         {
-            using type = typename priv::isFunctionConvertible<Func, decltype(priv::bindRemover<Args>::remove(args))...>::type;
-            static_assert(!std::is_same<type, TypeSet<void>>::value, "Parameters passed to the connect function are wrong!");
-
-            auto argPos = checkCompatibleParameterType<type>();
-            m_functions[id] = priv::connector<type, Func, Args...>::connect(func, argPos, args...);
+            if (1 + extraParameters > m_parameters.size())
+                m_parameters.resize(1 + extraParameters);
         }
 
-        template <typename Func, typename... Args>
-        void connectEx(unsigned int id, Func func, Args... args)
-        {
-            m_functionsEx[id] = std::bind(func, args..., std::placeholders::_1);
-        }
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const Delegate& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a pointer to the widget and the name of the signal as arguments
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateEx& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Disconnect a signal handler from this signal
+        ///
+        /// @param id  Unique id of the connection returned by the connect function
+        ///
+        /// @return True when a connection with this id existed and was removed
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool disconnect(unsigned int id);
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Disconnect all signal handler from this signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void disconnectAll();
 
-        bool isEmpty() const;
 
-        void operator()(unsigned int count);
-
-        template <typename T, typename... Args>
-        void operator()(unsigned int count, const T& value, Args... args)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Call all connected signal handlers
+        ///
+        /// @param widget  The sender of the signal
+        ///
+        /// @return True when at least one signal handler was called
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget)
         {
-            priv::data[count] = static_cast<const void*>(&value);
-            (*this)(count+1, args...);
+            if (m_handlers.empty())
+                return false;
+
+            m_parameters[0] = static_cast<const void*>(&widget);
+
+            for (auto& handler : m_handlers)
+                handler.second();
+
+            return true;
         }
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the name given to the signal
+        ///
+        /// @return signal name
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::string getName() const
+        {
+            return m_name;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        template <typename Type>
-        std::size_t checkCompatibleParameterType()
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Extracts the widget stored in the first parameter
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::shared_ptr<Widget> getWidget() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        std::string m_name;
+        std::map<unsigned int, std::function<void()>> m_handlers;
+
+        static std::vector<const void*> m_parameters;
+    };
+
+
+    #define TGUI_SIGNAL_VALUE_DECLARATION(TypeName, Type) \
+    /**************************************************************************************************************************** \
+     * @brief Signal to which the user can subscribe to get callbacks from
+     *
+     ****************************************************************************************************************************/ \
+    class TGUI_API Signal##TypeName : public Signal \
+    { \
+    public: \
+        using Delegate##TypeName = std::function<void(Type)>; \
+        using Delegate##TypeName##Ex = std::function<void(std::shared_ptr<Widget>, const std::string&, Type)>; \
+        using Signal::connect; \
+        \
+        /************************************************************************************************************************ \
+         * @brief Constructor
+         *
+         ************************************************************************************************************************/ \
+        Signal##TypeName(std::string&& name) : \
+            Signal{std::move(name), 1} \
+        { \
+        } \
+        \
+        /************************************************************************************************************************ \
+         * @brief Connects a signal handler that will be called when this signal is emitted
+         *
+         * @param handler  Callback function that is given a Vector2f as argument
+         *
+         * @return Unique id of the connection
+         *
+         ************************************************************************************************************************/ \
+        unsigned int connect(const Delegate##TypeName& handler); \
+        \
+        /************************************************************************************************************************ \
+         * @brief Connects a signal handler that will be called when this signal is emitted
+         *
+         * @param handler  Callback function that is given a pointer to the widget, the name of the signal and a Vector2f as arguments
+         *
+         * @return Unique id of the connection
+         *
+         ************************************************************************************************************************/ \
+        unsigned int connect(const Delegate##TypeName##Ex& handler); \
+        \
+        /************************************************************************************************************************ \
+         * @internal
+         * @brief Call all connected signal handlers
+         *
+         ************************************************************************************************************************/ \
+        bool emit(const Widget* widget, Type strParam) \
+        { \
+            if (m_handlers.empty()) \
+                return false; \
+         \
+            m_parameters[1] = static_cast<const void*>(&strParam); \
+            return Signal::emit(widget); \
+        } \
+    };
+
+
+    TGUI_SIGNAL_VALUE_DECLARATION(Int, int)
+    TGUI_SIGNAL_VALUE_DECLARATION(UInt, unsigned int)
+    TGUI_SIGNAL_VALUE_DECLARATION(Bool, bool)
+    TGUI_SIGNAL_VALUE_DECLARATION(Float, float)
+    TGUI_SIGNAL_VALUE_DECLARATION(String, const sf::String&)
+    TGUI_SIGNAL_VALUE_DECLARATION(Vector2f, sf::Vector2f)
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Signal to which the user can subscribe to get callbacks from
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API SignalChildWindow : public Signal
+    {
+    public:
+
+        using DelegateChildWindow = std::function<void(std::shared_ptr<ChildWindow>)>;
+        using DelegateChildWindowEx = std::function<void(std::shared_ptr<Widget>, const std::string&, std::shared_ptr<ChildWindow>)>;
+
+        using Signal::connect;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalChildWindow(std::string&& name) :
+            Signal{std::move(name), 1}
         {
-            if (std::is_same<Type, TypeSet<>>::value)
-                return 0;
-
-            auto acceptedType = priv::extractTypes<Type>::get();
-            assert(acceptedType.size() == 1);
-
-            std::size_t count = 0;
-            for (std::size_t i = 0; i < m_allowedTypes.size(); ++i)
-            {
-                if (acceptedType[0] == m_allowedTypes[i])
-                    return count;
-
-                count += m_allowedTypes[i].size();
-            }
-
-            throw Exception{"Failed to bind parameter to callback function. Parameter is of wrong type."};
         }
 
-    private:
 
-        std::map<unsigned int, std::function<void()>> m_functions;
-        std::map<unsigned int, std::function<void(const Callback&)>> m_functionsEx;
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a child window as argument
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateChildWindow& handler);
 
-        std::vector<std::vector<std::string>> m_allowedTypes;
 
-        friend class SignalWidgetBase; // Only needed for m_functionsEx
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and a child window as arguments
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateChildWindowEx& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Call all connected signal handlers
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const ChildWindow* param);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Base class for widgets to enable signal handling
+    /// @brief Signal to which the user can subscribe to get callbacks from
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API SignalItem : public Signal
+    {
+    public:
+
+        using DelegateItem = std::function<void(const sf::String&)>;
+        using DelegateItemAndId = std::function<void(const sf::String&, const sf::String&)>;
+        using DelegateItemEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&)>;
+        using DelegateItemAndIdEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&, const sf::String&)>;
+
+        using Signal::connect;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalItem(std::string&& name) :
+            Signal{std::move(name), 2}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a string as argument
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateItem& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and a string as arguments
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateItemEx& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given two strings as argument
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateItemAndId& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and two strings as arguments
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateItemAndIdEx& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Call all connected signal handlers
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget, const sf::String& item, const sf::String& id)
+        {
+            if (m_handlers.empty())
+                return false;
+
+            m_parameters[1] = static_cast<const void*>(&item);
+            m_parameters[2] = static_cast<const void*>(&id);
+            return Signal::emit(widget);
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Signal to which the user can subscribe to get callbacks from
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API SignalMenuItem : public Signal
+    {
+    public:
+
+        using DelegateMenuItem = std::function<void(const sf::String&)>;
+        using DelegateMenuItemFull = std::function<void(const std::vector<sf::String>&)>;
+        using DelegateMenuItemEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const sf::String&)>;
+        using DelegateMenuItemFullEx = std::function<void(std::shared_ptr<Widget>, const std::string&, const std::vector<sf::String>&)>;
+
+        using Signal::connect;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalMenuItem(std::string&& name) :
+            Signal{std::move(name), 2}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a string as argument
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateMenuItem& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and a string as arguments
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateMenuItemEx& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a list of strings as argument
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateMenuItemFull& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler that will be called when this signal is emitted
+        ///
+        /// @param handler  Callback function that is given a pointer to the widget, the name of the signal and a list of strings as arguments
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int connect(const DelegateMenuItemFullEx& handler);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Call all connected signal handlers
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget, const sf::String& item, const std::vector<sf::String>& fullItem)
+        {
+            if (m_handlers.empty())
+                return false;
+
+            m_parameters[1] = static_cast<const void*>(&item);
+            m_parameters[2] = static_cast<const void*>(&fullItem);
+            return Signal::emit(widget);
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Wrapper around signals to allow copying and moving
+    ///
+    /// The signal itself can't be copied of moved. The wrapper will just copy the pointer to the signal when moving but will
+    /// reset the signal when being copied. A copied widget has no signal handlers at all.
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename SignalType>
+    class SignalWrapper
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalWrapper(std::string&& name) :
+            m_signal{std::make_unique<SignalType>(std::move(name))}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Copy constructor that will default initialize the signal (as handlers are not copied)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalWrapper(const SignalWrapper& other) :
+            m_signal{std::make_unique<SignalType>(other->getName())}
+        {
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Defaukt move constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalWrapper(SignalWrapper&&) = default;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Copy assignment operator that will default initialize the signal (as handlers are not copied)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalWrapper& operator=(const SignalWrapper& other)
+        {
+            if (this != &other)
+                m_signal = std::make_unique<SignalType>(other->getName());
+
+            return *this;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Default move assignment operator
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalWrapper& operator=(SignalWrapper&&) = default;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Access the signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalType& operator*() const
+        {
+            return *m_signal;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Access the signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalType* operator->() const
+        {
+            return m_signal.get();
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        std::unique_ptr<SignalType> m_signal = std::make_unique<SignalType>();
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Base class for Widget which provides functionality to connect signals based on their name
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API SignalWidgetBase
     {
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Virtual destructor
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~SignalWidgetBase() {};
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler function to one or more signals
+        /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param signalNames Name of the signal, or multiple names split by spaces
-        /// @param func        The function to connect
-        /// @param args        The arguments that should be bound to the function
+        /// @param signalName   Name of the signal
+        /// @param handler      Callback function
         ///
-        /// @return Id of this connection, which you need if you want to disconnect it later
-        ///
+        /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args>
-        unsigned int connect(const std::string& signalNames, Func func, Args... args)
+        unsigned int connect(std::string signalName, const Signal::Delegate& handler)
         {
-            auto signalNameList = extractSignalNames(signalNames);
-            if (signalNameList.empty())
-                throw Exception{"connect function called with empty string"};
-
-            for (const auto& signalName : signalNameList)
-            {
-                if (m_signals.find(toLower(signalName)) != m_signals.end())
-                {
-                    try {
-                        m_signals[toLower(signalName)].connect(m_lastId, func, args...);
-                        m_lastId++;
-                    }
-                    catch (const Exception& e) {
-                        throw Exception{e.what() + (" The parameters are not valid for the '" + signalName + "' signal.")};
-                    }
-                }
-                else
-                {
-                    if (toLower(signalName) != "all")
-                        throw Exception{"Cannot connect to unknown signal '" + signalName + "'."};
-                    else
-                    {
-                        assert(!m_signals.empty());
-
-                        for (auto& signal : m_signals)
-                        {
-                            try {
-                                signal.second.connect(m_lastId, func, args...);
-                                m_lastId++;
-                            }
-                            catch (const Exception& e) {
-                                throw Exception{e.what() + (" The parameters are not valid for the '" + signalName + "' signal.")};
-                            }
-                        }
-                    }
-                }
-            }
-
-            return m_lastId - 1;
+            return getSignal(toLower(std::move(signalName))).connect(handler);
         }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler function to one or more signals
+        /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param signalName Name of the signal, or multiple names split by spaces
-        /// @param func       The function to connect.
-        ///                   This last parameter of the function must be of type "const tgui::Callback&"
-        /// @param args       The arguments that should be bound to the function.
-        ///                   The amount of arguments should be exactly one less than the function needs
+        /// @param signalName   Name of the signal
+        /// @param handler      Callback function that is given a pointer to the widget and the name of the signal as arguments
         ///
-        /// @return Id of this connection, which you need if you want to disconnect it later
-        ///
+        /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args>
-        unsigned int connectEx(const std::string& signalName, Func func, Args... args)
+        unsigned int connect(std::string signalName, const Signal::DelegateEx& handler)
         {
-            auto signalNameList = extractSignalNames(signalName);
-            if (signalNameList.empty())
-                throw Exception{"connect function called with empty string"};
-
-            for (const auto& name : signalNameList)
-            {
-                if (m_signals.find(toLower(name)) != m_signals.end())
-                {
-                    try {
-                        m_signals[toLower(name)].connectEx(m_lastId, func, args...);
-                        m_lastId++;
-                    }
-                    catch (const Exception& e) {
-                        throw Exception{e.what() + (" since it is not valid for the '" + name + "' signal.")};
-                    }
-                }
-                else // Signal name does not exist
-                {
-                    if (toLower(name) != "all")
-                        throw Exception{"Cannot connect to unknown signal '" + name + "'."};
-                    else
-                    {
-                        assert(!m_signals.empty());
-
-                        for (auto& signal : m_signals)
-                        {
-                            try {
-                                signal.second.connectEx(m_lastId, func, args...);
-                                m_lastId++;
-                            }
-                            catch (const Exception& e) {
-                                throw Exception{e.what() + (" since it is not valid for the '" + name + "' signal.")};
-                            }
-                        }
-                    }
-                }
-            }
-
-            return m_lastId - 1;
+            return getSignal(toLower(std::move(signalName))).connect(handler);
         }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Disconnects a connection
+        /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
-        /// @param id  The id that was returned by the connect function when this connection was made
+        /// @param signalName   Name of the signal
+        /// @param handler      Callback function
         ///
+        /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void disconnect(unsigned int id);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Disconnects all connections from a certain signal
-        ///
-        /// @param signalName  Name of the signal, or multiple names split by spaces,
-        ///                    from which you want to disconnect all function handlers
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void disconnectAll(const std::string& signalName);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Disconnects all connections from a all signals
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void disconnectAll();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // @brief Adds a new signal that people can bind
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename... T>
-        void addSignal(std::string&& name)
+        template <typename SignalType, typename Func>
+        unsigned int connect(std::string signalName, const Func& handler)
         {
-            m_signals[toLower(name)] = {priv::extractTypes<T...>::get()};
+            return static_cast<SignalType&>(getSignal(toLower(std::move(signalName)))).connect(handler);
         }
 
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // @brief Checks if some signal handler has been bound to the signal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool isSignalBound(std::string&& name);
-
-
+        /// @brief Disconnects a signal handler
+        ///
+        /// @param signalName   Name of the signal
+        /// @param id           Id of the connection
+        ///
+        /// @return True when a connection with this id existed and was removed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // @brief Sends a signal to all signal handlers that are connected with this signal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename... Args>
-        void sendSignal(std::string&& name, Args... args)
+        bool disconnect(std::string signalName, unsigned int id)
         {
-            assert(m_signals.find(toLower(name)) != m_signals.end());
-            auto& signal = m_signals[toLower(name)];
-
-            if (signal.m_functionsEx.empty())
-            {
-                if (!signal.isEmpty())
-                    signal(0, args...);
-            }
-            else // Legacy functions are used
-            {
-                // Copy signal to avoid problems with lifetime when signal handler destroys this object
-                Signal signalCopy = signal;
-
-                m_callback.trigger = name;
-                for (const auto& function : signalCopy.m_functionsEx)
-                    function.second(m_callback);
-
-                if (!signalCopy.isEmpty())
-                    signalCopy(0, args...);
-            }
+            return getSignal(toLower(std::move(signalName))).disconnect(id);
         }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::vector<std::string> extractSignalNames(std::string input);
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
-
-        std::map<std::string, Signal> m_signals;
-
-        static unsigned int m_lastId;
-
-        Callback m_callback;
-
+        /// @brief Retrieves a signal based on its name
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) = 0;
     };
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

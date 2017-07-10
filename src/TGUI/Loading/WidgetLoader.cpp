@@ -67,21 +67,21 @@ namespace tgui
 
         bool parseBoolean(std::string str)
         {
-            str = tgui::toLower(str);
+            str = toLower(str);
             if (str == "true" || str == "yes" || str == "on" || str == "1")
                 return true;
             else if (str == "false" || str == "no" || str == "off" || str == "0")
                 return false;
             else
-                throw tgui::Exception{"Failed to parse boolean in '" + str + "'"};
+                throw Exception{"Failed to parse boolean in '" + str + "'"};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        tgui::Layout2d parseLayout(std::string str)
+        Layout2d parseLayout(std::string str)
         {
             if (str.empty())
-                throw tgui::Exception{"Failed to parse layout. String was empty."};
+                throw Exception{"Failed to parse layout. String was empty."};
 
             // Remove the brackets around the value
             if (((str.front() == '(') && (str.back() == ')')) || ((str.front() == '{') && (str.back() == '}')))
@@ -92,10 +92,10 @@ namespace tgui
 
             auto commaPos = str.find(',');
             if (commaPos == std::string::npos)
-                throw tgui::Exception{"Failed to parse layout '" + str + "'. Expected numbers separated with a comma."};
+                throw Exception{"Failed to parse layout '" + str + "'. Expected numbers separated with a comma."};
 
-            return {tgui::trim(str.substr(0, commaPos)),
-                    tgui::trim(str.substr(commaPos + 1))};
+            return {trim(str.substr(0, commaPos)),
+                    trim(str.substr(commaPos + 1))};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

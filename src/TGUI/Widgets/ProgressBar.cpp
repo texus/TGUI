@@ -44,11 +44,7 @@ namespace tgui
 
     ProgressBar::ProgressBar()
     {
-        m_callback.widgetType = "ProgressBar";
         m_type = "ProgressBar";
-
-        addSignal<int>("ValueChanged");
-        addSignal<int>("Full");
 
         m_renderer = aurora::makeCopied<ProgressBarRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -157,11 +153,10 @@ namespace tgui
         {
             m_value = value;
 
-            m_callback.value = static_cast<int>(m_value);
-            sendSignal("ValueChanged", m_value);
+            onValueChange->emit(this, m_value);
 
             if (m_value == m_maximum)
-                sendSignal("Full", m_value);
+                onFull->emit(this);
 
             // Recalculate the size of the front image (the size of the part that will be drawn)
             recalculateFillSize();
@@ -255,6 +250,18 @@ namespace tgui
     ProgressBar::FillDirection ProgressBar::getFillDirection() const
     {
         return m_fillDirection;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& ProgressBar::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onValueChange->getName()))
+            return *onValueChange;
+        else if (signalName == toLower(onFull->getName()))
+            return *onFull;
+        else
+            return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

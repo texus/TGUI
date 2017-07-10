@@ -52,10 +52,7 @@ namespace tgui
     Knob::Knob()
     {
         m_type = "Knob";
-        m_callback.widgetType = "Knob";
         m_draggableWidget = true;
-
-        addSignal<int>("ValueChanged");
 
         m_renderer = aurora::makeCopied<KnobRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -219,8 +216,7 @@ namespace tgui
             // The knob might have to point in a different direction
             recalculateRotation();
 
-            m_callback.value = m_value;
-            sendSignal("ValueChanged", m_value);
+            onValueChange->emit(this, m_value);
         }
     }
 
@@ -450,6 +446,16 @@ namespace tgui
         {
             m_angle = (((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)) * allowedAngle) + m_startRotation;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& Knob::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onValueChange->getName()))
+            return *onValueChange;
+        else
+            return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

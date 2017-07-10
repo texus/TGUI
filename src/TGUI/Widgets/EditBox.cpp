@@ -64,11 +64,7 @@ namespace tgui
 
     EditBox::EditBox()
     {
-        m_callback.widgetType = "EditBox";
         m_type = "EditBox";
-
-        addSignal<sf::String>("TextChanged");
-        addSignal<sf::String>("ReturnKeyPressed");
 
         m_draggableWidget = true;
         m_allowFocus = true;
@@ -229,6 +225,8 @@ namespace tgui
 
         // Set the caret behind the last character
         setCaretPosition(m_textFull.getString().getSize());
+
+        onTextChange->emit(this, m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -511,9 +509,7 @@ namespace tgui
 
         // Set the mouse down flag
         m_mouseDown = true;
-        m_callback.mouse.x = static_cast<int>(pos.x);
-        m_callback.mouse.y = static_cast<int>(pos.y);
-        sendSignal("MousePressed", pos);
+        onMousePress->emit(this, pos);
 
         recalculateTextPositions();
 
@@ -697,8 +693,7 @@ namespace tgui
         }
         else if (event.code == sf::Keyboard::Return)
         {
-            m_callback.text = m_text;
-            sendSignal("ReturnKeyPressed", getText());
+            onReturnKeyPress->emit(this, m_text);
         }
         else if (event.code == sf::Keyboard::BackSpace)
         {
@@ -739,8 +734,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = {};
 
-            m_callback.text = m_text;
-            sendSignal("TextChanged", getText());
+            onTextChange->emit(this, m_text);
         }
         else if (event.code == sf::Keyboard::Delete)
         {
@@ -780,8 +774,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = {};
 
-            m_callback.text = m_text;
-            sendSignal("TextChanged", getText());
+            onTextChange->emit(this, m_text);
         }
         else
         {
@@ -809,9 +802,6 @@ namespace tgui
                             setText(m_text + clipboardContents);
 
                         setCaretPosition(oldCaretPos + clipboardContents.getSize());
-
-                        m_callback.text = m_text;
-                        sendSignal("TextChanged", getText());
                     }
                 }
                 else if (event.code == sf::Keyboard::X)
@@ -819,8 +809,7 @@ namespace tgui
                     Clipboard::set(m_textSelection.getString());
                     deleteSelectedCharacters();
 
-                    m_callback.text = m_text;
-                    sendSignal("TextChanged", getText());
+                    onTextChange->emit(this, m_text);
                 }
                 else if (event.code == sf::Keyboard::A)
                 {
@@ -886,8 +875,7 @@ namespace tgui
         m_caretVisible = true;
         m_animationTimeElapsed = {};
 
-        m_callback.text = m_text;
-        sendSignal("TextChanged", getText());
+        onTextChange->emit(this, m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -914,6 +902,18 @@ namespace tgui
     #endif
 
         Widget::widgetUnfocused();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& EditBox::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onTextChange->getName()))
+            return *onTextChange;
+        else if (signalName == toLower(onReturnKeyPress->getName()))
+            return *onReturnKeyPress;
+        else
+            return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

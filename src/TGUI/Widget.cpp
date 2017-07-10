@@ -62,15 +62,6 @@ namespace tgui
 
     Widget::Widget()
     {
-        m_callback.widget = this;
-
-        addSignal<sf::Vector2f>("PositionChanged");
-        addSignal<sf::Vector2f>("SizeChanged");
-        addSignal("Focused");
-        addSignal("Unfocused");
-        addSignal("MouseEntered");
-        addSignal("MouseLeft");
-
         m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
 
         // The opacity is 1 by default and thus has to be explicitly initialized
@@ -105,8 +96,6 @@ namespace tgui
         m_fontCached                   {other.m_fontCached},
         m_opacityCached                {other.m_opacityCached}
     {
-        m_callback.widget = this;
-
         m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
     }
 
@@ -116,6 +105,12 @@ namespace tgui
         Transformable                  {std::move(other)},
         SignalWidgetBase               {std::move(other)},
         enable_shared_from_this<Widget>{std::move(other)},
+        onPositionChange               {std::move(other.onPositionChange)},
+        onSizeChange                   {std::move(other.onSizeChange)},
+        onFocus                        {std::move(other.onFocus)},
+        onUnfocus                      {std::move(other.onUnfocus)},
+        onMouseEnter                   {std::move(other.onMouseEnter)},
+        onMouseLeave                   {std::move(other.onMouseLeave)},
         m_type                         (std::move(other.m_type)), // Did not compile in VS2013 when using braces
         m_enabled                      {std::move(other.m_enabled)},
         m_visible                      {std::move(other.m_visible)},
@@ -133,8 +128,6 @@ namespace tgui
         m_fontCached                   {std::move(other.m_fontCached)},
         m_opacityCached                {std::move(other.m_opacityCached)}
     {
-        m_callback.widget = this;
-
         other.m_renderer->unsubscribe(&other);
         m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
 
@@ -153,7 +146,13 @@ namespace tgui
             SignalWidgetBase::operator=(other);
             enable_shared_from_this::operator=(other);
 
-            m_callback.widget      = this;
+            onPositionChange->disconnectAll();
+            onSizeChange->disconnectAll();
+            onFocus->disconnectAll();
+            onUnfocus->disconnectAll();
+            onMouseEnter->disconnectAll();
+            onMouseLeave->disconnectAll();
+
             m_type                 = other.m_type;
             m_enabled              = other.m_enabled;
             m_visible              = other.m_visible;
@@ -190,7 +189,12 @@ namespace tgui
             SignalWidgetBase::operator=(std::move(other));
             enable_shared_from_this::operator=(std::move(other));
 
-            m_callback.widget      = this;
+            onPositionChange       = std::move(other.onPositionChange);
+            onSizeChange           = std::move(other.onSizeChange);
+            onFocus                = std::move(other.onFocus);
+            onUnfocus              = std::move(other.onUnfocus);
+            onMouseEnter           = std::move(other.onMouseEnter);
+            onMouseLeave           = std::move(other.onMouseLeave);
             m_type                 = std::move(other.m_type);
             m_enabled              = std::move(other.m_enabled);
             m_visible              = std::move(other.m_visible);
@@ -292,8 +296,7 @@ namespace tgui
             }
         }
 
-        m_callback.position = getPosition();
-        sendSignal("PositionChanged", getPosition());
+        onPositionChange->emit(this, getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -313,8 +316,7 @@ namespace tgui
             }
         }
 
-        m_callback.size = getSize();
-        sendSignal("SizeChanged", getSize());
+        onSizeChange->emit(this, getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -604,7 +606,7 @@ namespace tgui
 
     void Widget::widgetFocused()
     {
-        sendSignal("Focused");
+        onFocus->emit(this);
 
         // Make sure the parent is also focused
         if (m_parent)
@@ -615,7 +617,7 @@ namespace tgui
 
     void Widget::widgetUnfocused()
     {
-        sendSignal("Unfocused");
+        onUnfocus->emit(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -661,6 +663,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Signal& Widget::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onPositionChange->getName()))
+            return *onPositionChange;
+        else if (signalName == toLower(onSizeChange->getName()))
+            return *onSizeChange;
+        else if (signalName == toLower(onFocus->getName()))
+            return *onFocus;
+        else if (signalName == toLower(onUnfocus->getName()))
+            return *onUnfocus;
+        else if (signalName == toLower(onMouseEnter->getName()))
+            return *onMouseEnter;
+        else if (signalName == toLower(onMouseLeave->getName()))
+            return *onMouseLeave;
+
+        throw Exception{"No signal exists with name '" + std::move(signalName) + "'."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Widget::rendererChanged(const std::string& property)
     {
         if (property == "opacity")
@@ -676,7 +698,7 @@ namespace tgui
     void Widget::mouseEnteredWidget()
     {
         m_mouseHover = true;
-        sendSignal("MouseEntered");
+        onMouseEnter->emit(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -684,7 +706,7 @@ namespace tgui
     void Widget::mouseLeftWidget()
     {
         m_mouseHover = false;
-        sendSignal("MouseLeft");
+        onMouseLeave->emit(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

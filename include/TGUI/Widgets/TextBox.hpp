@@ -41,14 +41,6 @@ namespace tgui
     /// A text box is a multi-line input box which supports word-wrap and a vertical scrollbar.
     /// If you are looking for a single line input field (with options like setting a password character or displaying a
     /// default text when it is empty) then check out the EditBox class.
-    ///
-    /// Signals:
-    ///     - TextChanged
-    ///         * Optional parameter sf::String: current text in the text box
-    ///         * Uses Callback member 'text'
-    ///
-    ///     - Inherited signals from Widget
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API TextBox : public Widget
     {
@@ -408,6 +400,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -423,6 +427,12 @@ namespace tgui
         {
             return std::make_shared<TextBox>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        SignalWrapper<SignalString> onTextChange = {"TextChanged"};    ///< The text was changed. Optional parameter: new text
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

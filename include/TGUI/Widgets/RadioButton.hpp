@@ -37,18 +37,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Radio button widget
-    ///
-    /// Signals:
-    ///     - Checked
-    ///         * Optional parameter bool: always contains true
-    ///         * Uses Callback member 'checked'
-    ///
-    ///     - Unchecked
-    ///         * Optional parameter bool: always contains false
-    ///         * Uses Callback member 'checked'
-    ///
-    ///     - Inherited signals from ClickableWidget
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API RadioButton : public ClickableWidget
     {
@@ -249,6 +237,18 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -312,6 +312,13 @@ namespace tgui
         {
             return std::make_shared<RadioButton>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        SignalWrapper<SignalBool> onCheck   = {"Checked"};   ///< Radio button was chacked. Optional parameter: bool which is always true
+        SignalWrapper<SignalBool> onUncheck = {"Unchecked"}; ///< Radio button was unchacked. Optional parameter: bool which is always false
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -33,7 +33,6 @@ namespace tgui
 
     RadioButtonGroup::RadioButtonGroup()
     {
-        m_callback.widgetType = "RadioButtonGroup";
         m_type = "RadioButtonGroup";
     }
 

@@ -52,10 +52,7 @@ namespace tgui
     TextBox::TextBox()
     {
         m_type = "TextBox";
-        m_callback.widgetType = "TextBox";
         m_draggableWidget = true;
-
-        addSignal<sf::String>("TextChanged");
 
         m_renderer = aurora::makeCopied<TextBoxRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -746,8 +743,7 @@ namespace tgui
                 m_caretVisible = true;
                 m_animationTimeElapsed = {};
 
-                m_callback.text = m_text;
-                sendSignal("TextChanged", m_text);
+                onTextChange->emit(this, m_text);
                 break;
             }
 
@@ -765,8 +761,7 @@ namespace tgui
                 else // You did select some characters, so remove them
                     deleteSelectedCharacters();
 
-                m_callback.text = m_text;
-                sendSignal("TextChanged", m_text);
+                onTextChange->emit(this, m_text);
                 break;
             }
 
@@ -827,8 +822,7 @@ namespace tgui
                         m_selEnd = m_selStart;
                         rearrangeText(true);
 
-                        m_callback.text = m_text;
-                        sendSignal("TextChanged", m_text);
+                        onTextChange->emit(this, m_text);
                     }
                 }
 
@@ -900,8 +894,7 @@ namespace tgui
         m_caretVisible = true;
         m_animationTimeElapsed = {};
 
-        m_callback.text = m_text;
-        sendSignal("TextChanged", m_text);
+        onTextChange->emit(this, m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1397,6 +1390,16 @@ namespace tgui
             m_topLine = 0;
             m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight), m_lines.size());
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& TextBox::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onTextChange->getName()))
+            return *onTextChange;
+        else
+            return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

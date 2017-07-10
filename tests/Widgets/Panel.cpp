@@ -35,12 +35,22 @@ TEST_CASE("[Panel]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(panel->connect("MousePressed", [](){}));
+        REQUIRE_NOTHROW(panel->connect("MousePressed", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(panel->onMousePress->connect([](sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->onMousePress->connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(panel->onMousePress->connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        
         REQUIRE_NOTHROW(panel->connect("MouseReleased", [](){}));
+        REQUIRE_NOTHROW(panel->connect("MouseReleased", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(panel->onMouseRelease->connect([](sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->onMouseRelease->connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(panel->onMouseRelease->connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        
         REQUIRE_NOTHROW(panel->connect("Clicked", [](){}));
-
-        REQUIRE_NOTHROW(panel->connect("MousePressed", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(panel->connect("MouseReleased", [](sf::Vector2f){}));
-        REQUIRE_NOTHROW(panel->connect("Clicked", [](sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->connect("Clicked", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(panel->onClick->connect([](sf::Vector2f){}));
+        REQUIRE_NOTHROW(panel->onClick->connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(panel->onClick->connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
     }
 
     SECTION("WidgetType")
@@ -98,9 +108,9 @@ TEST_CASE("[Panel]")
         panel->setPosition(40, 30);
         panel->setSize(150, 100);
 
-        panel->connect("MousePressed", mouseCallback, std::ref(mousePressedCount));
-        panel->connect("MouseReleased", mouseCallback, std::ref(mouseReleasedCount));
-        panel->connect("Clicked", mouseCallback, std::ref(clickedCount));
+        panel->onMousePress->connect([&](sf::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
+        panel->onMouseRelease->connect([&](sf::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
+        panel->onClick->connect([&](sf::Vector2f pos){ mouseCallback(clickedCount, pos); });
 
         SECTION("mouseOnWidget")
         {
@@ -120,8 +130,8 @@ TEST_CASE("[Panel]")
             unsigned int mouseEnteredCount = 0;
             unsigned int mouseLeftCount = 0;
 
-            panel->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
-            panel->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
+            panel->onMouseEnter->connect([&]{ genericCallback(mouseEnteredCount); });
+            panel->onMouseLeave->connect([&]{ genericCallback(mouseLeftCount); });
 
             auto parent = tgui::Panel::create({300, 200});
             parent->setPosition({30, 25});

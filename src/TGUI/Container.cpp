@@ -1024,7 +1024,6 @@ namespace tgui
 
     GuiContainer::GuiContainer()
     {
-        m_callback.widgetType = "GuiContainer";
         m_type = "GuiContainer";
     }
 

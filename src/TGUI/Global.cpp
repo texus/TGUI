@@ -25,7 +25,6 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Clipboard.hpp>
-#include <TGUI/Exception.hpp>
 #include <functional>
 #include <sstream>
 #include <locale>

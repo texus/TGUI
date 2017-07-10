@@ -44,12 +44,9 @@ namespace tgui
 
     Slider::Slider()
     {
-        m_callback.widgetType = "Slider";
         m_type = "Slider";
 
         m_draggableWidget = true;
-
-        addSignal<int>("ValueChanged");
 
         m_renderer = aurora::makeCopied<SliderRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -242,8 +239,7 @@ namespace tgui
         {
             m_value = value;
 
-            m_callback.value = m_value;
-            sendSignal("ValueChanged", m_value);
+            onValueChange->emit(this, m_value);
 
             updateThumbPosition();
         }
@@ -393,6 +389,16 @@ namespace tgui
             updateThumbPosition();
 
         Widget::mouseNoLongerDown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& Slider::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onValueChange->getName()))
+            return *onValueChange;
+        else
+            return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

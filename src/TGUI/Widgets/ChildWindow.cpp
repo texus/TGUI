@@ -66,12 +66,6 @@ namespace tgui
     ChildWindow::ChildWindow()
     {
         m_type = "ChildWindow";
-        m_callback.widgetType = "ChildWindow";
-
-        addSignal<sf::Vector2f>("MousePressed");
-        addSignal<ChildWindow::Ptr>("Closed");
-        addSignal<ChildWindow::Ptr>("Minimized");
-        addSignal<ChildWindow::Ptr>("Maximized");
 
         m_renderer = aurora::makeCopied<ChildWindowRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -269,7 +263,10 @@ namespace tgui
             m_closeButton = Button::create();
             m_closeButton->setRenderer(getRenderer()->getCloseButton());
             m_closeButton->getRenderer()->setOpacity(m_opacityCached);
-            m_closeButton->connect("pressed", &ChildWindow::titleButtonPressed, this, "closed");
+            m_closeButton->onPress->connect([this](){
+                                                if (!onClose->emit(this))
+                                                    destroy();
+                                            });
         }
         else
             m_closeButton = nullptr;
@@ -279,7 +276,7 @@ namespace tgui
             m_maximizeButton = Button::create();
             m_maximizeButton->setRenderer(getRenderer()->getMaximizeButton());
             m_maximizeButton->getRenderer()->setOpacity(m_opacityCached);
-            m_maximizeButton->connect("pressed", &ChildWindow::titleButtonPressed, this, "maximized");
+            m_maximizeButton->onPress->connect([this](){ onMaximize->emit(this); });
         }
         else
             m_maximizeButton = nullptr;
@@ -289,7 +286,7 @@ namespace tgui
             m_minimizeButton = Button::create();
             m_minimizeButton->setRenderer(getRenderer()->getMinimizeButton());
             m_minimizeButton->getRenderer()->setOpacity(m_opacityCached);
-            m_minimizeButton->connect("pressed", &ChildWindow::titleButtonPressed, this, "minimized");
+            m_minimizeButton->onPress->connect([this](){ onMinimize->emit(this); });
         }
         else
             m_minimizeButton = nullptr;
@@ -379,9 +376,7 @@ namespace tgui
         // Move the child window to the front
         moveToFront();
 
-        m_callback.mouse.x = static_cast<int>(pos.x);
-        m_callback.mouse.y = static_cast<int>(pos.y);
-        sendSignal("MousePressed", pos);
+        onMousePress->emit(this);
 
         // Check if the mouse is on top of the title bar
         if (sf::FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
@@ -611,6 +606,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Signal& ChildWindow::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onMousePress->getName()))
+            return *onMousePress;
+        else if (signalName == toLower(onClose->getName()))
+            return *onClose;
+        else if (signalName == toLower(onMinimize->getName()))
+            return *onMinimize;
+        else if (signalName == toLower(onMaximize->getName()))
+            return *onMaximize;
+        else
+            return Container::getSignal(std::move(signalName));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::rendererChanged(const std::string& property)
     {
         if (property == "borders")
@@ -778,20 +789,6 @@ namespace tgui
         // Draw the widgets in the child window
         const Clipping clipping{target, states, {}, {getSize()}};
         drawWidgetContainer(&target, states);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChildWindow::titleButtonPressed(const sf::String& signal)
-    {
-        sendSignal(signal, std::static_pointer_cast<ChildWindow>(shared_from_this()));
-
-        // When the closed signal is send while there is no signal handler for it then destroy the child window
-        if (signal == "closed")
-        {
-            if (!isSignalBound("closed"))
-                destroy();
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

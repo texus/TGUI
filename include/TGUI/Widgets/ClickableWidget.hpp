@@ -35,22 +35,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Clickable widget
-    ///
-    /// Signals:
-    ///     - MousePressed (the left mouse button was pressed on top of the widget)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the widget position
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - MouseReleased (the left mouse button was released on top of the widget)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the widget position
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - Clicked (you left clicked the widget)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the widget position
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - Inherited signals from Widget
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API ClickableWidget : public Widget
     {
@@ -122,12 +106,32 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() const override
         {
             return std::make_shared<ClickableWidget>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        SignalWrapper<SignalVector2f> onMousePress   = {"MousePressed"};   ///< The mouse went down on the widget. Optional parameter: mouse position relative to widget
+        SignalWrapper<SignalVector2f> onMouseRelease = {"MouseReleased"};  ///< The mouse was released on top of the widget. Optional parameter: mouse position relative to widget
+        SignalWrapper<SignalVector2f> onClick        = {"Clicked"};        ///< The widget was clicked. Optional parameter: mouse position relative to widget
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

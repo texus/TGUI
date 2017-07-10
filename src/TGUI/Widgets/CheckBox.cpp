@@ -36,7 +36,6 @@ namespace tgui
 
     CheckBox::CheckBox()
     {
-        m_callback.widgetType = "CheckBox";
         m_type = "CheckBox";
     }
 
@@ -117,8 +116,7 @@ namespace tgui
             else
                 m_text.setStyle(m_textStyleCached);
 
-            m_callback.checked = true;
-            sendSignal("Checked", static_cast<int>(m_checked));
+            onCheck->emit(this, true);
         }
     }
 

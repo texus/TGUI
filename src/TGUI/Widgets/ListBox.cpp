@@ -48,15 +48,9 @@ namespace tgui
 
     ListBox::ListBox()
     {
-        m_callback.widgetType = "ListBox";
         m_type = "ListBox";
 
         m_draggableWidget = true;
-
-        addSignal<sf::String, TypeSet<sf::String, sf::String>>("ItemSelected");
-        addSignal<sf::String, TypeSet<sf::String, sf::String>>("MousePressed");
-        addSignal<sf::String, TypeSet<sf::String, sf::String>>("MouseReleased");
-        addSignal<sf::String, TypeSet<sf::String, sf::String>>("DoubleClicked");
 
         m_renderer = aurora::makeCopied<ListBoxRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -488,11 +482,7 @@ namespace tgui
                     updateHoveringItem(-1);
 
                 if (m_hoveringItem >= 0)
-                {
-                    m_callback.text = m_items[m_hoveringItem].getString();
-                    m_callback.itemId = m_itemIds[m_hoveringItem];
-                    sendSignal("MousePressed", m_items[m_hoveringItem].getString(), m_items[m_hoveringItem].getString(), m_itemIds[m_hoveringItem]);
-                }
+                    onMousePress->emit(this, m_items[m_hoveringItem].getString(), m_itemIds[m_hoveringItem]);
 
                 if (m_selectedItem != m_hoveringItem)
                 {
@@ -501,17 +491,9 @@ namespace tgui
                     updateSelectedItem(m_hoveringItem);
 
                     if (m_selectedItem >= 0)
-                    {
-                        m_callback.text = m_items[m_selectedItem].getString();
-                        m_callback.itemId = m_itemIds[m_selectedItem];
-                        sendSignal("ItemSelected", m_items[m_selectedItem].getString(), m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
-                    }
+                        onItemSelect->emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
                     else
-                    {
-                        m_callback.text = "";
-                        m_callback.itemId = "";
-                        sendSignal("ItemSelected", "", "", "");
-                    }
+                        onItemSelect->emit(this, "", "");
                 }
             }
         }
@@ -524,11 +506,7 @@ namespace tgui
         if (m_mouseDown && !m_scroll.isMouseDown())
         {
             if (m_selectedItem >= 0)
-            {
-                m_callback.text  = m_items[m_selectedItem].getString();
-                m_callback.itemId = m_itemIds[m_selectedItem];
-                sendSignal("MouseReleased", m_items[m_selectedItem].getString(), m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
-            }
+                onMouseRelease->emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
 
             // Check if you double-clicked
             if (m_possibleDoubleClick)
@@ -536,7 +514,7 @@ namespace tgui
                 m_possibleDoubleClick = false;
 
                 if (m_selectedItem >= 0)
-                    sendSignal("DoubleClicked", m_items[m_selectedItem].getString(), m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
+                    onDoubleClick->emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
             }
             else // This is the first click
             {
@@ -590,17 +568,9 @@ namespace tgui
                         updateSelectedItem(m_hoveringItem);
 
                         if (m_selectedItem >= 0)
-                        {
-                            m_callback.text = m_items[m_selectedItem].getString();
-                            m_callback.itemId = m_itemIds[m_selectedItem];
-                            sendSignal("ItemSelected", m_items[m_selectedItem].getString(), m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
-                        }
+                            onItemSelect->emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
                         else
-                        {
-                            m_callback.text = "";
-                            m_callback.itemId = "";
-                            sendSignal("ItemSelected", "", "", "");
-                        }
+                            onItemSelect->emit(this, "", "");
                     }
                 }
             }
@@ -638,6 +608,22 @@ namespace tgui
     {
         Widget::mouseNoLongerDown();
         m_scroll.mouseNoLongerDown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& ListBox::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onItemSelect->getName()))
+            return *onItemSelect;
+        else if (signalName == toLower(onMousePress->getName()))
+            return *onMousePress;
+        else if (signalName == toLower(onMouseRelease->getName()))
+            return *onMouseRelease;
+        else if (signalName == toLower(onDoubleClick->getName()))
+            return *onDoubleClick;
+        else
+            return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

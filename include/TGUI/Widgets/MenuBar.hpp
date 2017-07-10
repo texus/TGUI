@@ -37,15 +37,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Menu bar widget
-    ///
-    /// Signals:
-    ///     - MenuItemClicked
-    ///         * Optional parameter sf::String: name of the item on which you clicked
-    ///         * Optional parameter std::vector<sf::String>: Which menu was open, followed by which item you clicked on
-    ///         * Uses Callback member 'text' (menu item name) and 'index' (index of the open menu)
-    ///
-    ///     - Inherited signals from Widget
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API MenuBar : public Widget
     {
@@ -321,6 +312,18 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -336,6 +339,16 @@ namespace tgui
         {
             return std::make_shared<MenuBar>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        /// One of the menu items was clicked.
+        /// Optional parameters:
+        ///     - The text of the clicked menu item
+        ///     - List containing both the name of the menu and the menu item that was clicked
+        SignalWrapper<SignalMenuItem> onMenuItemClick = {"MenuItemClicked"};
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

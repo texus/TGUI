@@ -37,30 +37,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief List box widget
-    ///
-    /// Signals:
-    ///     - ItemSelected (a new item was selected)
-    ///         * Optional parameter sf::String: Name of the item (the text that is visible)
-    ///         * Optional parameters sf::String and sf::String: Name and id of the item
-    ///         * Uses Callback member 'text' and 'itemId'
-    ///
-    ///     - MousePressed (left mouse went down on top of an item)
-    ///         * Optional parameter sf::String: Name of the item (the text that is visible)
-    ///         * Optional parameters sf::String and sf::String: Name and id of the item
-    ///         * Uses Callback member 'text' and 'itemId'
-    ///
-    ///     - MouseReleased (left mouse went up on top of an item after it went down on of the items of the list box)
-    ///         * Optional parameter sf::String: Name of the item (the text that is visible)
-    ///         * Optional parameters sf::String and sf::String: Name and id of the item
-    ///         * Uses Callback member 'text' and 'itemId'
-    ///
-    ///     - DoubleClicked (double clicked on an item with the left mouse button)
-    ///         * Optional parameter sf::String: Name of the item (the text that is visible)
-    ///         * Optional parameters sf::String and sf::String: Name and id of the item
-    ///         * Uses Callback member 'text' and 'itemId'
-    ///
-    ///     - Inherited signals from Widget
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API ListBox : public Widget
     {
@@ -511,6 +487,18 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -562,6 +550,15 @@ namespace tgui
         {
             return std::make_shared<ListBox>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        SignalWrapper<SignalItem> onItemSelect   = {"ItemSelected"};   ///< An item was selected in the list box. Optional parameter: selected item
+        SignalWrapper<SignalItem> onMousePress   = {"MousePressed"};   ///< The mouse went down on an item. Optional parameter: selected item
+        SignalWrapper<SignalItem> onMouseRelease = {"MouseReleased"};  ///< The mouse was released on one of the items. Optional parameter: selected item
+        SignalWrapper<SignalItem> onDoubleClick  = {"DoubleClicked"};  ///< An item was double clicked. Optional parameter: selected item
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -34,7 +34,6 @@ namespace tgui
 
     Group::Group(const Layout2d& size)
     {
-        m_callback.widgetType = "Group";
         m_type = "Group";
 
         m_renderer = aurora::makeCopied<GroupRenderer>();

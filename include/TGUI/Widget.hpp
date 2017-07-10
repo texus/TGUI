@@ -27,6 +27,7 @@
 #define TGUI_WIDGET_HPP
 
 
+#include <TGUI/Global.hpp>
 #include <TGUI/Signal.hpp>
 #include <TGUI/Sprite.hpp>
 #include <TGUI/Transformable.hpp>
@@ -53,21 +54,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief The parent class for every widget
-    ///
-    /// Signals
-    ///     - PositionChanged (Position of the widget has changed)
-    ///         * Optional parameter sf::Vector2f: New widget position
-    ///         * Uses Callback member 'position'
-    ///
-    ///     - SizeChanged (Size of the widget has changed)
-    ///         * Optional parameter sf::Vector2f: New widget size
-    ///         * Uses Callback member 'size'
-    ///
-    ///     - Focused (Widget gained focus)
-    ///     - Unfocused (Widget lost focus)
-    ///     - MouseEntered (Mouse cursor entered in the Widget area)
-    ///     - MouseLeft (Mouse cursor left the Widget area)
-    ///
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Widget : public Transformable, public SignalWidgetBase, public std::enable_shared_from_this<Widget>
     {
@@ -507,6 +493,18 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -555,6 +553,17 @@ namespace tgui
         // Callback function which is called on a renderer change and which calls the virtual rendererChanged function
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rendererChangedCallback(const std::string& property);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        SignalWrapper<SignalVector2f> onPositionChange = {"PositionChanged"};  ///< The position of the widget changed. Optional parameter: new position
+        SignalWrapper<SignalVector2f> onSizeChange     = {"SizeChanged"};      ///< The size of the widget changed. Optional parameter: new size
+        SignalWrapper<Signal>         onFocus          = {"Focused"};          ///< The widget was focused
+        SignalWrapper<Signal>         onUnfocus        = {"Unfocused"};        ///< The widget was unfocused
+        SignalWrapper<Signal>         onMouseEnter     = {"MouseEntered"};     ///< The mouse entered the widget
+        SignalWrapper<Signal>         onMouseLeave     = {"MouseLeft"};        ///< The mouse left the widget
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -45,10 +45,8 @@ namespace tgui
 
     Scrollbar::Scrollbar()
     {
-        m_callback.widgetType = "Scrollbar";
         m_type = "Scrollbar";
 
-        addSignal<int>("ValueChanged");
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<ScrollbarRenderer>();
@@ -250,8 +248,7 @@ namespace tgui
         {
             m_value = value;
 
-            m_callback.value = static_cast<int>(m_value);
-            sendSignal("ValueChanged", static_cast<int>(m_value));
+            onValueChange->emit(this, m_value);
 
             // Recalculate the size and position of the thumb image
             updateSize();
@@ -665,6 +662,16 @@ namespace tgui
             updateThumbPosition();
 
         Widget::mouseNoLongerDown();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& Scrollbar::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onValueChange->getName()))
+            return *onValueChange;
+        else
+            return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

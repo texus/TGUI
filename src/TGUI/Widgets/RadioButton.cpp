@@ -48,11 +48,7 @@ namespace tgui
 
     RadioButton::RadioButton()
     {
-        m_callback.widgetType = "RadioButton";
         m_type = "RadioButton";
-
-        addSignal<int>("Checked");
-        addSignal<int>("Unchecked");
 
         m_renderer = aurora::makeCopied<RadioButtonRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -131,8 +127,7 @@ namespace tgui
             else
                 m_text.setStyle(m_textStyleCached);
 
-            m_callback.checked = true;
-            sendSignal("Checked", static_cast<int>(m_checked));
+            onCheck->emit(this, true);
         }
     }
 
@@ -147,8 +142,7 @@ namespace tgui
             updateTextColor();
             m_text.setStyle(m_textStyleCached);
 
-            m_callback.checked = false;
-            sendSignal("Unchecked", static_cast<int>(m_checked));
+            onUncheck->emit(this, false);
         }
     }
 
@@ -275,6 +269,18 @@ namespace tgui
     {
         Widget::mouseLeftWidget();
         updateTextColor();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& RadioButton::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onCheck->getName()))
+            return *onCheck;
+        else if (signalName == toLower(onUncheck->getName()))
+            return *onUncheck;
+        else
+            return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -26,7 +26,6 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
-#include <TGUI/Exception.hpp>
 #include <TGUI/Global.hpp>
 #include <cassert>
 

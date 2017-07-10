@@ -45,9 +45,6 @@ namespace tgui
     Label::Label()
     {
         m_type = "Label";
-        m_callback.widgetType = "Label";
-
-        addSignal<sf::String>("DoubleClicked");
 
         m_renderer = aurora::makeCopied<LabelRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -214,9 +211,7 @@ namespace tgui
             if (m_possibleDoubleClick)
             {
                 m_possibleDoubleClick = false;
-
-                m_callback.text = m_string;
-                sendSignal("DoubleClicked", m_string);
+                onDoubleClick->emit(this, m_string);
             }
             else // This is the first click
             {
@@ -224,6 +219,16 @@ namespace tgui
                 m_possibleDoubleClick = true;
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& Label::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onDoubleClick->getName()))
+            return *onDoubleClick;
+        else
+            return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

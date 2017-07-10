@@ -45,9 +45,6 @@ namespace tgui
     MenuBar::MenuBar()
     {
         m_type = "MenuBar";
-        m_callback.widgetType = "MenuBar";
-
-        addSignal<std::vector<sf::String>, sf::String>("MenuItemClicked");
 
         m_renderer = aurora::makeCopied<MenuBarRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -398,12 +395,9 @@ namespace tgui
 
                 if (selectedMenuItem < m_menus[m_visibleMenu].menuItems.size())
                 {
-                    m_callback.index = m_visibleMenu;
-                    m_callback.text = m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString();
-
-                    sendSignal("MenuItemClicked",
-                               std::vector<sf::String>{m_menus[m_visibleMenu].text.getString(), m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString()},
-                               m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString());
+                    onMenuItemClick->emit(this,
+                                         m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString(),
+                                         {m_menus[m_visibleMenu].text.getString(), m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString()});
 
                     closeMenu();
                 }
@@ -512,6 +506,16 @@ namespace tgui
         }
 
         Widget::mouseLeftWidget();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& MenuBar::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onMenuItemClick->getName()))
+            return *onMenuItemClick;
+        else
+            return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

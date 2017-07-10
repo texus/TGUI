@@ -49,12 +49,9 @@ namespace tgui
 
     ComboBox::ComboBox()
     {
-        m_callback.widgetType = "ComboBox";
         m_type = "ComboBox";
 
         m_draggableWidget = true;
-
-        addSignal<sf::String, TypeSet<sf::String, sf::String>>("ItemSelected");
 
         initListBox();
 
@@ -68,6 +65,7 @@ namespace tgui
 
     ComboBox::ComboBox(const ComboBox& other) :
         Widget                           {other},
+        onItemSelect                     {other.onItemSelect},
         m_nrOfItemsToDisplay             {other.m_nrOfItemsToDisplay},
         m_listBox                        {ListBox::copy(other.m_listBox)},
         m_text                           {other.m_text},
@@ -85,17 +83,14 @@ namespace tgui
         m_arrowBackgroundColorCached     {other.m_arrowBackgroundColorCached},
         m_arrowBackgroundColorHoverCached{other.m_arrowBackgroundColorHoverCached}
     {
-        if (m_listBox != nullptr)
-        {
-            m_listBox->disconnectAll();
-            initListBox();
-        }
+        initListBox();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(ComboBox&& other) :
         Widget                           {std::move(other)},
+        onItemSelect                     {std::move(other.onItemSelect)},
         m_nrOfItemsToDisplay             {std::move(other.m_nrOfItemsToDisplay)},
         m_listBox                        {std::move(other.m_listBox)},
         m_text                           {std::move(other.m_text)},
@@ -113,11 +108,7 @@ namespace tgui
         m_arrowBackgroundColorCached     {std::move(other.m_arrowBackgroundColorCached)},
         m_arrowBackgroundColorHoverCached{std::move(other.m_arrowBackgroundColorHoverCached)}
     {
-        if (m_listBox != nullptr)
-        {
-            m_listBox->disconnectAll();
-            initListBox();
-        }
+        initListBox();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,6 +120,7 @@ namespace tgui
             ComboBox temp{other};
             Widget::operator=(other);
 
+            std::swap(onItemSelect,                      temp.onItemSelect);
             std::swap(m_nrOfItemsToDisplay,              temp.m_nrOfItemsToDisplay);
             std::swap(m_listBox,                         temp.m_listBox);
             std::swap(m_text,                            temp.m_text);
@@ -157,6 +149,7 @@ namespace tgui
         if (this != &other)
         {
             Widget::operator=(std::move(other));
+            std::swap(onItemSelect,                      other.onItemSelect);
             std::swap(m_nrOfItemsToDisplay,              other.m_nrOfItemsToDisplay);
             std::swap(m_listBox,                         other.m_listBox);
             std::swap(m_text,                            other.m_text);
@@ -516,6 +509,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Signal& ComboBox::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onItemSelect->getName()))
+            return *onItemSelect;
+        else
+            return Widget::getSignal(std::move(signalName));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::rendererChanged(const std::string& property)
     {
         if (property == "borders")
@@ -681,28 +684,18 @@ namespace tgui
     void ComboBox::initListBox()
     {
         m_listBox->hide();
-        m_listBox->connect("ItemSelected", &ComboBox::newItemSelectedCallbackFunction, this);
-        m_listBox->connect("Unfocused", &ComboBox::listBoxUnfocusedCallbackFunction, this);
-        m_listBox->connect("MouseReleased", &ComboBox::hideListBox, this);
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        m_listBox->onItemSelect->connect([this](){
+                                            m_text.setString(m_listBox->getSelectedItem());
+                                            onItemSelect->emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
+                                        });
 
-    void ComboBox::newItemSelectedCallbackFunction()
-    {
-        m_text.setString(m_listBox->getSelectedItem());
+        m_listBox->onUnfocus->connect([this](){
+                                            if (!m_mouseHover)
+                                                hideListBox();
+                                        });
 
-        m_callback.text   = m_listBox->getSelectedItem();
-        m_callback.itemId = m_listBox->getSelectedItemId();
-        sendSignal("ItemSelected", m_listBox->getSelectedItem(), m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ComboBox::listBoxUnfocusedCallbackFunction()
-    {
-        if (!m_mouseHover)
-            hideListBox();
+        m_listBox->onMouseRelease->connect([this](){ hideListBox(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,124 +24,191 @@
 
 
 #include <TGUI/Signal.hpp>
+#include <TGUI/Widget.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/to_string.hpp>
+#include <cassert>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace
+{
+    unsigned int lastId = 0;
+
+    unsigned int generateUniqueId()
+    {
+        return ++lastId;
+    }
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::vector<const void*> Signal::m_parameters(3, nullptr);
 
-    std::deque<const void*> priv::data; // deque because vector could reallocate when resizing after parameters are already bound
-    unsigned int SignalWidgetBase::m_lastId = 0;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Signal::Signal(std::vector<std::vector<std::string>>&& types)
+    unsigned int Signal::connect(const Delegate& handler)
     {
-        std::size_t maxSize = 0;
-        for (const auto& typeList : types)
-            maxSize += typeList.size();
-
-        m_allowedTypes = types;
-        if (maxSize > priv::data.size())
-            priv::data.resize(maxSize, nullptr);
+        const auto id = generateUniqueId();
+        m_handlers[id] = handler;
+        return id;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int Signal::connect(const DelegateEx& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(getWidget(), m_name); };
+        return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Signal::disconnect(unsigned int id)
     {
-        return !!m_functions.erase(id) || !!m_functionsEx.erase(id);
+        return m_handlers.erase(id) == 0;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Signal::disconnectAll()
     {
-        m_functions.clear();
-        m_functionsEx.clear();
+        m_handlers.clear();
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Signal::isEmpty() const
+    tgui::Widget::Ptr Signal::getWidget() const
     {
-        return m_functions.empty();
+        return dereference<Widget*>(m_parameters[0])->shared_from_this();
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Signal::operator()(unsigned int)
-    {
-        // Copy the functions in case one of the functions destroys the widget to which this Signal instance belongs
-        auto functions = m_functions;
-        for (const auto& function : functions)
-            function.second();
+    #define TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(TypeName, Type) \
+    unsigned int Signal##TypeName::connect(const Delegate##TypeName& handler) \
+    { \
+        const auto id = generateUniqueId(); \
+        m_handlers[id] = [=](){ handler(dereference<Type>(m_parameters[1])); }; \
+        return id; \
+    } \
+    \
+    unsigned int Signal##TypeName::connect(const Delegate##TypeName##Ex& handler) \
+    { \
+        const auto id = generateUniqueId(); \
+        m_handlers[id] = [=](){ handler(getWidget(), m_name, dereference<Type>(m_parameters[1])); }; \
+        return id; \
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Int, int)
+    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(UInt, unsigned int)
+    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Bool, bool)
+    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Float, float)
+    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(String, sf::String)
+    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Vector2f, sf::Vector2f)
 
-    void SignalWidgetBase::disconnect(unsigned int id)
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalChildWindow::connect(const DelegateChildWindow& handler)
     {
-        for (auto& signal : m_signals)
-        {
-            if (signal.second.disconnect(id))
-                return;
-        }
-
-        throw Exception{"Failed to disconnect signal handler. There is no function bound to the given id " + tgui::to_string(id) + "."};
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(std::static_pointer_cast<ChildWindow>(dereference<ChildWindow*>(m_parameters[1])->shared_from_this())); };
+        return id;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SignalWidgetBase::disconnectAll(const std::string& signalName)
+    unsigned int SignalChildWindow::connect(const DelegateChildWindowEx& handler)
     {
-        for (const auto& name : extractSignalNames(signalName))
-        {
-            auto it = m_signals.find(toLower(name));
-            if (it != m_signals.end())
-                it->second.disconnectAll();
-        }
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(getWidget(), m_name, std::static_pointer_cast<ChildWindow>(dereference<ChildWindow*>(m_parameters[1])->shared_from_this())); };
+        return id;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SignalWidgetBase::disconnectAll()
+    bool SignalChildWindow::emit(const ChildWindow* childWindow)
     {
-        for (auto& signal : m_signals)
-            signal.second.disconnectAll();
+        if (m_handlers.empty())
+            return false;
+
+        m_parameters[1] = static_cast<const void*>(&childWindow);
+        return Signal::emit(childWindow);
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SignalWidgetBase::isSignalBound(std::string&& name)
+    unsigned int SignalItem::connect(const DelegateItem& handler)
     {
-        assert(m_signals.find(toLower(name)) != m_signals.end());
-        return !m_signals[toLower(name)].isEmpty() || !m_signals[toLower(name)].m_functionsEx.empty();
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(dereference<sf::String>(m_parameters[1])); };
+        return id;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<std::string> SignalWidgetBase::extractSignalNames(std::string input)
+    unsigned int SignalItem::connect(const DelegateItemEx& handler)
     {
-        // A space is used for binding multiple signals at once
-        std::vector<std::string> names;
-        std::string::size_type pos = 0;
-        while ((pos = input.find(" ")) != std::string::npos)
-        {
-            std::string token = input.substr(0, pos);
-            if (token != "")
-                names.push_back(token);
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(getWidget(), m_name, dereference<sf::String>(m_parameters[1])); };
+        return id;
+    }
 
-            input.erase(0, pos+1);
-        }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        if (input != "")
-            names.push_back(input);
+    unsigned int SignalItem::connect(const DelegateItemAndId& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(dereference<sf::String>(m_parameters[1]), dereference<sf::String>(m_parameters[2])); };
+        return id;
+    }
 
-        return names;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalItem::connect(const DelegateItemAndIdEx& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(getWidget(), m_name, dereference<sf::String>(m_parameters[1]), dereference<sf::String>(m_parameters[2])); };
+        return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalMenuItem::connect(const DelegateMenuItem& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(dereference<sf::String>(m_parameters[1])); };
+        return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalMenuItem::connect(const DelegateMenuItemEx& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(getWidget(), m_name, dereference<sf::String>(m_parameters[1])); };
+        return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalMenuItem::connect(const DelegateMenuItemFull& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(dereference<std::vector<sf::String>>(m_parameters[2])); };
+        return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalMenuItem::connect(const DelegateMenuItemFullEx& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [=](){ handler(getWidget(), m_name, dereference<std::vector<sf::String>>(m_parameters[2])); };
+        return id;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

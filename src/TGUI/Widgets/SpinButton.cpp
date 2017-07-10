@@ -45,10 +45,7 @@ namespace tgui
 
     SpinButton::SpinButton()
     {
-        m_callback.widgetType = "SpinButton";
         m_type = "SpinButton";
-
-        addSignal<int>("ValueChanged");
 
         m_renderer = aurora::makeCopied<SpinButtonRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -151,9 +148,7 @@ namespace tgui
         if (m_value != value)
         {
             m_value = value;
-
-            m_callback.value = m_value;
-            sendSignal("ValueChanged", value);
+            onValueChange->emit(this, value);
         }
     }
 
@@ -291,6 +286,16 @@ namespace tgui
     {
         // A spin button can't be focused
         unfocus();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& SpinButton::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onValueChange->getName()))
+            return *onValueChange;
+        else
+            return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

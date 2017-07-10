@@ -33,10 +33,18 @@ TEST_CASE("[EditBox]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(editBox->connect("TextChanged", [](){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](){}));
+        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(editBox->onTextChange->connect([](){}));
+        REQUIRE_NOTHROW(editBox->onTextChange->connect([](sf::String){}));
+        REQUIRE_NOTHROW(editBox->onTextChange->connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(editBox->onTextChange->connect([](tgui::Widget::Ptr, std::string, sf::String){}));
 
-        REQUIRE_NOTHROW(editBox->connect("TextChanged", [](sf::String){}));
-        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](sf::String){}));
+        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](){}));
+        REQUIRE_NOTHROW(editBox->connect("ReturnKeyPressed", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(editBox->onReturnKeyPress->connect([](){}));
+        REQUIRE_NOTHROW(editBox->onReturnKeyPress->connect([](sf::String){}));
+        REQUIRE_NOTHROW(editBox->onReturnKeyPress->connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(editBox->onReturnKeyPress->connect([](tgui::Widget::Ptr, std::string, sf::String){}));
     }
 
     SECTION("WidgetType")
@@ -318,7 +326,7 @@ TEST_CASE("[EditBox]")
         SECTION("TextChanged signal")
         {
             unsigned int textChangedCount = 0;
-            editBox->connect("TextChanged", genericCallback, std::ref(textChangedCount));
+            editBox->onTextChange->connect([&]{ genericCallback(textChangedCount); });
 
             editBox->textEntered('a');
             REQUIRE(textChangedCount == 1);
@@ -360,7 +368,7 @@ TEST_CASE("[EditBox]")
         {
             unsigned int count = 0;
             std::string expectedText = "";
-            editBox->connect("ReturnKeyPressed", [&](sf::String text){ REQUIRE(text == expectedText); count++; });
+            editBox->onReturnKeyPress->connect([&](sf::String text){ REQUIRE(text == expectedText); count++; });
 
             keyEvent.code = sf::Keyboard::Return;
             editBox->keyPressed(keyEvent);

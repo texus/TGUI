@@ -41,18 +41,6 @@ namespace tgui
     ///
     /// An edit box is a single line input field. It has options like setting a password character or displaying a default text.
     /// If you are looking for something with multiple lines, word-wrap and a scrollbar then check out the TextBox class.
-    ///
-    /// Signals:
-    ///     - TextChanged
-    ///         * Optional parameter sf::String: current text in the edit box
-    ///         * Uses Callback member 'text'
-    ///
-    ///     - ReturnKeyPressed (the return/enter key was pressed while the edit box was focused)
-    ///         * Optional parameter sf::String: current text in the edit box
-    ///         * Uses Callback member 'text'
-    ///
-    ///     - Inherited signals from ClickableWidget
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API EditBox : public ClickableWidget
     {
@@ -421,6 +409,18 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -473,6 +473,13 @@ namespace tgui
         {
             return std::make_shared<EditBox>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        SignalWrapper<SignalString> onTextChange     = {"TextChanged"};        ///< The text was changed. Optional parameter: new text
+        SignalWrapper<SignalString> onReturnKeyPress = {"ReturnKeyPressed"};   ///< The return key was pressed. Optional parameter: text in the edit box
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

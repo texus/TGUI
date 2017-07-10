@@ -33,7 +33,6 @@ namespace tgui
 
     Canvas::Canvas(const Layout2d& size)
     {
-        m_callback.widgetType = "Canvas";
         m_type = "Canvas";
 
         setSize(size);

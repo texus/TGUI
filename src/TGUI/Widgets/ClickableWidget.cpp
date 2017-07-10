@@ -34,11 +34,6 @@ namespace tgui
     ClickableWidget::ClickableWidget()
     {
         m_type = "ClickableWidget";
-        m_callback.widgetType = "ClickableWidget";
-
-        addSignal<sf::Vector2f>("MousePressed");
-        addSignal<sf::Vector2f>("MouseReleased");
-        addSignal<sf::Vector2f>("Clicked");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,24 +67,17 @@ namespace tgui
     void ClickableWidget::leftMousePressed(sf::Vector2f pos)
     {
         m_mouseDown = true; /// TODO: Is there any widget for which this can't be in Widget base class?
-
-        pos -= getPosition();
-        m_callback.mouse.x = static_cast<int>(pos.x);
-        m_callback.mouse.y = static_cast<int>(pos.y);
-        sendSignal("MousePressed", pos);
+        onMousePress->emit(this, pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ClickableWidget::leftMouseReleased(sf::Vector2f pos)
     {
-        pos -= getPosition();
-        m_callback.mouse.x = static_cast<int>(pos.x);
-        m_callback.mouse.y = static_cast<int>(pos.y);
-        sendSignal("MouseReleased", pos);
+        onMouseRelease->emit(this, pos - getPosition());
 
         if (m_mouseDown)
-            sendSignal("Clicked", pos);
+            onClick->emit(this, pos - getPosition());
 
         m_mouseDown = false; /// TODO: Is there any widget for which this can't be in Widget base class?
     }
@@ -98,6 +86,20 @@ namespace tgui
 
     void ClickableWidget::draw(sf::RenderTarget&, sf::RenderStates) const
     {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& ClickableWidget::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onMousePress->getName()))
+            return *onMousePress;
+        else if (signalName == toLower(onMouseRelease->getName()))
+            return *onMouseRelease;
+        else if (signalName == toLower(onClick->getName()))
+            return *onClick;
+        else
+            return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -37,18 +37,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Progress bar widget
-    ///
-    /// Signals:
-    ///     - ValueChanged (The value of the progress bar has changed)
-    ///         * Optional parameter int: New value
-    ///         * Uses Callback member 'value'
-    ///
-    ///     - Full (The new value equals the maximum value)
-    ///         * Optional parameter int: The maximum value
-    ///         * Uses Callback member 'value'
-    ///
-    ///     - Inherited signals from ClickableWidget
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API ProgressBar : public ClickableWidget
     {
@@ -267,6 +255,18 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -301,6 +301,13 @@ namespace tgui
         {
             return std::make_shared<ProgressBar>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        SignalWrapper<SignalUInt> onValueChange = {"ValueChanged"}; ///< Value of the progress bar changed. Optional parameter: new value
+        SignalWrapper<Signal>     onFull        = {"Full"};         ///< Value of the progress bar changed and he progress bar became full
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

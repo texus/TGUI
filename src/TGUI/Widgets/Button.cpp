@@ -48,10 +48,7 @@ namespace tgui
 
     Button::Button()
     {
-        m_callback.widgetType = "Button";
         m_type = "Button";
-
-        addSignal<sf::String>("Pressed");
 
         m_renderer = aurora::makeCopied<ButtonRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -122,7 +119,6 @@ namespace tgui
     void Button::setText(const sf::String& text)
     {
         m_string = text;
-        m_callback.text = text;
 
         // Set the text size when the text has a fixed size
         if (m_textSize != 0)
@@ -209,7 +205,7 @@ namespace tgui
     void Button::leftMouseReleased(sf::Vector2f pos)
     {
         if (m_mouseDown)
-            sendSignal("Pressed", m_text.getString());
+            onPress->emit(this, m_text.getString());
 
         ClickableWidget::leftMouseReleased(pos);
 
@@ -221,7 +217,7 @@ namespace tgui
     void Button::keyPressed(const sf::Event::KeyEvent& event)
     {
         if ((event.code == sf::Keyboard::Space) || (event.code == sf::Keyboard::Return))
-            sendSignal("Pressed", m_text.getString());
+            onPress->emit(this, m_text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,6 +245,16 @@ namespace tgui
     {
         Widget::mouseLeftWidget();
         updateTextColorAndStyle();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& Button::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onPress->getName()))
+            return *onPress;
+        else
+            return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

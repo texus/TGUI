@@ -36,22 +36,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Group of widgets that has a background color and optional borders.
-    ///
-    /// Signals:
-    ///     - MousePressed (the left mouse button was pressed on top of the panel)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the panel position
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - MouseReleased (the left mouse button was released on top of the panel)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the panel position
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - Clicked (you left clicked the panel)
-    ///         * Optional parameter sf::Vector2f: Mouse position relative to the panel position
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - Inherited signals from Container
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Panel : public Group
     {
@@ -166,6 +150,18 @@ namespace tgui
     protected:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -181,6 +177,14 @@ namespace tgui
         {
             return std::make_shared<Panel>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        SignalWrapper<SignalVector2f> onMousePress   = {"MousePressed"};   ///< The mouse went down on the panel. Optional parameter: mouse position relative to panel
+        SignalWrapper<SignalVector2f> onMouseRelease = {"MouseReleased"};  ///< The mouse was released on top of the panel. Optional parameter: mouse position relative to panel
+        SignalWrapper<SignalVector2f> onClick        = {"Clicked"};        ///< The panel was clicked. Optional parameter: mouse position relative to panel
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

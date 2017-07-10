@@ -38,23 +38,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Child window widget
-    ///
-    /// Signals:
-    ///     - MousePressed (left mouse button went down on top of the child window and the window was in front of other widgets)
-    ///         * Optional parameter sf::Vector2f: Position of the mouse relative to the position of the child window
-    ///         * Uses Callback member 'mouse'
-    ///
-    ///     - Closed (Child window was closed)
-    ///         * Optional parameter ChildWindow::Ptr: shared pointer to the closed child window
-    ///
-    ///     - Minimized (Child window was minimized)
-    ///         * Optional parameter ChildWindow::Ptr: shared pointer to the minimized child window
-    ///
-    ///     - Maximized (Child window was maximized)
-    ///         * Optional parameter ChildWindow::Ptr: shared pointer to the maximized child window
-    ///
-    ///     - Inherited signals from Container
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API ChildWindow : public Container
     {
@@ -383,6 +366,18 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves a signal based on its name
+        ///
+        /// @param signalName  Name of the signal
+        ///
+        /// @return Signal that corresponds to the name
+        ///
+        /// @throw Exception when the name does not match any signal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual Signal& getSignal(std::string&& signalName) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
@@ -401,12 +396,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
+    public:
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Signal handler from the title buttons. This function propagates the signal to the user if needed.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void titleButtonPressed(const sf::String& signal);
+        SignalWrapper<Signal>            onMousePress = {"MousePressed"};  ///< The mouse went down on the widget
+        SignalWrapper<SignalChildWindow> onClose      = {"Closed"};        ///< The window was closed. Optional parameter: pointer to the window
+        SignalWrapper<SignalChildWindow> onMinimize   = {"Minimized"};     ///< The window was minimized. Optional parameter: pointer to the window
+        SignalWrapper<SignalChildWindow> onMaximize   = {"Maximized"};     ///< The window was maximized. Optional parameter: pointer to the window
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,6 +415,7 @@ namespace tgui
             ResizeRight  = 4,
             ResizeBottom = 8
         };
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:

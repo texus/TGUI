@@ -40,12 +40,7 @@ namespace tgui
 
     Panel::Panel(const Layout2d& size)
     {
-        m_callback.widgetType = "Panel";
         m_type = "Panel";
-
-        addSignal<sf::Vector2f>("MousePressed");
-        addSignal<sf::Vector2f>("MouseReleased");
-        addSignal<sf::Vector2f>("Clicked");
 
         m_renderer = aurora::makeCopied<PanelRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -108,29 +103,37 @@ namespace tgui
     {
         m_mouseDown = true;
 
-        pos -= getPosition();
-        m_callback.mouse.x = static_cast<int>(pos.x);
-        m_callback.mouse.y = static_cast<int>(pos.y);
-        sendSignal("MousePressed", pos);
+        onMousePress->emit(this, pos - getPosition());
 
-        Container::leftMousePressed(pos + getPosition());
+        Container::leftMousePressed(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Panel::leftMouseReleased(sf::Vector2f pos)
     {
-        pos -= getPosition();
-        m_callback.mouse.x = static_cast<int>(pos.x);
-        m_callback.mouse.y = static_cast<int>(pos.y);
-        sendSignal("MouseReleased", pos);
+        onMouseRelease->emit(this, pos - getPosition());
 
         if (m_mouseDown)
-            sendSignal("Clicked", pos);
+            onClick->emit(this, pos - getPosition());
 
         m_mouseDown = false;
 
-        Container::leftMouseReleased(pos + getPosition());
+        Container::leftMouseReleased(pos);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& Panel::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onMousePress->getName()))
+            return *onMousePress;
+        else if (signalName == toLower(onMouseRelease->getName()))
+            return *onMouseRelease;
+        else if (signalName == toLower(onClick->getName()))
+            return *onClick;
+        else
+            return Group::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -34,9 +34,6 @@ namespace tgui
     Picture::Picture()
     {
         m_type = "Picture";
-        m_callback.widgetType = "Picture";
-
-        addSignal("DoubleClicked");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,11 +137,7 @@ namespace tgui
             if (m_possibleDoubleClick)
             {
                 m_possibleDoubleClick = false;
-
-                pos -= getPosition();
-                m_callback.mouse.x = static_cast<int>(pos.x);
-                m_callback.mouse.y = static_cast<int>(pos.y);
-                sendSignal("DoubleClicked", pos);
+                onDoubleClick->emit(this, pos - getPosition());
             }
             else // This is the first click
             {
@@ -152,6 +145,16 @@ namespace tgui
                 m_possibleDoubleClick = true;
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& Picture::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onDoubleClick->getName()))
+            return *onDoubleClick;
+        else
+            return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

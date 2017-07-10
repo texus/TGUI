@@ -33,7 +33,11 @@ TEST_CASE("[TextBox]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(textBox->connect("TextChanged", [](){}));
-        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](sf::String){}));
+        REQUIRE_NOTHROW(textBox->connect("TextChanged", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(textBox->onTextChange->connect([](){}));
+        REQUIRE_NOTHROW(textBox->onTextChange->connect([](sf::String){}));
+        REQUIRE_NOTHROW(textBox->onTextChange->connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(textBox->onTextChange->connect([](tgui::Widget::Ptr, std::string, sf::String){}));
     }
 
     SECTION("WidgetType")

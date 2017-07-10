@@ -46,9 +46,6 @@ namespace tgui
     Tabs::Tabs()
     {
         m_type = "Tabs";
-        m_callback.widgetType = "Tabs";
-
-        addSignal<sf::String>("TabSelected");
 
         m_renderer = aurora::makeCopied<TabsRenderer>();
         setRenderer(RendererData::create(defaultRendererValues));
@@ -198,8 +195,7 @@ namespace tgui
         m_tabTexts[m_selectedTab].setColor(m_selectedTextColorCached);
 
         // Send the callback
-        m_callback.text = m_tabTexts[index].getString();
-        sendSignal("TabSelected", m_tabTexts[index].getString());
+        onTabSelect->emit(this, m_tabTexts[index].getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -404,6 +400,16 @@ namespace tgui
             m_width = m_bordersCached.getLeft() + m_bordersCached.getRight();
 
         m_bordersCached.updateParentSize(getSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Signal& Tabs::getSignal(std::string&& signalName)
+    {
+        if (signalName == toLower(onTabSelect->getName()))
+            return *onTabSelect;
+        else
+            return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -34,7 +34,6 @@ namespace tgui
     Grid::Grid()
     {
         m_type = "Grid";
-        m_callback.widgetType = "Grid";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +229,7 @@ namespace tgui
         updateWidgets();
 
         // Automatically update the widgets when their size changes
-        m_connectedCallbacks[widget] = widget->connect("SizeChanged", &Grid::updateWidgets, this);
+        m_connectedCallbacks[widget] = widget->onSizeChange->connect([this](){ updateWidgets(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

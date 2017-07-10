@@ -45,7 +45,6 @@ namespace tgui
     ChatBox::ChatBox()
     {
         m_type = "ChatBox";
-        m_callback.widgetType = "ChatBox";
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<ChatBoxRenderer>();
