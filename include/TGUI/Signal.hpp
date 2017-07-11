@@ -581,7 +581,7 @@ namespace tgui
         template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(Args...)>>::value>::type* = nullptr>
         unsigned int connect(std::string signalName, Func&& handler, Args&&... args)
         {
-            return getSignal(toLower(std::move(signalName))).connect([=](){ handler(args...); });
+            return getSignal(toLower(std::move(signalName))).connect([f=std::function<void(Args...)>(handler),args...](){ f(args...); });
         }
 
 
@@ -595,10 +595,14 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(std::shared_ptr<Widget>, const std::string&, Args...)>>::value>::type* = nullptr>
+        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(Args..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
         unsigned int connect(std::string signalName, Func&& handler, Args&&... args)
         {
-            return getSignal(toLower(std::move(signalName))).connect([=](const std::shared_ptr<Widget>& w, const std::string& s){ handler(w, s, args...); });
+            return getSignal(toLower(std::move(signalName))).connect(
+                [f=std::function<void(Args..., std::shared_ptr<Widget>, const std::string&)>(handler), args...]
+                (const std::shared_ptr<Widget>& w, const std::string& s)
+                { f(args..., w, s); }
+            );
         }
 
 
