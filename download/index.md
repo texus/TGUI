@@ -6,7 +6,7 @@ title: Download
 Precompiled windows libraries require matching libraries from <a href="http://www.sfml-dev.org/download/sfml/2.4.2/">SFML 2.4.2</a>. For other SFML versions, different compilers or different operating systems, you must download the source code and build TGUI yourself.
 
 ### TGUI 0.8-dev
-Unstable development version - intended for testing
+Unstable development version
 <p>
   {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.8-dev.zip" style="Orange" %}
   {% include button.ext text="C binding" link="/bindings/c" style="Orange" %}
@@ -16,7 +16,7 @@ Unstable development version - intended for testing
 </p>
 
 ### TGUI 0.7.4
-Latest stable version - <b>recommended</b>
+Latest stable version
 <p>
   {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.7.4.zip" style="Green" %}<br><br>
   {% include button.ext text="Visual C++12 (2013) - 32bit" link="https://github.com/texus/TGUI/releases/download/0.7.4/TGUI-0.7.4-vc12-32bit-for-SFML-2.4.2.zip" style="Green" %}

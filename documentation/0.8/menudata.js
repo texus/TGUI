@@ -55,7 +55,13 @@ var menudata={children:[
 {text:"u",url:"functions_func_u.html#index_u"},
 {text:"w",url:"functions_func_w.html#index_w"},
 {text:"~",url:"functions_func_0x7e.html#index_0x7e"}]},
-{text:"Variables",url:"functions_vars.html"},
+{text:"Variables",url:"functions_vars.html",children:[
+{text:"a",url:"functions_vars.html#index_a"},
+{text:"f",url:"functions_vars.html#index_f"},
+{text:"i",url:"functions_vars.html#index_i"},
+{text:"m",url:"functions_vars.html#index_m"},
+{text:"o",url:"functions_vars.html#index_o"},
+{text:"u",url:"functions_vars.html#index_u"}]},
 {text:"Typedefs",url:"functions_type.html",children:[
 {text:"c",url:"functions_type.html#index_c"},
 {text:"p",url:"functions_type.html#index_p"}]},

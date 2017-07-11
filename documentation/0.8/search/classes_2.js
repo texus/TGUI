@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['callback',['Callback',['../structtgui_1_1Callback.html',1,'tgui']]],
   ['canvas',['Canvas',['../classtgui_1_1Canvas.html',1,'tgui']]],
   ['chatbox',['ChatBox',['../classtgui_1_1ChatBox.html',1,'tgui']]],
   ['chatboxrenderer',['ChatBoxRenderer',['../classtgui_1_1ChatBoxRenderer.html',1,'tgui']]],

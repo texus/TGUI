@@ -1,12 +1,19 @@
 ---
 layout: page
 title: 0.8 Tutorials
-breadcrumb: "0.8"
+breadcrumb: 0.8
 ---
 <div>
   <h3 id="installation-tutorials">Installation tutorials</h3>
-  <p>You will have to build the library yourself from source code with CMake.</p>
-  <p>See the <a href="/tutorials/v0.7/#installation_tutorials">installation tutorials from 0.7</a>.</p>
+  <p>Note: when the tutorial mentions c++11, use c++14 instead.</p>
+  <p><a href="../v0.7/visual-studio/">Windows (Visual Studio)</a> - Build from source code<br>
+     <a href="../v0.7/visual-studio-precompiled/">Windows (Visual Studio)</a> - Precompiled libraries</p>
+  <p><a href="../v0.7/codeblocks/">Windows (CodeBlocks)</a></p>
+  <p><a href="../v0.7/xcode/">Mac OS X (Xcode)</a></p>
+  <p><a href="../0.8/linux/">Linux / FreeBSD</a></p>
+  <p><a href="../v0.7/raspberry/">Raspberry Pi</a> - experimental</p>
+  <p><a href="../v0.7/android/">Android</a> - experimental</p>
+  <p><a href="../v0.7/ios/">iOS</a> - experimental</p>
 </div>
 
 <div>
@@ -21,9 +28,6 @@ breadcrumb: "0.8"
   <h3 id="intermediate-tutorials">Intermediate tutorials</h3>
   <p><a href="renderers">Renderers</a></p>
   <p><a href="using-themes">Using themes/skins</a></p>
-  <p><a href="signals-optional-parameters">Optional parameters in signals</a> (not supported by VS2013)<br>
-     <a href="signals-connectEx">connectEx function</a> (deprecated alternative to optional parameters)
-  </p>
 </div>
 
 <div>

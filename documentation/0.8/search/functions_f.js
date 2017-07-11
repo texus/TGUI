@@ -178,6 +178,11 @@ var searchData=
   ['setwidgetname',['setWidgetName',['../classtgui_1_1Container.html#a1df09925591bb67f1ce3a73ec1aa1285',1,'tgui::Container::setWidgetName()'],['../classtgui_1_1Gui.html#a7a4d61aad8239596e2170bc24520ab50',1,'tgui::Gui::setWidgetName()']]],
   ['show',['show',['../classtgui_1_1Widget.html#ae3881afdad82cf8c2bd12f36238c04fe',1,'tgui::Widget']]],
   ['showwitheffect',['showWithEffect',['../classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b',1,'tgui::Widget']]],
+  ['signal',['Signal',['../classtgui_1_1Signal.html#ae66e7edf6a6a62c1d6d87a767e349241',1,'tgui::Signal']]],
+  ['signalchildwindow',['SignalChildWindow',['../classtgui_1_1SignalChildWindow.html#a5fdab32a0a953f66425efbe7e76a65c7',1,'tgui::SignalChildWindow']]],
+  ['signalitem',['SignalItem',['../classtgui_1_1SignalItem.html#a3962fd3c9db2bf59f6771fe5e9b977ef',1,'tgui::SignalItem']]],
+  ['signalmenuitem',['SignalMenuItem',['../classtgui_1_1SignalMenuItem.html#acfda6455030609220ddc04d590c22ae0',1,'tgui::SignalMenuItem']]],
+  ['signalwrapper',['SignalWrapper',['../classtgui_1_1SignalWrapper.html#abcc548df81759233a7efb649f4f8ca3c',1,'tgui::SignalWrapper::SignalWrapper(std::string &amp;&amp;name)'],['../classtgui_1_1SignalWrapper.html#a5b7e141117af9ac5dc79d8a04ae7cdf5',1,'tgui::SignalWrapper::SignalWrapper(const SignalWrapper &amp;other)'],['../classtgui_1_1SignalWrapper.html#ade48bab7cee25b198721709173a8df3a',1,'tgui::SignalWrapper::SignalWrapper(SignalWrapper &amp;&amp;)=default']]],
   ['sliderrenderer',['SliderRenderer',['../classtgui_1_1SliderRenderer.html#a52976c726443508608297ca9d08a5de2',1,'tgui::SliderRenderer::SliderRenderer()=default'],['../classtgui_1_1SliderRenderer.html#aebdbedfd20a939a61e853d1fa64e633c',1,'tgui::SliderRenderer::SliderRenderer(const std::shared_ptr&lt; RendererData &gt; &amp;data)']]],
   ['spinbuttonrenderer',['SpinButtonRenderer',['../classtgui_1_1SpinButtonRenderer.html#a8087146829bf7c46d6c29234bbcfd0c6',1,'tgui::SpinButtonRenderer::SpinButtonRenderer()=default'],['../classtgui_1_1SpinButtonRenderer.html#a25555f64717f6978a881afceaa6334e4',1,'tgui::SpinButtonRenderer::SpinButtonRenderer(const std::shared_ptr&lt; RendererData &gt; &amp;data)']]],
   ['subscribe',['subscribe',['../classtgui_1_1WidgetRenderer.html#a429c4ba602b77ccc55ff7f21237674ee',1,'tgui::WidgetRenderer']]]
