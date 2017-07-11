@@ -77,7 +77,21 @@ TEST_CASE("[Signal]")
         REQUIRE(widget2->connect("Pressed", [](int){}, 5) == ++id);
         REQUIRE(widget2->connect("Pressed", [](auto){}, 10.f) == ++id);
         REQUIRE(widget2->connect("Pressed", [](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget2->connect("Pressed", [](tgui::Widget::Ptr, std::string, auto, auto, auto){}, "Hey", 15, 3.f) == ++id);
+        REQUIRE(widget2->connect("Pressed", [](auto, auto, auto, tgui::Widget::Ptr, std::string){}, "Hey", 15, 3.f) == ++id);
+
+        struct Class
+        {
+            void signalHandler1() {}
+            void signalHandler2(tgui::Widget::Ptr, const std::string&) {}
+            void signalHandler3(int, float, tgui::Widget::Ptr, const std::string&) {}
+            void signalHandler4(int&, tgui::Widget::Ptr, const std::string&) {}
+        } instance;
+
+        int i;
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler1, &instance) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler2, &instance) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler3, &instance, 0, 5.f) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler4, &instance, std::ref(i)) == ++id);
     }
 
     SECTION("disconnect")
@@ -108,8 +122,8 @@ TEST_CASE("[Signal]")
         REQUIRE(i == 3);
 
         widget->onPositionChange->connect([&](){ i++; });
-        widget->onSizeChange->connect([&](){ i++; });
-        widget->onPositionChange->disconnectAll();
+        widget->connect("SizeChanged", [&](){ i++; });
+        widget->disconnectAll("PositionChanged");
         widget->onSizeChange->disconnectAll();
         widget->setPosition(40, 40);
         widget->setSize(200, 50);
