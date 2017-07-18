@@ -3,27 +3,17 @@ layout: page
 title: ".Net binding"
 breadcrumb: ".net"
 ---
-This page contains information about the .Net binding.  
 
 Please note that both the binding and TGUI 0.8 are still under development and may change at any time.
 
-The code may or may not crash when closing the window. If it crashes for you then for now you will have to ignore it.
 
+### Download
 
-### Option 1: Install prepackaged version (recommended)
+{% include button.ext text="x64 windows libraries" link="https://bintray.com/texus/generic/download_file?file_path=TGUI.Net-0.8-dev-64bit.zip" style="Orange" %}
 
-{% include button.ext text="Download x64 windows libraries" link="https://www.dropbox.com/s/lsg0svjblxujo4k/TGUI.Net%200.8-dev%202017-02-06.zip?dl=1" style="Orange" %}
+{% include button.ext text="Source code" link="https://github.com/texus/TGUI.Net/archive/master.zip" style="Orange" %}
 
-All dependencies are included in the download, just unzip, copy the files as described in the README and it should be ready to use.
-
-
-### Option 2: Install from source
-
-{% include button.ext text="Download source code" link="https://github.com/texus/TGUI.Net/archive/master.zip" style="Orange" %}
-
-You need to have [CTGUI](/bindings/c) installed before you can use TGUI.Net.
-
-Inside the build folder you will find a TGUI.Net.sln project that you will need to build. You will have to manually change the references so that the sfmlnet libraries are found on your pc.
+To install, follow the instructions in the README.
 
 
 ### Example code (C#)

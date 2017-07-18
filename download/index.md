@@ -9,7 +9,6 @@ Precompiled windows libraries require matching libraries from <a href="http://ww
 Unstable development version
 <p>
   {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.8-dev.zip" style="Orange" %}
-  {% include button.ext text="C binding" link="/bindings/c" style="Orange" %}
   {% include button.ext text=".Net binding" link="/bindings/dotnet" style="Orange" %}<br><br>
   {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://bintray.com/texus/generic/download_file?file_path=TGUI-0.8-dev-vc14-32bit-for-SFML-2.4.2.zip" style="Orange" %}
   {% include button.ext text="Visual C++14 (2015) - 64bit" link="https://bintray.com/texus/generic/download_file?file_path=TGUI-0.8-dev-vc14-64bit-for-SFML-2.4.2.zip" style="Orange" %}

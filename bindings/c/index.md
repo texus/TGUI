@@ -3,7 +3,7 @@ layout: page
 title: C binding
 breadcrumb: c
 ---
-This page contains information about the C binding.  
+
 The main goal of the C binding was to more easily allow creating bindings to other languages, however it is still usable for C programmers. There are currently no tutorials or documentation available for this binding.
 
 Please note that both the binding and TGUI 0.8 are still under development and may change at any time.
