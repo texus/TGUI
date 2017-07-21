@@ -34,10 +34,13 @@ namespace tgui
             {
                 {"borders", Borders{2}},
                 {"bordercolor", sf::Color::Black},
-                {"textcolor", sf::Color::Black},
+                {"textcolor", Color{60, 60, 60}},
+                {"textcolorhover", sf::Color::Black},
                 {"selectedtextcolor", sf::Color::White},
-                {"backgroundcolor", sf::Color::White},
+                {"backgroundcolor", Color{245, 245, 245}},
+                {"backgroundcolorhover", sf::Color::White},
                 {"selectedbackgroundcolor", Color{0, 110, 255}},
+                {"selectedbackgroundcolorhover", Color{30, 150, 255}},
                 {"distancetoside", 1.f}
             };
 
@@ -130,6 +133,8 @@ namespace tgui
         m_tabTexts.insert(m_tabTexts.begin() + index, std::move(newTab));
         recalculateTabsWidth();
 
+        if (m_hoveringTab >= static_cast<int>(index))
+            m_hoveringTab++;
         if (m_selectedTab >= static_cast<int>(index))
             m_selectedTab++;
 
@@ -234,11 +239,14 @@ namespace tgui
         m_tabTexts.erase(m_tabTexts.begin() + index);
         m_tabWidth.erase(m_tabWidth.begin() + index);
 
-        // Check if the selected tab should change
+        // Check if the selected tab should be updated
         if (m_selectedTab == static_cast<int>(index))
             m_selectedTab = -1;
         else if (m_selectedTab > static_cast<int>(index))
             --m_selectedTab;
+
+        // New hovered tab depends on several factors, we keep it simple and just remove the hover state
+        m_hoveringTab = -1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,6 +256,7 @@ namespace tgui
         m_tabTexts.clear();
         m_tabWidth.clear();
         m_selectedTab = -1;
+        m_hoveringTab = -1;
 
         recalculateTabsWidth();
     }
@@ -363,6 +372,40 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Tabs::mouseMoved(sf::Vector2f pos)
+    {
+        Widget::mouseMoved(pos);
+
+        pos -= getPosition();
+        m_hoveringTab = -1;
+        float width = m_bordersCached.getLeft() / 2.f;
+
+        // Loop through all tabs
+        for (unsigned int i = 0; i < m_tabWidth.size(); ++i)
+        {
+            // Append the width of the tab
+            width += (m_bordersCached.getLeft() / 2.f) + m_tabWidth[i] + (m_bordersCached.getRight() / 2.0f);
+
+            // If the mouse is on top of this tab then remember it
+            if (pos.x < width)
+            {
+                m_hoveringTab = i;
+                break;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Tabs::mouseNoLongerOnWidget()
+    {
+        Widget::mouseNoLongerOnWidget();
+
+        m_hoveringTab = -1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Tabs::recalculateTabsWidth()
     {
         if (m_autoSize)
@@ -420,19 +463,22 @@ namespace tgui
         else if (property == "textcolor")
         {
             m_textColorCached = getRenderer()->getTextColor();
-
-            for (auto& tabText : m_tabTexts)
-                tabText.setColor(m_textColorCached);
-
-            if (m_selectedTab >= 0)
-                m_tabTexts[m_selectedTab].setColor(m_selectedTextColorCached);
+            updateTextColors();
+        }
+        else if (property == "textcolorhover")
+        {
+            m_textColorHoverCached = getRenderer()->getTextColorHover();
+            updateTextColors();
         }
         else if (property == "selectedtextcolor")
         {
             m_selectedTextColorCached = getRenderer()->getSelectedTextColor();
-
-            if (m_selectedTab >= 0)
-                m_tabTexts[m_selectedTab].setColor(m_selectedTextColorCached);
+            updateTextColors();
+        }
+        else if (property == "selectedtextcolorhover")
+        {
+            m_selectedTextColorHoverCached = getRenderer()->getSelectedTextColorHover();
+            updateTextColors();
         }
         else if (property == "texturetab")
         {
@@ -451,9 +497,17 @@ namespace tgui
         {
             m_backgroundColorCached = getRenderer()->getBackgroundColor();
         }
+        else if (property == "backgroundcolorhover")
+        {
+            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+        }
         else if (property == "selectedbackgroundcolor")
         {
             m_selectedBackgroundColorCached = getRenderer()->getSelectedBackgroundColor();
+        }
+        else if (property == "selectedbackgroundcolorhover")
+        {
+            m_selectedBackgroundColorHoverCached = getRenderer()->getSelectedBackgroundColorHover();
         }
         else if (property == "bordercolor")
         {
@@ -488,6 +542,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Tabs::updateTextColors()
+    {
+        for (auto& tabText : m_tabTexts)
+            tabText.setColor(m_textColorCached);
+
+        if (m_selectedTab >= 0)
+        {
+            if ((m_selectedTab == m_hoveringTab) && m_selectedTextColorHoverCached.isSet())
+                m_tabTexts[m_selectedTab].setColor(m_selectedTextColorHoverCached);
+            else if (m_selectedTextColorCached.isSet())
+                m_tabTexts[m_selectedTab].setColor(m_selectedTextColorCached);
+        }
+
+        if ((m_hoveringTab >= 0) && (m_selectedTab != m_hoveringTab))
+        {
+            if (m_textColorHoverCached.isSet())
+                m_tabTexts[m_hoveringTab].setColor(m_textColorHoverCached);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Tabs::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
@@ -516,7 +592,10 @@ namespace tgui
                 }
                 else // No texture was loaded
                 {
-                    drawRectangleShape(target, states, {m_tabWidth[i], usableHeight}, m_selectedBackgroundColorCached);
+                    if ((m_hoveringTab == static_cast<int>(i)) && m_selectedBackgroundColorHoverCached.isSet())
+                        drawRectangleShape(target, states, {m_tabWidth[i], usableHeight}, m_selectedBackgroundColorHoverCached);
+                    else
+                        drawRectangleShape(target, states, {m_tabWidth[i], usableHeight}, m_selectedBackgroundColorCached);
                 }
             }
             else // This tab is not selected
@@ -529,19 +608,12 @@ namespace tgui
                 }
                 else // No texture was loaded
                 {
-                    drawRectangleShape(target, states, {m_tabWidth[i], usableHeight}, m_backgroundColorCached);
+                    if ((m_hoveringTab == static_cast<int>(i)) && m_backgroundColorHoverCached.isSet())
+                        drawRectangleShape(target, states, {m_tabWidth[i], usableHeight}, m_backgroundColorHoverCached);
+                    else
+                        drawRectangleShape(target, states, {m_tabWidth[i], usableHeight}, m_backgroundColorCached);
                 }
             }
-
-            // Apply clipping if required for the text in this tab
-            std::unique_ptr<Clipping> clipping;
-            float usableWidth = m_tabWidth[i] - (2 * m_distanceToSideCached);
-            if (m_tabTexts[i].getSize().x > usableWidth)
-                clipping = std::make_unique<Clipping>(target, textStates, sf::Vector2f{m_distanceToSideCached, 0}, sf::Vector2f{usableWidth, usableHeight});
-
-            // Draw the text
-            textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabTexts[i].getSize().x) / 2.f), ((usableHeight - m_tabTexts[i].getSize().y) / 2.f)});
-            m_tabTexts[i].draw(target, textStates);
 
             // Draw the borders between the tabs
             states.transform.translate({m_tabWidth[i], 0});
@@ -550,6 +622,16 @@ namespace tgui
                 drawRectangleShape(target, states, {(m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f, usableHeight}, m_borderColorCached);
                 states.transform.translate({(m_bordersCached.getLeft() + m_bordersCached.getRight()) / 2.f, 0});
             }
+
+            // Apply clipping if required for the text in this tab
+            std::unique_ptr<Clipping> clipping;
+            const float usableWidth = m_tabWidth[i] - (2 * m_distanceToSideCached);
+            if (m_tabTexts[i].getSize().x > usableWidth)
+                clipping = std::make_unique<Clipping>(target, textStates, sf::Vector2f{m_distanceToSideCached, 0}, sf::Vector2f{usableWidth, usableHeight});
+
+            // Draw the text
+            textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabTexts[i].getSize().x) / 2.f), ((usableHeight - m_tabTexts[i].getSize().y) / 2.f)});
+            m_tabTexts[i].draw(target, textStates);
         }
     }
 
