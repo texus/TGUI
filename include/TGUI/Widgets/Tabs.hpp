@@ -85,15 +85,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief This function currently does nothing
+        /// @brief Changes the area used by the tabs
         ///
-        /// @param size  Currently ignored
+        /// @param size  Total size of the tabs
         ///
-        /// It is not yet possible to change the size directly.
+        /// When this function is called, the tabs will no longer be auto-sizing, but each tab will get an equal width such that
+        /// the total width corresponds to the size passed to this function.
         ///
-        /// @see setTabHeight
-        /// @see setDistanceToSide
-        /// @see setMaximumTabWidth
+        /// @see setAutoSize
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void setSize(const Layout2d& size) override;
@@ -101,15 +100,26 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size of the tabs
+        /// @brief Changes whether the tabs are auto-sized or not
         ///
-        /// @return Size of the tabs
+        /// @param autoSize  Should the size of the tabs depend on their content?
+        ///
+        /// When the tabs are in auto-size mode, the width of the tabs will be depend on the text which they contain.
+        /// Otherwise, all tabs have an equal width to fill the size of the widget.
+        ///
+        /// The tabs are auto-sized by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const override
-        {
-            return {m_width, m_tabHeight};
-        }
+        void setAutoSize(bool autoSize);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the tabs are auto-sized or not
+        ///
+        /// @return Is the width of the tabs dependent on their content?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getAutoSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,19 +283,11 @@ namespace tgui
         ///
         /// @param height  Height of the tabs
         ///
-        /// By default, it is the height of the tab image that is loaded with the load function.
+        /// When the tabs are auto-sizing, this function allows changing the width of the tabs without setting a fixed width
+        /// like calling setSize would do.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTabHeight(float height);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the height of the tabs
-        ///
-        /// @return Tab height
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getTabHeight() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -392,16 +394,12 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
-        unsigned int m_requestedTextSize = 0;
-        unsigned int m_textSize = 22;
-
+        unsigned int       m_requestedTextSize = 0;
+        unsigned int       m_textSize = 22;
         float              m_maximumTabWidth = 0;
         int                m_selectedTab = -1;
-
-        float              m_width = 0;
-        float              m_tabHeight = 0;
+        bool               m_autoSize = true;
         std::vector<float> m_tabWidth;
-
         std::vector<Text>  m_tabTexts;
 
         Sprite m_spriteTab;

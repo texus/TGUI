@@ -586,8 +586,14 @@ namespace tgui
             if (tabs->getMaximumTabWidth() > 0)
                 SET_PROPERTY("MaximumTabWidth", to_string(tabs->getMaximumTabWidth()));
 
+            if (tabs->getAutoSize())
+            {
+                node->propertyValuePairs.erase("Size");
+                SET_PROPERTY("TabHeight", to_string(tabs->getSize().y));
+            }
+
             SET_PROPERTY("TextSize", to_string(tabs->getTextSize()));
-            SET_PROPERTY("TabHeight", to_string(tabs->getTabHeight()));
+            SET_PROPERTY("AutoSize", to_string(tabs->getAutoSize()));
             return node;
         }
 
