@@ -335,6 +335,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Tabs::setMinimumTabWidth(float minimumWidth)
+    {
+        m_minimumTabWidth = minimumWidth;
+
+        recalculateTabsWidth();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Tabs::getMinimumTabWidth() const
+    {
+        return m_minimumTabWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::size_t Tabs::getTabsCount() const
     {
         return m_tabTexts.size();
@@ -418,7 +434,7 @@ namespace tgui
                 float totalWidth = 0;
                 for (unsigned int i = 0; i < m_tabWidth.size(); ++i)
                 {
-                    m_tabWidth[i] = m_tabTexts[i].getSize().x + (2 * m_distanceToSideCached);
+                    m_tabWidth[i] = m_tabTexts[i].getSize().x + std::max(m_minimumTabWidth, 2 * m_distanceToSideCached);
                     if ((m_maximumTabWidth > 0) && (m_maximumTabWidth < m_tabWidth[i]))
                         m_tabWidth[i] = m_maximumTabWidth;
 

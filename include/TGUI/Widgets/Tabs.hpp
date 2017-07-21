@@ -295,6 +295,8 @@ namespace tgui
         ///
         /// @param maximumWidth  Maximum width of a single tab
         ///
+        /// This property only has effect when the tabs are auto-sizing.
+        ///
         /// If the text on the tab is longer than this width then it will be cropped to fit inside the tab.
         /// By default, the maximum width is 0 which means that there is no limitation.
         ///
@@ -307,11 +309,39 @@ namespace tgui
         ///
         /// @return Maximum tab width
         ///
+        /// This property only has effect when the tabs are auto-sizing.
+        ///
         /// If the text on the tab is longer than this width then it will be cropped to fit inside the tab.
         /// By default, the maximum width is 0 which means that there is no limitation.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         float getMaximumTabWidth() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the minimum tab width of the tabs
+        ///
+        /// @param minimumWidth  Minimum width of a single tab
+        ///
+        /// This property only has effect when the tabs are auto-sizing.
+        ///
+        /// Every tab is at least as wide as this minimum or twice the distance to side.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMinimumTabWidth(float minimumWidth);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the minimum tab width of the tabs
+        ///
+        /// @return Minimum tab width
+        ///
+        /// This property only has effect when the tabs are auto-sizing.
+        ///
+        /// Every tab is at least as wide as this minimum or twice the distance to side.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getMinimumTabWidth() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -413,6 +443,7 @@ namespace tgui
         unsigned int       m_requestedTextSize = 0;
         unsigned int       m_textSize = 22;
         float              m_maximumTabWidth = 0;
+        float              m_minimumTabWidth = 0;
         int                m_selectedTab = -1;
         int                m_hoveringTab = -1;
         bool               m_autoSize = true;
