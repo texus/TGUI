@@ -154,7 +154,7 @@ namespace tgui
         /// @return Size of the widget
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getSize() const    /// TODO: Fix Grid and Tab to no longer override the getSize function
+        sf::Vector2f getSize() const
         {
             return m_size.getValue();
         }

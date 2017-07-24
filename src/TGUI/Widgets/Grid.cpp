@@ -40,7 +40,7 @@ namespace tgui
 
     Grid::Grid(const Grid& gridToCopy) :
         Container {gridToCopy},
-        m_realSize{gridToCopy.m_realSize}
+        m_autoSize{gridToCopy.m_autoSize}
     {
         const auto& widgets = gridToCopy.m_widgets;
 
@@ -61,6 +61,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Grid::Grid(Grid&& gridToMove) :
+        Container           {std::move(gridToMove)},
+        m_autoSize          {std::move(gridToMove.m_autoSize)},
+        m_gridWidgets       {std::move(gridToMove.m_gridWidgets)},
+        m_objBorders        {std::move(gridToMove.m_objBorders)},
+        m_objAlignment      {std::move(gridToMove.m_objAlignment)},
+        m_rowHeight         {std::move(gridToMove.m_rowHeight)},
+        m_columnWidth       {std::move(gridToMove.m_columnWidth)},
+        m_connectedCallbacks{}
+    {
+        for (auto& widget : m_widgets)
+        {
+            widget->onSizeChange->disconnect(gridToMove.m_connectedCallbacks[widget]);
+            m_connectedCallbacks[widget] = widget->onSizeChange->connect([this](){ updateWidgets(); });
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Grid& Grid::operator= (const Grid& right)
     {
         // Make sure it is not the same widget
@@ -69,12 +88,38 @@ namespace tgui
             Grid temp{right};
             Container::operator=(right);
 
-            std::swap(m_gridWidgets,  temp.m_gridWidgets);
-            std::swap(m_objBorders,   temp.m_objBorders);
-            std::swap(m_objAlignment, temp.m_objAlignment);
-            std::swap(m_rowHeight,    temp.m_rowHeight);
-            std::swap(m_columnWidth,  temp.m_columnWidth);
-            std::swap(m_realSize,     temp.m_realSize);
+            std::swap(m_autoSize,           temp.m_autoSize);
+            std::swap(m_gridWidgets,        temp.m_gridWidgets);
+            std::swap(m_objBorders,         temp.m_objBorders);
+            std::swap(m_objAlignment,       temp.m_objAlignment);
+            std::swap(m_rowHeight,          temp.m_rowHeight);
+            std::swap(m_columnWidth,        temp.m_columnWidth);
+            std::swap(m_connectedCallbacks, temp.m_connectedCallbacks);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Grid& Grid::operator= (Grid&& right)
+    {
+        if (this != &right)
+        {
+            Container::operator=(std::move(right));
+            m_autoSize           = std::move(right.m_autoSize);
+            m_gridWidgets        = std::move(right.m_gridWidgets);
+            m_objBorders         = std::move(right.m_objBorders);
+            m_objAlignment       = std::move(right.m_objAlignment);
+            m_rowHeight          = std::move(right.m_rowHeight);
+            m_columnWidth        = std::move(right.m_columnWidth);
+            m_connectedCallbacks = std::move(right.m_connectedCallbacks);
+
+            for (auto& widget : m_widgets)
+            {
+                widget->onSizeChange->disconnect(right.m_connectedCallbacks[widget]);
+                m_connectedCallbacks[widget] = widget->onSizeChange->connect([this](){ updateWidgets(); });
+            }
         }
 
         return *this;
@@ -101,16 +146,27 @@ namespace tgui
 
     void Grid::setSize(const Layout2d& size)
     {
-        Widget::setSize(size);
+        Container::setSize(size);
 
         updatePositionsOfAllWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Grid::getSize() const
+    void Grid::setAutoSize(bool autoSize)
     {
-        return m_realSize;
+        if (m_autoSize != autoSize)
+        {
+            m_autoSize = autoSize;
+            updatePositionsOfAllWidgets();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Grid::getAutoSize() const
+    {
+        return m_autoSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,6 +230,8 @@ namespace tgui
 
     void Grid::removeAllWidgets()
     {
+        Container::removeAllWidgets();
+
         m_gridWidgets.clear();
         m_objBorders.clear();
         m_objAlignment.clear();
@@ -183,9 +241,7 @@ namespace tgui
 
         m_connectedCallbacks.clear();
 
-        Container::removeAllWidgets();
-
-        setSize(0, 0);
+        updateWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,82 +375,8 @@ namespace tgui
     {
         if (((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size())) && (m_gridWidgets[row][col] != nullptr))
         {
-            // Change the alignment of the widget
             m_objAlignment[row][col] = alignment;
-
-            // Recalculate the position of the widget
-            {
-                // Calculate the available space which is distributed when widgets are positionned.
-                sf::Vector2f availableSpace;
-                const sf::Vector2f minSize = getMinSize();
-
-                if (m_realSize.x > minSize.x)
-                    availableSpace.x = m_realSize.x - minSize.x;
-                if (m_realSize.y > minSize.y)
-                    availableSpace.y = m_realSize.y - minSize.y;
-
-                const sf::Vector2f availSpaceOffset{0.5f * availableSpace.x / m_columnWidth.size(),
-                                                    0.5f * availableSpace.y / m_rowHeight.size()};
-
-                float left = 0;
-                float top = 0;
-
-                for (std::size_t i = 0; i < row; ++i)
-                    top += m_rowHeight[i] + 2 * availSpaceOffset.y;
-
-                for (std::size_t i = 0; i < col; ++i)
-                    left += m_columnWidth[i] + 2 * availSpaceOffset.x;
-
-                switch (m_objAlignment[row][col])
-                {
-                case Alignment::UpperLeft:
-                    left += m_objBorders[row][col].getLeft() + availSpaceOffset.x;
-                    top += m_objBorders[row][col].getTop() + availSpaceOffset.y;
-                    break;
-
-                case Alignment::Up:
-                    left += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
-                    top += m_objBorders[row][col].getTop() + availSpaceOffset.y;
-                    break;
-
-                case Alignment::UpperRight:
-                    left += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
-                    top += m_objBorders[row][col].getTop() + availSpaceOffset.y;
-                    break;
-
-                case Alignment::Right:
-                    left += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
-                    top += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
-                    break;
-
-                case Alignment::BottomRight:
-                    left += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
-                    top += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
-                    break;
-
-                case Alignment::Bottom:
-                    left += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
-                    top += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
-                    break;
-
-                case Alignment::BottomLeft:
-                    left += m_objBorders[row][col].getLeft() + availSpaceOffset.x;
-                    top += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
-                    break;
-
-                case Alignment::Left:
-                    left += m_objBorders[row][col].getLeft() + availSpaceOffset.x;
-                    top += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
-                    break;
-
-                case Alignment::Center:
-                    left += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
-                    top += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
-                    break;
-                }
-
-                m_gridWidgets[row][col]->setPosition({left, top});
-            }
+            updatePositionsOfAllWidgets();
         }
     }
 
@@ -435,23 +417,23 @@ namespace tgui
 
     bool Grid::mouseOnWidget(sf::Vector2f pos) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, m_realSize.x, m_realSize.y}.contains(pos);
+        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Grid::getMinSize()
+    sf::Vector2f Grid::getMinimumSize() const
     {
-        // Calculate the required place to have all widgets in the grid.
+        // Calculate the required space to have all widgets in the grid.
         sf::Vector2f minSize;
 
         // Loop through all rows to find the minimum height required by the grid
-        for (auto it = m_rowHeight.cbegin(); it != m_rowHeight.cend(); ++it)
-            minSize.y += *it;
+        for (float rowHeight : m_rowHeight)
+            minSize.y += rowHeight;
 
         // Loop through all columns to find the minimum width required by the grid
-        for (auto it = m_columnWidth.cbegin(); it != m_columnWidth.cend(); ++it)
-            minSize.x += *it;
+        for (float columnWidth : m_columnWidth)
+            minSize.x += columnWidth;
 
         return minSize;
     }
@@ -460,98 +442,85 @@ namespace tgui
 
     void Grid::updatePositionsOfAllWidgets()
     {
-        // Calculate the size and the available space which will be distributed when widgets will be positionned.
-        sf::Vector2f availableSpace;
-        m_realSize = m_size.getValue();
-        const sf::Vector2f minSize = getMinSize();
+        sf::Vector2f extraOffset;
+        if (!m_autoSize && m_gridWidgets.size() > 1)
+        {
+            const sf::Vector2f minimumSize = getMinimumSize();
+            if (getSize().x > minimumSize.x)
+                extraOffset.x = (getSize().x - minimumSize.x) / (m_gridWidgets.size() - 1);
+            if (getSize().y > minimumSize.y)
+                extraOffset.y = (getSize().y - minimumSize.y) / (m_gridWidgets.size() - 1);
+        }
 
-        if (getSize().x > minSize.x)
-            availableSpace.x = getSize().x - minSize.x;
-        else
-            m_realSize.x = minSize.x;
-
-        if (getSize().y > minSize.y)
-            availableSpace.y = getSize().y - minSize.y;
-        else
-            m_realSize.y = minSize.y;
-
-        const sf::Vector2f availSpaceOffset{0.5f * availableSpace.x / m_columnWidth.size(),
-                                            0.5f * availableSpace.y / m_rowHeight.size()};
-
-        // Loop through all rows
         sf::Vector2f position;
         for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
         {
-            // Remember the current position
             const sf::Vector2f previousPosition = position;
 
-            // Loop through all widgets in the row
             for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
             {
                 if (m_gridWidgets[row][col].get() == nullptr)
                 {
-                    position.x += m_columnWidth[col] + 2 * availSpaceOffset.x;
+                    position.x += m_columnWidth[col] + extraOffset.x;
                     continue;
                 }
 
-                sf::Vector2f cellPosition = position;
-
-                // Place the next widget on the correct position
+                sf::Vector2f cellPosition = position + (extraOffset / 2.f);
                 switch (m_objAlignment[row][col])
                 {
                 case Alignment::UpperLeft:
-                    cellPosition.x += m_objBorders[row][col].getLeft() + availSpaceOffset.x;
-                    cellPosition.y += m_objBorders[row][col].getTop() + availSpaceOffset.y;
+                    cellPosition.x += m_objBorders[row][col].getLeft();
+                    cellPosition.y += m_objBorders[row][col].getTop();
                     break;
 
                 case Alignment::Up:
-                    cellPosition.x += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
-                    cellPosition.y += m_objBorders[row][col].getTop() + availSpaceOffset.y;
+                    cellPosition.x += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f);
+                    cellPosition.y += m_objBorders[row][col].getTop();
                     break;
 
                 case Alignment::UpperRight:
-                    cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
-                    cellPosition.y += m_objBorders[row][col].getTop() + availSpaceOffset.y;
+                    cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x;
+                    cellPosition.y += m_objBorders[row][col].getTop();
                     break;
 
                 case Alignment::Right:
-                    cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
-                    cellPosition.y += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
+                    cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x;
+                    cellPosition.y += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f);
                     break;
 
                 case Alignment::BottomRight:
-                    cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x + availSpaceOffset.x;
-                    cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
+                    cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x;
+                    cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y;
                     break;
 
                 case Alignment::Bottom:
-                    cellPosition.x += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
-                    cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
+                    cellPosition.x += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f);
+                    cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y;
                     break;
 
                 case Alignment::BottomLeft:
-                    cellPosition.x += m_objBorders[row][col].getLeft() + availSpaceOffset.x;
-                    cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y + availSpaceOffset.y;
+                    cellPosition.x += m_objBorders[row][col].getLeft();
+                    cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y;
                     break;
 
                 case Alignment::Left:
-                    cellPosition.x += m_objBorders[row][col].getLeft() + availSpaceOffset.x;
-                    cellPosition.y += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
+                    cellPosition.x += m_objBorders[row][col].getLeft();
+                    cellPosition.y += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f);
                     break;
 
                 case Alignment::Center:
-                    cellPosition.x += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f) + availSpaceOffset.x;
-                    cellPosition.y += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f) + availSpaceOffset.y;
+                    cellPosition.x += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f);
+                    cellPosition.y += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f);
                     break;
                 }
 
                 m_gridWidgets[row][col]->setPosition(cellPosition);
-                position.x += m_columnWidth[col] + 2 * availSpaceOffset.x;
+                position.x += m_columnWidth[col] + extraOffset.x;
             }
 
-            // Go to the next row
+            // Move to the next row
             position = previousPosition;
-            position.y += m_rowHeight[row] + 2 * availSpaceOffset.y;
+            position.y += m_rowHeight[row] + extraOffset.y;
         }
     }
 
@@ -560,8 +529,8 @@ namespace tgui
     void Grid::updateWidgets()
     {
         // Reset the column widths
-        for (auto it = m_columnWidth.begin(); it != m_columnWidth.end(); ++it)
-            *it = 0;
+        for (float& width : m_columnWidth)
+            width = 0;
 
         // Loop through all widgets
         for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)

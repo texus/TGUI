@@ -77,13 +77,7 @@ namespace tgui
             if (widget->getPosition() != sf::Vector2f{})
                 SET_PROPERTY("Position", widget->getPositionLayout().toString());
             if (widget->getSize() != sf::Vector2f{})
-            {
-                /// TODO: Fix Grid and Tab to no longer override the getSize function
-                if (widget->getSize() != widget->getSizeLayout().getValue())
-                    SET_PROPERTY("Size", Layout2d{widget->getSize()}.toString());
-                else
-                    SET_PROPERTY("Size", widget->getSizeLayout().toString());
-            }
+                SET_PROPERTY("Size", widget->getSizeLayout().toString());
 
             if (widget->getToolTip() != nullptr)
             {
