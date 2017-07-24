@@ -49,12 +49,27 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Container::Container(const Container& other) :
-        Widget         {other},
-        m_focusedWidget{0}
+        Widget{other}
     {
         // Copy all the widgets
         for (std::size_t i = 0; i < other.m_widgets.size(); ++i)
             add(other.m_widgets[i]->clone(), other.m_widgetNames[i]);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Container::Container(Container&& other) :
+        Widget                {std::move(other)},
+        m_widgets             {std::move(other.m_widgets)},
+        m_widgetNames         {std::move(other.m_widgetNames)},
+        m_widgetBelowMouse    {std::move(other.m_widgetBelowMouse)},
+        m_focusedWidget       {std::move(other.m_focusedWidget)},
+        m_handingMouseReleased{std::move(other.m_handingMouseReleased)}
+    {
+        for (auto& widget : m_widgets)
+            widget->setParent(this);
+
+        other.m_widgets = {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +101,29 @@ namespace tgui
             // Copy all the widgets
             for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
                 add(right.m_widgets[i]->clone(), right.m_widgetNames[i]);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Container& Container::operator= (Container&& right)
+    {
+        // Make sure it is not the same widget
+        if (this != &right)
+        {
+            Widget::operator=(std::move(right));
+            m_widgets              = std::move(right.m_widgets);
+            m_widgetNames          = std::move(right.m_widgetNames);
+            m_widgetBelowMouse     = std::move(right.m_widgetBelowMouse);
+            m_focusedWidget        = std::move(right.m_focusedWidget);
+            m_handingMouseReleased = std::move(right.m_handingMouseReleased);
+
+            for (auto& widget : m_widgets)
+                widget->setParent(this);
+
+            right.m_widgets = {};
         }
 
         return *this;

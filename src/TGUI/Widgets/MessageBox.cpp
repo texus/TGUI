@@ -75,7 +75,7 @@ namespace tgui
 
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {
-            if ((m_widgetNames[i].getSize() > 32) && (m_widgetNames[i].substring(0, 32) == "#TGUI_INTERNAL$MessageBoxButton:"))
+            if ((m_widgetNames[i].getSize() >= 32) && (m_widgetNames[i].substring(0, 32) == "#TGUI_INTERNAL$MessageBoxButton:"))
             {
                 auto button = std::dynamic_pointer_cast<Button>(m_widgets[i]);
 
@@ -86,6 +86,24 @@ namespace tgui
         }
 
         rearrange();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    MessageBox::MessageBox(MessageBox&& other) :
+        ChildWindow      {std::move(other)},
+        onButtonPress    {std::move(other.onButtonPress)},
+        m_loadedThemeFile{std::move(other.m_loadedThemeFile)},
+        m_buttonClassName{std::move(other.m_buttonClassName)},
+        m_buttons        {std::move(other.m_buttons)},
+        m_label          {std::move(other.m_label)},
+        m_textSize       {std::move(other.m_textSize)}
+    {
+        for (auto& button : m_buttons)
+        {
+            button->onPress->disconnectAll();
+            button->onPress->connect([=]() { onButtonPress->emit(this, button->getText()); });
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,6 +121,31 @@ namespace tgui
             std::swap(m_buttons,         temp.m_buttons);
             std::swap(m_label,           temp.m_label);
             std::swap(m_textSize,        temp.m_textSize);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    MessageBox& MessageBox::operator= (MessageBox&& other)
+    {
+        if (this != &other)
+        {
+            ChildWindow::operator=(std::move(other));
+
+            onButtonPress     = std::move(other.onButtonPress);
+            m_loadedThemeFile = std::move(other.m_loadedThemeFile);
+            m_buttonClassName = std::move(other.m_buttonClassName);
+            m_buttons         = std::move(other.m_buttons);
+            m_label           = std::move(other.m_label);
+            m_textSize        = std::move(other.m_textSize);
+
+            for (auto& button : m_buttons)
+            {
+                button->onPress->disconnectAll();
+                button->onPress->connect([=]() { onButtonPress->emit(this, button->getText()); });
+            }
         }
 
         return *this;

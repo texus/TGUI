@@ -149,23 +149,23 @@ namespace tgui
         if (this != &other)
         {
             Widget::operator=(std::move(other));
-            std::swap(onItemSelect,                      other.onItemSelect);
-            std::swap(m_nrOfItemsToDisplay,              other.m_nrOfItemsToDisplay);
-            std::swap(m_listBox,                         other.m_listBox);
-            std::swap(m_text,                            other.m_text);
-            std::swap(m_spriteBackground,                other.m_spriteBackground);
-            std::swap(m_spriteArrowUp,                   other.m_spriteArrowUp);
-            std::swap(m_spriteArrowDown,                 other.m_spriteArrowDown);
-            std::swap(m_spriteArrowUpHover,              other.m_spriteArrowUpHover);
-            std::swap(m_spriteArrowDownHover,            other.m_spriteArrowDownHover);
-            std::swap(m_bordersCached,                   other.m_bordersCached);
-            std::swap(m_paddingCached,                   other.m_paddingCached);
-            std::swap(m_borderColorCached,               other.m_borderColorCached);
-            std::swap(m_backgroundColorCached,           other.m_backgroundColorCached);
-            std::swap(m_arrowColorCached,                other.m_arrowColorCached);
-            std::swap(m_arrowColorHoverCached,           other.m_arrowColorHoverCached);
-            std::swap(m_arrowBackgroundColorCached,      other.m_arrowBackgroundColorCached);
-            std::swap(m_arrowBackgroundColorHoverCached, other.m_arrowBackgroundColorHoverCached);
+            onItemSelect                      = std::move(other.onItemSelect);
+            m_nrOfItemsToDisplay              = std::move(other.m_nrOfItemsToDisplay);
+            m_listBox                         = std::move(other.m_listBox);
+            m_text                            = std::move(other.m_text);
+            m_spriteBackground                = std::move(other.m_spriteBackground);
+            m_spriteArrowUp                   = std::move(other.m_spriteArrowUp);
+            m_spriteArrowDown                 = std::move(other.m_spriteArrowDown);
+            m_spriteArrowUpHover              = std::move(other.m_spriteArrowUpHover);
+            m_spriteArrowDownHover            = std::move(other.m_spriteArrowDownHover);
+            m_bordersCached                   = std::move(other.m_bordersCached);
+            m_paddingCached                   = std::move(other.m_paddingCached);
+            m_borderColorCached               = std::move(other.m_borderColorCached);
+            m_backgroundColorCached           = std::move(other.m_backgroundColorCached);
+            m_arrowColorCached                = std::move(other.m_arrowColorCached);
+            m_arrowColorHoverCached           = std::move(other.m_arrowColorHoverCached);
+            m_arrowBackgroundColorCached      = std::move(other.m_arrowBackgroundColorCached);
+            m_arrowBackgroundColorHoverCached = std::move(other.m_arrowBackgroundColorHoverCached);
         }
 
         return *this;

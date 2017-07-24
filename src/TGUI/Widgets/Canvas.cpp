@@ -48,11 +48,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Canvas::Canvas(Canvas&& other) :
+        ClickableWidget{std::move(other)}
+    {
+        // sf::RenderTexture does not support move yet
+        setSize(other.getSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Canvas& Canvas::operator= (const Canvas& right)
     {
         if (this != &right)
         {
             ClickableWidget::operator=(right);
+            setSize(right.getSize());
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Canvas& Canvas::operator= (Canvas&& right)
+    {
+        if (this != &right)
+        {
+            ClickableWidget::operator=(std::move(right));
+
+            // sf::RenderTexture does not support move yet
             setSize(right.getSize());
         }
 
