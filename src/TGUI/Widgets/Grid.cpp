@@ -42,17 +42,15 @@ namespace tgui
         Container {gridToCopy},
         m_autoSize{gridToCopy.m_autoSize}
     {
-        const auto& widgets = gridToCopy.m_widgets;
-
         for (std::size_t row = 0; row < gridToCopy.m_gridWidgets.size(); ++row)
         {
             for (std::size_t col = 0; col < gridToCopy.m_gridWidgets[row].size(); ++col)
             {
                 // Find the widget that belongs in this square
-                for (std::size_t i = 0; i < widgets.size(); ++i)
+                for (std::size_t i = 0; i < gridToCopy.m_widgets.size(); ++i)
                 {
                     // If a widget matches then add it to the grid
-                    if (widgets[i] == gridToCopy.m_gridWidgets[row][col])
+                    if (gridToCopy.m_widgets[i] == gridToCopy.m_gridWidgets[row][col])
                         addWidget(m_widgets[i], row, col, gridToCopy.m_objBorders[row][col], gridToCopy.m_objAlignment[row][col]);
                 }
             }
@@ -85,16 +83,21 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &right)
         {
-            Grid temp{right};
             Container::operator=(right);
 
-            std::swap(m_autoSize,           temp.m_autoSize);
-            std::swap(m_gridWidgets,        temp.m_gridWidgets);
-            std::swap(m_objBorders,         temp.m_objBorders);
-            std::swap(m_objAlignment,       temp.m_objAlignment);
-            std::swap(m_rowHeight,          temp.m_rowHeight);
-            std::swap(m_columnWidth,        temp.m_columnWidth);
-            std::swap(m_connectedCallbacks, temp.m_connectedCallbacks);
+            for (std::size_t row = 0; row < right.m_gridWidgets.size(); ++row)
+            {
+                for (std::size_t col = 0; col < right.m_gridWidgets[row].size(); ++col)
+                {
+                    // Find the widget that belongs in this square
+                    for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
+                    {
+                        // If a widget matches then add it to the grid
+                        if (right.m_widgets[i] == right.m_gridWidgets[row][col])
+                            addWidget(m_widgets[i], row, col, right.m_objBorders[row][col], right.m_objAlignment[row][col]);
+                    }
+                }
+            }
         }
 
         return *this;
@@ -296,6 +299,24 @@ namespace tgui
             return m_gridWidgets[row][col];
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::map<Widget::Ptr, std::pair<std::size_t, std::size_t>> Grid::getWidgetLocations() const
+    {
+        std::map<Widget::Ptr, std::pair<std::size_t, std::size_t>> widgetsMap;
+
+        for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+        {
+            for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
+            {
+                if (m_gridWidgets[row][col])
+                    widgetsMap[m_gridWidgets[row][col]] = {row, col};
+            }
+        }
+
+        return widgetsMap;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

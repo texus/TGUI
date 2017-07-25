@@ -199,6 +199,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns a list of widgets and the cell they are in
+        ///
+        /// @return A mapping of each widget to its row and cell. The first element of the pair is the row while the second
+        ///         element in the pair is the column.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::map<Widget::Ptr, std::pair<std::size_t, std::size_t>> getWidgetLocations() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes borders of a given widget
         ///
         /// @param widget  The widget to which borders should be added
