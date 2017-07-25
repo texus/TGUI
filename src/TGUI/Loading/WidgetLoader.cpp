@@ -539,8 +539,8 @@ namespace tgui
                     Borders borders;
                     auto alignment = Grid::Alignment::Center;
 
-                    auto index = 0;
-                    auto pos = str.find(',');
+                    std::size_t index = 0;
+                    std::size_t pos = str.find(',');
                     if (pos == std::string::npos)
                         throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after row."};
 
