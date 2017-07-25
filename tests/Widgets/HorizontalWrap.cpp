@@ -90,4 +90,9 @@ TEST_CASE("[HorizontalWrap]")
     REQUIRE(pic6->getPosition() == sf::Vector2f(0, 80));
     REQUIRE(pic7->getPosition() == sf::Vector2f(100, 80));
     REQUIRE(pic8->getPosition() == sf::Vector2f(0, 160));
+
+    SECTION("Saving and loading from file")
+    {
+        testSavingWidget("HorizontalWrap", wrap, false);
+    }
 }

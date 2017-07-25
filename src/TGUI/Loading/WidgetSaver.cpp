@@ -31,6 +31,7 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Grid.hpp>
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
@@ -310,6 +311,75 @@ namespace tgui
                 SET_PROPERTY("TextWidthLimited", "true");
 
             SET_PROPERTY("TextSize", to_string(editBox->getTextSize()));
+            return node;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::unique_ptr<DataIO::Node> saveGrid(Widget::Ptr widget)
+        {
+            auto grid = std::static_pointer_cast<Grid>(widget);
+            auto node = WidgetSaver::getSaveFunction("container")(grid);
+
+            const auto& children = grid->getWidgets();
+            auto widgetsMap = grid->getWidgetLocations();
+            if (!widgetsMap.empty())
+            {
+                auto alignmentToString = [](Grid::Alignment alignment) -> std::string {
+                    switch (alignment)
+                    {
+                    case Grid::Alignment::Center:
+                        return "Center";
+                    case Grid::Alignment::UpperLeft:
+                        return "UpperLeft";
+                    case Grid::Alignment::Up:
+                        return "Up";
+                    case Grid::Alignment::UpperRight:
+                        return "UpperRight";
+                    case Grid::Alignment::Right:
+                        return "Right";
+                    case Grid::Alignment::BottomRight:
+                        return "BottomRight";
+                    case Grid::Alignment::Bottom:
+                        return "Bottom";
+                    case Grid::Alignment::BottomLeft:
+                        return "BottomLeft";
+                    case Grid::Alignment::Left:
+                        return "Left";
+                    default:
+                        throw Exception{"Invalid grid alignment encountered."};
+                    }
+                };
+
+                auto getWidgetsInGridString = [&](const auto& w) -> std::string {
+                    auto it = widgetsMap.find(w);
+                    if (it != widgetsMap.end())
+                    {
+                        const auto row = it->second.first;
+                        const auto col = it->second.second;
+                        return "\"(" + to_string(row)
+                             + ", " + to_string(col)
+                             + ", " + grid->getWidgetBorders(row, col).toString()
+                             + ", " + alignmentToString(grid->getWidgetAlignment(row, col))
+                             + ")\"";
+                    }
+                    else
+                        return "\"()\"";
+                };
+
+                std::string str = "[" + getWidgetsInGridString(children[0]);
+
+                for (std::size_t i = 1; i < children.size(); ++i)
+                    str += ", " + getWidgetsInGridString(children[i]);
+
+                str += "]";
+                SET_PROPERTY("GridWidgets", str);
+            }
+
+            if (grid->getAutoSize())
+                node->propertyValuePairs.erase("Size");
+
+            SET_PROPERTY("AutoSize", to_string(grid->getAutoSize()));
             return node;
         }
 
@@ -626,7 +696,10 @@ namespace tgui
             {"clickablewidget", saveWidget},
             {"combobox", saveComboBox},
             {"editbox", saveEditBox},
+            {"grid", saveGrid},
             {"group", saveContainer},
+            {"horizontallayout", saveContainer},
+            {"horizontalwrap", saveContainer},
             {"knob", saveKnob},
             {"label", saveLabel},
             {"listbox", saveListBox},
@@ -641,7 +714,8 @@ namespace tgui
             {"slider", saveSlider},
             {"spinbutton", saveSpinButton},
             {"tabs", saveTabs},
-            {"textbox", saveTextBox}
+            {"textbox", saveTextBox},
+            {"verticallayout", saveContainer}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

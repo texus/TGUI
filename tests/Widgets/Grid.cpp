@@ -108,5 +108,22 @@ TEST_CASE("[Grid]")
         REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::Center);
     }
 
-    /// TODO: Loading from and saving to file
+    SECTION("Saving and loading from file")
+    {
+        grid->setSize({800, 600});
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 5, 4);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 7, {1, 2, 3, 4});
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 0, 0, {}, tgui::Grid::Alignment::Center);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 0, 1, {}, tgui::Grid::Alignment::Left);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 0, 2, {}, tgui::Grid::Alignment::UpperLeft);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 1, 0, {}, tgui::Grid::Alignment::Up);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 1, 1, {}, tgui::Grid::Alignment::UpperRight);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 1, 2, {}, tgui::Grid::Alignment::Right);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 0, {}, tgui::Grid::Alignment::BottomRight);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 1, {}, tgui::Grid::Alignment::Bottom);
+        grid->addWidget(tgui::ClickableWidget::create({40, 30}), 2, 2, {}, tgui::Grid::Alignment::BottomLeft);
+        grid->add(tgui::ClickableWidget::create({40, 30}));
+
+        testSavingWidget("Grid", grid, false);
+    }
 }

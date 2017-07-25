@@ -127,6 +127,7 @@ namespace tgui
         {
             Group::rendererChanged(property);
 
+            // Update the space between widgets as the padding is used when no space was explicitly set
             m_spaceBetweenWidgetsCached = getRenderer()->getSpaceBetweenWidgets();
             updateWidgets();
         }

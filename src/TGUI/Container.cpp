@@ -100,7 +100,10 @@ namespace tgui
 
             // Copy all the widgets
             for (std::size_t i = 0; i < right.m_widgets.size(); ++i)
-                add(right.m_widgets[i]->clone(), right.m_widgetNames[i]);
+            {
+                // Don't allow the 'add' function of a derived class to be called, since its members are not copied yet
+                Container::add(right.m_widgets[i]->clone(), right.m_widgetNames[i]);
+            }
         }
 
         return *this;

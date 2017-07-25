@@ -33,7 +33,10 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Grid.hpp>
 #include <TGUI/Widgets/Group.hpp>
+#include <TGUI/Widgets/HorizontalLayout.hpp>
+#include <TGUI/Widgets/HorizontalWrap.hpp>
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
@@ -49,6 +52,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/VerticalLayout.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -233,7 +237,7 @@ namespace tgui
             if (widget)
                 return loadWidget(node, widget);
             else
-                return loadWidget(node, std::make_shared<Canvas>());
+                return loadWidget(node, Canvas::create());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,7 +378,7 @@ namespace tgui
             if (widget)
                 return loadWidget(node, widget);
             else
-                return loadWidget(node, std::make_shared<ClickableWidget>());
+                return loadWidget(node, ClickableWidget::create());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -492,12 +496,140 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        Widget::Ptr loadGrid(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        {
+            Grid::Ptr grid;
+            if (widget)
+                grid = std::static_pointer_cast<Grid>(widget);
+            else
+                grid = Grid::create();
+
+            loadContainer(node, grid);
+
+            if (node->propertyValuePairs["autosize"])
+                grid->setAutoSize(parseBoolean(node->propertyValuePairs["autosize"]->value));
+
+            if (node->propertyValuePairs["gridwidgets"])
+            {
+                if (!node->propertyValuePairs["gridwidgets"]->listNode)
+                    throw Exception{"Failed to parse 'GridWidgets' property, expected a list as value"};
+
+                const auto& elements = node->propertyValuePairs["gridwidgets"]->valueList;
+                if (elements.size() != grid->getWidgets().size())
+                    throw Exception{"Failed to parse 'GridWidgets' property, the amount of items has to match with the amount of child widgets"};
+
+                for (unsigned int i = 0; i < elements.size(); ++i)
+                {
+                    std::string str = elements[i].toAnsiString();
+
+                    // Remove quotes
+                    if ((str.size() >= 2) && (str[0] == '"') && (str[str.size()-1] == '"'))
+                        str = str.substr(1, str.size()-2);
+
+                    // Remove brackets
+                    if ((str.size() >= 2) && (str[0] == '(') && (str[str.size()-1] == ')'))
+                        str = str.substr(1, str.size()-2);
+
+                    // Ignore empty values (which are widgets that have not been given a location in the grid)
+                    if (str.empty())
+                        continue;
+
+                    int row;
+                    int col;
+                    Borders borders;
+                    auto alignment = Grid::Alignment::Center;
+
+                    auto index = 0;
+                    auto pos = str.find(',');
+                    if (pos == std::string::npos)
+                        throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after row."};
+
+                    row = tgui::stoi(str.substr(index, pos - index));
+                    index = pos + 1;
+
+                    pos = str.find(',', index);
+                    if (pos == std::string::npos)
+                        throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after column."};
+
+                    col = tgui::stoi(str.substr(index, pos - index));
+                    index = pos + 1;
+
+                    if (row < 0 || col < 0)
+                        throw Exception{"Failed to parse 'GridWidgets' property, row and column have to be positive integers"};
+
+                    pos = str.find('(', index);
+                    if (pos == std::string::npos)
+                        throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing opening bracket for borders."};
+
+                    index = pos;
+                    pos = str.find(')', index);
+                    if (pos == std::string::npos)
+                        throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing closing bracket for borders."};
+
+                    borders = Deserializer::deserialize(ObjectConverter::Type::Outline, str.substr(index, pos+1 - index)).getOutline();
+                    index = pos + 1;
+
+                    pos = str.find(',', index);
+                    if (pos == std::string::npos)
+                        throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after borders."};
+
+                    std::string alignmentStr = toLower(trim(str.substr(pos + 1)));
+                    if (alignmentStr == "center")
+                        alignment = Grid::Alignment::Center;
+                    else if (alignmentStr == "upperleft")
+                        alignment = Grid::Alignment::UpperLeft;
+                    else if (alignmentStr == "up")
+                        alignment = Grid::Alignment::Up;
+                    else if (alignmentStr == "upperright")
+                        alignment = Grid::Alignment::UpperRight;
+                    else if (alignmentStr == "right")
+                        alignment = Grid::Alignment::Right;
+                    else if (alignmentStr == "bottomright")
+                        alignment = Grid::Alignment::BottomRight;
+                    else if (alignmentStr == "bottom")
+                        alignment = Grid::Alignment::Bottom;
+                    else if (alignmentStr == "bottomleft")
+                        alignment = Grid::Alignment::BottomLeft;
+                    else if (alignmentStr == "left")
+                        alignment = Grid::Alignment::Left;
+                    else
+                        throw Exception{"Failed to parse 'GridWidgets' property. Invalid alignment '" + alignmentStr + "'."};
+
+                    grid->addWidget(grid->getWidgets()[i], static_cast<std::size_t>(row), static_cast<std::size_t>(col), borders, alignment);
+                }
+            }
+
+            return grid;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         Widget::Ptr loadGroup(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             if (widget)
                 return loadContainer(node, std::static_pointer_cast<Group>(widget));
             else
-                return loadContainer(node, std::make_shared<Group>());
+                return loadContainer(node, Group::create());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Widget::Ptr loadHorizontalLayout(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        {
+            if (widget)
+                return loadContainer(node, std::static_pointer_cast<HorizontalLayout>(widget));
+            else
+                return loadContainer(node, HorizontalLayout::create());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Widget::Ptr loadHorizontalWrap(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        {
+            if (widget)
+                return loadContainer(node, std::static_pointer_cast<HorizontalWrap>(widget));
+            else
+                return loadContainer(node, HorizontalWrap::create());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -704,7 +836,7 @@ namespace tgui
             if (widget)
                 return loadContainer(node, std::static_pointer_cast<Panel>(widget));
             else
-                return loadContainer(node, std::make_shared<Panel>());
+                return loadContainer(node, Panel::create());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -718,7 +850,7 @@ namespace tgui
                 picture = Picture::create();
 
             if (node->propertyValuePairs["filename"])
-                picture = std::make_shared<Picture>(DESERIALIZE_STRING("filename"));
+                picture = Picture::create(DESERIALIZE_STRING("filename"));
 
             loadWidget(node, picture);
 
@@ -801,7 +933,7 @@ namespace tgui
             if (widget)
                 return loadContainer(node, std::static_pointer_cast<RadioButtonGroup>(widget));
             else
-                return loadContainer(node, std::make_shared<RadioButtonGroup>());
+                return loadContainer(node, RadioButtonGroup::create());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -931,6 +1063,18 @@ namespace tgui
 
             return textBox;
         }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Widget::Ptr loadVerticalLayout(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        {
+            if (widget)
+                return loadContainer(node, std::static_pointer_cast<VerticalLayout>(widget));
+            else
+                return loadContainer(node, VerticalLayout::create());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -947,7 +1091,10 @@ namespace tgui
             {"clickablewidget", loadClickableWidget},
             {"combobox", loadComboBox},
             {"editbox", loadEditBox},
+            {"grid", loadGrid},
             {"group", loadGroup},
+            {"horizontallayout", loadHorizontalLayout},
+            {"horizontalwrap", loadHorizontalWrap},
             {"knob", loadKnob},
             {"label", loadLabel},
             {"listbox", loadListBox},
@@ -962,7 +1109,8 @@ namespace tgui
             {"slider", loadSlider},
             {"spinbutton", loadSpinButton},
             {"tabs", loadTabs},
-            {"textbox", loadTextBox}
+            {"textbox", loadTextBox},
+            {"verticallayout", loadVerticalLayout}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

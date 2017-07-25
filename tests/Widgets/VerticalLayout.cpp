@@ -97,4 +97,11 @@ TEST_CASE("[VerticalLayout]")
         REQUIRE(layout->getWidgetName(layout->get(2)) == "5");
         REQUIRE(layout->get(5) == nullptr);
     }
+
+    SECTION("Saving and loading from file")
+    {
+        layout->add(tgui::Button::create("Hello"));
+        layout->add(tgui::Button::create("Hi"));
+        testSavingWidget("VerticalLayout", layout, false);
+    }
 }

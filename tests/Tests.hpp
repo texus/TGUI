@@ -117,7 +117,7 @@ void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool
         parent = std::make_shared<tgui::GuiContainer>();
         REQUIRE_NOTHROW(parent->loadWidgetsFromFile(name + "WidgetFile1.txt"));
 
-        REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile2.txt"));
-        REQUIRE(compareFiles(name + "WidgetFile1.txt", name + "WidgetFile2.txt"));
+        REQUIRE_NOTHROW(parent->saveWidgetsToFile(name + "WidgetFile3.txt"));
+        REQUIRE(compareFiles(name + "WidgetFile1.txt", name + "WidgetFile3.txt"));
     }
 }

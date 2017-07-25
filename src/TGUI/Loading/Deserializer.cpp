@@ -212,6 +212,13 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        ObjectConverter deserializeLayout(const std::string& value)
+        {
+            return {sf::String(value)};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         ObjectConverter deserializeOutline(const std::string& value)
         {
             std::string str = trim(value);
@@ -387,6 +394,7 @@ namespace tgui
             {ObjectConverter::Type::Color, deserializeColor},
             {ObjectConverter::Type::String, deserializeString},
             {ObjectConverter::Type::Number, deserializeNumber},
+            {ObjectConverter::Type::Layout, deserializeLayout},
             {ObjectConverter::Type::Outline, deserializeOutline},
             {ObjectConverter::Type::Texture, deserializeTexture},
             {ObjectConverter::Type::TextStyle, deserializeTextStyle},

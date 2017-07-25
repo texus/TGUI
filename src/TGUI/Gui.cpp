@@ -60,7 +60,6 @@ namespace tgui
         m_target        (&window),
         m_accessToWindow(true)
     {
-        m_container->m_target = &window;
         m_container->m_focused = true;
 
         Clipboard::setWindowHandle(window.getSystemHandle());
@@ -83,7 +82,6 @@ namespace tgui
         m_accessToWindow(false)
     #endif
     {
-        m_container->m_target = &target;
         m_container->m_focused = true;
 
         setView(target.getDefaultView());
@@ -99,7 +97,6 @@ namespace tgui
     void Gui::setTarget(sf::RenderWindow& window)
     {
         m_target = &window;
-        m_container->m_target = &window;
 
         m_accessToWindow = true;
         Clipboard::setWindowHandle(window.getSystemHandle());
@@ -117,7 +114,6 @@ namespace tgui
     #endif
 
         m_target = &target;
-        m_container->m_target = &target;
 
         setView(target.getDefaultView());
     }
