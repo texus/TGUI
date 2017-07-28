@@ -287,6 +287,7 @@ TEST_CASE("[Button]")
     {
         TEST_DRAW_INIT(120, 35, button)
 
+        button->enable();
         button->setPosition(10, 5);
         button->setSize(100, 25);
         button->setText("Click me!");

@@ -22,11 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Ignore warning "C4800: 'const int': forcing value to bool 'true' or 'false'" in Visual Studio
-#if defined _MSC_VER
-    #pragma warning(disable : 4800)
-#endif
-
 #include "../Tests.hpp"
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/RadioButtonGroup.hpp>
@@ -422,5 +417,231 @@ TEST_CASE("[RadioButton]")
         radioButton->setTextClickable(false);
 
         testSavingWidget("RadioButton", radioButton);
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(150, 35, radioButton)
+
+        radioButton->enable();
+        radioButton->setPosition(10, 5);
+        radioButton->setSize(25, 25);
+        radioButton->setText("Check me!");
+        radioButton->setTextSize(16);
+
+        tgui::RadioButtonRenderer renderer = tgui::RendererData::create();
+        renderer.setTextColor(sf::Color::Red);
+        renderer.setTextColorChecked({128, 0, 0});
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setBackgroundColorChecked({0, 128, 0});
+        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setBorderColorChecked({0, 0, 128});
+        renderer.setTextStyle(sf::Text::Style::Italic);
+        renderer.setTextStyleChecked(tgui::TextStyle{sf::Text::Style::Bold | sf::Text::Style::StrikeThrough});
+        renderer.setOpacity(0.7f);
+        radioButton->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+                                        renderer.setTextColorHover(sf::Color::Magenta);
+                                        renderer.setBackgroundColorHover(sf::Color::Cyan);
+                                        renderer.setBorderColorHover(sf::Color::Yellow);
+                                        renderer.setTextStyle(sf::Text::Style::Bold);
+                                        if (textured)
+                                            renderer.setTextureUncheckedHover("resources/Texture3.png");
+                                     };
+
+        auto setDisabledRenderer = [&](bool textured){
+                                        renderer.setTextColorDisabled({128, 128, 0});
+                                        renderer.setBackgroundColorDisabled({0, 128, 128});
+                                        renderer.setBorderColorDisabled({128, 0, 128});
+                                        renderer.setTextStyle(sf::Text::Style::Italic);
+                                        if (textured)
+                                            renderer.setTextureUncheckedDisabled("resources/Texture5.png");
+                                    };
+
+        auto setCheckedHoverRenderer = [&](bool textured){
+                                            renderer.setTextColorCheckedHover({192, 64, 0});
+                                            renderer.setBackgroundColorCheckedHover({0, 192, 64});
+                                            renderer.setBorderColorCheckedHover({64, 0, 192});
+                                            renderer.setTextStyleChecked(tgui::TextStyle{sf::Text::Style::Bold | sf::Text::Style::Italic});
+                                            if (textured)
+                                                renderer.setTextureCheckedHover("resources/Texture4.png");
+                                         };
+
+        auto setCheckedDisabledRenderer = [&](bool textured){
+                                            renderer.setTextColorCheckedDisabled({64, 192, 0});
+                                            renderer.setBackgroundColorCheckedDisabled({0, 64, 192});
+                                            renderer.setBorderColorCheckedDisabled({192, 0, 64});
+                                            renderer.setTextStyleChecked(tgui::TextStyle{sf::Text::Style::Italic | sf::Text::Style::StrikeThrough});
+                                            if (textured)
+                                                renderer.setTextureCheckedDisabled("resources/Texture6.png");
+                                        };
+
+        SECTION("Colored")
+        {
+            renderer.setBorders({2});
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("RadioButton_Normal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("RadioButton_Normal_HoverSet.png")
+                }
+            }
+
+            SECTION("CheckedNormalState")
+            {
+                radioButton->check();
+
+                TEST_DRAW("RadioButton_CheckedNormal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setCheckedHoverRenderer(false);
+                    TEST_DRAW("RadioButton_CheckedNormal_HoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                radioButton->mouseMoved({0,0});
+
+                TEST_DRAW("RadioButton_Hover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("RadioButton_Hover_HoverSet.png")
+                }
+            }
+
+            SECTION("CheckedHoverState")
+            {
+                radioButton->check();
+                radioButton->mouseMoved({0,0});
+
+                TEST_DRAW("RadioButton_CheckedHover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setCheckedHoverRenderer(false);
+                    TEST_DRAW("RadioButton_CheckedHover_HoverSet.png")
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                radioButton->disable();
+
+                TEST_DRAW("RadioButton_Disabled_NormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(false);
+                    TEST_DRAW("RadioButton_Disabled_DisabledSet.png")
+                }
+            }
+
+            SECTION("CheckedDisabledState")
+            {
+                radioButton->check();
+                radioButton->disable();
+
+                TEST_DRAW("RadioButton_CheckedDisabled_NormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setCheckedDisabledRenderer(false);
+                    TEST_DRAW("RadioButton_CheckedDisabled_DisabledSet.png")
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureUnchecked("resources/Texture1.png");
+            renderer.setTextureChecked("resources/Texture2.png");
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("RadioButton_Normal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("RadioButton_Normal_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("CheckedNormalState")
+            {
+                radioButton->check();
+
+                TEST_DRAW("RadioButton_CheckedNormal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setCheckedHoverRenderer(true);
+                    TEST_DRAW("RadioButton_CheckedNormal_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                radioButton->mouseMoved({0,0});
+
+                TEST_DRAW("RadioButton_Hover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("RadioButton_Hover_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("CheckedHoverState")
+            {
+                radioButton->check();
+                radioButton->mouseMoved({0,0});
+
+                TEST_DRAW("RadioButton_CheckedHover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setCheckedHoverRenderer(true);
+                    TEST_DRAW("RadioButton_CheckedHover_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                radioButton->disable();
+
+                TEST_DRAW("RadioButton_Disabled_TextureNormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(true);
+                    TEST_DRAW("RadioButton_Disabled_TextureDisabledSet.png")
+                }
+            }
+
+            SECTION("CheckedDisabledState")
+            {
+                radioButton->check();
+                radioButton->disable();
+
+                TEST_DRAW("RadioButton_CheckedDisabled_TextureNormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setCheckedDisabledRenderer(true);
+                    TEST_DRAW("RadioButton_CheckedDisabled_TextureDisabledSet.png")
+                }
+            }
+        }
     }
 }

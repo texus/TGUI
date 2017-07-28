@@ -75,8 +75,10 @@ TEST_CASE("[Theme]")
         REQUIRE(theme.getRenderer("label1")->propertyValuePairs["textcolor"].getColor() == sf::Color(255, 0, 255, 200));
         REQUIRE(theme.getRenderer("label2")->propertyValuePairs.empty());
 
-        theme.removeRenderer("label1");
+        REQUIRE(theme.removeRenderer("label1"));
         REQUIRE(theme.getRenderer("label1")->propertyValuePairs.empty());
+
+        REQUIRE(!theme.removeRenderer("nonexistent"));
     }
 
     SECTION("Renderers are shared")
@@ -153,6 +155,7 @@ TEST_CASE("[Theme]")
 
         auto loader = std::make_shared<CustomThemeLoader>();
         tgui::Theme::setThemeLoader(loader);
+        REQUIRE(tgui::Theme::getThemeLoader() == loader);
 
         tgui::Theme theme1;
         theme1.getRenderer("BUTTON");
@@ -161,6 +164,7 @@ TEST_CASE("[Theme]")
         theme2.getRenderer("EditBox");
 
         tgui::Theme::setThemeLoader(std::make_shared<tgui::DefaultThemeLoader>());
+        REQUIRE(tgui::Theme::getThemeLoader() != loader);
 
         REQUIRE(loader->preloadCount == 1);
         REQUIRE(loader->loadCount == 2);

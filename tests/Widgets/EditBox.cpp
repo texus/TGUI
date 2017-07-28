@@ -564,6 +564,7 @@ TEST_CASE("[EditBox]")
     {
         TEST_DRAW_INIT(120, 35, editBox)
 
+        editBox->enable();
         editBox->setPosition(10, 5);
         editBox->setSize(100, 25);
         editBox->setText("Something");

@@ -22,11 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Ignore warning "C4800: 'const int': forcing value to bool 'true' or 'false'" in Visual Studio
-#if defined _MSC_VER
-    #pragma warning(disable : 4800)
-#endif
-
 #include "Tests.hpp"
 #include <TGUI/Widgets/Button.hpp>
 
