@@ -210,9 +210,9 @@ namespace tgui
                     checkedSprite = &m_spriteChecked;
 
                 // The image may need to be shifted when the check leaves the box
-                if (getSize().y != checkedSprite->getSize().y)
+                if (getInnerSize().y != checkedSprite->getSize().y)
                 {
-                    float diff = getSize().y - checkedSprite->getSize().y;
+                    float diff = getInnerSize().y - checkedSprite->getSize().y;
 
                     states.transform.translate({0, diff});
                     checkedSprite->draw(target, states);
