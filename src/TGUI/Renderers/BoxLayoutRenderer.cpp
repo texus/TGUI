@@ -32,18 +32,18 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayoutRenderer::setSpaceBetweenWidgets(const Layout& distance)
+    void BoxLayoutRenderer::setSpaceBetweenWidgets(float distance)
     {
         setProperty("spacebetweenwidgets", ObjectConverter{distance});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout BoxLayoutRenderer::getSpaceBetweenWidgets() const
+    float BoxLayoutRenderer::getSpaceBetweenWidgets() const
     {
         auto it = m_data->propertyValuePairs.find("spacebetweenwidgets");
         if (it != m_data->propertyValuePairs.end())
-            return it->second.getLayout();
+            return it->second.getNumber();
         else
         {
             it = m_data->propertyValuePairs.find("padding");

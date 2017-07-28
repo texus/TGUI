@@ -59,7 +59,6 @@ namespace tgui
     void HorizontalWrap::updateWidgets()
     {
         const sf::Vector2f contentSize = getContentSize();
-        const float spaceBetweenWidgets = m_spaceBetweenWidgetsCached.getValue();
 
         float currentHorizontalOffset = 0;
         float currentVerticalOffset = 0;
@@ -70,14 +69,14 @@ namespace tgui
 
             if (currentHorizontalOffset + size.x > contentSize.x)
             {
-                currentVerticalOffset += lineHeight + spaceBetweenWidgets;
+                currentVerticalOffset += lineHeight + m_spaceBetweenWidgetsCached;
                 currentHorizontalOffset = 0;
                 lineHeight = 0;
             }
 
             widget->setPosition({currentHorizontalOffset, currentVerticalOffset});
 
-            currentHorizontalOffset += size.x + spaceBetweenWidgets;
+            currentHorizontalOffset += size.x + m_spaceBetweenWidgetsCached;
 
             if (lineHeight < size.y)
                 lineHeight = size.y;

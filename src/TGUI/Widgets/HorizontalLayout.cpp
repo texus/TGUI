@@ -59,8 +59,7 @@ namespace tgui
     void HorizontalLayout::updateWidgets()
     {
         const sf::Vector2f contentSize = getContentSize();
-        const float spaceBetweenWidgets = m_spaceBetweenWidgetsCached.getValue();
-        const float totalSpaceBetweenWidgets = (spaceBetweenWidgets * m_widgets.size()) - spaceBetweenWidgets;
+        const float totalSpaceBetweenWidgets = (m_spaceBetweenWidgetsCached * m_widgets.size()) - m_spaceBetweenWidgetsCached;
 
         float currentOffset = 0;
         for (auto& widget : m_widgets)
@@ -81,7 +80,7 @@ namespace tgui
                 }
             }
 
-            currentOffset += width + spaceBetweenWidgets;
+            currentOffset += width + m_spaceBetweenWidgetsCached;
         }
     }
 
