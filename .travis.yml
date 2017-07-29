@@ -33,7 +33,6 @@ addons:
     packages:
     - g++-4.9
     - g++-6
-    - valgrind
     - libfreetype6-dev
     - libjpeg-dev
     - libx11-dev
