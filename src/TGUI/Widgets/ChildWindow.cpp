@@ -63,7 +63,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::ChildWindow()
+    ChildWindow::ChildWindow(const sf::String& title, unsigned int titleButtons)
     {
         m_type = "ChildWindow";
 
@@ -74,15 +74,16 @@ namespace tgui
         getRenderer()->getMaximizeButton()->propertyValuePairs["borders"] = {Borders{1}};
         getRenderer()->getMinimizeButton()->propertyValuePairs["borders"] = {Borders{1}};
 
-        setTitleButtons(TitleButton::Close);
-        setSize(400, 300);
+        setTitleButtons(titleButtons);
+        setTitle(title);
+        setSize({400, 300});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow::Ptr ChildWindow::create()
+    ChildWindow::Ptr ChildWindow::create(const sf::String& title, unsigned int titleButtons)
     {
-        return std::make_shared<ChildWindow>();
+        return std::make_shared<ChildWindow>(title, titleButtons);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
