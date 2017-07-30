@@ -61,8 +61,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
         TGUI_CONSTEXPR Layout(T constant) :
-            m_constant{true},
-            m_value   {static_cast<float>(constant)}
+            m_constant    {true},
+            m_value       {static_cast<float>(constant)},
+            m_constantTerm{static_cast<float>(constant)}
         {
         }
 
@@ -84,20 +85,10 @@ namespace tgui
         ///
         /// @param expression  String to parse
         ///
+        /// TODO: Some code examples
+        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Layout(const std::string& expression)
-        {
-            if (!expression.empty())
-            {
-                if (expression.back() == '%')
-                {
-                    m_constant = false;
-                    m_ratio    = std::stof(expression.substr(0, expression.length()-1)) / 100.f;
-                }
-                else
-                    m_value = std::stof(expression.substr(0, expression.length()));
-            }
-        }
+        Layout(const std::string& expression);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,34 +105,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
-        /// @brief Returns whether the value in the layout is constant
-        ///
-        /// @return Is the layout value constant?
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR bool isConstant() const
-        {
-            return m_constant;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /// @brief Returns the ratio used by the layout
-        ///
-        /// @return Ratio of the parent size that defines the layout value
-        ///
-        /// This function should only be called when the layout does not contain a constant value.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR float getRatio() const
-        {
-            return m_ratio;
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
         /// @brief Update the size to which the layout depends on if its value is relative
         ///
         /// @param newParentSize  New size from which to take the relative value
@@ -152,7 +115,7 @@ namespace tgui
             if (!m_constant)
             {
                 m_parentValue = newParentSize;
-                m_value = m_ratio * newParentSize;
+                m_value = m_ratio * newParentSize + m_constantTerm;
             }
         }
 
@@ -164,21 +127,17 @@ namespace tgui
         /// @return String representation of layout
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::string toString() const
-        {
-            if (m_constant)
-                return to_string(m_value);
-            else
-                return to_string(m_ratio * 100) + '%';
-        }
+        std::string toString() const;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        bool  m_constant    = true;
-        float m_value       = 0;
-        float m_ratio       = 0;
-        float m_parentValue = 0;
+        bool  m_constant     = true;
+        float m_value        = 0;
+        float m_ratio        = 0;
+        float m_constantTerm = 0;
+        float m_parentValue  = 0;
     };
 
 
@@ -188,10 +147,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API RelLayout : Layout
     {
-        explicit TGUI_CONSTEXPR RelLayout(float constant)
+        explicit TGUI_CONSTEXPR RelLayout(float ratio, float constantTerm = 0)
         {
-            m_constant = false;
-            m_ratio    = constant;
+            m_constant     = false;
+            m_ratio        = ratio;
+            m_constantTerm = constantTerm;
+            m_value        = constantTerm;
         }
     };
 

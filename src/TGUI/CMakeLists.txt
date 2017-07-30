@@ -6,6 +6,7 @@ set(TGUI_SRC
     Font.cpp
     Global.cpp
     Gui.cpp
+    Layout.cpp
     ObjectConverter.cpp
     Sprite.cpp
     Signal.cpp
