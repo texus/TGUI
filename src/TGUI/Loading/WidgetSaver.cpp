@@ -101,6 +101,10 @@ namespace tgui
                 node->children.back()->name = "Renderer";
                 for (const auto& pair : widget->getRenderer()->getPropertyValuePairs())
                 {
+                    // Skip "font = null"
+                    if (pair.first == "font" && ObjectConverter{pair.second}.getString() == "null")
+                        continue;
+
                     sf::String value = ObjectConverter{pair.second}.getString();
                     if (pair.second.getType() == ObjectConverter::Type::RendererData)
                     {
