@@ -103,7 +103,7 @@ namespace tgui
         float x = position.getValue().x;
         float y = position.getValue().y;
 
-        if (m_parent && m_keepInParent)
+        if (m_parent && m_keepInParent && ((y < 0) || (y > m_parent->getSize().y - m_titleBarHeightCached) || (x < 0) || (x > m_parent->getSize().x - getSize().x)))
         {
             if (y < 0)
                 y = 0;
@@ -114,9 +114,11 @@ namespace tgui
                 x = 0;
             else if (x > m_parent->getSize().x - getSize().x)
                 x = m_parent->getSize().x - getSize().x;
-        }
 
-        Widget::setPosition({x, y});
+            Widget::setPosition({x, y});
+        }
+        else
+            Widget::setPosition(position);
 
         // Calculate the distance from the right side that the buttons will need
         float buttonOffsetX = 0;
