@@ -115,10 +115,10 @@ namespace tgui
             else if (x > m_parent->getSize().x - getSize().x)
                 x = m_parent->getSize().x - getSize().x;
 
-            Widget::setPosition({x, y});
+            Container::setPosition({x, y});
         }
         else
-            Widget::setPosition(position);
+            Container::setPosition(position);
 
         // Calculate the distance from the right side that the buttons will need
         float buttonOffsetX = 0;
@@ -163,7 +163,7 @@ namespace tgui
 
     void ChildWindow::setSize(const Layout2d& size)
     {
-        Widget::setSize(size);
+        Container::setSize(size);
 
         m_bordersCached.updateParentSize(getSize());
 
