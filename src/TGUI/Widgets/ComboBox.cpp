@@ -247,11 +247,9 @@ namespace tgui
 
     bool ComboBox::addItem(const sf::String& item, const sf::String& id)
     {
-        // Make room to add another item, until there are enough items
-        if ((m_nrOfItemsToDisplay == 0) || (m_listBox->getItemCount() < m_nrOfItemsToDisplay))
-            updateListBoxHeight();
-
-        return m_listBox->addItem(item, id);
+        const bool ret = m_listBox->addItem(item, id);
+        updateListBoxHeight();
+        return ret;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
