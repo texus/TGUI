@@ -35,7 +35,7 @@ namespace tgui
     static std::map<std::string, ObjectConverter> defaultRendererValues =
             {
                 {"borders", Borders{2}},
-                {"padding", Padding{2, 0, 0, 0}},
+                {"padding", Padding{0}},
                 {"bordercolor", sf::Color::Black},
                 {"textcolor", sf::Color::Black},
                 {"backgroundcolor", Color{245, 245, 245}},
