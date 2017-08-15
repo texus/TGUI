@@ -399,6 +399,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::setReadOnly(bool readOnly)
+    {
+        m_readOnly = readOnly;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool EditBox::isReadOnly() const
+    {
+        return m_readOnly;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::setCaretPosition(std::size_t charactersBeforeCaret)
     {
         // The caret position has to stay inside the string
@@ -697,6 +711,9 @@ namespace tgui
         }
         else if (event.code == sf::Keyboard::BackSpace)
         {
+            if (m_readOnly)
+                return;
+
             // Make sure that we did not select any characters
             if (m_selChars == 0)
             {
@@ -738,6 +755,9 @@ namespace tgui
         }
         else if (event.code == sf::Keyboard::Delete)
         {
+            if (m_readOnly)
+                return;
+
             // Make sure that no text is selected
             if (m_selChars == 0)
             {
@@ -787,6 +807,9 @@ namespace tgui
                 }
                 else if (event.code == sf::Keyboard::V)
                 {
+                    if (m_readOnly)
+                        return;
+
                     const auto clipboardContents = Clipboard::get();
 
                     // Only continue pasting if you actually have to do something
@@ -807,6 +830,10 @@ namespace tgui
                 else if (event.code == sf::Keyboard::X)
                 {
                     Clipboard::set(m_textSelection.getString());
+
+                    if (m_readOnly)
+                        return;
+
                     deleteSelectedCharacters();
 
                     onTextChange->emit(this, m_text);
@@ -823,6 +850,9 @@ namespace tgui
 
     void EditBox::textEntered(sf::Uint32 key)
     {
+        if (m_readOnly)
+            return;
+
         // Only add the character when the regex matches
         if (m_regexString != ".*")
         {

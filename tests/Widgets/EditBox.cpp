@@ -145,6 +145,22 @@ TEST_CASE("[EditBox]")
         REQUIRE(editBox->getText() == "yet another text");
     }
 
+    SECTION("ReadOnly")
+    {
+        REQUIRE(!editBox->isReadOnly());
+
+        editBox->setReadOnly(true);
+        REQUIRE(editBox->isReadOnly());
+
+        // The text can still be changed using the setText function
+        editBox->setText("Test");
+        REQUIRE(editBox->getText() == "Test");
+        REQUIRE(editBox->isReadOnly());
+
+        editBox->setReadOnly(false);
+        REQUIRE(!editBox->isReadOnly());
+    }
+
     SECTION("Input Validator")
     {
         editBox->setText(L"++Some123 Ê Text456--");

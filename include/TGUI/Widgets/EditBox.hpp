@@ -321,6 +321,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Makes the edit box read-only or make it writable again
+        ///
+        /// @param readOnly  Should the edit box be read-only?
+        ///
+        /// When the edit box is read-only, you can no longer delete characters and type text.
+        /// Selecting text, copying text and even calling the setText function will still work.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setReadOnly(bool readOnly = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Checks if the edit box read-only or writable
+        ///
+        /// @return Is the edit box read-only?
+        ///
+        /// When the edit box is read-only, you can no longer delete characters and type text.
+        /// Selecting text, copying text and even calling the setText function will still work.
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isReadOnly() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the blinking caret to after a specific character
         ///
         /// @param charactersBeforeCaret  The new position
@@ -492,6 +516,8 @@ namespace tgui
         // Changing it to false will allow you to scroll the text (default).
         // You can change the boolean with the limitTextWidth(bool) function.
         bool          m_limitTextWidth = false;
+
+        bool          m_readOnly = false;
 
         // The text inside the edit box
         sf::String    m_text;
