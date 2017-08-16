@@ -578,10 +578,10 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(Args...)>>::value>::type* = nullptr>
-        unsigned int connect(std::string signalName, Func&& handler, Args&&... args)
+        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type* = nullptr>
+        unsigned int connect(std::string signalName, Func&& handler, const Args&... args)
         {
-            return getSignal(toLower(std::move(signalName))).connect([f=std::function<void(Args...)>(handler),args...](){ f(args...); });
+            return getSignal(toLower(std::move(signalName))).connect([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); });
         }
 
 
@@ -595,11 +595,11 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(Args..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
-        unsigned int connect(std::string signalName, Func&& handler, Args&&... args)
+        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
+        unsigned int connect(std::string signalName, Func&& handler, const Args&... args)
         {
             return getSignal(toLower(std::move(signalName))).connect(
-                [f=std::function<void(Args..., std::shared_ptr<Widget>, const std::string&)>(handler), args...]
+                [f=std::function<void(const Args&..., const std::shared_ptr<Widget>&, const std::string&)>(handler), args...]
                 (const std::shared_ptr<Widget>& w, const std::string& s)
                 { f(args..., w, s); }
             );
