@@ -45,9 +45,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Texture::Texture(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middlePart)
+    Texture::Texture(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool smooth)
     {
         load(id, partRect, middlePart);
+        if (smooth)
+            setSmooth(smooth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

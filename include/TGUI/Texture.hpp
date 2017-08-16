@@ -62,8 +62,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture(const char* id,
                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0))
-            : Texture(sf::String{id}, partRect, middlePart)
+                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                bool smooth = false)
+            : Texture(sf::String{id}, partRect, middlePart, smooth)
         {
         }
 
@@ -80,8 +81,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture(const std::string& id,
                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0))
-            : Texture(sf::String{id}, partRect, middlePart)
+                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                bool smooth = false)
+            : Texture(sf::String{id}, partRect, middlePart, smooth)
         {
         }
 
@@ -98,7 +100,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture(const sf::String& id,
                 const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0),
-                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0));
+                const sf::IntRect& middlePart = sf::IntRect(0, 0, 0, 0),
+                bool smooth = false);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

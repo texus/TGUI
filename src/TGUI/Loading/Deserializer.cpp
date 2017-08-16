@@ -360,6 +360,7 @@ namespace tgui
             // There may be optional parameters
             sf::IntRect partRect;
             sf::IntRect middleRect;
+            bool smooth = false;
 
             while (removeWhitespace(value, c))
             {
@@ -368,7 +369,15 @@ namespace tgui
                 if (openingBracketPos != std::string::npos)
                     word = value.substr(c - value.begin(), openingBracketPos - (c - value.begin()));
                 else
-                    throw Exception{"Failed to deserialize texture '" + value + "'. Invalid text found behind filename."};
+                {
+                    if (toLower(trim(value.substr(c - value.begin()))) == "smooth")
+                    {
+                        smooth = true;
+                        break;
+                    }
+                    else
+                        throw Exception{"Failed to deserialize texture '" + value + "'. Invalid text found behind filename."};
+                }
 
                 sf::IntRect* rect = nullptr;
                 if ((word == "Part") || (word == "part"))
@@ -401,7 +410,7 @@ namespace tgui
                 std::advance(c, closeBracketPos - (c - value.begin()) + 1);
             }
 
-            return Texture{getResourcePath() + filename, partRect, middleRect};
+            return Texture{getResourcePath() + filename, partRect, middleRect, smooth};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
