@@ -240,11 +240,9 @@ namespace tgui
 
         // Check if the selected item should change
         if (m_selectedItem == static_cast<int>(index))
-            m_selectedItem = -1;
+            updateSelectedItem(-1);
         else if (m_selectedItem > static_cast<int>(index))
-        {
             updateSelectedItem(m_selectedItem - 1);
-        }
 
         return true;
     }
@@ -258,8 +256,8 @@ namespace tgui
         m_itemIds.clear();
 
         // Unselect any selected item
-        m_selectedItem = -1;
-        m_hoveringItem = -1;
+        updateSelectedItem(-1);
+        updateHoveringItem(-1);
 
         m_scroll.setMaximum(0);
     }
@@ -489,11 +487,6 @@ namespace tgui
                     m_possibleDoubleClick = false;
 
                     updateSelectedItem(m_hoveringItem);
-
-                    if (m_selectedItem >= 0)
-                        onItemSelect->emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
-                    else
-                        onItemSelect->emit(this, "", "");
                 }
             }
         }
@@ -566,11 +559,6 @@ namespace tgui
                         m_possibleDoubleClick = false;
 
                         updateSelectedItem(m_hoveringItem);
-
-                        if (m_selectedItem >= 0)
-                            onItemSelect->emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
-                        else
-                            onItemSelect->emit(this, "", "");
                     }
                 }
             }
@@ -819,6 +807,10 @@ namespace tgui
             }
 
             m_selectedItem = item;
+            if (m_selectedItem >= 0)
+                onItemSelect->emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
+            else
+                onItemSelect->emit(this, "", "");
 
             updateSelectedAndHoveringItemColorsAndStyle();
         }
