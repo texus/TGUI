@@ -53,13 +53,13 @@ TEST_CASE("[Picture]")
         SECTION("from tgui::Texture")
         {
             REQUIRE_NOTHROW(picture = tgui::Picture::create("resources/image.png"));
-            REQUIRE(picture->getLoadedFilename() == "resources/image.png");
+            REQUIRE(picture->getTexture().getId() == "resources/image.png");
         }
 
         SECTION("from sf::Texture")
         {
             REQUIRE_NOTHROW(picture = tgui::Picture::create(texture));
-            REQUIRE(picture->getLoadedFilename() == "");
+            REQUIRE(picture->getTexture().getId() == "");
         }
 
         REQUIRE(picture->getSize() == sf::Vector2f(texture.getSize()));
@@ -83,7 +83,7 @@ TEST_CASE("[Picture]")
         SECTION("from tgui::Texture")
         {
             REQUIRE_NOTHROW(picture->setTexture("resources/image.png"));
-            REQUIRE(picture->getLoadedFilename() == "resources/image.png");
+            REQUIRE(picture->getTexture().getId() == "resources/image.png");
             REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
 
             picture->setSize(100, 100);
@@ -97,28 +97,13 @@ TEST_CASE("[Picture]")
             texture.loadFromFile("resources/image.png");
         
             REQUIRE_NOTHROW(picture->setTexture(texture));
-            REQUIRE(picture->getLoadedFilename() == "");
+            REQUIRE(picture->getTexture().getId() == "");
             REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
 
             picture->setSize(100, 100);
             REQUIRE_NOTHROW(picture->setTexture(texture));
             REQUIRE(picture->getSize() == sf::Vector2f(100, 100));
         }
-    }
-
-    SECTION("Smooth")
-    {
-        // Calling isSmooth has no effect when not loaded
-        REQUIRE(!picture->isSmooth());
-        picture->setSmooth(true);
-        REQUIRE(!picture->isSmooth());
-
-        picture = tgui::Picture::create("resources/image.png");
-        REQUIRE(!picture->isSmooth());
-        picture->setSmooth(true);
-        REQUIRE(picture->isSmooth());
-        picture->setSmooth(false);
-        REQUIRE(!picture->isSmooth());
     }
 
     SECTION("Events / Signals")
@@ -185,7 +170,6 @@ TEST_CASE("[Picture]")
     {
         picture->setTexture("resources/image.png");
         picture->setSize(80, 60);
-        picture->setSmooth();
 
         testSavingWidget("Picture", picture, false);
     }

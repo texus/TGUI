@@ -528,10 +528,8 @@ namespace tgui
             auto picture = std::static_pointer_cast<Picture>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(picture);
 
-            if (!picture->getLoadedFilename().isEmpty())
-                SET_PROPERTY("Filename", Serializer::serialize(sf::String{picture->getLoadedFilename()}));
-            if (picture->isSmooth())
-                SET_PROPERTY("Smooth", "true");
+            if (!picture->getTexture().getId().isEmpty())
+                SET_PROPERTY("Texture", Serializer::serialize(picture->getTexture()));
 
             return node;
         }

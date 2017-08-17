@@ -47,9 +47,7 @@ namespace tgui
 
     Texture::Texture(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middlePart, bool smooth)
     {
-        load(id, partRect, middlePart);
-        if (smooth)
-            setSmooth(smooth);
+        load(id, partRect, middlePart, smooth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,7 +132,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::load(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middleRect)
+    void Texture::load(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middleRect, bool smooth)
     {
         if (getData() && (m_destructCallback != nullptr))
             m_destructCallback(getData());
@@ -146,6 +144,9 @@ namespace tgui
 
         m_id = id;
         setTextureData(data, middleRect);
+
+        if (smooth)
+            setSmooth(true);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

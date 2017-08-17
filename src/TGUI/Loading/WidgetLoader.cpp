@@ -849,13 +849,10 @@ namespace tgui
             else
                 picture = Picture::create();
 
-            if (node->propertyValuePairs["filename"])
-                picture = Picture::create(DESERIALIZE_STRING("filename"));
+            if (node->propertyValuePairs["texture"])
+                picture = Picture::create(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs["texture"]->value).getTexture());
 
             loadWidget(node, picture);
-
-            if (node->propertyValuePairs["smooth"])
-                picture->setSmooth(parseBoolean(node->propertyValuePairs["smooth"]->value));
 
             return picture;
         }

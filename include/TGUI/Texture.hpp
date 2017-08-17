@@ -58,6 +58,7 @@ namespace tgui
         /// @param id         Id for the the image to load (for the default loader, the id is the filename)
         /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param smooth     Enable smoothing on the texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Texture(const char* id,
@@ -75,6 +76,7 @@ namespace tgui
         /// @param id         Id for the the image to load (for the default loader, the id is the filename)
         /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param smooth     Enable smoothing on the texture
         ///
         /// This constructor just calls the corresponding load function.
         ///
@@ -94,6 +96,7 @@ namespace tgui
         /// @param id         Id for the the image to load (for the default loader, the id is the filename)
         /// @param partRect   Load only part of the image. Pass an empty rectangle if you want to load the full image
         /// @param middlePart Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param smooth     Enable smoothing on the texture
         ///
         /// This constructor just calls the corresponding load function.
         ///
@@ -153,11 +156,13 @@ namespace tgui
         /// @param id         Id for the the image to load (for the default loader, the id is the filename)
         /// @param partRect   Load only part of the image. Don't pass this parameter if you want to load the full image
         /// @param middleRect Choose the middle part of the image for 9-slice scaling (relative to the part defined by partRect)
+        /// @param smooth     Enable smoothing on the texture
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const sf::String& id,
                   const sf::IntRect& partRect = {},
-                  const sf::IntRect& middleRect = {});
+                  const sf::IntRect& middleRect = {},
+                  bool smooth = false);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
