@@ -65,7 +65,7 @@ namespace tgui
 
     void Picture::setTexture(const Texture& texture, bool fullyClickable)
     {
-        if (!m_sprite.isSet())
+        if (!m_sprite.isSet() && (texture.getImageSize() != sf::Vector2f{0,0}))
             setSize(texture.getImageSize());
 
         m_fullyClickable = fullyClickable;
