@@ -318,20 +318,18 @@ namespace tgui
         {
             std::string::const_iterator c = value.begin();
 
-            // Remove all whitespaces (string should still contains something)
+            // Remove all whitespaces and return an empty texture when the string does not contain any text
             if (!removeWhitespace(value, c))
-                throw Exception{"Failed to deserialize texture '" + value + "'. Value is empty."};
+                return Texture{};
 
             if (toLower(value) == "none")
                 return Texture{};
 
-            // There has to be a quote
+            // There has to be a quote if the value contains more than just the filename
             if (*c == '"')
                 ++c;
             else
-            {
-                throw Exception{"Failed to deserialize texture '" + value + "'. Expected an opening quote for the filename."};
-            }
+                return Texture{getResourcePath() + value};
 
             std::string filename;
             char prev = '\0';
