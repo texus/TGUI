@@ -10,6 +10,7 @@ matrix:
     compiler: g++-4.9
     env: COMPILER=g++-4.9
     cache:
+      ccache: true
       directories:
       - $HOME/SFML_LINUX
 
@@ -17,6 +18,7 @@ matrix:
     compiler: g++-6
     env: COMPILER=g++-6
     cache:
+      ccache: true
       directories:
       - $HOME/SFML-2.4.0_LINUX
 
@@ -33,6 +35,7 @@ addons:
     packages:
     - g++-4.9
     - g++-6
+    - ccache
     - libfreetype6-dev
     - libjpeg-dev
     - libx11-dev
@@ -58,8 +61,8 @@ addons:
 
 script:
   - >
-    CXX=$COMPILER;
     if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
+      export CXX=$COMPILER;
       if [[ $CXX == g++-4.9 ]]; then
         chmod +x tests/travis_linux.sh
         tests/travis_linux.sh
