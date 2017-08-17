@@ -65,7 +65,7 @@ void loadWidgets( tgui::Gui& gui )
     gui.add(button);
 
     // Call the login function when the button is pressed and pass the edit boxes that we created as parameters
-    button->onPress->connect([=]{ login(editBoxUsername, editBoxPassword); });
+    button->onPress.connect([=]{ login(editBoxUsername, editBoxPassword); });
 }
 
 int main()
