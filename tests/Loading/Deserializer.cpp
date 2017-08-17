@@ -112,23 +112,29 @@ TEST_CASE("[Deserializer]")
     {
         tgui::Texture texture;
 
-        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\"").getTexture();
+        texture = tgui::Deserializer::deserialize(Type::Texture, "resources/image.png").getTexture();
         REQUIRE(texture.getData() != nullptr);
         REQUIRE(texture.getData()->rect == sf::IntRect());
         REQUIRE(texture.getMiddleRect() == sf::IntRect(0, 0, 50, 50));
         REQUIRE(!texture.isSmooth());
 
-        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0, 0, 25, 25) Smooth").getTexture();
+        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Smooth").getTexture();
+        REQUIRE(texture.getData() != nullptr);
+        REQUIRE(texture.getData()->rect == sf::IntRect());
+        REQUIRE(texture.getMiddleRect() == sf::IntRect(0, 0, 50, 50));
+        REQUIRE(texture.isSmooth());
+
+        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0, 0, 25, 25)").getTexture();
         REQUIRE(texture.getData() != nullptr);
         REQUIRE(texture.getData()->rect == sf::IntRect(0, 0, 25, 25));
         REQUIRE(texture.getMiddleRect() == sf::IntRect(0, 0, 25, 25));
-        REQUIRE(texture.isSmooth());
+        REQUIRE(!texture.isSmooth());
 
-        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 30, 30)").getTexture();
+        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 30, 30) Smooth").getTexture();
         REQUIRE(texture.getData() != nullptr);
         REQUIRE(texture.getData()->rect == sf::IntRect());
         REQUIRE(texture.getMiddleRect() == sf::IntRect(10, 10, 30, 30));
-        REQUIRE(!texture.isSmooth());
+        REQUIRE(texture.isSmooth());
 
         texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20)").getTexture();
         REQUIRE(texture.getData() != nullptr);
@@ -142,10 +148,13 @@ TEST_CASE("[Deserializer]")
         REQUIRE(texture.getMiddleRect() == sf::IntRect(10, 10, 20, 10));
         REQUIRE(texture.isSmooth());
 
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, ""), tgui::Exception);
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "resources/image.png"), tgui::Exception);
+        texture = tgui::Deserializer::deserialize(Type::Texture, "none").getTexture();
+        REQUIRE(texture.getData() == nullptr);
+
+        texture = tgui::Deserializer::deserialize(Type::Texture, "").getTexture();
+        REQUIRE(texture.getData() == nullptr);
+
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png"), tgui::Exception);
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "resources/image.png\""), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" (0,0,0,0)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" xyz(0,0,0,0)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part"), tgui::Exception);
