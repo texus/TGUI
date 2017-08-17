@@ -226,7 +226,7 @@ namespace tgui
         // Set the caret behind the last character
         setCaretPosition(m_textFull.getString().getSize());
 
-        onTextChange->emit(this, m_text);
+        onTextChange.emit(this, m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -523,7 +523,7 @@ namespace tgui
 
         // Set the mouse down flag
         m_mouseDown = true;
-        onMousePress->emit(this, pos);
+        onMousePress.emit(this, pos);
 
         recalculateTextPositions();
 
@@ -707,7 +707,7 @@ namespace tgui
         }
         else if (event.code == sf::Keyboard::Return)
         {
-            onReturnKeyPress->emit(this, m_text);
+            onReturnKeyPress.emit(this, m_text);
         }
         else if (event.code == sf::Keyboard::BackSpace)
         {
@@ -751,7 +751,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = {};
 
-            onTextChange->emit(this, m_text);
+            onTextChange.emit(this, m_text);
         }
         else if (event.code == sf::Keyboard::Delete)
         {
@@ -794,7 +794,7 @@ namespace tgui
             m_caretVisible = true;
             m_animationTimeElapsed = {};
 
-            onTextChange->emit(this, m_text);
+            onTextChange.emit(this, m_text);
         }
         else
         {
@@ -836,7 +836,7 @@ namespace tgui
 
                     deleteSelectedCharacters();
 
-                    onTextChange->emit(this, m_text);
+                    onTextChange.emit(this, m_text);
                 }
                 else if (event.code == sf::Keyboard::A)
                 {
@@ -905,7 +905,7 @@ namespace tgui
         m_caretVisible = true;
         m_animationTimeElapsed = {};
 
-        onTextChange->emit(this, m_text);
+        onTextChange.emit(this, m_text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -938,10 +938,10 @@ namespace tgui
 
     Signal& EditBox::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onTextChange->getName()))
-            return *onTextChange;
-        else if (signalName == toLower(onReturnKeyPress->getName()))
-            return *onReturnKeyPress;
+        if (signalName == toLower(onTextChange.getName()))
+            return onTextChange;
+        else if (signalName == toLower(onReturnKeyPress.getName()))
+            return onReturnKeyPress;
         else
             return ClickableWidget::getSignal(std::move(signalName));
     }

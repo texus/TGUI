@@ -266,8 +266,8 @@ namespace tgui
             m_closeButton = Button::create();
             m_closeButton->setRenderer(getRenderer()->getCloseButton());
             m_closeButton->getRenderer()->setOpacity(m_opacityCached);
-            m_closeButton->onPress->connect([this](){
-                                                if (!onClose->emit(this))
+            m_closeButton->onPress.connect([this](){
+                                                if (!onClose.emit(this))
                                                     destroy();
                                             });
         }
@@ -279,7 +279,7 @@ namespace tgui
             m_maximizeButton = Button::create();
             m_maximizeButton->setRenderer(getRenderer()->getMaximizeButton());
             m_maximizeButton->getRenderer()->setOpacity(m_opacityCached);
-            m_maximizeButton->onPress->connect([this](){ onMaximize->emit(this); });
+            m_maximizeButton->onPress.connect([this](){ onMaximize.emit(this); });
         }
         else
             m_maximizeButton = nullptr;
@@ -289,7 +289,7 @@ namespace tgui
             m_minimizeButton = Button::create();
             m_minimizeButton->setRenderer(getRenderer()->getMinimizeButton());
             m_minimizeButton->getRenderer()->setOpacity(m_opacityCached);
-            m_minimizeButton->onPress->connect([this](){ onMinimize->emit(this); });
+            m_minimizeButton->onPress.connect([this](){ onMinimize.emit(this); });
         }
         else
             m_minimizeButton = nullptr;
@@ -379,7 +379,7 @@ namespace tgui
         // Move the child window to the front
         moveToFront();
 
-        onMousePress->emit(this);
+        onMousePress.emit(this);
 
         // Check if the mouse is on top of the title bar
         if (sf::FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
@@ -611,14 +611,14 @@ namespace tgui
 
     Signal& ChildWindow::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onMousePress->getName()))
-            return *onMousePress;
-        else if (signalName == toLower(onClose->getName()))
-            return *onClose;
-        else if (signalName == toLower(onMinimize->getName()))
-            return *onMinimize;
-        else if (signalName == toLower(onMaximize->getName()))
-            return *onMaximize;
+        if (signalName == toLower(onMousePress.getName()))
+            return onMousePress;
+        else if (signalName == toLower(onClose.getName()))
+            return onClose;
+        else if (signalName == toLower(onMinimize.getName()))
+            return onMinimize;
+        else if (signalName == toLower(onMaximize.getName()))
+            return onMaximize;
         else
             return Container::getSignal(std::move(signalName));
     }

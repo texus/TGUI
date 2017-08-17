@@ -182,9 +182,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalWrapper<SignalVector2f> onMousePress   = {"MousePressed"};   ///< The mouse went down on the panel. Optional parameter: mouse position relative to panel
-        SignalWrapper<SignalVector2f> onMouseRelease = {"MouseReleased"};  ///< The mouse was released on top of the panel. Optional parameter: mouse position relative to panel
-        SignalWrapper<SignalVector2f> onClick        = {"Clicked"};        ///< The panel was clicked. Optional parameter: mouse position relative to panel
+        SignalVector2f onMousePress   = {"MousePressed"};   ///< The mouse went down on the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onMouseRelease = {"MouseReleased"};  ///< The mouse was released on top of the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onClick        = {"Clicked"};        ///< The panel was clicked. Optional parameter: mouse position relative to panel
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

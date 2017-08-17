@@ -34,10 +34,10 @@ TEST_CASE("[Tabs]")
     {
         REQUIRE_NOTHROW(tabs->connect("TabSelected", [](){}));
         REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(tabs->onTabSelect->connect([](){}));
-        REQUIRE_NOTHROW(tabs->onTabSelect->connect([](sf::String){}));
-        REQUIRE_NOTHROW(tabs->onTabSelect->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(tabs->onTabSelect->connect([](tgui::Widget::Ptr, std::string, sf::String){}));
+        REQUIRE_NOTHROW(tabs->onTabSelect.connect([](){}));
+        REQUIRE_NOTHROW(tabs->onTabSelect.connect([](sf::String){}));
+        REQUIRE_NOTHROW(tabs->onTabSelect.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(tabs->onTabSelect.connect([](tgui::Widget::Ptr, std::string, sf::String){}));
     }
 
     SECTION("WidgetType")

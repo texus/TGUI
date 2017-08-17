@@ -216,7 +216,7 @@ namespace tgui
             // The knob might have to point in a different direction
             recalculateRotation();
 
-            onValueChange->emit(this, m_value);
+            onValueChange.emit(this, m_value);
         }
     }
 
@@ -452,8 +452,8 @@ namespace tgui
 
     Signal& Knob::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onValueChange->getName()))
-            return *onValueChange;
+        if (signalName == toLower(onValueChange.getName()))
+            return onValueChange;
         else
             return Widget::getSignal(std::move(signalName));
     }

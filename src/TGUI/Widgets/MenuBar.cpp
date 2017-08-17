@@ -395,7 +395,7 @@ namespace tgui
 
                 if (selectedMenuItem < m_menus[m_visibleMenu].menuItems.size())
                 {
-                    onMenuItemClick->emit(this,
+                    onMenuItemClick.emit(this,
                                          m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString(),
                                          {m_menus[m_visibleMenu].text.getString(), m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString()});
 
@@ -512,8 +512,8 @@ namespace tgui
 
     Signal& MenuBar::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onMenuItemClick->getName()))
-            return *onMenuItemClick;
+        if (signalName == toLower(onMenuItemClick.getName()))
+            return onMenuItemClick;
         else
             return Widget::getSignal(std::move(signalName));
     }

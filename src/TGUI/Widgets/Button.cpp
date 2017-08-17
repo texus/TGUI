@@ -205,7 +205,7 @@ namespace tgui
     void Button::leftMouseReleased(sf::Vector2f pos)
     {
         if (m_mouseDown)
-            onPress->emit(this, m_text.getString());
+            onPress.emit(this, m_text.getString());
 
         ClickableWidget::leftMouseReleased(pos);
 
@@ -217,7 +217,7 @@ namespace tgui
     void Button::keyPressed(const sf::Event::KeyEvent& event)
     {
         if ((event.code == sf::Keyboard::Space) || (event.code == sf::Keyboard::Return))
-            onPress->emit(this, m_text.getString());
+            onPress.emit(this, m_text.getString());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,8 +251,8 @@ namespace tgui
 
     Signal& Button::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onPress->getName()))
-            return *onPress;
+        if (signalName == toLower(onPress.getName()))
+            return onPress;
         else
             return ClickableWidget::getSignal(std::move(signalName));
     }

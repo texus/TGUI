@@ -67,17 +67,17 @@ namespace tgui
     void ClickableWidget::leftMousePressed(sf::Vector2f pos)
     {
         m_mouseDown = true; /// TODO: Is there any widget for which this can't be in Widget base class?
-        onMousePress->emit(this, pos - getPosition());
+        onMousePress.emit(this, pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ClickableWidget::leftMouseReleased(sf::Vector2f pos)
     {
-        onMouseRelease->emit(this, pos - getPosition());
+        onMouseRelease.emit(this, pos - getPosition());
 
         if (m_mouseDown)
-            onClick->emit(this, pos - getPosition());
+            onClick.emit(this, pos - getPosition());
 
         m_mouseDown = false; /// TODO: Is there any widget for which this can't be in Widget base class?
     }
@@ -92,12 +92,12 @@ namespace tgui
 
     Signal& ClickableWidget::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onMousePress->getName()))
-            return *onMousePress;
-        else if (signalName == toLower(onMouseRelease->getName()))
-            return *onMouseRelease;
-        else if (signalName == toLower(onClick->getName()))
-            return *onClick;
+        if (signalName == toLower(onMousePress.getName()))
+            return onMousePress;
+        else if (signalName == toLower(onMouseRelease.getName()))
+            return onMouseRelease;
+        else if (signalName == toLower(onClick.getName()))
+            return onClick;
         else
             return Widget::getSignal(std::move(signalName));
     }

@@ -317,8 +317,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalWrapper<SignalBool> onCheck   = {"Checked"};   ///< Radio button was chacked. Optional parameter: bool which is always true
-        SignalWrapper<SignalBool> onUncheck = {"Unchecked"}; ///< Radio button was unchacked. Optional parameter: bool which is always false
+        SignalBool onCheck   = {"Checked"};   ///< Radio button was chacked. Optional parameter: bool which is always true
+        SignalBool onUncheck = {"Unchecked"}; ///< Radio button was unchacked. Optional parameter: bool which is always false
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

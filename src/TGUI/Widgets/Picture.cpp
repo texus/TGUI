@@ -137,7 +137,7 @@ namespace tgui
             if (m_possibleDoubleClick)
             {
                 m_possibleDoubleClick = false;
-                onDoubleClick->emit(this, pos - getPosition());
+                onDoubleClick.emit(this, pos - getPosition());
             }
             else // This is the first click
             {
@@ -151,8 +151,8 @@ namespace tgui
 
     Signal& Picture::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onDoubleClick->getName()))
-            return *onDoubleClick;
+        if (signalName == toLower(onDoubleClick.getName()))
+            return onDoubleClick;
         else
             return ClickableWidget::getSignal(std::move(signalName));
     }

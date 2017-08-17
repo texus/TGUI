@@ -79,8 +79,8 @@ namespace tgui
             {
                 auto button = std::dynamic_pointer_cast<Button>(m_widgets[i]);
 
-                button->onPress->disconnectAll();
-                button->onPress->connect([=]() { onButtonPress->emit(this, button->getText()); });
+                button->onPress.disconnectAll();
+                button->onPress.connect([=]() { onButtonPress.emit(this, button->getText()); });
                 m_buttons.push_back(button);
             }
         }
@@ -101,8 +101,8 @@ namespace tgui
     {
         for (auto& button : m_buttons)
         {
-            button->onPress->disconnectAll();
-            button->onPress->connect([=]() { onButtonPress->emit(this, button->getText()); });
+            button->onPress.disconnectAll();
+            button->onPress.connect([=]() { onButtonPress.emit(this, button->getText()); });
         }
     }
 
@@ -143,8 +143,8 @@ namespace tgui
 
             for (auto& button : m_buttons)
             {
-                button->onPress->disconnectAll();
-                button->onPress->connect([=]() { onButtonPress->emit(this, button->getText()); });
+                button->onPress.disconnectAll();
+                button->onPress.connect([=]() { onButtonPress.emit(this, button->getText()); });
             }
         }
 
@@ -212,7 +212,7 @@ namespace tgui
         auto button = Button::create(caption);
         button->setRenderer(getRenderer()->getButton());
         button->setTextSize(m_textSize);
-        button->onPress->connect([=]() { onButtonPress->emit(this, caption); });
+        button->onPress.connect([=]() { onButtonPress.emit(this, caption); });
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
         m_buttons.push_back(button);
@@ -289,8 +289,8 @@ namespace tgui
 
     Signal& MessageBox::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onButtonPress->getName()))
-            return *onButtonPress;
+        if (signalName == toLower(onButtonPress.getName()))
+            return onButtonPress;
         else
             return ChildWindow::getSignal(std::move(signalName));
     }

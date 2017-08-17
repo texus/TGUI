@@ -116,7 +116,7 @@ namespace tgui
             else
                 m_text.setStyle(m_textStyleCached);
 
-            onCheck->emit(this, true);
+            onCheck.emit(this, true);
         }
     }
 

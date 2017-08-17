@@ -213,7 +213,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalWrapper<SignalString> onButtonPress = {"ButtonPressed"}; ///< One of the buttons was pressed. Optional parameter: text of the pressed button
+        SignalString onButtonPress = {"ButtonPressed"}; ///< One of the buttons was pressed. Optional parameter: text of the pressed button
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

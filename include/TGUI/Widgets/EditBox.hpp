@@ -502,8 +502,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalWrapper<SignalString> onTextChange     = {"TextChanged"};        ///< The text was changed. Optional parameter: new text
-        SignalWrapper<SignalString> onReturnKeyPress = {"ReturnKeyPressed"};   ///< The return key was pressed. Optional parameter: text in the edit box
+        SignalString onTextChange     = {"TextChanged"};        ///< The text was changed. Optional parameter: new text
+        SignalString onReturnKeyPress = {"ReturnKeyPressed"};   ///< The return key was pressed. Optional parameter: text in the edit box
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

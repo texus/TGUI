@@ -509,8 +509,8 @@ namespace tgui
 
     Signal& ComboBox::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onItemSelect->getName()))
-            return *onItemSelect;
+        if (signalName == toLower(onItemSelect.getName()))
+            return onItemSelect;
         else
             return Widget::getSignal(std::move(signalName));
     }
@@ -683,17 +683,17 @@ namespace tgui
     {
         m_listBox->hide();
 
-        m_listBox->onItemSelect->connect([this](){
+        m_listBox->onItemSelect.connect([this](){
                                             m_text.setString(m_listBox->getSelectedItem());
-                                            onItemSelect->emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
+                                            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
                                         });
 
-        m_listBox->onUnfocus->connect([this](){
+        m_listBox->onUnfocus.connect([this](){
                                             if (!m_mouseHover)
                                                 hideListBox();
                                         });
 
-        m_listBox->onMouseRelease->connect([this](){ hideListBox(); });
+        m_listBox->onMouseRelease.connect([this](){ hideListBox(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

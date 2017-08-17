@@ -34,21 +34,21 @@ TEST_CASE("[ClickableWidget]")
     {
         REQUIRE_NOTHROW(widget->connect("MousePressed", [](){}));
         REQUIRE_NOTHROW(widget->connect("MousePressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->onMousePress->connect([](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->onMousePress->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->onMousePress->connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->onMousePress.connect([](sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->onMousePress.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(widget->onMousePress.connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
         
         REQUIRE_NOTHROW(widget->connect("MouseReleased", [](){}));
         REQUIRE_NOTHROW(widget->connect("MouseReleased", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->onMouseRelease->connect([](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->onMouseRelease->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->onMouseRelease->connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->onMouseRelease.connect([](sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->onMouseRelease.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(widget->onMouseRelease.connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
         
         REQUIRE_NOTHROW(widget->connect("Clicked", [](){}));
         REQUIRE_NOTHROW(widget->connect("Clicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->onClick->connect([](sf::Vector2f){}));
-        REQUIRE_NOTHROW(widget->onClick->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(widget->onClick->connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->onClick.connect([](sf::Vector2f){}));
+        REQUIRE_NOTHROW(widget->onClick.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(widget->onClick.connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
     }
 
     SECTION("WidgetType")

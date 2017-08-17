@@ -348,7 +348,7 @@ namespace tgui
         /// Optional parameters:
         ///     - The text of the clicked menu item
         ///     - List containing both the name of the menu and the menu item that was clicked
-        SignalWrapper<SignalMenuItem> onMenuItemClick = {"MenuItemClicked"};
+        SignalMenuItem onMenuItemClick = {"MenuItemClicked"};
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

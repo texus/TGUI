@@ -71,8 +71,8 @@ namespace tgui
     {
         for (auto& widget : m_widgets)
         {
-            widget->onSizeChange->disconnect(gridToMove.m_connectedCallbacks[widget]);
-            m_connectedCallbacks[widget] = widget->onSizeChange->connect([this](){ updateWidgets(); });
+            widget->onSizeChange.disconnect(gridToMove.m_connectedCallbacks[widget]);
+            m_connectedCallbacks[widget] = widget->onSizeChange.connect([this](){ updateWidgets(); });
         }
     }
 
@@ -120,8 +120,8 @@ namespace tgui
 
             for (auto& widget : m_widgets)
             {
-                widget->onSizeChange->disconnect(right.m_connectedCallbacks[widget]);
-                m_connectedCallbacks[widget] = widget->onSizeChange->connect([this](){ updateWidgets(); });
+                widget->onSizeChange.disconnect(right.m_connectedCallbacks[widget]);
+                m_connectedCallbacks[widget] = widget->onSizeChange.connect([this](){ updateWidgets(); });
             }
         }
 
@@ -288,7 +288,7 @@ namespace tgui
         updateWidgets();
 
         // Automatically update the widgets when their size changes
-        m_connectedCallbacks[widget] = widget->onSizeChange->connect([this](){ updateWidgets(); });
+        m_connectedCallbacks[widget] = widget->onSizeChange.connect([this](){ updateWidgets(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -34,10 +34,10 @@ TEST_CASE("[MessageBox]")
     {
         REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](){}));
         REQUIRE_NOTHROW(messageBox->connect("ButtonPressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(messageBox->onButtonPress->connect([](){}));
-        REQUIRE_NOTHROW(messageBox->onButtonPress->connect([](sf::String){}));
-        REQUIRE_NOTHROW(messageBox->onButtonPress->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(messageBox->onButtonPress->connect([](tgui::Widget::Ptr, std::string, sf::String){}));
+        REQUIRE_NOTHROW(messageBox->onButtonPress.connect([](){}));
+        REQUIRE_NOTHROW(messageBox->onButtonPress.connect([](sf::String){}));
+        REQUIRE_NOTHROW(messageBox->onButtonPress.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(messageBox->onButtonPress.connect([](tgui::Widget::Ptr, std::string, sf::String){}));
     }
 
     SECTION("WidgetType")

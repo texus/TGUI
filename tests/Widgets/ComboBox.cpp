@@ -35,11 +35,11 @@ TEST_CASE("[ComboBox]")
     {
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](){}));
         REQUIRE_NOTHROW(comboBox->connect("ItemSelected", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(comboBox->onItemSelect->connect([](sf::String){}));
-        REQUIRE_NOTHROW(comboBox->onItemSelect->connect([](sf::String, sf::String){}));
-        REQUIRE_NOTHROW(comboBox->onItemSelect->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(comboBox->onItemSelect->connect([](tgui::Widget::Ptr, std::string, sf::String){}));
-        REQUIRE_NOTHROW(comboBox->onItemSelect->connect([](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
+        REQUIRE_NOTHROW(comboBox->onItemSelect.connect([](sf::String){}));
+        REQUIRE_NOTHROW(comboBox->onItemSelect.connect([](sf::String, sf::String){}));
+        REQUIRE_NOTHROW(comboBox->onItemSelect.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(comboBox->onItemSelect.connect([](tgui::Widget::Ptr, std::string, sf::String){}));
+        REQUIRE_NOTHROW(comboBox->onItemSelect.connect([](tgui::Widget::Ptr, std::string, sf::String, sf::String){}));
     }
 
     SECTION("WidgetType")

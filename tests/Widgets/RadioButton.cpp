@@ -35,17 +35,17 @@ TEST_CASE("[RadioButton]")
     {
         REQUIRE_NOTHROW(radioButton->connect("Checked", [](){}));
         REQUIRE_NOTHROW(radioButton->connect("Checked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(radioButton->onCheck->connect([](){}));
-        REQUIRE_NOTHROW(radioButton->onCheck->connect([](bool){}));
-        REQUIRE_NOTHROW(radioButton->onCheck->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(radioButton->onCheck->connect([](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(radioButton->onCheck.connect([](){}));
+        REQUIRE_NOTHROW(radioButton->onCheck.connect([](bool){}));
+        REQUIRE_NOTHROW(radioButton->onCheck.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(radioButton->onCheck.connect([](tgui::Widget::Ptr, std::string, bool){}));
 
         REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](){}));
         REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(radioButton->onUncheck->connect([](){}));
-        REQUIRE_NOTHROW(radioButton->onUncheck->connect([](bool){}));
-        REQUIRE_NOTHROW(radioButton->onUncheck->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(radioButton->onUncheck->connect([](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(radioButton->onUncheck.connect([](){}));
+        REQUIRE_NOTHROW(radioButton->onUncheck.connect([](bool){}));
+        REQUIRE_NOTHROW(radioButton->onUncheck.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(radioButton->onUncheck.connect([](tgui::Widget::Ptr, std::string, bool){}));
     }
 
     SECTION("WidgetType")
@@ -164,8 +164,8 @@ TEST_CASE("[RadioButton]")
 
             unsigned int checkCount = 0;
             unsigned int uncheckCount = 0;
-            radioButton->onCheck->connect([&]{ genericCallback(checkCount); });
-            radioButton->onUncheck->connect([&]{ genericCallback(uncheckCount); });
+            radioButton->onCheck.connect([&]{ genericCallback(checkCount); });
+            radioButton->onUncheck.connect([&]{ genericCallback(uncheckCount); });
 
             radioButton->leftMousePressed({105, 90});
             REQUIRE(checkCount == 0);

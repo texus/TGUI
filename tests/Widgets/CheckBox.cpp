@@ -34,17 +34,17 @@ TEST_CASE("[CheckBox]")
     {
         REQUIRE_NOTHROW(checkBox->connect("Checked", [](){}));
         REQUIRE_NOTHROW(checkBox->connect("Checked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(checkBox->onCheck->connect([](){}));
-        REQUIRE_NOTHROW(checkBox->onCheck->connect([](bool){}));
-        REQUIRE_NOTHROW(checkBox->onCheck->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(checkBox->onCheck->connect([](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(checkBox->onCheck.connect([](){}));
+        REQUIRE_NOTHROW(checkBox->onCheck.connect([](bool){}));
+        REQUIRE_NOTHROW(checkBox->onCheck.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(checkBox->onCheck.connect([](tgui::Widget::Ptr, std::string, bool){}));
 
         REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](){}));
         REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(checkBox->onUncheck->connect([](){}));
-        REQUIRE_NOTHROW(checkBox->onUncheck->connect([](bool){}));
-        REQUIRE_NOTHROW(checkBox->onUncheck->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(checkBox->onUncheck->connect([](tgui::Widget::Ptr, std::string, bool){}));
+        REQUIRE_NOTHROW(checkBox->onUncheck.connect([](){}));
+        REQUIRE_NOTHROW(checkBox->onUncheck.connect([](bool){}));
+        REQUIRE_NOTHROW(checkBox->onUncheck.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(checkBox->onUncheck.connect([](tgui::Widget::Ptr, std::string, bool){}));
     }
 
     SECTION("WidgetType")
@@ -187,8 +187,8 @@ TEST_CASE("[CheckBox]")
 
             unsigned int checkCount = 0;
             unsigned int uncheckCount = 0;
-            checkBox->onCheck->connect([&]{ genericCallback(checkCount); });
-            checkBox->onUncheck->connect([&]{ genericCallback(uncheckCount); });
+            checkBox->onCheck.connect([&]{ genericCallback(checkCount); });
+            checkBox->onUncheck.connect([&]{ genericCallback(uncheckCount); });
 
             checkBox->check();
             REQUIRE(checkCount == 1);

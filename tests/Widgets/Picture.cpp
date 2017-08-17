@@ -34,10 +34,10 @@ TEST_CASE("[Picture]")
     {
         REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](){}));
         REQUIRE_NOTHROW(picture->connect("DoubleClicked", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(picture->onDoubleClick->connect([](){}));
-        REQUIRE_NOTHROW(picture->onDoubleClick->connect([](sf::Vector2f){}));
-        REQUIRE_NOTHROW(picture->onDoubleClick->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(picture->onDoubleClick->connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
+        REQUIRE_NOTHROW(picture->onDoubleClick.connect([](){}));
+        REQUIRE_NOTHROW(picture->onDoubleClick.connect([](sf::Vector2f){}));
+        REQUIRE_NOTHROW(picture->onDoubleClick.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(picture->onDoubleClick.connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}));
     }
 
     SECTION("WidgetType")
@@ -135,7 +135,7 @@ TEST_CASE("[Picture]")
             picture->setSize(150, 100);
 
             unsigned int doubleClickedCount = 0;
-            picture->onDoubleClick->connect([&](sf::Vector2f pos){ mouseCallback(doubleClickedCount, pos); });
+            picture->onDoubleClick.connect([&](sf::Vector2f pos){ mouseCallback(doubleClickedCount, pos); });
 
             picture->leftMousePressed({115, 80});
             picture->leftMouseReleased({115, 80});

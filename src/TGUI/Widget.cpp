@@ -146,12 +146,12 @@ namespace tgui
             SignalWidgetBase::operator=(other);
             enable_shared_from_this::operator=(other);
 
-            onPositionChange->disconnectAll();
-            onSizeChange->disconnectAll();
-            onFocus->disconnectAll();
-            onUnfocus->disconnectAll();
-            onMouseEnter->disconnectAll();
-            onMouseLeave->disconnectAll();
+            onPositionChange.disconnectAll();
+            onSizeChange.disconnectAll();
+            onFocus.disconnectAll();
+            onUnfocus.disconnectAll();
+            onMouseEnter.disconnectAll();
+            onMouseLeave.disconnectAll();
 
             m_type                 = other.m_type;
             m_enabled              = other.m_enabled;
@@ -296,7 +296,7 @@ namespace tgui
             }
         }
 
-        onPositionChange->emit(this, getPosition());
+        onPositionChange.emit(this, getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -316,7 +316,7 @@ namespace tgui
             }
         }
 
-        onSizeChange->emit(this, getSize());
+        onSizeChange.emit(this, getSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -606,7 +606,7 @@ namespace tgui
 
     void Widget::widgetFocused()
     {
-        onFocus->emit(this);
+        onFocus.emit(this);
 
         // Make sure the parent is also focused
         if (m_parent)
@@ -617,7 +617,7 @@ namespace tgui
 
     void Widget::widgetUnfocused()
     {
-        onUnfocus->emit(this);
+        onUnfocus.emit(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -665,18 +665,18 @@ namespace tgui
 
     Signal& Widget::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onPositionChange->getName()))
-            return *onPositionChange;
-        else if (signalName == toLower(onSizeChange->getName()))
-            return *onSizeChange;
-        else if (signalName == toLower(onFocus->getName()))
-            return *onFocus;
-        else if (signalName == toLower(onUnfocus->getName()))
-            return *onUnfocus;
-        else if (signalName == toLower(onMouseEnter->getName()))
-            return *onMouseEnter;
-        else if (signalName == toLower(onMouseLeave->getName()))
-            return *onMouseLeave;
+        if (signalName == toLower(onPositionChange.getName()))
+            return onPositionChange;
+        else if (signalName == toLower(onSizeChange.getName()))
+            return onSizeChange;
+        else if (signalName == toLower(onFocus.getName()))
+            return onFocus;
+        else if (signalName == toLower(onUnfocus.getName()))
+            return onUnfocus;
+        else if (signalName == toLower(onMouseEnter.getName()))
+            return onMouseEnter;
+        else if (signalName == toLower(onMouseLeave.getName()))
+            return onMouseLeave;
 
         throw Exception{"No signal exists with name '" + std::move(signalName) + "'."};
     }
@@ -698,7 +698,7 @@ namespace tgui
     void Widget::mouseEnteredWidget()
     {
         m_mouseHover = true;
-        onMouseEnter->emit(this);
+        onMouseEnter.emit(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -706,7 +706,7 @@ namespace tgui
     void Widget::mouseLeftWidget()
     {
         m_mouseHover = false;
-        onMouseLeave->emit(this);
+        onMouseLeave.emit(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

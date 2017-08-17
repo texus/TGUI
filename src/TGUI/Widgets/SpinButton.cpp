@@ -148,7 +148,7 @@ namespace tgui
         if (m_value != value)
         {
             m_value = value;
-            onValueChange->emit(this, value);
+            onValueChange.emit(this, value);
         }
     }
 
@@ -292,8 +292,8 @@ namespace tgui
 
     Signal& SpinButton::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onValueChange->getName()))
-            return *onValueChange;
+        if (signalName == toLower(onValueChange.getName()))
+            return onValueChange;
         else
             return ClickableWidget::getSignal(std::move(signalName));
     }

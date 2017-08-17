@@ -239,7 +239,7 @@ namespace tgui
         {
             m_value = value;
 
-            onValueChange->emit(this, m_value);
+            onValueChange.emit(this, m_value);
 
             updateThumbPosition();
         }
@@ -395,8 +395,8 @@ namespace tgui
 
     Signal& Slider::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onValueChange->getName()))
-            return *onValueChange;
+        if (signalName == toLower(onValueChange.getName()))
+            return onValueChange;
         else
             return Widget::getSignal(std::move(signalName));
     }

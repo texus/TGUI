@@ -398,10 +398,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalWrapper<Signal>            onMousePress = {"MousePressed"};  ///< The mouse went down on the widget
-        SignalWrapper<SignalChildWindow> onClose      = {"Closed"};        ///< The window was closed. Optional parameter: pointer to the window
-        SignalWrapper<SignalChildWindow> onMinimize   = {"Minimized"};     ///< The window was minimized. Optional parameter: pointer to the window
-        SignalWrapper<SignalChildWindow> onMaximize   = {"Maximized"};     ///< The window was maximized. Optional parameter: pointer to the window
+        Signal            onMousePress = {"MousePressed"};  ///< The mouse went down on the widget
+        SignalChildWindow onClose      = {"Closed"};        ///< The window was closed. Optional parameter: pointer to the window
+        SignalChildWindow onMinimize   = {"Minimized"};     ///< The window was minimized. Optional parameter: pointer to the window
+        SignalChildWindow onMaximize   = {"Maximized"};     ///< The window was maximized. Optional parameter: pointer to the window
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

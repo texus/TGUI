@@ -103,7 +103,7 @@ namespace tgui
     {
         m_mouseDown = true;
 
-        onMousePress->emit(this, pos - getPosition());
+        onMousePress.emit(this, pos - getPosition());
 
         Container::leftMousePressed(pos);
     }
@@ -112,10 +112,10 @@ namespace tgui
 
     void Panel::leftMouseReleased(sf::Vector2f pos)
     {
-        onMouseRelease->emit(this, pos - getPosition());
+        onMouseRelease.emit(this, pos - getPosition());
 
         if (m_mouseDown)
-            onClick->emit(this, pos - getPosition());
+            onClick.emit(this, pos - getPosition());
 
         m_mouseDown = false;
 
@@ -126,12 +126,12 @@ namespace tgui
 
     Signal& Panel::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onMousePress->getName()))
-            return *onMousePress;
-        else if (signalName == toLower(onMouseRelease->getName()))
-            return *onMouseRelease;
-        else if (signalName == toLower(onClick->getName()))
-            return *onClick;
+        if (signalName == toLower(onMousePress.getName()))
+            return onMousePress;
+        else if (signalName == toLower(onMouseRelease.getName()))
+            return onMouseRelease;
+        else if (signalName == toLower(onClick.getName()))
+            return onClick;
         else
             return Group::getSignal(std::move(signalName));
     }

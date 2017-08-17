@@ -211,7 +211,7 @@ namespace tgui
             if (m_possibleDoubleClick)
             {
                 m_possibleDoubleClick = false;
-                onDoubleClick->emit(this, m_string);
+                onDoubleClick.emit(this, m_string);
             }
             else // This is the first click
             {
@@ -225,8 +225,8 @@ namespace tgui
 
     Signal& Label::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onDoubleClick->getName()))
-            return *onDoubleClick;
+        if (signalName == toLower(onDoubleClick.getName()))
+            return onDoubleClick;
         else
             return ClickableWidget::getSignal(std::move(signalName));
     }

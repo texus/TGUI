@@ -153,10 +153,10 @@ namespace tgui
         {
             m_value = value;
 
-            onValueChange->emit(this, m_value);
+            onValueChange.emit(this, m_value);
 
             if (m_value == m_maximum)
-                onFull->emit(this);
+                onFull.emit(this);
 
             // Recalculate the size of the front image (the size of the part that will be drawn)
             recalculateFillSize();
@@ -256,10 +256,10 @@ namespace tgui
 
     Signal& ProgressBar::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onValueChange->getName()))
-            return *onValueChange;
-        else if (signalName == toLower(onFull->getName()))
-            return *onFull;
+        if (signalName == toLower(onValueChange.getName()))
+            return onValueChange;
+        else if (signalName == toLower(onFull.getName()))
+            return onFull;
         else
             return ClickableWidget::getSignal(std::move(signalName));
     }

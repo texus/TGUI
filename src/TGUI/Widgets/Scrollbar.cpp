@@ -248,7 +248,7 @@ namespace tgui
         {
             m_value = value;
 
-            onValueChange->emit(this, m_value);
+            onValueChange.emit(this, m_value);
 
             // Recalculate the size and position of the thumb image
             updateSize();
@@ -668,8 +668,8 @@ namespace tgui
 
     Signal& Scrollbar::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onValueChange->getName()))
-            return *onValueChange;
+        if (signalName == toLower(onValueChange.getName()))
+            return onValueChange;
         else
             return Widget::getSignal(std::move(signalName));
     }

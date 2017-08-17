@@ -135,7 +135,7 @@ namespace tgui
 
             const sf::Vector2f containerSize = view.getSize();
             m_container->m_size = containerSize;
-            m_container->onSizeChange->emit(m_container.get(), m_container->getSize());
+            m_container->onSizeChange.emit(m_container.get(), m_container->getSize());
 
             for (auto& widget : m_container->m_widgets)
                 widget->updateParentSize(containerSize);

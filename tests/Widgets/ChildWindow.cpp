@@ -35,29 +35,29 @@ TEST_CASE("[ChildWindow]")
     {
         REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](){}));
         REQUIRE_NOTHROW(childWindow->connect("MousePressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->onMousePress->connect([](){}));
-        REQUIRE_NOTHROW(childWindow->onMousePress->connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(childWindow->onMousePress.connect([](){}));
+        REQUIRE_NOTHROW(childWindow->onMousePress.connect([](tgui::Widget::Ptr, std::string){}));
 
         REQUIRE_NOTHROW(childWindow->connect("Closed", [](){}));
         REQUIRE_NOTHROW(childWindow->connect("Closed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->onClose->connect([](){}));
-        REQUIRE_NOTHROW(childWindow->onClose->connect([](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->onClose->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->onClose->connect([](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->onClose.connect([](){}));
+        REQUIRE_NOTHROW(childWindow->onClose.connect([](tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->onClose.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(childWindow->onClose.connect([](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
 
         REQUIRE_NOTHROW(childWindow->connect("Maximized", [](){}));
         REQUIRE_NOTHROW(childWindow->connect("Maximized", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->onMaximize->connect([](){}));
-        REQUIRE_NOTHROW(childWindow->onMaximize->connect([](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->onMaximize->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->onMaximize->connect([](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->onMaximize.connect([](){}));
+        REQUIRE_NOTHROW(childWindow->onMaximize.connect([](tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->onMaximize.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(childWindow->onMaximize.connect([](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
 
         REQUIRE_NOTHROW(childWindow->connect("Minimized", [](){}));
         REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->onMinimize->connect([](){}));
-        REQUIRE_NOTHROW(childWindow->onMinimize->connect([](tgui::ChildWindow::Ptr){}));
-        REQUIRE_NOTHROW(childWindow->onMinimize->connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(childWindow->onMinimize->connect([](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->onMinimize.connect([](){}));
+        REQUIRE_NOTHROW(childWindow->onMinimize.connect([](tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->onMinimize.connect([](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(childWindow->onMinimize.connect([](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
     }
 
     SECTION("WidgetType")
@@ -202,8 +202,8 @@ TEST_CASE("[ChildWindow]")
             unsigned int mouseEnteredCount = 0;
             unsigned int mouseLeftCount = 0;
 
-            childWindow->onMouseEnter->connect([&]{ genericCallback(mouseEnteredCount); });
-            childWindow->onMouseLeave->connect([&]{ genericCallback(mouseLeftCount); });
+            childWindow->onMouseEnter.connect([&]{ genericCallback(mouseEnteredCount); });
+            childWindow->onMouseLeave.connect([&]{ genericCallback(mouseLeftCount); });
 
             auto parent = tgui::Panel::create({300, 200});
             parent->setPosition({30, 25});

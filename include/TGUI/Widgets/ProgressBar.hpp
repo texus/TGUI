@@ -306,8 +306,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalWrapper<SignalUInt> onValueChange = {"ValueChanged"}; ///< Value of the progress bar changed. Optional parameter: new value
-        SignalWrapper<Signal>     onFull        = {"Full"};         ///< Value of the progress bar changed and he progress bar became full
+        SignalUInt onValueChange = {"ValueChanged"}; ///< Value of the progress bar changed. Optional parameter: new value
+        Signal     onFull        = {"Full"};         ///< Value of the progress bar changed and he progress bar became full
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

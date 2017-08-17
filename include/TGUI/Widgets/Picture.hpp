@@ -217,7 +217,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalWrapper<SignalVector2f> onDoubleClick = {"DoubleClicked"};  ///< The picture was double clicked. Optional parameter: mouse position relative to picture
+        SignalVector2f onDoubleClick = {"DoubleClicked"};  ///< The picture was double clicked. Optional parameter: mouse position relative to picture
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

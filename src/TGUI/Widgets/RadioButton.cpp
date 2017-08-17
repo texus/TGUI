@@ -127,7 +127,7 @@ namespace tgui
             else
                 m_text.setStyle(m_textStyleCached);
 
-            onCheck->emit(this, true);
+            onCheck.emit(this, true);
         }
     }
 
@@ -142,7 +142,7 @@ namespace tgui
             updateTextColor();
             m_text.setStyle(m_textStyleCached);
 
-            onUncheck->emit(this, false);
+            onUncheck.emit(this, false);
         }
     }
 
@@ -275,10 +275,10 @@ namespace tgui
 
     Signal& RadioButton::getSignal(std::string&& signalName)
     {
-        if (signalName == toLower(onCheck->getName()))
-            return *onCheck;
-        else if (signalName == toLower(onUncheck->getName()))
-            return *onUncheck;
+        if (signalName == toLower(onCheck.getName()))
+            return onCheck;
+        else if (signalName == toLower(onUncheck.getName()))
+            return onUncheck;
         else
             return ClickableWidget::getSignal(std::move(signalName));
     }
