@@ -70,7 +70,6 @@ namespace tgui
 
         m_fullyClickable = fullyClickable;
         m_sprite.setTexture(texture);
-        m_sprite.setPosition(getPosition());
         m_sprite.setOpacity(m_opacityCached);
     }
 
