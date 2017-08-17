@@ -582,7 +582,7 @@ namespace tgui
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
         /// @param signalName   Name of the signal
-        /// @param handler      Callback function that is giventhe extra arguments provided to this function as arguments
+        /// @param handler      Callback function that is given the extra arguments provided to this function as arguments
         /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
         ///
         /// @return Unique id of the connection
@@ -612,6 +612,26 @@ namespace tgui
                 (const std::shared_ptr<Widget>& w, const std::string& s)
                 { f(args..., w, s); }
             );
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connect a signal handler to multiple signals
+        ///
+        /// @param signalNames  List of signal names that will trigger the signal handler
+        /// @param handler      Callback function
+        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
+        ///
+        /// @return Unique id of the last connection. When passing e.g. 2 signal names, the first signal will correspond to id-1.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... Args>
+        unsigned int connect(std::initializer_list<std::string> signalNames, Func&& handler, const Args&... args)
+        {
+            unsigned int lastId = 0;
+            for (const auto& signalName : signalNames)
+                lastId = connect(signalName, handler, args...);
+
+            return lastId;
         }
 
 
