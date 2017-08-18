@@ -16,7 +16,7 @@ if [[ ! -d "$SFML_ROOT/lib" || ! -f "$SFML_ROOT/revision_cache" || `git rev-pars
   git apply ../tests/ubuntu_sfml_gcc_patch.diff
 
   git rev-parse HEAD > "$SFML_ROOT/revision_cache"
-  cmake -DCMAKE_INSTALL_PREFIX=$SFML_ROOT .
+  cmake -DCMAKE_INSTALL_PREFIX=$SFML_ROOT -DSFML_BUILD_AUDIO=FALSE -DSFML_BUILD_NETWORK=FALSE .
   make -j2
   make install
 else

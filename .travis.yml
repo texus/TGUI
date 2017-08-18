@@ -7,16 +7,32 @@ git:
 matrix:
   include:
   - os: linux
-    compiler: g++-4.9
     env: COMPILER=g++-4.9
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-4.9
+        - libudev-dev
+        - libxrandr-dev
     cache:
       ccache: true
       directories:
       - $HOME/SFML_LINUX
 
   - os: linux
-    compiler: g++-6
     env: COMPILER=g++-6
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-6
+        - libudev-dev
+        - libx11-xcb-dev
+        - libxcb-image0-dev
+        - libxcb-randr0-dev
     cache:
       ccache: true
       directories:
@@ -26,38 +42,6 @@ matrix:
     cache:
       directories:
       - $HOME/SFML_OSX
-
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    - george-edison55-precise-backports
-    packages:
-    - g++-4.9
-    - g++-6
-    - ccache
-    - libfreetype6-dev
-    - libjpeg-dev
-    - libx11-dev
-    - libxrandr-dev
-    - libxcb1-dev
-    - libx11-xcb-dev
-    - libxcb-randr0-dev
-    - libxcb-image0-dev
-    - libgl1-mesa-dev
-    - libflac-dev
-    - libogg-dev
-    - libvorbis-dev
-    - libvorbisenc2
-    - libvorbisfile3
-    - libopenal-dev
-    - libpthread-stubs0-dev
-    - libglew-dev
-    - libgpgme11-dev
-    - libsndfile1-dev
-    - libudev-dev
-    - cmake
-    - cmake-data
 
 script:
   - >

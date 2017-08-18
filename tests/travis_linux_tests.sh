@@ -11,6 +11,11 @@ if [[ ! -d "$SFML_ROOT/lib" ]]; then
   wget -O SFML.tar.gz https://github.com/SFML/SFML/archive/${SFML_VERSION}.tar.gz
   tar -xzf SFML.tar.gz
   cd SFML-${SFML_VERSION}
+
+  # Skip building audio, which required several more dependencies to be installed in order to build SFML
+  # The SFML_BUILD_AUDIO cmake option did not exist yet in the SFML version we use here.
+  sed -i "s/add_subdirectory(Audio)/#add_subdirectory(Audio)/g" src/SFML/CMakeLists.txt
+
   cmake -DCMAKE_INSTALL_PREFIX=$SFML_ROOT .
   make -j2
   make install
