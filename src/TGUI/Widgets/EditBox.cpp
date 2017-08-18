@@ -1210,7 +1210,7 @@ namespace tgui
         if (m_textAlignment != Alignment::Left)
         {
             // Calculate the text width
-            const float textWidth = m_textFull.getSize().x;
+            const float textWidth = m_textFull.getString().isEmpty() ? m_defaultText.getSize().x : m_textFull.getSize().x;
 
             // Check if a layout would make sense
             if (textWidth < getVisibleEditBoxWidth())
