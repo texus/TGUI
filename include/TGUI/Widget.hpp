@@ -26,11 +26,12 @@
 #ifndef TGUI_WIDGET_HPP
 #define TGUI_WIDGET_HPP
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Signal.hpp>
 #include <TGUI/Sprite.hpp>
-#include <TGUI/Transformable.hpp>
+#include <TGUI/Layout.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
 #include <TGUI/Aurora/Tools/Downcast.hpp>
@@ -38,6 +39,8 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+
+#include <unordered_set>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,7 +58,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief The parent class for every widget
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Widget : public Transformable, public SignalWidgetBase, public std::enable_shared_from_this<Widget>
+    class TGUI_API Widget : public SignalWidgetBase, public std::enable_shared_from_this<Widget>
     {
     public:
 
@@ -65,7 +68,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget();
 
@@ -99,7 +101,6 @@ namespace tgui
         /// @brief Sets a new renderer for the widget. The renderer determines how the widget looks
         ///
         /// @param rendererData  new renderer data
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setRenderer(const std::shared_ptr<RendererData>& rendererData);
 
@@ -108,7 +109,6 @@ namespace tgui
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
         /// @return Temporary pointer to the renderer
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         WidgetRenderer* getRenderer() const;
 
@@ -129,16 +129,43 @@ namespace tgui
         /// // Place the widget on an exact position
         /// widget->setPosition({40, 30});
         ///
-        /// // Place the widget 50 pixels below another widget
-        /// widget->setPosition(otherWidget->getPosition() + sf::Vector2f{0, otherWidget->getSize().y + 50});
+        /// // Place the widget relative to the size of its parent
+        /// widget->setPosition({"5%", "10%"});
         ///
         /// // Place the widget 50 pixels below another widget and automatically move it when the other widget moves
         /// widget->setPosition({tgui::bindLeft(otherWidget), tgui::bindBottom(otherWidget) + 50});
         /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setPosition(const Layout2d& position) override;
-        using Transformable::setPosition;
+        virtual void setPosition(const Layout2d& position);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the position of the widget
+        ///
+        /// This function completely overwrites the previous position.
+        /// See the move function to apply an offset based on the previous position instead.
+        /// The default position of a transformable widget is (0, 0).
+        ///
+        /// @param x  New x coordinate
+        /// @param y  New y coordinate
+        ///
+        /// @warning This setPosition overload must never be used from internal TGUI code or by custom widget implementations
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setPosition(Layout x, Layout y)
+        {
+            setPosition({std::move(x), std::move(y)});
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Gets the position of the widget
+        ///
+        /// @return Current position
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::Vector2f getPosition() const
+        {
+            return m_position.getValue();
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,23 +178,56 @@ namespace tgui
         /// // Give the widget an exact size
         /// widget->setSize({40, 30});
         ///
-        /// // Make the widget 50 pixels higher than some other widget
-        /// widget->setSize(otherWidget->getSize() + sf::Vector2f{0, 50});
+        /// // Give the widget a size relative to the size of its parent
+        /// widget->setSize({"20%", "5%"});
         ///
         /// // Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes
-        /// widget->setSize(tgui::bindSize(otherWidget) + sf::Vector2f{0, 50});
+        /// widget->setSize({200, tgui::bindHeight(otherWidget) + 50});
         /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void setSize(const Layout2d& size) override;
-        using Transformable::setSize;
+        virtual void setSize(const Layout2d& size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the size of the widget
+        ///
+        /// @param width   Width of the widget
+        /// @param height  Height of the widget
+        ///
+        /// @warning This setSize overload must never be used from internal TGUI code or by custom widget implementations
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSize(Layout width, Layout height)
+        {
+            setSize({std::move(width), std::move(height)});
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the size of the widget
+        ///
+        /// @return Size of the widget
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        sf::Vector2f getSize() const
+        {
+            return m_size.getValue();
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the entire size that the widget is using
+        ///
+        /// This function will return a value equal or greater than what getSize returns.
+        /// If the widget would e.g. have borders around it then this function will return the size, including these borders.
+        ///
+        /// @return Full size of the widget
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual sf::Vector2f getFullSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the absolute position of the widget instead of the relative position to its parent
         ///
         /// @return Absolute position of the widget
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getAbsolutePosition() const;
 
@@ -178,7 +238,6 @@ namespace tgui
         /// The offset is (0,0) for almost all widgets.
         ///
         /// @return Offset of the widget
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual sf::Vector2f getWidgetOffset() const;
 
@@ -189,7 +248,6 @@ namespace tgui
         /// The widget is visible by default.
         ///
         /// @see hide
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void show();
 
@@ -206,7 +264,6 @@ namespace tgui
         /// @param duration Duration of the animation
         ///
         /// @see hideWithEffect
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void showWithEffect(ShowAnimationType type, sf::Time duration);
 
@@ -216,7 +273,6 @@ namespace tgui
         ///
         /// The widget won't receive events (and thus won't send callbacks) nor will it be drawn when hidden.
         /// The widget is visible by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void hide();
 
@@ -233,7 +289,6 @@ namespace tgui
         /// @param duration Duration of the animation
         ///
         /// @see showWithEffect
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void hideWithEffect(ShowAnimationType type, sf::Time duration);
 
@@ -245,7 +300,6 @@ namespace tgui
         ///
         /// If this function returns false then the widget is hidden, which means that it won't receive events (and thus won't
         /// send callbacks) and it won't be drawn. All widgets are visible by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isVisible() const
         {
@@ -258,7 +312,6 @@ namespace tgui
         ///
         /// The widget will receive events and send callbacks again.
         /// All widgets are enabled by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void enable();
 
@@ -268,7 +321,6 @@ namespace tgui
         ///
         /// The widget will no longer receive events and it will thus no longer send callbacks.
         /// All widgets are enabled by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void disable();
 
@@ -280,7 +332,6 @@ namespace tgui
         ///
         /// If this function returns false then the widget is disabled and will longer receive events and it will thus no longer send callbacks.
         /// All widgets are enabled by default.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isEnabled() const
         {
@@ -310,7 +361,6 @@ namespace tgui
         /// @brief Returns true when the widget is focused and false otherwise
         ///
         /// @return Is the widget focused?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isFocused() const
         {
@@ -322,7 +372,6 @@ namespace tgui
         /// @brief Returns the type of the widget
         ///
         /// @return Type of the widget
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const std::string& getWidgetType() const;
 
@@ -331,7 +380,6 @@ namespace tgui
         /// @brief Returns a pointer to the parent widget
         ///
         /// @return Pointer to the parent
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Container* getParent() const
         {
@@ -359,7 +407,6 @@ namespace tgui
         /// @brief Sets the tool tip that should be displayed when hovering over the widget
         ///
         /// @param toolTip  Any widget that you want to use as a tool tip (usually a Label)
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setToolTip(Widget::Ptr toolTip);
 
@@ -368,7 +415,6 @@ namespace tgui
         /// @brief Returns the tool tip that is displayed when hovering over the widget
         ///
         /// @return The widget that is used as tool tip or nullptr when no tool tip has been set
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr getToolTip();
 
@@ -392,7 +438,6 @@ namespace tgui
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(sf::Vector2f pos) const = 0;
 
@@ -458,9 +503,50 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
-        // Inform the widget that the size of its parent has been changed.
+        /// @brief Returns the layout object that is being used for the position
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateParentSize(sf::Vector2f size);
+        const Layout2d& getPositionLayout() const
+        {
+            return m_position;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Returns the layout object that is being used for the size
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const Layout2d& getSizeLayout() const
+        {
+            return m_size;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// Requests the widget to inform the layout about position changes
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void bindPositionLayout(Layout* layout);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// Informs the widget that the layout no longer needs to know about position changes
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void unbindPositionLayout(Layout* layout);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// Requests the widget to inform the layout about position changes
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void bindSizeLayout(Layout* layout);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// Informs the widget that the layout no longer needs to know about position changes
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void unbindSizeLayout(Layout* layout);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -470,7 +556,6 @@ namespace tgui
         ///
         /// @param target Render target to draw to
         /// @param states Current render states
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 
@@ -482,7 +567,6 @@ namespace tgui
         /// If you know what kind of widget you are copying, you should use the copy function.
         ///
         /// @return Copy of the widget
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Widget::Ptr clone() const = 0;
 
@@ -506,21 +590,18 @@ namespace tgui
         /// @brief Function called when one of the properties of the renderer is changed
         ///
         /// @param property  Lowercase name of the property that was changed
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void rendererChanged(const std::string& property);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief This function is called when the mouse enters the widget
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseEnteredWidget();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief This function is called when the mouse leaves the widget
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseLeftWidget();
 
@@ -568,6 +649,13 @@ namespace tgui
     protected:
 
         std::string m_type;
+
+        Layout2d m_position;
+        Layout2d m_size;
+
+        // Layouts that need to recalculate their value when the position or size of this widget changes
+        std::unordered_set<Layout*> m_boundPositionLayouts;
+        std::unordered_set<Layout*> m_boundSizeLayouts;
 
         // When a widget is disabled, it will no longer receive events
         bool m_enabled = true;

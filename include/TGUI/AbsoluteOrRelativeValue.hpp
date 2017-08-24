@@ -23,115 +23,139 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_CLICKABLE_WIDGET_HPP
-#define TGUI_CLICKABLE_WIDGET_HPP
+#ifndef TGUI_ABSOLUTE_OR_RELATIVE_VALUE_HPP
+#define TGUI_ABSOLUTE_OR_RELATIVE_VALUE_HPP
 
-
-#include <TGUI/Widget.hpp>
+#include <TGUI/Global.hpp>
+#include <TGUI/to_string.hpp>
+#include <type_traits>
+#include <string>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Clickable widget
+    /// @brief Class to store the a value that is either a constant or a ratio
+    ///
+    /// You don't have to explicitly create an instance of this class, numbers and strings are implicitly cast.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API ClickableWidget : public Widget
+    class TGUI_API AbsoluteOrRelativeValue
     {
     public:
 
-        typedef std::shared_ptr<ClickableWidget> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const ClickableWidget> ConstPtr; ///< Shared constant widget pointer
-
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ClickableWidget();
+        TGUI_CONSTEXPR AbsoluteOrRelativeValue() = default;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates a new clickable widget
+        /// @brief Constructor to set constant
         ///
-        /// @param size  Size of the clickable widget
-        ///
-        /// @return The new clickable widget
-        ///
+        /// @param constant  Value to set
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ClickableWidget::Ptr create(Layout2d size = {"100%", "100%"});
+        template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+        TGUI_CONSTEXPR AbsoluteOrRelativeValue(T constant) :
+            m_constant    {true},
+            m_value       {static_cast<float>(constant)}
+        {
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Makes a copy of another clickable widget
+        /// @brief Construct the value from a string that either contains a value or a percentage
         ///
-        /// @param widget  The other clickable widget
-        ///
-        /// @return The new clickable widget
-        ///
+        /// @param expression  String to parse
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ClickableWidget::Ptr copy(ClickableWidget::ConstPtr widget);
+        AbsoluteOrRelativeValue(const char* expression) :
+            AbsoluteOrRelativeValue{std::string{expression}}
+        {
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
+        /// @brief Construct the value from a string that either contains a value or a percentage
         ///
-        /// @return Is the mouse on top of the widget?
-        ///
+        /// @param expression  String to parse
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool mouseOnWidget(sf::Vector2f pos) const override;
+        AbsoluteOrRelativeValue(const std::string& expression)
+        {
+            if (!expression.empty() && (expression.back() == '%'))
+            {
+                m_constant = false;
+                m_ratio    = tgui::stof(expression.substr(0, expression.length()-1)) / 100.f;
+            }
+            else
+            {
+                m_constant = true;
+                m_value    = tgui::stof(expression.substr(0, expression.length()));
+            }
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the value
+        ///
+        /// @return The constant value or the value based on the given ratio and parent size
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_CONSTEXPR float getValue() const
+        {
+            return m_value;
+        }
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
+        /// @brief Update the size to which the value depends on if the value is relative
+        ///
+        /// @param newParentSize  New size from which to take the relative value
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void leftMousePressed(sf::Vector2f pos) override;
+        TGUI_CONSTEXPR void updateParentSize(float newParentSize)
+        {
+            if (!m_constant)
+            {
+                m_parentValue = newParentSize;
+                m_value = m_ratio * newParentSize;
+            }
+        }
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void leftMouseReleased(sf::Vector2f pos) override;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Draw the widget to a render target
+        /// @brief Converts the value to a string
         ///
-        /// @param target Render target to draw to
-        /// @param states Current render states
-        ///
+        /// @return String representation of the value
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+        std::string toString() const
+        {
+            if (m_constant)
+                return to_string(m_value);
+            else
+                return to_string(m_ratio * 100) + '%';
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Retrieves a signal based on its name
-        ///
-        /// @param signalName  Name of the signal
-        ///
-        /// @return Signal that corresponds to the name
-        ///
-        /// @throw Exception when the name does not match any signal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Signal& getSignal(std::string&& signalName) override;
+        bool  m_constant     = true;
+        float m_value        = 0;
+        float m_ratio        = 0;
+        float m_parentValue  = 0;
+    };
 
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Makes a copy of the widget
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Widget::Ptr clone() const override
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Helper class to create an AbsoluteOrRelativeValue object containing a relative value without using a string
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    struct TGUI_API RelativeValue : AbsoluteOrRelativeValue
+    {
+        explicit TGUI_CONSTEXPR RelativeValue(float ratio)
         {
-            return std::make_shared<ClickableWidget>(*this);
+            m_constant = false;
+            m_ratio    = ratio;
         }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
-
-        SignalVector2f onMousePress   = {"MousePressed"};   ///< The mouse went down on the widget. Optional parameter: mouse position relative to widget
-        SignalVector2f onMouseRelease = {"MouseReleased"};  ///< The mouse was released on top of the widget. Optional parameter: mouse position relative to widget
-        SignalVector2f onClick        = {"Clicked"};        ///< The widget was clicked. Optional parameter: mouse position relative to widget
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,5 +163,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_CLICKABLE_WIDGET_HPP
-
+#endif // TGUI_ABSOLUTE_OR_RELATIVE_VALUE_HPP

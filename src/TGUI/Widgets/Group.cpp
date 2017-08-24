@@ -120,7 +120,7 @@ namespace tgui
         if (property == "padding")
         {
             m_paddingCached = getRenderer()->getPadding();
-            updateSize();
+            setSize(m_size);
         }
         else
             Container::rendererChanged(property);

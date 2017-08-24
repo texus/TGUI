@@ -264,7 +264,7 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
-            updateSize();
+            setSize(m_size);
         }
         else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordown") || (property == "textcolordisabled")
               || (property == "textstyle") || (property == "textstylehover") || (property == "textstyledown") || (property == "textstyledisabled"))

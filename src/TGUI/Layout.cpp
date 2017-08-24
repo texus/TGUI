@@ -24,7 +24,11 @@
 
 
 #include <TGUI/Layout.hpp>
-#include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Widget.hpp>
+#include <TGUI/Gui.hpp>
+#include <TGUI/to_string.hpp>
+#include <SFML/System/Err.hpp>
+#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,23 +36,740 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Layout::Layout(const std::string& expression) :
-        Layout(Deserializer::deserialize(ObjectConverter::Type::Layout, expression).getLayout())
+    Layout::Layout(std::string expression)
     {
+        // Empty strings have value 0 (although this might indicate a mistake in the expression, it is valid for unary minus)
+        expression = tgui::trim(expression);
+        if (expression.empty())
+            return;
+
+        auto searchPos = expression.find_first_of("+-*/()");
+
+        // Extract the value from the string when there are no more operators
+        if (searchPos == std::string::npos)
+        {
+            // Convert percentages to references to the parent widget
+            if (expression.back() == '%')
+            {
+                // We don't know if we have to bind the width or height, so bind "size" and let the connectWidget function figure it out later
+                *this = Layout{Layout::Operation::Multiplies,
+                               std::make_unique<Layout>(tgui::stof(expression.substr(0, expression.length()-1)) / 100.f),
+                               std::make_unique<Layout>("&.size")};
+            }
+            else
+            {
+                // The expression might reference to a widget instead of being a constant
+                expression = tgui::toLower(expression);
+                if ((expression.substr(expression.size()-1) == "x")
+                 || (expression.substr(expression.size()-1) == "y")
+                 || (expression.substr(expression.size()-1) == "w") // width
+                 || (expression.substr(expression.size()-1) == "h") // height
+                 || (expression.size() >= 4 && expression.substr(expression.size()-4) == "left")
+                 || (expression.size() >= 3 && expression.substr(expression.size()-3) == "top")
+                 || (expression.size() >= 5 && expression.substr(expression.size()-5) == "width")
+                 || (expression.size() >= 6 && expression.substr(expression.size()-6) == "height")
+                 || (expression.size() >= 4 && expression.substr(expression.size()-4) == "size")
+                 || (expression.size() >= 3 && expression.substr(expression.size()-3) == "pos")
+                 || (expression.size() >= 8 && expression.substr(expression.size()-8) == "position"))
+                {
+                    // We can't search for the referenced widget yet as no widget is connected to the widget yet, so store the string for future parsing
+                    m_boundString = expression;
+                    m_operation = Operation::BindingString;
+                }
+                else if (expression.size() >= 5 && expression.substr(expression.size()-5) == "right")
+                {
+                    *this = Layout{Operation::Plus,
+                                   std::make_unique<Layout>(expression.substr(0, expression.size()-5) + "left"),
+                                   std::make_unique<Layout>(expression.substr(0, expression.size()-5) + "width")};
+                }
+                else if (expression.size() >= 6 && expression.substr(expression.size()-6) == "bottom")
+                {
+                    *this = Layout{Operation::Plus,
+                                   std::make_unique<Layout>(expression.substr(0, expression.size()-6) + "top"),
+                                   std::make_unique<Layout>(expression.substr(0, expression.size()-6) + "height")};
+                }
+                else // Constant value
+                    m_value = tgui::stof(expression);
+            }
+
+            return;
+        }
+
+        // The string contains an expression, so split it up in multiple layouts
+        std::list<Layout> operands;
+        std::vector<Operation> operators;
+        decltype(searchPos) prevSearchPos = 0;
+        while (searchPos != std::string::npos)
+        {
+            switch (expression[searchPos])
+            {
+            case '+':
+                operators.push_back(Operation::Plus);
+                operands.emplace_back(expression.substr(prevSearchPos, searchPos - prevSearchPos));
+                break;
+            case '-':
+                operators.push_back(Operation::Minus);
+                operands.emplace_back(expression.substr(prevSearchPos, searchPos - prevSearchPos));
+                break;
+            case '*':
+                operators.push_back(Operation::Multiplies);
+                operands.emplace_back(expression.substr(prevSearchPos, searchPos - prevSearchPos));
+                break;
+            case '/':
+                operators.push_back(Operation::Divides);
+                operands.emplace_back(expression.substr(prevSearchPos, searchPos - prevSearchPos));
+                break;
+            case '(':
+            {
+                // Find corresponding closing bracket
+                unsigned int bracketCount = 0;
+                auto bracketPos = expression.find_first_of("()", searchPos + 1);
+                while (bracketPos != std::string::npos)
+                {
+                    if (expression[bracketPos] == '(')
+                        bracketCount++;
+                    else if (bracketCount > 0)
+                        bracketCount--;
+                    else
+                    {
+                        // If the entire layout was in brackets then remove these brackets
+                        if ((searchPos == 0) && (bracketPos == expression.size()-1))
+                        {
+                            *this = Layout{expression.substr(1, expression.size()-2)};
+                            return;
+                        }
+                        else // The brackets form a sub-expression
+                            searchPos = bracketPos;
+
+                        break;
+                    }
+
+                    bracketPos = expression.find_first_of("()", bracketPos + 1);
+                }
+
+                if (bracketPos == std::string::npos)
+                {
+                    sf::err() << "TGUI warning: bracket mismatch while parsing layout string '" << expression << "'." << std::endl;
+                    return;
+                }
+                else
+                {
+                    // Search for the next operator, starting from the closing bracket, but keeping prevSearchPos before the opening bracket
+                    searchPos = expression.find_first_of("+-*/()", searchPos + 1);
+                    continue;
+                }
+            }
+            case ')':
+                sf::err() << "TGUI warning: bracket mismatch while parsing layout string '" << expression << "'." << std::endl;
+                return;
+            };
+
+            prevSearchPos = searchPos + 1;
+            searchPos = expression.find_first_of("+-*/()", searchPos + 1);
+        }
+
+        operands.emplace_back(expression.substr(prevSearchPos));
+
+        // First perform all * and / operations
+        auto operandIt = operands.begin();
+        for (std::size_t i = 0; i < operators.size(); ++i)
+        {
+            if ((operators[i] == Operation::Multiplies) || (operators[i] == Operation::Divides))
+            {
+                auto nextOperandIt = operandIt;
+                std::advance(nextOperandIt, 1);
+
+                (*operandIt) = Layout{operators[i],
+                                      std::make_unique<Layout>(*operandIt),
+                                      std::make_unique<Layout>(*nextOperandIt)};
+
+                operands.erase(nextOperandIt);
+            }
+            else
+                ++operandIt;
+        }
+
+        // Now perform all + and - operations
+        operandIt = operands.begin();
+        for (std::size_t i = 0; i < operators.size(); ++i)
+        {
+            if ((operators[i] == Operation::Plus) || (operators[i] == Operation::Minus))
+            {
+                assert(operandIt != operands.end());
+
+                auto nextOperandIt = operandIt;
+                std::advance(nextOperandIt, 1);
+
+                assert(nextOperandIt != operands.end());
+
+                (*operandIt) = Layout{operators[i],
+                                      std::make_unique<Layout>(*operandIt),
+                                      std::make_unique<Layout>(*nextOperandIt)};
+
+                operands.erase(nextOperandIt);
+            }
+        }
+
+        assert(operands.size() == 1);
+        *this = operands.front();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout::Layout(Operation operation, Widget* boundWidget) :
+        m_operation  {operation},
+        m_boundWidget{boundWidget}
+    {
+        assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop) || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight));
+        assert(m_boundWidget != nullptr);
+
+        if (m_operation == Operation::BindingLeft)
+            m_value = m_boundWidget->getPosition().x;
+        else if (m_operation == Operation::BindingTop)
+            m_value = m_boundWidget->getPosition().y;
+        else if (m_operation == Operation::BindingWidth)
+            m_value = m_boundWidget->getSize().x;
+        else if (m_operation == Operation::BindingHeight)
+            m_value = m_boundWidget->getSize().y;
+
+        resetPointers();
+        recalculateValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout::Layout(Operation operation, std::unique_ptr<Layout> leftOperand, std::unique_ptr<Layout> rightOperand) :
+        m_operation   {operation},
+        m_leftOperand {std::move(leftOperand)},
+        m_rightOperand{std::move(rightOperand)}
+    {
+        assert(m_leftOperand != nullptr);
+        assert(m_rightOperand != nullptr);
+        resetPointers();
+        recalculateValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout::Layout(const Layout& other) :
+        m_value          {other.m_value},
+        m_parent         {other.m_parent},
+        m_operation      {other.m_operation},
+        m_leftOperand    {other.m_leftOperand ? std::make_unique<Layout>(*other.m_leftOperand) : nullptr},
+        m_rightOperand   {other.m_rightOperand ? std::make_unique<Layout>(*other.m_rightOperand) : nullptr},
+        m_boundWidget    {other.m_boundWidget},
+        m_boundString    {other.m_boundString},
+        m_connectedWidget{nullptr}
+    {
+        // Disconnect the bound widget if a string was used, the same name may apply to a different widget now
+        if (!m_boundString.empty())
+            m_boundWidget = nullptr;
+
+        resetPointers();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout::Layout(Layout&& other) :
+        m_value          {std::move(other.m_value)},
+        m_parent         {std::move(other.m_parent)},
+        m_operation      {other.m_operation},
+        m_leftOperand    {std::move(other.m_leftOperand)},
+        m_rightOperand   {std::move(other.m_rightOperand)},
+        m_boundWidget    {other.m_boundWidget},
+        m_boundString    {std::move(other.m_boundString)},
+        m_connectedWidget{nullptr}
+    {
+        resetPointers();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout& Layout::operator=(const Layout& other)
+    {
+        if (this != &other)
+        {
+            m_value           = other.m_value;
+            m_parent          = other.m_parent;
+            m_operation       = other.m_operation;
+            m_leftOperand     = other.m_leftOperand ? std::make_unique<Layout>(*other.m_leftOperand) : nullptr;
+            m_rightOperand    = other.m_rightOperand ? std::make_unique<Layout>(*other.m_rightOperand) : nullptr;
+            m_boundWidget     = other.m_boundWidget;
+            m_boundString     = other.m_boundString;
+            m_connectedWidget = nullptr;
+
+            // Disconnect the bound widget if a string was used, the same name may apply to a different widget now
+            if (!m_boundString.empty())
+                m_boundWidget = nullptr;
+
+            resetPointers();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout& Layout::operator=(Layout&& other)
+    {
+        if (this != &other)
+        {
+            m_value           = std::move(other.m_value);
+            m_parent          = std::move(other.m_parent);
+            m_operation       = other.m_operation;
+            m_leftOperand     = std::move(other.m_leftOperand);
+            m_rightOperand    = std::move(other.m_rightOperand);
+            m_boundWidget     = other.m_boundWidget;
+            m_boundString     = std::move(other.m_boundString);
+            m_connectedWidget = nullptr;
+
+            resetPointers();
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout::~Layout()
+    {
+        if (m_boundWidget)
+        {
+            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop) || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight));
+
+            if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
+                m_boundWidget->unbindPositionLayout(this);
+            else // if ((m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight))
+                m_boundWidget->unbindSizeLayout(this);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::string Layout::toString() const
     {
-        if (m_constant)
+        if (m_operation == Operation::Value)
+        {
             return to_string(m_value);
-        else if (m_constantTerm > 0)
-            return to_string(m_ratio * 100) + "% + " + to_string(m_constantTerm);
-        else if (m_constantTerm < 0)
-            return to_string(m_ratio * 100) + "% - " + to_string(-m_constantTerm);
+        }
+        else if ((m_operation == Operation::Plus) || (m_operation == Operation::Minus) || (m_operation == Operation::Multiplies) || (m_operation == Operation::Divides))
+        {
+            char operatorChar;
+            if (m_operation == Operation::Plus)
+                operatorChar = '+';
+            else if (m_operation == Operation::Minus)
+                operatorChar = '-';
+            else if (m_operation == Operation::Multiplies)
+                operatorChar = '*';
+            else // if (m_operation == Operation::Divides)
+                operatorChar = '/';
+
+            if ((m_leftOperand->m_leftOperand) && (m_rightOperand->m_leftOperand))
+                return "(" + m_leftOperand->toString() + ") " + operatorChar + " (" + m_rightOperand->toString() + ")";
+            else if (m_leftOperand->m_leftOperand)
+                return "(" + m_leftOperand->toString() + ") " + operatorChar + " " + m_rightOperand->toString();
+            else if (m_rightOperand->m_leftOperand)
+                return m_leftOperand->toString() + " " + operatorChar + " (" + m_rightOperand->toString() + ")";
+            else
+                return m_leftOperand->toString() + " " + operatorChar + " " + m_rightOperand->toString();
+        }
         else
-            return to_string(m_ratio * 100) + '%';
+        {
+            // Hopefully the expression is stored in the bound string, otherwise (i.e. when bind functions were used) it is infeasible to turn it into a string
+            return m_boundString;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::resetPointers()
+    {
+        if (m_leftOperand != nullptr)
+        {
+            assert(m_rightOperand != nullptr);
+
+            m_leftOperand->m_parent = this;
+            m_rightOperand->m_parent = this;
+        }
+
+        if (m_boundWidget)
+        {
+            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop) || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight));
+
+            if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
+                m_boundWidget->bindPositionLayout(this);
+            else // if ((m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight))
+                m_boundWidget->bindSizeLayout(this);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::connectWidget(Widget* widget, bool xAxis, std::function<void()> valueChangedCallbackHandler)
+    {
+        m_connectedWidget = widget;
+        m_connectedWidgetCallback = valueChangedCallbackHandler;
+
+        if (m_leftOperand)
+        {
+            assert(m_rightOperand != nullptr);
+
+            m_leftOperand->connectWidget(widget, xAxis, nullptr);
+            m_rightOperand->connectWidget(widget, xAxis, nullptr);
+        }
+
+        // Parse the string binding even when the referred widget was already found. The widget may be added to a different parent
+        if (!m_boundString.empty())
+            parseBindingString(m_boundString, widget, xAxis);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::unbindWidget()
+    {
+        m_boundWidget = nullptr;
+
+        if (!m_boundString.empty())
+            m_operation = Operation::BindingString;
+        else
+        {
+            m_value = 0;
+            m_operation = Operation::Value;
+        }
+
+        recalculateValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::recalculateValue()
+    {
+        const float oldValue = m_value;
+
+        switch (m_operation)
+        {
+            case Operation::Value:
+                break;
+            case Operation::Plus:
+                m_value = m_leftOperand->getValue() + m_rightOperand->getValue();
+                break;
+            case Operation::Minus:
+                m_value = m_leftOperand->getValue() - m_rightOperand->getValue();
+                break;
+            case Operation::Multiplies:
+                m_value = m_leftOperand->getValue() * m_rightOperand->getValue();
+                break;
+            case Operation::Divides:
+                m_value = m_leftOperand->getValue() / m_rightOperand->getValue();
+                break;
+            case Operation::BindingLeft:
+                m_value = m_boundWidget->getPosition().x;
+                break;
+            case Operation::BindingTop:
+                m_value = m_boundWidget->getPosition().y;
+                break;
+            case Operation::BindingWidth:
+                m_value = m_boundWidget->getSize().x;
+                break;
+            case Operation::BindingHeight:
+                m_value = m_boundWidget->getSize().y;
+                break;
+            case Operation::BindingString:
+                // Passing here either means something is wrong with the string or the layout was not connected to a widget with a parent yet
+                break;
+        };
+
+        if (m_value != oldValue)
+        {
+            if (m_parent)
+                m_parent->recalculateValue();
+            else
+            {
+                // The topmost layout must tell the connected widget about the new value
+                if (m_connectedWidgetCallback)
+                    m_connectedWidgetCallback();
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::parseBindingString(const std::string& expression, Widget* widget, bool xAxis)
+    {
+        if (expression == "x" || expression == "left")
+        {
+            m_operation = Operation::BindingLeft;
+            m_boundWidget = widget;
+        }
+        else if (expression == "y" || expression == "top")
+        {
+            m_operation = Operation::BindingTop;
+            m_boundWidget = widget;
+        }
+        else if (expression == "w" || expression == "width")
+        {
+            m_operation = Operation::BindingWidth;
+            m_boundWidget = widget;
+        }
+        else if (expression == "h" || expression == "height")
+        {
+            m_operation = Operation::BindingHeight;
+            m_boundWidget = widget;
+        }
+        else if (expression == "size")
+        {
+            if (xAxis)
+                return parseBindingString("width", widget, xAxis);
+            else
+                return parseBindingString("height", widget, xAxis);
+        }
+        else if ((expression == "pos") || (expression == "position"))
+        {
+            if (xAxis)
+                return parseBindingString("x", widget, xAxis);
+            else
+                return parseBindingString("y", widget, xAxis);
+        }
+        else
+        {
+            const auto dotPos = expression.find('.');
+            if (dotPos != std::string::npos)
+            {
+                const std::string widgetName = expression.substr(0, dotPos);
+                if (widgetName == "parent" || widgetName == "&")
+                {
+                    if (widget->getParent())
+                        return parseBindingString(expression.substr(dotPos+1), widget->getParent(), xAxis);
+                }
+                else if (!widgetName.empty())
+                {
+                    // If the widget is a container, search in its children first
+                    Container* container = dynamic_cast<Container*>(widget);
+                    if (container != nullptr)
+                    {
+                        auto widgetToBind = container->get(widgetName);
+                        if (widgetToBind)
+                            return parseBindingString(expression.substr(dotPos+1), widgetToBind.get(), xAxis);
+                    }
+
+                    // If the widget has a parent, look for a sibling
+                    if (widget->getParent())
+                    {
+                        auto widgetToBind = widget->getParent()->get(widgetName);
+                        if (widgetToBind)
+                            return parseBindingString(expression.substr(dotPos+1), widgetToBind.get(), xAxis);
+                    }
+                }
+            }
+
+            // The referred widget was not found or there was something wrong with the string
+            return;
+        }
+
+        resetPointers();
+        recalculateValue();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout operator-(Layout right)
+    {
+        return Layout{Layout::Operation::Minus, std::make_unique<Layout>(), std::make_unique<Layout>(std::move(right))};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout operator+(Layout left, Layout right)
+    {
+        return Layout{Layout::Operation::Plus, std::make_unique<Layout>(std::move(left)), std::make_unique<Layout>(std::move(right))};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout operator-(Layout left, Layout right)
+    {
+        return Layout{Layout::Operation::Minus, std::make_unique<Layout>(std::move(left)), std::make_unique<Layout>(std::move(right))};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout operator*(Layout left, Layout right)
+    {
+        return Layout{Layout::Operation::Multiplies, std::make_unique<Layout>(std::move(left)), std::make_unique<Layout>(std::move(right))};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout operator/(Layout left, Layout right)
+    {
+        return Layout{Layout::Operation::Divides, std::make_unique<Layout>(std::move(left)), std::make_unique<Layout>(std::move(right))};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout2d operator-(Layout2d right)
+    {
+        return Layout2d{-std::move(right.x), -std::move(right.y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout2d operator+(Layout2d left, Layout2d right)
+    {
+        return Layout2d{std::move(left.x) + std::move(right.x), std::move(left.y) + std::move(right.y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout2d operator-(Layout2d left, Layout2d right)
+    {
+        return Layout2d{std::move(left.x) - std::move(right.x), std::move(left.y) - std::move(right.y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout2d operator*(Layout2d left, const Layout& right)
+    {
+        return Layout2d{std::move(left.x) * right, std::move(left.y) * right};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout2d operator*(const Layout& left, Layout2d right)
+    {
+        return Layout2d{left * std::move(right.x), left * std::move(right.y)};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Layout2d operator/(Layout2d left, const Layout& right)
+    {
+        return Layout2d{std::move(left.x) / right, std::move(left.y) / right};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    inline namespace bind_functions
+    {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindLeft(Widget::Ptr widget)
+        {
+            return Layout{Layout::Operation::BindingLeft, widget.get()};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindTop(Widget::Ptr widget)
+        {
+            return Layout{Layout::Operation::BindingTop, widget.get()};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindWidth(Widget::Ptr widget)
+        {
+            return Layout{Layout::Operation::BindingWidth, widget.get()};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindHeight(Widget::Ptr widget)
+        {
+            return Layout{Layout::Operation::BindingHeight, widget.get()};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindRight(Widget::Ptr widget)
+        {
+            return Layout{Layout::Operation::Plus,
+                          std::make_unique<Layout>(Layout::Operation::BindingLeft, widget.get()),
+                          std::make_unique<Layout>(Layout::Operation::BindingWidth, widget.get())};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindBottom(Widget::Ptr widget)
+        {
+            return Layout{Layout::Operation::Plus,
+                          std::make_unique<Layout>(Layout::Operation::BindingTop, widget.get()),
+                          std::make_unique<Layout>(Layout::Operation::BindingHeight, widget.get())};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout2d bindPosition(Widget::Ptr widget)
+        {
+            return {bindLeft(widget), bindTop(widget)};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout2d bindSize(Widget::Ptr widget)
+        {
+            return {bindWidth(widget), bindHeight(widget)};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindLeft(Gui& gui)
+        {
+            return bindLeft(gui.getContainer());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindTop(Gui& gui)
+        {
+            return bindTop(gui.getContainer());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindWidth(Gui& gui)
+        {
+            return bindWidth(gui.getContainer());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindHeight(Gui& gui)
+        {
+            return bindHeight(gui.getContainer());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindRight(Gui& gui)
+        {
+            return bindRight(gui.getContainer());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindBottom(Gui& gui)
+        {
+            return bindBottom(gui.getContainer());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout2d bindPosition(Gui& gui)
+        {
+            return bindPosition(gui.getContainer());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout2d bindSize(Gui& gui)
+        {
+            return bindSize(gui.getContainer());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

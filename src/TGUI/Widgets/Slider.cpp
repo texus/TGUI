@@ -408,7 +408,7 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturetrack")
         {
@@ -419,7 +419,7 @@ namespace tgui
             else
                 m_verticalImage = false;
 
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturetrackhover")
         {
@@ -428,7 +428,7 @@ namespace tgui
         else if (property == "texturethumb")
         {
             m_spriteThumb.setTexture(getRenderer()->getTextureThumb());
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturethumbhover")
         {

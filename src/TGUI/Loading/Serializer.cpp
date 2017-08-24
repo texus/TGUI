@@ -148,13 +148,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::string serializeLayout(ObjectConverter&& value)
-        {
-            return value.getLayout().toString();
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         std::string serializeOutline(ObjectConverter&& value)
         {
             return value.getOutline().toString();
@@ -251,7 +244,6 @@ namespace tgui
             {ObjectConverter::Type::Color, serializeColor},
             {ObjectConverter::Type::String, serializeString},
             {ObjectConverter::Type::Number, serializeNumber},
-            {ObjectConverter::Type::Layout, serializeLayout},
             {ObjectConverter::Type::Outline, serializeOutline},
             {ObjectConverter::Type::Texture, serializeTexture},
             {ObjectConverter::Type::TextStyle, serializeTextStyle},

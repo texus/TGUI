@@ -522,12 +522,12 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "padding")
         {
             m_paddingCached = getRenderer()->getPadding();
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "textcolor")
         {
@@ -544,7 +544,7 @@ namespace tgui
         else if (property == "texturearrowup")
         {
             m_spriteArrowUp.setTexture(getRenderer()->getTextureArrowUp());
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturearrowuphover")
         {
@@ -553,7 +553,7 @@ namespace tgui
         else if (property == "texturearrowdown")
         {
             m_spriteArrowDown.setTexture(getRenderer()->getTextureArrowDown());
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturearrowdownhover")
         {
@@ -608,7 +608,7 @@ namespace tgui
             if (m_listBox->getRenderer()->getFont() == nullptr)
                 m_listBox->getRenderer()->setFont(m_fontCached);
 
-            updateSize();
+            setSize(m_size);
         }
         else
             Widget::rendererChanged(property);

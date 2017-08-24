@@ -170,7 +170,7 @@ namespace tgui
         m_spriteTitleBar.setSize({getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached});
 
         // Reposition the images and text
-        updatePosition();
+        setPosition(m_position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@ namespace tgui
         m_titleText.setString(title);
 
         // Reposition the images and text
-        updatePosition();
+        setPosition(m_position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,7 +245,7 @@ namespace tgui
         m_titleAlignment = alignment;
 
         // Reposition the images and text
-        updatePosition();
+        setPosition(m_position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -604,7 +604,7 @@ namespace tgui
         m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, m_titleBarHeightCached * 0.8f));
 
         // Reposition the images and text
-        updatePosition();
+        setPosition(m_position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -630,7 +630,7 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "titlecolor")
         {
@@ -653,12 +653,12 @@ namespace tgui
         else if (property == "distancetoside")
         {
             m_distanceToSideCached = getRenderer()->getDistanceToSide();
-            updatePosition();
+            setPosition(m_position);
         }
         else if (property == "paddingbetweenbuttons")
         {
             m_paddingBetweenButtonsCached = getRenderer()->getPaddingBetweenButtons();
-            updatePosition();
+            setPosition(m_position);
         }
         else if (property == "closebutton")
         {
@@ -728,7 +728,7 @@ namespace tgui
             m_titleText.setFont(m_fontCached);
             m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, getRenderer()->getTitleBarHeight() * 0.8f));
 
-            updatePosition();
+            setPosition(m_position);
         }
         else
             Container::rendererChanged(property);

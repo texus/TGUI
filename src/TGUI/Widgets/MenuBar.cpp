@@ -285,7 +285,7 @@ namespace tgui
         Widget::setParent(parent);
 
         if ((m_parent != nullptr) && (getSize().x == 0))
-            setSize(RelLayout{1}, m_size.y);
+            setSize("100%", m_size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

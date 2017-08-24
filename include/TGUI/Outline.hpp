@@ -26,7 +26,8 @@
 #ifndef TGUI_OUTLINE_HPP
 #define TGUI_OUTLINE_HPP
 
-#include <TGUI/Layout.hpp>
+#include <TGUI/AbsoluteOrRelativeValue.hpp>
+#include <SFML/System/Vector2.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,7 +45,7 @@ namespace tgui
         /// @param size  Width and height of the outline in all directions
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline(Layout size = 0) :
+        TGUI_CONSTEXPR Outline(AbsoluteOrRelativeValue size = 0) :
             m_left  {size},
             m_top   {size},
             m_right {size},
@@ -76,7 +77,7 @@ namespace tgui
         /// @param height  Height of the top and bottom outline
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline(Layout width, Layout height) :
+        TGUI_CONSTEXPR Outline(AbsoluteOrRelativeValue width, AbsoluteOrRelativeValue height) :
             m_left  {width},
             m_top   {height},
             m_right {width},
@@ -94,7 +95,7 @@ namespace tgui
         /// @param bottomBorderHeight Height of the bottom outline
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_CONSTEXPR Outline(Layout leftBorderWidth, Layout topBorderHeight, Layout rightBorderWidth, Layout bottomBorderHeight) :
+        TGUI_CONSTEXPR Outline(AbsoluteOrRelativeValue leftBorderWidth, AbsoluteOrRelativeValue topBorderHeight, AbsoluteOrRelativeValue rightBorderWidth, AbsoluteOrRelativeValue bottomBorderHeight) :
             m_left  {leftBorderWidth},
             m_top   {topBorderHeight},
             m_right {rightBorderWidth},
@@ -211,10 +212,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        Layout m_left = 0;      ///< Width of the left outline
-        Layout m_top = 0;       ///< Height of the top outline
-        Layout m_right = 0;     ///< Width of the right outline
-        Layout m_bottom = 0;    ///< Height of the bottom outline
+        AbsoluteOrRelativeValue m_left = 0;      ///< Width of the left outline
+        AbsoluteOrRelativeValue m_top = 0;       ///< Height of the top outline
+        AbsoluteOrRelativeValue m_right = 0;     ///< Width of the right outline
+        AbsoluteOrRelativeValue m_bottom = 0;    ///< Height of the bottom outline
     };
 
 

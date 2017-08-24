@@ -133,12 +133,11 @@ namespace tgui
         {
             m_view = view;
 
-            const sf::Vector2f containerSize = view.getSize();
-            m_container->m_size = containerSize;
+            m_container->m_size = view.getSize();
             m_container->onSizeChange.emit(m_container.get(), m_container->getSize());
 
-            for (auto& widget : m_container->m_widgets)
-                widget->updateParentSize(containerSize);
+            for (auto& layout : m_container->m_boundSizeLayouts)
+                layout->recalculateValue();
         }
         else // Set it anyway in case something changed that we didn't care to check
             m_view = view;

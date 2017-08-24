@@ -134,17 +134,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::setSize(const Layout2d& size)
-    {
-        Widget::setSize(size);
-
-        const sf::Vector2f innerSize = getContentSize();
-        for (auto& widget : m_widgets)
-            widget->updateParentSize(innerSize);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Container::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
     {
         assert(widgetPtr != nullptr);

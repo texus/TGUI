@@ -212,81 +212,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ObjectConverter deserializeLayout(const std::string& value)
-        {
-            std::string expression = tgui::trim(value);
-            if (expression.empty())
-                return {0.f};
-
-            // First calculate expressions withing brackets
-            auto openBracketPos = expression.rfind('(');
-            while (openBracketPos != std::string::npos)
-            {
-                auto closeBracketPos = expression.find(')', openBracketPos + 1);
-                if (closeBracketPos == std::string::npos)
-                    return {0.f}; // Opening bracket without matching closing bracket
-
-                std::string newExpression = expression.substr(0, openBracketPos)
-                                          + deserializeLayout(expression.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1)).getLayout().toString()
-                                          + expression.substr(closeBracketPos + 1);
-
-                expression = newExpression;
-                openBracketPos = expression.rfind('(');
-            }
-
-            // All brackets should be remove by now
-            if (expression.find(')') != std::string::npos)
-                return {0.f};
-
-            float ratioTerm = 0;
-            float constantTerm = 0;
-
-            // Split the expression in terms
-            // We can't split on '+' and '-' simultaniously, so we first split on '+' which gives a list of elements
-            // that may still be an expression containing '-'. When we split this expression on '-', the first term in the list
-            // is always positive (because it came first after the original split on '+'), while all the other terms have to be
-            // negative (because there can only be more terms when a '-' was found in the expression)
-            std::vector<std::string> temp = Deserializer::split(expression, '+');
-            for (auto& element : temp)
-            {
-                auto terms = Deserializer::split(element, '-');
-
-                // The first term in the list is always the positive one
-                if (!terms[0].empty())
-                {
-                    if (terms[0].back() == '%')
-                    {
-                        terms[0].pop_back();
-                        ratioTerm += std::stof(terms[0]);
-                    }
-                    else
-                        constantTerm += std::stof(terms[0]);
-                }
-
-                // All other elements are negative
-                for (unsigned int i = 1; i < terms.size(); ++i)
-                {
-                    if (!terms[i].empty())
-                    {
-                        if (terms[i].back() == '%')
-                        {
-                            terms[i].pop_back();
-                            ratioTerm -= std::stof(terms[i]);
-                        }
-                        else
-                            constantTerm -= std::stof(terms[i]);
-                    }
-                }
-            }
-
-            if (ratioTerm)
-                return {RelLayout{ratioTerm / 100.f, constantTerm}};
-            else
-                return {Layout{constantTerm}};
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         ObjectConverter deserializeOutline(const std::string& value)
         {
             std::string str = trim(value);
@@ -469,7 +394,6 @@ namespace tgui
             {ObjectConverter::Type::Color, deserializeColor},
             {ObjectConverter::Type::String, deserializeString},
             {ObjectConverter::Type::Number, deserializeNumber},
-            {ObjectConverter::Type::Layout, deserializeLayout},
             {ObjectConverter::Type::Outline, deserializeOutline},
             {ObjectConverter::Type::Texture, deserializeTexture},
             {ObjectConverter::Type::TextStyle, deserializeTextStyle},

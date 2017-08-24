@@ -1,17 +1,17 @@
 set(TEST_SOURCES
     main.cpp
+    Tests.cpp
+    CompareFiles.cpp
     Animation.cpp
     Clipboard.cpp
     Clipping.cpp
     Color.cpp
-    CompareFiles.cpp
     Container.cpp
     Font.cpp
     Layouts.cpp
     Outline.cpp
     Sprite.cpp
     Signal.cpp
-    Tests.cpp
     Text.cpp
     Texture.cpp
     TextureManager.cpp

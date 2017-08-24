@@ -102,7 +102,7 @@ namespace tgui
         m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom())});
         m_scroll.setLowValue(static_cast<unsigned int>(m_scroll.getSize().y));
 
-        updatePosition();
+        setPosition(m_position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,7 +233,7 @@ namespace tgui
         m_itemIds.erase(m_itemIds.begin() + index);
 
         m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-        updatePosition();
+        setPosition(m_position);
 
         // Keep it simple and forget hover when an item is removed
         updateHoveringItem(-1);
@@ -373,7 +373,7 @@ namespace tgui
 
         m_scroll.setScrollAmount(m_itemHeight);
         m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-        updatePosition();
+        setPosition(m_position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,7 +397,7 @@ namespace tgui
         for (auto& item : m_items)
             item.setCharacterSize(m_textSize);
 
-        updatePosition();
+        setPosition(m_position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,7 +422,7 @@ namespace tgui
             m_itemIds.erase(m_itemIds.begin() + m_maxItems, m_itemIds.end());
 
             m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-            updatePosition();
+            setPosition(m_position);
         }
     }
 
@@ -621,12 +621,12 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "padding")
         {
             m_paddingCached = getRenderer()->getPadding();
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "textcolor")
         {
@@ -722,7 +722,7 @@ namespace tgui
                     item.setCharacterSize(m_textSize);
             }
 
-            updatePosition();
+            setPosition(m_position);
         }
         else
             Widget::rendererChanged(property);

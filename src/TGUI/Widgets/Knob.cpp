@@ -465,17 +465,17 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturebackground")
         {
             m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "textureforeground")
         {
             m_spriteForeground.setTexture(getRenderer()->getTextureForeground());
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "bordercolor")
         {

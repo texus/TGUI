@@ -198,7 +198,7 @@ namespace tgui
         if (present)
         {
             m_verticalScroll.show();
-            updateSize();
+            setSize(m_size);
         }
         else
         {
@@ -1409,12 +1409,12 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getRenderer()->getBorders();
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "padding")
         {
             m_paddingCached = getRenderer()->getPadding();
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "textcolor")
         {

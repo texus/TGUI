@@ -224,7 +224,7 @@ namespace tgui
             setValue(m_maximum - m_lowValue);
 
         // Recalculate the size and position of the thumb image
-        updateSize();
+        setSize(m_size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ namespace tgui
             onValueChange.emit(this, m_value);
 
             // Recalculate the size and position of the thumb image
-            updateSize();
+            setSize(m_size);
         }
     }
 
@@ -276,7 +276,7 @@ namespace tgui
             setValue(m_maximum - m_lowValue);
 
         // Recalculate the size and position of the thumb image
-        updateSize();
+        setSize(m_size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -681,7 +681,7 @@ namespace tgui
         if (property == "texturetrack")
         {
             m_spriteTrack.setTexture(getRenderer()->getTextureTrack());
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturetrackhover")
         {
@@ -690,7 +690,7 @@ namespace tgui
         else if (property == "texturethumb")
         {
             m_spriteThumb.setTexture(getRenderer()->getTextureThumb());
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturethumbhover")
         {
@@ -699,7 +699,7 @@ namespace tgui
         else if (property == "texturearrowup")
         {
             m_spriteArrowUp.setTexture(getRenderer()->getTextureArrowUp());
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturearrowuphover")
         {
@@ -708,7 +708,7 @@ namespace tgui
         else if (property == "texturearrowdown")
         {
             m_spriteArrowDown.setTexture(getRenderer()->getTextureArrowDown());
-            updateSize();
+            setSize(m_size);
         }
         else if (property == "texturearrowdownhover")
         {
