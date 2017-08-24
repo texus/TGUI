@@ -2,6 +2,7 @@ set(TEST_SOURCES
     main.cpp
     Tests.cpp
     CompareFiles.cpp
+    AbsoluteOrRelativeValue.cpp
     Animation.cpp
     Clipboard.cpp
     Clipping.cpp
