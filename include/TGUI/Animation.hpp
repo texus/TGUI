@@ -88,9 +88,9 @@ namespace tgui
         public:
             MoveAnimation(Widget::Ptr widget, sf::Vector2f start, sf::Vector2f end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
 
-            virtual bool update(sf::Time elapsedTime) override;
+            bool update(sf::Time elapsedTime) override;
 
-            virtual void finish() override;
+            void finish() override;
 
         private:
             sf::Vector2f m_startPos;
@@ -104,9 +104,9 @@ namespace tgui
         public:
             ResizeAnimation(Widget::Ptr widget, sf::Vector2f start, sf::Vector2f end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
 
-            virtual bool update(sf::Time elapsedTime) override;
+            bool update(sf::Time elapsedTime) override;
 
-            virtual void finish() override;
+            void finish() override;
 
         private:
             sf::Vector2f m_startSize;
@@ -120,9 +120,9 @@ namespace tgui
         public:
             FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback = nullptr);
 
-            virtual bool update(sf::Time elapsedTime) override;
+            bool update(sf::Time elapsedTime) override;
 
-            virtual void finish() override;
+            void finish() override;
 
         private:
             float m_startOpacity;
