@@ -270,6 +270,11 @@ if(NOT TGUI_SHARED_LIBS)
     endif()
 endif()
 
+# Warning if they have set TGUI to static libs, but not set SFML to static.
+if((NOT TGUI_SHARED_LIBS) AND (NOT SFML_STATIC) AND (NOT TGUI_QUIET_STATIC))
+  message(WARNING "TGUI_SHARED_LIBS is false, but SFML_STATIC is false. TGUI will link statically, but SFML will be dynamically linked. Pass -DSFML_STATIC to cmake to link SFML statically. Pass -DTGUI_QUIET_STATIC to disable this message")
+endif()
+
 # Find sfml (also look for the main component when using Visual Studio)
 if (SFML_OS_WINDOWS AND SFML_COMPILER_MSVC)
     find_package(SFML 2 COMPONENTS main graphics window system)
