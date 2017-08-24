@@ -238,8 +238,6 @@ endif()
 
 # Link to the static sfml libraries when building tgui statically
 if(NOT TGUI_SHARED_LIBS)
-    set(SFML_STATIC_LIBRARIES TRUE)
-
     # Attempt to find the SFML dependencies when linking statically
     if (SFML_ROOT)
         if (SFML_OS_WINDOWS)
@@ -321,12 +319,6 @@ endif()
 # We need to link to an extra library on android (to use the asset manager)
 if(SFML_OS_ANDROID)
     set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
-endif()
-
-# Add SFML_STATIC define when linking statically and link to SFML dependencies
-if(NOT TGUI_SHARED_LIBS)
-    add_definitions(-DSFML_STATIC)
-    set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} ${SFML_DEPENDENCIES})
 endif()
 
 # Generate .gcno files when requested
