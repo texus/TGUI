@@ -40,6 +40,7 @@
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
@@ -224,6 +225,11 @@ namespace tgui
 
             if (childWindow->isResizable())
                 SET_PROPERTY("Resizable", "true");
+
+            if (childWindow->getMinimumSize() != sf::Vector2f{})
+                SET_PROPERTY("MinimumSize", "(" + to_string(childWindow->getMinimumSize().x) + ", " + to_string(childWindow->getMinimumSize().y) + ")");
+            if (childWindow->getMaximumSize() != sf::Vector2f{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()})
+                SET_PROPERTY("MaximumSize", "(" + to_string(childWindow->getMaximumSize().x) + ", " + to_string(childWindow->getMaximumSize().y) + ")");
 
             std::string serializedTitleButtons;
             if (childWindow->getTitleButtons() & ChildWindow::TitleButton::Minimize)
@@ -581,6 +587,18 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        std::unique_ptr<DataIO::Node> saveScrollablePanel(Widget::Ptr widget)
+        {
+            auto panel = std::static_pointer_cast<ScrollablePanel>(widget);
+            auto node = WidgetSaver::getSaveFunction("panel")(panel);
+
+            SET_PROPERTY("CententSize", "(" + to_string(panel->getContentSize().x) + ", " + to_string(panel->getContentSize().y) + ")");
+
+            return node;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         std::unique_ptr<DataIO::Node> saveScrollbar(Widget::Ptr widget)
         {
             auto scrollbar = std::static_pointer_cast<Scrollbar>(widget);
@@ -712,6 +730,7 @@ namespace tgui
             {"progressbar", saveProgressBar},
             {"radiobutton", saveRadioButton},
             {"radiobuttongroup", saveContainer},
+            {"scrollablepanel", saveScrollablePanel},
             {"scrollbar", saveScrollbar},
             {"slider", saveSlider},
             {"spinbutton", saveSpinButton},

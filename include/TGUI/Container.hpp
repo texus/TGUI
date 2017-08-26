@@ -250,20 +250,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the size available for child widgets
-        ///
-        /// This function will return a value equal or smaller than what getSize returns.
-        ///
-        /// @return Inner size of the container
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual sf::Vector2f getContentSize() const
-        {
-            return getSize();
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position of the container and a widget that would be drawn inside
         ///        this container on relative position (0,0)
         ///

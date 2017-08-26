@@ -58,8 +58,9 @@ namespace tgui
 
     void VerticalLayout::updateWidgets()
     {
-        const sf::Vector2f contentSize = getContentSize();
         const float totalSpaceBetweenWidgets = (m_spaceBetweenWidgetsCached * m_widgets.size()) - m_spaceBetweenWidgetsCached;
+        const sf::Vector2f contentSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+                                          getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
         float currentOffset = 0;
         for (auto& widget : m_widgets)

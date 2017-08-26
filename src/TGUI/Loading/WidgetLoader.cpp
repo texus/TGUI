@@ -47,6 +47,7 @@
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/RadioButtonGroup.hpp>
+#include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/SpinButton.hpp>
@@ -82,6 +83,27 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        sf::Vector2f parseVector2f(std::string str)
+        {
+            if (str.empty())
+                throw Exception{"Failed to parse Vector2f. String was empty."};
+
+            // Remove the brackets around the value
+            if (((str.front() == '(') && (str.back() == ')')) || ((str.front() == '{') && (str.back() == '}')))
+                str = str.substr(1, str.length() - 2);
+
+            if (str.empty())
+                return {0, 0};
+
+            auto commaPos = str.find(',');
+            if (commaPos == std::string::npos)
+                throw Exception{"Failed to parse Vector2f '" + str + "'. Expected numbers separated with a comma."};
+
+            return {tgui::stof(trim(str.substr(0, commaPos))), tgui::stof(trim(str.substr(commaPos + 1)))};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         Layout2d parseLayout(std::string str)
         {
             if (str.empty())
@@ -96,7 +118,7 @@ namespace tgui
 
             auto commaPos = str.find(',');
             if (commaPos == std::string::npos)
-                throw Exception{"Failed to parse layout '" + str + "'. Expected numbers separated with a comma."};
+                throw Exception{"Failed to parse layout '" + str + "'. Expected expressions separated with a comma."};
 
             return {trim(str.substr(0, commaPos)),
                     trim(str.substr(commaPos + 1))};
@@ -365,6 +387,12 @@ namespace tgui
 
             if (node->propertyValuePairs["resizable"])
                 childWindow->setResizable(parseBoolean(node->propertyValuePairs["resizable"]->value));
+
+            if (node->propertyValuePairs["minimumsize"])
+                childWindow->setMinimumSize(parseVector2f(node->propertyValuePairs["minimumsize"]->value));
+
+            if (node->propertyValuePairs["maximumsize"])
+                childWindow->setMaximumSize(parseVector2f(node->propertyValuePairs["maximumsize"]->value));
 
             loadContainer(node, childWindow);
 
@@ -935,6 +963,24 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        Widget::Ptr loadScrollablePanel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        {
+            ScrollablePanel::Ptr panel;
+            if (widget)
+                panel = std::static_pointer_cast<ScrollablePanel>(widget);
+            else
+                panel = ScrollablePanel::create();
+
+            if (node->propertyValuePairs["contentsize"])
+                panel->setContentSize(parseVector2f(node->propertyValuePairs["contentsize"]->value));
+
+            loadPanel(node, panel);
+
+            return panel;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         Widget::Ptr loadScrollbar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             Scrollbar::Ptr scrollbar;
@@ -1102,6 +1148,7 @@ namespace tgui
             {"progressbar", loadProgressBar},
             {"radiobutton", loadRadioButton},
             {"radiobuttongroup", loadRadioButtonGroup},
+            {"scrollablepanel", loadScrollablePanel},
             {"scrollbar", loadScrollbar},
             {"slider", loadSlider},
             {"spinbutton", loadSpinButton},

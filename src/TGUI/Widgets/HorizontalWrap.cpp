@@ -58,7 +58,8 @@ namespace tgui
 
     void HorizontalWrap::updateWidgets()
     {
-        const sf::Vector2f contentSize = getContentSize();
+        const sf::Vector2f contentSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+                                          getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
         float currentHorizontalOffset = 0;
         float currentVerticalOffset = 0;

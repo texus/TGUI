@@ -69,18 +69,10 @@ else()
     tgui_set_option(TGUI_BUILD_EXAMPLES FALSE BOOL "TRUE to build the TGUI examples, FALSE to ignore them")
 endif()
 
-# Add option to build the tests on linux
-if(SFML_OS_IOS OR SFML_OS_ANDROID)
-    set(TGUI_BUILD_TESTS FALSE)
-else()
-    tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests (requires c++14)")
-endif()
-
-# Add an option for choosing the OpenGL implementation
+tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
+tgui_set_option(TGUI_BUILD_GUI_BUILDER FALSE BOOL "TRUE to compile the GUI Builder")
+tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 tgui_set_option(TGUI_OPENGL_ES ${OPENGL_ES} BOOL "TRUE to use an OpenGL ES implementation, FALSE to use a desktop OpenGL implementation")
-
-# Add an option to build the documentation
-tgui_set_option( TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 
 # Set compile flags for gcc and clang
 if (SFML_OS_ANDROID)
@@ -360,6 +352,11 @@ if (TGUI_BUILD_TESTS)
     endif()
 
     add_subdirectory(tests)
+endif()
+
+# Build the GUI Builder if requested
+if (TGUI_BUILD_GUI_BUILDER)
+    add_subdirectory("${PROJECT_SOURCE_DIR}/gui-builder")
 endif()
 
 # Install include files

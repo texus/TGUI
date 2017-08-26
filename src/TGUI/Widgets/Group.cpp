@@ -70,14 +70,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Group::getContentSize() const
-    {
-        return {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     sf::Vector2f Group::getChildWidgetsOffset() const
     {
         return {m_paddingCached.getLeft(), m_paddingCached.getTop()};

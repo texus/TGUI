@@ -45,6 +45,7 @@ set(TEST_SOURCES
     Widgets/ProgressBar.cpp
     Widgets/RadioButton.cpp
     Widgets/RadioButtonGroup.cpp
+    Widgets/ScrollablePanel.cpp
     Widgets/Scrollbar.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp

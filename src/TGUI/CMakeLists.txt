@@ -38,6 +38,7 @@ set(TGUI_SRC
     Renderers/PanelRenderer.cpp
     Renderers/ProgressBarRenderer.cpp
     Renderers/RadioButtonRenderer.cpp
+    Renderers/ScrollablePanelRenderer.cpp
     Renderers/ScrollbarRenderer.cpp
     Renderers/SliderRenderer.cpp
     Renderers/SpinButtonRenderer.cpp
@@ -67,6 +68,7 @@ set(TGUI_SRC
     Widgets/ProgressBar.cpp
     Widgets/RadioButton.cpp
     Widgets/RadioButtonGroup.cpp
+    Widgets/ScrollablePanel.cpp
     Widgets/Scrollbar.cpp
     Widgets/Slider.cpp
     Widgets/SpinButton.cpp
