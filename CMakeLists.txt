@@ -230,8 +230,6 @@ endif()
 
 # Link to the static sfml libraries when building tgui statically
 if(NOT TGUI_SHARED_LIBS)
-    set(SFML_STATIC_LIBRARIES TRUE)
-
     # Attempt to find the SFML dependencies when linking statically
     if (SFML_ROOT)
         if (SFML_OS_WINDOWS)
@@ -262,6 +260,11 @@ if(NOT TGUI_SHARED_LIBS)
             set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-ios/")
         endif()
     endif()
+endif()
+
+# Warning if they have set TGUI to static libs, but not set SFML to static.
+if((NOT TGUI_SHARED_LIBS) AND (NOT SFML_STATIC) AND (NOT TGUI_QUIET_STATIC))
+  message(WARNING "TGUI_SHARED_LIBS is false, but SFML_STATIC is false. TGUI will link statically, but SFML will be dynamically linked. Pass -DSFML_STATIC to cmake to link SFML statically. Pass -DTGUI_QUIET_STATIC to disable this message")
 endif()
 
 # Find sfml (also look for the main component when using Visual Studio)
@@ -313,12 +316,6 @@ endif()
 # We need to link to an extra library on android (to use the asset manager)
 if(SFML_OS_ANDROID)
     set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
-endif()
-
-# Add SFML_STATIC define when linking statically and link to SFML dependencies
-if(NOT TGUI_SHARED_LIBS)
-    add_definitions(-DSFML_STATIC)
-    set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} ${SFML_DEPENDENCIES})
 endif()
 
 # Generate .gcno files when requested
