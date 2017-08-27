@@ -3,6 +3,8 @@ layout: page
 title: Download
 ---
 
+<p><span class="Red">Currently, SFML 2.4.2 is the last supported SFML version, the github version of SFML is NOT supported!</span> (<a href="https://en.sfml-dev.org/forums/index.php?topic=22202.0">see issue</a>)</p>
+
 Precompiled windows libraries require matching libraries from <a href="http://www.sfml-dev.org/download/sfml/2.4.2/">SFML 2.4.2</a>. For other SFML versions, different compilers or different operating systems, you must download the source code and build TGUI yourself.
 
 ### TGUI 0.8-dev
