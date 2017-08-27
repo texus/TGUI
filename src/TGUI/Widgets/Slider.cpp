@@ -310,16 +310,16 @@ namespace tgui
 
                 // Set the new value
                 if (pos.y - m_mouseDownOnThumbPos.y + (m_thumb.height / 2.0f) > 0)
-                    setValue(static_cast<int>((((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
+                    setValue(m_maximum - static_cast<int>((((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)) + 0.5f));
                 else
-                    setValue(m_minimum);
+                    setValue(m_maximum);
 
                 // Set the thumb position for smooth scrolling
-                float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
+                const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
                 if ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))
                     m_thumb.top = thumbTop;
                 else
-                    m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.height / 2.0f);
+                    m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
             }
             else // the slider lies horizontal
             {
@@ -338,7 +338,7 @@ namespace tgui
                     setValue(m_minimum);
 
                 // Set the thumb position for smooth scrolling
-                float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
+                const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
                 if ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))
                     m_thumb.left = thumbLeft;
                 else
@@ -483,7 +483,7 @@ namespace tgui
         if (m_verticalScroll)
         {
             m_thumb.left = (getSize().x - m_thumb.width) / 2.0f;
-            m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.height / 2.0f);
+            m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
         }
         else
         {
