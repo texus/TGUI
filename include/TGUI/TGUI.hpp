@@ -62,6 +62,7 @@
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/RadioButtonGroup.hpp>
+#include <TGUI/Widgets/RangeSlider.hpp>
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>

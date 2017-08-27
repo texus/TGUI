@@ -40,6 +40,7 @@
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
+#include <TGUI/Widgets/RangeSlider.hpp>
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
@@ -587,6 +588,20 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        std::unique_ptr<DataIO::Node> saveRangeSlider(Widget::Ptr widget)
+        {
+            auto slider = std::static_pointer_cast<RangeSlider>(widget);
+            auto node = WidgetSaver::getSaveFunction("widget")(slider);
+
+            SET_PROPERTY("Minimum", to_string(slider->getMinimum()));
+            SET_PROPERTY("Maximum", to_string(slider->getMaximum()));
+            SET_PROPERTY("SelectionStart", to_string(slider->getSelectionStart()));
+            SET_PROPERTY("SelectionEnd", to_string(slider->getSelectionEnd()));
+            return node;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         std::unique_ptr<DataIO::Node> saveScrollablePanel(Widget::Ptr widget)
         {
             auto panel = std::static_pointer_cast<ScrollablePanel>(widget);
@@ -730,6 +745,7 @@ namespace tgui
             {"progressbar", saveProgressBar},
             {"radiobutton", saveRadioButton},
             {"radiobuttongroup", saveContainer},
+            {"rangeslider", saveRangeSlider},
             {"scrollablepanel", saveScrollablePanel},
             {"scrollbar", saveScrollbar},
             {"slider", saveSlider},

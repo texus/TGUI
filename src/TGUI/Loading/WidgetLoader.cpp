@@ -47,6 +47,7 @@
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Widgets/RadioButtonGroup.hpp>
+#include <TGUI/Widgets/RangeSlider.hpp>
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/Slider.hpp>
@@ -963,6 +964,29 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        Widget::Ptr loadRangeSlider(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        {
+            RangeSlider::Ptr slider;
+            if (widget)
+                slider = std::static_pointer_cast<RangeSlider>(widget);
+            else
+                slider = RangeSlider::create();
+
+            loadWidget(node, slider);
+            if (node->propertyValuePairs["minimum"])
+                slider->setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+            if (node->propertyValuePairs["maximum"])
+                slider->setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+            if (node->propertyValuePairs["selectionstart"])
+                slider->setSelectionStart(tgui::stoi(node->propertyValuePairs["selectionstart"]->value));
+            if (node->propertyValuePairs["selectionend"])
+                slider->setSelectionEnd(tgui::stoi(node->propertyValuePairs["selectionend"]->value));
+
+            return slider;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         Widget::Ptr loadScrollablePanel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             ScrollablePanel::Ptr panel;
@@ -1148,6 +1172,7 @@ namespace tgui
             {"progressbar", loadProgressBar},
             {"radiobutton", loadRadioButton},
             {"radiobuttongroup", loadRadioButtonGroup},
+            {"rangeslider", loadRangeSlider},
             {"scrollablepanel", loadScrollablePanel},
             {"scrollbar", loadScrollbar},
             {"slider", loadSlider},

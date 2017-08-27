@@ -139,6 +139,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    unsigned int SignalRange::connect(const DelegateRange& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [handler](){ handler(dereference<int>(m_parameters[1]), dereference<int>(m_parameters[2])); };
+        return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalRange::connect(const DelegateRangeEx& handler)
+    {
+        const auto id = generateUniqueId();
+        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, dereference<int>(m_parameters[1]), dereference<int>(m_parameters[2])); };
+        return id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool SignalRange::emit(const Widget* widget, int start, int end)
+    {
+        if (m_handlers.empty())
+            return false;
+
+        m_parameters[1] = static_cast<const void*>(&start);
+        m_parameters[2] = static_cast<const void*>(&end);
+        return Signal::emit(widget);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     unsigned int SignalChildWindow::connect(const DelegateChildWindow& handler)
     {
         const auto id = generateUniqueId();
