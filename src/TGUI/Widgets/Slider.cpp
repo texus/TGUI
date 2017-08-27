@@ -202,10 +202,7 @@ namespace tgui
     void Slider::setMaximum(int maximum)
     {
         // Set the new maximum
-        if (maximum > 0)
-            m_maximum = maximum;
-        else
-            m_maximum = 1;
+        m_maximum = maximum;
 
         // The minimum can't be below the maximum
         if (m_minimum > m_maximum)
@@ -345,7 +342,7 @@ namespace tgui
                 if ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))
                     m_thumb.left = thumbLeft;
                 else
-                    m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f) ;
+                    m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
             }
         }
         else // Normal mouse move
