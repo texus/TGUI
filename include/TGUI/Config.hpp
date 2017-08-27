@@ -27,7 +27,14 @@
 
 #include <SFML/Config.hpp>
 
-#ifndef SFML_STATIC
+// TGUI will link in the same way as SFML, unless TGUI_DYNAMIC or TGUI_STATIC is defined
+#if !defined(TGUI_DYNAMIC) && !defined(TGUI_STATIC)
+    #ifdef SFML_STATIC
+        #define TGUI_STATIC
+    #endif
+#endif
+
+#ifndef TGUI_STATIC
 
     #ifdef SFML_SYSTEM_WINDOWS
 

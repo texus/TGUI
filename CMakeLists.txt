@@ -228,11 +228,17 @@ else()
     unset(ANDROID_NDK CACHE)
 endif()
 
-# Link to the static sfml libraries when building tgui statically
-if(NOT TGUI_SHARED_LIBS)
+# Link SFML in the same way as TGUI, unless SFML_STATIC_LIBRARIES is manually specified
+if (NOT DEFINED SFML_STATIC_LIBRARIES)
+  if (TGUI_SHARED_LIBS)
+    set(SFML_STATIC_LIBRARIES FALSE)
+  else()
     set(SFML_STATIC_LIBRARIES TRUE)
+  endif()
+endif()
 
-    # Attempt to find the SFML dependencies when linking statically
+# Attempt to find the SFML dependencies when linking statically
+if(NOT TGUI_SHARED_LIBS)
     if (SFML_ROOT)
         if (SFML_OS_WINDOWS)
             set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${SFML_ROOT}/extlibs/headers")
@@ -289,10 +295,9 @@ include_directories( ${SFML_INCLUDE_DIR} )
 # OpenGL is required (due to a temporary fix)
 if (NOT TGUI_OPENGL_ES)
     find_package(OpenGL REQUIRED)
-    set(TGUI_EXT_LIBS ${OPENGL_gl_LIBRARY} ${SFML_LIBRARIES})
+    set(TGUI_EXT_LIBS ${OPENGL_gl_LIBRARY} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 else()
     if (SFML_OS_LINUX)
-
         # Try to manually find the packages for when we are on Raspberry Pi
         find_path(EGL_INCLUDE_DIR EGL/egl.h PATHS /opt/vc/include)
         find_path(GLES_INCLUDE_DIR GLES/gl.h PATHS /opt/vc/include)
@@ -306,19 +311,13 @@ else()
         add_definitions(-DSFML_OPENGL_ES)
         include_directories(${EGL_INCLUDE_DIR} ${GLES_INCLUDE_DIR})
     elseif(SFML_OS_ANDROID)
-        set(TGUI_EXT_LIBS ${SFML_LIBRARIES} "-lEGL -lGLESv1_CM")
+        set(TGUI_EXT_LIBS ${SFML_LIBRARIES} ${SFML_DEPENDENCIES} "-lEGL -lGLESv1_CM")
     endif()
 endif()
 
 # We need to link to an extra library on android (to use the asset manager)
 if(SFML_OS_ANDROID)
     set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
-endif()
-
-# Add SFML_STATIC define when linking statically and link to SFML dependencies
-if(NOT TGUI_SHARED_LIBS)
-    add_definitions(-DSFML_STATIC)
-    set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} ${SFML_DEPENDENCIES})
 endif()
 
 # Generate .gcno files when requested
