@@ -131,10 +131,11 @@ Inheritance diagram for tgui::SignalWidgetBase:</div>
 <area href="classtgui_1_1Knob.html" title="Knob widget. " alt="tgui::Knob" shape="rect" coords="149,336,288,360"/>
 <area href="classtgui_1_1ListBox.html" title="List box widget. " alt="tgui::ListBox" shape="rect" coords="149,392,288,416"/>
 <area href="classtgui_1_1MenuBar.html" title="Menu bar widget. " alt="tgui::MenuBar" shape="rect" coords="149,448,288,472"/>
-<area href="classtgui_1_1Scrollbar.html" title="Scrollbar widget. " alt="tgui::Scrollbar" shape="rect" coords="149,504,288,528"/>
-<area href="classtgui_1_1Slider.html" title="Slider widget. " alt="tgui::Slider" shape="rect" coords="149,560,288,584"/>
-<area href="classtgui_1_1Tabs.html" title="Tabs widget. " alt="tgui::Tabs" shape="rect" coords="149,616,288,640"/>
-<area href="classtgui_1_1TextBox.html" title="Text box widget. " alt="tgui::TextBox" shape="rect" coords="149,672,288,696"/>
+<area href="classtgui_1_1RangeSlider.html" title="RangeSlider widget. " alt="tgui::RangeSlider" shape="rect" coords="149,504,288,528"/>
+<area href="classtgui_1_1Scrollbar.html" title="Scrollbar widget. " alt="tgui::Scrollbar" shape="rect" coords="149,560,288,584"/>
+<area href="classtgui_1_1Slider.html" title="Slider widget. " alt="tgui::Slider" shape="rect" coords="149,616,288,640"/>
+<area href="classtgui_1_1Tabs.html" title="Tabs widget. " alt="tgui::Tabs" shape="rect" coords="149,672,288,696"/>
+<area href="classtgui_1_1TextBox.html" title="Text box widget. " alt="tgui::TextBox" shape="rect" coords="149,728,288,752"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -146,17 +147,24 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a185f8d5bfd1463428692b164ec92b664"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a185f8d5bfd1463428692b164ec92b664">connect</a> (std::string signalName, const Signal::DelegateEx &amp;handler)</td></tr>
 <tr class="memdesc:a185f8d5bfd1463428692b164ec92b664"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="#a185f8d5bfd1463428692b164ec92b664">More...</a><br /></td></tr>
 <tr class="separator:a185f8d5bfd1463428692b164ec92b664"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a429803c024270de8ad6730158c3ea212"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(Args...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </td></tr>
-<tr class="memitem:a429803c024270de8ad6730158c3ea212"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a429803c024270de8ad6730158c3ea212">connect</a> (std::string signalName, Func &amp;&amp;handler, Args &amp;&amp;... args)</td></tr>
-<tr class="memdesc:a429803c024270de8ad6730158c3ea212"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="#a429803c024270de8ad6730158c3ea212">More...</a><br /></td></tr>
-<tr class="separator:a429803c024270de8ad6730158c3ea212"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a429803c024270de8ad6730158c3ea212"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(std::shared_ptr&lt; Widget &gt;, const std::string &amp;, Args...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </td></tr>
-<tr class="memitem:a429803c024270de8ad6730158c3ea212"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a429803c024270de8ad6730158c3ea212">connect</a> (std::string signalName, Func &amp;&amp;handler, Args &amp;&amp;... args)</td></tr>
-<tr class="memdesc:a429803c024270de8ad6730158c3ea212"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="#a429803c024270de8ad6730158c3ea212">More...</a><br /></td></tr>
-<tr class="separator:a429803c024270de8ad6730158c3ea212"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const Args &amp;...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </td></tr>
+<tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a71a57f0500ef818b1a0a0d8a35cdea06">connect</a> (std::string signalName, Func &amp;&amp;handler, const Args &amp;... args)</td></tr>
+<tr class="memdesc:a71a57f0500ef818b1a0a0d8a35cdea06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="#a71a57f0500ef818b1a0a0d8a35cdea06">More...</a><br /></td></tr>
+<tr class="separator:a71a57f0500ef818b1a0a0d8a35cdea06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const Args &amp;..., std::shared_ptr&lt; Widget &gt;, const std::string &amp;)&gt;&gt;::value &gt;::type *  = nullptr&gt; </td></tr>
+<tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a71a57f0500ef818b1a0a0d8a35cdea06">connect</a> (std::string signalName, Func &amp;&amp;handler, const Args &amp;... args)</td></tr>
+<tr class="memdesc:a71a57f0500ef818b1a0a0d8a35cdea06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="#a71a57f0500ef818b1a0a0d8a35cdea06">More...</a><br /></td></tr>
+<tr class="separator:a71a57f0500ef818b1a0a0d8a35cdea06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae24a743ce2b315ea3912c3dc32abbd0c"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args&gt; </td></tr>
+<tr class="memitem:ae24a743ce2b315ea3912c3dc32abbd0c"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#ae24a743ce2b315ea3912c3dc32abbd0c">connect</a> (std::initializer_list&lt; std::string &gt; signalNames, Func &amp;&amp;handler, const Args &amp;... args)</td></tr>
+<tr class="memdesc:ae24a743ce2b315ea3912c3dc32abbd0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect a signal handler to multiple signals.  <a href="#ae24a743ce2b315ea3912c3dc32abbd0c">More...</a><br /></td></tr>
+<tr class="separator:ae24a743ce2b315ea3912c3dc32abbd0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72c798f528a30c1484a2137b3dac95a2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a72c798f528a30c1484a2137b3dac95a2">disconnect</a> (std::string signalName, unsigned int id)</td></tr>
 <tr class="memdesc:a72c798f528a30c1484a2137b3dac95a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disconnects a signal handler.  <a href="#a72c798f528a30c1484a2137b3dac95a2">More...</a><br /></td></tr>
 <tr class="separator:a72c798f528a30c1484a2137b3dac95a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae40ed93989b2b60c2bf41277798c7ca8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#ae40ed93989b2b60c2bf41277798c7ca8">disconnectAll</a> (std::string signalName)</td></tr>
+<tr class="memdesc:ae40ed93989b2b60c2bf41277798c7ca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disconnects all signal handler from a certain signal.  <a href="#ae40ed93989b2b60c2bf41277798c7ca8">More...</a><br /></td></tr>
+<tr class="separator:ae40ed93989b2b60c2bf41277798c7ca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -169,7 +177,7 @@ virtual <a class="el" href="classtgui_1_1Signal.html">Signal</a> &amp;&#160;</td
 <div class="textblock"><p>Base class for <a class="el" href="classtgui_1_1Widget.html" title="The parent class for every widget. ">Widget</a> which provides functionality to connect signals based on their name. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a006a96474b168a4f64ec500a2488683c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a006a96474b168a4f64ec500a2488683c">&#9670;&nbsp;</a></span>connect() <span class="overload">[1/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a006a96474b168a4f64ec500a2488683c">&#9670;&nbsp;</a></span>connect() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -215,7 +223,7 @@ virtual <a class="el" href="classtgui_1_1Signal.html">Signal</a> &amp;&#160;</td
 </div>
 </div>
 <a id="a185f8d5bfd1463428692b164ec92b664"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a185f8d5bfd1463428692b164ec92b664">&#9670;&nbsp;</a></span>connect() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a185f8d5bfd1463428692b164ec92b664">&#9670;&nbsp;</a></span>connect() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -260,13 +268,13 @@ virtual <a class="el" href="classtgui_1_1Signal.html">Signal</a> &amp;&#160;</td
 
 </div>
 </div>
-<a id="a429803c024270de8ad6730158c3ea212"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a429803c024270de8ad6730158c3ea212">&#9670;&nbsp;</a></span>connect() <span class="overload">[3/4]</span></h2>
+<a id="a71a57f0500ef818b1a0a0d8a35cdea06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71a57f0500ef818b1a0a0d8a35cdea06">&#9670;&nbsp;</a></span>connect() <span class="overload">[3/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(Args...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </div>
+template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const Args &amp;...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -286,7 +294,7 @@ template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::i
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramtype">const Args &amp;...&#160;</td>
           <td class="paramname"><em>args</em>&#160;</td>
         </tr>
         <tr>
@@ -306,7 +314,7 @@ template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::i
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">signalName</td><td>Name of the signal </td></tr>
-    <tr><td class="paramname">handler</td><td>Callback function that is giventhe extra arguments provided to this function as arguments </td></tr>
+    <tr><td class="paramname">handler</td><td>Callback function that is given the extra arguments provided to this function as arguments </td></tr>
     <tr><td class="paramname">args</td><td>Optional extra arguments to pass to the signal handler when the signal is emitted</td></tr>
   </table>
   </dd>
@@ -315,13 +323,13 @@ template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::i
 
 </div>
 </div>
-<a id="a429803c024270de8ad6730158c3ea212"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a429803c024270de8ad6730158c3ea212">&#9670;&nbsp;</a></span>connect() <span class="overload">[4/4]</span></h2>
+<a id="a71a57f0500ef818b1a0a0d8a35cdea06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71a57f0500ef818b1a0a0d8a35cdea06">&#9670;&nbsp;</a></span>connect() <span class="overload">[4/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(std::shared_ptr&lt; Widget &gt;, const std::string &amp;, Args...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </div>
+template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const Args &amp;..., std::shared_ptr&lt; Widget &gt;, const std::string &amp;)&gt;&gt;::value &gt;::type *  = nullptr&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -341,7 +349,7 @@ template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::i
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramtype">const Args &amp;...&#160;</td>
           <td class="paramname"><em>args</em>&#160;</td>
         </tr>
         <tr>
@@ -367,6 +375,61 @@ template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::i
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Unique id of the connection </dd></dl>
+
+</div>
+</div>
+<a id="ae24a743ce2b315ea3912c3dc32abbd0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae24a743ce2b315ea3912c3dc32abbd0c">&#9670;&nbsp;</a></span>connect() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Func , typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int tgui::SignalWidgetBase::connect </td>
+          <td>(</td>
+          <td class="paramtype">std::initializer_list&lt; std::string &gt;&#160;</td>
+          <td class="paramname"><em>signalNames</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func &amp;&amp;&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Args &amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Connect a signal handler to multiple signals. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">signalNames</td><td>List of signal names that will trigger the signal handler </td></tr>
+    <tr><td class="paramname">handler</td><td>Callback function </td></tr>
+    <tr><td class="paramname">args</td><td>Optional extra arguments to pass to the signal handler when the signal is emitted</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Unique id of the last connection. When passing e.g. 2 signal names, the first signal will correspond to id-1. </dd></dl>
 
 </div>
 </div>
@@ -416,6 +479,40 @@ template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::i
 
 </div>
 </div>
+<a id="ae40ed93989b2b60c2bf41277798c7ca8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae40ed93989b2b60c2bf41277798c7ca8">&#9670;&nbsp;</a></span>disconnectAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::SignalWidgetBase::disconnectAll </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>signalName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Disconnects all signal handler from a certain signal. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">signalName</td><td>Name of the signal </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/TGUI/<a class="el" href="Signal_8hpp_source.html">Signal.hpp</a></li>
 </ul>
@@ -423,7 +520,7 @@ template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::i
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jul 11 2017 11:12:35 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 27 2017 22:48:29 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

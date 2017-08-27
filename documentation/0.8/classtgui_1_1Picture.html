@@ -126,10 +126,9 @@ Inheritance diagram for tgui::Picture:</div>
  <div class="center">
   <img src="classtgui_1_1Picture.png" usemap="#tgui::Picture_map" alt=""/>
   <map id="tgui::Picture_map" name="tgui::Picture_map">
-<area href="classtgui_1_1ClickableWidget.html" title="Clickable widget. " alt="tgui::ClickableWidget" shape="rect" coords="248,112,486,136"/>
-<area href="classtgui_1_1Widget.html" title="The parent class for every widget. " alt="tgui::Widget" shape="rect" coords="248,56,486,80"/>
-<area href="classtgui_1_1Transformable.html" alt="tgui::Transformable" shape="rect" coords="0,0,238,24"/>
-<area href="classtgui_1_1SignalWidgetBase.html" title="Base class for Widget which provides functionality to connect signals based on their name..." alt="tgui::SignalWidgetBase" shape="rect" coords="248,0,486,24"/>
+<area href="classtgui_1_1ClickableWidget.html" title="Clickable widget. " alt="tgui::ClickableWidget" shape="rect" coords="124,112,362,136"/>
+<area href="classtgui_1_1Widget.html" title="The parent class for every widget. " alt="tgui::Widget" shape="rect" coords="124,56,362,80"/>
+<area href="classtgui_1_1SignalWidgetBase.html" title="Base class for Widget which provides functionality to connect signals based on their name..." alt="tgui::SignalWidgetBase" shape="rect" coords="0,0,238,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -174,24 +173,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1855f6ffddc95165013843c1738327e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a1855f6ffddc95165013843c1738327e7">setTexture</a> (const <a class="el" href="classtgui_1_1Texture.html">Texture</a> &amp;texture, bool fullyClickable=true)</td></tr>
 <tr class="memdesc:a1855f6ffddc95165013843c1738327e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the image.  <a href="#a1855f6ffddc95165013843c1738327e7">More...</a><br /></td></tr>
 <tr class="separator:a1855f6ffddc95165013843c1738327e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a811dfb9cd37d85655e823671b02eccc6"><td class="memItemLeft" align="right" valign="top">const sf::String &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a811dfb9cd37d85655e823671b02eccc6">getLoadedFilename</a> () const</td></tr>
-<tr class="memdesc:a811dfb9cd37d85655e823671b02eccc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the filename of the image that was used to load the widget.  <a href="#a811dfb9cd37d85655e823671b02eccc6">More...</a><br /></td></tr>
-<tr class="separator:a811dfb9cd37d85655e823671b02eccc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fab9d212933870d1ff0e30fb5139871"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a4fab9d212933870d1ff0e30fb5139871">setSize</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;size) override</td></tr>
-<tr class="memdesc:a4fab9d212933870d1ff0e30fb5139871"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the picture.  <a href="#a4fab9d212933870d1ff0e30fb5139871">More...</a><br /></td></tr>
-<tr class="separator:a4fab9d212933870d1ff0e30fb5139871"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a861ed4cef4393b8925ed7118629606aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a861ed4cef4393b8925ed7118629606aa">setSmooth</a> (bool smooth=true)</td></tr>
-<tr class="memdesc:a861ed4cef4393b8925ed7118629606aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disable the smooth filter.  <a href="#a861ed4cef4393b8925ed7118629606aa">More...</a><br /></td></tr>
-<tr class="separator:a861ed4cef4393b8925ed7118629606aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3968696aded8953ad870efd456bb4b11"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a3968696aded8953ad870efd456bb4b11">isSmooth</a> () const</td></tr>
-<tr class="memdesc:a3968696aded8953ad870efd456bb4b11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tells whether the smooth filter is enabled or not.  <a href="#a3968696aded8953ad870efd456bb4b11">More...</a><br /></td></tr>
-<tr class="separator:a3968696aded8953ad870efd456bb4b11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bcdac77a50de3218276c7afd5559ff9"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a5bcdac77a50de3218276c7afd5559ff9">mouseOnWidget</a> (sf::Vector2f pos) const override</td></tr>
-<tr class="memdesc:a5bcdac77a50de3218276c7afd5559ff9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget.  <a href="#a5bcdac77a50de3218276c7afd5559ff9">More...</a><br /></td></tr>
-<tr class="separator:a5bcdac77a50de3218276c7afd5559ff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad51c782b01f8a49786deca6a1093769c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#ad51c782b01f8a49786deca6a1093769c">draw</a> (sf::RenderTarget &amp;target, sf::RenderStates states) const override</td></tr>
-<tr class="memdesc:ad51c782b01f8a49786deca6a1093769c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw the widget to a render target.  <a href="#ad51c782b01f8a49786deca6a1093769c">More...</a><br /></td></tr>
-<tr class="separator:ad51c782b01f8a49786deca6a1093769c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5dd5ab74fe46286c2d6038002a9fcb0"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classtgui_1_1Texture.html">Texture</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#aa5dd5ab74fe46286c2d6038002a9fcb0">getTexture</a> () const</td></tr>
+<tr class="memdesc:aa5dd5ab74fe46286c2d6038002a9fcb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the texture used by the picture.  <a href="#aa5dd5ab74fe46286c2d6038002a9fcb0">More...</a><br /></td></tr>
+<tr class="separator:aa5dd5ab74fe46286c2d6038002a9fcb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afadc00adfbf6feb1b10aee3b385aab70"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Texture.html">Texture</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#afadc00adfbf6feb1b10aee3b385aab70">getTexture</a> ()</td></tr>
+<tr class="memdesc:afadc00adfbf6feb1b10aee3b385aab70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the texture used by the picture.  <a href="#afadc00adfbf6feb1b10aee3b385aab70">More...</a><br /></td></tr>
+<tr class="separator:afadc00adfbf6feb1b10aee3b385aab70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac36d31193586a33bc584ed3d59eebd98"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#ac36d31193586a33bc584ed3d59eebd98">setSize</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;size) override</td></tr>
+<tr class="memdesc:ac36d31193586a33bc584ed3d59eebd98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the picture.  <a href="#ac36d31193586a33bc584ed3d59eebd98">More...</a><br /></td></tr>
+<tr class="separator:ac36d31193586a33bc584ed3d59eebd98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff51541e56b01208493d18bba6b61e38"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#aff51541e56b01208493d18bba6b61e38">mouseOnWidget</a> (sf::Vector2f pos) const override</td></tr>
+<tr class="memdesc:aff51541e56b01208493d18bba6b61e38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget.  <a href="#aff51541e56b01208493d18bba6b61e38">More...</a><br /></td></tr>
+<tr class="separator:aff51541e56b01208493d18bba6b61e38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a8d320fc1c96e26bad028b7c3a888ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a3a8d320fc1c96e26bad028b7c3a888ca">draw</a> (sf::RenderTarget &amp;target, sf::RenderStates states) const override</td></tr>
+<tr class="memdesc:a3a8d320fc1c96e26bad028b7c3a888ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw the widget to a render target.  <a href="#a3a8d320fc1c96e26bad028b7c3a888ca">More...</a><br /></td></tr>
+<tr class="separator:a3a8d320fc1c96e26bad028b7c3a888ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtgui_1_1ClickableWidget"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1ClickableWidget')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></td></tr>
 <tr class="memitem:aa24c0d5b57f4e61d46438fd1d659a676 inherit pub_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top"><a id="aa24c0d5b57f4e61d46438fd1d659a676"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#aa24c0d5b57f4e61d46438fd1d659a676">ClickableWidget</a> ()</td></tr>
@@ -228,9 +224,24 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6048b52ec67068b0531ed533e09232a2 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1WidgetRenderer.html">WidgetRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a6048b52ec67068b0531ed533e09232a2">getRenderer</a> () const</td></tr>
 <tr class="memdesc:a6048b52ec67068b0531ed533e09232a2 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the renderer, which gives access to functions that determine how the widget is displayed.  <a href="classtgui_1_1Widget.html#a6048b52ec67068b0531ed533e09232a2">More...</a><br /></td></tr>
 <tr class="separator:a6048b52ec67068b0531ed533e09232a2 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a299706f20b12cbe65422c6e53493e12d inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a299706f20b12cbe65422c6e53493e12d">setPosition</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;position) override</td></tr>
-<tr class="memdesc:a299706f20b12cbe65422c6e53493e12d inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the position of the widget  <a href="classtgui_1_1Widget.html#a299706f20b12cbe65422c6e53493e12d">More...</a><br /></td></tr>
-<tr class="separator:a299706f20b12cbe65422c6e53493e12d inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc57c2d17eebd0a528e7f5ca8e088011 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#afc57c2d17eebd0a528e7f5ca8e088011">setPosition</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;position)</td></tr>
+<tr class="memdesc:afc57c2d17eebd0a528e7f5ca8e088011 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the position of the widget  <a href="classtgui_1_1Widget.html#afc57c2d17eebd0a528e7f5ca8e088011">More...</a><br /></td></tr>
+<tr class="separator:afc57c2d17eebd0a528e7f5ca8e088011 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57b85bc10c1447e62d65739a39fca865 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a57b85bc10c1447e62d65739a39fca865">setPosition</a> (<a class="el" href="classtgui_1_1Layout.html">Layout</a> x, <a class="el" href="classtgui_1_1Layout.html">Layout</a> y)</td></tr>
+<tr class="memdesc:a57b85bc10c1447e62d65739a39fca865 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the position of the widget.  <a href="classtgui_1_1Widget.html#a57b85bc10c1447e62d65739a39fca865">More...</a><br /></td></tr>
+<tr class="separator:a57b85bc10c1447e62d65739a39fca865 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a0b48f8503f6179509715cd8cc5f96d inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a4a0b48f8503f6179509715cd8cc5f96d">getPosition</a> () const</td></tr>
+<tr class="memdesc:a4a0b48f8503f6179509715cd8cc5f96d inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the position of the widget.  <a href="classtgui_1_1Widget.html#a4a0b48f8503f6179509715cd8cc5f96d">More...</a><br /></td></tr>
+<tr class="separator:a4a0b48f8503f6179509715cd8cc5f96d inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a087a60617c86fcf6521da7bc9f4723bd inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a087a60617c86fcf6521da7bc9f4723bd">setSize</a> (<a class="el" href="classtgui_1_1Layout.html">Layout</a> width, <a class="el" href="classtgui_1_1Layout.html">Layout</a> height)</td></tr>
+<tr class="memdesc:a087a60617c86fcf6521da7bc9f4723bd inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the widget.  <a href="classtgui_1_1Widget.html#a087a60617c86fcf6521da7bc9f4723bd">More...</a><br /></td></tr>
+<tr class="separator:a087a60617c86fcf6521da7bc9f4723bd inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a390f854b10d7bce546d8cf16801af83a inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a390f854b10d7bce546d8cf16801af83a">getSize</a> () const</td></tr>
+<tr class="memdesc:a390f854b10d7bce546d8cf16801af83a inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the widget.  <a href="classtgui_1_1Widget.html#a390f854b10d7bce546d8cf16801af83a">More...</a><br /></td></tr>
+<tr class="separator:a390f854b10d7bce546d8cf16801af83a inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d4aeeba79b2d283208f37bbfe9c0483 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a1d4aeeba79b2d283208f37bbfe9c0483">getFullSize</a> () const</td></tr>
+<tr class="memdesc:a1d4aeeba79b2d283208f37bbfe9c0483 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="classtgui_1_1Widget.html#a1d4aeeba79b2d283208f37bbfe9c0483">More...</a><br /></td></tr>
+<tr class="separator:a1d4aeeba79b2d283208f37bbfe9c0483 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf1cec930567f4f079651c833b38a292 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#abf1cec930567f4f079651c833b38a292">getAbsolutePosition</a> () const</td></tr>
 <tr class="memdesc:abf1cec930567f4f079651c833b38a292 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the absolute position of the widget instead of the relative position to its parent.  <a href="classtgui_1_1Widget.html#abf1cec930567f4f079651c833b38a292">More...</a><br /></td></tr>
 <tr class="separator:abf1cec930567f4f079651c833b38a292 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -276,13 +287,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a962edd9814fd28dc2f14a0843842062b inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Container.html">Container</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a962edd9814fd28dc2f14a0843842062b">getParent</a> () const</td></tr>
 <tr class="memdesc:a962edd9814fd28dc2f14a0843842062b inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to the parent widget.  <a href="classtgui_1_1Widget.html#a962edd9814fd28dc2f14a0843842062b">More...</a><br /></td></tr>
 <tr class="separator:a962edd9814fd28dc2f14a0843842062b inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98fd0f08b45e3e54b9054965060136dd inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a98fd0f08b45e3e54b9054965060136dd"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a98fd0f08b45e3e54b9054965060136dd">moveToFront</a> ()</td></tr>
-<tr class="memdesc:a98fd0f08b45e3e54b9054965060136dd inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the widget before all other widgets. <br /></td></tr>
+<tr class="memitem:a98fd0f08b45e3e54b9054965060136dd inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a98fd0f08b45e3e54b9054965060136dd">moveToFront</a> ()</td></tr>
+<tr class="memdesc:a98fd0f08b45e3e54b9054965060136dd inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the widget before all other widgets.  <a href="classtgui_1_1Widget.html#a98fd0f08b45e3e54b9054965060136dd">More...</a><br /></td></tr>
 <tr class="separator:a98fd0f08b45e3e54b9054965060136dd inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15e7d3570551c72d9a4d9534ac7a7f19 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a15e7d3570551c72d9a4d9534ac7a7f19"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a15e7d3570551c72d9a4d9534ac7a7f19">moveToBack</a> ()</td></tr>
-<tr class="memdesc:a15e7d3570551c72d9a4d9534ac7a7f19 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the widget behind all other widgets. <br /></td></tr>
+<tr class="memitem:a15e7d3570551c72d9a4d9534ac7a7f19 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a15e7d3570551c72d9a4d9534ac7a7f19">moveToBack</a> ()</td></tr>
+<tr class="memdesc:a15e7d3570551c72d9a4d9534ac7a7f19 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the widget behind all other widgets.  <a href="classtgui_1_1Widget.html#a15e7d3570551c72d9a4d9534ac7a7f19">More...</a><br /></td></tr>
 <tr class="separator:a15e7d3570551c72d9a4d9534ac7a7f19 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4f30ef364bf7594ec209688a9b43ec5 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ae4f30ef364bf7594ec209688a9b43ec5">setToolTip</a> (<a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> toolTip)</td></tr>
 <tr class="memdesc:ae4f30ef364bf7594ec209688a9b43ec5 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the tool tip that should be displayed when hovering over the widget.  <a href="classtgui_1_1Widget.html#ae4f30ef364bf7594ec209688a9b43ec5">More...</a><br /></td></tr>
@@ -290,22 +299,6 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a0e6e54fbaba931d0bb8eb0404e2e1c22 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a0e6e54fbaba931d0bb8eb0404e2e1c22">getToolTip</a> ()</td></tr>
 <tr class="memdesc:a0e6e54fbaba931d0bb8eb0404e2e1c22 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the tool tip that is displayed when hovering over the widget.  <a href="classtgui_1_1Widget.html#a0e6e54fbaba931d0bb8eb0404e2e1c22">More...</a><br /></td></tr>
 <tr class="separator:a0e6e54fbaba931d0bb8eb0404e2e1c22 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classtgui_1_1Transformable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1Transformable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1Transformable.html">tgui::Transformable</a></td></tr>
-<tr class="memitem:ac8562efd5ed03d35babfec89663865b2 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#ac8562efd5ed03d35babfec89663865b2">setPosition</a> (<a class="el" href="classtgui_1_1Layout.html">Layout</a> x, <a class="el" href="classtgui_1_1Layout.html">Layout</a> y)</td></tr>
-<tr class="memdesc:ac8562efd5ed03d35babfec89663865b2 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the position of the widget.  <a href="classtgui_1_1Transformable.html#ac8562efd5ed03d35babfec89663865b2">More...</a><br /></td></tr>
-<tr class="separator:ac8562efd5ed03d35babfec89663865b2 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5927d8c58e98886ecd08883efd60df82 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a5927d8c58e98886ecd08883efd60df82">getPosition</a> () const</td></tr>
-<tr class="memdesc:a5927d8c58e98886ecd08883efd60df82 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the position of the widget.  <a href="classtgui_1_1Transformable.html#a5927d8c58e98886ecd08883efd60df82">More...</a><br /></td></tr>
-<tr class="separator:a5927d8c58e98886ecd08883efd60df82 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56f62d1abf08edf93af4d74a1c6acfb2 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a56f62d1abf08edf93af4d74a1c6acfb2">setSize</a> (<a class="el" href="classtgui_1_1Layout.html">Layout</a> width, <a class="el" href="classtgui_1_1Layout.html">Layout</a> height)</td></tr>
-<tr class="memdesc:a56f62d1abf08edf93af4d74a1c6acfb2 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the widget.  <a href="classtgui_1_1Transformable.html#a56f62d1abf08edf93af4d74a1c6acfb2">More...</a><br /></td></tr>
-<tr class="separator:a56f62d1abf08edf93af4d74a1c6acfb2 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b97f4fd9514651f6f715aa303dc2ee1 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#a2b97f4fd9514651f6f715aa303dc2ee1">getSize</a> () const</td></tr>
-<tr class="memdesc:a2b97f4fd9514651f6f715aa303dc2ee1 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the widget.  <a href="classtgui_1_1Transformable.html#a2b97f4fd9514651f6f715aa303dc2ee1">More...</a><br /></td></tr>
-<tr class="separator:a2b97f4fd9514651f6f715aa303dc2ee1 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae62ab76c2766eb8a78f580601864d452 inherit pub_methods_classtgui_1_1Transformable"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Transformable.html#ae62ab76c2766eb8a78f580601864d452">getFullSize</a> () const</td></tr>
-<tr class="memdesc:ae62ab76c2766eb8a78f580601864d452 inherit pub_methods_classtgui_1_1Transformable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="classtgui_1_1Transformable.html#ae62ab76c2766eb8a78f580601864d452">More...</a><br /></td></tr>
-<tr class="separator:ae62ab76c2766eb8a78f580601864d452 inherit pub_methods_classtgui_1_1Transformable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtgui_1_1SignalWidgetBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1SignalWidgetBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td></tr>
 <tr class="memitem:a006a96474b168a4f64ec500a2488683c inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a006a96474b168a4f64ec500a2488683c">connect</a> (std::string signalName, const Signal::Delegate &amp;handler)</td></tr>
 <tr class="memdesc:a006a96474b168a4f64ec500a2488683c inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="classtgui_1_1SignalWidgetBase.html#a006a96474b168a4f64ec500a2488683c">More...</a><br /></td></tr>
@@ -313,17 +306,24 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a185f8d5bfd1463428692b164ec92b664 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a185f8d5bfd1463428692b164ec92b664">connect</a> (std::string signalName, const Signal::DelegateEx &amp;handler)</td></tr>
 <tr class="memdesc:a185f8d5bfd1463428692b164ec92b664 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="classtgui_1_1SignalWidgetBase.html#a185f8d5bfd1463428692b164ec92b664">More...</a><br /></td></tr>
 <tr class="separator:a185f8d5bfd1463428692b164ec92b664 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a429803c024270de8ad6730158c3ea212 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(Args...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </td></tr>
-<tr class="memitem:a429803c024270de8ad6730158c3ea212 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a429803c024270de8ad6730158c3ea212">connect</a> (std::string signalName, Func &amp;&amp;handler, Args &amp;&amp;... args)</td></tr>
-<tr class="memdesc:a429803c024270de8ad6730158c3ea212 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="classtgui_1_1SignalWidgetBase.html#a429803c024270de8ad6730158c3ea212">More...</a><br /></td></tr>
-<tr class="separator:a429803c024270de8ad6730158c3ea212 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a429803c024270de8ad6730158c3ea212 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(std::shared_ptr&lt; Widget &gt;, const std::string &amp;, Args...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </td></tr>
-<tr class="memitem:a429803c024270de8ad6730158c3ea212 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a429803c024270de8ad6730158c3ea212">connect</a> (std::string signalName, Func &amp;&amp;handler, Args &amp;&amp;... args)</td></tr>
-<tr class="memdesc:a429803c024270de8ad6730158c3ea212 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="classtgui_1_1SignalWidgetBase.html#a429803c024270de8ad6730158c3ea212">More...</a><br /></td></tr>
-<tr class="separator:a429803c024270de8ad6730158c3ea212 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const Args &amp;...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </td></tr>
+<tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a71a57f0500ef818b1a0a0d8a35cdea06">connect</a> (std::string signalName, Func &amp;&amp;handler, const Args &amp;... args)</td></tr>
+<tr class="memdesc:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="classtgui_1_1SignalWidgetBase.html#a71a57f0500ef818b1a0a0d8a35cdea06">More...</a><br /></td></tr>
+<tr class="separator:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const Args &amp;..., std::shared_ptr&lt; Widget &gt;, const std::string &amp;)&gt;&gt;::value &gt;::type *  = nullptr&gt; </td></tr>
+<tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a71a57f0500ef818b1a0a0d8a35cdea06">connect</a> (std::string signalName, Func &amp;&amp;handler, const Args &amp;... args)</td></tr>
+<tr class="memdesc:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler that will be called when this signal is emitted.  <a href="classtgui_1_1SignalWidgetBase.html#a71a57f0500ef818b1a0a0d8a35cdea06">More...</a><br /></td></tr>
+<tr class="separator:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae24a743ce2b315ea3912c3dc32abbd0c inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args&gt; </td></tr>
+<tr class="memitem:ae24a743ce2b315ea3912c3dc32abbd0c inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#ae24a743ce2b315ea3912c3dc32abbd0c">connect</a> (std::initializer_list&lt; std::string &gt; signalNames, Func &amp;&amp;handler, const Args &amp;... args)</td></tr>
+<tr class="memdesc:ae24a743ce2b315ea3912c3dc32abbd0c inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect a signal handler to multiple signals.  <a href="classtgui_1_1SignalWidgetBase.html#ae24a743ce2b315ea3912c3dc32abbd0c">More...</a><br /></td></tr>
+<tr class="separator:ae24a743ce2b315ea3912c3dc32abbd0c inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72c798f528a30c1484a2137b3dac95a2 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a72c798f528a30c1484a2137b3dac95a2">disconnect</a> (std::string signalName, unsigned int id)</td></tr>
 <tr class="memdesc:a72c798f528a30c1484a2137b3dac95a2 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disconnects a signal handler.  <a href="classtgui_1_1SignalWidgetBase.html#a72c798f528a30c1484a2137b3dac95a2">More...</a><br /></td></tr>
 <tr class="separator:a72c798f528a30c1484a2137b3dac95a2 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae40ed93989b2b60c2bf41277798c7ca8 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#ae40ed93989b2b60c2bf41277798c7ca8">disconnectAll</a> (std::string signalName)</td></tr>
+<tr class="memdesc:ae40ed93989b2b60c2bf41277798c7ca8 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disconnects all signal handler from a certain signal.  <a href="classtgui_1_1SignalWidgetBase.html#ae40ed93989b2b60c2bf41277798c7ca8">More...</a><br /></td></tr>
+<tr class="separator:ae40ed93989b2b60c2bf41277798c7ca8 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -334,69 +334,69 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae0eff99b9f930644d58a153edabb3fe9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of another picture.  <a href="#ae0eff99b9f930644d58a153edabb3fe9">More...</a><br /></td></tr>
 <tr class="separator:ae0eff99b9f930644d58a153edabb3fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_classtgui_1_1ClickableWidget"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classtgui_1_1ClickableWidget')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></td></tr>
-<tr class="memitem:a942a9534a5ef965c407562bd56927c4b inherit pub_static_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtgui_1_1ClickableWidget.html#a6ac85e9df673fe1f4c012ad21199b6b0">ClickableWidget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a942a9534a5ef965c407562bd56927c4b">create</a> (<a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> size={<a class="el" href="structtgui_1_1RelLayout.html">RelLayout</a>{1}, <a class="el" href="structtgui_1_1RelLayout.html">RelLayout</a>{1}})</td></tr>
-<tr class="memdesc:a942a9534a5ef965c407562bd56927c4b inherit pub_static_methods_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new clickable widget.  <a href="classtgui_1_1ClickableWidget.html#a942a9534a5ef965c407562bd56927c4b">More...</a><br /></td></tr>
-<tr class="separator:a942a9534a5ef965c407562bd56927c4b inherit pub_static_methods_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a830333cb6928cc008677741c21cb91 inherit pub_static_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtgui_1_1ClickableWidget.html#a6ac85e9df673fe1f4c012ad21199b6b0">ClickableWidget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a0a830333cb6928cc008677741c21cb91">create</a> (<a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> size={&quot;100%&quot;, &quot;100%&quot;})</td></tr>
+<tr class="memdesc:a0a830333cb6928cc008677741c21cb91 inherit pub_static_methods_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new clickable widget.  <a href="classtgui_1_1ClickableWidget.html#a0a830333cb6928cc008677741c21cb91">More...</a><br /></td></tr>
+<tr class="separator:a0a830333cb6928cc008677741c21cb91 inherit pub_static_methods_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf51f403be363152eb0147acbaee9b2a inherit pub_static_methods_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtgui_1_1ClickableWidget.html#a6ac85e9df673fe1f4c012ad21199b6b0">ClickableWidget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#acf51f403be363152eb0147acbaee9b2a">copy</a> (<a class="el" href="classtgui_1_1ClickableWidget.html#aec51a79d5e43d6f90fee0e6aed43b46e">ClickableWidget::ConstPtr</a> widget)</td></tr>
 <tr class="memdesc:acf51f403be363152eb0147acbaee9b2a inherit pub_static_methods_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of another clickable widget.  <a href="classtgui_1_1ClickableWidget.html#acf51f403be363152eb0147acbaee9b2a">More...</a><br /></td></tr>
 <tr class="separator:acf51f403be363152eb0147acbaee9b2a inherit pub_static_methods_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a318182d96ca256076fed39c918a1f0a1"><td class="memItemLeft" align="right" valign="top"><a id="a318182d96ca256076fed39c918a1f0a1"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; SignalVector2f &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a318182d96ca256076fed39c918a1f0a1">onDoubleClick</a> = {&quot;DoubleClicked&quot;}</td></tr>
-<tr class="memdesc:a318182d96ca256076fed39c918a1f0a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The picture was double clicked. Optional parameter: mouse position relative to picture. <br /></td></tr>
-<tr class="separator:a318182d96ca256076fed39c918a1f0a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f6be224cac8c8dfd9ced8df7c519570"><td class="memItemLeft" align="right" valign="top"><a id="a1f6be224cac8c8dfd9ced8df7c519570"></a>
+SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a1f6be224cac8c8dfd9ced8df7c519570">onDoubleClick</a> = {&quot;DoubleClicked&quot;}</td></tr>
+<tr class="memdesc:a1f6be224cac8c8dfd9ced8df7c519570"><td class="mdescLeft">&#160;</td><td class="mdescRight">The picture was double clicked. Optional parameter: mouse position relative to picture. <br /></td></tr>
+<tr class="separator:a1f6be224cac8c8dfd9ced8df7c519570"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classtgui_1_1ClickableWidget"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classtgui_1_1ClickableWidget')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></td></tr>
-<tr class="memitem:a7da939d5fc7712bc9ace09652480541a inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top"><a id="a7da939d5fc7712bc9ace09652480541a"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; SignalVector2f &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a7da939d5fc7712bc9ace09652480541a">onMousePress</a> = {&quot;MousePressed&quot;}</td></tr>
-<tr class="memdesc:a7da939d5fc7712bc9ace09652480541a inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mouse went down on the widget. Optional parameter: mouse position relative to widget. <br /></td></tr>
-<tr class="separator:a7da939d5fc7712bc9ace09652480541a inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3707f0547d5c1cfd6f762e4f48bc3c71 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top"><a id="a3707f0547d5c1cfd6f762e4f48bc3c71"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; SignalVector2f &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a3707f0547d5c1cfd6f762e4f48bc3c71">onMouseRelease</a> = {&quot;MouseReleased&quot;}</td></tr>
-<tr class="memdesc:a3707f0547d5c1cfd6f762e4f48bc3c71 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mouse was released on top of the widget. Optional parameter: mouse position relative to widget. <br /></td></tr>
-<tr class="separator:a3707f0547d5c1cfd6f762e4f48bc3c71 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04694e00825e4adbef93de58c3fbdddb inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top"><a id="a04694e00825e4adbef93de58c3fbdddb"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; SignalVector2f &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a04694e00825e4adbef93de58c3fbdddb">onClick</a> = {&quot;Clicked&quot;}</td></tr>
-<tr class="memdesc:a04694e00825e4adbef93de58c3fbdddb inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The widget was clicked. Optional parameter: mouse position relative to widget. <br /></td></tr>
-<tr class="separator:a04694e00825e4adbef93de58c3fbdddb inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f5f43b7459941beb2566d647401b343 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top"><a id="a0f5f43b7459941beb2566d647401b343"></a>
+SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a0f5f43b7459941beb2566d647401b343">onMousePress</a> = {&quot;MousePressed&quot;}</td></tr>
+<tr class="memdesc:a0f5f43b7459941beb2566d647401b343 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mouse went down on the widget. Optional parameter: mouse position relative to widget. <br /></td></tr>
+<tr class="separator:a0f5f43b7459941beb2566d647401b343 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6834e971bba75778f70e6fcdff49e8f9 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top"><a id="a6834e971bba75778f70e6fcdff49e8f9"></a>
+SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a6834e971bba75778f70e6fcdff49e8f9">onMouseRelease</a> = {&quot;MouseReleased&quot;}</td></tr>
+<tr class="memdesc:a6834e971bba75778f70e6fcdff49e8f9 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mouse was released on top of the widget. Optional parameter: mouse position relative to widget. <br /></td></tr>
+<tr class="separator:a6834e971bba75778f70e6fcdff49e8f9 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4faa0a32ca37a34b509b79a350ac1aa5 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memItemLeft" align="right" valign="top"><a id="a4faa0a32ca37a34b509b79a350ac1aa5"></a>
+SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ClickableWidget.html#a4faa0a32ca37a34b509b79a350ac1aa5">onClick</a> = {&quot;Clicked&quot;}</td></tr>
+<tr class="memdesc:a4faa0a32ca37a34b509b79a350ac1aa5 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The widget was clicked. Optional parameter: mouse position relative to widget. <br /></td></tr>
+<tr class="separator:a4faa0a32ca37a34b509b79a350ac1aa5 inherit pub_attribs_classtgui_1_1ClickableWidget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classtgui_1_1Widget"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classtgui_1_1Widget')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td></tr>
-<tr class="memitem:abf140bdbc227b3ba0af00a2c77207227 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="abf140bdbc227b3ba0af00a2c77207227"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; SignalVector2f &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#abf140bdbc227b3ba0af00a2c77207227">onPositionChange</a> = {&quot;PositionChanged&quot;}</td></tr>
-<tr class="memdesc:abf140bdbc227b3ba0af00a2c77207227 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The position of the widget changed. Optional parameter: new position. <br /></td></tr>
-<tr class="separator:abf140bdbc227b3ba0af00a2c77207227 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1430d8ff88c5742dae7e97f60727b836 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a1430d8ff88c5742dae7e97f60727b836"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; SignalVector2f &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a1430d8ff88c5742dae7e97f60727b836">onSizeChange</a> = {&quot;SizeChanged&quot;}</td></tr>
-<tr class="memdesc:a1430d8ff88c5742dae7e97f60727b836 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The size of the widget changed. Optional parameter: new size. <br /></td></tr>
-<tr class="separator:a1430d8ff88c5742dae7e97f60727b836 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af25ff36ed0d265a951209247771ff2a1 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="af25ff36ed0d265a951209247771ff2a1"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; <a class="el" href="classtgui_1_1Signal.html">Signal</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#af25ff36ed0d265a951209247771ff2a1">onFocus</a> = {&quot;Focused&quot;}</td></tr>
-<tr class="memdesc:af25ff36ed0d265a951209247771ff2a1 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The widget was focused. <br /></td></tr>
-<tr class="separator:af25ff36ed0d265a951209247771ff2a1 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4619c660102cd89a2bfa768cba8a1626 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a4619c660102cd89a2bfa768cba8a1626"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; <a class="el" href="classtgui_1_1Signal.html">Signal</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a4619c660102cd89a2bfa768cba8a1626">onUnfocus</a> = {&quot;Unfocused&quot;}</td></tr>
-<tr class="memdesc:a4619c660102cd89a2bfa768cba8a1626 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The widget was unfocused. <br /></td></tr>
-<tr class="separator:a4619c660102cd89a2bfa768cba8a1626 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40623fa177b03050edfbe5d8aad0d4e5 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a40623fa177b03050edfbe5d8aad0d4e5"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; <a class="el" href="classtgui_1_1Signal.html">Signal</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a40623fa177b03050edfbe5d8aad0d4e5">onMouseEnter</a> = {&quot;MouseEntered&quot;}</td></tr>
-<tr class="memdesc:a40623fa177b03050edfbe5d8aad0d4e5 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mouse entered the widget. <br /></td></tr>
-<tr class="separator:a40623fa177b03050edfbe5d8aad0d4e5 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9abdd3f5a584d4b29c6ea91dbe01d75 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="aa9abdd3f5a584d4b29c6ea91dbe01d75"></a>
-<a class="el" href="classtgui_1_1SignalWrapper.html">SignalWrapper</a>&lt; <a class="el" href="classtgui_1_1Signal.html">Signal</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#aa9abdd3f5a584d4b29c6ea91dbe01d75">onMouseLeave</a> = {&quot;MouseLeft&quot;}</td></tr>
-<tr class="memdesc:aa9abdd3f5a584d4b29c6ea91dbe01d75 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mouse left the widget. <br /></td></tr>
-<tr class="separator:aa9abdd3f5a584d4b29c6ea91dbe01d75 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3835e82146cd20f070cb1363bc183976 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a3835e82146cd20f070cb1363bc183976"></a>
+SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a3835e82146cd20f070cb1363bc183976">onPositionChange</a> = {&quot;PositionChanged&quot;}</td></tr>
+<tr class="memdesc:a3835e82146cd20f070cb1363bc183976 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The position of the widget changed. Optional parameter: new position. <br /></td></tr>
+<tr class="separator:a3835e82146cd20f070cb1363bc183976 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afeab12e6d18dd931af50892aed72bc18 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="afeab12e6d18dd931af50892aed72bc18"></a>
+SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#afeab12e6d18dd931af50892aed72bc18">onSizeChange</a> = {&quot;SizeChanged&quot;}</td></tr>
+<tr class="memdesc:afeab12e6d18dd931af50892aed72bc18 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The size of the widget changed. Optional parameter: new size. <br /></td></tr>
+<tr class="separator:afeab12e6d18dd931af50892aed72bc18 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e8abf6cc15ae2c78dd644f653c20778 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a3e8abf6cc15ae2c78dd644f653c20778"></a>
+<a class="el" href="classtgui_1_1Signal.html">Signal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a3e8abf6cc15ae2c78dd644f653c20778">onFocus</a> = {&quot;Focused&quot;}</td></tr>
+<tr class="memdesc:a3e8abf6cc15ae2c78dd644f653c20778 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The widget was focused. <br /></td></tr>
+<tr class="separator:a3e8abf6cc15ae2c78dd644f653c20778 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22d40dc010d14acdcb0d791adfddb3d6 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a22d40dc010d14acdcb0d791adfddb3d6"></a>
+<a class="el" href="classtgui_1_1Signal.html">Signal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a22d40dc010d14acdcb0d791adfddb3d6">onUnfocus</a> = {&quot;Unfocused&quot;}</td></tr>
+<tr class="memdesc:a22d40dc010d14acdcb0d791adfddb3d6 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The widget was unfocused. <br /></td></tr>
+<tr class="separator:a22d40dc010d14acdcb0d791adfddb3d6 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3592e865e88965ab647783948de93469 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a3592e865e88965ab647783948de93469"></a>
+<a class="el" href="classtgui_1_1Signal.html">Signal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a3592e865e88965ab647783948de93469">onMouseEnter</a> = {&quot;MouseEntered&quot;}</td></tr>
+<tr class="memdesc:a3592e865e88965ab647783948de93469 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mouse entered the widget. <br /></td></tr>
+<tr class="separator:a3592e865e88965ab647783948de93469 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace62ad49b3e1fb9056f0a6431f1dcc12 inherit pub_attribs_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="ace62ad49b3e1fb9056f0a6431f1dcc12"></a>
+<a class="el" href="classtgui_1_1Signal.html">Signal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ace62ad49b3e1fb9056f0a6431f1dcc12">onMouseLeave</a> = {&quot;MouseLeft&quot;}</td></tr>
+<tr class="memdesc:ace62ad49b3e1fb9056f0a6431f1dcc12 inherit pub_attribs_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">The mouse left the widget. <br /></td></tr>
+<tr class="separator:ace62ad49b3e1fb9056f0a6431f1dcc12 inherit pub_attribs_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a894091cb60bb7ada6bf47ac37c773477"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Signal.html">Signal</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a894091cb60bb7ada6bf47ac37c773477">getSignal</a> (std::string &amp;&amp;signalName) override</td></tr>
-<tr class="memdesc:a894091cb60bb7ada6bf47ac37c773477"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a signal based on its name.  <a href="#a894091cb60bb7ada6bf47ac37c773477">More...</a><br /></td></tr>
-<tr class="separator:a894091cb60bb7ada6bf47ac37c773477"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f50d5b4a8506ce04fe9404f1e0ab9c0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a0f50d5b4a8506ce04fe9404f1e0ab9c0">rendererChanged</a> (const std::string &amp;property) override</td></tr>
-<tr class="memdesc:a0f50d5b4a8506ce04fe9404f1e0ab9c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function called when one of the properties of the renderer is changed.  <a href="#a0f50d5b4a8506ce04fe9404f1e0ab9c0">More...</a><br /></td></tr>
-<tr class="separator:a0f50d5b4a8506ce04fe9404f1e0ab9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17d33d5cc3e9ed675c0b8e68001e9e22"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a17d33d5cc3e9ed675c0b8e68001e9e22">clone</a> () const override</td></tr>
-<tr class="memdesc:a17d33d5cc3e9ed675c0b8e68001e9e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of the widget if you don't know its exact type.  <a href="#a17d33d5cc3e9ed675c0b8e68001e9e22">More...</a><br /></td></tr>
-<tr class="separator:a17d33d5cc3e9ed675c0b8e68001e9e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a932ddb6d012e3686b9f1a31565daa30e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Signal.html">Signal</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a932ddb6d012e3686b9f1a31565daa30e">getSignal</a> (std::string &amp;&amp;signalName) override</td></tr>
+<tr class="memdesc:a932ddb6d012e3686b9f1a31565daa30e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a signal based on its name.  <a href="#a932ddb6d012e3686b9f1a31565daa30e">More...</a><br /></td></tr>
+<tr class="separator:a932ddb6d012e3686b9f1a31565daa30e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a098801aa9e3d3799e4a7a1bba972d6ce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#a098801aa9e3d3799e4a7a1bba972d6ce">rendererChanged</a> (const std::string &amp;property) override</td></tr>
+<tr class="memdesc:a098801aa9e3d3799e4a7a1bba972d6ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function called when one of the properties of the renderer is changed.  <a href="#a098801aa9e3d3799e4a7a1bba972d6ce">More...</a><br /></td></tr>
+<tr class="separator:a098801aa9e3d3799e4a7a1bba972d6ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe7013710991051aaeda8ea42e3516a2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Picture.html#abe7013710991051aaeda8ea42e3516a2">clone</a> () const override</td></tr>
+<tr class="memdesc:abe7013710991051aaeda8ea42e3516a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of the widget if you don't know its exact type.  <a href="#abe7013710991051aaeda8ea42e3516a2">More...</a><br /></td></tr>
+<tr class="separator:abe7013710991051aaeda8ea42e3516a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classtgui_1_1Widget"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtgui_1_1Widget')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td></tr>
 <tr class="memitem:a6e3bbdea21eb583b3239103329e22f9b inherit pro_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a id="a6e3bbdea21eb583b3239103329e22f9b"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a6e3bbdea21eb583b3239103329e22f9b">mouseEnteredWidget</a> ()</td></tr>
@@ -448,8 +448,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a17d33d5cc3e9ed675c0b8e68001e9e22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a17d33d5cc3e9ed675c0b8e68001e9e22">&#9670;&nbsp;</a></span>clone()</h2>
+<a id="abe7013710991051aaeda8ea42e3516a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe7013710991051aaeda8ea42e3516a2">&#9670;&nbsp;</a></span>clone()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -458,7 +458,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> tgui::Picture::clone </td>
+          <td class="memname"><a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> tgui::Picture::clone </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -475,7 +475,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>This function should only be used when you don't know the type of the widget. If you know what kind of widget you are copying, you should use the copy function.</p>
 <dl class="section return"><dt>Returns</dt><dd>Copy of the widget </dd></dl>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#a322b9b5fdb4bf5b3ba65591f2428bac7">tgui::ClickableWidget</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#a8767037a3b2d51b07617cfd34a105e12">tgui::ClickableWidget</a>.</p>
 
 </div>
 </div>
@@ -560,8 +560,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <div class="fragment"><div class="line"><span class="keyword">auto</span> picture1 = <a class="code" href="classtgui_1_1Picture.html#af97a95e13742861dbc9c02df470d2cfc">Picture::create</a>(<span class="stringliteral">&quot;image.png&quot;</span>);</div><div class="line"></div><div class="line"><span class="keyword">auto</span> picture2 = <a class="code" href="classtgui_1_1Picture.html#af97a95e13742861dbc9c02df470d2cfc">Picture::create</a>({<span class="stringliteral">&quot;image.png&quot;</span>, {20, 15, 60, 40}}); <span class="comment">// Load part of the image from (20,15) to (80,55)</span></div><div class="line"></div><div class="line">sf::Texture texture;</div><div class="line">texture.loadFromFile(<span class="stringliteral">&quot;image.png&quot;</span>, {20, 15, 60, 40});</div><div class="line"><span class="keyword">auto</span> picture3 = <a class="code" href="classtgui_1_1Picture.html#af97a95e13742861dbc9c02df470d2cfc">Picture::create</a>(texture);</div></div><!-- fragment --> 
 </div>
 </div>
-<a id="ad51c782b01f8a49786deca6a1093769c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad51c782b01f8a49786deca6a1093769c">&#9670;&nbsp;</a></span>draw()</h2>
+<a id="a3a8d320fc1c96e26bad028b7c3a888ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a8d320fc1c96e26bad028b7c3a888ca">&#9670;&nbsp;</a></span>draw()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -570,7 +570,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void tgui::Picture::draw </td>
+          <td class="memname">void tgui::Picture::draw </td>
           <td>(</td>
           <td class="paramtype">sf::RenderTarget &amp;&#160;</td>
           <td class="paramname"><em>target</em>, </td>
@@ -603,32 +603,12 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   </dd>
 </dl>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#a0b856d91d2ebea4b805bce427845be20">tgui::ClickableWidget</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#afce3046cbb34ddf46a90d3899271e55f">tgui::ClickableWidget</a>.</p>
 
 </div>
 </div>
-<a id="a811dfb9cd37d85655e823671b02eccc6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a811dfb9cd37d85655e823671b02eccc6">&#9670;&nbsp;</a></span>getLoadedFilename()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const sf::String&amp; tgui::Picture::getLoadedFilename </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns the filename of the image that was used to load the widget. </p>
-<dl class="section return"><dt>Returns</dt><dd>Filename of loaded image. Empty string when no image was loaded yet or when it was loaded directly from an sf::Texture. </dd></dl>
-
-</div>
-</div>
-<a id="a894091cb60bb7ada6bf47ac37c773477"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a894091cb60bb7ada6bf47ac37c773477">&#9670;&nbsp;</a></span>getSignal()</h2>
+<a id="a932ddb6d012e3686b9f1a31565daa30e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a932ddb6d012e3686b9f1a31565daa30e">&#9670;&nbsp;</a></span>getSignal()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -637,7 +617,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classtgui_1_1Signal.html">Signal</a>&amp; tgui::Picture::getSignal </td>
+          <td class="memname"><a class="el" href="classtgui_1_1Signal.html">Signal</a>&amp; tgui::Picture::getSignal </td>
           <td>(</td>
           <td class="paramtype">std::string &amp;&amp;&#160;</td>
           <td class="paramname"><em>signalName</em></td><td>)</td>
@@ -666,18 +646,18 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   </dd>
 </dl>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#a9afc51e32cbaac09b9b2c1752893cec0">tgui::ClickableWidget</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#a75331d60d0537c458004f327faf51f83">tgui::ClickableWidget</a>.</p>
 
 </div>
 </div>
-<a id="a3968696aded8953ad870efd456bb4b11"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3968696aded8953ad870efd456bb4b11">&#9670;&nbsp;</a></span>isSmooth()</h2>
+<a id="aa5dd5ab74fe46286c2d6038002a9fcb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5dd5ab74fe46286c2d6038002a9fcb0">&#9670;&nbsp;</a></span>getTexture() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool tgui::Picture::isSmooth </td>
+          <td class="memname">const <a class="el" href="classtgui_1_1Texture.html">Texture</a>&amp; tgui::Picture::getTexture </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -685,14 +665,33 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
       </table>
 </div><div class="memdoc">
 
-<p>Tells whether the smooth filter is enabled or not. </p>
-<dl class="section return"><dt>Returns</dt><dd>True if smoothing is enabled, false if it is disabled</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Picture.html#a861ed4cef4393b8925ed7118629606aa" title="Enables or disable the smooth filter. ">setSmooth</a> </dd></dl>
+<p>Returns the texture used by the picture. </p>
+<dl class="section return"><dt>Returns</dt><dd>Internal texture </dd></dl>
 
 </div>
 </div>
-<a id="a5bcdac77a50de3218276c7afd5559ff9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5bcdac77a50de3218276c7afd5559ff9">&#9670;&nbsp;</a></span>mouseOnWidget()</h2>
+<a id="afadc00adfbf6feb1b10aee3b385aab70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afadc00adfbf6feb1b10aee3b385aab70">&#9670;&nbsp;</a></span>getTexture() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtgui_1_1Texture.html">Texture</a>&amp; tgui::Picture::getTexture </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the texture used by the picture. </p>
+<dl class="section return"><dt>Returns</dt><dd>Reference to the internal texture </dd></dl>
+
+</div>
+</div>
+<a id="aff51541e56b01208493d18bba6b61e38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff51541e56b01208493d18bba6b61e38">&#9670;&nbsp;</a></span>mouseOnWidget()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -701,7 +700,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual bool tgui::Picture::mouseOnWidget </td>
+          <td class="memname">bool tgui::Picture::mouseOnWidget </td>
           <td>(</td>
           <td class="paramtype">sf::Vector2f&#160;</td>
           <td class="paramname"><em>pos</em></td><td>)</td>
@@ -718,12 +717,12 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget. </p>
 <dl class="section return"><dt>Returns</dt><dd>Is the mouse on top of the widget? </dd></dl>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#aca839d73366736fbe7f90ad6155c7486">tgui::ClickableWidget</a>.</p>
+<p>Reimplemented from <a class="el" href="classtgui_1_1ClickableWidget.html#abcd3906e9d8d467a461a9c7bee868fbc">tgui::ClickableWidget</a>.</p>
 
 </div>
 </div>
-<a id="a0f50d5b4a8506ce04fe9404f1e0ab9c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f50d5b4a8506ce04fe9404f1e0ab9c0">&#9670;&nbsp;</a></span>rendererChanged()</h2>
+<a id="a098801aa9e3d3799e4a7a1bba972d6ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a098801aa9e3d3799e4a7a1bba972d6ce">&#9670;&nbsp;</a></span>rendererChanged()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -732,7 +731,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void tgui::Picture::rendererChanged </td>
+          <td class="memname">void tgui::Picture::rendererChanged </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>property</em></td><td>)</td>
@@ -758,8 +757,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
-<a id="a4fab9d212933870d1ff0e30fb5139871"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4fab9d212933870d1ff0e30fb5139871">&#9670;&nbsp;</a></span>setSize()</h2>
+<a id="ac36d31193586a33bc584ed3d59eebd98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac36d31193586a33bc584ed3d59eebd98">&#9670;&nbsp;</a></span>setSize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -768,7 +767,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void tgui::Picture::setSize </td>
+          <td class="memname">void tgui::Picture::setSize </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;&#160;</td>
           <td class="paramname"><em>size</em></td><td>)</td>
@@ -791,35 +790,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </dl>
 <p>The image will be scaled to fit this size. </p>
 
-<p>Reimplemented from <a class="el" href="classtgui_1_1Widget.html#aa780b3b9e657ea6b3acecd2045593cca">tgui::Widget</a>.</p>
-
-</div>
-</div>
-<a id="a861ed4cef4393b8925ed7118629606aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a861ed4cef4393b8925ed7118629606aa">&#9670;&nbsp;</a></span>setSmooth()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tgui::Picture::setSmooth </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>smooth</em> = <code>true</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Enables or disable the smooth filter. </p>
-<p>When the filter is activated, the texture appears smoother so that pixels are less noticeable. However if you want the texture to look exactly the same as its source file, you should leave it disabled. The smooth filter is disabled by default.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">smooth</td><td>True to enable smoothing, false to disable it</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Picture.html#a3968696aded8953ad870efd456bb4b11" title="Tells whether the smooth filter is enabled or not. ">isSmooth</a> </dd></dl>
+<p>Reimplemented from <a class="el" href="classtgui_1_1Widget.html#aa593c0cf9c1dca1393e60849719417cf">tgui::Widget</a>.</p>
 
 </div>
 </div>
@@ -867,7 +838,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jul 11 2017 11:12:35 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 27 2017 22:48:29 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

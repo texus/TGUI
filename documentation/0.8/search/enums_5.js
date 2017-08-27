@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['verticalalignment',['VerticalAlignment',['../classtgui_1_1Label.html#a2974ef71da25253342a8b3660b6d094c',1,'tgui::Label']]]
+  ['titlealignment',['TitleAlignment',['../classtgui_1_1ChildWindow.html#a247720248700e8ddbbb4af19bbfad5b8',1,'tgui::ChildWindow']]],
+  ['titlebutton',['TitleButton',['../classtgui_1_1ChildWindow.html#a745bc87bd3cb52c390cc26ea1e08765d',1,'tgui::ChildWindow']]]
 ];

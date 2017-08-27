@@ -1,7 +1,21 @@
 var searchData=
 [
-  ['handleevent',['handleEvent',['../classtgui_1_1Gui.html#a5ed041b03290df56b6fa965363972f3d',1,'tgui::Gui']]],
-  ['hide',['hide',['../classtgui_1_1Widget.html#a4234b30173259e7b5082a58a9f0e2ca6',1,'tgui::Widget']]],
-  ['hidewitheffect',['hideWithEffect',['../classtgui_1_1Widget.html#a9bcb2d85d7e449ef7305771256ec79bf',1,'tgui::Widget']]],
-  ['horizontalwrap',['HorizontalWrap',['../classtgui_1_1HorizontalWrap.html#af0297bc3a290dbeb292897101af27b69',1,'tgui::HorizontalWrap']]]
+  ['incrementvalue',['incrementValue',['../classtgui_1_1ProgressBar.html#aa3fe640b75753e5e9353b1b754202d37',1,'tgui::ProgressBar']]],
+  ['insert',['insert',['../classtgui_1_1BoxLayout.html#aa13ab97044e8288bb5dcc3ad9e1000c4',1,'tgui::BoxLayout::insert()'],['../classtgui_1_1Tabs.html#a393fd1ff44ccd470a039e42d53a86c4d',1,'tgui::Tabs::insert()']]],
+  ['ischecked',['isChecked',['../classtgui_1_1RadioButton.html#a0bd329e6a6fdafe65031f17ec856f257',1,'tgui::RadioButton']]],
+  ['isenabled',['isEnabled',['../classtgui_1_1Widget.html#aa1dcaa2bb45dd0b16b66095c1d197e36',1,'tgui::Widget']]],
+  ['isfocused',['isFocused',['../classtgui_1_1Widget.html#aff719de74e3d9a59ff23a034ae3bd427',1,'tgui::Widget']]],
+  ['iskeptinparent',['isKeptInParent',['../classtgui_1_1ChildWindow.html#addbf79ac606e11a0aa3de87e6ab9619c',1,'tgui::ChildWindow']]],
+  ['ismousedown',['isMouseDown',['../classtgui_1_1ScrollbarChildWidget.html#ac064716d3bb6c4e7db43d3444fe3a548',1,'tgui::ScrollbarChildWidget']]],
+  ['ismousedownonthumb',['isMouseDownOnThumb',['../classtgui_1_1ScrollbarChildWidget.html#a84947d25d8c4f825c31833e0d023e7ac',1,'tgui::ScrollbarChildWidget']]],
+  ['isreadonly',['isReadOnly',['../classtgui_1_1EditBox.html#aeccc30eadc5861af3c771ad0579d5e42',1,'tgui::EditBox::isReadOnly()'],['../classtgui_1_1TextBox.html#a48953673104ac7bdb2e98c15b52e9bb2',1,'tgui::TextBox::isReadOnly()']]],
+  ['isresizable',['isResizable',['../classtgui_1_1ChildWindow.html#ae3bca0d423460e0f41e0fe996d038bc5',1,'tgui::ChildWindow']]],
+  ['isset',['isSet',['../classtgui_1_1Color.html#a9f7d80d673382846386697e28d9022d7',1,'tgui::Color::isSet()'],['../classtgui_1_1Sprite.html#a68e68ccb3b0e5f77069821500c0863b4',1,'tgui::Sprite::isSet()'],['../classtgui_1_1TextStyle.html#afae1f84f67794ed79adf8f4d779fd022',1,'tgui::TextStyle::isSet()']]],
+  ['isshown',['isShown',['../classtgui_1_1ScrollbarChildWidget.html#ac0f0b870a7909d152eaf73c52acda939',1,'tgui::ScrollbarChildWidget']]],
+  ['issmooth',['isSmooth',['../classtgui_1_1Texture.html#aaa04f8a2bbe14b549802eae4a3539eda',1,'tgui::Texture']]],
+  ['istextclickable',['isTextClickable',['../classtgui_1_1RadioButton.html#af4aaf746a08775ebfe1a4f15d9103fa1',1,'tgui::RadioButton']]],
+  ['istextwidthlimited',['isTextWidthLimited',['../classtgui_1_1EditBox.html#a4626b4336048138f4cc7da05bd5d3186',1,'tgui::EditBox']]],
+  ['istransparentpixel',['isTransparentPixel',['../classtgui_1_1Sprite.html#ab44f1c7987c6be0098147b49155b459b',1,'tgui::Sprite::isTransparentPixel()'],['../classtgui_1_1Texture.html#a672aa2b62abc849ea6540fc6eefe1af5',1,'tgui::Texture::isTransparentPixel()']]],
+  ['isverticalscrollbarpresent',['isVerticalScrollbarPresent',['../classtgui_1_1TextBox.html#a688a8fe344a5f2eb185e4b4766615f4e',1,'tgui::TextBox']]],
+  ['isvisible',['isVisible',['../classtgui_1_1Widget.html#a4b7bcaba92ecc9603cd804f811e8e787',1,'tgui::Widget']]]
 ];
