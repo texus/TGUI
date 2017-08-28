@@ -1,6 +1,7 @@
 ---
 layout: page
-title: Contact
+title: Community
+redirect_from: /contact/
 ---
 
 [![TGUI forum](/resources/ButtonForum.png)](https://forum.tgui.eu)
