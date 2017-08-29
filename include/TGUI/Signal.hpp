@@ -634,6 +634,40 @@ namespace tgui
         };
 
         template <typename... UnboundArgs>
+        struct binder<TypeSet<std::shared_ptr<Widget>, std::string, UnboundArgs...>, TypeSet<>>
+        {
+            template <typename... Args, typename... BoundArgs>
+            static auto bind(Signal& signal, std::function<void(Args...)>&& handler, BoundArgs&&... args)
+            {
+                return bindImpl(std::index_sequence_for<UnboundArgs...>{}, signal, std::forward<std::function<void(Args...)>>(handler), std::forward<BoundArgs>(args)...);
+            }
+
+        private:
+
+            template <typename... Args, typename... BoundArgs, std::size_t... Indices>
+            static auto bindImpl(std::index_sequence<Indices...>, Signal& signal, std::function<void(Args...)>&& handler, BoundArgs&&... args)
+            {
+                if constexpr (sizeof...(UnboundArgs) == 0)
+                {
+                    return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
+                        std::invoke(handler, unbind(std::forward<BoundArgs>(args))..., widget, signalName);
+                    };
+                }
+                else // There are unbound parameters that have to be checked at runtime
+                {
+                    std::size_t offset = signal.validateTypes({typeid(UnboundArgs)...});
+                    return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
+                        std::invoke(handler,
+                                    unbind(std::forward<BoundArgs>(args))...,
+                                    widget,
+                                    signalName,
+                                    internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
+                    };
+                }
+            }
+        };
+
+        template <typename... UnboundArgs>
         struct binder<TypeSet<UnboundArgs...>, TypeSet<>>
         {
             template <typename... Args, typename... BoundArgs>
@@ -647,12 +681,19 @@ namespace tgui
             template <typename... Args, typename... BoundArgs, std::size_t... Indices>
             static auto bindImpl(std::index_sequence<Indices...>, Signal& signal, std::function<void(Args...)>&& handler, BoundArgs&&... args)
             {
-                const std::size_t offset = signal.validateTypes({typeid(UnboundArgs)...});
-                return [=](){
-                                std::invoke(handler,
-                                            unbind(std::forward<BoundArgs>(args))...,
-                                            internal_signal::dereference<std::decay_t<UnboundArgs>>(internal_signal::parameters[offset + Indices])...);
-                            };
+                if constexpr (sizeof...(UnboundArgs) == 0)
+                {
+                    return [=](){ std::invoke(handler, unbind(std::forward<BoundArgs>(args))...); };
+                }
+                else // There are unbound parameters that have to be checked at runtime
+                {
+                    std::size_t offset = signal.validateTypes({typeid(UnboundArgs)...});
+                    return [=](){
+                                    std::invoke(handler,
+                                                unbind(std::forward<BoundArgs>(args))...,
+                                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
+                                };
+                }
             }
         };
     }
@@ -724,9 +765,9 @@ namespace tgui
         unsigned int connect(std::string signalName, Func&& handler, const Args&... args)
         {
             return getSignal(toLower(std::move(signalName))).connect(
-                [f=std::function<void(const Args&..., const std::shared_ptr<Widget>&, const std::string&)>(handler), args...]
-                (const std::shared_ptr<Widget>& w, const std::string& s)
-                { f(args..., w, s); }
+                [f=std::function<void(const Args&..., const std::shared_ptr<Widget>&, const std::string&)>(handler), args...] (const std::shared_ptr<Widget>& w, const std::string& s) {
+                    f(args..., w, s);
+                }
             );
         }
 
@@ -850,7 +891,7 @@ namespace tgui
             else
             {
                 Signal& signal = getSignal(toLower(std::move(signalName)));
-                return signal.connect(internal_signals::binder<internal_signals::TypeSet<Args...>, internal_signals::TypeSet<BoundArgs...>>::bind(signal, std::forward<std::function<void(Args...)>>(func), std::forward<BoundArgs>(args)...));
+                return signal.connect(internal_signals::binder<internal_signals::TypeSet<std::decay_t<Args>...>, internal_signals::TypeSet<BoundArgs...>>::bind(signal, std::forward<std::function<void(Args...)>>(func), std::forward<BoundArgs>(args)...));
             }
         }
 #endif // TGUI_ENABLE_SIGNAL_EXTENSION
