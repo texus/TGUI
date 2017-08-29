@@ -59,16 +59,24 @@ editBox->connect("TextChanged", &Class::signalHandler3, &instance, std::ref(gui)
 
 <div>
 <h3 id="optional-parameters">Optional parameters</h3>
-<p class="SmallBottomMargin">The widget can optionally provide information about the event that occurred. Since the connect function as shown above does not know at compile time what the signal type is, it cannot use these optional parameters. You must instead connect to the signal directly. The "pressed" signal from buttons e.g. provides the text of the button as optional parameter, so that the signal handler can distinguish which button was pressed.</p>
+<p>The widget can optionally provide information about the event that occurred. For example, the "pressed" signal from buttons provides the text of the button as optional parameter, so that the signal handler can distinguish which button was pressed.</p>
+
+<p class="SmallBottomMargin">On some compilers (currently only on g++ >= 7.1 with -std=c++17 flag) it is possible to use an extension on the connect function to handle these optional parameters. The connect function will verify at runtime that the Pressed signal supports an sf::String parameter and will make sure that the text on the button is passed as argument when the button is pressed.</p>
 {% highlight c++ %}
-void buttonClickedCallback1();
-button->onPress->connect(buttonClickedCallback1);
+void buttonPressedCallback(const sf::String& buttonText);
+button->connect("pressed", buttonPressedCallback);
+{% endhighlight %}
 
-void buttonClickedCallback2(const sf::String& buttonText);
-button->onPress->connect(buttonClickedCallback2);
+<p class="SmallBottomMargin">Since most compilers don't support the experimental code yet, you can access the signals directly instead:</p>
+{% highlight c++ %}
+void buttonPressedCallback1();
+button->onPress->connect(buttonPressedCallback1);
 
-void buttonClickedCallback3(tgui::Widget::Ptr widget, const std::string& signalName, const sf::String& buttonText);
-button->onPress->connect(buttonClickedCallback3);
+void buttonPressedCallback2(const sf::String& buttonText);
+button->onPress->connect(buttonPressedCallback2);
+
+void buttonPressedCallback3(tgui::Widget::Ptr widget, const std::string& signalName, const sf::String& buttonText);
+button->onPress->connect(buttonPressedCallback3);
 {% endhighlight %}
 </div>
 

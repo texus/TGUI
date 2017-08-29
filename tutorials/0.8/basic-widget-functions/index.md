@@ -2,7 +2,6 @@
 layout: page
 title: Basic widget functions
 breadcrumb: "basic widget functions"
-redirect_from: "/tutorials/0.8/layouts/"
 ---
 This tutorial is about the functions that you find in the Widget base class. These functions are available for all widgets.
 
@@ -25,6 +24,8 @@ sf::Vector2f size = widget->getSize();
 widget->setPosition("10%", "5%");
 widget->setSize("30%", "10%");
 {% endhighlight %}
+
+<p>More complex arguments can be given to the setPosition and setSize function, as described in the <a href="../layouts/">Layouts tutorial</a>.</p>
 
 ### Visible and enabled
 The enabled property determines if a widget receives events. If a widget is disabled, it will still be drawn but it will be unresponsive to your mouse clicks.
