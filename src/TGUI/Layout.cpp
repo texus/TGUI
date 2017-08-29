@@ -59,7 +59,7 @@ namespace tgui
             else
             {
                 // The expression might reference to a widget instead of being a constant
-                expression = tgui::toLower(expression);
+                expression = toLower(expression);
                 if ((expression.substr(expression.size()-1) == "x")
                  || (expression.substr(expression.size()-1) == "y")
                  || (expression.substr(expression.size()-1) == "w") // width
@@ -547,17 +547,25 @@ namespace tgui
                     Container* container = dynamic_cast<Container*>(widget);
                     if (container != nullptr)
                     {
-                        auto widgetToBind = container->get(widgetName);
-                        if (widgetToBind)
-                            return parseBindingString(expression.substr(dotPos+1), widgetToBind.get(), xAxis);
+                        const auto& widgets = container->getWidgets();
+                        const auto& widgetNames = container->getWidgetNames();
+                        for (std::size_t i = 0; i < widgets.size(); ++i)
+                        {
+                            if (toLower(widgetNames[i]) == widgetName)
+                                return parseBindingString(expression.substr(dotPos+1), widgets[i].get(), xAxis);
+                        }
                     }
 
                     // If the widget has a parent, look for a sibling
                     if (widget->getParent())
                     {
-                        auto widgetToBind = widget->getParent()->get(widgetName);
-                        if (widgetToBind)
-                            return parseBindingString(expression.substr(dotPos+1), widgetToBind.get(), xAxis);
+                        const auto& widgets = widget->getParent()->getWidgets();
+                        const auto& widgetNames = widget->getParent()->getWidgetNames();
+                        for (std::size_t i = 0; i < widgets.size(); ++i)
+                        {
+                            if (toLower(widgetNames[i]) == widgetName)
+                                return parseBindingString(expression.substr(dotPos+1), widgets[i].get(), xAxis);
+                        }
                     }
                 }
             }
