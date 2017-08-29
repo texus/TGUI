@@ -70,13 +70,13 @@ button->connect("pressed", buttonPressedCallback);
 <p class="SmallBottomMargin">Since most compilers don't support the experimental code yet, you can access the signals directly instead:</p>
 {% highlight c++ %}
 void buttonPressedCallback1();
-button->onPress->connect(buttonPressedCallback1);
+button->onPress.connect(buttonPressedCallback1);
 
 void buttonPressedCallback2(const sf::String& buttonText);
-button->onPress->connect(buttonPressedCallback2);
+button->onPress.connect(buttonPressedCallback2);
 
 void buttonPressedCallback3(tgui::Widget::Ptr widget, const std::string& signalName, const sf::String& buttonText);
-button->onPress->connect(buttonPressedCallback3);
+button->onPress.connect(buttonPressedCallback3);
 {% endhighlight %}
 </div>
 
@@ -87,7 +87,7 @@ button->onPress->connect(buttonPressedCallback3);
 unsigned int id1 = button1->connect("pressed", signalHandler);
 button1->disconnect("pressed", id1);
 
-unsigned int id2 = button2->onPress->connect(signalHandler);
+unsigned int id2 = button2->onPress.connect(signalHandler);
 button2->onPress->disconnect(id2);
 {% endhighlight %}
 
