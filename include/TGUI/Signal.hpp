@@ -648,7 +648,11 @@ namespace tgui
             static auto bindImpl(std::index_sequence<Indices...>, Signal& signal, std::function<void(Args...)>&& handler, BoundArgs&&... args)
             {
                 const std::size_t offset = signal.validateTypes({typeid(UnboundArgs)...});
-                return [=](){ std::invoke(handler, unbind(std::forward<BoundArgs>(args))..., internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...); };
+                return [=](){
+                                std::invoke(handler,
+                                            unbind(std::forward<BoundArgs>(args))...,
+                                            internal_signal::dereference<std::decay_t<UnboundArgs>>(internal_signal::parameters[offset + Indices])...);
+                            };
             }
         };
     }
