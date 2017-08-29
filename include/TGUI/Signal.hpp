@@ -41,6 +41,20 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Enable the signal extension on compilers that can compile the code
+// Minimum required compiler version:
+// - GCC: 7.1
+// - Clang: Unsupported
+// - VC++: Unsupported
+
+#if (__GNUC__ > 7) || ((__GNUC__ == 7) && (__GNUC_MINOR__ >= 1))  // gcc >= 7.1
+    #if (__cplusplus >= 201703L) && (__cpp_if_constexpr >= 201606) && (__cpp_deduction_guides >= 201606)  // only when -std=c++1z or -std=c++17 is used
+        #define TGUI_ENABLE_SIGNAL_EXTENSION
+    #endif
+#endif
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace tgui
 {
     class Widget;
