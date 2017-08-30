@@ -41,8 +41,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Font::Font(const std::string& id) :
-        m_font{Deserializer::deserialize(ObjectConverter::Type::Font, id).getFont()},
-        m_id  {Deserializer::deserialize(ObjectConverter::Type::String, id).getString()}
+        m_font(Deserializer::deserialize(ObjectConverter::Type::Font, id).getFont()), // Did not compile with clang 3.6 when using braces
+        m_id  (Deserializer::deserialize(ObjectConverter::Type::String, id).getString()) // Did not compile with clang 3.6 when using braces
     {
     }
 

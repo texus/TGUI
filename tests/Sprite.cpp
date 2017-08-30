@@ -515,7 +515,7 @@ TEST_CASE("[Sprite]")
     {
         sprite.getTexture().setSmooth(false);
 
-        const tgui::Sprite sprite2;
+        const tgui::Sprite sprite2{};
         sprite2.getTexture().isSmooth();
     }
 }

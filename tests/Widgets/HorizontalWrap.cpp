@@ -58,19 +58,19 @@ TEST_CASE("[HorizontalWrap]")
         REQUIRE(pic3->getPosition() == sf::Vector2f(0, 50));
         REQUIRE(pic4->getPosition() == sf::Vector2f(60, 50));
 
-        wrap->getRenderer()->setSpaceBetweenWidgets({20});
+        wrap->getRenderer()->setSpaceBetweenWidgets(20);
         REQUIRE(pic1->getPosition() == sf::Vector2f(0, 0));
         REQUIRE(pic2->getPosition() == sf::Vector2f(70, 0));
         REQUIRE(pic3->getPosition() == sf::Vector2f(0, 60));
         REQUIRE(pic4->getPosition() == sf::Vector2f(70, 60));
 
-        wrap->getRenderer()->setSpaceBetweenWidgets({21});
+        wrap->getRenderer()->setSpaceBetweenWidgets(21);
         REQUIRE(pic1->getPosition() == sf::Vector2f(0, 0));
         REQUIRE(pic2->getPosition() == sf::Vector2f(0, 61));
         REQUIRE(pic3->getPosition() == sf::Vector2f(0, 122));
         REQUIRE(pic4->getPosition() == sf::Vector2f(0, 183));
 
-        wrap->getRenderer()->setSpaceBetweenWidgets({20});
+        wrap->getRenderer()->setSpaceBetweenWidgets(20);
         wrap->removeAllWidgets();
 
         auto pic5 = tgui::Picture::copy(pic);
@@ -126,7 +126,7 @@ TEST_CASE("[HorizontalWrap]")
 
     SECTION("Saving and loading from file")
     {
-        wrap->getRenderer()->setSpaceBetweenWidgets({20});
+        wrap->getRenderer()->setSpaceBetweenWidgets(20);
 
         auto pic = tgui::Picture::create("resources/image.png");
         pic->setSize({50, 40});
