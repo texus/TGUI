@@ -254,7 +254,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ProgressBar::getSignal(std::string&& signalName)
+    Signal& ProgressBar::getSignal(std::string signalName)
     {
         if (signalName == toLower(onValueChange.getName()))
             return onValueChange;

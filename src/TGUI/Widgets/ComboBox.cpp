@@ -507,7 +507,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ComboBox::getSignal(std::string&& signalName)
+    Signal& ComboBox::getSignal(std::string signalName)
     {
         if (signalName == toLower(onItemSelect.getName()))
             return onItemSelect;

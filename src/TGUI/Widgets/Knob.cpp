@@ -450,7 +450,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Knob::getSignal(std::string&& signalName)
+    Signal& Knob::getSignal(std::string signalName)
     {
         if (signalName == toLower(onValueChange.getName()))
             return onValueChange;

@@ -936,7 +936,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& EditBox::getSignal(std::string&& signalName)
+    Signal& EditBox::getSignal(std::string signalName)
     {
         if (signalName == toLower(onTextChange.getName()))
             return onTextChange;

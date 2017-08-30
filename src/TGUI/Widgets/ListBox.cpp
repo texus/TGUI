@@ -600,7 +600,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ListBox::getSignal(std::string&& signalName)
+    Signal& ListBox::getSignal(std::string signalName)
     {
         if (signalName == toLower(onItemSelect.getName()))
             return onItemSelect;

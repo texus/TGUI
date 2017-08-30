@@ -1394,7 +1394,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& TextBox::getSignal(std::string&& signalName)
+    Signal& TextBox::getSignal(std::string signalName)
     {
         if (signalName == toLower(onTextChange.getName()))
             return onTextChange;

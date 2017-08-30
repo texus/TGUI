@@ -510,7 +510,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& MenuBar::getSignal(std::string&& signalName)
+    Signal& MenuBar::getSignal(std::string signalName)
     {
         if (signalName == toLower(onMenuItemClick.getName()))
             return onMenuItemClick;

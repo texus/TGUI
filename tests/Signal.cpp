@@ -133,7 +133,7 @@ TEST_CASE("[Signal]")
         widget->setPosition(10, 10);
         REQUIRE(i == 2);
 
-        widget->disconnect("PositionChanged", id);
+        widget->disconnect(id);
         widget->setPosition(20, 20);
         REQUIRE(i == 2);
 
@@ -151,5 +151,16 @@ TEST_CASE("[Signal]")
         widget->setPosition(40, 40);
         widget->setSize(200, 50);
         REQUIRE(i == 3);
+
+        widget->connect("PositionChanged", [&](){ i++; });
+        widget->connect("SizeChanged", [&](){ i++; });
+        widget->setPosition(50, 50);
+        widget->setSize(300, 75);
+        REQUIRE(i == 5);
+
+        widget->disconnectAll();
+        widget->setPosition(60, 60);
+        widget->setSize(400, 100);
+        REQUIRE(i == 5);
     }
 }

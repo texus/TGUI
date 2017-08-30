@@ -666,7 +666,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Scrollbar::getSignal(std::string&& signalName)
+    Signal& Scrollbar::getSignal(std::string signalName)
     {
         if (signalName == toLower(onValueChange.getName()))
             return onValueChange;

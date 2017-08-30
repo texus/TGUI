@@ -459,7 +459,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Tabs::getSignal(std::string&& signalName)
+    Signal& Tabs::getSignal(std::string signalName)
     {
         if (signalName == toLower(onTabSelect.getName()))
             return onTabSelect;

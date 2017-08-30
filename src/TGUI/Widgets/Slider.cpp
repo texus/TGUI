@@ -390,7 +390,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Slider::getSignal(std::string&& signalName)
+    Signal& Slider::getSignal(std::string signalName)
     {
         if (signalName == toLower(onValueChange.getName()))
             return onValueChange;

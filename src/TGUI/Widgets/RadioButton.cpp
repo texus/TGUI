@@ -273,7 +273,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& RadioButton::getSignal(std::string&& signalName)
+    Signal& RadioButton::getSignal(std::string signalName)
     {
         if (signalName == toLower(onCheck.getName()))
             return onCheck;

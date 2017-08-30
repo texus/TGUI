@@ -71,7 +71,7 @@ namespace tgui
     {
         for (auto& widget : m_widgets)
         {
-            widget->disconnect("SizeChanged", gridToMove.m_connectedCallbacks[widget]);
+            widget->disconnect(gridToMove.m_connectedCallbacks[widget]);
             m_connectedCallbacks[widget] = widget->connect("SizeChanged", [this](){ updateWidgets(); });
         }
     }
@@ -120,7 +120,7 @@ namespace tgui
 
             for (auto& widget : m_widgets)
             {
-                widget->disconnect("SizeChanged", right.m_connectedCallbacks[widget]);
+                widget->disconnect(right.m_connectedCallbacks[widget]);
                 m_connectedCallbacks[widget] = widget->connect("SizeChanged", [this](){ updateWidgets(); });
             }
         }

@@ -451,7 +451,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& RangeSlider::getSignal(std::string&& signalName)
+    Signal& RangeSlider::getSignal(std::string signalName)
     {
         if (signalName == toLower(onRangeChange.getName()))
             return onRangeChange;

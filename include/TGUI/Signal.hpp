@@ -636,7 +636,7 @@ namespace tgui
                 const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
                 return [=, f=func](const std::shared_ptr<Widget>& widget, const std::string& signalName) {  // f=func is needed to decay free functions
                     invokeFunc(f,
-                               std::forward<BoundArgs>(args)...,
+                               args...,
                                widget,
                                signalName,
                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
@@ -661,7 +661,7 @@ namespace tgui
                 const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
                 return [=, f=func]() {  // f=func is needed to decay free functions
                     invokeFunc(f,
-                               std::forward<BoundArgs>(args)...,
+                               args...,
                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
                 };
             }
@@ -721,7 +721,9 @@ namespace tgui
         template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type* = nullptr>
         unsigned int connect(std::string signalName, Func&& handler, const Args&... args)
         {
-            return getSignal(toLower(std::move(signalName))).connect([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); });
+            const unsigned int id = getSignal(toLower(signalName)).connect([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); });
+            m_connectedSignals[id] = toLower(signalName);
+            return id;
         }
 
 
@@ -735,14 +737,16 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
-        unsigned int connect(std::string signalName, Func&& handler, const Args&... args)
+        template <typename Func, typename... BoundArgs, typename std::enable_if<std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
+        unsigned int connect(std::string signalName, Func&& handler, BoundArgs&&... args)
         {
-            return getSignal(toLower(std::move(signalName))).connect(
-                [f=std::function<void(const Args&..., const std::shared_ptr<Widget>&, const std::string&)>(handler), args...] (const std::shared_ptr<Widget>& w, const std::string& s) {
-                    f(args..., w, s);
-                }
-            );
+            const unsigned int id = getSignal(toLower(signalName)).connect(
+                                        [f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const std::string&)>(handler), args...]
+                                        (const std::shared_ptr<Widget>& w, const std::string& s)
+                                        { f(args..., w, s); }
+                                    );
+            m_connectedSignals[id] = toLower(signalName);
+            return id;
         }
 
 
@@ -757,11 +761,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value
                                                                              && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
-        unsigned int connect(std::string signalName, Func&& handler, const BoundArgs&... args)
+        unsigned int connect(std::string signalName, Func&& handler, BoundArgs&&... args)
         {
-            Signal& signal = getSignal(toLower(std::move(signalName)));
+            Signal& signal = getSignal(toLower(signalName));
             using binder = internal_signal::func_traits<void, typename std::decay<Func>::type, BoundArgs...>;
-            return signal.connect(binder::bind(signal, std::forward<Func>(handler), args...));
+            const unsigned int id = signal.connect(binder::bind(signal, std::forward<Func>(handler), std::forward<BoundArgs>(args)...));
+            m_connectedSignals[id] = toLower(signalName);
+            return id;
         }
 
 
@@ -774,8 +780,8 @@ namespace tgui
         ///
         /// @return Unique id of the last connection. When passing e.g. 2 signal names, the first signal will correspond to id-1.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args>
-        unsigned int connect(std::initializer_list<std::string> signalNames, Func&& handler, const Args&... args)
+        template <typename Func, typename... BoundArgs>
+        unsigned int connect(std::initializer_list<std::string> signalNames, Func&& handler, BoundArgs&&... args)
         {
             unsigned int lastId = 0;
             for (auto& signalName : signalNames)
@@ -788,14 +794,21 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Disconnects a signal handler
         ///
-        /// @param signalName   Name of the signal
         /// @param id           Id of the connection
         ///
         /// @return True when a connection with this id existed and was removed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool disconnect(std::string signalName, unsigned int id)
+        bool disconnect(unsigned int id)
         {
-            return getSignal(toLower(std::move(signalName))).disconnect(id);
+            auto it = m_connectedSignals.find(id);
+            if (it != m_connectedSignals.end())
+            {
+                const bool ret = getSignal(it->second).disconnect(id);
+                m_connectedSignals.erase(it);
+                return ret;
+            }
+            else // The id was not found
+                return false;
         }
 
 
@@ -804,10 +817,13 @@ namespace tgui
         ///
         /// @param signalName   Name of the signal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void disconnectAll(std::string signalName)
-        {
-            return getSignal(toLower(std::move(signalName))).disconnectAll();
-        }
+        void disconnectAll(std::string signalName);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Disconnects all signal handlers from signals
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void disconnectAll();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -816,7 +832,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual Signal& getSignal(std::string&& signalName) = 0;
+        virtual Signal& getSignal(std::string signalName) = 0;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private:
+
+        std::map<unsigned int, std::string> m_connectedSignals;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

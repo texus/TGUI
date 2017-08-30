@@ -609,7 +609,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ChildWindow::getSignal(std::string&& signalName)
+    Signal& ChildWindow::getSignal(std::string signalName)
     {
         if (signalName == toLower(onMousePress.getName()))
             return onMousePress;

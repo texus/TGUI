@@ -90,7 +90,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& ClickableWidget::getSignal(std::string&& signalName)
+    Signal& ClickableWidget::getSignal(std::string signalName)
     {
         if (signalName == toLower(onMousePress.getName()))
             return onMousePress;

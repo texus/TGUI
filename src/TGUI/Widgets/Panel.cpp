@@ -124,7 +124,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Panel::getSignal(std::string&& signalName)
+    Signal& Panel::getSignal(std::string signalName)
     {
         if (signalName == toLower(onMousePress.getName()))
             return onMousePress;

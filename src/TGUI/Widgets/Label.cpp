@@ -223,7 +223,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Label::getSignal(std::string&& signalName)
+    Signal& Label::getSignal(std::string signalName)
     {
         if (signalName == toLower(onDoubleClick.getName()))
             return onDoubleClick;

@@ -722,7 +722,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Signal& Widget::getSignal(std::string&& signalName)
+    Signal& Widget::getSignal(std::string signalName)
     {
         if (signalName == toLower(onPositionChange.getName()))
             return onPositionChange;
