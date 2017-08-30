@@ -683,17 +683,17 @@ namespace tgui
     {
         m_listBox->hide();
 
-        m_listBox->onItemSelect.connect([this](){
-                                            m_text.setString(m_listBox->getSelectedItem());
-                                            onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
-                                        });
+        m_listBox->connect("ItemSelected", [this](){
+                                                m_text.setString(m_listBox->getSelectedItem());
+                                                onItemSelect.emit(this, m_listBox->getSelectedItem(), m_listBox->getSelectedItemId());
+                                            });
 
-        m_listBox->onUnfocus.connect([this](){
-                                            if (!m_mouseHover)
-                                                hideListBox();
-                                        });
+        m_listBox->connect("Unfocused", [this](){
+                                                    if (!m_mouseHover)
+                                                        hideListBox();
+                                                });
 
-        m_listBox->onMouseRelease.connect([this](){ hideListBox(); });
+        m_listBox->connect("MouseReleased", [this](){ hideListBox(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -33,11 +33,11 @@ TEST_CASE("[Button]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(button->connect("Pressed", [](){}));
+        REQUIRE_NOTHROW(button->connect("Pressed", [](sf::String){}));
+        REQUIRE_NOTHROW(button->connect("Pressed", [](std::string){}));
         REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(button->onPress.connect([](){}));
-        REQUIRE_NOTHROW(button->onPress.connect([](sf::String){}));
-        REQUIRE_NOTHROW(button->onPress.connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(button->onPress.connect([](tgui::Widget::Ptr, std::string, sf::String){}));
+        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, std::string, sf::String){}));
+        REQUIRE_NOTHROW(button->connect("Pressed", [](tgui::Widget::Ptr, std::string, std::string){}));
     }
 
     SECTION("WidgetType")
@@ -83,7 +83,7 @@ TEST_CASE("[Button]")
             button->setSize(150, 100);
 
             unsigned int pressedCount = 0;
-            button->onPress.connect([&]{ genericCallback(pressedCount); });
+            button->connect("Pressed", genericCallback, std::ref(pressedCount));
 
             SECTION("mouse click")
             {

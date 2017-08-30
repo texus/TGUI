@@ -21,8 +21,8 @@ void testWidgetSignals(tgui::Widget::Ptr widget)
         unsigned int mouseEnteredCount = 0;
         unsigned int mouseLeftCount = 0;
 
-        widget->onMouseEnter.connect([&]{ genericCallback(mouseEnteredCount); });
-        widget->onMouseLeave.connect([&]{ genericCallback(mouseLeftCount); });
+        widget->connect("MouseEntered", [&]{ genericCallback(mouseEnteredCount); });
+        widget->connect("MouseLeft", [&]{ genericCallback(mouseLeftCount); });
 
         auto parent = tgui::Panel::create({300, 200});
         parent->setPosition({30, 25});
@@ -60,9 +60,9 @@ void testClickableWidgetSignals(tgui::ClickableWidget::Ptr widget)
     widget->setPosition({40, 30});
     widget->setSize({150, 100});
 
-    widget->onMousePress.connect([&](sf::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
-    widget->onMouseRelease.connect([&](sf::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
-    widget->onClick.connect([&](sf::Vector2f pos){ mouseCallback(clickedCount, pos); });
+    widget->connect("MousePressed", [&](sf::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
+    widget->connect("MouseReleased", [&](sf::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
+    widget->connect("Clicked", [&](sf::Vector2f pos){ mouseCallback(clickedCount, pos); });
 
     SECTION("mouseOnWidget")
     {

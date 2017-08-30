@@ -87,9 +87,9 @@ TEST_CASE("[ScrollablePanel]")
         panel->setPosition(40, 30);
         panel->setSize(150, 100);
 
-        panel->onMousePress.connect([&](sf::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
-        panel->onMouseRelease.connect([&](sf::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
-        panel->onClick.connect([&](sf::Vector2f pos){ mouseCallback(clickedCount, pos); });
+        panel->connect("MousePressed", mouseCallback, std::ref(mousePressedCount));
+        panel->connect("MouseReleased", mouseCallback, std::ref(mouseReleasedCount));
+        panel->connect("Clicked", mouseCallback, std::ref(clickedCount));
 
         SECTION("mouseOnWidget")
         {
@@ -109,8 +109,8 @@ TEST_CASE("[ScrollablePanel]")
             unsigned int mouseEnteredCount = 0;
             unsigned int mouseLeftCount = 0;
 
-            panel->onMouseEnter.connect([&]{ genericCallback(mouseEnteredCount); });
-            panel->onMouseLeave.connect([&]{ genericCallback(mouseLeftCount); });
+            panel->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
+            panel->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
 
             auto parent = tgui::Panel::create({300, 200});
             parent->setPosition({30, 25});

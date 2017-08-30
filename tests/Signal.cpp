@@ -32,14 +32,18 @@ TEST_CASE("[Signal]")
     SECTION("connect")
     {
         unsigned int id = widget->connect("PositionChanged", [](){});
+        REQUIRE(widget->connect("PositionChanged", [](sf::Vector2f){}) == ++id);
         REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, std::string){}) == ++id);
+        REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}) == ++id);
         REQUIRE(widget->onPositionChange.connect([](){}) == ++id);
         REQUIRE(widget->onPositionChange.connect([](sf::Vector2f){}) == ++id);
         REQUIRE(widget->onPositionChange.connect([](tgui::Widget::Ptr, std::string){}) == ++id);
         REQUIRE(widget->onPositionChange.connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}) == ++id);
 
         REQUIRE(widget->connect("SizeChanged", [](){}) == ++id);
+        REQUIRE(widget->connect("SizeChanged", [](sf::Vector2f){}) == ++id);
         REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, std::string){}) == ++id);
+        REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}) == ++id);
         REQUIRE(widget->onSizeChange.connect([](){}) == ++id);
         REQUIRE(widget->onSizeChange.connect([](sf::Vector2f){}) == ++id);
         REQUIRE(widget->onSizeChange.connect([](tgui::Widget::Ptr, std::string){}) == ++id);
@@ -74,19 +78,43 @@ TEST_CASE("[Signal]")
         REQUIRE(widget2->connect("Pressed", [](tgui::Widget::Ptr, std::string){}) == ++id);
         REQUIRE(widget2->connect("Pressed", [](auto, auto, auto, tgui::Widget::Ptr, std::string){}, "Hey", 15, 3.f) == ++id);
 
+        REQUIRE(widget2->connect({"MouseEntered", "MouseLeft"}, [](){}) == id+2);
+        REQUIRE(widget2->connect({"PositionChanged", "SizeChanged", "MouseEntered", "MouseLeft", "Pressed"}, [](const tgui::Widget::Ptr&, const std::string&){}) == id+7);
+        id += 7;
+
         struct Class
         {
             void signalHandler1() {}
             void signalHandler2(tgui::Widget::Ptr, const std::string&) {}
             void signalHandler3(int, float, tgui::Widget::Ptr, const std::string&) {}
             void signalHandler4(int&, tgui::Widget::Ptr, const std::string&) {}
-        } instance;
+            void signalHandler5(int&, const sf::String&) {}
+            void signalHandler6(int&, tgui::Widget::Ptr, const std::string&, std::string) {}
+
+            void signalHandler7() const {}
+            void signalHandler8(tgui::Widget::Ptr, const std::string&) const {}
+            void signalHandler9(int, float, tgui::Widget::Ptr, const std::string&) const {}
+            void signalHandler10(int&, tgui::Widget::Ptr, const std::string&) const {}
+            void signalHandler11(int&, const sf::String&) const {}
+            void signalHandler12(int&, tgui::Widget::Ptr, const std::string&, std::string) const {}
+        };
 
         int i;
+        Class instance;
         REQUIRE(widget2->connect("Pressed", &Class::signalHandler1, &instance) == ++id);
         REQUIRE(widget2->connect("Pressed", &Class::signalHandler2, &instance) == ++id);
         REQUIRE(widget2->connect("Pressed", &Class::signalHandler3, &instance, 0, 5.f) == ++id);
         REQUIRE(widget2->connect("Pressed", &Class::signalHandler4, &instance, std::ref(i)) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler5, &instance, std::ref(i)) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler6, &instance, std::ref(i)) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler7, &instance) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler8, &instance) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler9, &instance, 0, 0.5f) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler10, &instance, std::ref(i)) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler11, &instance, std::ref(i)) == ++id);
+        REQUIRE(widget2->connect("Pressed", &Class::signalHandler12, &instance, std::ref(i)) == ++id);
+
+        REQUIRE(widget2->connect("Pressed", std::function<void(std::string)>([](std::string){})) == ++id);
     }
 
     SECTION("disconnect")

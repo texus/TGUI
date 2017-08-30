@@ -36,11 +36,9 @@ TEST_CASE("[Scrollbar]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](){}));
+        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](unsigned int){}));
         REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(scrollbar->onValueChange.connect([](){}));
-        REQUIRE_NOTHROW(scrollbar->onValueChange.connect([](unsigned int){}));
-        REQUIRE_NOTHROW(scrollbar->onValueChange.connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(scrollbar->onValueChange.connect([](tgui::Widget::Ptr, std::string, unsigned int){}));
+        REQUIRE_NOTHROW(scrollbar->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, unsigned int){}));
     }
 
     SECTION("WidgetType")

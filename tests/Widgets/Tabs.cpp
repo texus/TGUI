@@ -33,11 +33,11 @@ TEST_CASE("[Tabs]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(tabs->connect("TabSelected", [](){}));
+        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](sf::String){}));
+        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](std::string){}));
         REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(tabs->onTabSelect.connect([](){}));
-        REQUIRE_NOTHROW(tabs->onTabSelect.connect([](sf::String){}));
-        REQUIRE_NOTHROW(tabs->onTabSelect.connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(tabs->onTabSelect.connect([](tgui::Widget::Ptr, std::string, sf::String){}));
+        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, std::string, sf::String){}));
+        REQUIRE_NOTHROW(tabs->connect("TabSelected", [](tgui::Widget::Ptr, std::string, std::string){}));
     }
 
     SECTION("WidgetType")

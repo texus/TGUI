@@ -37,11 +37,9 @@ TEST_CASE("[SpinButton]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](){}));
+        REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](int){}));
         REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(spinButton->onValueChange.connect([](){}));
-        REQUIRE_NOTHROW(spinButton->onValueChange.connect([](int){}));
-        REQUIRE_NOTHROW(spinButton->onValueChange.connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(spinButton->onValueChange.connect([](tgui::Widget::Ptr, std::string, int){}));
+        REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, int){}));
     }
 
     SECTION("WidgetType")
@@ -136,7 +134,7 @@ TEST_CASE("[SpinButton]")
             spinButton->setSize(25, 60);
 
             unsigned int valueChangedCount = 0;
-            spinButton->onValueChange.connect([&]{ genericCallback(valueChangedCount); });
+            spinButton->connect("ValueChanged", genericCallback, std::ref(valueChangedCount));
 
             spinButton->setValue(10);
             REQUIRE(valueChangedCount == 1);

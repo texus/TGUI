@@ -36,16 +36,12 @@ TEST_CASE("[ProgressBar]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](){}));
+        REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](unsigned int){}));
         REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(progressBar->onValueChange.connect([](){}));
-        REQUIRE_NOTHROW(progressBar->onValueChange.connect([](unsigned int){}));
-        REQUIRE_NOTHROW(progressBar->onValueChange.connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(progressBar->onValueChange.connect([](tgui::Widget::Ptr, std::string, unsigned int){}));
+        REQUIRE_NOTHROW(progressBar->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, unsigned int){}));
 
         REQUIRE_NOTHROW(progressBar->connect("Full", [](){}));
         REQUIRE_NOTHROW(progressBar->connect("Full", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(progressBar->onFull.connect([](){}));
-        REQUIRE_NOTHROW(progressBar->onFull.connect([](tgui::Widget::Ptr, std::string){}));
     }
 
     SECTION("WidgetType")
@@ -167,7 +163,7 @@ TEST_CASE("[ProgressBar]")
         SECTION("ValueChanged")
         {
             unsigned int valueChangedCount = 0;
-            progressBar->onValueChange.connect([&]{ genericCallback(valueChangedCount); });
+            progressBar->connect("ValueChanged", genericCallback, std::ref(valueChangedCount));
 
             progressBar->setValue(4);
             REQUIRE(valueChangedCount == 1);
@@ -190,7 +186,7 @@ TEST_CASE("[ProgressBar]")
         SECTION("Full")
         {
             unsigned int fullCount = 0;
-            progressBar->onFull.connect([&]{ genericCallback(fullCount); });
+            progressBar->connect("Full", genericCallback, std::ref(fullCount));
 
             progressBar->setValue(4);
             REQUIRE(fullCount == 0);

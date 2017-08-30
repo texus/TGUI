@@ -37,11 +37,9 @@ TEST_CASE("[RangeSlider]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(slider->connect("RangeChanged", [](){}));
+        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](int, int){}));
         REQUIRE_NOTHROW(slider->connect("RangeChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(slider->onRangeChange.connect([](){}));
-        REQUIRE_NOTHROW(slider->onRangeChange.connect([](int, int){}));
-        REQUIRE_NOTHROW(slider->onRangeChange.connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(slider->onRangeChange.connect([](tgui::Widget::Ptr, std::string, int, int){}));
+        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](tgui::Widget::Ptr, std::string, int, int){}));
     }
 
     SECTION("WidgetType")
@@ -157,7 +155,7 @@ TEST_CASE("[RangeSlider]")
         SECTION("RangeChanged")
         {
             unsigned int rangeChangedCount = 0;
-            slider->onRangeChange.connect([&]{ genericCallback(rangeChangedCount); });
+            slider->connect("RangeChanged", genericCallback, std::ref(rangeChangedCount));
 
             slider->setSelectionStart(14);
             REQUIRE(rangeChangedCount == 1);

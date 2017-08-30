@@ -36,11 +36,9 @@ TEST_CASE("[Slider]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(slider->connect("ValueChanged", [](){}));
+        REQUIRE_NOTHROW(slider->connect("ValueChanged", [](int){}));
         REQUIRE_NOTHROW(slider->connect("ValueChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(slider->onValueChange.connect([](){}));
-        REQUIRE_NOTHROW(slider->onValueChange.connect([](int){}));
-        REQUIRE_NOTHROW(slider->onValueChange.connect([](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(slider->onValueChange.connect([](tgui::Widget::Ptr, std::string, int){}));
+        REQUIRE_NOTHROW(slider->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, int){}));
     }
 
     SECTION("WidgetType")
@@ -124,7 +122,7 @@ TEST_CASE("[Slider]")
         SECTION("ValueChanged")
         {
             unsigned int valueChangedCount = 0;
-            slider->onValueChange.connect([&]{ genericCallback(valueChangedCount); });
+            slider->connect("ValueChanged", genericCallback, std::ref(valueChangedCount));
 
             slider->setValue(14);
             REQUIRE(valueChangedCount == 1);

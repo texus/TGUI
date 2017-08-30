@@ -266,7 +266,7 @@ namespace tgui
             m_closeButton = Button::create();
             m_closeButton->setRenderer(getRenderer()->getCloseButton());
             m_closeButton->getRenderer()->setOpacity(m_opacityCached);
-            m_closeButton->onPress.connect([this](){
+            m_closeButton->connect("pressed", [this](){
                                                 if (!onClose.emit(this))
                                                     destroy();
                                             });
@@ -279,7 +279,7 @@ namespace tgui
             m_maximizeButton = Button::create();
             m_maximizeButton->setRenderer(getRenderer()->getMaximizeButton());
             m_maximizeButton->getRenderer()->setOpacity(m_opacityCached);
-            m_maximizeButton->onPress.connect([this](){ onMaximize.emit(this); });
+            m_maximizeButton->connect("pressed", [this](){ onMaximize.emit(this); });
         }
         else
             m_maximizeButton = nullptr;
@@ -289,7 +289,7 @@ namespace tgui
             m_minimizeButton = Button::create();
             m_minimizeButton->setRenderer(getRenderer()->getMinimizeButton());
             m_minimizeButton->getRenderer()->setOpacity(m_opacityCached);
-            m_minimizeButton->onPress.connect([this](){ onMinimize.emit(this); });
+            m_minimizeButton->connect("pressed", [this](){ onMinimize.emit(this); });
         }
         else
             m_minimizeButton = nullptr;
