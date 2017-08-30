@@ -81,4 +81,8 @@
     #define TGUI_CONSTEXPR constexpr
 #endif
 
+#ifndef TGUI_NO_DEPRECATED_WARNINGS
+    #define TGUI_DEPRECATED(msg) [[deprecated(msg)]]
+#endif
+
 #endif // TGUI_CONFIG_HPP
