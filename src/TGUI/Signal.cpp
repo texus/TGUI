@@ -26,8 +26,6 @@
 #include <TGUI/Signal.hpp>
 #include <TGUI/Widget.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/to_string.hpp>
-#include <cassert>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -252,7 +250,7 @@ namespace tgui
 
     unsigned int SignalChildWindow::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(ChildWindow*)))
+        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(tgui::ChildWindow::Ptr)))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);

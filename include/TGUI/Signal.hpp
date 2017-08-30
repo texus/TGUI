@@ -41,20 +41,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Enable the signal extension on compilers that can compile the code
-// Minimum required compiler version:
-// - GCC: 7.1
-// - Clang: Unsupported
-// - VC++: Unsupported
-
-#if (__GNUC__ > 7) || ((__GNUC__ == 7) && (__GNUC_MINOR__ >= 1))  // gcc >= 7.1
-    #if (__cplusplus >= 201703L) && (__cpp_if_constexpr >= 201606) && (__cpp_deduction_guides >= 201606)  // only when -std=c++1z or -std=c++17 is used
-        #define TGUI_ENABLE_SIGNAL_EXTENSION
-    #endif
-#endif
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 namespace tgui
 {
     class Widget;
@@ -63,28 +49,7 @@ namespace tgui
 
     namespace internal_signal
     {
-        extern std::deque<const void*> parameters;
-
-        // The dereference function turns the void* elements in the parameters list back into its original type right before calling the signal handler
-#ifdef TGUI_ENABLE_SIGNAL_EXTENSION
-        template <typename Type>
-        auto dereference(const void* obj)
-        {
-            if constexpr (std::is_same_v<Type, std::string>)
-            {
-                // Signal handlers are allowed to have std::string parameters while the signal sends sf::String
-                return static_cast<std::string>(*static_cast<const sf::String*>(obj));
-            }
-            else
-                return *static_cast<const Type*>(obj);
-        }
-#else
-        template <typename Type>
-        const Type& dereference(const void* obj)
-        {
-            return *static_cast<const Type*>(obj);
-        }
-#endif
+        extern TGUI_API std::deque<const void*> parameters;
     }
 
 
@@ -602,9 +567,12 @@ namespace tgui
     };
 
 
-#ifdef TGUI_ENABLE_SIGNAL_EXTENSION
-    namespace internal_signals
+    namespace internal_signal
     {
+        // void_t only exists in c++17 so we use our own implementation to support c++14 compilers
+        template<typename...>
+        using void_t = void;
+
         // Type to pass a list of template types
         template <typename...>
         struct TypeSet;
@@ -613,14 +581,32 @@ namespace tgui
         template <typename...>
         struct always_false : std::false_type {};
 
-        // If the argument is a bind expression then call the bound function and pass the return value, otherwise just pass the argument
-        template <typename Arg>
-        auto unbind(Arg&& arg)
+        // The dereference function turns the void* elements in the parameters list back into its original type right before calling the signal handler
+        template <typename Type, typename std::enable_if<std::is_same<Type, std::string>::value>::type* = nullptr>
+        decltype(auto) dereference(const void* obj)
         {
-            if constexpr (std::is_bind_expression_v<Arg>)
-                return arg();
-            else
-                return std::forward<Arg>(arg);
+            // Signal handlers are allowed to have std::string parameters while the signal sends sf::String
+            return static_cast<std::string>(*static_cast<const sf::String*>(obj));
+        }
+
+        template <typename Type, typename std::enable_if<!std::is_same<Type, std::string>::value>::type* = nullptr>
+        decltype(auto) dereference(const void* obj)
+        {
+            return *static_cast<const Type*>(obj);
+        }
+
+        // std::invoke only exists in c++17 so we use our own implementation to support c++14 compilers
+        // Visual Studio compiler did not like it when the function was called "invoke"
+        template <typename Func, typename... Args, typename std::enable_if<std::is_member_pointer<typename std::decay<Func>::type>::value>::type* = nullptr>
+        TGUI_CONSTEXPR decltype(auto) invokeFunc(Func&& func, Args&&... args)
+        {
+            return std::mem_fn(func)(std::forward<Args>(args)...);
+        }
+
+        template <typename Func, typename... Args, typename std::enable_if<!std::is_member_pointer<typename std::decay<Func>::type>::value>::type* = nullptr>
+        TGUI_CONSTEXPR decltype(auto) invokeFunc(Func&& func, Args&&... args)
+        {
+            return std::forward<Func>(func)(std::forward<Args>(args)...);
         }
 
         // The binder will figure out the unbound parameters and bind them if they correspond to what the signal sends
@@ -636,68 +622,84 @@ namespace tgui
         template <typename... UnboundArgs>
         struct binder<TypeSet<std::shared_ptr<Widget>, std::string, UnboundArgs...>, TypeSet<>>
         {
-            template <typename... Args, typename... BoundArgs>
-            static auto bind(Signal& signal, std::function<void(Args...)>&& handler, BoundArgs&&... args)
+            template <typename Func, typename... BoundArgs>
+            static decltype(auto) bind(Signal& signal, Func&& func, BoundArgs&&... args)
             {
-                return bindImpl(std::index_sequence_for<UnboundArgs...>{}, signal, std::forward<std::function<void(Args...)>>(handler), std::forward<BoundArgs>(args)...);
+                return bindImpl(std::index_sequence_for<UnboundArgs...>{}, signal, std::forward<Func>(func), std::forward<BoundArgs>(args)...);
             }
 
         private:
 
-            template <typename... Args, typename... BoundArgs, std::size_t... Indices>
-            static auto bindImpl(std::index_sequence<Indices...>, Signal& signal, std::function<void(Args...)>&& handler, BoundArgs&&... args)
+            template <typename Func, typename... BoundArgs, std::size_t... Indices>
+            static decltype(auto) bindImpl(std::index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
             {
-                if constexpr (sizeof...(UnboundArgs) == 0)
-                {
-                    return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
-                        std::invoke(handler, unbind(std::forward<BoundArgs>(args))..., widget, signalName);
-                    };
-                }
-                else // There are unbound parameters that have to be checked at runtime
-                {
-                    std::size_t offset = signal.validateTypes({typeid(UnboundArgs)...});
-                    return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
-                        std::invoke(handler,
-                                    unbind(std::forward<BoundArgs>(args))...,
-                                    widget,
-                                    signalName,
-                                    internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
-                    };
-                }
+                const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
+                return [=, f=func](const std::shared_ptr<Widget>& widget, const std::string& signalName) {  // f=func is needed to decay free functions
+                    invokeFunc(f,
+                               std::forward<BoundArgs>(args)...,
+                               widget,
+                               signalName,
+                               internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
+                };
             }
         };
 
         template <typename... UnboundArgs>
         struct binder<TypeSet<UnboundArgs...>, TypeSet<>>
         {
-            template <typename... Args, typename... BoundArgs>
-            static auto bind(Signal& signal, std::function<void(Args...)>&& handler, BoundArgs&&... args)
+            template <typename Func, typename... BoundArgs>
+            static decltype(auto) bind(Signal& signal, Func&& func, BoundArgs&&... args)
             {
-                return bindImpl(std::index_sequence_for<UnboundArgs...>{}, signal, std::forward<std::function<void(Args...)>>(handler), std::forward<BoundArgs>(args)...);
+                return bindImpl(std::index_sequence_for<UnboundArgs...>{}, signal, std::forward<Func>(func), std::forward<BoundArgs>(args)...);
             }
 
         private:
 
-            template <typename... Args, typename... BoundArgs, std::size_t... Indices>
-            static auto bindImpl(std::index_sequence<Indices...>, Signal& signal, std::function<void(Args...)>&& handler, BoundArgs&&... args)
+            template <typename Func, typename... BoundArgs, std::size_t... Indices>
+            static decltype(auto) bindImpl(std::index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
             {
-                if constexpr (sizeof...(UnboundArgs) == 0)
-                {
-                    return [=](){ std::invoke(handler, unbind(std::forward<BoundArgs>(args))...); };
-                }
-                else // There are unbound parameters that have to be checked at runtime
-                {
-                    std::size_t offset = signal.validateTypes({typeid(UnboundArgs)...});
-                    return [=](){
-                                    std::invoke(handler,
-                                                unbind(std::forward<BoundArgs>(args))...,
-                                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
-                                };
-                }
+                const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
+                return [=, f=func]() {  // f=func is needed to decay free functions
+                    invokeFunc(f,
+                               std::forward<BoundArgs>(args)...,
+                               internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
+                };
             }
         };
+
+
+        // Error case (function signature did not match anything)
+        template <typename Enable, typename Func, typename... BoundArgs>
+        struct func_traits;
+
+        // Normal function or lambda
+        template <typename Func, typename... BoundArgs>
+        struct func_traits<void_t<decltype(&Func::operator())>, Func, BoundArgs...>
+            : public func_traits<void, decltype(&Func::operator()), Func*, BoundArgs...>
+        {
+        };
+
+        // Non-const member function
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...), BoundArgs...>
+            : binder<TypeSet<Class*, typename std::decay<Args>::type...>, TypeSet<BoundArgs...>>
+        {
+        };
+
+        // Const member function
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) const, BoundArgs...>
+            : binder<TypeSet<const Class*, typename std::decay<Args>::type...>, TypeSet<BoundArgs...>>
+        {
+        };
+
+        // Free function
+        template <typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(*)(Args...), BoundArgs...>
+            : binder<TypeSet<typename std::decay<Args>::type...>, TypeSet<BoundArgs...>>
+        {
+        };
     }
-#endif // TGUI_ENABLE_SIGNAL_EXTENSION
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -706,34 +708,6 @@ namespace tgui
     class TGUI_API SignalWidgetBase
     {
     public:
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(std::string signalName, const Signal::Delegate& handler)
-        {
-            return getSignal(toLower(std::move(signalName))).connect(handler);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function that is given a pointer to the widget and the name of the signal as arguments
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int connect(std::string signalName, const Signal::DelegateEx& handler)
-        {
-            return getSignal(toLower(std::move(signalName))).connect(handler);
-        }
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
@@ -772,7 +746,6 @@ namespace tgui
         }
 
 
-#ifdef TGUI_ENABLE_SIGNAL_EXTENSION
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -782,48 +755,14 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs, typename std::enable_if_t<!std::is_function_v<decltype(std::function(std::declval<Func>()))>
-                                                                               && !std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>
-                                                                               && !std::is_convertible_v<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>>* = nullptr>
+        template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value
+                                                                             && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
         unsigned int connect(std::string signalName, Func&& handler, const BoundArgs&... args)
         {
-            return connectWithUnboundParameters(std::move(signalName), std::function(std::forward<Func>(handler)), args...);
+            Signal& signal = getSignal(toLower(std::move(signalName)));
+            using binder = internal_signal::func_traits<void, typename std::decay<Func>::type, BoundArgs...>;
+            return signal.connect(binder::bind(signal, std::forward<Func>(handler), args...));
         }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Class, typename... Args, typename... BoundArgs, typename std::enable_if_t<!std::is_convertible_v<void(Class::*)(Args...), std::function<void(const BoundArgs&...)>>
-                                                                                                  && !std::is_convertible_v<void(Class::*)(Args...), std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>>* = nullptr>
-        unsigned int connect(std::string signalName, void(Class::*handler)(Args...), const BoundArgs&... args)
-        {
-            return connectWithUnboundParameters(std::move(signalName), std::function<void(Class*, Args...)>(handler), args...);
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
-        ///
-        /// @return Unique id of the connection
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Class, typename... Args, typename... BoundArgs, typename std::enable_if_t<!std::is_convertible_v<void(Class::*)(Args...) const, std::function<void(const BoundArgs&...)>>
-                                                                                                  && !std::is_convertible_v<void(Class::*)(Args...) const, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>>* = nullptr>
-        unsigned int connect(std::string signalName, void(Class::*handler)(Args...) const, const BoundArgs&... args)
-        {
-            return connectWithUnboundParameters(std::move(signalName), std::function<void(const Class*, Args...)>(handler), args...);
-        }
-#endif // TGUI_ENABLE_SIGNAL_EXTENSION
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -879,22 +818,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual Signal& getSignal(std::string&& signalName) = 0;
 
-#ifdef TGUI_ENABLE_SIGNAL_EXTENSION
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
-        template <typename... Args, typename... BoundArgs>
-        unsigned int connectWithUnboundParameters(std::string&& signalName, std::function<void(Args...)>&& func, BoundArgs&&... args)
-        {
-            if constexpr (sizeof...(Args) < sizeof...(BoundArgs))
-                static_assert(internal_signals::always_false<Args..., BoundArgs...>::value, "TGUI Error: Too many parameters passed to connect, signal handler does not have so many parameters!");
-            else
-            {
-                Signal& signal = getSignal(toLower(std::move(signalName)));
-                return signal.connect(internal_signals::binder<internal_signals::TypeSet<std::decay_t<Args>...>, internal_signals::TypeSet<BoundArgs...>>::bind(signal, std::forward<std::function<void(Args...)>>(func), std::forward<BoundArgs>(args)...));
-            }
-        }
-#endif // TGUI_ENABLE_SIGNAL_EXTENSION
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
