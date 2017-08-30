@@ -598,15 +598,15 @@ namespace tgui
         // std::invoke only exists in c++17 so we use our own implementation to support c++14 compilers
         // Visual Studio compiler did not like it when the function was called "invoke"
         template <typename Func, typename... Args, typename std::enable_if<std::is_member_pointer<typename std::decay<Func>::type>::value>::type* = nullptr>
-        TGUI_CONSTEXPR decltype(auto) invokeFunc(Func&& func, Args&&... args)
+        void invokeFunc(Func&& func, Args&&... args)
         {
-            return std::mem_fn(func)(std::forward<Args>(args)...);
+            std::mem_fn(func)(std::forward<Args>(args)...);
         }
 
         template <typename Func, typename... Args, typename std::enable_if<!std::is_member_pointer<typename std::decay<Func>::type>::value>::type* = nullptr>
-        TGUI_CONSTEXPR decltype(auto) invokeFunc(Func&& func, Args&&... args)
+        void invokeFunc(Func&& func, Args&&... args)
         {
-            return std::forward<Func>(func)(std::forward<Args>(args)...);
+            std::forward<Func>(func)(std::forward<Args>(args)...);
         }
 
         // The binder will figure out the unbound parameters and bind them if they correspond to what the signal sends
