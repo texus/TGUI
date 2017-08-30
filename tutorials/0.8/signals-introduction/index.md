@@ -59,24 +59,16 @@ editBox->connect("TextChanged", &Class::signalHandler3, &instance, std::ref(gui)
 
 <div>
 <h3 id="optional-parameters">Optional parameters</h3>
-<p>The widget can optionally provide information about the event that occurred. For example, the "pressed" signal from buttons provides the text of the button as optional parameter, so that the signal handler can distinguish which button was pressed.</p>
-
-<p class="SmallBottomMargin">On some compilers (currently only on g++ >= 7.1 with -std=c++17 flag) it is possible to use an extension on the connect function to handle these optional parameters. The connect function will verify at runtime that the Pressed signal supports an sf::String parameter and will make sure that the text on the button is passed as argument when the button is pressed.</p>
-{% highlight c++ %}
-void buttonPressedCallback(const sf::String& buttonText);
-button->connect("pressed", buttonPressedCallback);
-{% endhighlight %}
-
-<p class="SmallBottomMargin">Since most compilers don't support the experimental code yet, you can access the signals directly instead:</p>
+<p>Widgets can optionally provide information about the event that occurred. For example, the "pressed" signal from buttons provides the text of the button as optional parameter, so that the signal handler can distinguish which button was pressed. The connect function will verify at runtime that the Pressed signal supports an sf::String parameter and will allow the text on the button to be passed as argument when the button is pressed.</p>
 {% highlight c++ %}
 void buttonPressedCallback1();
-button->onPress.connect(buttonPressedCallback1);
+button->connect("pressed", buttonPressedCallback1);
 
 void buttonPressedCallback2(const sf::String& buttonText);
-button->onPress.connect(buttonPressedCallback2);
+button->connect("pressed", buttonPressedCallback2);
 
 void buttonPressedCallback3(tgui::Widget::Ptr widget, const std::string& signalName, const sf::String& buttonText);
-button->onPress.connect(buttonPressedCallback3);
+button->connect("pressed", buttonPressedCallback3);
 {% endhighlight %}
 </div>
 
@@ -84,17 +76,13 @@ button->onPress.connect(buttonPressedCallback3);
 <h3 id="disconnecting-signals">Disconnecting signals</h3>
 <p class="SmallBottomMargin">The connect function returns a unique id, which can be used to diconnect the signal handler.</p>
 {% highlight c++ %}
-unsigned int id1 = button1->connect("pressed", signalHandler);
-button1->disconnect("pressed", id1);
-
-unsigned int id2 = button2->onPress.connect(signalHandler);
-button2->onPress->disconnect(id2);
+unsigned int id = button1->connect("pressed", signalHandler);
+button1->disconnect(id);
 {% endhighlight %}
 
-<p class="SmallBottomMargin">It is also possible to disconnect all signal handlers that connected to a specific signal at once.</p>
+<p class="SmallBottomMargin">It is also possible to disconnect all signal handlers at once.</p>
 {% highlight c++ %}
 button1->disconnectAll("pressed");
-
-button2->onPress->disconnectAll();
+button2->disconnectAll();
 {% endhighlight %}
 </div>
