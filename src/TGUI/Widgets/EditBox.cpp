@@ -416,13 +416,7 @@ namespace tgui
     {
         m_selStart = 0;
         m_selEnd = m_text.getSize();
-        m_selChars = m_text.getSize();
-
-        m_textBeforeSelection.setString("");
-        m_textSelection.setString(m_displayedText);
-        m_textAfterSelection.setString("");
-
-        recalculateTextPositions();
+        updateSelection();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -487,12 +481,7 @@ namespace tgui
             // Select the whole text
             m_selStart = 0;
             m_selEnd = m_text.getSize();
-            m_selChars = m_text.getSize();
-
-            // Change the texts
-            m_textBeforeSelection.setString("");
-            m_textSelection.setString(m_displayedText);
-            m_textAfterSelection.setString("");
+            updateSelection();
         }
         else // No double clicking
         {
@@ -508,8 +497,6 @@ namespace tgui
         m_callback.mouse.x = static_cast<int>(x - getPosition().x);
         m_callback.mouse.y = static_cast<int>(y - getPosition().y);
         sendSignal("MousePressed", sf::Vector2f{x - getPosition().x, y - getPosition().y});
-
-        recalculateTextPositions();
 
         // The caret should be visible
         m_caretVisible = true;
@@ -578,51 +565,7 @@ namespace tgui
                 m_selEnd = findCaretPosition(x - getPosition().x - getRenderer()->getScaledPadding().left);
             }
 
-            // Check if we are selecting text from left to right
-            if (m_selEnd > m_selStart)
-            {
-                // There is no need to redo everything when nothing changed
-                if (m_selChars != (m_selEnd - m_selStart))
-                {
-                    // Adjust the number of characters that are selected
-                    m_selChars = m_selEnd - m_selStart;
-
-                    // Change our three texts
-                    m_textBeforeSelection.setString(m_displayedText.toWideString().substr(0, m_selStart));
-                    m_textSelection.setString(m_displayedText.toWideString().substr(m_selStart, m_selChars));
-                    m_textAfterSelection.setString(m_displayedText.toWideString().substr(m_selEnd));
-
-                    recalculateTextPositions();
-                }
-            }
-            else if (m_selEnd < m_selStart)
-            {
-                // There is no need to redo everything when nothing changed
-                if (m_selChars != (m_selStart - m_selEnd))
-                {
-                    // Adjust the number of characters that are selected
-                    m_selChars = m_selStart - m_selEnd;
-
-                    // Change our three texts
-                    m_textBeforeSelection.setString(m_displayedText.toWideString().substr(0, m_selEnd));
-                    m_textSelection.setString(m_displayedText.toWideString().substr(m_selEnd, m_selChars));
-                    m_textAfterSelection.setString(m_displayedText.toWideString().substr(m_selStart));
-
-                    recalculateTextPositions();
-                }
-            }
-            else if (m_selChars > 0)
-            {
-                // Adjust the number of characters that are selected
-                m_selChars = 0;
-
-                // Change our three texts
-                m_textBeforeSelection.setString(m_displayedText);
-                m_textSelection.setString("");
-                m_textAfterSelection.setString("");
-
-                recalculateTextPositions();
-            }
+            updateSelection();
         }
     }
 
@@ -633,20 +576,31 @@ namespace tgui
         // Check if one of the correct keys was pressed
         if (event.code == sf::Keyboard::Left)
         {
-            // Check if we have selected some text
-            if (m_selChars > 0)
+            if (event.shift)
             {
-                // We will not move the caret, but just undo the selection
-                if (m_selStart < m_selEnd)
-                    setCaretPosition(m_selStart);
-                else
-                    setCaretPosition(m_selEnd);
-            }
-            else // When we did not select any text
-            {
-                // Move the caret to the left
                 if (m_selEnd > 0)
-                    setCaretPosition(m_selEnd - 1);
+                {
+                    m_selEnd--;
+                    updateSelection();
+                }
+            }
+            else // Shift key is not being held down
+            {
+                // Check if we have selected some text
+                if (m_selChars > 0)
+                {
+                    // We will not move the caret, but just undo the selection
+                    if (m_selStart < m_selEnd)
+                        setCaretPosition(m_selStart);
+                    else
+                        setCaretPosition(m_selEnd);
+                }
+                else // When we did not select any text
+                {
+                    // Move the caret to the left
+                    if (m_selEnd > 0)
+                        setCaretPosition(m_selEnd - 1);
+                }
             }
 
             // Our caret has moved, it should be visible
@@ -655,20 +609,31 @@ namespace tgui
         }
         else if (event.code == sf::Keyboard::Right)
         {
-            // Check if we have selected some text
-            if (m_selChars > 0)
+            if (event.shift)
             {
-                // We will not move the caret, but just undo the selection
-                if (m_selStart < m_selEnd)
-                    setCaretPosition(m_selEnd);
-                else
-                    setCaretPosition(m_selStart);
-            }
-            else // When we did not select any text
-            {
-                // Move the caret to the right
                 if (m_selEnd < m_displayedText.getSize())
-                    setCaretPosition(m_selEnd + 1);
+                {
+                    m_selEnd++;
+                    updateSelection();
+                }
+            }
+            else // Shift key is not being held down
+            {
+                // Check if we have selected some text
+                if (m_selChars > 0)
+                {
+                    // We will not move the caret, but just undo the selection
+                    if (m_selStart < m_selEnd)
+                        setCaretPosition(m_selEnd);
+                    else
+                        setCaretPosition(m_selStart);
+                }
+                else // When we did not select any text
+                {
+                    // Move the caret to the right
+                    if (m_selEnd < m_displayedText.getSize())
+                        setCaretPosition(m_selEnd + 1);
+                }
             }
 
             // Our caret has moved, it should be visible
@@ -677,8 +642,16 @@ namespace tgui
         }
         else if (event.code == sf::Keyboard::Home)
         {
-            // Set the caret to the beginning of the text
-            setCaretPosition(0);
+            if (event.shift)
+            {
+                m_selEnd = 0;
+                updateSelection();
+            }
+            else // Shift key is not being held down
+            {
+                // Set the caret to the beginning of the text
+                setCaretPosition(0);
+            }
 
             // Our caret has moved, it should be visible
             m_caretVisible = true;
@@ -686,8 +659,16 @@ namespace tgui
         }
         else if (event.code == sf::Keyboard::End)
         {
-            // Set the caret behind the text
-            setCaretPosition(m_text.getSize());
+            if (event.shift)
+            {
+                m_selEnd = m_text.getSize();
+                updateSelection();
+            }
+            else // Shift key is not being held down
+            {
+                // Set the caret behind the text
+                setCaretPosition(m_text.getSize());
+            }
 
             // Our caret has moved, it should be visible
             m_caretVisible = true;
@@ -1134,6 +1115,82 @@ namespace tgui
         // Set the position of the caret
         caretLeft += m_textFull.findCharacterPos(m_selEnd).x - (m_caret.getSize().x * 0.5f);
         m_caret.setPosition(std::floor(caretLeft + 0.5f), std::floor(padding.top + getPosition().y + 0.5f));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::updateSelection()
+    {
+        bool recalculationNeeded = false;
+
+        // Check if we are selecting text from left to right
+        if (m_selEnd > m_selStart)
+        {
+            // There is no need to redo everything when nothing changed
+            if (m_selChars != (m_selEnd - m_selStart))
+            {
+                // Adjust the number of characters that are selected
+                m_selChars = m_selEnd - m_selStart;
+
+                // Change our three texts
+                m_textBeforeSelection.setString(m_displayedText.toWideString().substr(0, m_selStart));
+                m_textSelection.setString(m_displayedText.toWideString().substr(m_selStart, m_selChars));
+                m_textAfterSelection.setString(m_displayedText.toWideString().substr(m_selEnd));
+
+                recalculationNeeded = true;
+            }
+        }
+        else if (m_selEnd < m_selStart)
+        {
+            // There is no need to redo everything when nothing changed
+            if (m_selChars != (m_selStart - m_selEnd))
+            {
+                // Adjust the number of characters that are selected
+                m_selChars = m_selStart - m_selEnd;
+
+                // Change our three texts
+                m_textBeforeSelection.setString(m_displayedText.toWideString().substr(0, m_selEnd));
+                m_textSelection.setString(m_displayedText.toWideString().substr(m_selEnd, m_selChars));
+                m_textAfterSelection.setString(m_displayedText.toWideString().substr(m_selStart));
+
+                recalculationNeeded = true;
+            }
+        }
+        else if (m_selChars > 0)
+        {
+            // Adjust the number of characters that are selected
+            m_selChars = 0;
+
+            // Change our three texts
+            m_textBeforeSelection.setString(m_displayedText);
+            m_textSelection.setString("");
+            m_textAfterSelection.setString("");
+
+            recalculationNeeded = true;
+        }
+
+        if (recalculationNeeded)
+        {
+            // Check if scrolling is enabled
+            if (!m_limitTextWidth)
+            {
+                // Find out the position of the caret
+                float caretPosition = m_textFull.findCharacterPos(m_selEnd).x;
+
+                if (m_selEnd == m_displayedText.getSize())
+                    caretPosition += m_textFull.getCharacterSize() / 10.f;
+
+                // If the caret is too far on the right then adjust the cropping
+                if (m_textCropPosition + getVisibleEditBoxWidth() < caretPosition)
+                    m_textCropPosition = static_cast<unsigned int>(caretPosition - getVisibleEditBoxWidth());
+
+                // If the caret is too far on the left then adjust the cropping
+                if (m_textCropPosition > caretPosition)
+                    m_textCropPosition = static_cast<unsigned int>(caretPosition);
+            }
+
+            recalculateTextPositions();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
