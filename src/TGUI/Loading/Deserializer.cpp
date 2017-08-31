@@ -78,7 +78,18 @@ namespace tgui
                 return Font{};
 
             auto font = std::make_shared<sf::Font>();
-            font->loadFromFile(Deserializer::deserialize(ObjectConverter::Type::String, value).getString());
+
+            // Load the font but insert the resource path into the filename unless the filename is an absolute path
+            const sf::String& filename = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
+        #ifdef SFML_SYSTEM_WINDOWS
+            if ((filename.getSize() > 1) && (filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':'))
+        #else
+            if ((filename.getSize() > 0) && (filename[0] != '/'))
+        #endif
+                font->loadFromFile(getResourcePath() + Deserializer::deserialize(ObjectConverter::Type::String, value).getString());
+            else
+                font->loadFromFile(Deserializer::deserialize(ObjectConverter::Type::String, value).getString());
+
             return Font(font);
         }
 
@@ -254,7 +265,17 @@ namespace tgui
             if (*c == '"')
                 ++c;
             else
-                return Texture{getResourcePath() + value};
+            {
+                // Load the texture but insert the resource path into the filename unless the filename is an absolute path
+            #ifdef SFML_SYSTEM_WINDOWS
+                if ((value.size() > 1) && (value[0] != '/') && (value[0] != '\\') && (value[1] != ':'))
+            #else
+                if ((value.size() > 0) && (value[0] != '/'))
+            #endif
+                    return Texture{getResourcePath() + value};
+                else
+                    return Texture{value};
+            }
 
             std::string filename;
             char prev = '\0';
@@ -333,7 +354,16 @@ namespace tgui
                 std::advance(c, closeBracketPos - (c - value.begin()) + 1);
             }
 
-            return Texture{getResourcePath() + filename, partRect, middleRect, smooth};
+
+            // Load the texture but insert the resource path into the filename unless the filename is an absolute path
+        #ifdef SFML_SYSTEM_WINDOWS
+            if ((filename.size() > 1) && (filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':'))
+        #else
+            if ((filename.size() > 0) && (filename[0] != '/'))
+        #endif
+                return Texture{getResourcePath() + filename, partRect, middleRect, smooth};
+            else
+                return Texture{filename, partRect, middleRect, smooth};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

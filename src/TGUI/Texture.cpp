@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include <TGUI/Global.hpp>
 #include <TGUI/Texture.hpp>
 #include <TGUI/Exception.hpp>
 #include <TGUI/TextureManager.hpp>
@@ -138,7 +139,17 @@ namespace tgui
             m_destructCallback(getData());
 
         m_data = nullptr;
-        auto data = m_textureLoader(*this, id, partRect);
+
+        std::shared_ptr<TextureData> data;
+    #ifdef SFML_SYSTEM_WINDOWS
+        if ((id.getSize() > 1) && (id[0] != '/') && (id[0] != '\\') && (id[1] != ':'))
+    #else
+        if ((id.getSize() > 0) && (id[0] != '/'))
+    #endif
+            data = m_textureLoader(*this, getResourcePath() + id, partRect);
+        else
+            data = m_textureLoader(*this, id, partRect);
+
         if (!data)
             throw Exception{"Failed to load '" + id + "'"};
 

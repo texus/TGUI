@@ -28,6 +28,7 @@
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Global.hpp>
 
+#include <stdlib.h> // _fullpath/realpath
 #include <cassert>
 #include <sstream>
 #include <fstream>
@@ -67,8 +68,12 @@ namespace tgui
                     auto quotePos = pair.second->value.find('"');
                     if (quotePos != std::string::npos)
                     {
-                        ///TODO: Detect absolute pathname on windows
+                        // Only inject the path of the theme file when the texture filename is not an absolute path
+                    #ifdef SFML_SYSTEM_WINDOWS
+                        if ((pair.second->value.getSize() > quotePos + 2) && (pair.second->value[quotePos+1] != '/') && (pair.second->value[quotePos+1] != '\\') && (pair.second->value[quotePos+2] != ':'))
+                    #else
                         if ((pair.second->value.getSize() > quotePos + 1) && (pair.second->value[quotePos+1] != '/'))
+                    #endif
                             pair.second->value = pair.second->value.substring(0, quotePos+1) + path + pair.second->value.substring(quotePos+1);
                     }
                 }
@@ -164,8 +169,31 @@ namespace tgui
             // Inject relative path to the theme file into texture filenames
             if (!resourcePath.empty())
             {
+                char* buffer;
+            #ifdef SFML_SYSTEM_WINDOWS
+                if ((filename.size() > 1) && (resourcePath[0] != '/') && (resourcePath[0] != '\\') && (resourcePath[1] != ':'))
+                    resourcePath = getResourcePath() + resourcePath;
+
+                buffer = _fullpath(nullptr, resourcePath.c_str(), 512);
+            #else
+                if ((resourcePath.size() > 0) && (resourcePath[0] != '/'))
+                    resourcePath = getResourcePath() + resourcePath;
+
+                buffer = realpath(resourcePath.c_str(), nullptr);
+            #endif
+
+                std::string absoluteResourcePath;
+                if (buffer != nullptr)
+                {
+                    absoluteResourcePath = buffer;
+                    free(buffer);
+
+                    if (!absoluteResourcePath.empty() && (absoluteResourcePath[absoluteResourcePath.length()-1] != '/'))
+                        absoluteResourcePath.push_back('/');
+                }
+
                 std::set<const DataIO::Node*> handledSections;
-                injectRelativePathInTextures(handledSections, root, resourcePath);
+                injectRelativePathInTextures(handledSections, root, absoluteResourcePath);
             }
 
             // Get a list of section names and map them to their nodes (needed for resolving references)
@@ -219,7 +247,15 @@ namespace tgui
 
     void DefaultThemeLoader::readFile(const std::string& filename, std::stringstream& contents) const
     {
-        std::string fullFilename = getResourcePath() + filename;
+        std::string fullFilename;
+    #ifdef SFML_SYSTEM_WINDOWS
+        if ((filename.size() > 1) && (filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':'))
+    #else
+        if ((filename.size() > 0) && (filename[0] != '/'))
+    #endif
+            fullFilename = getResourcePath() + filename;
+        else
+            fullFilename = filename;
 
     #ifdef SFML_SYSTEM_ANDROID
         // If the file does not start with a slash then load it from the assets
