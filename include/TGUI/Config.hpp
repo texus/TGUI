@@ -70,8 +70,14 @@
 #define TGUI_VERSION_MINOR 8
 #define TGUI_VERSION_PATCH 0
 
-// All supported compilers except GCC 4.9 support constexpr
-#if __GNUC__
+// Enable constexpr when using Clang or at least GCC 5 or MSVC++ 14.1 (VS2017)
+#if _MSC_VER
+    #if _MSC_VER >= 1910
+        #define TGUI_CONSTEXPR constexpr
+    #else
+        #define TGUI_CONSTEXPR
+    #endif
+#elif __GNUC__
     #if __cpp_constexpr >= 201304
         #define TGUI_CONSTEXPR constexpr
     #else
