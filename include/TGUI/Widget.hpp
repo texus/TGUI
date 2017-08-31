@@ -653,6 +653,11 @@ namespace tgui
         Layout2d m_position;
         Layout2d m_size;
 
+        // The previous position and size have to be stored because when setPosition/setSize is called, the layout may already be
+        // changed and there would be no way for the widget to detect whether the values changed or not.
+        sf::Vector2f m_prevPosition;
+        sf::Vector2f m_prevSize;
+
         // Layouts that need to recalculate their value when the position or size of this widget changes
         std::unordered_set<Layout*> m_boundPositionLayouts;
         std::unordered_set<Layout*> m_boundSizeLayouts;

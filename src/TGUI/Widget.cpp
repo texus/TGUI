@@ -321,14 +321,13 @@ namespace tgui
 
     void Widget::setPosition(const Layout2d& position)
     {
-        const sf::Vector2f oldPosition = getPosition();
-
         m_position = position;
         m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
         m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
 
-        if (getPosition() != oldPosition)
+        if (getPosition() != m_prevPosition)
         {
+            m_prevPosition = getPosition();
             onPositionChange.emit(this, getPosition());
 
             for (auto& layout : m_boundPositionLayouts)
@@ -340,14 +339,13 @@ namespace tgui
 
     void Widget::setSize(const Layout2d& size)
     {
-        const sf::Vector2f oldSize = getSize();
-
         m_size = size;
         m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
         m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
-        if (getSize() != oldSize)
+        if (getSize() != m_prevSize)
         {
+            m_prevSize = getSize();
             onSizeChange.emit(this, getSize());
 
             for (auto& layout : m_boundSizeLayouts)
