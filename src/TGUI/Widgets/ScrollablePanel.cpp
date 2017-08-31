@@ -303,18 +303,18 @@ namespace tgui
     void ScrollablePanel::updateScrollbars()
     {
         const sf::Vector2f visibleSize = getInnerSize();
-        m_horizontalScrollbar.setLowValue(visibleSize.x);
-        m_verticalScrollbar.setLowValue(visibleSize.y);
+        m_horizontalScrollbar.setLowValue(static_cast<unsigned int>(visibleSize.x));
+        m_verticalScrollbar.setLowValue(static_cast<unsigned int>(visibleSize.y));
 
         const sf::Vector2f contentSize = getContentSize();
-        m_horizontalScrollbar.setMaximum(contentSize.x);
-        m_verticalScrollbar.setMaximum(contentSize.y);
+        m_horizontalScrollbar.setMaximum(static_cast<unsigned int>(contentSize.x));
+        m_verticalScrollbar.setMaximum(static_cast<unsigned int>(contentSize.y));
 
         const bool horizontalScrollbarVisible = m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue();
         if (horizontalScrollbarVisible)
         {
             m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, getInnerSize().y - m_horizontalScrollbar.getSize().y);
-            m_verticalScrollbar.setLowValue(m_verticalScrollbar.getLowValue() - m_horizontalScrollbar.getSize().y);
+            m_verticalScrollbar.setLowValue(static_cast<unsigned int>(m_verticalScrollbar.getLowValue() - m_horizontalScrollbar.getSize().y));
 
             const bool verticalScrollbarVisible = m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue();
             if (verticalScrollbarVisible)
@@ -330,7 +330,7 @@ namespace tgui
             if (verticalScrollbarVisible)
             {
                 m_horizontalScrollbar.setSize(getInnerSize().x - m_verticalScrollbar.getSize().x, m_horizontalScrollbar.getSize().y);
-                m_horizontalScrollbar.setLowValue(m_horizontalScrollbar.getLowValue() - m_verticalScrollbar.getSize().x);
+                m_horizontalScrollbar.setLowValue(static_cast<unsigned int>(m_horizontalScrollbar.getLowValue() - m_verticalScrollbar.getSize().x));
 
                 if (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue())
                     m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, getInnerSize().y - m_horizontalScrollbar.getSize().y);
