@@ -171,7 +171,7 @@ namespace tgui
             {
                 char* buffer;
             #ifdef SFML_SYSTEM_WINDOWS
-                if ((filename.size() > 1) && (resourcePath[0] != '/') && (resourcePath[0] != '\\') && (resourcePath[1] != ':'))
+                if ((resourcePath.size() > 1) && (resourcePath[0] != '/') && (resourcePath[0] != '\\') && (resourcePath[1] != ':'))
                     resourcePath = getResourcePath() + resourcePath;
 
                 buffer = _fullpath(nullptr, resourcePath.c_str(), 512);
