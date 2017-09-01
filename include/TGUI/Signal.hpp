@@ -798,18 +798,7 @@ namespace tgui
         ///
         /// @return True when a connection with this id existed and was removed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool disconnect(unsigned int id)
-        {
-            auto it = m_connectedSignals.find(id);
-            if (it != m_connectedSignals.end())
-            {
-                const bool ret = getSignal(it->second).disconnect(id);
-                m_connectedSignals.erase(it);
-                return ret;
-            }
-            else // The id was not found
-                return false;
-        }
+        bool disconnect(unsigned int id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

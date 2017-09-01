@@ -360,6 +360,21 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool SignalWidgetBase::disconnect(unsigned int id)
+    {
+        auto it = m_connectedSignals.find(id);
+        if (it != m_connectedSignals.end())
+        {
+            const bool ret = getSignal(it->second).disconnect(id);
+            m_connectedSignals.erase(it);
+            return ret;
+        }
+        else // The id was not found
+            return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void SignalWidgetBase::disconnectAll(std::string signalName)
     {
         return getSignal(toLower(std::move(signalName))).disconnectAll();
