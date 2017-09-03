@@ -1,4 +1,4 @@
-# Theme based on http://dribbble.com/shots/635698-UI-Kit-Baby-Blue
+// Theme based on http://dribbble.com/shots/635698-UI-Kit-Baby-Blue
 
 Button {
     NormalImage : "BabyBlue.png" Part(269, 40, 90, 60) Middle(30, 0, 30, 60);
