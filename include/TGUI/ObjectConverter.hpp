@@ -55,6 +55,7 @@ namespace tgui
         enum class Type
         {
             None,
+            Bool,
             Font,
             Color,
             String,
@@ -80,9 +81,30 @@ namespace tgui
         /// @brief Stores a string for later retrieval
         ///
         /// @param string  String to store
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(const sf::String& string)  :
+        ObjectConverter(const char* string) :
+            ObjectConverter{sf::String{string}}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Stores a string for later retrieval
+        ///
+        /// @param string  String to store
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ObjectConverter(const std::string& string) :
+            ObjectConverter{sf::String{string}}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Stores a string for later retrieval
+        ///
+        /// @param string  String to store
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ObjectConverter(const sf::String& string) :
             m_type      {Type::String},
             m_value     {string},
             m_serialized{true},
@@ -111,7 +133,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(sf::Color color) :
-            ObjectConverter(Color(color))
+            ObjectConverter(Color{color})
         {
         }
 
@@ -130,14 +152,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Stores a boolean for later retrieval
+        ///
+        /// @param value  Boolean to store
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ObjectConverter(bool value) :
+            m_type {Type::Bool},
+            m_value{value}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Stores a number for later retrieval
         ///
         /// @param number  Number to store
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ObjectConverter(float number) :
+        template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+        ObjectConverter(T number) :
             m_type {Type::Number},
-            m_value{number}
+            m_value{static_cast<float>(number)}
         {
         }
 
@@ -251,6 +286,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Retrieves the saved boolean
+        ///
+        /// @return The saved boolean
+        ///
+        /// This function will assert when something other than a boolean was saved
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getBool();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves the saved number
         ///
         /// @return The saved number
@@ -308,7 +353,7 @@ namespace tgui
         Type m_type = Type::None;
 
     #ifdef TGUI_USE_VARIANT
-        std::variant<sf::String, Font, Color, Outline, float, Texture, TextStyle, std::shared_ptr<RendererData>> m_value;
+        std::variant<sf::String, Font, Color, Outline, bool, float, Texture, TextStyle, std::shared_ptr<RendererData>> m_value;
     #else
         Any  m_value;
     #endif

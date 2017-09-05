@@ -88,6 +88,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ObjectConverter::getBool()
+    {
+        assert(m_type != Type::None);
+        assert(m_type == Type::Bool || m_type == Type::String);
+
+        if (m_type == Type::String)
+        {
+            m_value = Deserializer::deserialize(ObjectConverter::Type::Bool, m_string).getBool();
+            m_type = Type::Bool;
+        }
+
+    #ifdef TGUI_USE_VARIANT
+        return std::get<bool>(m_value);
+    #else
+        return m_value.as<bool>();
+    #endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     float ObjectConverter::getNumber()
     {
         assert(m_type != Type::None);

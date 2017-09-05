@@ -72,6 +72,19 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        ObjectConverter deserializeBool(const std::string& value)
+        {
+            const std::string str = toLower(value);
+            if (str == "true" || str == "yes" || str == "on" || str == "1")
+                return {true};
+            else if (str == "false" || str == "no" || str == "off" || str == "0")
+                return {false};
+            else
+                throw Exception{"Failed to deserialize boolean from '" + str + "'"};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         ObjectConverter deserializeFont(const std::string& value)
         {
             if (value == "null" || value == "nullptr")
@@ -420,6 +433,7 @@ namespace tgui
 
     std::map<ObjectConverter::Type, Deserializer::DeserializeFunc> Deserializer::m_deserializers =
         {
+            {ObjectConverter::Type::Bool, deserializeBool},
             {ObjectConverter::Type::Font, deserializeFont},
             {ObjectConverter::Type::Color, deserializeColor},
             {ObjectConverter::Type::String, deserializeString},

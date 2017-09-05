@@ -29,6 +29,18 @@ using Type = tgui::ObjectConverter::Type;
 
 TEST_CASE("[Deserializer]")
 {
+    SECTION("deserialize bool")
+    {
+        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "True").getBool());
+        REQUIRE(!tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "FALSE").getBool());
+        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "YeS").getBool());
+        REQUIRE(!tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "nO").getBool());
+        REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "1").getBool());
+        REQUIRE(!tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, "0").getBool());
+
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Bool, "InvalidString"), tgui::Exception);
+    }
+
     SECTION("deserialize font")
     {
         REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Font, "resources/DejaVuSans.ttf").getFont() != nullptr);

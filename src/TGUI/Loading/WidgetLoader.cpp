@@ -71,19 +71,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool parseBoolean(std::string str)
-        {
-            str = toLower(str);
-            if (str == "true" || str == "yes" || str == "on" || str == "1")
-                return true;
-            else if (str == "false" || str == "no" || str == "off" || str == "0")
-                return false;
-            else
-                throw Exception{"Failed to parse boolean in '" + str + "'"};
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         sf::Vector2f parseVector2f(std::string str)
         {
             if (str.empty())
@@ -133,7 +120,7 @@ namespace tgui
 
             if (node->propertyValuePairs["visible"])
             {
-                bool visible = parseBoolean(node->propertyValuePairs["visible"]->value);
+                bool visible = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["visible"]->value).getBool();
                 if (visible)
                     widget->show();
                 else
@@ -141,7 +128,7 @@ namespace tgui
             }
             if (node->propertyValuePairs["enabled"])
             {
-                bool enabled = parseBoolean(node->propertyValuePairs["enabled"]->value);
+                bool enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["enabled"]->value).getBool();
                 if (enabled)
                     widget->enable();
                 else
@@ -305,11 +292,11 @@ namespace tgui
             REMOVE_CHILD("line");
 
             if (node->propertyValuePairs["linesstartfromtop"])
-                chatBox->setLinesStartFromTop(parseBoolean(node->propertyValuePairs["linesstartfromtop"]->value));
+                chatBox->setLinesStartFromTop(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["linesstartfromtop"]->value).getBool());
 
             // This has to be parsed after the lines have been added
             if (node->propertyValuePairs["newlinesbelowothers"])
-                chatBox->setNewLinesBelowOthers(parseBoolean(node->propertyValuePairs["newlinesbelowothers"]->value));
+                chatBox->setNewLinesBelowOthers(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["newlinesbelowothers"]->value).getBool());
 
             return chatBox;
         }
@@ -330,10 +317,10 @@ namespace tgui
             if (node->propertyValuePairs["textsize"])
                 checkbox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
             if (node->propertyValuePairs["textclickable"])
-                checkbox->setTextClickable(parseBoolean(node->propertyValuePairs["textclickable"]->value));
+                checkbox->setTextClickable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["textclickable"]->value).getBool());
             if (node->propertyValuePairs["checked"])
             {
-                if (parseBoolean(node->propertyValuePairs["checked"]->value))
+                if (Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["checked"]->value).getBool())
                     checkbox->check();
             }
 
@@ -384,10 +371,10 @@ namespace tgui
                 childWindow->setTitle(DESERIALIZE_STRING("title"));
 
             if (node->propertyValuePairs["keepinparent"])
-                childWindow->keepInParent(parseBoolean(node->propertyValuePairs["keepinparent"]->value));
+                childWindow->keepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["keepinparent"]->value).getBool());
 
             if (node->propertyValuePairs["resizable"])
-                childWindow->setResizable(parseBoolean(node->propertyValuePairs["resizable"]->value));
+                childWindow->setResizable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["resizable"]->value).getBool());
 
             if (node->propertyValuePairs["minimumsize"])
                 childWindow->setMinimumSize(parseVector2f(node->propertyValuePairs["minimumsize"]->value));
@@ -490,7 +477,7 @@ namespace tgui
             if (node->propertyValuePairs["maximumcharacters"])
                 editBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
             if (node->propertyValuePairs["textwidthlimited"])
-                editBox->limitTextWidth(parseBoolean(node->propertyValuePairs["textwidthlimited"]->value));
+                editBox->limitTextWidth(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["textwidthlimited"]->value).getBool());
             if (node->propertyValuePairs["passwordcharacter"])
             {
                 std::string pass = DESERIALIZE_STRING("passwordcharacter");
@@ -536,7 +523,7 @@ namespace tgui
             loadContainer(node, grid);
 
             if (node->propertyValuePairs["autosize"])
-                grid->setAutoSize(parseBoolean(node->propertyValuePairs["autosize"]->value));
+                grid->setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autosize"]->value).getBool());
 
             if (node->propertyValuePairs["gridwidgets"])
             {
@@ -683,7 +670,7 @@ namespace tgui
             if (node->propertyValuePairs["value"])
                 knob->setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
             if (node->propertyValuePairs["clockwiseturning"])
-                knob->setClockwiseTurning(parseBoolean(node->propertyValuePairs["clockwiseturning"]->value));
+                knob->setClockwiseTurning(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["clockwiseturning"]->value).getBool());
 
             return knob;
         }
@@ -729,7 +716,7 @@ namespace tgui
             if (node->propertyValuePairs["maximumtextwidth"])
                 label->setMaximumTextWidth(tgui::stof(node->propertyValuePairs["maximumtextwidth"]->value));
             if (node->propertyValuePairs["autosize"])
-                label->setAutoSize(parseBoolean(node->propertyValuePairs["autosize"]->value));
+                label->setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autosize"]->value).getBool());
 
             return label;
         }
@@ -784,7 +771,7 @@ namespace tgui
             }
 
             if (node->propertyValuePairs["autoscroll"])
-                listBox->setAutoScroll(parseBoolean(node->propertyValuePairs["autoscroll"]->value));
+                listBox->setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autoscroll"]->value).getBool());
             if (node->propertyValuePairs["textsize"])
                 listBox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
             if (node->propertyValuePairs["itemheight"])
@@ -942,10 +929,10 @@ namespace tgui
             if (node->propertyValuePairs["textsize"])
                 radioButton->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
             if (node->propertyValuePairs["textclickable"])
-                radioButton->setTextClickable(parseBoolean(node->propertyValuePairs["textclickable"]->value));
+                radioButton->setTextClickable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["textclickable"]->value).getBool());
             if (node->propertyValuePairs["checked"])
             {
-                if (parseBoolean(node->propertyValuePairs["checked"]->value))
+                if (Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["checked"]->value).getBool())
                     radioButton->check();
             }
 
@@ -1023,7 +1010,7 @@ namespace tgui
             if (node->propertyValuePairs["scrollamount"])
                 scrollbar->setScrollAmount(tgui::stoi(node->propertyValuePairs["scrollamount"]->value));
             if (node->propertyValuePairs["autohide"])
-                scrollbar->setAutoHide(parseBoolean(node->propertyValuePairs["autohide"]->value));
+                scrollbar->setAutoHide(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autohide"]->value).getBool());
 
             return scrollbar;
         }
@@ -1067,7 +1054,7 @@ namespace tgui
             if (node->propertyValuePairs["value"])
                 spinButton->setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
             if (node->propertyValuePairs["verticalscroll"])
-                spinButton->setVerticalScroll(parseBoolean(node->propertyValuePairs["verticalscroll"]->value));
+                spinButton->setVerticalScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["verticalscroll"]->value).getBool());
 
             return spinButton;
         }
@@ -1124,9 +1111,9 @@ namespace tgui
             if (node->propertyValuePairs["maximumcharacters"])
                 textBox->setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
             if (node->propertyValuePairs["readonly"])
-                textBox->setReadOnly(parseBoolean(node->propertyValuePairs["readonly"]->value));
+                textBox->setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["readonly"]->value).getBool());
             if (node->propertyValuePairs["verticalscrollbarpresent"])
-                textBox->setVerticalScrollbarPresent(parseBoolean(node->propertyValuePairs["verticalscrollbarpresent"]->value));
+                textBox->setVerticalScrollbarPresent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["verticalscrollbarpresent"]->value).getBool());
 
             return textBox;
         }

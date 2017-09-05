@@ -74,6 +74,16 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        std::string serializeBool(ObjectConverter&& value)
+        {
+            if (value.getBool())
+                return "true";
+            else
+                return "false";
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         std::string serializeFont(ObjectConverter&& value)
         {
             if (value.getFont() && !value.getFont().getId().empty())
@@ -240,6 +250,7 @@ namespace tgui
     std::map<ObjectConverter::Type, Serializer::SerializeFunc> Serializer::m_serializers =
         {
             {ObjectConverter::Type::None, serializeEmptyObject},
+            {ObjectConverter::Type::Bool, serializeBool},
             {ObjectConverter::Type::Font, serializeFont},
             {ObjectConverter::Type::Color, serializeColor},
             {ObjectConverter::Type::String, serializeString},

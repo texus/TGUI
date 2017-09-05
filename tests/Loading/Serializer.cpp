@@ -32,6 +32,12 @@ TEST_CASE("[Serializer]")
         REQUIRE_THROWS_AS(tgui::Serializer::serialize({}), tgui::Exception);
     }
 
+    SECTION("serialize bool")
+    {
+        REQUIRE(tgui::Serializer::serialize({false}) == "false");
+        REQUIRE(tgui::Serializer::serialize({true}) == "true");
+    }
+
     SECTION("serialize font")
     {
         tgui::Font font{"resources/DejaVuSans.ttf"};
