@@ -865,9 +865,6 @@ namespace tgui
             else
                 picture = Picture::create();
 
-            if (node->propertyValuePairs["texture"])
-                picture = Picture::create(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs["texture"]->value).getTexture());
-
             loadWidget(node, picture);
 
             return picture;

@@ -34,14 +34,19 @@ namespace tgui
     Picture::Picture()
     {
         m_type = "Picture";
+
+        m_renderer = aurora::makeCopied<PictureRenderer>();
+        setRenderer(RendererData::create({}));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture(const Texture& texture, bool fullyClickable) :
+    Picture::Picture(const Texture& texture, bool ignoreTransparentParts) :
         Picture{}
     {
-        setTexture(texture, fullyClickable);
+        getRenderer()->setTexture(texture);
+        if (ignoreTransparentParts)
+            getRenderer()->setIgnoreTransparentParts(ignoreTransparentParts);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,32 +68,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::setTexture(const Texture& texture, bool fullyClickable)
-    {
-        if (!m_sprite.isSet() && (texture.getImageSize() != sf::Vector2f{0,0}))
-            setSize(texture.getImageSize());
-
-        m_fullyClickable = fullyClickable;
-        m_sprite.setTexture(texture);
-        m_sprite.setOpacity(m_opacityCached);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    const Texture& Picture::getTexture() const
-    {
-        return m_sprite.getTexture();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Texture& Picture::getTexture()
-    {
-        return m_sprite.getTexture();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Picture::setSize(const Layout2d& size)
     {
         Widget::setSize(size);
@@ -106,7 +85,7 @@ namespace tgui
         if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             // We sometimes want clicks to go through transparent parts of the picture
-            if (!m_fullyClickable && m_sprite.isTransparentPixel(pos))
+            if (!m_ignoreTransparentParts && m_sprite.isTransparentPixel(pos))
                 return false;
             else
                 return true;
@@ -153,10 +132,26 @@ namespace tgui
 
     void Picture::rendererChanged(const std::string& property)
     {
-        Widget::rendererChanged(property);
+        if (property == "texture")
+        {
+            const auto& texture = getRenderer()->getTexture();
 
-        if (property == "opacity")
+            if (!m_sprite.isSet() && (getSize() == sf::Vector2f{0,0}))
+                setSize(texture.getImageSize());
+
+            m_sprite.setTexture(texture);
+        }
+        else if (property == "ignoretransparentparts")
+        {
+            m_ignoreTransparentParts = getRenderer()->getIgnoreTransparentParts();
+        }
+        else if (property == "opacity")
+        {
+            Widget::rendererChanged(property);
             m_sprite.setOpacity(m_opacityCached);
+        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

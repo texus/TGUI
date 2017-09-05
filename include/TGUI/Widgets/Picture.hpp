@@ -28,6 +28,7 @@
 
 
 #include <TGUI/Widgets/ClickableWidget.hpp>
+#include <TGUI/Renderers/PictureRenderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -106,42 +107,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the image
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         ///
-        /// @param texture  The texture to load the picture from
-        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
-        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
-        ///
-        /// @code
-        /// picture1->setTexture("image.png");
-        ///
-        /// picture2->setTexture({"image.png", {20, 15, 60, 40}}); // Only load the part of the image from (20,15) to (80,55)
-        ///
-        /// sf::Texture texture;
-        /// texture.loadFromFile("image.png", {20, 15, 60, 40});
-        /// picture3->setTexture(texture);
-        /// @endcode
+        /// @return Temporary pointer to the renderer
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTexture(const Texture& texture, bool fullyClickable = true);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the texture used by the picture
-        ///
-        /// @return Internal texture
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const Texture& getTexture() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the texture used by the picture
-        ///
-        /// @return Reference to the internal texture
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Texture& getTexture();
+        PictureRenderer* getRenderer() const
+        {
+            return aurora::downcast<PictureRenderer*>(m_renderer.get());
+        }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,8 +208,8 @@ namespace tgui
 
         Sprite  m_sprite;
 
-        // Set to false when clicks on transparent parts of the picture should go to the widgets behind the picture
-        bool m_fullyClickable = true;
+        // Set to true when clicks on transparent parts of the picture should go to the widgets behind the picture
+        bool m_ignoreTransparentParts = true;
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;

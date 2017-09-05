@@ -36,6 +36,7 @@ set(TGUI_SRC
     Renderers/MenuBarRenderer.cpp
     Renderers/MessageBoxRenderer.cpp
     Renderers/PanelRenderer.cpp
+    Renderers/PictureRenderer.cpp
     Renderers/ProgressBarRenderer.cpp
     Renderers/RadioButtonRenderer.cpp
     Renderers/RangeSliderRenderer.cpp

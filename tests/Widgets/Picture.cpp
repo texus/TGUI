@@ -51,13 +51,13 @@ TEST_CASE("[Picture]")
         SECTION("from tgui::Texture")
         {
             REQUIRE_NOTHROW(picture = tgui::Picture::create("resources/image.png"));
-            REQUIRE(picture->getTexture().getId() == "resources/image.png");
+            REQUIRE(picture->getRenderer()->getTexture().getId() == "resources/image.png");
         }
 
         SECTION("from sf::Texture")
         {
             REQUIRE_NOTHROW(picture = tgui::Picture::create(texture));
-            REQUIRE(picture->getTexture().getId() == "");
+            REQUIRE(picture->getRenderer()->getTexture().getId() == "");
         }
 
         REQUIRE(picture->getSize() == sf::Vector2f(texture.getSize()));
@@ -74,36 +74,6 @@ TEST_CASE("[Picture]")
         REQUIRE(picture->getWidgetOffset() == sf::Vector2f(0, 0));
     }
 
-    SECTION("setTexture")
-    {
-        picture->setSize(50, 50);
-
-        SECTION("from tgui::Texture")
-        {
-            REQUIRE_NOTHROW(picture->setTexture("resources/image.png"));
-            REQUIRE(picture->getTexture().getId() == "resources/image.png");
-            REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
-
-            picture->setSize(100, 100);
-            REQUIRE_NOTHROW(picture->setTexture("resources/image.png"));
-            REQUIRE(picture->getSize() == sf::Vector2f(100, 100));
-        }
-
-        SECTION("from sf::Texture")
-        {
-            sf::Texture texture;
-            texture.loadFromFile("resources/image.png");
-        
-            REQUIRE_NOTHROW(picture->setTexture(texture));
-            REQUIRE(picture->getTexture().getId() == "");
-            REQUIRE(picture->getSize() == sf::Vector2f(50, 50));
-
-            picture->setSize(100, 100);
-            REQUIRE_NOTHROW(picture->setTexture(texture));
-            REQUIRE(picture->getSize() == sf::Vector2f(100, 100));
-        }
-    }
-
     SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
@@ -113,7 +83,7 @@ TEST_CASE("[Picture]")
 
         SECTION("double click")
         {
-            picture->setTexture("resources/image.png");
+            picture->getRenderer()->setTexture("resources/image.png");
             picture->setPosition(40, 30);
             picture->setSize(150, 100);
 
@@ -143,21 +113,31 @@ TEST_CASE("[Picture]")
     {
         auto renderer = picture->getRenderer();
 
+        tgui::Texture texture("resources/Texture1.png");
+
         SECTION("set serialized property")
         {
+            REQUIRE_NOTHROW(renderer->setProperty("Texture", tgui::Serializer::serialize(texture)));
+            REQUIRE_NOTHROW(renderer->setProperty("IgnoreTransparentParts", "true"));
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
         }
 
         SECTION("set object property")
         {
+            REQUIRE_NOTHROW(renderer->setProperty("Texture", texture));
+            REQUIRE_NOTHROW(renderer->setProperty("IgnoreTransparentParts", true));
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
         }
 
         SECTION("functions")
         {
+            renderer->setTexture(texture);
+            renderer->setIgnoreTransparentParts(true);
             renderer->setOpacity(0.8f);
         }
 
+        REQUIRE(renderer->getTexture().getData() == texture.getData());
+        REQUIRE(renderer->getProperty("IgnoreTransparentParts").getBool());
         REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
         REQUIRE(renderer->getOpacity() == 0.8f);
 
@@ -166,7 +146,7 @@ TEST_CASE("[Picture]")
 
     SECTION("Saving and loading from file")
     {
-        picture->setTexture("resources/image.png");
+        picture->getRenderer()->setTexture("resources/image.png");
         picture->setSize(80, 60);
 
         testSavingWidget("Picture", picture, false);
@@ -176,7 +156,9 @@ TEST_CASE("[Picture]")
     {
         TEST_DRAW_INIT(60, 40, picture)
 
-        picture->setTexture("resources/image.png");
+        picture->getRenderer()->setTexture("resources/image.png");
+        picture->getRenderer()->setIgnoreTransparentParts(true);
+
         picture->setPosition(10, 5);
         picture->setSize(40, 30);
 
