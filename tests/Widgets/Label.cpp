@@ -128,6 +128,15 @@ TEST_CASE("[Label]")
         REQUIRE(label->getMaximumTextWidth() == 500);
     }
 
+    SECTION("IgnoreMouseEvents")
+    {
+        REQUIRE(!label->isIgnoringMouseEvents());
+        label->ignoreMouseEvents(true);
+        REQUIRE(label->isIgnoringMouseEvents());
+        label->ignoreMouseEvents(false);
+        REQUIRE(!label->isIgnoringMouseEvents());
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
@@ -219,6 +228,7 @@ TEST_CASE("[Label]")
         label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
         label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
         label->setMaximumTextWidth(300);
+        label->ignoreMouseEvents(true);
 
         testSavingWidget("Label", label);
     }

@@ -438,6 +438,9 @@ namespace tgui
             if (label->getAutoSize())
                 SET_PROPERTY("AutoSize", "true");
 
+            if (label->isIgnoringMouseEvents())
+                SET_PROPERTY("IgnoreMouseEvents", Serializer::serialize(label->isIgnoringMouseEvents()));
+
             SET_PROPERTY("TextSize", to_string(label->getTextSize()));
             return node;
         }
@@ -534,6 +537,10 @@ namespace tgui
         {
             auto picture = std::static_pointer_cast<Picture>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(picture);
+
+            if (picture->isIgnoringMouseEvents())
+                SET_PROPERTY("IgnoreMouseEvents", Serializer::serialize(picture->isIgnoringMouseEvents()));
+
             return node;
         }
 

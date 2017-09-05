@@ -131,6 +131,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether the widget should completely ignore mouse events and let them pass to the widgets behind it
+        ///
+        /// @param ignore  Should mouse events be ignored by this widget?
+        ///
+        /// By default, mouse events are NOT ignored.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void ignoreMouseEvents(bool ignore = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the widget is ignoring mouse events and letting them pass to the widgets behind it
+        ///
+        /// @return Are mouse events ignored by this widget?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isIgnoringMouseEvents() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
@@ -207,6 +225,8 @@ namespace tgui
     protected:
 
         Sprite  m_sprite;
+
+        bool m_ignoringMouseEvents = false;
 
         // Set to true when clicks on transparent parts of the picture should go to the widgets behind the picture
         bool m_ignoreTransparentParts = true;

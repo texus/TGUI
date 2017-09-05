@@ -77,12 +77,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Picture::ignoreMouseEvents(bool ignore)
+    {
+        m_ignoringMouseEvents = ignore;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Picture::isIgnoringMouseEvents() const
+    {
+        return m_ignoringMouseEvents;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Picture::mouseOnWidget(sf::Vector2f pos) const
     {
         pos -= getPosition();
 
         // Check if the mouse is on top of the picture
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        if (!m_ignoringMouseEvents && (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos)))
         {
             // We sometimes want clicks to go through transparent parts of the picture
             if (!m_ignoreTransparentParts && m_sprite.isTransparentPixel(pos))

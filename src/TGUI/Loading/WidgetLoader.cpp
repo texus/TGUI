@@ -718,6 +718,9 @@ namespace tgui
             if (node->propertyValuePairs["autosize"])
                 label->setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autosize"]->value).getBool());
 
+            if (node->propertyValuePairs["ignoremouseevents"])
+                label->ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ignoremouseevents"]->value).getBool());
+
             return label;
         }
 
@@ -864,6 +867,9 @@ namespace tgui
                 picture = std::static_pointer_cast<Picture>(widget);
             else
                 picture = Picture::create();
+
+            if (node->propertyValuePairs["ignoremouseevents"])
+                picture->ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ignoremouseevents"]->value).getBool());
 
             loadWidget(node, picture);
 

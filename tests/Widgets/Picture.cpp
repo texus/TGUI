@@ -74,6 +74,15 @@ TEST_CASE("[Picture]")
         REQUIRE(picture->getWidgetOffset() == sf::Vector2f(0, 0));
     }
 
+    SECTION("IgnoreMouseEvents")
+    {
+        REQUIRE(!picture->isIgnoringMouseEvents());
+        picture->ignoreMouseEvents(true);
+        REQUIRE(picture->isIgnoringMouseEvents());
+        picture->ignoreMouseEvents(false);
+        REQUIRE(!picture->isIgnoringMouseEvents());
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")
@@ -148,6 +157,7 @@ TEST_CASE("[Picture]")
     {
         picture->getRenderer()->setTexture("resources/image.png");
         picture->setSize(80, 60);
+        picture->ignoreMouseEvents(true);
 
         testSavingWidget("Picture", picture, false);
     }

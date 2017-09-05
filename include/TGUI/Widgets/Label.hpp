@@ -258,6 +258,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether the widget should completely ignore mouse events and let them pass to the widgets behind it
+        ///
+        /// @param ignore  Should mouse events be ignored by this widget?
+        ///
+        /// By default, mouse events are NOT ignored.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void ignoreMouseEvents(bool ignore = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the widget is ignoring mouse events and letting them pass to the widgets behind it
+        ///
+        /// @return Are mouse events ignored by this widget?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isIgnoringMouseEvents() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// This function is called when the widget is added to a container.
         /// You should not call this function yourself.
@@ -345,6 +363,8 @@ namespace tgui
         bool m_autoSize = true;
 
         float m_maximumTextWidth = 0;
+
+        bool m_ignoringMouseEvents = false;
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
