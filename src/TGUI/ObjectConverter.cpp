@@ -59,7 +59,11 @@ namespace tgui
             m_type = Type::Font;
         }
 
+    #ifdef TGUI_USE_VARIANT
+        return std::get<Font>(m_value);
+    #else
         return m_value.as<Font>();
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +79,11 @@ namespace tgui
             m_type = Type::Color;
         }
 
+    #ifdef TGUI_USE_VARIANT
+        return std::get<Color>(m_value);
+    #else
         return m_value.as<Color>();
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +99,11 @@ namespace tgui
             m_type = Type::Number;
         }
 
+    #ifdef TGUI_USE_VARIANT
+        return std::get<float>(m_value);
+    #else
         return m_value.as<float>();
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +119,11 @@ namespace tgui
             m_type = Type::Outline;
         }
 
+    #ifdef TGUI_USE_VARIANT
+        return std::get<Outline>(m_value);
+    #else
         return m_value.as<Outline>();
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +139,11 @@ namespace tgui
             m_type = Type::Texture;
         }
 
+    #ifdef TGUI_USE_VARIANT
+        return std::get<Texture>(m_value);
+    #else
         return m_value.as<Texture>();
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,7 +159,11 @@ namespace tgui
             m_type = Type::TextStyle;
         }
 
+    #ifdef TGUI_USE_VARIANT
+        return std::get<TextStyle>(m_value);
+    #else
         return m_value.as<TextStyle>();
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +179,11 @@ namespace tgui
             m_type = Type::RendererData;
         }
 
+    #ifdef TGUI_USE_VARIANT
+        return std::get<std::shared_ptr<RendererData>>(m_value);
+    #else
         return m_value.as<std::shared_ptr<RendererData>>();
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

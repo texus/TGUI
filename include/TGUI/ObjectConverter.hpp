@@ -32,7 +32,12 @@
 #include <TGUI/Texture.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/Font.hpp>
-#include <TGUI/Any.hpp>
+
+#ifdef TGUI_USE_VARIANT
+    #include <variant>
+#else
+    #include <TGUI/Any.hpp>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -301,7 +306,12 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
         Type m_type = Type::None;
+
+    #ifdef TGUI_USE_VARIANT
+        std::variant<sf::String, Font, Color, Outline, float, Texture, TextStyle, std::shared_ptr<RendererData>> m_value;
+    #else
         Any  m_value;
+    #endif
 
         bool m_serialized = false;
         sf::String m_string;
