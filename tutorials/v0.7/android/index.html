@@ -7,6 +7,7 @@ redirect_from: "/tutorials/v07/android/index.html"
 
 <div>
   <p>Please note that support for android is still in an early stage. Building for android has so far only been tested on linux, altough it should be very similar on other systems.</p>
+  <p>Using TGUI was only successfully tested with android-ndk 12b and with ANDROID_STL=c++_shared set in cmake (which is the default value).</p>
 </div>
 
 <div>
@@ -27,9 +28,9 @@ cd build-android-arm
 cmake -DANDROID_ABI=armeabi-v7a -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android.toolchain.cmake ..
 {% endhighlight %}
 
-  <p>Make sure that it finds the android sfml libraries. If you see a message like "Found SFML 2.3.1 in /usr/local/include" then it is finding the ones for your own system instead. Remove the libraries from /usr/local/lib and the includes from /usr/local/include, delete the cmake cache and rebuild. After that it should find the ones in the android ndk.</p>
+  <p>Make sure that it finds the android sfml libraries. If you see a message like "Found SFML 2.4.2 in /usr/local/include" then it is finding the ones for your own system instead. Remove the libraries from /usr/local/lib and the includes from /usr/local/include, delete the cmake cache and rebuild. After that it should find the ones in the android ndk.</p>
 
-  <p class="SmallBottomMargin">Depending on the generator, CMake will have created a build file or project. For "Unix Makefiles" (linux and mac) you use the following code to build the library and install it to the ndk folder. The "-j2" after the make command means it uses 2 threads, if you have more cores you can increase the number to speed up the build.</p>
+  <p class="SmallBottomMargin">Depending on the generator, CMake will have created a build file or project. For "Unix Makefiles" (default on linux and mac) you use the following code to build the library and install it to the ndk folder. The "-j2" after the make command means it uses 2 threads, if you have more cores you can increase the number to speed up the build.</p>
 {% highlight bash %}
 make -j2
 make install
@@ -51,7 +52,7 @@ $ANDROID_NDK/ndk-build
 
   <p class="SmallBottomMargin">If this succeeds then you can build the apk. The target sets the API level to use (you need this version of the android SDK installed).</p>
 {% highlight bash %}
-Android-SDK-Path/tools/android update project --name TGUI --path . --target android-21
+Android-SDK-Path/tools/android update project --name TGUI --path . --target android-23
 ant debug
 cp bin/TGUI-debug.apk TGUI-example.apk
 {% endhighlight %}
