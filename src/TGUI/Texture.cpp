@@ -117,12 +117,31 @@ namespace tgui
 
     void Texture::load(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middleRect)
     {
+        if (id.isEmpty())
+        {
+            *this = Texture{};
+            return;
+        }
+
         if (m_loaded && (m_destructCallback != nullptr))
             m_destructCallback(getData());
 
         m_loaded = false;
-        if (!m_textureLoader(*this, id, partRect))
-            throw Exception{"Failed to load '" + id + "'"};
+
+    #ifdef SFML_SYSTEM_WINDOWS
+        if ((id.getSize() <= 1) || ((id[0] != '/') && (id[0] != '\\') && (id[1] != ':')))
+    #else
+        if (id[0] != '/')
+    #endif
+        {
+            if (!m_textureLoader(*this, getResourcePath() + id, partRect))
+                throw Exception{"Failed to load '" + getResourcePath() + id + "'"};
+        }
+        else
+        {
+            if (!m_textureLoader(*this, id, partRect))
+                throw Exception{"Failed to load '" + id + "'"};
+        }
 
         m_id = id;
         setTexture(m_data, middleRect);
