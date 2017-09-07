@@ -643,7 +643,7 @@ namespace tgui
             std::unique_ptr<Clipping> clipping;
             const float usableWidth = m_tabWidth[i] - (2 * m_distanceToSideCached);
             if (m_tabTexts[i].getSize().x > usableWidth)
-                clipping = std::make_unique<Clipping>(target, textStates, sf::Vector2f{m_distanceToSideCached, 0}, sf::Vector2f{usableWidth, usableHeight});
+                clipping = make_unique<Clipping>(target, textStates, sf::Vector2f{m_distanceToSideCached, 0}, sf::Vector2f{usableWidth, usableHeight});
 
             // Draw the text
             textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabTexts[i].getSize().x) / 2.f), ((usableHeight - m_tabTexts[i].getSize().y) / 2.f)});

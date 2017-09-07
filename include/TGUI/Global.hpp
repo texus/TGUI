@@ -31,6 +31,22 @@
 #include <TGUI/Exception.hpp>
 #include <iostream>
 #include <string>
+#include <memory>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef TGUI_NO_CPP14
+    namespace tgui
+    {
+        template<typename T, typename... Args>
+        std::unique_ptr<T> make_unique(Args&&... args)
+        {
+            return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+        }
+    }
+#else
+    using std::make_unique;
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

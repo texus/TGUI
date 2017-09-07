@@ -37,7 +37,7 @@ namespace tgui
     Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
     Texture::ImageLoaderFunc Texture::m_imageLoader = [](const sf::String& filename) -> std::unique_ptr<sf::Image>
         {
-            auto image = std::make_unique<sf::Image>();
+            auto image = make_unique<sf::Image>();
             if (image->loadFromFile(filename))
                 return image;
             else

@@ -287,7 +287,7 @@ namespace tgui
                     stream.read(&chr, 1);
 
                 // Create a value node to store the value
-                auto valueNode = std::make_unique<DataIO::ValueNode>();
+                auto valueNode = make_unique<DataIO::ValueNode>();
                 valueNode->value = line;
 
                 // It might be a list node
@@ -367,7 +367,7 @@ namespace tgui
         std::string parseSection(std::stringstream& stream, const std::unique_ptr<DataIO::Node>& node, const std::string& sectionName)
         {
             // Create a new node for this section
-            auto sectionNode = std::make_unique<DataIO::Node>();
+            auto sectionNode = make_unique<DataIO::Node>();
             sectionNode->parent = node.get();
             sectionNode->name = sectionName;
 
@@ -487,7 +487,7 @@ namespace tgui
 
     std::unique_ptr<DataIO::Node> DataIO::parse(std::stringstream& stream)
     {
-        auto root = std::make_unique<Node>();
+        auto root = make_unique<Node>();
 
         std::string error;
         while (stream.peek() != EOF)

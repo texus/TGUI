@@ -569,6 +569,111 @@ namespace tgui
 
     namespace internal_signal
     {
+        // make_integer_sequence implementation taken from https://gist.github.com/jappa/62f30b6da5adea60bad3
+    #ifdef TGUI_NO_CPP14
+        template <class Type, Type... Indices>
+        struct integer_sequence
+        {
+            typedef Type value_type;
+            static std::size_t size()
+            {
+                return sizeof...(Indices);
+            }
+        };
+
+        template<std::size_t... Ints>
+        using index_sequence = integer_sequence<std::size_t, Ints...>;
+
+        namespace integer_sequence_detail
+        {
+            template <typename T, std::size_t ..._Extra>
+            struct repeat;
+
+            template <typename T, T ...N, std::size_t ..._Extra>
+            struct repeat<integer_sequence<T, N...>, _Extra...>
+            {
+              typedef integer_sequence<T, N...,
+                1 * sizeof...(N) + N...,
+                2 * sizeof...(N) + N...,
+                3 * sizeof...(N) + N...,
+                4 * sizeof...(N) + N...,
+                5 * sizeof...(N) + N...,
+                6 * sizeof...(N) + N...,
+                7 * sizeof...(N) + N...,
+                _Extra...> type;
+            };
+
+            template <std::size_t N> struct parity;
+            template <std::size_t N> struct make:parity<N % 8>::template pmake<N> {};
+
+            template <> struct make<0> { typedef integer_sequence<std::size_t> type; };
+            template <> struct make<1> { typedef integer_sequence<std::size_t, 0> type; };
+            template <> struct make<2> { typedef integer_sequence<std::size_t, 0, 1> type; };
+            template <> struct make<3> { typedef integer_sequence<std::size_t, 0, 1, 2> type; };
+            template <> struct make<4> { typedef integer_sequence<std::size_t, 0, 1, 2, 3> type; };
+            template <> struct make<5> { typedef integer_sequence<std::size_t, 0, 1, 2, 3, 4> type; };
+            template <> struct make<6> { typedef integer_sequence<std::size_t, 0, 1, 2, 3, 4, 5> type; };
+            template <> struct make<7> { typedef integer_sequence<std::size_t, 0, 1, 2, 3, 4, 5, 6> type; };
+
+            template <> struct parity<0> { template <std::size_t N> struct pmake:repeat<typename make<N / 8>::type> {}; };
+            template <> struct parity<1> { template <std::size_t N> struct pmake:repeat<typename make<N / 8>::type, N - 1> {}; };
+            template <> struct parity<2> { template <std::size_t N> struct pmake:repeat<typename make<N / 8>::type, N - 2, N - 1> {}; };
+            template <> struct parity<3> { template <std::size_t N> struct pmake:repeat<typename make<N / 8>::type, N - 3, N - 2, N - 1> {}; };
+            template <> struct parity<4> { template <std::size_t N> struct pmake:repeat<typename make<N / 8>::type, N - 4, N - 3, N - 2, N - 1> {}; };
+            template <> struct parity<5> { template <std::size_t N> struct pmake:repeat<typename make<N / 8>::type, N - 5, N - 4, N - 3, N - 2, N - 1> {}; };
+            template <> struct parity<6> { template <std::size_t N> struct pmake:repeat<typename make<N / 8>::type, N - 6, N - 5, N - 4, N - 3, N - 2, N - 1> {}; };
+            template <> struct parity<7> { template <std::size_t N> struct pmake:repeat<typename make<N / 8>::type, N - 7, N - 6, N - 5, N - 4, N - 3, N - 2, N - 1> {}; };
+
+            template <typename T, typename U>
+            struct convert
+            {
+              template <typename>
+              struct result;
+
+              template <T ...N>
+              struct result<integer_sequence<T, N...> >
+              {
+                typedef integer_sequence<U, N...> type;
+              };
+            };
+
+            template <typename T>
+            struct convert<T, T>
+            {
+              template <typename U>
+              struct result
+              {
+                typedef U type;
+              };
+            };
+
+            template <typename T, T N>
+            using make_integer_sequence_unchecked = typename convert<std::size_t, T>::template result<typename make<N>::type>::type;
+
+            template <typename T, T N>
+            struct make_integer_sequence
+            {
+              static_assert(std::is_integral<T>::value,
+                "std::make_integer_sequence can only be instantiated with an integral type");
+              static_assert(0 <= N,"std::make_integer_sequence input shall not be negative");
+
+              typedef make_integer_sequence_unchecked<T, N> type;
+            };
+        }
+
+        template <typename T, T N>
+        using make_integer_sequence = typename integer_sequence_detail::make_integer_sequence<T, N>::type;
+
+        template<std::size_t N>
+        using make_index_sequence = make_integer_sequence<std::size_t, N>;
+
+        template<class... T>
+        using index_sequence_for = make_index_sequence<sizeof...(T)>;
+    #else
+        using std::index_sequence;
+        using std::index_sequence_for;
+    #endif
+
         // void_t only exists in c++17 so we use our own implementation to support c++14 compilers
         template<typename...>
         using void_t = void;
@@ -583,16 +688,24 @@ namespace tgui
 
         // The dereference function turns the void* elements in the parameters list back into its original type right before calling the signal handler
         template <typename Type, typename std::enable_if<std::is_same<Type, std::string>::value>::type* = nullptr>
+    #ifdef TGUI_NO_CPP14
+        std::string dereference(const void* obj)
+    #else
         decltype(auto) dereference(const void* obj)
+    #endif
         {
             // Signal handlers are allowed to have std::string parameters while the signal sends sf::String
             return static_cast<std::string>(*static_cast<const sf::String*>(obj));
         }
 
         template <typename Type, typename std::enable_if<!std::is_same<Type, std::string>::value>::type* = nullptr>
+    #ifdef TGUI_NO_CPP14
+        const Type& dereference(const void* obj)
+    #else
         decltype(auto) dereference(const void* obj)
+    #endif
         {
-            return *static_cast<const Type*>(obj);
+            return *static_cast<const typename std::decay<Type>::type*>(obj);
         }
 
         // std::invoke only exists in c++17 so we use our own implementation to support c++14 compilers
@@ -623,18 +736,31 @@ namespace tgui
         struct binder<TypeSet<std::shared_ptr<Widget>, std::string, UnboundArgs...>, TypeSet<>>
         {
             template <typename Func, typename... BoundArgs>
+        #ifdef TGUI_NO_CPP14
+            static std::function<void(const std::shared_ptr<Widget>& widget, const std::string& signalName)> bind(Signal& signal, Func&& func, BoundArgs&&... args)
+        #else
             static decltype(auto) bind(Signal& signal, Func&& func, BoundArgs&&... args)
+        #endif
             {
-                return bindImpl(std::index_sequence_for<UnboundArgs...>{}, signal, std::forward<Func>(func), std::forward<BoundArgs>(args)...);
+                return bindImpl(index_sequence_for<UnboundArgs...>{}, signal, std::forward<Func>(func), std::forward<BoundArgs>(args)...);
             }
 
         private:
 
             template <typename Func, typename... BoundArgs, std::size_t... Indices>
-            static decltype(auto) bindImpl(std::index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
+        #ifdef TGUI_NO_CPP14
+            static std::function<void(const std::shared_ptr<Widget>& widget, const std::string& signalName)> bindImpl(index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
+        #else
+            static decltype(auto) bindImpl(index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
+        #endif
             {
                 const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
+            #ifdef TGUI_NO_CPP14
+                return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
+                    auto f = func;
+            #else
                 return [=, f=func](const std::shared_ptr<Widget>& widget, const std::string& signalName) {  // f=func is needed to decay free functions
+            #endif
                     invokeFunc(f,
                                args...,
                                widget,
@@ -648,18 +774,31 @@ namespace tgui
         struct binder<TypeSet<UnboundArgs...>, TypeSet<>>
         {
             template <typename Func, typename... BoundArgs>
+        #ifdef TGUI_NO_CPP14
+            static std::function<void()> bind(Signal& signal, Func&& func, BoundArgs&&... args)
+        #else
             static decltype(auto) bind(Signal& signal, Func&& func, BoundArgs&&... args)
+        #endif
             {
-                return bindImpl(std::index_sequence_for<UnboundArgs...>{}, signal, std::forward<Func>(func), std::forward<BoundArgs>(args)...);
+                return bindImpl(index_sequence_for<UnboundArgs...>{}, signal, std::forward<Func>(func), std::forward<BoundArgs>(args)...);
             }
 
         private:
 
             template <typename Func, typename... BoundArgs, std::size_t... Indices>
-            static decltype(auto) bindImpl(std::index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
+        #ifdef TGUI_NO_CPP14
+            static std::function<void()> bindImpl(index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
+        #else
+            static decltype(auto) bindImpl(index_sequence<Indices...>, Signal& signal, Func&& func, BoundArgs&&... args)
+        #endif
             {
                 const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
+            #ifdef TGUI_NO_CPP14
+                return [=]() {
+                    auto f = func;
+            #else
                 return [=, f=func]() {  // f=func is needed to decay free functions
+            #endif
                     invokeFunc(f,
                                args...,
                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
@@ -721,7 +860,11 @@ namespace tgui
         template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type* = nullptr>
         unsigned int connect(std::string signalName, Func&& handler, const Args&... args)
         {
+        #ifdef TGUI_NO_CPP14
+            const unsigned int id = getSignal(toLower(signalName)).connect([=](){ (std::function<void(const Args&...)>(handler))(args...); });
+        #else
             const unsigned int id = getSignal(toLower(signalName)).connect([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); });
+        #endif
             m_connectedSignals[id] = toLower(signalName);
             return id;
         }
@@ -740,11 +883,20 @@ namespace tgui
         template <typename Func, typename... BoundArgs, typename std::enable_if<std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
         unsigned int connect(std::string signalName, Func&& handler, BoundArgs&&... args)
         {
+        #ifdef TGUI_NO_CPP14
+            const unsigned int id = getSignal(toLower(signalName)).connect(
+                                        [=](const std::shared_ptr<Widget>& w, const std::string& s) {
+                                            (std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const std::string&)>(handler))(args..., w, s);
+                                         }
+                                    );
+        #else
             const unsigned int id = getSignal(toLower(signalName)).connect(
                                         [f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const std::string&)>(handler), args...]
                                         (const std::shared_ptr<Widget>& w, const std::string& s)
                                         { f(args..., w, s); }
                                     );
+        #endif
+
             m_connectedSignals[id] = toLower(signalName);
             return id;
         }

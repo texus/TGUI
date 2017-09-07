@@ -57,7 +57,7 @@ namespace tgui
 
     namespace
     {
-        #define SET_PROPERTY(property, value) node->propertyValuePairs[property] = std::make_unique<DataIO::ValueNode>(value)
+        #define SET_PROPERTY(property, value) node->propertyValuePairs[property] = make_unique<DataIO::ValueNode>(value)
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +67,7 @@ namespace tgui
             if (widget->getParent())
                 widgetName = widget->getParent()->getWidgetName(widget);
 
-            auto node = std::make_unique<DataIO::Node>();
+            auto node = make_unique<DataIO::Node>();
             if (widgetName.isEmpty())
                 node->name = widget->getWidgetType();
             else
@@ -86,12 +86,12 @@ namespace tgui
             {
                 auto toolTipWidgetNode = WidgetSaver::getSaveFunction("widget")(widget->getToolTip());
 
-                auto toolTipNode = std::make_unique<DataIO::Node>();
+                auto toolTipNode = make_unique<DataIO::Node>();
                 toolTipNode->name = "ToolTip";
                 toolTipNode->children.emplace_back(std::move(toolTipWidgetNode));
 
-                toolTipNode->propertyValuePairs["TimeToDisplay"] = std::make_unique<DataIO::ValueNode>(to_string(ToolTip::getTimeToDisplay().asSeconds()));
-                toolTipNode->propertyValuePairs["DistanceToMouse"] = std::make_unique<DataIO::ValueNode>("(" + to_string(ToolTip::getDistanceToMouse().x) + "," + to_string(ToolTip::getDistanceToMouse().y) + ")");
+                toolTipNode->propertyValuePairs["TimeToDisplay"] = make_unique<DataIO::ValueNode>(to_string(ToolTip::getTimeToDisplay().asSeconds()));
+                toolTipNode->propertyValuePairs["DistanceToMouse"] = make_unique<DataIO::ValueNode>("(" + to_string(ToolTip::getDistanceToMouse().x) + "," + to_string(ToolTip::getDistanceToMouse().y) + ")");
 
                 node->children.emplace_back(std::move(toolTipNode));
             }
@@ -99,7 +99,7 @@ namespace tgui
             /// TODO: Separate renderer section?
             if (!widget->getRenderer()->getPropertyValuePairs().empty())
             {
-                node->children.emplace_back(std::make_unique<DataIO::Node>());
+                node->children.emplace_back(make_unique<DataIO::Node>());
                 node->children.back()->name = "Renderer";
                 for (const auto& pair : widget->getRenderer()->getPropertyValuePairs())
                 {
@@ -120,7 +120,7 @@ namespace tgui
                         node->children.back()->children.back()->name = pair.first;
                     }
                     else
-                        node->children.back()->propertyValuePairs[pair.first] = std::make_unique<DataIO::ValueNode>(value);
+                        node->children.back()->propertyValuePairs[pair.first] = make_unique<DataIO::ValueNode>(value);
                 }
             }
 
@@ -188,15 +188,15 @@ namespace tgui
                 unsigned int lineTextSize = chatBox->getLineTextSize(i);
                 sf::Color lineTextColor = chatBox->getLineColor(i);
 
-                auto lineNode = std::make_unique<DataIO::Node>();
+                auto lineNode = make_unique<DataIO::Node>();
                 lineNode->parent = node.get();
                 lineNode->name = "Line";
 
-                lineNode->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(chatBox->getLine(i)));
+                lineNode->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(chatBox->getLine(i)));
                 if (lineTextSize != chatBox->getTextSize())
-                    lineNode->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(lineTextSize));
+                    lineNode->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(lineTextSize));
                 if (lineTextColor != chatBox->getTextColor())
-                    lineNode->propertyValuePairs["Color"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
+                    lineNode->propertyValuePairs["Color"] = make_unique<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
 
                 node->children.push_back(std::move(lineNode));
             }
@@ -362,7 +362,7 @@ namespace tgui
                     }
                 };
 
-                auto getWidgetsInGridString = [&](const auto& w) -> std::string {
+                auto getWidgetsInGridString = [&](const tgui::Widget::Ptr& w) -> std::string {
                     auto it = widgetsMap.find(w);
                     if (it != widgetsMap.end())
                     {
@@ -491,11 +491,11 @@ namespace tgui
             std::map<sf::String, std::vector<sf::String>> menus = menuBar->getMenus();
             for (const auto& menu : menus)
             {
-                auto menuNode = std::make_unique<DataIO::Node>();
+                auto menuNode = make_unique<DataIO::Node>();
                 menuNode->parent = node.get();
                 menuNode->name = "Menu";
 
-                menuNode->propertyValuePairs["Name"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu.first));
+                menuNode->propertyValuePairs["Name"] = make_unique<DataIO::ValueNode>(Serializer::serialize(menu.first));
 
                 const auto& items = menu.second;
                 if (!items.empty())
@@ -505,7 +505,7 @@ namespace tgui
                         itemList += ", " + Serializer::serialize(items[i]);
                     itemList += "]";
 
-                    menuNode->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
+                    menuNode->propertyValuePairs["Items"] = make_unique<DataIO::ValueNode>(itemList);
                 }
 
                 node->children.push_back(std::move(menuNode));
@@ -762,7 +762,7 @@ namespace tgui
 
     void WidgetSaver::save(Container::ConstPtr widget, std::stringstream& stream)
     {
-        auto node = std::make_unique<DataIO::Node>();
+        auto node = make_unique<DataIO::Node>();
         for (const auto& child : widget->getWidgets())
         {
             auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));

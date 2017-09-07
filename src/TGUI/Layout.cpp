@@ -53,8 +53,8 @@ namespace tgui
             {
                 // We don't know if we have to bind the width or height, so bind "size" and let the connectWidget function figure it out later
                 *this = Layout{Layout::Operation::Multiplies,
-                               std::make_unique<Layout>(tgui::stof(expression.substr(0, expression.length()-1)) / 100.f),
-                               std::make_unique<Layout>("&.size")};
+                               make_unique<Layout>(tgui::stof(expression.substr(0, expression.length()-1)) / 100.f),
+                               make_unique<Layout>("&.size")};
             }
             else
             {
@@ -79,14 +79,14 @@ namespace tgui
                 else if (expression.size() >= 5 && expression.substr(expression.size()-5) == "right")
                 {
                     *this = Layout{Operation::Plus,
-                                   std::make_unique<Layout>(expression.substr(0, expression.size()-5) + "left"),
-                                   std::make_unique<Layout>(expression.substr(0, expression.size()-5) + "width")};
+                                   make_unique<Layout>(expression.substr(0, expression.size()-5) + "left"),
+                                   make_unique<Layout>(expression.substr(0, expression.size()-5) + "width")};
                 }
                 else if (expression.size() >= 6 && expression.substr(expression.size()-6) == "bottom")
                 {
                     *this = Layout{Operation::Plus,
-                                   std::make_unique<Layout>(expression.substr(0, expression.size()-6) + "top"),
-                                   std::make_unique<Layout>(expression.substr(0, expression.size()-6) + "height")};
+                                   make_unique<Layout>(expression.substr(0, expression.size()-6) + "top"),
+                                   make_unique<Layout>(expression.substr(0, expression.size()-6) + "height")};
                 }
                 else // Constant value
                     m_value = tgui::stof(expression);
@@ -180,8 +180,8 @@ namespace tgui
                 std::advance(nextOperandIt, 1);
 
                 (*operandIt) = Layout{operators[i],
-                                      std::make_unique<Layout>(*operandIt),
-                                      std::make_unique<Layout>(*nextOperandIt)};
+                                      make_unique<Layout>(*operandIt),
+                                      make_unique<Layout>(*nextOperandIt)};
 
                 operands.erase(nextOperandIt);
             }
@@ -203,8 +203,8 @@ namespace tgui
                 assert(nextOperandIt != operands.end());
 
                 (*operandIt) = Layout{operators[i],
-                                      std::make_unique<Layout>(*operandIt),
-                                      std::make_unique<Layout>(*nextOperandIt)};
+                                      make_unique<Layout>(*operandIt),
+                                      make_unique<Layout>(*nextOperandIt)};
 
                 operands.erase(nextOperandIt);
             }
@@ -255,8 +255,8 @@ namespace tgui
         m_value          {other.m_value},
         m_parent         {other.m_parent},
         m_operation      {other.m_operation},
-        m_leftOperand    {other.m_leftOperand ? std::make_unique<Layout>(*other.m_leftOperand) : nullptr},
-        m_rightOperand   {other.m_rightOperand ? std::make_unique<Layout>(*other.m_rightOperand) : nullptr},
+        m_leftOperand    {other.m_leftOperand ? make_unique<Layout>(*other.m_leftOperand) : nullptr},
+        m_rightOperand   {other.m_rightOperand ? make_unique<Layout>(*other.m_rightOperand) : nullptr},
         m_boundWidget    {other.m_boundWidget},
         m_boundString    {other.m_boundString},
         m_connectedWidget{nullptr}
@@ -292,8 +292,8 @@ namespace tgui
             m_value           = other.m_value;
             m_parent          = other.m_parent;
             m_operation       = other.m_operation;
-            m_leftOperand     = other.m_leftOperand ? std::make_unique<Layout>(*other.m_leftOperand) : nullptr;
-            m_rightOperand    = other.m_rightOperand ? std::make_unique<Layout>(*other.m_rightOperand) : nullptr;
+            m_leftOperand     = other.m_leftOperand ? make_unique<Layout>(*other.m_leftOperand) : nullptr;
+            m_rightOperand    = other.m_rightOperand ? make_unique<Layout>(*other.m_rightOperand) : nullptr;
             m_boundWidget     = other.m_boundWidget;
             m_boundString     = other.m_boundString;
             m_connectedWidget = nullptr;
@@ -583,35 +583,35 @@ namespace tgui
 
     Layout operator-(Layout right)
     {
-        return Layout{Layout::Operation::Minus, std::make_unique<Layout>(), std::make_unique<Layout>(std::move(right))};
+        return Layout{Layout::Operation::Minus, make_unique<Layout>(), make_unique<Layout>(std::move(right))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout operator+(Layout left, Layout right)
     {
-        return Layout{Layout::Operation::Plus, std::make_unique<Layout>(std::move(left)), std::make_unique<Layout>(std::move(right))};
+        return Layout{Layout::Operation::Plus, make_unique<Layout>(std::move(left)), make_unique<Layout>(std::move(right))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout operator-(Layout left, Layout right)
     {
-        return Layout{Layout::Operation::Minus, std::make_unique<Layout>(std::move(left)), std::make_unique<Layout>(std::move(right))};
+        return Layout{Layout::Operation::Minus, make_unique<Layout>(std::move(left)), make_unique<Layout>(std::move(right))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout operator*(Layout left, Layout right)
     {
-        return Layout{Layout::Operation::Multiplies, std::make_unique<Layout>(std::move(left)), std::make_unique<Layout>(std::move(right))};
+        return Layout{Layout::Operation::Multiplies, make_unique<Layout>(std::move(left)), make_unique<Layout>(std::move(right))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout operator/(Layout left, Layout right)
     {
-        return Layout{Layout::Operation::Divides, std::make_unique<Layout>(std::move(left)), std::make_unique<Layout>(std::move(right))};
+        return Layout{Layout::Operation::Divides, make_unique<Layout>(std::move(left)), make_unique<Layout>(std::move(right))};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -694,8 +694,8 @@ namespace tgui
         Layout bindRight(Widget::Ptr widget)
         {
             return Layout{Layout::Operation::Plus,
-                          std::make_unique<Layout>(Layout::Operation::BindingLeft, widget.get()),
-                          std::make_unique<Layout>(Layout::Operation::BindingWidth, widget.get())};
+                          make_unique<Layout>(Layout::Operation::BindingLeft, widget.get()),
+                          make_unique<Layout>(Layout::Operation::BindingWidth, widget.get())};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -703,8 +703,8 @@ namespace tgui
         Layout bindBottom(Widget::Ptr widget)
         {
             return Layout{Layout::Operation::Plus,
-                          std::make_unique<Layout>(Layout::Operation::BindingTop, widget.get()),
-                          std::make_unique<Layout>(Layout::Operation::BindingHeight, widget.get())};
+                          make_unique<Layout>(Layout::Operation::BindingTop, widget.get()),
+                          make_unique<Layout>(Layout::Operation::BindingHeight, widget.get())};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

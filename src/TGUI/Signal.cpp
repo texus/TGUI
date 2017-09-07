@@ -84,7 +84,12 @@ namespace tgui
     unsigned int Signal::connect(const DelegateEx& handler)
     {
         const auto id = generateUniqueId();
+    #ifdef TGUI_NO_CPP14
+        std::string name = m_name;
+        m_handlers[id] = [handler, name](){ handler(getWidget(), name); };
+    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name); };
+    #endif
         return id;
     }
 
@@ -121,6 +126,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef TGUI_NO_CPP14
+    #define TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(TypeName, Type) \
+    unsigned int Signal##TypeName::connect(const Delegate##TypeName& handler) \
+    { \
+        const auto id = generateUniqueId(); \
+        m_handlers[id] = [handler](){ handler(internal_signal::dereference<Type>(internal_signal::parameters[1])); }; \
+        return id; \
+    } \
+    \
+    unsigned int Signal##TypeName::connect(const Delegate##TypeName##Ex& handler) \
+    { \
+        const auto id = generateUniqueId(); \
+        std::string name = m_name; \
+        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<Type>(internal_signal::parameters[1])); }; \
+        return id; \
+    }
+#else
     #define TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(TypeName, Type) \
     unsigned int Signal##TypeName::connect(const Delegate##TypeName& handler) \
     { \
@@ -134,45 +156,95 @@ namespace tgui
         const auto id = generateUniqueId(); \
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<Type>(internal_signal::parameters[1])); }; \
         return id; \
-    } \
-    \
-    unsigned int Signal##TypeName::validateTypes(std::initializer_list<std::type_index> unboundParameters) \
-    { \
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(Type))) \
-            return 1; \
-        else \
-            return Signal::validateTypes(unboundParameters); \
     }
+#endif
 
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Int, int)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(UInt, unsigned int)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Bool, bool)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Float, float)
+    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(String, const sf::String&)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Vector2f, sf::Vector2f)
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SignalString::connect(const DelegateString& handler)
+    unsigned int SignalInt::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
-        return id;
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(int).name()) == 0))
+    #else
+        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(int)))
+    #endif
+            return 1;
+        else
+            return Signal::validateTypes(unboundParameters);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SignalString::connect(const DelegateStringEx& handler)
+    unsigned int SignalUInt::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
-        const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
-        return id;
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(unsigned int).name()) == 0))
+    #else
+        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(unsigned int)))
+    #endif
+            return 1;
+        else
+            return Signal::validateTypes(unboundParameters);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalBool::validateTypes(std::initializer_list<std::type_index> unboundParameters)
+    {
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(bool).name()) == 0))
+    #else
+        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(bool)))
+    #endif
+            return 1;
+        else
+            return Signal::validateTypes(unboundParameters);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalFloat::validateTypes(std::initializer_list<std::type_index> unboundParameters)
+    {
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(float).name()) == 0))
+    #else
+        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(float)))
+    #endif
+            return 1;
+        else
+            return Signal::validateTypes(unboundParameters);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int SignalString::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(std::string).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::String).name()) == 0)))
+    #else
         if ((unboundParameters.size() == 1) && ((*unboundParameters.begin() == typeid(std::string)) || (*unboundParameters.begin() == typeid(sf::String))))
+    #endif
+            return 1;
+        else
+            return Signal::validateTypes(unboundParameters);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalVector2f::validateTypes(std::initializer_list<std::type_index> unboundParameters)
+    {
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(sf::Vector2f).name()) == 0))
+    #else
+        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(sf::Vector2f)))
+    #endif
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -192,7 +264,12 @@ namespace tgui
     unsigned int SignalRange::connect(const DelegateRangeEx& handler)
     {
         const auto id = generateUniqueId();
+    #ifdef TGUI_NO_CPP14
+        std::string name = m_name;
+        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<int>(internal_signal::parameters[1]), internal_signal::dereference<int>(internal_signal::parameters[2])); };
+    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<int>(internal_signal::parameters[1]), internal_signal::dereference<int>(internal_signal::parameters[2])); };
+    #endif
         return id;
     }
 
@@ -212,7 +289,11 @@ namespace tgui
 
     unsigned int SignalRange::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 2) && (strcmp(unboundParameters.begin()->name(), typeid(int).name()) == 0) && (strcmp((unboundParameters.begin()+1)->name(), typeid(int).name()) == 0))
+    #else
         if ((unboundParameters.size() == 2) && (*unboundParameters.begin() == typeid(int)) && (*(unboundParameters.begin()+1) == typeid(int)))
+    #endif
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -232,7 +313,12 @@ namespace tgui
     unsigned int SignalChildWindow::connect(const DelegateChildWindowEx& handler)
     {
         const auto id = generateUniqueId();
+    #ifdef TGUI_NO_CPP14
+        std::string name = m_name;
+        m_handlers[id] = [handler, name](){ handler(getWidget(), name, std::static_pointer_cast<ChildWindow>(internal_signal::dereference<ChildWindow*>(internal_signal::parameters[1])->shared_from_this())); };
+    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, std::static_pointer_cast<ChildWindow>(internal_signal::dereference<ChildWindow*>(internal_signal::parameters[1])->shared_from_this())); };
+    #endif
         return id;
     }
 
@@ -251,7 +337,11 @@ namespace tgui
 
     unsigned int SignalChildWindow::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(tgui::ChildWindow::Ptr)))
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(ChildWindow::Ptr).name()) == 0))
+    #else
+        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(ChildWindow::Ptr)))
+    #endif
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -271,7 +361,12 @@ namespace tgui
     unsigned int SignalItem::connect(const DelegateItemEx& handler)
     {
         const auto id = generateUniqueId();
+    #ifdef TGUI_NO_CPP14
+        std::string name = m_name;
+        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
+    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
+    #endif
         return id;
     }
 
@@ -289,7 +384,12 @@ namespace tgui
     unsigned int SignalItem::connect(const DelegateItemAndIdEx& handler)
     {
         const auto id = generateUniqueId();
+    #ifdef TGUI_NO_CPP14
+        std::string name = m_name;
+        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1]), internal_signal::dereference<sf::String>(internal_signal::parameters[2])); };
+    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1]), internal_signal::dereference<sf::String>(internal_signal::parameters[2])); };
+    #endif
         return id;
     }
 
@@ -297,11 +397,20 @@ namespace tgui
 
     unsigned int SignalItem::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(std::string).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::String).name()) == 0)))
+    #else
         if ((unboundParameters.size() == 1) && ((*unboundParameters.begin() == typeid(std::string)) || (*unboundParameters.begin() == typeid(sf::String))))
+    #endif
             return 1;
         else if ((unboundParameters.size() == 2)
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+              && ((strcmp(unboundParameters.begin()->name(), typeid(std::string).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::String).name()) == 0))
+              && ((strcmp((unboundParameters.begin()+1)->name(), typeid(std::string).name()) == 0) || (strcmp((unboundParameters.begin()+1)->name(), typeid(sf::String).name()) == 0)))
+    #else
               && ((*unboundParameters.begin() == typeid(std::string)) || (*unboundParameters.begin() == typeid(sf::String)))
               && ((*(unboundParameters.begin()+1) == typeid(std::string)) || (*(unboundParameters.begin()+1) == typeid(sf::String))))
+    #endif
         {
             return 1;
         }
@@ -323,7 +432,12 @@ namespace tgui
     unsigned int SignalMenuItem::connect(const DelegateMenuItemEx& handler)
     {
         const auto id = generateUniqueId();
+    #ifdef TGUI_NO_CPP14
+        std::string name = m_name;
+        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
+    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
+    #endif
         return id;
     }
 
@@ -341,7 +455,12 @@ namespace tgui
     unsigned int SignalMenuItem::connect(const DelegateMenuItemFullEx& handler)
     {
         const auto id = generateUniqueId();
+    #ifdef TGUI_NO_CPP14
+        std::string name = m_name;
+        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<std::vector<sf::String>>(internal_signal::parameters[2])); };
+    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<std::vector<sf::String>>(internal_signal::parameters[2])); };
+    #endif
         return id;
     }
 
@@ -349,9 +468,17 @@ namespace tgui
 
     unsigned int SignalMenuItem::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(std::string).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::String).name()) == 0)))
+    #else
         if ((unboundParameters.size() == 1) && ((*unboundParameters.begin() == typeid(std::string)) || (*unboundParameters.begin() == typeid(sf::String))))
+    #endif
             return 1;
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        else if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(std::vector<sf::String>).name()) == 0))
+    #else
         else if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(std::vector<sf::String>)))
+    #endif
             return 2;
         else
             return Signal::validateTypes(unboundParameters);

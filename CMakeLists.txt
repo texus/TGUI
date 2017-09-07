@@ -16,6 +16,17 @@ macro(tgui_add_cxx_flag flag)
     endif()
 endmacro()
 
+macro(tgui_remove_cxx_flag flagToRemove)
+    string(REPLACE " " ";" TGUI_CXX_FLAGS_LIST ${CMAKE_CXX_FLAGS})
+    set(TGUI_TEMP_CXX_FLAGS "")
+    foreach (flag ${TGUI_CXX_FLAGS_LIST})
+        if (NOT (${flag} STREQUAL "${flagToRemove}"))
+            set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} ${flag}")
+        endif()
+    endforeach(flag)
+    set(CMAKE_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS}")
+endmacro()
+
 # Set a default build type and module path if none was provided
 tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
 tgui_set_option(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" STRING "The path to the cmake modules. This path must contain the FindSFML.cmake file.")
@@ -76,27 +87,12 @@ tgui_set_option(TGUI_OPENGL_ES ${OPENGL_ES} BOOL "TRUE to use an OpenGL ES imple
 
 # Set compile flags for gcc and clang
 if (SFML_OS_ANDROID)
-    # Remove "-fno-exceptions" from the CMAKE_CXX_FLAGS
-    string(REPLACE " " ";" TGUI_CXX_FLAGS_LIST ${CMAKE_CXX_FLAGS})
-    set(TGUI_TEMP_CXX_FLAGS "")
-    foreach (flag ${TGUI_CXX_FLAGS_LIST})
-        if (NOT (${flag} STREQUAL "-fno-exceptions"))
-            set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} ${flag}")
-        endif()
-    endforeach(flag)
+    tgui_remove_cxx_flag(-fno-exceptions)
+    tgui_remove_cxx_flag(-fno-rtti)
 
-    # Remove "-fno-rtti" from the CMAKE_CXX_FLAGS
-    string(REPLACE " " ";" TGUI_CXX_FLAGS_LIST ${TGUI_TEMP_CXX_FLAGS})
-    set(TGUI_TEMP_CXX_FLAGS "")
-    foreach (flag ${TGUI_CXX_FLAGS_LIST})
-        if (NOT (${flag} STREQUAL "-fno-rtti"))
-            set(TGUI_TEMP_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS} ${flag}")
-        endif()
-    endforeach(flag)
+    # TGUI was only successfully tested on Android with NDK 12b, which did not work when -std=c++1y (or -std=c++14) is defined
+    tgui_add_cxx_flag(-std=c++11)
 
-    set(CMAKE_CXX_FLAGS "${TGUI_TEMP_CXX_FLAGS}")
-
-    tgui_add_cxx_flag(-std=c++1y)
     tgui_add_cxx_flag(-fexceptions)
     tgui_add_cxx_flag(-frtti)
 

@@ -453,7 +453,7 @@ namespace tgui
             innerSize.x -= m_paddingCached.getLeft() + m_paddingCached.getRight();
             innerSize.y -= m_paddingCached.getTop() + m_paddingCached.getBottom();
 
-            clipping = std::make_unique<Clipping>(target, states, sf::Vector2f{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize);
+            clipping = make_unique<Clipping>(target, states, sf::Vector2f{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize);
         }
 
         // Draw the text

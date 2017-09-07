@@ -385,7 +385,7 @@ namespace tgui
             // Apply clipping when needed
             std::unique_ptr<Clipping> clipping;
             if (m_visibleRect != sf::FloatRect{0, 0, 0, 0})
-                clipping = std::make_unique<Clipping>(target, states, sf::Vector2f{m_visibleRect.left, m_visibleRect.top}, sf::Vector2f{m_visibleRect.width, m_visibleRect.height});
+                clipping = make_unique<Clipping>(target, states, sf::Vector2f{m_visibleRect.left, m_visibleRect.top}, sf::Vector2f{m_visibleRect.width, m_visibleRect.height});
 
             states.texture = &m_texture.getData()->texture;
             target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
