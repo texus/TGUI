@@ -93,15 +93,15 @@ namespace tgui
             auto font = std::make_shared<sf::Font>();
 
             // Load the font but insert the resource path into the filename unless the filename is an absolute path
-            const sf::String& filename = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
+            sf::String filename = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
         #ifdef SFML_SYSTEM_WINDOWS
             if ((filename.getSize() > 1) && (filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':'))
         #else
             if ((filename.getSize() > 0) && (filename[0] != '/'))
         #endif
-                font->loadFromFile(getResourcePath() + Deserializer::deserialize(ObjectConverter::Type::String, value).getString());
+                font->loadFromFile(getResourcePath() + filename);
             else
-                font->loadFromFile(Deserializer::deserialize(ObjectConverter::Type::String, value).getString());
+                font->loadFromFile(filename);
 
             return Font(font);
         }
