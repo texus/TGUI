@@ -45,6 +45,8 @@
 #include <TGUI/Widgets/Tab.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
 
+#include <stdlib.h> // _fullpath/realpath
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -347,39 +349,55 @@ namespace tgui
         if (filename != m_filename)
             throw Exception{"Theme tried to init widget which gave a wrong filename"};
 
-        // Temporarily change the resource path to load relative from the theme file
-        std::string oldResourcePath = getResourcePath();
+        // Turn image filenames into absolute paths when the theme file is in a different folder so that images are always loaded relative to that folder.
+        // Widgets don't know whether the filename came from a theme or not, so without absolute paths it can't load them relative from the theme file.
+        // Temporarily changing the resource path here also works, but that would still go wrong when saving and loading widgets to a file.
+        if (!m_resourcePath.empty())
+        {
+            std::string resourcePath = m_resourcePath;
 
-        bool resourcePathChanged = false;
-        if (!m_resourcePathLock && !m_resourcePath.empty())
-        {
-            m_resourcePathLock = true;
-            resourcePathChanged = true;
-            setResourcePath(oldResourcePath + m_resourcePath);
-        }
+            char* buffer;
+        #ifdef SFML_SYSTEM_WINDOWS
+            if ((resourcePath[0] != '/') && (resourcePath[0] != '\\') && ((resourcePath.size() <= 1) || (resourcePath[1] != ':')))
+                resourcePath = getResourcePath() + resourcePath;
 
-        try
-        {
-            for (auto& property : m_widgetProperties[className])
-                widget->getRenderer()->setProperty(property.first, property.second);
-        }
-        catch (Exception& e)
-        {
-            // Restore the resource path before throwing
-            if (resourcePathChanged)
+            buffer = _fullpath(nullptr, resourcePath.c_str(), 512);
+        #else
+            if (resourcePath[0] != '/')
+                resourcePath = getResourcePath() + resourcePath;
+
+            buffer = realpath(resourcePath.c_str(), nullptr);
+        #endif
+
+            std::string absoluteResourcePath;
+            if (buffer != nullptr)
             {
-                setResourcePath(oldResourcePath);
-                m_resourcePathLock = false;
+                absoluteResourcePath = buffer;
+                free(buffer);
+
+                if (!absoluteResourcePath.empty() && (absoluteResourcePath[absoluteResourcePath.length()-1] != '/'))
+                    absoluteResourcePath.push_back('/');
             }
-            throw e;
+
+            for (auto& pair : m_widgetProperties[className])
+            {
+                if ((pair.first.size() >= 5) && (toLower(pair.first.substr(pair.first.size()-5)) == "image"))
+                {
+                    if ((pair.second.size() <= 1) || (pair.second[0] != '"'))
+                        continue;
+
+                #ifdef SFML_SYSTEM_WINDOWS
+                    if ((pair.second[1] != '/') && (pair.second[1] != '\\') && ((pair.second.size() <= 2) || (pair.second[2] != ':')))
+                #else
+                    if (pair.second[1] != '/')
+                #endif
+                        pair.second = '"' + absoluteResourcePath + pair.second.substr(1);
+                }
+            }
         }
 
-        // Restore the resource path
-        if (resourcePathChanged)
-        {
-            setResourcePath(oldResourcePath);
-            m_resourcePathLock = false;
-        }
+        for (auto& property : m_widgetProperties[className])
+            widget->getRenderer()->setProperty(property.first, property.second);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
