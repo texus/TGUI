@@ -90,14 +90,16 @@ namespace tgui
             if (value == "null" || value == "nullptr")
                 return Font{};
 
-            auto font = std::make_shared<sf::Font>();
+            sf::String filename = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
+            if (filename.isEmpty())
+                return Font{};
 
             // Load the font but insert the resource path into the filename unless the filename is an absolute path
-            sf::String filename = Deserializer::deserialize(ObjectConverter::Type::String, value).getString();
+            auto font = std::make_shared<sf::Font>();
         #ifdef SFML_SYSTEM_WINDOWS
-            if ((filename.getSize() > 1) && (filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':'))
+            if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.getSize() <= 1) || (filename[1] != ':')))
         #else
-            if ((filename.getSize() > 0) && (filename[0] != '/'))
+            if (filename[0] != '/')
         #endif
                 font->loadFromFile(getResourcePath() + filename);
             else
@@ -265,30 +267,25 @@ namespace tgui
 
         ObjectConverter deserializeTexture(const std::string& value)
         {
-            std::string::const_iterator c = value.begin();
-
-            // Remove all whitespaces and return an empty texture when the string does not contain any text
-            if (!removeWhitespace(value, c))
+            if (value.empty() || (toLower(value) == "none"))
                 return Texture{};
 
-            if (toLower(value) == "none")
-                return Texture{};
-
-            // There has to be a quote if the value contains more than just the filename
-            if (*c == '"')
-                ++c;
-            else
+            // If there are no quotes then the value just contains a filename
+            if (value[0] != '"')
             {
                 // Load the texture but insert the resource path into the filename unless the filename is an absolute path
             #ifdef SFML_SYSTEM_WINDOWS
-                if ((value.size() > 1) && (value[0] != '/') && (value[0] != '\\') && (value[1] != ':'))
+                if ((value[0] != '/') && (value[0] != '\\') && ((value.size() <= 1) || (value[1] != ':')))
             #else
-                if ((value.size() > 0) && (value[0] != '/'))
+                if (value[0] != '/')
             #endif
                     return Texture{getResourcePath() + value};
                 else
                     return Texture{value};
             }
+
+            std::string::const_iterator c = value.begin();
+            c++; // Skip the opening quote
 
             std::string filename;
             char prev = '\0';
@@ -367,12 +364,14 @@ namespace tgui
                 std::advance(c, closeBracketPos - (c - value.begin()) + 1);
             }
 
+            if (filename.empty())
+                return Texture{};
 
             // Load the texture but insert the resource path into the filename unless the filename is an absolute path
         #ifdef SFML_SYSTEM_WINDOWS
-            if ((filename.size() > 1) && (filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':'))
+            if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.size() <= 1) || (filename[1] != ':')))
         #else
-            if ((filename.size() > 0) && (filename[0] != '/'))
+            if (filename[0] != '/')
         #endif
                 return Texture{getResourcePath() + filename, partRect, middleRect, smooth};
             else

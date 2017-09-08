@@ -65,16 +65,30 @@ namespace tgui
             {
                 if ((pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture"))
                 {
-                    auto quotePos = pair.second->value.find('"');
-                    if (quotePos != std::string::npos)
+                    if (pair.second->value.isEmpty())
+                        continue;
+
+                    // Load the texture but insert the resource path into the filename unless the filename is an absolute path
+                    if (pair.second->value[0] != '"')
                     {
-                        // Only inject the path of the theme file when the texture filename is not an absolute path
                     #ifdef SFML_SYSTEM_WINDOWS
-                        if ((pair.second->value.getSize() > quotePos + 2) && (pair.second->value[quotePos+1] != '/') && (pair.second->value[quotePos+1] != '\\') && (pair.second->value[quotePos+2] != ':'))
+                        if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.getSize() <= 1) || (pair.second->value[1] != ':')))
                     #else
-                        if ((pair.second->value.getSize() > quotePos + 1) && (pair.second->value[quotePos+1] != '/'))
+                        if (pair.second->value[0] != '/')
                     #endif
-                            pair.second->value = pair.second->value.substring(0, quotePos+1) + path + pair.second->value.substring(quotePos+1);
+                            pair.second->value = path + pair.second->value;
+                    }
+                    else // The filename is between quotes
+                    {
+                        if (pair.second->value.getSize() <= 1)
+                            continue;
+
+                    #ifdef SFML_SYSTEM_WINDOWS
+                        if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.getSize() <= 2) || (pair.second->value[2] != ':')))
+                    #else
+                        if (pair.second->value[1] != '/')
+                    #endif
+                            pair.second->value = '"' + path + pair.second->value.substring(1);
                     }
                 }
             }
@@ -171,12 +185,12 @@ namespace tgui
             {
                 char* buffer;
             #ifdef SFML_SYSTEM_WINDOWS
-                if ((resourcePath.size() > 1) && (resourcePath[0] != '/') && (resourcePath[0] != '\\') && (resourcePath[1] != ':'))
+                if ((resourcePath[0] != '/') && (resourcePath[0] != '\\') && ((resourcePath.size() <= 1) || (resourcePath[1] != ':')))
                     resourcePath = getResourcePath() + resourcePath;
 
                 buffer = _fullpath(nullptr, resourcePath.c_str(), 512);
             #else
-                if ((resourcePath.size() > 0) && (resourcePath[0] != '/'))
+                if (resourcePath[0] != '/')
                     resourcePath = getResourcePath() + resourcePath;
 
                 buffer = realpath(resourcePath.c_str(), nullptr);
@@ -247,11 +261,14 @@ namespace tgui
 
     void DefaultThemeLoader::readFile(const std::string& filename, std::stringstream& contents) const
     {
+        if (filename.empty())
+            return;
+
         std::string fullFilename;
     #ifdef SFML_SYSTEM_WINDOWS
-        if ((filename.size() > 1) && (filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':'))
+        if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.size() <= 1) || (filename[1] != ':')))
     #else
-        if ((filename.size() > 0) && (filename[0] != '/'))
+        if (filename[0] != '/')
     #endif
             fullFilename = getResourcePath() + filename;
         else

@@ -135,6 +135,12 @@ namespace tgui
 
     void Texture::load(const sf::String& id, const sf::IntRect& partRect, const sf::IntRect& middleRect, bool smooth)
     {
+        if (id.isEmpty())
+        {
+            *this = Texture{};
+            return;
+        }
+
         if (getData() && (m_destructCallback != nullptr))
             m_destructCallback(getData());
 
@@ -142,9 +148,9 @@ namespace tgui
 
         std::shared_ptr<TextureData> data;
     #ifdef SFML_SYSTEM_WINDOWS
-        if ((id.getSize() > 1) && (id[0] != '/') && (id[0] != '\\') && (id[1] != ':'))
+        if ((id[0] != '/') && (id[0] != '\\') && ((id.getSize() <= 1) || (id[1] != ':')))
     #else
-        if ((id.getSize() > 0) && (id[0] != '/'))
+        if (id[0] != '/')
     #endif
             data = m_textureLoader(*this, getResourcePath() + id, partRect);
         else
