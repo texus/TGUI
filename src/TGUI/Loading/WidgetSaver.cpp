@@ -49,6 +49,12 @@
 #include <TGUI/Widgets/TextBox.hpp>
 #include <TGUI/to_string.hpp>
 
+#ifdef SFML_SYSTEM_WINDOWS
+    #include <direct.h> // _getcwd
+#else
+    #include <unistd.h> // getcwd
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -58,6 +64,72 @@ namespace tgui
     namespace
     {
         #define SET_PROPERTY(property, value) node->propertyValuePairs[property] = make_unique<DataIO::ValueNode>(value)
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string workingDirectory;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        sf::String tryRemoveAbsolutePath(const sf::String& value)
+        {
+            if (!value.isEmpty() && (value != "null") && (value != "nullptr"))
+            {
+                if (value[0] != '"')
+                {
+                #ifdef SFML_SYSTEM_WINDOWS
+                    if ((value[0] == '/') || (value[0] == '\\') || ((value.getSize() > 1) && (value[1] == ':')))
+                #else
+                    if (value[0] == '/')
+                #endif
+                    {
+                        if ((value.getSize() > workingDirectory.size()) && (value.substring(0, workingDirectory.size()) == workingDirectory))
+                        {
+                            if ((value[workingDirectory.size()] != '/') && (value[workingDirectory.size()] != '\\'))
+                                return value.substring(workingDirectory.size());
+                            else
+                                return value.substring(workingDirectory.size() + 1);
+                        }
+                    }
+                }
+                else // The filename is between quotes
+                {
+                    if (value.getSize() <= 1)
+                        return value;
+
+                #ifdef SFML_SYSTEM_WINDOWS
+                    if ((value[1] == '/') || (value[1] == '\\') || ((value.getSize() > 2) && (value[2] == ':')))
+                #else
+                    if (value[1] == '/')
+                #endif
+                    {
+                        if ((value.getSize() + 1 > workingDirectory.size()) && (value.substring(1, workingDirectory.size()) == workingDirectory))
+                        {
+                            if ((value[workingDirectory.size() + 1] != '/') && (value[workingDirectory.size() + 1] != '\\'))
+                                return '"' + value.substring(workingDirectory.size() + 1);
+                            else
+                                return '"' + value.substring(workingDirectory.size() + 2);
+                        }
+                    }
+                }
+            }
+
+            return value;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void recursiveTryRemoveAbsolutePath(std::unique_ptr<DataIO::Node>& node)
+        {
+            for (auto& pair : node->propertyValuePairs)
+            {
+                if (((pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture")) || (pair.first == "font"))
+                    pair.second->value = tryRemoveAbsolutePath(pair.second->value);
+            }
+
+            for (auto& child : node->children)
+                recursiveTryRemoveAbsolutePath(child);
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -108,16 +180,25 @@ namespace tgui
                         continue;
 
                     sf::String value = ObjectConverter{pair.second}.getString();
+
+                    // Turn absolute paths (which were likely caused by loading from a theme) into relative paths if the first part of the path matches the current working directory
+                    if (!workingDirectory.empty())
+                    {
+                        if ((pair.second.getType() == ObjectConverter::Type::Font) || (pair.second.getType() == ObjectConverter::Type::Texture))
+                            value = tryRemoveAbsolutePath(value);
+                    }
+
                     if (pair.second.getType() == ObjectConverter::Type::RendererData)
                     {
                         std::stringstream ss{value};
                         auto rendererRootNode = DataIO::parse(ss);
                         if (!rendererRootNode->children.empty())
-                            node->children.back()->children.push_back(std::move(rendererRootNode->children[0]));
-                        else
-                            node->children.back()->children.push_back(std::move(rendererRootNode));
+                            rendererRootNode = std::move(rendererRootNode->children[0]);
 
-                        node->children.back()->children.back()->name = pair.first;
+                        recursiveTryRemoveAbsolutePath(rendererRootNode);
+
+                        rendererRootNode->name = pair.first;
+                        node->children.back()->children.push_back(std::move(rendererRootNode));
                     }
                     else
                         node->children.back()->propertyValuePairs[pair.first] = make_unique<DataIO::ValueNode>(value);
@@ -762,6 +843,18 @@ namespace tgui
 
     void WidgetSaver::save(Container::ConstPtr widget, std::stringstream& stream)
     {
+        // Get the current working directory (used for turning absolute into relative paths in saveWidget)
+    #ifdef SFML_SYSTEM_WINDOWS
+        char* buffer = _getcwd(nullptr, 0);
+    #else
+        char* buffer = getcwd(nullptr, 0);
+    #endif
+        if (buffer)
+        {
+            workingDirectory = buffer;
+            free(buffer);
+        }
+
         auto node = make_unique<DataIO::Node>();
         for (const auto& child : widget->getWidgets())
         {
