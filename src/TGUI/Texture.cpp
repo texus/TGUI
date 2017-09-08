@@ -152,12 +152,17 @@ namespace tgui
     #else
         if (id[0] != '/')
     #endif
+        {
             data = m_textureLoader(*this, getResourcePath() + id, partRect);
+            if (!data)
+                throw Exception{"Failed to load '" + getResourcePath() + id + "'"};
+        }
         else
+        {
             data = m_textureLoader(*this, id, partRect);
-
-        if (!data)
-            throw Exception{"Failed to load '" + id + "'"};
+            if (!data)
+                throw Exception{"Failed to load '" + id + "'"};
+        }
 
         m_id = id;
         setTextureData(data, middleRect);
