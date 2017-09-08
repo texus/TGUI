@@ -59,16 +59,17 @@ namespace tgui
 
     namespace
     {
-        void injectRelativePathInTextures(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const std::string& path)
+        // Turns texture and font filenames into absolute paths
+        void injectAbsolutePath(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const std::string& path)
         {
             for (const auto& pair : node->propertyValuePairs)
             {
-                if ((pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture"))
+                if (((pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture")) || (pair.first == "font"))
                 {
-                    if (pair.second->value.isEmpty())
+                    if (pair.second->value.isEmpty() || (pair.second->value == "null") || (pair.second->value == "nullptr"))
                         continue;
 
-                    // Load the texture but insert the resource path into the filename unless the filename is an absolute path
+                    // Insert the path into the filename unless the filename is already an absolute path
                     if (pair.second->value[0] != '"')
                     {
                     #ifdef SFML_SYSTEM_WINDOWS
@@ -98,7 +99,7 @@ namespace tgui
                 if (handledSections.find(child.get()) == handledSections.end())
                 {
                     handledSections.insert(child.get());
-                    injectRelativePathInTextures(handledSections, child, path);
+                    injectAbsolutePath(handledSections, child, path);
                 }
             }
         }
@@ -180,20 +181,19 @@ namespace tgui
             if (root->propertyValuePairs.size() != 0)
                 throw Exception{"Unexpected result while loading theme file '" + filename + "'. Root property-value pair found."};
 
-            // Inject relative path to the theme file into texture filenames
+            // Turn texture and font filenames into absolute paths
             if (!resourcePath.empty())
             {
-                char* buffer;
             #ifdef SFML_SYSTEM_WINDOWS
                 if ((resourcePath[0] != '/') && (resourcePath[0] != '\\') && ((resourcePath.size() <= 1) || (resourcePath[1] != ':')))
                     resourcePath = getResourcePath() + resourcePath;
 
-                buffer = _fullpath(nullptr, resourcePath.c_str(), 512);
+                char* buffer = _fullpath(nullptr, resourcePath.c_str(), 512);
             #else
                 if (resourcePath[0] != '/')
                     resourcePath = getResourcePath() + resourcePath;
 
-                buffer = realpath(resourcePath.c_str(), nullptr);
+                char* buffer = realpath(resourcePath.c_str(), nullptr);
             #endif
 
                 std::string absoluteResourcePath;
@@ -207,7 +207,7 @@ namespace tgui
                 }
 
                 std::set<const DataIO::Node*> handledSections;
-                injectRelativePathInTextures(handledSections, root, absoluteResourcePath);
+                injectAbsolutePath(handledSections, root, absoluteResourcePath);
             }
 
             // Get a list of section names and map them to their nodes (needed for resolving references)
