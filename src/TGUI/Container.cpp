@@ -746,9 +746,8 @@ namespace tgui
             return false;
         }
 
-        // Check if a mouse button was pressed
-        else if (((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))
-              || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
+        // Check if a mouse button was pressed or a touch event occurred
+        else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::TouchBegan))
         {
             sf::Vector2f mousePos;
             if (event.type == sf::Event::MouseButtonPressed)
@@ -775,8 +774,17 @@ namespace tgui
                     }
                 }
 
-                widget->leftMousePressed(mousePos);
-                return true;
+                if (((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))
+                 || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
+                {
+                    widget->leftMousePressed(mousePos);
+                    return true;
+                }
+                else if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Right))
+                {
+                    widget->rightMousePressed(mousePos);
+                    return true;
+                }
             }
             else // The mouse did not went down on a widget, so unfocus the focused widget
                 unfocusWidgets();
