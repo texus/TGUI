@@ -58,7 +58,7 @@ namespace tgui
 
     Picture::Ptr Picture::create(const char* filename, bool fullyClickable)
     {
-        return create(Texture{sf::String{filename}}, fullyClickable);
+        return std::make_shared<Picture>(filename, fullyClickable);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ namespace tgui
 
     void Picture::setTexture(const sf::String& filename, bool fullyClickable)
     {
-        m_loadedFilename = getResourcePath() + filename;
+        m_loadedFilename = filename;
 
         setTexture(Texture{filename}, fullyClickable);
     }
