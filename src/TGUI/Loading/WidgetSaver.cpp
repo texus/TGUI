@@ -104,12 +104,7 @@ namespace tgui
                 #endif
                     {
                         if ((value.getSize() + 1 > workingDirectory.size()) && (value.substring(1, workingDirectory.size()) == workingDirectory))
-                        {
-                            if ((value[workingDirectory.size() + 1] != '/') && (value[workingDirectory.size() + 1] != '\\'))
-                                return '"' + value.substring(workingDirectory.size() + 1);
-                            else
-                                return '"' + value.substring(workingDirectory.size() + 2);
-                        }
+                            return '"' + value.substring(workingDirectory.size() + 1);
                     }
                 }
             }
@@ -843,16 +838,34 @@ namespace tgui
 
     void WidgetSaver::save(Container::ConstPtr widget, std::stringstream& stream)
     {
-        // Get the current working directory (used for turning absolute into relative paths in saveWidget)
+        std::string resourcePath = getResourcePath();
     #ifdef SFML_SYSTEM_WINDOWS
-        char* buffer = _getcwd(nullptr, 0);
+        if ((resourcePath[0] == '/') || (resourcePath[0] == '\\') || ((resourcePath.size() > 1) && (resourcePath[1] == ':')))
     #else
-        char* buffer = getcwd(nullptr, 0);
+        if (resourcePath[0] == '/')
     #endif
-        if (buffer)
         {
-            workingDirectory = buffer;
-            free(buffer);
+            // The resource path is already an absolute path, we don't even need to find out the current working directory
+            workingDirectory = resourcePath;
+        }
+        else
+        {
+            // Get the current working directory (used for turning absolute into relative paths in saveWidget)
+        #ifdef SFML_SYSTEM_WINDOWS
+            char* buffer = _getcwd(nullptr, 0);
+        #else
+            char* buffer = getcwd(nullptr, 0);
+        #endif
+            if (buffer)
+            {
+                workingDirectory = buffer;
+                free(buffer);
+
+                if (!workingDirectory.empty() && (workingDirectory[workingDirectory.size() - 1] != '/') && (workingDirectory[workingDirectory.size() - 1] != '\\'))
+                    workingDirectory.push_back('/');
+
+                workingDirectory += getResourcePath();
+            }
         }
 
         auto node = make_unique<DataIO::Node>();
