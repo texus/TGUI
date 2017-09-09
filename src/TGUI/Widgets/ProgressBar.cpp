@@ -77,8 +77,7 @@ namespace tgui
 
         m_bordersCached.updateParentSize(getSize());
 
-        if (m_spriteBackground.isSet())
-            m_spriteBackground.setSize(getInnerSize());
+        m_spriteBackground.setSize(getInnerSize());
 
         // Recalculate the size of the front image
         recalculateFillSize();
