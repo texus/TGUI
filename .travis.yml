@@ -2,7 +2,7 @@ sudo: false
 language: cpp
 
 git:
-  depth: 25
+  depth: 10
 
 matrix:
   include:
@@ -38,6 +38,20 @@ matrix:
       directories:
       - $HOME/SFML-2.4.0_LINUX
 
+  - language: android
+    env:
+    - ANDROID_NDK=$HOME/android-ndk-r12b
+    android:
+      components:
+      - android-23
+    addons:
+      apt:
+        packages:
+        - ant
+    cache:
+      directories:
+      - $ANDROID_NDK/sources/sfml
+
   - os: osx
     cache:
       directories:
@@ -45,7 +59,10 @@ matrix:
 
 script:
   - >
-    if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
+    if [[ $ANDROID_NDK ]]; then
+      chmod +x tests/travis_android.sh
+      tests/travis_android.sh
+    elif [[ $TRAVIS_OS_NAME == 'linux' ]]; then
       export CXX=$COMPILER;
       if [[ $CXX == g++-4.9 ]]; then
         chmod +x tests/travis_linux.sh
