@@ -285,7 +285,7 @@ namespace tgui
             }
 
             std::string::const_iterator c = value.begin();
-            c++; // Skip the opening quote
+            ++c; // Skip the opening quote
 
             std::string filename;
             char prev = '\0';
@@ -364,18 +364,7 @@ namespace tgui
                 std::advance(c, closeBracketPos - (c - value.begin()) + 1);
             }
 
-            if (filename.empty())
-                return Texture{};
-
-            // Load the texture but insert the resource path into the filename unless the filename is an absolute path
-        #ifdef SFML_SYSTEM_WINDOWS
-            if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.size() <= 1) || (filename[1] != ':')))
-        #else
-            if (filename[0] != '/')
-        #endif
-                return Texture{getResourcePath() + filename, partRect, middleRect, smooth};
-            else
-                return Texture{filename, partRect, middleRect, smooth};
+            return Texture{filename, partRect, middleRect, smooth};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
