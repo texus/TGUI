@@ -1,6 +1,6 @@
 lsi: false
 highlighter: rouge
 
-gems:
+plugins:
   - jekyll-sitemap
   - jekyll-redirect-from
