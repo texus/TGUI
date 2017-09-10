@@ -61,7 +61,7 @@
 // Version of the library
 #define TGUI_VERSION_MAJOR 0
 #define TGUI_VERSION_MINOR 7
-#define TGUI_VERSION_PATCH 4
+#define TGUI_VERSION_PATCH 5
 
 
 #endif // TGUI_CONFIG_HPP
