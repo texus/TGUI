@@ -7,6 +7,18 @@ changelog:
   minors:
   - version: 7
     patches:
+    - version: 5
+      date: 11 September 2017
+      changes: |
+        Added closeMenu function to MenuBar
+        System clipboard is now used on all platforms when using SFML >= 2.5
+        Fixed FindTGUI.cmake script when patch version is not specified
+        Label didn't send a SizeChanged signal when its text changed
+        The size of a Grid was reset in removeAllWidgets
+        Holding shift and pressing arrow keys will select text in EditBox
+        Fixed syntax error in BabyBlue and TransparentGrey themes
+        Resource path was not correctly used for all resources
+        Picture::create did not store the filename used
     - version: 4
       date: 3 April 2017
       changes: |
@@ -314,6 +326,7 @@ a.ChangelogLink {
 }
 </style>
 
+<div>
 {% for major in page.changelog %}
   {% for minor in major.minors %}
     {% for patch in minor.patches %}
@@ -334,3 +347,4 @@ a.ChangelogLink {
     {% endif %}
   {% endfor %}
 {% endfor %}
+</div>

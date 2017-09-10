@@ -160,7 +160,6 @@ var searchData=
   ['setview',['setView',['../classtgui_1_1Gui.html#ac7ed139560029cc70925480927f88080',1,'tgui::Gui']]],
   ['setwidgetname',['setWidgetName',['../classtgui_1_1Container.html#a1df09925591bb67f1ce3a73ec1aa1285',1,'tgui::Container::setWidgetName()'],['../classtgui_1_1Gui.html#a7a4d61aad8239596e2170bc24520ab50',1,'tgui::Gui::setWidgetName()']]],
   ['setwindow',['setWindow',['../classtgui_1_1Gui.html#a118ec1b31e08afff8515b3bdd68e48f2',1,'tgui::Gui::setWindow(sf::RenderWindow &amp;window)'],['../classtgui_1_1Gui.html#a0d46c749e4265e60e3c39c819dea8892',1,'tgui::Gui::setWindow(sf::RenderTarget &amp;window)']]],
-  ['setwindowhandle',['setWindowHandle',['../classtgui_1_1Clipboard.html#a5a6d372a1e70cb92779ab8b75dc8c680',1,'tgui::Clipboard']]],
   ['show',['show',['../classtgui_1_1Widget.html#ae3881afdad82cf8c2bd12f36238c04fe',1,'tgui::Widget']]],
   ['showanimationtype',['ShowAnimationType',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437da',1,'tgui']]],
   ['showwitheffect',['showWithEffect',['../classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b',1,'tgui::Widget']]],
