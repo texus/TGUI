@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/VerticalLayout.hpp>
+#include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,7 +33,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     VerticalLayout::VerticalLayout(const Layout2d& size) :
-        BoxLayout{size}
+        BoxLayoutRatios{size}
     {
         m_type = "VerticalLayout";
     }
@@ -62,10 +63,13 @@ namespace tgui
         const sf::Vector2f contentSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                           getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
+        const float totalRatio = std::accumulate(m_ratios.begin(), m_ratios.end(), 0.f);
+
         float currentOffset = 0;
-        for (auto& widget : m_widgets)
+        for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            const float height = (contentSize.y - totalSpaceBetweenWidgets) / m_widgets.size();
+            auto& widget = m_widgets[i];
+            const float height = (contentSize.y - totalSpaceBetweenWidgets) * (m_ratios[i] / totalRatio);
 
             widget->setSize({contentSize.x, height});
             widget->setPosition({0, currentOffset});

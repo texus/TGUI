@@ -26,7 +26,7 @@
 #ifndef TGUI_VERTICAL_LAYOUT_HPP
 #define TGUI_VERTICAL_LAYOUT_HPP
 
-#include <TGUI/Widgets/BoxLayout.hpp>
+#include <TGUI/Widgets/BoxLayoutRatios.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,9 +36,8 @@ namespace tgui
     /// @brief Container that automatically resizes children to fit the entire available space between children
     ///
     /// The children are stacked vertically.
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API VerticalLayout : public BoxLayout
+    class TGUI_API VerticalLayout : public BoxLayoutRatios
     {
     public:
         typedef std::shared_ptr<VerticalLayout> Ptr; ///< Shared widget pointer
@@ -57,7 +56,6 @@ namespace tgui
         /// @param size  Size of the vertical layout
         ///
         /// @return The new vertical layout
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static VerticalLayout::Ptr create(const Layout2d& size = {"100%", "100%"});
 
@@ -68,7 +66,6 @@ namespace tgui
         /// @param layout  The other layout
         ///
         /// @return The new layout
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static VerticalLayout::Ptr copy(ConstPtr layout);
 

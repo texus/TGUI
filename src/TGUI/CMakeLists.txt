@@ -48,6 +48,7 @@ set(TGUI_SRC
     Renderers/TextBoxRenderer.cpp
     Renderers/WidgetRenderer.cpp
     Widgets/BoxLayout.cpp
+    Widgets/BoxLayoutRatios.cpp
     Widgets/Button.cpp
     Widgets/Canvas.cpp
     Widgets/ChatBox.cpp

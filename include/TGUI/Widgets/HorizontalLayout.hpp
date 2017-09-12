@@ -26,7 +26,7 @@
 #ifndef TGUI_HORIZONTAL_LAYOUT_HPP
 #define TGUI_HORIZONTAL_LAYOUT_HPP
 
-#include <TGUI/Widgets/BoxLayout.hpp>
+#include <TGUI/Widgets/BoxLayoutRatios.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,9 +36,8 @@ namespace tgui
     /// @brief Container that automatically resizes children to fit the entire available space between children.
     ///
     /// The children are positioned side by side.
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API HorizontalLayout : public BoxLayout
+    class TGUI_API HorizontalLayout : public BoxLayoutRatios
     {
     public:
         typedef std::shared_ptr<HorizontalLayout> Ptr; ///< Shared widget pointer
@@ -57,7 +56,6 @@ namespace tgui
         /// @param size  Size of the horizontal layout
         ///
         /// @return The new horizontal layout
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static HorizontalLayout::Ptr create(const Layout2d& size = {"100%", "100%"});
 
@@ -68,7 +66,6 @@ namespace tgui
         /// @param layout  The other layout
         ///
         /// @return The new layout
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static HorizontalLayout::Ptr copy(ConstPtr layout);
 

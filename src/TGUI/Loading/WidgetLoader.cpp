@@ -242,6 +242,30 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        Widget::Ptr loadBoxLayoutRatios(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        {
+            assert(widget != nullptr);
+            BoxLayoutRatios::Ptr layout = std::static_pointer_cast<BoxLayoutRatios>(widget);
+
+            loadContainer(node, layout);
+
+            if (node->propertyValuePairs["ratios"])
+            {
+                if (!node->propertyValuePairs["ratios"]->listNode)
+                    throw Exception{"Failed to parse 'Ratios' property, expected a list as value"};
+
+                if (node->propertyValuePairs["ratios"]->valueList.size() != layout->getWidgets().size())
+                    throw Exception{"Amounts of values for 'Ratios' differs from the amount in child widgets"};
+
+                for (std::size_t i = 0; i < node->propertyValuePairs["ratios"]->valueList.size(); ++i)
+                    layout->setRatio(i, Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["ratios"]->valueList[i]).getNumber());
+            }
+
+            return layout;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         Widget::Ptr loadCanvas(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             if (widget)
@@ -633,9 +657,9 @@ namespace tgui
         Widget::Ptr loadHorizontalLayout(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             if (widget)
-                return loadContainer(node, std::static_pointer_cast<HorizontalLayout>(widget));
+                return loadBoxLayoutRatios(node, std::static_pointer_cast<HorizontalLayout>(widget));
             else
-                return loadContainer(node, HorizontalLayout::create());
+                return loadBoxLayoutRatios(node, HorizontalLayout::create());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1126,9 +1150,9 @@ namespace tgui
         Widget::Ptr loadVerticalLayout(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
         {
             if (widget)
-                return loadContainer(node, std::static_pointer_cast<VerticalLayout>(widget));
+                return loadBoxLayoutRatios(node, std::static_pointer_cast<VerticalLayout>(widget));
             else
-                return loadContainer(node, VerticalLayout::create());
+                return loadBoxLayoutRatios(node, VerticalLayout::create());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

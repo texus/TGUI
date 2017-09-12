@@ -59,15 +59,41 @@ TEST_CASE("[VerticalLayout]")
         REQUIRE(button1->getFullSize() == sf::Vector2f(980, 375));
         REQUIRE(button2->getFullSize() == sf::Vector2f(980, 375));
 
-        auto button3 = tgui::Button::create();
-        layout->add(button3);
+        SECTION("Spaces and ratios")
+        {
+            layout->addSpace(0.5f);
 
-        REQUIRE(button1->getPosition() == sf::Vector2f(0, 0));
-        REQUIRE(button2->getPosition() == sf::Vector2f(0, 270));
-        REQUIRE(button3->getPosition() == sf::Vector2f(0, 540));
-        REQUIRE(button1->getFullSize() == sf::Vector2f(980, 240));
-        REQUIRE(button2->getFullSize() == sf::Vector2f(980, 240));
-        REQUIRE(button3->getFullSize() == sf::Vector2f(980, 240));
+            auto button3 = tgui::Button::create();
+            layout->add(button3, 2);
+
+            REQUIRE(layout->get(0)->getFullSize() == sf::Vector2f(980, (800 - 20 - 3*30) * (1 / 4.5f)));
+            REQUIRE(layout->get(1)->getFullSize() == sf::Vector2f(980, (800 - 20 - 3*30) * (1 / 4.5f)));
+            REQUIRE(layout->get(2)->getFullSize() == sf::Vector2f(980, (800 - 20 - 3*30) * (0.5f / 4.5f)));
+            REQUIRE(layout->get(3)->getFullSize() == sf::Vector2f(980, (800 - 20 - 3*30) * (2 / 4.5f)));
+            REQUIRE(layout->get(0)->getPosition() == sf::Vector2f(0, 0));
+            REQUIRE(layout->get(1)->getPosition() == sf::Vector2f(0, layout->get(0)->getPosition().y + layout->get(0)->getFullSize().y + 30));
+            REQUIRE(layout->get(2)->getPosition() == sf::Vector2f(0, layout->get(1)->getPosition().y + layout->get(1)->getFullSize().y + 30));
+            REQUIRE(layout->get(3)->getPosition() == sf::Vector2f(0, layout->get(2)->getPosition().y + layout->get(2)->getFullSize().y + 30));
+
+            layout->insertSpace(1, 1.5f);
+            layout->insertSpace(3, 2.5f);
+            layout->remove(4);
+
+            auto button4 = tgui::Button::create();
+            layout->insert(2, button4);
+            layout->remove(2);
+
+            REQUIRE(layout->get(0)->getFullSize() == sf::Vector2f(980, (800 - 20 - 4*30) * (1 / 8.f)));
+            REQUIRE(layout->get(1)->getFullSize() == sf::Vector2f(980, (800 - 20 - 4*30) * (1.5f / 8.f)));
+            REQUIRE(layout->get(2)->getFullSize() == sf::Vector2f(980, (800 - 20 - 4*30) * (1 / 8.f)));
+            REQUIRE(layout->get(3)->getFullSize() == sf::Vector2f(980, (800 - 20 - 4*30) * (2.5f / 8.f)));
+            REQUIRE(layout->get(4)->getFullSize() == sf::Vector2f(980, (800 - 20 - 4*30) * (2 / 8.f)));
+            REQUIRE(layout->get(0)->getPosition() == sf::Vector2f(0, 0));
+            REQUIRE(layout->get(1)->getPosition() == sf::Vector2f(0, layout->get(0)->getPosition().y + layout->get(0)->getFullSize().y + 30));
+            REQUIRE(layout->get(2)->getPosition() == sf::Vector2f(0, layout->get(1)->getPosition().y + layout->get(1)->getFullSize().y + 30));
+            REQUIRE(layout->get(3)->getPosition() == sf::Vector2f(0, layout->get(2)->getPosition().y + layout->get(2)->getFullSize().y + 30));
+            REQUIRE(layout->get(4)->getPosition() == sf::Vector2f(0, layout->get(3)->getPosition().y + layout->get(3)->getFullSize().y + 30));
+        }
     }
 
     SECTION("Order")
@@ -101,6 +127,7 @@ TEST_CASE("[VerticalLayout]")
     SECTION("Saving and loading from file")
     {
         layout->add(tgui::Button::create("Hello"));
+        layout->addSpace(0.5);
         layout->add(tgui::Button::create("Hi"));
         testSavingWidget("VerticalLayout", layout, false);
     }

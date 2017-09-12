@@ -32,6 +32,7 @@
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Grid.hpp>
+#include <TGUI/Widgets/HorizontalLayout.hpp>
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
@@ -47,6 +48,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/VerticalLayout.hpp>
 #include <TGUI/to_string.hpp>
 
 #ifdef SFML_SYSTEM_WINDOWS
@@ -233,6 +235,26 @@ namespace tgui
                 SET_PROPERTY("Text", Serializer::serialize(button->getText()));
 
             SET_PROPERTY("TextSize", to_string(button->getTextSize()));
+            return node;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::unique_ptr<DataIO::Node> saveBoxLayoutRatios(Widget::Ptr widget)
+        {
+            auto layout = std::static_pointer_cast<BoxLayoutRatios>(widget);
+            auto node = WidgetSaver::getSaveFunction("container")(layout);
+
+            if (layout->getWidgets().size() > 0)
+            {
+                std::string ratioList = "[" + Serializer::serialize(layout->getRatio(0));
+                for (std::size_t i = 1; i < layout->getWidgets().size(); ++i)
+                    ratioList += ", " + Serializer::serialize(layout->getRatio(i));
+
+                ratioList += "]";
+                SET_PROPERTY("Ratios", ratioList);
+            }
+
             return node;
         }
 
@@ -812,7 +834,7 @@ namespace tgui
             {"editbox", saveEditBox},
             {"grid", saveGrid},
             {"group", saveContainer},
-            {"horizontallayout", saveContainer},
+            {"horizontallayout", saveBoxLayoutRatios},
             {"horizontalwrap", saveContainer},
             {"knob", saveKnob},
             {"label", saveLabel},
@@ -831,7 +853,7 @@ namespace tgui
             {"spinbutton", saveSpinButton},
             {"tabs", saveTabs},
             {"textbox", saveTextBox},
-            {"verticallayout", saveContainer}
+            {"verticallayout", saveBoxLayoutRatios}
         };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
