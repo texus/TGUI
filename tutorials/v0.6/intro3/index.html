@@ -1,31 +1,18 @@
 ---
+layout: page
+title: Handling callbacks
 redirect_from: "/tutorials/v06/intro3/index.html"
 ---
 
-<!DOCTYPE html>
+<p>In part 2 of this tutorial, you have seen how to create a login screen. It all looks fine but there is one important thing missing: the callbacks.</p>
 
-<head>
-{% include head.ext %}
+<p>You will need to find out when the user clicked on the login button. This is what you will learn in this part of the tutorial. Note that this page only gives a short intro on how to handle callbacks, polling is not the only way.</p>
 
-    <title>Introduction tutorial</title>
-</head>
+<p>At the bottom of the page you will find the full code for the working login screen.</p>
 
-<body>
-<div id="body" class="NoMargin">
-{% include navigation.ext %}
-
-<div id="contents" class="NoMargin">
-    <h2>Handling callbacks</h2>
-
-    <p>In part 2 of this tutorial, you have seen how to create a login screen. It all looks fine but there is one important thing missing: the callbacks.</p>
-
-    <p>You will need to find out when the user clicked on the login button. This is what you will learn in this part of the tutorial. Note that this page only gives a short intro on how to handle callbacks, polling is not the only way.</p>
-
-    <p>At the bottom of the page you will find the full code for the working login screen.</p>
-
-    <p class="SmallBottomMargin">The easiest way to handle callback is to poll them from the window. This is very similar to the pollEvent function from sfml.<br />
-        The other ways to handle callbacks are discussed in the <a href="../callback-system/">callback tutorial</a>.
-    </p>
+<p class="SmallBottomMargin">The easiest way to handle callback is to poll them from the window. This is very similar to the pollEvent function from sfml.<br />
+    The other ways to handle callbacks are discussed in the <a href="../callback-system/">callback tutorial</a>.
+</p>
 {% highlight c++ %}
 tgui::Callback callback;
 while (gui.pollCallback(callback))
@@ -33,17 +20,17 @@ while (gui.pollCallback(callback))
 }
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">By default, widgets will not send any callback. You will have to explicitly ask the widget to send you callback. You do this with the bindCallback function. Because we get all callback in one place when polling it from the window, you will also have to set an id. This id is part of the callback so that you can distinguish the widgets from each other when receiving callbacks.
-    </p>
+<p class="SmallBottomMargin">By default, widgets will not send any callback. You will have to explicitly ask the widget to send you callback. You do this with the bindCallback function. Because we get all callback in one place when polling it from the window, you will also have to set an id. This id is part of the callback so that you can distinguish the widgets from each other when receiving callbacks.
+</p>
 {% highlight c++ %}
 button->bindCallback(tgui::Button::LeftMouseClicked);
 button->setCallbackId(1);
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">Now that the button is sending callbacks, it is time to receive them.<br />
-        First we will check if the id is 1 to make sure that the event comes from the button.<br />
-        Then we get the username and password that were filled in inside the edit boxes. As the pointers are not accessible in this scope, we will use the get function to get the pointers back.
-    </p>
+<p class="SmallBottomMargin">Now that the button is sending callbacks, it is time to receive them.<br />
+    First we will check if the id is 1 to make sure that the event comes from the button.<br />
+    Then we get the username and password that were filled in inside the edit boxes. As the pointers are not accessible in this scope, we will use the get function to get the pointers back.
+</p>
 {% highlight c++ %}
 tgui::Callback callback;
 while (gui.pollCallback(callback))
@@ -59,7 +46,7 @@ while (gui.pollCallback(callback))
 }
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">Here is the full code of the introduction tutorial.</p>
+<p class="SmallBottomMargin">Here is the full code of the introduction tutorial.</p>
 {% highlight c++ %}
 #include <TGUI/TGUI.hpp>
 
@@ -156,18 +143,13 @@ int main()
 }
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">There is still one very important thing that you should take into account: errors.<br />
-       In the above code, there is no error checking. If you write a program then you will probably want to add error checking to the following places:
-    </p>
-    <ul>
-      <li>gui.setGlobalFont will return false when the font couldn’t be loaded.</li>
-      <li>All load functions return false on failure. (you could also use the isLoaded function later).</li>
-      <li>The get function will return NULL when the widget name was wrong.</li>
-    </ul>
+<p class="SmallBottomMargin">There is still one very important thing that you should take into account: errors.<br />
+   In the above code, there is no error checking. If you write a program then you will probably want to add error checking to the following places:
+</p>
+<ul>
+  <li>gui.setGlobalFont will return false when the font couldn’t be loaded.</li>
+  <li>All load functions return false on failure. (you could also use the isLoaded function later).</li>
+  <li>The get function will return NULL when the widget name was wrong.</li>
+</ul>
 
-    <p>Previous: <a href="../intro2/">Working with widgets</a></p>
-</div>
-
-{% include footer.ext %}
-</div>
-</body>
+<p>Previous: <a href="../intro2/">Working with widgets</a></p>

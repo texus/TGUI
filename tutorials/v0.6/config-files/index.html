@@ -1,29 +1,17 @@
 ---
+layout: page
+title: Config Files
 redirect_from: "/tutorials/v06/config-files/index.html"
 ---
-<!DOCTYPE html>
 
-<head>
-{% include head.ext %}
+<p>Config files are needed to load widgets. TGUI comes with the default Black theme which can be used until you have created your own theme.</p>
 
-    <title>Config Files</title>
-</head>
+<p>The config files contain information about the widget that you want to load. Most of the information is just which image file needs to be loaded, but other important information can be put in there as well. In the Black style for example, the images from EditBox have rounded corners and the config file contains information about how many pixels the text should be from the side of the image.</p>
 
-<body>
-<div id="body" class="NoMargin">
-{% include navigation.ext %}
+<p>The best way to write your own config files is to look at the ones that are provided with TGUI.<br />
+   However if you really need a list of all options that a widget can have then you can find it below.</p>
 
-<div id="contents" class="NoMargin">
-    <h2>Config files</h2>
-
-    <p>Config files are needed to load widgets. TGUI comes with the default Black theme which can be used until you have created your own theme.</p>
-
-    <p>The config files contain information about the widget that you want to load. Most of the information is just which image file needs to be loaded, but other important information can be put in there as well. In the Black style for example, the images from EditBox have rounded corners and the config file contains information about how many pixels the text should be from the side of the image.</p>
-
-    <p>The best way to write your own config files is to look at the ones that are provided with TGUI.<br />
-       However if you really need a list of all options that a widget can have then you can find it below.</p>
-
-    <p>When it says “SplitImage available” between brackets, it means that the xxx option can be replaced by xxx_L, xxx_M and xxx_R. In this case, only the middle image will be repeated horizontally, while the left and right parts keep their ratio.</p>
+<p>When it says “SplitImage available” between brackets, it means that the xxx option can be replaced by xxx_L, xxx_M and xxx_R. In this case, only the middle image will be repeated horizontally, while the left and right parts keep their ratio.</p>
 
 <div>
 <b>Button</b>
@@ -208,8 +196,3 @@ redirect_from: "/tutorials/v06/config-files/index.html"
 </ul>
 <br>
 </div>
-</div>
-
-{% include footer.ext %}
-</div>
-</body>

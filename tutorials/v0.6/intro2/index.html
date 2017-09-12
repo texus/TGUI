@@ -1,38 +1,26 @@
 ---
+layout: page
+title: Working with objects
 redirect_from: "/tutorials/v06/intro2/index.html"
 ---
 
-<!DOCTYPE html>
+<p class="SmallBottomMargin">In this tutorial, you will learn how to make a login screen like in the screenshot below.</p>
+<a class="img" href="/resources/Login%20screen.png"><img alt="TGUI Login Screen Example" src="/resources/Login%20screen.png" width="640" height="480" /></a>
 
-<head>
-{% include head.ext %}
-
-    <title>Introduction tutorial</title>
-</head>
-
-<body>
-<div id="body" class="NoMargin">
-{% include navigation.ext %}
-
-<div id="contents" class="NoMargin">
-    <h2>Working with objects</h2>
-    <p class="SmallBottomMargin">In this tutorial, you will learn how to make a login screen like in the screenshot below.</p>
-    <a class="img" href="/resources/Login%20screen.png"><img alt="TGUI Login Screen Example" src="/resources/Login%20screen.png" width="640" height="480" /></a>
-
-    <p class="SmallBottomMargin">You should always create a widget by passing its parent widget as a first parameter to the contructor.<br />
-        The second parameter is optional, but when you do pass a name then you will be able to retreive the widget from the window later. Like this, you don’t have to store the widget yourself.
-    </p>
+<p class="SmallBottomMargin">You should always create a widget by passing its parent widget as a first parameter to the contructor.<br />
+    The second parameter is optional, but when you do pass a name then you will be able to retreive the widget from the window later. Like this, you don’t have to store the widget yourself.
+</p>
 {% highlight c++ %}
 tgui::Picture::Ptr picture(gui, "BackgroundImage");
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">Now that the widget (in this case a picture) is created, you can set it up.</p>
+<p class="SmallBottomMargin">Now that the widget (in this case a picture) is created, you can set it up.</p>
 {% highlight c++ %}
 picture->load("myBackgroundImage.png");
 picture->setSize(800, 600);
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">We are also going to create an edit box. The code is similar to creating the picture.</p>
+<p class="SmallBottomMargin">We are also going to create an edit box. The code is similar to creating the picture.</p>
 {% highlight c++ %}
 tgui::EditBox::Ptr editBoxUsername(gui, "Username");
 editBoxUsername->load("TGUI/widgets/Black.conf");
@@ -40,19 +28,19 @@ editBoxUsername->setSize(400, 40);
 editBoxUsername->setPosition(200, 140);
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">We could load the second edit box in exactly the same way, but I want to show you how to copy widgets.<br />
-        As because this is an edit box that contains a password, we will set a password character.
-    </p>
+<p class="SmallBottomMargin">We could load the second edit box in exactly the same way, but I want to show you how to copy widgets.<br />
+    As because this is an edit box that contains a password, we will set a password character.
+</p>
 {% highlight c++ %}
 tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
 editBoxPassword->setPosition(200, 290);
 editBoxPassword->setPasswordCharacter('*');
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">The rest of the widgets are created in a similar way and I am not going to explain every line.<br />
-        Below you can find the code to create all the widgets inside the login screen.<br />
-        Take a moment to read through it to make sure you understand everything.
-    </p>
+<p class="SmallBottomMargin">The rest of the widgets are created in a similar way and I am not going to explain every line.<br />
+    Below you can find the code to create all the widgets inside the login screen.<br />
+    Take a moment to read through it to make sure you understand everything.
+</p>
 
 {% highlight c++ %}
 void loadWidgets( tgui::Gui& gui )
@@ -92,10 +80,5 @@ void loadWidgets( tgui::Gui& gui )
 }
 {% endhighlight %}
 
-    <p>Previous: <a href="../intro1/">Starting with TGUI</a><br />
-       Next: <a href="../intro3/">Handling callbacks</a></p>
-</div>
-
-{% include footer.ext %}
-</div>
-</body>
+<p>Previous: <a href="../intro1/">Starting with TGUI</a><br />
+   Next: <a href="../intro3/">Handling callbacks</a></p>

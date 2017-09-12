@@ -1,27 +1,14 @@
 ---
+layout: page
+title: Callback system
 redirect_from: "/tutorials/v06/callback-system/index.html"
 ---
 
-<!DOCTYPE html>
-
-<head>
-{% include head.ext %}
-
-    <title>Callback system</title>
-</head>
-
-<body>
-<div id="body" class="NoMargin">
-{% include navigation.ext %}
-
-<div id="contents" class="NoMargin">
-    <h2>Callback system</h2>
-
-    <div>
-    <h3>Polling, the old way</h3>
-    <p class="SmallBottomMargin">In earlier versions, this was the only way to handle callback. Now, it is only a small part of the callback system.<br />
-        Just like you would poll your events from sfml, you can poll your callbacks from tgui.
-    </p>
+<div>
+<h3>Polling, the old way</h3>
+<p class="SmallBottomMargin">In earlier versions, this was the only way to handle callback. Now, it is only a small part of the callback system.<br />
+Just like you would poll your events from sfml, you can poll your callbacks from tgui.
+</p>
 {% highlight c++ %}
 tgui::Callback callback;
 while (gui.pollCallback(callback))
@@ -29,62 +16,62 @@ while (gui.pollCallback(callback))
     // Handle the callback
 }
 {% endhighlight %}
-    </div>
+</div>
 
-    <div>
-    <h3>Binding callbacks</h3>
-    <p class="SmallBottomMargin">Widgets don’t send callback by default, you have to ask them first. This can be achieved by using one of the bindCallback functions. When you just poll the callback from the gui, then you only need to pass a trigger.
-    </p>
+<div>
+<h3>Binding callbacks</h3>
+<p class="SmallBottomMargin">Widgets don’t send callback by default, you have to ask them first. This can be achieved by using one of the bindCallback functions. When you just poll the callback from the gui, then you only need to pass a trigger.
+</p>
 {% highlight c++ %}
 button->bindCallback(tgui::Button::LeftMouseClicked);
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">But sometimes you don’t want to poll the callback, you want a function to be called when something happens. Here, ‘function’ can be a normal function, a lambda expressing or a static member function.
-    </p>
+<p class="SmallBottomMargin">But sometimes you don’t want to poll the callback, you want a function to be called when something happens. Here, ‘function’ can be a normal function, a lambda expressing or a static member function.
+</p>
 {% highlight c++ %}
 editBox->bindCallback(function, tgui::EditBox::TextChanged);
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">But what about non-static member functions? No problem, but you’ll have to pass an extra parameter.</p>
+<p class="SmallBottomMargin">But what about non-static member functions? No problem, but you’ll have to pass an extra parameter.</p>
 {% highlight c++ %}
 MyClass myObj;
 editBox->bindCallback(&MyClass::function, &myObj, tgui::EditBox::ReturnKeyPressed);
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">Until now, the functions did not have any parameters. But you can technically use any function to which you have bound parameters.
-    </p>
+<p class="SmallBottomMargin">Until now, the functions did not have any parameters. But you can technically use any function to which you have bound parameters.
+</p>
 {% highlight c++ %}
 void function(tgui::Gui& gui);
 button->bindCallback(std::bind(function, std::ref(gui)), tgui::CheckBox::Checked | tgui::CheckBox::Unchecked);
 {% endhighlight %}
-    </div>
+</div>
 
-    <div>
-    <h3>Identifying callbacks</h3>
-    <p>If you have a simple function that is called when the button is pressed then you don’t have to care about this, but in many situations you will need to figure out where the callback came from.</p>
+<div>
+<h3>Identifying callbacks</h3>
+<p>If you have a simple function that is called when the button is pressed then you don’t have to care about this, but in many situations you will need to figure out where the callback came from.</p>
 
-    <p class="SmallBottomMargin">If you are polling the callback the the only thing to do is give every widget a unique id.</p>
+<p class="SmallBottomMargin">If you are polling the callback the the only thing to do is give every widget a unique id.</p>
 {% highlight c++ %}
 button->setCallbackId(5);
 {% endhighlight %}
 
-    <p>So when you are in the pollEvent loop you can just check callback.id to find out if it was the button who send the callback. The callback.trigger might also be usefull to find out what triggered the callback (left mouse click or key press or something else).</p>
+<p>So when you are in the pollEvent loop you can just check callback.id to find out if it was the button who send the callback. The callback.trigger might also be usefull to find out what triggered the callback (left mouse click or key press or something else).</p>
 
-    <p class="SmallBottomMargin">But how do you access this information when you aren’t polling? You have a function and you want to know more about the callback that was send. You will have to give your function an extra parameter.
-    </p>
+<p class="SmallBottomMargin">But how do you access this information when you aren’t polling? You have a function and you want to know more about the callback that was send. You will have to give your function an extra parameter.
+</p>
 {% highlight c++ %}
 void function(const tgui::Callback& callback);
 {% endhighlight %}
 
-    <p class="SmallBottomMargin">Now you can access all information in the function that can be found in the Callback struct. There is however one small catch. If you add this parameter then you can no longer use the normal bindCallback function. Instead, you must use the bindCallbackEx function. It is exactly the same, but it tells the compiler that the function has this extra parameter.
-    </p>
+<p class="SmallBottomMargin">Now you can access all information in the function that can be found in the Callback struct. There is however one small catch. If you add this parameter then you can no longer use the normal bindCallback function. Instead, you must use the bindCallbackEx function. It is exactly the same, but it tells the compiler that the function has this extra parameter.
+</p>
 {% highlight c++ %}
 button->bindCallbackEx(function, tgui::Button::LeftMouseClicked);
 {% endhighlight %}
-    </div>
+</div>
 
-    <div>
-    <h3>Example</h3>
+<div>
+<h3>Example</h3>
 
 {% highlight c++ %}
 #include <TGUI/TGUI.hpp>
@@ -130,9 +117,4 @@ int main()
     }
 }
 {% endhighlight %}
-    </div>
 </div>
-
-{% include footer.ext %}
-</div>
-</body>
