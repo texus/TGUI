@@ -93,13 +93,13 @@
 #endif
 
 // Enable constexpr when using Clang or at least GCC 5 or MSVC++ 14.1 (VS2017)
-#if _MSC_VER
+#if defined(_MSC_VER)
     #if _MSC_VER >= 1910
         #define TGUI_CONSTEXPR constexpr
     #else
         #define TGUI_CONSTEXPR
     #endif
-#elif __GNUC__
+#elif defined(__GNUC__)
     #if __cpp_constexpr >= 201304
         #define TGUI_CONSTEXPR constexpr
     #else
