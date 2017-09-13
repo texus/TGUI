@@ -104,7 +104,10 @@ elseif(SFML_COMPILER_GCC OR SFML_COMPILER_CLANG)
     tgui_add_cxx_flag(-Wshadow)
     tgui_add_cxx_flag(-Wno-long-long)
     tgui_add_cxx_flag(-pedantic)
-    tgui_add_cxx_flag(-std=c++1y)
+
+    # gnu++1y instead of c++1y because TDM-GCC 5.1 did not declare _fullpath without enabling GNU extensions (other MinGW versions did not require it)
+    # gnu++1y instead of gnu++14 because gnu++14 was only added in GCC 4.9.3 while the oldest supported compiler is the TDM-GCC 4.9.2 from CodeBlocks 16.01
+    tgui_add_cxx_flag(-std=gnu++1y)
 
     # On mac, clang needs another parameter
     if (SFML_COMPILER_CLANG AND SFML_OS_MACOSX)
