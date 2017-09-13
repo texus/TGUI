@@ -427,12 +427,6 @@ namespace tgui
         {
             m_angle = (((m_value - m_minimum) / static_cast<float>(m_maximum - m_minimum)) * allowedAngle) + m_startRotation;
         }
-
-        // Give the image the correct rotation
-        if (getRenderer()->m_imageRotation > m_angle)
-            getRenderer()->m_foregroundTexture.setRotation(getRenderer()->m_imageRotation - m_angle);
-        else
-            getRenderer()->m_foregroundTexture.setRotation(360 - m_angle + getRenderer()->m_imageRotation);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -654,6 +648,13 @@ namespace tgui
         if (m_backgroundTexture.isLoaded() && m_foregroundTexture.isLoaded())
         {
             target.draw(m_backgroundTexture, states);
+
+            // Give the foreground image the correct rotation
+            float angle = -(m_imageRotation + m_knob->m_angle);
+            auto center = m_foregroundTexture.getPosition();
+            center += m_foregroundTexture.getSize() / 2.f;
+            states.transform.rotate(angle, center);
+
             target.draw(m_foregroundTexture, states);
         }
         else
