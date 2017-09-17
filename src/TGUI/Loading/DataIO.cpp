@@ -25,6 +25,7 @@
 
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Global.hpp>
+#include <TGUI/to_string.hpp>
 
 #include <cctype>
 #include <cassert>
@@ -500,7 +501,7 @@ namespace tgui
                     std::string str = stream.str();
                     auto position = static_cast<std::iterator_traits<std::string::const_iterator>::difference_type>(stream.tellg());
                     std::size_t lineNumber = std::count(str.begin(), str.begin() + position, '\n') + 1;
-                    throw Exception{"Error while parsing input at line " + std::to_string(lineNumber) + ". " + error};
+                    throw Exception{"Error while parsing input at line " + to_string(lineNumber) + ". " + error};
                 }
                 else
                     throw Exception{"Error while parsing input. " + error};
