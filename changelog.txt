@@ -1,5 +1,13 @@
-TGUI 0.7.5  (11 September 2017)
+TGUI 0.7.6  (TBD)
 -----------------
+
+- Fixed compilation with TDM-GCC 5.1
+- Knob did not display correctly when using textures
+- Fixed crash in layouts in specific case with GCC 7
+
+
+TGUI 0.7.5  (11 September 2017)
+-------------------------------
 
 - Added closeMenu function to MenuBar
 - System clipboard is now used on all platforms when using SFML >= 2.5

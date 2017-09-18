@@ -197,7 +197,9 @@ namespace tgui
         }
 
         // Alert the widgets that are using this layout
-        for (auto& attachedLayout : attachedLayouts)
+        // Make a copy of the set first as this object may be destroyed while updating the widgets in which case we may no longer access the set
+        auto attachedLayoutsCopy = attachedLayouts;
+        for (auto& attachedLayout : attachedLayoutsCopy)
             attachedLayout->update();
     }
 
@@ -654,7 +656,6 @@ namespace tgui
     Layout::Layout()
     {
         m_impl->value = 0;
-        m_impl->attachedLayouts.insert(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -670,7 +671,6 @@ namespace tgui
     {
         m_impl->stringExpression = expression;
         m_impl->operation = LayoutImpl::Operation::String;
-        m_impl->attachedLayouts.insert(this);
         m_impl->recalculate();
     }
 
@@ -679,14 +679,6 @@ namespace tgui
     Layout::Layout(const Layout& copy)
     {
         m_impl = copy.m_impl;
-        m_impl->attachedLayouts.insert(this);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Layout::~Layout()
-    {
-        m_impl->attachedLayouts.erase(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -695,9 +687,8 @@ namespace tgui
     {
         if (&right != this)
         {
-            m_impl->attachedLayouts.erase(this);
-            right.m_impl->attachedLayouts.insert(this);
             m_impl = right.m_impl;
+            m_callbackFunction = nullptr;
         }
 
         return *this;

@@ -57,12 +57,22 @@ namespace tgui
     {
         if (this != &other)
         {
-            Transformable temp(other);
+            // We can only copy the layouts when they are strings
+            Layout2d position = {other.getPosition()};
+            Layout2d size = {other.getSize()};
 
-            std::swap(m_position,     temp.m_position);
-            std::swap(m_size,         temp.m_size);
-            std::swap(m_prevPosition, temp.m_prevPosition);
-            std::swap(m_prevSize,     temp.m_prevSize);
+            if (other.m_position.x.getImpl()->operation == LayoutImpl::Operation::String)
+                position.x = other.m_position.x.getImpl()->stringExpression;
+            if (other.m_position.y.getImpl()->operation == LayoutImpl::Operation::String)
+                position.y = other.m_position.y.getImpl()->stringExpression;
+
+            if (other.m_size.x.getImpl()->operation == LayoutImpl::Operation::String)
+                size.x = other.m_size.x.getImpl()->stringExpression;
+            if (other.m_size.y.getImpl()->operation == LayoutImpl::Operation::String)
+                size.y = other.m_size.y.getImpl()->stringExpression;
+
+            setPosition(position);
+            setSize(size);
         }
 
         return *this;
@@ -70,13 +80,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Transformable::~Transformable()
+    {
+        m_position.x.getImpl()->attachedLayouts.erase(&m_position.x);
+        m_position.y.getImpl()->attachedLayouts.erase(&m_position.y);
+        m_size.x.getImpl()->attachedLayouts.erase(&m_size.x);
+        m_size.y.getImpl()->attachedLayouts.erase(&m_size.y);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Transformable::setPosition(const Layout2d& position)
     {
+        m_position.x.getImpl()->attachedLayouts.erase(&m_position.x);
+        m_position.y.getImpl()->attachedLayouts.erase(&m_position.y);
+
         m_position = position;
         m_prevPosition = m_position.getValue();
 
-        m_position.x.connectUpdateCallback(std::bind(&Transformable::updatePosition, this, false));
-        m_position.y.connectUpdateCallback(std::bind(&Transformable::updatePosition, this, false));
+        m_position.x.getImpl()->attachedLayouts.insert(&m_position.x);
+        m_position.y.getImpl()->attachedLayouts.insert(&m_position.y);
+
+        m_position.x.connectUpdateCallback([this](){ updatePosition(false); });
+        m_position.y.connectUpdateCallback([this](){ updatePosition(false); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,11 +123,17 @@ namespace tgui
 
     void Transformable::setSize(const Layout2d& size)
     {
+        m_size.x.getImpl()->attachedLayouts.erase(&m_size.x);
+        m_size.y.getImpl()->attachedLayouts.erase(&m_size.y);
+
         m_size = size;
         m_prevSize = m_size.getValue();
 
-        m_size.x.connectUpdateCallback(std::bind(&Transformable::updateSize, this, false));
-        m_size.y.connectUpdateCallback(std::bind(&Transformable::updateSize, this, false));
+        m_size.x.getImpl()->attachedLayouts.insert(&m_size.x);
+        m_size.y.getImpl()->attachedLayouts.insert(&m_size.y);
+
+        m_size.x.connectUpdateCallback([this](){ updateSize(false); });
+        m_size.y.connectUpdateCallback([this](){ updateSize(false); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
