@@ -2,7 +2,7 @@ sudo: false
 language: cpp
 
 git:
-  depth: 1
+  depth: 10
 
 matrix:
   include:
