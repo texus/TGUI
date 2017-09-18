@@ -34,6 +34,18 @@ ChildWindow {
         TextureHover = "BabyBlue.png" Part(123, 2, 25, 25);
         TextureDown  = "BabyBlue.png" Part(150, 2, 25, 25);
     }
+
+    MaximizeButton = {
+        Texture      = "BabyBlue.png" Part(2, 90, 25, 25);
+        TextureHover = "BabyBlue.png" Part(29, 90, 25, 25);
+        TextureDown  = "BabyBlue.png" Part(56, 90, 25, 25);
+    }
+
+    MinimizeButton = {
+        Texture      = "BabyBlue.png" Part(83, 90, 25, 25);
+        TextureHover = "BabyBlue.png" Part(110, 90, 25, 25);
+        TextureDown  = "BabyBlue.png" Part(137, 90, 25, 25);
+    }
 }
 
 ComboBox {
