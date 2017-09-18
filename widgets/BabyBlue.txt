@@ -28,12 +28,26 @@ ChildWindow {
     Borders : (2, 0, 2, 2);
     DistanceToSide : 3;
     CloseButton : "ChildWindowCloseButton";
+    MaximizeButton : "ChildWindowMaximizeButton";
+    MinimizeButton : "ChildWindowMinimizeButton";
 }
 
 Button.ChildWindowCloseButton {
     NormalImage : "BabyBlue.png" Part(96, 2, 25, 25);
     HoverImage : "BabyBlue.png" Part(123, 2, 25, 25);
     DownImage : "BabyBlue.png" Part(150, 2, 25, 25);
+}
+
+Button.ChildWindowMaximizeButton {
+    NormalImage : "BabyBlue.png" Part(2, 90, 25, 25);
+    HoverImage : "BabyBlue.png" Part(29, 90, 25, 25);
+    DownImage : "BabyBlue.png" Part(56, 90, 25, 25);
+}
+
+Button.ChildWindowMinimizeButton {
+    NormalImage : "BabyBlue.png" Part(83, 90, 25, 25);
+    HoverImage : "BabyBlue.png" Part(110, 90, 25, 25);
+    DownImage : "BabyBlue.png" Part(137, 90, 25, 25);
 }
 
 ComboBox {
