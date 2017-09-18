@@ -1272,8 +1272,6 @@ namespace tgui
             m_textBeforeSelection.setString(m_textFull.getString().substring(0, m_selEnd));
             m_textSelection.setString(m_textFull.getString().substring(m_selEnd, m_selChars));
             m_textAfterSelection.setString(m_textFull.getString().substring(m_selStart));
-
-            recalculateTextPositions();
         }
         else
         {
