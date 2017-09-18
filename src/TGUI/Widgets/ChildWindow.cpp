@@ -301,7 +301,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::setTitleButtons(TitleButtons buttons)
+    void ChildWindow::setTitleButtons(unsigned int buttons)
     {
         m_titleButtons = buttons;
 

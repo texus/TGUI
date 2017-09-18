@@ -279,7 +279,7 @@ namespace tgui
         /// childWindow->setTitleButtons(ChildWindow::TitleButtons::Minimize | ChildWindow::TitleButtons::Close);
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setTitleButtons(TitleButtons buttons);
+        void setTitleButtons(unsigned int buttons);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,7 +288,7 @@ namespace tgui
         /// @return Which buttons are available in the title bar
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TitleButtons getTitleButtons() const
+        unsigned int getTitleButtons() const
         {
             return m_titleButtons;
         }
@@ -560,7 +560,7 @@ namespace tgui
         sf::Vector2f   m_maximumSize;
         sf::Vector2f   m_minimumSize;
         TitleAlignment m_titleAlignment = TitleAlignment::Center;
-        TitleButtons   m_titleButtons = TitleButtons::Close;
+        unsigned int   m_titleButtons = TitleButtons::Close;
         sf::String     m_closeButtonText = "x";
         sf::String     m_minimizeButtonText = "-";
         sf::String     m_maximizeButtonText = "+";
