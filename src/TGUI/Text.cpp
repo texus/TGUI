@@ -114,8 +114,26 @@ namespace tgui
     void Text::setFont(Font font)
     {
         m_font = font;
+
         if (font)
             m_text.setFont(*font.getFont());
+        else
+        {
+            // We can't keep using a pointer to the old font (it might be destroyed), but sf::Text has no function to pass an empty font
+            if (m_text.getFont())
+            {
+                m_text = {};
+                m_text.setString(getString());
+                m_text.setCharacterSize(getCharacterSize());
+                m_text.setStyle(getStyle());
+
+            #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
+                m_text.setFillColor(Color::calcColorOpacity(getColor(), getOpacity()));
+            #else
+                m_text.setColor(Color::calcColorOpacity(getColor(), getOpacity()));
+            #endif
+            }
+        }
 
         recalculateSize();
     }
@@ -250,6 +268,9 @@ namespace tgui
 
     float Text::calculateExtraVerticalSpace(Font font, unsigned int characterSize, TextStyle style)
     {
+        if (font == nullptr)
+            return 0;
+
         const bool bold = (style & sf::Text::Bold) != 0;
 
         // Calculate the height of the first line (char size = everything above baseline, height + top = part below baseline)
