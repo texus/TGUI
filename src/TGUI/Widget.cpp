@@ -757,7 +757,13 @@ namespace tgui
         if (property == "opacity")
             m_opacityCached = getRenderer()->getOpacity();
         else if (property == "font")
+        {
             m_fontCached = getRenderer()->getFont();
+
+            // Try to use the font of the parent when the font is removed
+            if (!m_fontCached && m_parent && m_parent->getRenderer()->getFont())
+                getRenderer()->setFont(m_parent->getRenderer()->getFont());
+        }
         else
             throw Exception{"Could not set property '" + property + "', widget of type '" + getWidgetType() + "' does not has this property."};
     }
