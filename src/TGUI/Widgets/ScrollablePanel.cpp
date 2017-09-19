@@ -123,7 +123,10 @@ namespace tgui
         Panel::removeAllWidgets();
 
         if (m_contentSize == sf::Vector2f{0, 0})
+        {
+            recalculateMostBottomRightPosition();
             updateScrollbars();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -350,6 +353,8 @@ namespace tgui
 
     void ScrollablePanel::recalculateMostBottomRightPosition()
     {
+        m_mostBottomRightPosition = {0, 0};
+
         for (const auto& widget : m_widgets)
         {
             const sf::Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
