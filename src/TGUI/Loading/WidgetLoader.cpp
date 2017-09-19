@@ -104,12 +104,20 @@ namespace tgui
             if (str.empty())
                 return {0, 0};
 
-            auto commaPos = str.find(',');
+            const auto commaPos = str.find(',');
             if (commaPos == std::string::npos)
                 throw Exception{"Failed to parse layout '" + str + "'. Expected expressions separated with a comma."};
 
-            return {trim(str.substr(0, commaPos)),
-                    trim(str.substr(commaPos + 1))};
+            // Remove quotes around the values
+            std::string x = trim(str.substr(0, commaPos));
+            if ((x.size() >= 2) && ((x[0] == '"') && (x[x.length()-1] == '"')))
+                x = x.substr(1, x.length()-2);
+
+            std::string y = trim(str.substr(commaPos + 1));
+            if ((y.size() >= 2) && ((y[0] == '"') && (y[y.length()-1] == '"')))
+                y = y.substr(1, y.length()-2);
+
+            return {x, y};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

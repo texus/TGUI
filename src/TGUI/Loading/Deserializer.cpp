@@ -204,7 +204,7 @@ namespace tgui
         ObjectConverter deserializeString(const std::string& value)
         {
             // Only deserialize the string when it is surrounded with quotes
-            if (!value.empty() && ((value[0] == '"') && (value[value.length()-1] == '"')))
+            if ((value.size() >= 2) && ((value[0] == '"') && (value[value.length()-1] == '"')))
             {
                 std::string result = value.substr(1, value.length()-2);
 
