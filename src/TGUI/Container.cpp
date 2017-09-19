@@ -605,6 +605,7 @@ namespace tgui
         sf::Event event;
         event.type = sf::Event::MouseWheelScrolled;
         event.mouseWheelScroll.delta = delta;
+        event.mouseWheelScroll.wheel = sf::Mouse::Wheel::VerticalWheel;
         event.mouseWheelScroll.x = static_cast<int>(pos.x - getPosition().x - getChildWidgetsOffset().x);
         event.mouseWheelScroll.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
 
