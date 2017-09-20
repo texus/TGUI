@@ -153,9 +153,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox::Ptr MessageBox::create()
+    MessageBox::Ptr MessageBox::create(sf::String title, sf::String text, std::vector<sf::String> buttons)
     {
-        return std::make_shared<MessageBox>();
+        auto messageBox = std::make_shared<MessageBox>();
+        messageBox->setTitle(title);
+        messageBox->setText(text);
+        for (auto& buttonText : buttons)
+            messageBox->addButton(std::move(buttonText));
+
+        return messageBox;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

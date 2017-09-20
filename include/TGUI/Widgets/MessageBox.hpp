@@ -56,10 +56,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new message box widget
         ///
-        /// @return The new message box
+        /// @param title   Title to display in the title bar of the message box
+        /// @param text    Text to display on the message box
+        /// @param buttons Buttons to display on the message box
         ///
+        /// @return The new message box
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static MessageBox::Ptr create();
+        static MessageBox::Ptr create(sf::String title = "", sf::String text = "", std::vector<sf::String> buttons = {});
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
