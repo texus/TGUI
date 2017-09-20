@@ -124,8 +124,8 @@ RadioButton {
 }
 
 Scrollbar {
-    TextureTrack     = "BabyBlue.png" Part(432, 2, 16, 32) Middle(0, 5, 32, 22);
-    TextureThumb     = "BabyBlue.png" Part(414, 2, 16, 32) Middle(0, 5, 32, 22);
+    TextureTrack     = "BabyBlue.png" Part(432, 2, 16, 32);
+    TextureThumb     = "BabyBlue.png" Part(414, 2, 16, 32);
     TextureArrowUp   = "BabyBlue.png" Part(2, 2, 16, 16);
     TextureArrowDown = "BabyBlue.png" Part(20, 2, 16, 16);
 }
