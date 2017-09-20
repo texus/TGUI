@@ -216,9 +216,11 @@ namespace tgui
     void MessageBox::addButton(const sf::String& caption)
     {
         auto button = Button::create(caption);
-        button->setRenderer(getRenderer()->getButton());
         button->setTextSize(m_textSize);
         button->connect("Pressed", [=]() { onButtonPress.emit(this, caption); });
+
+        if (!getRenderer()->getButton()->propertyValuePairs.empty())
+            button->setRenderer(getRenderer()->getButton());
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
         m_buttons.push_back(button);
