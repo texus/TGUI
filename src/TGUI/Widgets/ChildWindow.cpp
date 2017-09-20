@@ -103,7 +103,8 @@ namespace tgui
         float x = position.getValue().x;
         float y = position.getValue().y;
 
-        if (m_parent && m_keepInParent && ((y < 0) || (y > m_parent->getSize().y - m_titleBarHeightCached) || (x < 0) || (x > m_parent->getSize().x - getSize().x)))
+        if (m_parent && m_keepInParent && (m_parent->getSize().x > 0) && (m_parent->getSize().y > 0)
+         && ((y < 0) || (y > m_parent->getSize().y - m_titleBarHeightCached) || (x < 0) || (x > m_parent->getSize().x - getSize().x)))
         {
             if (y < 0)
                 y = 0;
@@ -331,6 +332,9 @@ namespace tgui
     void ChildWindow::keepInParent(bool enabled)
     {
         m_keepInParent = enabled;
+
+        if (enabled)
+            setPosition(m_position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -345,6 +349,15 @@ namespace tgui
     sf::Vector2f ChildWindow::getChildWidgetsOffset() const
     {
         return {m_bordersCached.getLeft(), m_bordersCached.getTop() + m_titleBarHeightCached};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::setParent(Container* parent)
+    {
+        Container::setParent(parent);
+        if (m_keepInParent)
+            setPosition(m_position);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
