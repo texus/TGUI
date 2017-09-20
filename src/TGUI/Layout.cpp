@@ -52,9 +52,17 @@ namespace tgui
             if (expression.back() == '%')
             {
                 // We don't know if we have to bind the width or height, so bind "size" and let the connectWidget function figure it out later
-                *this = Layout{Layout::Operation::Multiplies,
-                               make_unique<Layout>(tgui::stof(expression.substr(0, expression.length()-1)) / 100.f),
-                               make_unique<Layout>("&.size")};
+                if (expression == "100%")
+                {
+                    m_boundString = "&.size";
+                    m_operation = Operation::BindingString;
+                }
+                else // value is a fraction of parent size
+                {
+                    *this = Layout{Layout::Operation::Multiplies,
+                                   make_unique<Layout>(tgui::stof(expression.substr(0, expression.length()-1)) / 100.f),
+                                   make_unique<Layout>("&.size")};
+                }
             }
             else
             {
