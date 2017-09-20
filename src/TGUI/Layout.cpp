@@ -266,8 +266,7 @@ namespace tgui
         m_leftOperand    {other.m_leftOperand ? make_unique<Layout>(*other.m_leftOperand) : nullptr},
         m_rightOperand   {other.m_rightOperand ? make_unique<Layout>(*other.m_rightOperand) : nullptr},
         m_boundWidget    {other.m_boundWidget},
-        m_boundString    {other.m_boundString},
-        m_connectedWidget{nullptr}
+        m_boundString    {other.m_boundString}
     {
         // Disconnect the bound widget if a string was used, the same name may apply to a different widget now
         if (!m_boundString.empty())
@@ -285,8 +284,7 @@ namespace tgui
         m_leftOperand    {std::move(other.m_leftOperand)},
         m_rightOperand   {std::move(other.m_rightOperand)},
         m_boundWidget    {other.m_boundWidget},
-        m_boundString    {std::move(other.m_boundString)},
-        m_connectedWidget{nullptr}
+        m_boundString    {std::move(other.m_boundString)}
     {
         resetPointers();
     }
@@ -304,7 +302,6 @@ namespace tgui
             m_rightOperand    = other.m_rightOperand ? make_unique<Layout>(*other.m_rightOperand) : nullptr;
             m_boundWidget     = other.m_boundWidget;
             m_boundString     = other.m_boundString;
-            m_connectedWidget = nullptr;
 
             // Disconnect the bound widget if a string was used, the same name may apply to a different widget now
             if (!m_boundString.empty())
@@ -329,7 +326,6 @@ namespace tgui
             m_rightOperand    = std::move(other.m_rightOperand);
             m_boundWidget     = other.m_boundWidget;
             m_boundString     = std::move(other.m_boundString);
-            m_connectedWidget = nullptr;
 
             resetPointers();
         }
@@ -415,20 +411,21 @@ namespace tgui
 
     void Layout::connectWidget(Widget* widget, bool xAxis, std::function<void()> valueChangedCallbackHandler)
     {
-        m_connectedWidget = widget;
+        const float oldValue = m_value;
+
+        // No callbacks must be made while parsing, a single callback will be made when done if needed
+        m_connectedWidgetCallback = nullptr;
+
+        parseBindingStringRecursive(widget, xAxis);
+
+        // Restore the callback function
         m_connectedWidgetCallback = valueChangedCallbackHandler;
 
-        if (m_leftOperand)
+        if (m_value != oldValue)
         {
-            assert(m_rightOperand != nullptr);
-
-            m_leftOperand->connectWidget(widget, xAxis, nullptr);
-            m_rightOperand->connectWidget(widget, xAxis, nullptr);
+            if (m_connectedWidgetCallback)
+                m_connectedWidgetCallback();
         }
-
-        // Parse the string binding even when the referred widget was already found. The widget may be added to a different parent
-        if (!m_boundString.empty())
-            parseBindingString(m_boundString, widget, xAxis);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -498,6 +495,23 @@ namespace tgui
                     m_connectedWidgetCallback();
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::parseBindingStringRecursive(Widget* widget, bool xAxis)
+    {
+        if (m_leftOperand)
+        {
+            assert(m_rightOperand != nullptr);
+
+            m_leftOperand->parseBindingStringRecursive(widget, xAxis);
+            m_rightOperand->parseBindingStringRecursive(widget, xAxis);
+        }
+
+        // Parse the string binding even when the referred widget was already found. The widget may be added to a different parent
+        if (!m_boundString.empty())
+            parseBindingString(m_boundString, widget, xAxis);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

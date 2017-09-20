@@ -201,6 +201,12 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Check whether sublayouts contain a string that refers to a widget which should be bound.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void parseBindingStringRecursive(Widget* widget, bool xAxis);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Find the widget corresponding to the given name and bind it if found
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void parseBindingString(const std::string& expression, Widget* widget, bool xAxis);
@@ -216,7 +222,6 @@ namespace tgui
         std::unique_ptr<Layout> m_rightOperand = nullptr; // The left operand of the operation in case the operation is a math operation
         Widget* m_boundWidget = nullptr; // The widget on which this layout depends in case the operation is a binding
         std::string m_boundString; // String referring  to a widget on which this layout depends in case the layout was created from a string and contains a binding operation
-        Widget* m_connectedWidget = nullptr; // The widget that uses this layout for its position or size
         std::function<void()> m_connectedWidgetCallback = nullptr; // Function to call when the value of the layout changes in case the layout and sublayouts are not all constants
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
