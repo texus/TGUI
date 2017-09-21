@@ -19,7 +19,7 @@ sf::Color thumbColor = slider->getRenderer()->getThumbColor();
   <h3 id="sharing-renderer">Sharing renderer</h3>
   <p class="SmallBottomMargin">When not calling the setRenderer function, each widget will have its own renderer. You can however set the same renderer in multiple widgets so that changing the renderer changes all these widgets. Renderers that you get from <a href="../using-themes">themes</a> are always shared.</p>
 {% highlight c++ %}
-Theme theme{"TGUI/widgets/Black.txt"};
+Theme theme{"TGUI/themes/Black.txt"};
 button1->setRenderer(theme.getRenderer("Button"));
 button2->setRenderer(theme.getRenderer("Button"));
 button3->setRenderer(button2->getRenderer());

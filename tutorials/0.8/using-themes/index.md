@@ -9,10 +9,10 @@ breadcrumb: themes
 
   <p class="SmallBottomMargin">By default, the theme will load renderers from a file which you can specify either when constructing the instance or later on by calling the load function.</p>
 {% highlight c++ %}
-Theme blackTheme{"TGUI/widgets/Black.txt"};
+Theme blackTheme{"TGUI/themes/Black.txt"};
 
 Theme greyTheme;
-greyTheme.load("TGUI/widgets/TransparentGrey.txt");
+greyTheme.load("TGUI/themes/TransparentGrey.txt");
 {% endhighlight %}
 
   <p>Technically, it is actually an internal DefaultThemeLoader that handles the loading and you could <a href="../custom-theme-loader">specify a custom theme loader</a>, but that is not something the average user will need to worry about.</p>
@@ -42,8 +42,8 @@ theme.removeRenderer("RendererName");
   <h3 id="reloading-themes">Reloading themes</h3>
   <p class="SmallBottomMargin">One cool thing that you can do with themes is reloading all widgets that are using renderers from that theme. Say for instance that you have loaded all widgets with the Black skin and you want all of these widgets to use the BabyBlue skin. This is as simple as calling the load function again:</p>
 {% highlight c++ %}
-Theme theme{"TGUI/widgets/Black.txt"};
+Theme theme{"TGUI/themes/Black.txt"};
 button->setRenderer(theme.getRenderer("Button")); // Button changes from White to Black skin
-theme.load("TGUI/widgets/BabyBlue.txt"); // Button changes from Black to BabyBlue skin
+theme.load("TGUI/themes/BabyBlue.txt"); // Button changes from Black to BabyBlue skin
 {% endhighlight %}
 </div>

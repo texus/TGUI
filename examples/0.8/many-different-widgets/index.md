@@ -16,7 +16,7 @@ int main()
 
     try
     {
-        tgui::Theme theme{"../../widgets/Black.txt"};
+        tgui::Theme theme{"../../themes/Black.txt"};
 
         gui.add(tgui::Picture::create("../RedBackground.jpg"));
 
