@@ -64,6 +64,9 @@ namespace tgui
         using DelegateEx = std::function<void(std::shared_ptr<Widget>, const std::string&)>;
 
 
+        virtual ~Signal() = default;
+
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         ///
@@ -847,6 +850,9 @@ namespace tgui
     class TGUI_API SignalWidgetBase
     {
     public:
+
+        virtual ~SignalWidgetBase() = default;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted

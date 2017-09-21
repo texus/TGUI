@@ -65,6 +65,8 @@ namespace tgui
                 Fade = 4
             };
 
+            virtual ~Animation() = default;
+
             Type getType() const;
 
             virtual bool update(sf::Time elapsedTime) = 0;
