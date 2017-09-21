@@ -332,9 +332,9 @@ endif()
 # Jump to the CMakeLists.txt file in the source folder
 add_subdirectory(src/TGUI)
 
-# Install the widgets on linux
+# Install the themes on linux
 if (SFML_OS_LINUX)
-    install( DIRECTORY widgets DESTINATION "${INSTALL_MISC_DIR}" )
+    install( DIRECTORY themes DESTINATION "${INSTALL_MISC_DIR}" )
 endif()
 
 # Build the documentation when requested

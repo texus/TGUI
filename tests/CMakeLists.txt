@@ -72,9 +72,9 @@ add_custom_command(TARGET tests
                    POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/tests/expected $<TARGET_FILE_DIR:tests>/expected
                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/tests/resources $<TARGET_FILE_DIR:tests>/resources
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/widgets/Knob $<TARGET_FILE_DIR:tests>/resources/Knob
-                   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/widgets/Black.png $<TARGET_FILE_DIR:tests>/resources
-                   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/widgets/Black.txt $<TARGET_FILE_DIR:tests>/resources)
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/themes/Knob $<TARGET_FILE_DIR:tests>/resources/Knob
+                   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/themes/Black.png $<TARGET_FILE_DIR:tests>/resources
+                   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/themes/Black.txt $<TARGET_FILE_DIR:tests>/resources)
 
 # Add the install rule for the executable
 install(TARGETS tests
@@ -85,6 +85,6 @@ install(TARGETS tests
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/tests/resources"
         DESTINATION "${INSTALL_MISC_DIR}/tests"
         COMPONENT tests)
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/widgets/"
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/themes/"
         DESTINATION "${INSTALL_MISC_DIR}/tests/resources"
         COMPONENT tests)
