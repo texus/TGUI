@@ -295,6 +295,8 @@ namespace tgui
     {
         if (this != &other)
         {
+            unbindLayout();
+
             m_value           = other.m_value;
             m_parent          = other.m_parent;
             m_operation       = other.m_operation;
@@ -319,6 +321,8 @@ namespace tgui
     {
         if (this != &other)
         {
+            unbindLayout();
+
             m_value           = std::move(other.m_value);
             m_parent          = std::move(other.m_parent);
             m_operation       = other.m_operation;
@@ -337,15 +341,7 @@ namespace tgui
 
     Layout::~Layout()
     {
-        if (m_boundWidget)
-        {
-            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop) || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight));
-
-            if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
-                m_boundWidget->unbindPositionLayout(this);
-            else // if ((m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight))
-                m_boundWidget->unbindSizeLayout(this);
-        }
+        unbindLayout();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -381,6 +377,21 @@ namespace tgui
         {
             // Hopefully the expression is stored in the bound string, otherwise (i.e. when bind functions were used) it is infeasible to turn it into a string
             return m_boundString;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Layout::unbindLayout()
+    {
+        if (m_boundWidget)
+        {
+            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop) || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight));
+
+            if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
+                m_boundWidget->unbindPositionLayout(this);
+            else // if ((m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight))
+                m_boundWidget->unbindSizeLayout(this);
         }
     }
 
