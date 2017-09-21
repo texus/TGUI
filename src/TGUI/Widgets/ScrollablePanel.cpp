@@ -352,8 +352,11 @@ namespace tgui
         m_verticalScrollbar.setPosition(getChildWidgetsOffset().x + getInnerSize().x - m_verticalScrollbar.getSize().x, getChildWidgetsOffset().y);
         m_horizontalScrollbar.setPosition(getChildWidgetsOffset().x, getChildWidgetsOffset().y + getInnerSize().y - m_horizontalScrollbar.getSize().y);
 
-        m_verticalScrollbar.setScrollAmount(static_cast<unsigned int>(std::ceil((m_verticalScrollbar.getMaximum() - m_verticalScrollbar.getLowValue()) / 50.f)));
-        m_horizontalScrollbar.setScrollAmount(static_cast<unsigned int>(std::ceil((m_horizontalScrollbar.getMaximum() - m_horizontalScrollbar.getLowValue()) / 50.f)));
+        const float verticalSpeed = 40.f * (static_cast<float>(m_verticalScrollbar.getMaximum() - m_verticalScrollbar.getLowValue()) / m_verticalScrollbar.getLowValue());
+        m_verticalScrollbar.setScrollAmount(std::ceil(std::sqrt(verticalSpeed)));
+
+        const float horizontalSpeed = 40.f * (static_cast<float>(m_horizontalScrollbar.getMaximum() - m_horizontalScrollbar.getLowValue()) / m_horizontalScrollbar.getLowValue());
+        m_horizontalScrollbar.setScrollAmount(std::ceil(std::sqrt(horizontalSpeed)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
