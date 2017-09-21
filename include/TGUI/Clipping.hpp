@@ -67,7 +67,7 @@ namespace tgui
             // If the object outside the window then don't draw anything
             if (scissorRight < scissorLeft)
                 scissorRight = scissorLeft;
-            else if (scissorBottom < scissorTop)
+            if (scissorBottom < scissorTop)
                 scissorTop = scissorBottom;
 
             // Set the clipping area
