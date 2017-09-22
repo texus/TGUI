@@ -37,7 +37,7 @@ namespace tgui
         m_type = "Group";
 
         m_renderer = aurora::makeCopied<GroupRenderer>();
-        setRenderer(RendererData::create());
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize(size);
     }
@@ -57,6 +57,34 @@ namespace tgui
             return std::static_pointer_cast<Group>(group->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    GroupRenderer* Group::getSharedRenderer()
+    {
+        return aurora::downcast<GroupRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const GroupRenderer* Group::getSharedRenderer() const
+    {
+        return aurora::downcast<const GroupRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    GroupRenderer* Group::getRenderer()
+    {
+        return aurora::downcast<GroupRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const GroupRenderer* Group::getRenderer() const
+    {
+        return aurora::downcast<const GroupRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +139,7 @@ namespace tgui
     {
         if (property == "padding")
         {
-            m_paddingCached = getRenderer()->getPadding();
+            m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
         else

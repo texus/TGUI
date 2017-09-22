@@ -32,19 +32,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{2}},
-                {"padding", Padding{0}},
-                {"bordercolor", sf::Color::Black},
-                {"textcolor", sf::Color::Black},
-                {"backgroundcolor", Color{245, 245, 245}},
-                {"arrowcolor", Color{60, 60, 60}},
-                {"arrowcolorhover", sf::Color::Black},
-                {"arrowbackgroundcolor", Color{245, 245, 245}},
-                {"arrowbackgroundcolorhover", sf::Color::White}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox()
@@ -56,7 +43,7 @@ namespace tgui
         initListBox();
 
         m_renderer = aurora::makeCopied<ComboBoxRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize({150, 24});
     }
@@ -186,6 +173,34 @@ namespace tgui
             return std::static_pointer_cast<ComboBox>(comboBox->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ComboBoxRenderer* ComboBox::getSharedRenderer()
+    {
+        return aurora::downcast<ComboBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ComboBoxRenderer* ComboBox::getSharedRenderer() const
+    {
+        return aurora::downcast<const ComboBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ComboBoxRenderer* ComboBox::getRenderer()
+    {
+        return aurora::downcast<ComboBoxRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ComboBoxRenderer* ComboBox::getRenderer() const
+    {
+        return aurora::downcast<const ComboBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -521,71 +536,71 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if (property == "padding")
         {
-            m_paddingCached = getRenderer()->getPadding();
+            m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
         else if (property == "textcolor")
         {
-            m_text.setColor(getRenderer()->getTextColor());
+            m_text.setColor(getSharedRenderer()->getTextColor());
         }
         else if (property == "textstyle")
         {
-            m_text.setStyle(getRenderer()->getTextStyle());
+            m_text.setStyle(getSharedRenderer()->getTextStyle());
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
         else if (property == "texturearrowup")
         {
-            m_spriteArrowUp.setTexture(getRenderer()->getTextureArrowUp());
+            m_spriteArrowUp.setTexture(getSharedRenderer()->getTextureArrowUp());
             setSize(m_size);
         }
         else if (property == "texturearrowuphover")
         {
-            m_spriteArrowUpHover.setTexture(getRenderer()->getTextureArrowUpHover());
+            m_spriteArrowUpHover.setTexture(getSharedRenderer()->getTextureArrowUpHover());
         }
         else if (property == "texturearrowdown")
         {
-            m_spriteArrowDown.setTexture(getRenderer()->getTextureArrowDown());
+            m_spriteArrowDown.setTexture(getSharedRenderer()->getTextureArrowDown());
             setSize(m_size);
         }
         else if (property == "texturearrowdownhover")
         {
-            m_spriteArrowDownHover.setTexture(getRenderer()->getTextureArrowDownHover());
+            m_spriteArrowDownHover.setTexture(getSharedRenderer()->getTextureArrowDownHover());
         }
         else if (property == "listbox")
         {
-            m_listBox->setRenderer(getRenderer()->getListBox());
+            m_listBox->setRenderer(getSharedRenderer()->getListBox());
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "arrowbackgroundcolor")
         {
-            m_arrowBackgroundColorCached = getRenderer()->getArrowBackgroundColor();
+            m_arrowBackgroundColorCached = getSharedRenderer()->getArrowBackgroundColor();
         }
         else if (property == "arrowbackgroundcolorhover")
         {
-            m_arrowBackgroundColorHoverCached = getRenderer()->getArrowBackgroundColorHover();
+            m_arrowBackgroundColorHoverCached = getSharedRenderer()->getArrowBackgroundColorHover();
         }
         else if (property == "arrowcolor")
         {
-            m_arrowColorCached = getRenderer()->getArrowColor();
+            m_arrowColorCached = getSharedRenderer()->getArrowColor();
         }
         else if (property == "arrowcolorhover")
         {
-            m_arrowColorHoverCached = getRenderer()->getArrowColorHover();
+            m_arrowColorHoverCached = getSharedRenderer()->getArrowColorHover();
         }
         else if (property == "opacity")
         {
@@ -604,9 +619,7 @@ namespace tgui
             Widget::rendererChanged(property);
 
             m_text.setFont(m_fontCached);
-
-            if (m_listBox->getRenderer()->getFont() == nullptr)
-                m_listBox->getRenderer()->setFont(m_fontCached);
+            m_listBox->setInheritedFont(m_fontCached);
 
             setSize(m_size);
         }
@@ -626,8 +639,8 @@ namespace tgui
 
     void ComboBox::updateListBoxHeight()
     {
-        const Borders borders = m_listBox->getRenderer()->getBorders();
-        const Padding padding = m_listBox->getRenderer()->getPadding();
+        const Borders borders = m_listBox->getSharedRenderer()->getBorders();
+        const Padding padding = m_listBox->getSharedRenderer()->getPadding();
 
         if (m_nrOfItemsToDisplay > 0)
             m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * (std::min<std::size_t>(m_nrOfItemsToDisplay, std::max<std::size_t>(m_listBox->getItemCount(), 1))))

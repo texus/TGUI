@@ -36,7 +36,7 @@ namespace tgui
         m_type = "Picture";
 
         m_renderer = aurora::makeCopied<PictureRenderer>();
-        setRenderer(RendererData::create({}));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,6 +64,34 @@ namespace tgui
             return std::static_pointer_cast<Picture>(picture->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    PictureRenderer* Picture::getSharedRenderer()
+    {
+        return aurora::downcast<PictureRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const PictureRenderer* Picture::getSharedRenderer() const
+    {
+        return aurora::downcast<const PictureRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    PictureRenderer* Picture::getRenderer()
+    {
+        return aurora::downcast<PictureRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const PictureRenderer* Picture::getRenderer() const
+    {
+        return aurora::downcast<const PictureRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +176,7 @@ namespace tgui
     {
         if (property == "texture")
         {
-            const auto& texture = getRenderer()->getTexture();
+            const auto& texture = getSharedRenderer()->getTexture();
 
             if (!m_sprite.isSet() && (getSize() == sf::Vector2f{0,0}))
                 setSize(texture.getImageSize());
@@ -157,7 +185,7 @@ namespace tgui
         }
         else if (property == "ignoretransparentparts")
         {
-            m_ignoreTransparentParts = getRenderer()->getIgnoreTransparentParts();
+            m_ignoreTransparentParts = getSharedRenderer()->getIgnoreTransparentParts();
         }
         else if (property == "opacity")
         {

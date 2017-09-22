@@ -49,7 +49,8 @@ namespace tgui
         }
 
         std::map<std::string, ObjectConverter> propertyValuePairs;
-        std::map<void*, std::function<void(const std::string& property)>> observers;
+        std::map<const void*, std::function<void(const std::string& property)>> observers;
+        bool shared = true;
     };
 
 
@@ -82,7 +83,7 @@ namespace tgui
         /// @brief Virtual destructor
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual ~WidgetRenderer() {};
+        virtual ~WidgetRenderer() = default;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +165,7 @@ namespace tgui
         /// @param function Callback function to call when the renderer changes
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void subscribe(void* id, const std::function<void(const std::string& property)>& function);
+        void subscribe(const void* id, const std::function<void(const std::string& property)>& function);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,7 +174,7 @@ namespace tgui
         /// @param id  Unique identifier used when subscribing the callback function
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void unsubscribe(void* id);
+        void unsubscribe(const void* id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

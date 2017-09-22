@@ -213,8 +213,6 @@ TEST_CASE("[TextBox]")
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
                 renderer->setCaretWidth(2);
-
-                REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 0);
                 renderer->setScrollbar(scrollbarRenderer.getData());
             }
 

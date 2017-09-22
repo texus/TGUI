@@ -30,17 +30,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"trackcolor", Color{245, 245, 245}},
-                {"thumbcolor", Color{220, 220, 220}},
-                {"thumbcolorhover", Color{230, 230, 230}},
-                {"arrowbackgroundcolor", Color{245, 245, 245}},
-                {"arrowbackgroundcolorhover", Color{255, 255, 255}},
-                {"arrowcolor", Color{60, 60, 60}},
-                {"arrowcolorhover", Color{0, 0, 0}}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Scrollbar::Scrollbar()
@@ -50,7 +39,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<ScrollbarRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize(16, 160);
     }
@@ -70,6 +59,34 @@ namespace tgui
             return std::static_pointer_cast<Scrollbar>(scrollbar->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarRenderer* Scrollbar::getSharedRenderer()
+    {
+        return aurora::downcast<ScrollbarRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ScrollbarRenderer* Scrollbar::getSharedRenderer() const
+    {
+        return aurora::downcast<const ScrollbarRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollbarRenderer* Scrollbar::getRenderer()
+    {
+        return aurora::downcast<ScrollbarRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ScrollbarRenderer* Scrollbar::getRenderer() const
+    {
+        return aurora::downcast<const ScrollbarRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -680,71 +697,71 @@ namespace tgui
     {
         if (property == "texturetrack")
         {
-            m_spriteTrack.setTexture(getRenderer()->getTextureTrack());
+            m_spriteTrack.setTexture(getSharedRenderer()->getTextureTrack());
             setSize(m_size);
         }
         else if (property == "texturetrackhover")
         {
-            m_spriteTrackHover.setTexture(getRenderer()->getTextureTrackHover());
+            m_spriteTrackHover.setTexture(getSharedRenderer()->getTextureTrackHover());
         }
         else if (property == "texturethumb")
         {
-            m_spriteThumb.setTexture(getRenderer()->getTextureThumb());
+            m_spriteThumb.setTexture(getSharedRenderer()->getTextureThumb());
             setSize(m_size);
         }
         else if (property == "texturethumbhover")
         {
-            m_spriteThumbHover.setTexture(getRenderer()->getTextureThumbHover());
+            m_spriteThumbHover.setTexture(getSharedRenderer()->getTextureThumbHover());
         }
         else if (property == "texturearrowup")
         {
-            m_spriteArrowUp.setTexture(getRenderer()->getTextureArrowUp());
+            m_spriteArrowUp.setTexture(getSharedRenderer()->getTextureArrowUp());
             setSize(m_size);
         }
         else if (property == "texturearrowuphover")
         {
-            m_spriteArrowUpHover.setTexture(getRenderer()->getTextureArrowUpHover());
+            m_spriteArrowUpHover.setTexture(getSharedRenderer()->getTextureArrowUpHover());
         }
         else if (property == "texturearrowdown")
         {
-            m_spriteArrowDown.setTexture(getRenderer()->getTextureArrowDown());
+            m_spriteArrowDown.setTexture(getSharedRenderer()->getTextureArrowDown());
             setSize(m_size);
         }
         else if (property == "texturearrowdownhover")
         {
-            m_spriteArrowDownHover.setTexture(getRenderer()->getTextureArrowDownHover());
+            m_spriteArrowDownHover.setTexture(getSharedRenderer()->getTextureArrowDownHover());
         }
         else if (property == "trackcolor")
         {
-            m_trackColorCached = getRenderer()->getTrackColor();
+            m_trackColorCached = getSharedRenderer()->getTrackColor();
         }
         else if (property == "trackcolorhover")
         {
-            m_trackColorHoverCached = getRenderer()->getTrackColorHover();
+            m_trackColorHoverCached = getSharedRenderer()->getTrackColorHover();
         }
         else if (property == "thumbcolor")
         {
-            m_thumbColorCached = getRenderer()->getThumbColor();
+            m_thumbColorCached = getSharedRenderer()->getThumbColor();
         }
         else if (property == "thumbcolorhover")
         {
-            m_thumbColorHoverCached = getRenderer()->getThumbColorHover();
+            m_thumbColorHoverCached = getSharedRenderer()->getThumbColorHover();
         }
         else if (property == "arrowbackgroundcolor")
         {
-            m_arrowBackgroundColorCached = getRenderer()->getArrowBackgroundColor();
+            m_arrowBackgroundColorCached = getSharedRenderer()->getArrowBackgroundColor();
         }
         else if (property == "arrowbackgroundcolorhover")
         {
-            m_arrowBackgroundColorHoverCached = getRenderer()->getArrowBackgroundColorHover();
+            m_arrowBackgroundColorHoverCached = getSharedRenderer()->getArrowBackgroundColorHover();
         }
         else if (property == "arrowcolor")
         {
-            m_arrowColorCached = getRenderer()->getArrowColor();
+            m_arrowColorCached = getSharedRenderer()->getArrowColor();
         }
         else if (property == "arrowcolorhover")
         {
-            m_arrowColorHoverCached = getRenderer()->getArrowColorHover();
+            m_arrowColorHoverCached = getSharedRenderer()->getArrowColorHover();
         }
         else if (property == "opacity")
         {

@@ -32,14 +32,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{2}},
-                {"padding", Padding{2, 0, 0, 0}},
-                {"bordercolor", sf::Color::Black},
-                {"backgroundcolor", Color{245, 245, 245}}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChatBox::ChatBox()
@@ -48,7 +40,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<ChatBoxRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize({200, 126});
         setTextSize(m_textSize);
@@ -69,6 +61,34 @@ namespace tgui
             return std::static_pointer_cast<ChatBox>(chatBox->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChatBoxRenderer* ChatBox::getSharedRenderer()
+    {
+        return aurora::downcast<ChatBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ChatBoxRenderer* ChatBox::getSharedRenderer() const
+    {
+        return aurora::downcast<const ChatBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChatBoxRenderer* ChatBox::getRenderer()
+    {
+        return aurora::downcast<ChatBoxRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ChatBoxRenderer* ChatBox::getRenderer() const
+    {
+        return aurora::downcast<const ChatBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -444,36 +464,36 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if (property == "padding")
         {
-            m_paddingCached = getRenderer()->getPadding();
+            m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
         else if (property == "scrollbar")
         {
-            m_scroll.setRenderer(getRenderer()->getScrollbar());
+            m_scroll.setRenderer(getSharedRenderer()->getScrollbar());
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "opacity")
         {
             Widget::rendererChanged(property);
 
             m_spriteBackground.setOpacity(m_opacityCached);
-            m_scroll.getRenderer()->setOpacity(m_opacityCached);
+            m_scroll.setInheritedOpacity(m_opacityCached);
 
             for (auto& line : m_lines)
                 line.text.setOpacity(m_opacityCached);

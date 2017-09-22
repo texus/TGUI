@@ -45,9 +45,16 @@ namespace tgui
         /// @brief Constructs the theme class, with an optional theme file to load
         ///
         /// @param primary  Primary parameter for the theme loader (filename of the theme file in DefaultThemeLoader)
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Theme(const std::string& primary = "");
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Destructor
+        ///
+        /// When a pointer to this theme was passed to setDefault, the default theme will be reset.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ~Theme();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +64,6 @@ namespace tgui
         ///
         /// When the theme was loaded before and a renderer with the same name is encountered, the widgets that were using
         /// the old renderer will be reloaded with the new renderer.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::string& primary);
 
@@ -69,8 +75,21 @@ namespace tgui
         ///
         /// @return Shared renderer data
         ///
+        /// @throw
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::shared_ptr<RendererData> getRenderer(const std::string& id);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Gets data for the renderers
+        ///
+        /// @param id  The secondary parameter for the theme loader (name of section in theme file in DefaultThemeLoader).
+        ///
+        /// @return Shared renderer data
+        ///
+        /// Unlike getRenderer which throws an exception, this function will return nullptr when the renderer is not found
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::shared_ptr<RendererData> getRendererNoThrow(const std::string& id);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +100,6 @@ namespace tgui
         ///
         /// If a renderer with the same id already exists then it will be replaced by this one.
         /// Widgets using the old renderer will keep using that old renderer and remain unchanged.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addRenderer(const std::string& id, std::shared_ptr<RendererData> renderer);
 
@@ -92,7 +110,6 @@ namespace tgui
         /// @param id  Identifier of the renderer
         ///
         /// @return True when removed, false when the identifier did not match any renderer
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeRenderer(const std::string& id);
 
@@ -101,7 +118,6 @@ namespace tgui
         /// @brief Changes the function that will load the widget theme data
         ///
         /// @param themeLoader  Pointer to the new loader
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void setThemeLoader(std::shared_ptr<BaseThemeLoader> themeLoader);
 
@@ -110,14 +126,36 @@ namespace tgui
         /// @brief Returns the function that is currently being used to load the widget theme data
         ///
         /// @return  Theme loader
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static std::shared_ptr<BaseThemeLoader> getThemeLoader();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the theme class that widgets use by default
+        ///
+        /// @param theme  Theme to use as default
+        ///
+        /// The default theme will automatically be reset to nullptr when the theme that is pointed to is destructed.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static void setDefault(Theme* theme);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns a pointer to the theme class that widgets use by default
+        ///
+        /// @return Default theme
+        ///
+        /// @warning When setDefault was not called or was given a nullptr as parameter, getDefault will return the default
+        ///          theme. If you set textures in this theme then you MUST call setDefault(nullptr) before the end of the
+        ///          program to prevent a potential crash due to undefined order of destruction.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static Theme* getDefault();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
+        static Theme* m_defaultTheme;
         static std::shared_ptr<BaseThemeLoader> m_themeLoader;  ///< Theme loader which will do the actual loading
         std::map<std::string, std::shared_ptr<RendererData>> m_renderers; ///< Maps ids to renderer datas
         std::string m_primary;

@@ -36,6 +36,9 @@ namespace tgui
         BoxLayoutRatios{size}
     {
         m_type = "VerticalLayout";
+
+        m_renderer = aurora::makeCopied<BoxLayoutRenderer>();
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

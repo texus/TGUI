@@ -40,7 +40,6 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Base class for theme loader implementations
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API BaseThemeLoader
     {
@@ -56,7 +55,6 @@ namespace tgui
         /// @brief Optionally already do some work when only the primary parameter is known yet
         ///
         /// @param primary    Primary parameter of the loader (filename of the theme file in DefaultThemeLoader)
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void preload(const std::string& primary);
 
@@ -70,9 +68,21 @@ namespace tgui
         /// For the default loader, the primary parameter is the filename while the secondary parameter is the section name.
         ///
         /// @return Map op property-value pairs
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual const std::map<sf::String, sf::String>& load(const std::string& primary, const std::string& secondary) = 0;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Check if the requested property-value pairs are available
+        ///
+        /// @param primary    Primary parameter of the loader
+        /// @param secondary  Secondary parameter of the loader
+        ///
+        /// For the default loader, the primary parameter is the filename while the secondary parameter is the section name.
+        ///
+        /// @return Whether a map op property-value pairs is available
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool canLoad(const std::string& primary, const std::string& secondary) = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +96,6 @@ namespace tgui
     /// This loader will be able to extract the data from these files.
     ///
     /// On first access, the entire file will be cached, the next times the cached map is simply returned.
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API DefaultThemeLoader : public BaseThemeLoader
     {
@@ -98,7 +107,6 @@ namespace tgui
         /// @param filename  Filename of the theme file to load
         ///
         /// @exception Exception when finding syntax errors in the file
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void preload(const std::string& filename) override;
 
@@ -113,9 +121,19 @@ namespace tgui
         ///
         /// @exception Exception when finding syntax errors in the file
         /// @exception Exception when file did not contain requested class name
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const std::map<sf::String, sf::String>& load(const std::string& filename, const std::string& section) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Check if the requested property-value pairs are available
+        ///
+        /// @param filename   Filename of the theme file
+        /// @param section    Name of the section inside the theme file
+        ///
+        /// @return Whether a map op property-value pairs is available
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool canLoad(const std::string& filename, const std::string& section) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +141,6 @@ namespace tgui
         ///
         /// @param filename  File to remove from cache.
         ///                  If no filename is given, the entire cache is cleared.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void flushCache(const std::string& filename = "");
 

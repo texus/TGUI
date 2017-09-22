@@ -49,7 +49,7 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, TextStyle, sf::Text::Regular)
 
-    TGUI_RENDERER_PROPERTY_RENDERER(ComboBoxRenderer, ListBox)
+    TGUI_RENDERER_PROPERTY_RENDERER(ComboBoxRenderer, ListBox, "listbox")
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

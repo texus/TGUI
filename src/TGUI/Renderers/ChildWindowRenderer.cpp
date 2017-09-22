@@ -39,9 +39,9 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ChildWindowRenderer, TextureTitleBar)
 
-    TGUI_RENDERER_PROPERTY_RENDERER(ChildWindowRenderer, CloseButton)
-    TGUI_RENDERER_PROPERTY_RENDERER(ChildWindowRenderer, MaximizeButton)
-    TGUI_RENDERER_PROPERTY_RENDERER(ChildWindowRenderer, MinimizeButton)
+    TGUI_RENDERER_PROPERTY_RENDERER(ChildWindowRenderer, CloseButton, "childwindowbutton")
+    TGUI_RENDERER_PROPERTY_RENDERER(ChildWindowRenderer, MaximizeButton, "childwindowbutton")
+    TGUI_RENDERER_PROPERTY_RENDERER(ChildWindowRenderer, MinimizeButton, "childwindowbutton")
 
     TGUI_RENDERER_PROPERTY_NUMBER(ChildWindowRenderer, DistanceToSide, 3)
     TGUI_RENDERER_PROPERTY_NUMBER(ChildWindowRenderer, PaddingBetweenButtons, 1)

@@ -29,21 +29,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{3}},
-                {"bordercolor", Color{60, 60, 60}},
-                {"bordercolorhover", sf::Color::Black},
-                {"textcolor", Color{60, 60, 60}},
-                {"textcolorhover", sf::Color::Black},
-                {"backgroundcolor", Color{245, 245, 245}},
-                {"backgroundcolorhover", sf::Color::White},
-                {"checkcolor", Color{60, 60, 60}},
-                {"checkcolorhover", sf::Color::Black},
-                {"textdistanceratio", 0.2f}
-                ///TODO: Define default disabled colors
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RadioButton::RadioButton()
@@ -51,7 +36,7 @@ namespace tgui
         m_type = "RadioButton";
 
         m_renderer = aurora::makeCopied<RadioButtonRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize({24, 24});
     }
@@ -71,6 +56,34 @@ namespace tgui
             return std::static_pointer_cast<RadioButton>(radioButton->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    RadioButtonRenderer* RadioButton::getSharedRenderer()
+    {
+        return aurora::downcast<RadioButtonRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const RadioButtonRenderer* RadioButton::getSharedRenderer() const
+    {
+        return aurora::downcast<const RadioButtonRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    RadioButtonRenderer* RadioButton::getRenderer()
+    {
+        return aurora::downcast<RadioButtonRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const RadioButtonRenderer* RadioButton::getRenderer() const
+    {
+        return aurora::downcast<const RadioButtonRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +302,7 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             m_bordersCached.updateParentSize(getSize());
             updateTextureSizes();
         }
@@ -300,7 +313,7 @@ namespace tgui
         }
         else if (property == "textstyle")
         {
-            m_textStyleCached = getRenderer()->getTextStyle();
+            m_textStyleCached = getSharedRenderer()->getTextStyle();
 
             if (m_checked && m_textStyleCheckedCached.isSet())
                 m_text.setStyle(m_textStyleCheckedCached);
@@ -309,7 +322,7 @@ namespace tgui
         }
         else if (property == "textstylechecked")
         {
-            m_textStyleCheckedCached = getRenderer()->getTextStyleChecked();
+            m_textStyleCheckedCached = getSharedRenderer()->getTextStyleChecked();
 
             if (m_checked && m_textStyleCheckedCached.isSet())
                 m_text.setStyle(m_textStyleCheckedCached);
@@ -318,98 +331,98 @@ namespace tgui
         }
         else if (property == "textureunchecked")
         {
-            m_spriteUnchecked.setTexture(getRenderer()->getTextureUnchecked());
+            m_spriteUnchecked.setTexture(getSharedRenderer()->getTextureUnchecked());
             updateTextureSizes();
         }
         else if (property == "texturechecked")
         {
-            m_spriteChecked.setTexture(getRenderer()->getTextureChecked());
+            m_spriteChecked.setTexture(getSharedRenderer()->getTextureChecked());
             updateTextureSizes();
         }
         else if (property == "textureuncheckedhover")
         {
-            m_spriteUncheckedHover.setTexture(getRenderer()->getTextureUncheckedHover());
+            m_spriteUncheckedHover.setTexture(getSharedRenderer()->getTextureUncheckedHover());
         }
         else if (property == "texturecheckedhover")
         {
-            m_spriteCheckedHover.setTexture(getRenderer()->getTextureCheckedHover());
+            m_spriteCheckedHover.setTexture(getSharedRenderer()->getTextureCheckedHover());
         }
         else if (property == "textureuncheckeddisabled")
         {
-            m_spriteUncheckedDisabled.setTexture(getRenderer()->getTextureUncheckedDisabled());
+            m_spriteUncheckedDisabled.setTexture(getSharedRenderer()->getTextureUncheckedDisabled());
         }
         else if (property == "texturecheckeddisabled")
         {
-            m_spriteCheckedDisabled.setTexture(getRenderer()->getTextureCheckedDisabled());
+            m_spriteCheckedDisabled.setTexture(getSharedRenderer()->getTextureCheckedDisabled());
         }
         else if (property == "texturefocused")
         {
-            m_spriteFocused.setTexture(getRenderer()->getTextureFocused());
+            m_spriteFocused.setTexture(getSharedRenderer()->getTextureFocused());
             m_allowFocus = m_spriteFocused.isSet();
         }
         else if (property == "checkcolor")
         {
-            m_checkColorCached = getRenderer()->getCheckColor();
+            m_checkColorCached = getSharedRenderer()->getCheckColor();
         }
         else if (property == "checkcolorhover")
         {
-            m_checkColorHoverCached = getRenderer()->getCheckColorHover();
+            m_checkColorHoverCached = getSharedRenderer()->getCheckColorHover();
         }
         else if (property == "checkcolordisabled")
         {
-            m_checkColorDisabledCached = getRenderer()->getCheckColorDisabled();
+            m_checkColorDisabledCached = getSharedRenderer()->getCheckColorDisabled();
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "bordercolorhover")
         {
-            m_borderColorHoverCached = getRenderer()->getBorderColorHover();
+            m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
         else if (property == "bordercolordisabled")
         {
-            m_borderColorDisabledCached = getRenderer()->getBorderColorDisabled();
+            m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
         }
         else if (property == "bordercolorchecked")
         {
-            m_borderColorCheckedCached = getRenderer()->getBorderColorChecked();
+            m_borderColorCheckedCached = getSharedRenderer()->getBorderColorChecked();
         }
         else if (property == "bordercolorcheckedhover")
         {
-            m_borderColorCheckedHoverCached = getRenderer()->getBorderColorCheckedHover();
+            m_borderColorCheckedHoverCached = getSharedRenderer()->getBorderColorCheckedHover();
         }
         else if (property == "bordercolorcheckeddisabled")
         {
-            m_borderColorCheckedDisabledCached = getRenderer()->getBorderColorCheckedDisabled();
+            m_borderColorCheckedDisabledCached = getSharedRenderer()->getBorderColorCheckedDisabled();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "backgroundcolorhover")
         {
-            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+            m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
         else if (property == "backgroundcolordisabled")
         {
-            m_backgroundColorDisabledCached = getRenderer()->getBackgroundColorDisabled();
+            m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
         else if (property == "backgroundcolorchecked")
         {
-            m_backgroundColorCheckedCached = getRenderer()->getBackgroundColorChecked();
+            m_backgroundColorCheckedCached = getSharedRenderer()->getBackgroundColorChecked();
         }
         else if (property == "backgroundcolorcheckedhover")
         {
-            m_backgroundColorCheckedHoverCached = getRenderer()->getBackgroundColorCheckedHover();
+            m_backgroundColorCheckedHoverCached = getSharedRenderer()->getBackgroundColorCheckedHover();
         }
         else if (property == "backgroundcolorcheckeddisabled")
         {
-            m_backgroundColorCheckedDisabledCached = getRenderer()->getBackgroundColorCheckedDisabled();
+            m_backgroundColorCheckedDisabledCached = getSharedRenderer()->getBackgroundColorCheckedDisabled();
         }
         else if (property == "textdistanceratio")
         {
-            m_textDistanceRatioCached = getRenderer()->getTextDistanceRatio();
+            m_textDistanceRatioCached = getSharedRenderer()->getTextDistanceRatio();
         }
         else if (property == "opacity")
         {
@@ -448,12 +461,12 @@ namespace tgui
 
     sf::Color RadioButton::getCurrentCheckColor() const
     {
-        if (!m_enabled && getRenderer()->getCheckColorDisabled().isSet())
-            return getRenderer()->getCheckColorDisabled();
-        else if (m_mouseHover && getRenderer()->getCheckColorHover().isSet())
-            return getRenderer()->getCheckColorHover();
+        if (!m_enabled && getSharedRenderer()->getCheckColorDisabled().isSet())
+            return getSharedRenderer()->getCheckColorDisabled();
+        else if (m_mouseHover && getSharedRenderer()->getCheckColorHover().isSet())
+            return getSharedRenderer()->getCheckColorHover();
         else
-            return getRenderer()->getCheckColor();
+            return getSharedRenderer()->getCheckColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,37 +475,37 @@ namespace tgui
     {
         if (m_checked)
         {
-            if (!m_enabled && getRenderer()->getBackgroundColorCheckedDisabled().isSet())
-                return getRenderer()->getBackgroundColorCheckedDisabled();
-            else if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
-                return getRenderer()->getBackgroundColorDisabled();
+            if (!m_enabled && getSharedRenderer()->getBackgroundColorCheckedDisabled().isSet())
+                return getSharedRenderer()->getBackgroundColorCheckedDisabled();
+            else if (!m_enabled && getSharedRenderer()->getBackgroundColorDisabled().isSet())
+                return getSharedRenderer()->getBackgroundColorDisabled();
             else if (m_mouseHover)
             {
-                if (getRenderer()->getBackgroundColorCheckedHover().isSet())
-                    return getRenderer()->getBackgroundColorCheckedHover();
-                else if (getRenderer()->getBackgroundColorChecked().isSet())
-                    return getRenderer()->getBackgroundColorChecked();
-                else if (getRenderer()->getBackgroundColorHover().isSet())
-                    return getRenderer()->getBackgroundColorHover();
+                if (getSharedRenderer()->getBackgroundColorCheckedHover().isSet())
+                    return getSharedRenderer()->getBackgroundColorCheckedHover();
+                else if (getSharedRenderer()->getBackgroundColorChecked().isSet())
+                    return getSharedRenderer()->getBackgroundColorChecked();
+                else if (getSharedRenderer()->getBackgroundColorHover().isSet())
+                    return getSharedRenderer()->getBackgroundColorHover();
                 else
-                    return getRenderer()->getBackgroundColor();
+                    return getSharedRenderer()->getBackgroundColor();
             }
             else
             {
-                if (getRenderer()->getBackgroundColorChecked().isSet())
-                    return getRenderer()->getBackgroundColorChecked();
+                if (getSharedRenderer()->getBackgroundColorChecked().isSet())
+                    return getSharedRenderer()->getBackgroundColorChecked();
                 else
-                    return getRenderer()->getBackgroundColor();
+                    return getSharedRenderer()->getBackgroundColor();
             }
         }
         else
         {
-            if (!m_enabled && getRenderer()->getBackgroundColorDisabled().isSet())
-                return getRenderer()->getBackgroundColorDisabled();
-            else if (m_mouseHover && getRenderer()->getBackgroundColorHover().isSet())
-                return getRenderer()->getBackgroundColorHover();
+            if (!m_enabled && getSharedRenderer()->getBackgroundColorDisabled().isSet())
+                return getSharedRenderer()->getBackgroundColorDisabled();
+            else if (m_mouseHover && getSharedRenderer()->getBackgroundColorHover().isSet())
+                return getSharedRenderer()->getBackgroundColorHover();
             else
-                return getRenderer()->getBackgroundColor();
+                return getSharedRenderer()->getBackgroundColor();
         }
     }
 
@@ -502,37 +515,37 @@ namespace tgui
     {
         if (m_checked)
         {
-            if (!m_enabled && getRenderer()->getBorderColorCheckedDisabled().isSet())
-                return getRenderer()->getBorderColorCheckedDisabled();
-            else if (!m_enabled && getRenderer()->getBorderColorDisabled().isSet())
-                return getRenderer()->getBorderColorDisabled();
+            if (!m_enabled && getSharedRenderer()->getBorderColorCheckedDisabled().isSet())
+                return getSharedRenderer()->getBorderColorCheckedDisabled();
+            else if (!m_enabled && getSharedRenderer()->getBorderColorDisabled().isSet())
+                return getSharedRenderer()->getBorderColorDisabled();
             else if (m_mouseHover)
             {
-                if (getRenderer()->getBorderColorCheckedHover().isSet())
-                    return getRenderer()->getBorderColorCheckedHover();
-                else if (getRenderer()->getBorderColorChecked().isSet())
-                    return getRenderer()->getBorderColorChecked();
-                else if (getRenderer()->getBorderColorHover().isSet())
-                    return getRenderer()->getBorderColorHover();
+                if (getSharedRenderer()->getBorderColorCheckedHover().isSet())
+                    return getSharedRenderer()->getBorderColorCheckedHover();
+                else if (getSharedRenderer()->getBorderColorChecked().isSet())
+                    return getSharedRenderer()->getBorderColorChecked();
+                else if (getSharedRenderer()->getBorderColorHover().isSet())
+                    return getSharedRenderer()->getBorderColorHover();
                 else
-                    return getRenderer()->getBorderColor();
+                    return getSharedRenderer()->getBorderColor();
             }
             else
             {
-                if (getRenderer()->getBorderColorChecked().isSet())
-                    return getRenderer()->getBorderColorChecked();
+                if (getSharedRenderer()->getBorderColorChecked().isSet())
+                    return getSharedRenderer()->getBorderColorChecked();
                 else
-                    return getRenderer()->getBorderColor();
+                    return getSharedRenderer()->getBorderColor();
             }
         }
         else
         {
-            if (!m_enabled && getRenderer()->getBorderColorDisabled().isSet())
-                return getRenderer()->getBorderColorDisabled();
-            else if (m_mouseHover && getRenderer()->getBorderColorHover().isSet())
-                return getRenderer()->getBorderColorHover();
+            if (!m_enabled && getSharedRenderer()->getBorderColorDisabled().isSet())
+                return getSharedRenderer()->getBorderColorDisabled();
+            else if (m_mouseHover && getSharedRenderer()->getBorderColorHover().isSet())
+                return getSharedRenderer()->getBorderColorHover();
             else
-                return getRenderer()->getBorderColor();
+                return getSharedRenderer()->getBorderColor();
         }
     }
 
@@ -555,37 +568,37 @@ namespace tgui
     {
         if (m_checked)
         {
-            if (!m_enabled && getRenderer()->getTextColorCheckedDisabled().isSet())
-                m_text.setColor(getRenderer()->getTextColorCheckedDisabled());
-            else if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
-                m_text.setColor(getRenderer()->getTextColorDisabled());
+            if (!m_enabled && getSharedRenderer()->getTextColorCheckedDisabled().isSet())
+                m_text.setColor(getSharedRenderer()->getTextColorCheckedDisabled());
+            else if (!m_enabled && getSharedRenderer()->getTextColorDisabled().isSet())
+                m_text.setColor(getSharedRenderer()->getTextColorDisabled());
             else if (m_mouseHover)
             {
-                if (getRenderer()->getTextColorCheckedHover().isSet())
-                    m_text.setColor(getRenderer()->getTextColorCheckedHover());
-                else if (getRenderer()->getTextColorChecked().isSet())
-                    m_text.setColor(getRenderer()->getTextColorChecked());
-                else if (getRenderer()->getTextColorHover().isSet())
-                    m_text.setColor(getRenderer()->getTextColorHover());
+                if (getSharedRenderer()->getTextColorCheckedHover().isSet())
+                    m_text.setColor(getSharedRenderer()->getTextColorCheckedHover());
+                else if (getSharedRenderer()->getTextColorChecked().isSet())
+                    m_text.setColor(getSharedRenderer()->getTextColorChecked());
+                else if (getSharedRenderer()->getTextColorHover().isSet())
+                    m_text.setColor(getSharedRenderer()->getTextColorHover());
                 else
-                    m_text.setColor(getRenderer()->getTextColor());
+                    m_text.setColor(getSharedRenderer()->getTextColor());
             }
             else
             {
-                if (getRenderer()->getTextColorChecked().isSet())
-                    m_text.setColor(getRenderer()->getTextColorChecked());
+                if (getSharedRenderer()->getTextColorChecked().isSet())
+                    m_text.setColor(getSharedRenderer()->getTextColorChecked());
                 else
-                    m_text.setColor(getRenderer()->getTextColor());
+                    m_text.setColor(getSharedRenderer()->getTextColor());
             }
         }
         else
         {
-            if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
-                m_text.setColor(getRenderer()->getTextColorDisabled());
-            else if (m_mouseHover && getRenderer()->getTextColorHover().isSet())
-                m_text.setColor(getRenderer()->getTextColorHover());
+            if (!m_enabled && getSharedRenderer()->getTextColorDisabled().isSet())
+                m_text.setColor(getSharedRenderer()->getTextColorDisabled());
+            else if (m_mouseHover && getSharedRenderer()->getTextColorHover().isSet())
+                m_text.setColor(getSharedRenderer()->getTextColorHover());
             else
-                m_text.setColor(getRenderer()->getTextColor());
+                m_text.setColor(getSharedRenderer()->getTextColor());
         }
     }
 

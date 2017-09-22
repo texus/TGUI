@@ -245,16 +245,26 @@ namespace tgui
     {
         preload(filename);
 
-        std::string lowercaseClassName = toLower(section);
+        const std::string lowercaseClassName = toLower(section);
 
         // An empty filename is not considered an error and will result in an empty property list
-        if (filename == "")
+        if (filename.empty())
             return m_propertiesCache[""][lowercaseClassName];
 
         if (m_propertiesCache[filename].find(lowercaseClassName) == m_propertiesCache[filename].end())
             throw Exception{"No section '" + section + "' was found in file '" + filename + "'."};
 
         return m_propertiesCache[filename][lowercaseClassName];
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool DefaultThemeLoader::canLoad(const std::string& filename, const std::string& section)
+    {
+        if (filename.empty())
+            return true;
+        else
+            return m_propertiesCache[filename].find(toLower(section)) != m_propertiesCache[filename].end();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

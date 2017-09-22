@@ -31,12 +31,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"bordercolor", sf::Color::Black},
-                {"backgroundcolor", sf::Color::Transparent}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollablePanel::ScrollablePanel(const Layout2d& size, sf::Vector2f contentSize) :
@@ -45,7 +39,7 @@ namespace tgui
         m_type = "ScrollablePanel";
 
         m_renderer = aurora::makeCopied<ScrollablePanelRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         // Rotate the horizontal scrollbar
         m_horizontalScrollbar.setSize(m_horizontalScrollbar.getSize().y, m_horizontalScrollbar.getSize().x);
@@ -68,6 +62,34 @@ namespace tgui
             return std::static_pointer_cast<ScrollablePanel>(panel->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollablePanelRenderer* ScrollablePanel::getSharedRenderer()
+    {
+        return aurora::downcast<ScrollablePanelRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ScrollablePanelRenderer* ScrollablePanel::getSharedRenderer() const
+    {
+        return aurora::downcast<const ScrollablePanelRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollablePanelRenderer* ScrollablePanel::getRenderer()
+    {
+        return aurora::downcast<ScrollablePanelRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ScrollablePanelRenderer* ScrollablePanel::getRenderer() const
+    {
+        return aurora::downcast<const ScrollablePanelRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -301,8 +323,8 @@ namespace tgui
     {
         if (property == "scrollbar")
         {
-            m_verticalScrollbar.setRenderer(getRenderer()->getScrollbar());
-            m_horizontalScrollbar.setRenderer(getRenderer()->getScrollbar());
+            m_verticalScrollbar.setRenderer(getSharedRenderer()->getScrollbar());
+            m_horizontalScrollbar.setRenderer(getSharedRenderer()->getScrollbar());
         }
         else
             Panel::rendererChanged(property);

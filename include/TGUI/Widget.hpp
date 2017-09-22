@@ -32,6 +32,7 @@
 #include <TGUI/Signal.hpp>
 #include <TGUI/Sprite.hpp>
 #include <TGUI/Layout.hpp>
+#include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
 #include <TGUI/Aurora/Tools/Downcast.hpp>
@@ -101,16 +102,26 @@ namespace tgui
         /// @brief Sets a new renderer for the widget. The renderer determines how the widget looks
         ///
         /// @param rendererData  new renderer data
+        ///
+        /// The renderer data is shared with this widget. When the data is changed, this widget will be updated as well.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setRenderer(const std::shared_ptr<RendererData>& rendererData);
+        void setRenderer(std::shared_ptr<RendererData> rendererData);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
-        ///
-        /// @return Temporary pointer to the renderer
+        /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        WidgetRenderer* getRenderer() const;
+        WidgetRenderer* getSharedRenderer();
+        const WidgetRenderer* getSharedRenderer() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
+        /// @return Temporary pointer to the renderer
+        /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        WidgetRenderer* getRenderer();
+        const WidgetRenderer* getRenderer() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -401,6 +412,38 @@ namespace tgui
         /// @warning This function only has an effect when the widget was already added to its parent (e.g. the Gui).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void moveToBack();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the font of the widget that is used when no font is set in the renderer
+        ///
+        /// @param font  New font for the widget
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setInheritedFont(const Font& font);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the font of the widget that is used when no font is set in the renderer
+        ///
+        /// @return Font of the widget
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const Font& getInheritedFont() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the opacity of the widget that will be multiplied with the opacity set in the renderer
+        ///
+        /// @param opacity  Opacity of the widget
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setInheritedOpacity(float opacity);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the opacity of the widget that is multiplied with the opacity set in the renderer
+        ///
+        /// @return Opacity of the widget
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getInheritedOpacity() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -709,9 +752,15 @@ namespace tgui
         // Show animations
         std::vector<std::shared_ptr<priv::Animation>> m_showAnimations;
 
+        // Renderer properties that can be passed from containers to their children
+        Font m_inheritedFont;
+        float m_inheritedOpacity = 1;
+
         // Cached renderer properties
         Font  m_fontCached;
-        float m_opacityCached;
+        float m_opacityCached = 1;
+
+        std::function<void(const std::string& property)> m_rendererChangedCallback = [this](const std::string& property){ rendererChangedCallback(property); };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

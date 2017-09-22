@@ -87,40 +87,62 @@ TEST_CASE("[Theme]")
 
         SECTION("With widgets")
         {
-            auto label1 = tgui::Label::create();
-            label1->getRenderer()->setTextColor("red");
-            REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Red);
+            SECTION("Using getSharedRenderer")
+            {
+                auto label1 = tgui::Label::create();
+                label1->getSharedRenderer()->setTextColor("red");
+                REQUIRE(label1->getSharedRenderer()->getTextColor() == sf::Color::Red);
 
-            label1->setRenderer(theme.getRenderer("label"));
-            REQUIRE(label1->getRenderer()->getTextColor() != sf::Color::Red);
+                label1->setRenderer(theme.getRenderer("label"));
+                REQUIRE(label1->getSharedRenderer()->getTextColor() != sf::Color::Red);
 
-            label1->getRenderer()->setTextColor("green");
-            REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Green);
+                label1->getSharedRenderer()->setTextColor("green");
+                REQUIRE(label1->getSharedRenderer()->getTextColor() == sf::Color::Green);
 
-            auto label2 = tgui::Label::create();
-            label2->getRenderer()->setTextColor("blue");
-            REQUIRE(label2->getRenderer()->getTextColor() == sf::Color::Blue);
+                auto label2 = tgui::Label::create();
+                label2->getSharedRenderer()->setTextColor("blue");
+                REQUIRE(label2->getSharedRenderer()->getTextColor() == sf::Color::Blue);
 
-            label2->setRenderer(theme.getRenderer("label"));
-            REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Green);
+                label2->setRenderer(theme.getRenderer("label"));
+                REQUIRE(label1->getSharedRenderer()->getTextColor() == sf::Color::Green);
 
-            label1->getRenderer()->setTextColor("yellow");
-            REQUIRE(label2->getRenderer()->getTextColor() == sf::Color::Yellow);
+                // Changing the renderer of one label affects the look of the other one
+                label1->getSharedRenderer()->setTextColor("yellow");
+                REQUIRE(label2->getSharedRenderer()->getTextColor() == sf::Color::Yellow);
+            }
+
+            SECTION("Using getRenderer")
+            {
+                auto label1 = tgui::Label::create();
+                label1->getRenderer()->setTextColor("red");
+                REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Red);
+
+                label1->setRenderer(theme.getRenderer("label"));
+                REQUIRE(label1->getRenderer()->getTextColor() != sf::Color::Red);
+
+                label1->getRenderer()->setTextColor("green");
+                REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Green);
+
+                auto label2 = tgui::Label::create();
+                label2->getRenderer()->setTextColor("blue");
+                REQUIRE(label2->getRenderer()->getTextColor() == sf::Color::Blue);
+
+                label2->setRenderer(theme.getRenderer("label"));
+                REQUIRE(label1->getRenderer()->getTextColor() == sf::Color::Green);
+
+                // Changing the renderer of one label does not affect the other one
+                label1->getRenderer()->setTextColor("yellow");
+                REQUIRE(label2->getRenderer()->getTextColor() != sf::Color::Yellow);
+            }
         }
 
         SECTION("Without widgets")
         {
-            sf::Color defaultColor = tgui::LabelRenderer().getTextColor();
-
             REQUIRE(tgui::LabelRenderer(theme.getRenderer("label")).getTextColor() != sf::Color::Cyan);
 
             tgui::LabelRenderer(theme.getRenderer("label")).setTextColor(sf::Color::Cyan);
             REQUIRE(tgui::LabelRenderer(theme.getRenderer("label")).getTextColor() == sf::Color::Cyan);
             REQUIRE(theme.getRenderer("label")->propertyValuePairs["textcolor"].getColor() == sf::Color::Cyan);
-
-            tgui::LabelRenderer(theme.getRenderer("label")).setTextColor({});
-            REQUIRE(tgui::LabelRenderer(theme.getRenderer("label")).getTextColor() == defaultColor);
-            REQUIRE(theme.getRenderer("label")->propertyValuePairs["textcolor"].getColor() == defaultColor);
         }
     }
 
@@ -146,6 +168,11 @@ TEST_CASE("[Theme]")
 
                 loadCount++;
                 return retVal;
+            }
+
+            bool canLoad(const std::string&, const std::string&) override
+            {
+                return true;
             }
 
             std::map<sf::String, sf::String> retVal;

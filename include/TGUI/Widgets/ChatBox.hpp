@@ -86,14 +86,18 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
-        ///
-        /// @return Temporary pointer to the renderer
-        ///
+        /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ChatBoxRenderer* getRenderer() const
-        {
-            return aurora::downcast<ChatBoxRenderer*>(m_renderer.get());
-        }
+        ChatBoxRenderer* getSharedRenderer();
+        const ChatBoxRenderer* getSharedRenderer() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
+        /// @return Temporary pointer to the renderer
+        /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ChatBoxRenderer* getRenderer();
+        const ChatBoxRenderer* getRenderer() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,7 +222,7 @@ namespace tgui
         /// @param lineIndex  The index of the line of which you request the font. The first line has index 0
         ///
         /// @return The font of the requested line.
-        ///         When the index is too high then the default font (set with chatBox->getRenderer()->setFont(font)) is returned.
+        ///         When the index is too high then the default font is returned.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::shared_ptr<sf::Font> getLineFont(std::size_t lineIndex) const;

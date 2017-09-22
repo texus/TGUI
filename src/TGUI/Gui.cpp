@@ -306,14 +306,14 @@ namespace tgui
 
     void Gui::setFont(const Font& font)
     {
-        m_container->getRenderer()->setFont(font);
+        m_container->setInheritedFont(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::shared_ptr<sf::Font> Gui::getFont() const
     {
-        return m_container->getRenderer()->getFont();
+        return m_container->getInheritedFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -411,14 +411,14 @@ namespace tgui
 
     void Gui::setOpacity(float opacity)
     {
-        m_container->getRenderer()->setOpacity(opacity);
+        m_container->setInheritedOpacity(opacity);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float Gui::getOpacity() const
     {
-        return m_container->getRenderer()->getOpacity();
+        return m_container->getInheritedOpacity();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -166,11 +166,11 @@ namespace tgui
             }
 
             /// TODO: Separate renderer section?
-            if (!widget->getRenderer()->getPropertyValuePairs().empty())
+            if (!widget->getSharedRenderer()->getPropertyValuePairs().empty())
             {
                 node->children.emplace_back(make_unique<DataIO::Node>());
                 node->children.back()->name = "Renderer";
-                for (const auto& pair : widget->getRenderer()->getPropertyValuePairs())
+                for (const auto& pair : widget->getSharedRenderer()->getPropertyValuePairs())
                 {
                     // Skip "font = null"
                     if (pair.first == "font" && ObjectConverter{pair.second}.getString() == "null")

@@ -38,15 +38,6 @@ namespace
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{5}},
-                {"imagerotation", 0.f},
-                {"bordercolor", sf::Color::Black},
-                {"thumbcolor", sf::Color::Black},
-                {"backgroundcolor", sf::Color::White}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Knob::Knob()
@@ -55,7 +46,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<KnobRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize(140, 140);
     }
@@ -75,6 +66,34 @@ namespace tgui
             return std::static_pointer_cast<Knob>(knob->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    KnobRenderer* Knob::getSharedRenderer()
+    {
+        return aurora::downcast<KnobRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const KnobRenderer* Knob::getSharedRenderer() const
+    {
+        return aurora::downcast<const KnobRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    KnobRenderer* Knob::getRenderer()
+    {
+        return aurora::downcast<KnobRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const KnobRenderer* Knob::getRenderer() const
+    {
+        return aurora::downcast<const KnobRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -464,34 +483,34 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
             setSize(m_size);
         }
         else if (property == "textureforeground")
         {
-            m_spriteForeground.setTexture(getRenderer()->getTextureForeground());
+            m_spriteForeground.setTexture(getSharedRenderer()->getTextureForeground());
             setSize(m_size);
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "thumbcolor")
         {
-            m_thumbColorCached = getRenderer()->getThumbColor();
+            m_thumbColorCached = getSharedRenderer()->getThumbColor();
         }
         else if (property == "imagerotation")
         {
-            m_imageRotationCached = getRenderer()->getImageRotation();
+            m_imageRotationCached = getSharedRenderer()->getImageRotation();
         }
         else if (property == "opacity")
         {

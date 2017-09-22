@@ -31,15 +31,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"textcolor", sf::Color::Black},
-                {"selectedtextcolor", sf::Color::White},
-                {"backgroundcolor", sf::Color::White},
-                {"selectedbackgroundcolor", Color{0, 110, 255}},
-                {"distancetoside", 4.f}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MenuBar::MenuBar()
@@ -47,7 +38,7 @@ namespace tgui
         m_type = "MenuBar";
 
         m_renderer = aurora::makeCopied<MenuBarRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize({0, 20});
     }
@@ -67,6 +58,34 @@ namespace tgui
             return std::static_pointer_cast<MenuBar>(menuBar->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    MenuBarRenderer* MenuBar::getSharedRenderer()
+    {
+        return aurora::downcast<MenuBarRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const MenuBarRenderer* MenuBar::getSharedRenderer() const
+    {
+        return aurora::downcast<const MenuBarRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    MenuBarRenderer* MenuBar::getRenderer()
+    {
+        return aurora::downcast<MenuBarRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const MenuBarRenderer* MenuBar::getRenderer() const
+    {
+        return aurora::downcast<const MenuBarRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -524,7 +543,7 @@ namespace tgui
     {
         if (property == "textcolor")
         {
-            m_textColorCached = getRenderer()->getTextColor();
+            m_textColorCached = getSharedRenderer()->getTextColor();
 
             for (unsigned int i = 0; i < m_menus.size(); ++i)
             {
@@ -542,7 +561,7 @@ namespace tgui
         }
         else if (property == "selectedtextcolor")
         {
-            m_selectedTextColorCached = getRenderer()->getSelectedTextColor();
+            m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
 
             if (m_visibleMenu != -1)
             {
@@ -557,27 +576,27 @@ namespace tgui
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
         else if (property == "textureitembackground")
         {
-            m_spriteItemBackground.setTexture(getRenderer()->getTextureItemBackground());
+            m_spriteItemBackground.setTexture(getSharedRenderer()->getTextureItemBackground());
         }
         else if (property == "textureselecteditembackground")
         {
-            m_spriteSelectedItemBackground.setTexture(getRenderer()->getTextureSelectedItemBackground());
+            m_spriteSelectedItemBackground.setTexture(getSharedRenderer()->getTextureSelectedItemBackground());
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "selectedbackgroundcolor")
         {
-            m_selectedBackgroundColorCached = getRenderer()->getSelectedBackgroundColor();
+            m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
         else if (property == "distancetoside")
         {
-            m_distanceToSideCached = getRenderer()->getDistanceToSide();
+            m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
         }
         else if (property == "opacity")
         {

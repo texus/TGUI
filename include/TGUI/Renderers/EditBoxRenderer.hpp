@@ -64,7 +64,7 @@ namespace tgui
         /// @param style  The new default text style
         ///
         /// @code
-        /// editBox->getRenderer()->setDefaultTextStyle(sf::Text::Italic | sf::Text::Bold);
+        /// editBox->getSharedRenderer()->setDefaultTextStyle(sf::Text::Italic | sf::Text::Bold);
         /// @endcode
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

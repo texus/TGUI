@@ -30,20 +30,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{2}},
-                {"bordercolor", sf::Color::Black},
-                {"textcolor", Color{60, 60, 60}},
-                {"textcolorhover", sf::Color::Black},
-                {"selectedtextcolor", sf::Color::White},
-                {"backgroundcolor", Color{245, 245, 245}},
-                {"backgroundcolorhover", sf::Color::White},
-                {"selectedbackgroundcolor", Color{0, 110, 255}},
-                {"selectedbackgroundcolorhover", Color{30, 150, 255}},
-                {"distancetoside", 1.f}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Tabs::Tabs()
@@ -51,7 +37,7 @@ namespace tgui
         m_type = "Tabs";
 
         m_renderer = aurora::makeCopied<TabsRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setTabHeight(30);
     }
@@ -71,6 +57,34 @@ namespace tgui
             return std::static_pointer_cast<Tabs>(tabs->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TabsRenderer* Tabs::getSharedRenderer()
+    {
+        return aurora::downcast<TabsRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const TabsRenderer* Tabs::getSharedRenderer() const
+    {
+        return aurora::downcast<const TabsRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TabsRenderer* Tabs::getRenderer()
+    {
+        return aurora::downcast<TabsRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const TabsRenderer* Tabs::getRenderer() const
+    {
+        return aurora::downcast<const TabsRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,61 +487,61 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             recalculateTabsWidth();
         }
         else if (property == "textcolor")
         {
-            m_textColorCached = getRenderer()->getTextColor();
+            m_textColorCached = getSharedRenderer()->getTextColor();
             updateTextColors();
         }
         else if (property == "textcolorhover")
         {
-            m_textColorHoverCached = getRenderer()->getTextColorHover();
+            m_textColorHoverCached = getSharedRenderer()->getTextColorHover();
             updateTextColors();
         }
         else if (property == "selectedtextcolor")
         {
-            m_selectedTextColorCached = getRenderer()->getSelectedTextColor();
+            m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
             updateTextColors();
         }
         else if (property == "selectedtextcolorhover")
         {
-            m_selectedTextColorHoverCached = getRenderer()->getSelectedTextColorHover();
+            m_selectedTextColorHoverCached = getSharedRenderer()->getSelectedTextColorHover();
             updateTextColors();
         }
         else if (property == "texturetab")
         {
-            m_spriteTab.setTexture(getRenderer()->getTextureTab());
+            m_spriteTab.setTexture(getSharedRenderer()->getTextureTab());
         }
         else if (property == "textureselectedtab")
         {
-            m_spriteSelectedTab.setTexture(getRenderer()->getTextureSelectedTab());
+            m_spriteSelectedTab.setTexture(getSharedRenderer()->getTextureSelectedTab());
         }
         else if (property == "distancetoside")
         {
-            m_distanceToSideCached = getRenderer()->getDistanceToSide();
+            m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
             recalculateTabsWidth();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "backgroundcolorhover")
         {
-            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+            m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
         else if (property == "selectedbackgroundcolor")
         {
-            m_selectedBackgroundColorCached = getRenderer()->getSelectedBackgroundColor();
+            m_selectedBackgroundColorCached = getSharedRenderer()->getSelectedBackgroundColor();
         }
         else if (property == "selectedbackgroundcolorhover")
         {
-            m_selectedBackgroundColorHoverCached = getRenderer()->getSelectedBackgroundColorHover();
+            m_selectedBackgroundColorHoverCached = getSharedRenderer()->getSelectedBackgroundColorHover();
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "opacity")
         {

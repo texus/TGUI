@@ -35,6 +35,9 @@ namespace tgui
         BoxLayout{size}
     {
         m_type = "HorizontalWrap";
+
+        m_renderer = aurora::makeCopied<BoxLayoutRenderer>();
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

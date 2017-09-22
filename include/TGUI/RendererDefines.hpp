@@ -27,7 +27,7 @@
 #define TGUI_RENDERER_DEFINES_HPP
 
 
-#include <TGUI/Global.hpp>
+#include <TGUI/Loading/Theme.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -117,7 +117,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_RENDERER(CLASS, NAME) \
+#define TGUI_RENDERER_PROPERTY_RENDERER(CLASS, NAME, RENDERER) \
     std::shared_ptr<RendererData> CLASS::get##NAME() const \
     { \
         const auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
@@ -125,8 +125,9 @@
             return it->second.getRenderer(); \
         else \
         { \
-            m_data->propertyValuePairs[toLower(#NAME)] = {RendererData::create()}; \
-            return m_data->propertyValuePairs[toLower(#NAME)].getRenderer(); \
+            auto renderer = Theme::getDefault()->getRendererNoThrow(RENDERER); \
+            m_data->propertyValuePairs[toLower(#NAME)] = {renderer ? renderer : RendererData::create()}; \
+            return renderer; \
         } \
     } \
     void CLASS::set##NAME(std::shared_ptr<RendererData> renderer) \

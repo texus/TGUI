@@ -257,11 +257,11 @@ TEST_CASE("[Container]")
 
         container->setOpacity(0.7f);
         REQUIRE(container->getOpacity() == 0.7f);
-        REQUIRE(widget1->getRenderer()->getOpacity() == 0.7f);
-        REQUIRE(widget2->getRenderer()->getOpacity() == 0.7f);
-        REQUIRE(widget3->getRenderer()->getOpacity() == 0.7f);
-        REQUIRE(widget4->getRenderer()->getOpacity() == 0.7f);
-        REQUIRE(widget5->getRenderer()->getOpacity() == 0.7f);
+        REQUIRE(widget1->getInheritedOpacity() == 0.7f);
+        REQUIRE(widget2->getInheritedOpacity() == 0.7f);
+        REQUIRE(widget3->getInheritedOpacity() == 0.7f);
+        REQUIRE(widget4->getInheritedOpacity() == 0.7f);
+        REQUIRE(widget5->getInheritedOpacity() == 0.7f);
     }
 
     // TODO: Events

@@ -240,8 +240,6 @@ TEST_CASE("[ChatBox]")
                 renderer->setBorderColor({40, 50, 60});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
-
-                REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 0);
                 renderer->setScrollbar(scrollbarRenderer.getData());
             }
 

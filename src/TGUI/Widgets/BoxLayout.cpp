@@ -35,8 +35,34 @@ namespace tgui
     BoxLayout::BoxLayout(const Layout2d& size) :
         Group{size}
     {
-        m_renderer = aurora::makeCopied<BoxLayoutRenderer>();
-        setRenderer(RendererData::create());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BoxLayoutRenderer* BoxLayout::getSharedRenderer()
+    {
+        return aurora::downcast<BoxLayoutRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const BoxLayoutRenderer* BoxLayout::getSharedRenderer() const
+    {
+        return aurora::downcast<const BoxLayoutRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    BoxLayoutRenderer* BoxLayout::getRenderer()
+    {
+        return aurora::downcast<BoxLayoutRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const BoxLayoutRenderer* BoxLayout::getRenderer() const
+    {
+        return aurora::downcast<const BoxLayoutRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +146,7 @@ namespace tgui
     {
         if (property == "spacebetweenwidgets")
         {
-            m_spaceBetweenWidgetsCached = getRenderer()->getSpaceBetweenWidgets();
+            m_spaceBetweenWidgetsCached = getSharedRenderer()->getSpaceBetweenWidgets();
             updateWidgets();
         }
         else if (property == "padding")
@@ -128,7 +154,7 @@ namespace tgui
             Group::rendererChanged(property);
 
             // Update the space between widgets as the padding is used when no space was explicitly set
-            m_spaceBetweenWidgetsCached = getRenderer()->getSpaceBetweenWidgets();
+            m_spaceBetweenWidgetsCached = getSharedRenderer()->getSpaceBetweenWidgets();
             updateWidgets();
         }
         else

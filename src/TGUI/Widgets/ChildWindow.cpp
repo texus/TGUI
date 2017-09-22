@@ -50,29 +50,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{1}},
-                {"bordercolor", sf::Color::Black},
-                {"titlecolor", sf::Color::Black},
-                {"titlebarcolor", sf::Color::White},
-                {"backgroundcolor", Color{230, 230, 230}},
-                {"distancetoside", 3.f},
-                {"paddingbetweenbuttons", 1.f}
-            };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     ChildWindow::ChildWindow(const sf::String& title, unsigned int titleButtons)
     {
         m_type = "ChildWindow";
 
         m_renderer = aurora::makeCopied<ChildWindowRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
-
-        getRenderer()->getCloseButton()->propertyValuePairs["borders"] = {Borders{1}};
-        getRenderer()->getMaximizeButton()->propertyValuePairs["borders"] = {Borders{1}};
-        getRenderer()->getMinimizeButton()->propertyValuePairs["borders"] = {Borders{1}};
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setTitleButtons(titleButtons);
         setTitle(title);
@@ -94,6 +77,34 @@ namespace tgui
             return std::static_pointer_cast<ChildWindow>(childWindow->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChildWindowRenderer* ChildWindow::getSharedRenderer()
+    {
+        return aurora::downcast<ChildWindowRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ChildWindowRenderer* ChildWindow::getSharedRenderer() const
+    {
+        return aurora::downcast<const ChildWindowRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ChildWindowRenderer* ChildWindow::getRenderer()
+    {
+        return aurora::downcast<ChildWindowRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ChildWindowRenderer* ChildWindow::getRenderer() const
+    {
+        return aurora::downcast<const ChildWindowRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,8 +276,8 @@ namespace tgui
         if (m_titleButtons & TitleButton::Close)
         {
             m_closeButton = Button::create();
-            m_closeButton->setRenderer(getRenderer()->getCloseButton());
-            m_closeButton->getRenderer()->setOpacity(m_opacityCached);
+            m_closeButton->setRenderer(getSharedRenderer()->getCloseButton());
+            m_closeButton->setInheritedOpacity(m_opacityCached);
             m_closeButton->connect("pressed", [this](){
                                                 if (!onClose.emit(this))
                                                     destroy();
@@ -278,8 +289,8 @@ namespace tgui
         if (m_titleButtons & TitleButton::Maximize)
         {
             m_maximizeButton = Button::create();
-            m_maximizeButton->setRenderer(getRenderer()->getMaximizeButton());
-            m_maximizeButton->getRenderer()->setOpacity(m_opacityCached);
+            m_maximizeButton->setRenderer(getSharedRenderer()->getMaximizeButton());
+            m_maximizeButton->setInheritedOpacity(m_opacityCached);
             m_maximizeButton->connect("pressed", [this](){ onMaximize.emit(this); });
         }
         else
@@ -288,8 +299,8 @@ namespace tgui
         if (m_titleButtons & TitleButton::Minimize)
         {
             m_minimizeButton = Button::create();
-            m_minimizeButton->setRenderer(getRenderer()->getMinimizeButton());
-            m_minimizeButton->getRenderer()->setOpacity(m_opacityCached);
+            m_minimizeButton->setRenderer(getSharedRenderer()->getMinimizeButton());
+            m_minimizeButton->setInheritedOpacity(m_opacityCached);
             m_minimizeButton->connect("pressed", [this](){ onMinimize.emit(this); });
         }
         else
@@ -603,10 +614,10 @@ namespace tgui
         {
             if (button)
             {
-                if (m_spriteTitleBar.isSet() && (button->getRenderer()->getTexture().getData() != nullptr))
+                if (m_spriteTitleBar.isSet() && (button->getSharedRenderer()->getTexture().getData() != nullptr))
                 {
-                    button->setSize(button->getRenderer()->getTexture().getImageSize().x * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y),
-                                    button->getRenderer()->getTexture().getImageSize().y * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y));
+                    button->setSize(button->getSharedRenderer()->getTexture().getImageSize().x * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y),
+                                    button->getSharedRenderer()->getTexture().getImageSize().y * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y));
                 }
                 else
                     button->setSize({m_titleBarHeightCached * 0.8f, m_titleBarHeightCached * 0.8f});
@@ -642,43 +653,43 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if (property == "titlecolor")
         {
-            m_titleText.setColor(getRenderer()->getTitleColor());
+            m_titleText.setColor(getSharedRenderer()->getTitleColor());
         }
         else if (property == "texturetitlebar")
         {
-            m_spriteTitleBar.setTexture(getRenderer()->getTextureTitleBar());
+            m_spriteTitleBar.setTexture(getSharedRenderer()->getTextureTitleBar());
 
             // If the title bar height is determined by the texture then update it (note that getTitleBarHeight has a non-trivial implementation)
-            m_titleBarHeightCached = getRenderer()->getTitleBarHeight();
+            m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
             if (m_titleBarHeightCached == m_spriteTitleBar.getTexture().getImageSize().y)
                 updateTitleBarHeight();
         }
         else if (property == "titlebarheight")
         {
-            m_titleBarHeightCached = getRenderer()->getTitleBarHeight();
+            m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
             updateTitleBarHeight();
         }
         else if (property == "distancetoside")
         {
-            m_distanceToSideCached = getRenderer()->getDistanceToSide();
+            m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
             setPosition(m_position);
         }
         else if (property == "paddingbetweenbuttons")
         {
-            m_paddingBetweenButtonsCached = getRenderer()->getPaddingBetweenButtons();
+            m_paddingBetweenButtonsCached = getSharedRenderer()->getPaddingBetweenButtons();
             setPosition(m_position);
         }
         else if (property == "closebutton")
         {
             if (m_closeButton)
             {
-                m_closeButton->setRenderer(getRenderer()->getCloseButton());
-                m_closeButton->getRenderer()->setOpacity(m_opacityCached);
+                m_closeButton->setRenderer(getSharedRenderer()->getCloseButton());
+                m_closeButton->setInheritedOpacity(m_opacityCached);
             }
 
             updateTitleBarHeight();
@@ -687,8 +698,8 @@ namespace tgui
         {
             if (m_maximizeButton)
             {
-                m_maximizeButton->setRenderer(getRenderer()->getMaximizeButton());
-                m_maximizeButton->getRenderer()->setOpacity(m_opacityCached);
+                m_maximizeButton->setRenderer(getSharedRenderer()->getMaximizeButton());
+                m_maximizeButton->setInheritedOpacity(m_opacityCached);
             }
 
             updateTitleBarHeight();
@@ -697,23 +708,23 @@ namespace tgui
         {
             if (m_minimizeButton)
             {
-                m_minimizeButton->setRenderer(getRenderer()->getMinimizeButton());
-                m_minimizeButton->getRenderer()->setOpacity(m_opacityCached);
+                m_minimizeButton->setRenderer(getSharedRenderer()->getMinimizeButton());
+                m_minimizeButton->setInheritedOpacity(m_opacityCached);
             }
 
             updateTitleBarHeight();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "titlebarcolor")
         {
-            m_titleBarColorCached = getRenderer()->getTitleBarColor();
+            m_titleBarColorCached = getSharedRenderer()->getTitleBarColor();
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "opacity")
         {
@@ -722,7 +733,7 @@ namespace tgui
             for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
             {
                 if (button)
-                    button->getRenderer()->setOpacity(m_opacityCached);
+                    button->setInheritedOpacity(m_opacityCached);
             }
 
             m_titleText.setOpacity(m_opacityCached);
@@ -735,11 +746,11 @@ namespace tgui
             for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
             {
                 if (button)
-                    button->getRenderer()->setFont(m_fontCached);
+                    button->setInheritedFont(m_fontCached);
             }
 
             m_titleText.setFont(m_fontCached);
-            m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, getRenderer()->getTitleBarHeight() * 0.8f));
+            m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, getSharedRenderer()->getTitleBarHeight() * 0.8f));
 
             setPosition(m_position);
         }

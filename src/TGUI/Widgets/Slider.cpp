@@ -29,17 +29,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{2}},
-                {"bordercolor", Color{60, 60, 60}},
-                {"bordercolorhover", sf::Color::Black},
-                {"trackcolor", Color{245, 245, 245}},
-                {"trackcolorhover", Color{255, 255, 255}},
-                {"thumbcolor", Color{245, 245, 245}},
-                {"thumbcolorhover", Color{255, 255, 255}}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Slider::Slider()
@@ -49,7 +38,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<SliderRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize(200, 16);
     }
@@ -74,6 +63,34 @@ namespace tgui
             return std::static_pointer_cast<Slider>(slider->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SliderRenderer* Slider::getSharedRenderer()
+    {
+        return aurora::downcast<SliderRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const SliderRenderer* Slider::getSharedRenderer() const
+    {
+        return aurora::downcast<const SliderRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SliderRenderer* Slider::getRenderer()
+    {
+        return aurora::downcast<SliderRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const SliderRenderer* Slider::getRenderer() const
+    {
+        return aurora::downcast<const SliderRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -404,12 +421,12 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if (property == "texturetrack")
         {
-            m_spriteTrack.setTexture(getRenderer()->getTextureTrack());
+            m_spriteTrack.setTexture(getSharedRenderer()->getTextureTrack());
 
             if (m_spriteTrack.getTexture().getImageSize().x < m_spriteTrack.getTexture().getImageSize().y)
                 m_verticalImage = true;
@@ -420,40 +437,40 @@ namespace tgui
         }
         else if (property == "texturetrackhover")
         {
-            m_spriteTrackHover.setTexture(getRenderer()->getTextureTrackHover());
+            m_spriteTrackHover.setTexture(getSharedRenderer()->getTextureTrackHover());
         }
         else if (property == "texturethumb")
         {
-            m_spriteThumb.setTexture(getRenderer()->getTextureThumb());
+            m_spriteThumb.setTexture(getSharedRenderer()->getTextureThumb());
             setSize(m_size);
         }
         else if (property == "texturethumbhover")
         {
-            m_spriteThumbHover.setTexture(getRenderer()->getTextureThumbHover());
+            m_spriteThumbHover.setTexture(getSharedRenderer()->getTextureThumbHover());
         }
         else if (property == "trackcolor")
         {
-            m_trackColorCached = getRenderer()->getTrackColor();
+            m_trackColorCached = getSharedRenderer()->getTrackColor();
         }
         else if (property == "trackcolorhover")
         {
-            m_trackColorHoverCached = getRenderer()->getTrackColorHover();
+            m_trackColorHoverCached = getSharedRenderer()->getTrackColorHover();
         }
         else if (property == "thumbcolor")
         {
-            m_thumbColorCached = getRenderer()->getThumbColor();
+            m_thumbColorCached = getSharedRenderer()->getThumbColor();
         }
         else if (property == "thumbcolorhover")
         {
-            m_thumbColorHoverCached = getRenderer()->getThumbColorHover();
+            m_thumbColorHoverCached = getSharedRenderer()->getThumbColorHover();
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "bordercolorhover")
         {
-            m_borderColorHoverCached = getRenderer()->getBorderColorHover();
+            m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
         else if (property == "opacity")
         {

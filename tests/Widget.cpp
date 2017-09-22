@@ -248,10 +248,10 @@ TEST_CASE("[Widget]")
             renderer->setFont(nullptr);
             REQUIRE(renderer->getFont() == nullptr);
 
+            // Inheriting the font does not change the renderer (but the widget will have a usable font)
             tgui::Gui gui;
             gui.add(widget);
-            REQUIRE(renderer->getFont() != nullptr);
-            REQUIRE(renderer->getFont().getId() == "");
+            REQUIRE(renderer->getFont() == nullptr);
         }
 
         SECTION("Non-existent property")

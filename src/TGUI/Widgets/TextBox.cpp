@@ -34,19 +34,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{2}},
-                {"padding", Padding{2, 0, 0, 0}},
-                {"caretwidth", 1.f},
-                {"caretcolor", sf::Color::Black},
-                {"bordercolor", sf::Color::Black},
-                {"textcolor", sf::Color::Black},
-                {"selectedtextcolor", sf::Color::White},
-                {"selectedtextbackgroundcolor", Color{0, 110, 255}},
-                {"backgroundcolor", sf::Color::White}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TextBox::TextBox()
@@ -55,7 +42,7 @@ namespace tgui
         m_draggableWidget = true;
 
         m_renderer = aurora::makeCopied<TextBoxRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize({360, 189});
     }
@@ -75,6 +62,34 @@ namespace tgui
             return std::static_pointer_cast<TextBox>(textBox->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TextBoxRenderer* TextBox::getSharedRenderer()
+    {
+        return aurora::downcast<TextBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const TextBoxRenderer* TextBox::getSharedRenderer() const
+    {
+        return aurora::downcast<const TextBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TextBoxRenderer* TextBox::getRenderer()
+    {
+        return aurora::downcast<TextBoxRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const TextBoxRenderer* TextBox::getRenderer() const
+    {
+        return aurora::downcast<const TextBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1408,59 +1423,59 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if (property == "padding")
         {
-            m_paddingCached = getRenderer()->getPadding();
+            m_paddingCached = getSharedRenderer()->getPadding();
             setSize(m_size);
         }
         else if (property == "textcolor")
         {
-            m_textBeforeSelection.setColor(getRenderer()->getTextColor());
-            m_textAfterSelection1.setColor(getRenderer()->getTextColor());
-            m_textAfterSelection2.setColor(getRenderer()->getTextColor());
+            m_textBeforeSelection.setColor(getSharedRenderer()->getTextColor());
+            m_textAfterSelection1.setColor(getSharedRenderer()->getTextColor());
+            m_textAfterSelection2.setColor(getSharedRenderer()->getTextColor());
         }
         else if (property == "selectedtextcolor")
         {
-            m_textSelection1.setColor(getRenderer()->getSelectedTextColor());
-            m_textSelection2.setColor(getRenderer()->getSelectedTextColor());
+            m_textSelection1.setColor(getSharedRenderer()->getSelectedTextColor());
+            m_textSelection2.setColor(getSharedRenderer()->getSelectedTextColor());
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
         else if (property == "scrollbar")
         {
-            m_verticalScroll.setRenderer(getRenderer()->getScrollbar());
+            m_verticalScroll.setRenderer(getSharedRenderer()->getScrollbar());
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "selectedtextbackgroundcolor")
         {
-            m_selectedTextBackgroundColorCached = getRenderer()->getSelectedTextBackgroundColor();
+            m_selectedTextBackgroundColorCached = getSharedRenderer()->getSelectedTextBackgroundColor();
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "caretcolor")
         {
-            m_caretColorCached = getRenderer()->getCaretColor();
+            m_caretColorCached = getSharedRenderer()->getCaretColor();
         }
         else if (property == "caretwidth")
         {
-            m_caretWidthCached = getRenderer()->getCaretWidth();
+            m_caretWidthCached = getSharedRenderer()->getCaretWidth();
         }
         else if (property == "opacity")
         {
             Widget::rendererChanged(property);
 
+            m_verticalScroll.setInheritedOpacity(m_opacityCached);
             m_spriteBackground.setOpacity(m_opacityCached);
-            m_verticalScroll.getRenderer()->setOpacity(m_opacityCached);
             m_textBeforeSelection.setOpacity(m_opacityCached);
             m_textAfterSelection1.setOpacity(m_opacityCached);
             m_textAfterSelection2.setOpacity(m_opacityCached);

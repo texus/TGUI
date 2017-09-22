@@ -30,12 +30,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"bordercolor", sf::Color::Black},
-                {"backgroundcolor", sf::Color::Transparent}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Panel::Panel(const Layout2d& size)
@@ -43,7 +37,7 @@ namespace tgui
         m_type = "Panel";
 
         m_renderer = aurora::makeCopied<PanelRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize(size);
     }
@@ -63,6 +57,34 @@ namespace tgui
             return std::static_pointer_cast<Panel>(panel->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    PanelRenderer* Panel::getSharedRenderer()
+    {
+        return aurora::downcast<PanelRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const PanelRenderer* Panel::getSharedRenderer() const
+    {
+        return aurora::downcast<const PanelRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    PanelRenderer* Panel::getRenderer()
+    {
+        return aurora::downcast<PanelRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const PanelRenderer* Panel::getRenderer() const
+    {
+        return aurora::downcast<const PanelRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,16 +164,16 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else
             Group::rendererChanged(property);

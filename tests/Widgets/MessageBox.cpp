@@ -95,8 +95,6 @@ TEST_CASE("[MessageBox]")
         SECTION("functions")
         {
             renderer->setTextColor({10, 20, 30});
-
-            REQUIRE(renderer->getButton()->propertyValuePairs.size() == 0);
             renderer->setButton(buttonsRenderer.getData());
         }
 

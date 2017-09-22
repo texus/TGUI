@@ -24,24 +24,11 @@
 
 
 #include <TGUI/Widgets/MessageBox.hpp>
-#include <TGUI/Loading/Theme.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{1}},
-                {"bordercolor", sf::Color::Black},
-                {"titlecolor", sf::Color::Black},
-                {"titlebarcolor", sf::Color::White},
-                {"backgroundcolor", Color{230, 230, 230}},
-                {"distancetoside", 3.f},
-                {"paddingbetweenbuttons", 1.f},
-                {"textcolor", sf::Color::Black}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox()
@@ -49,11 +36,7 @@ namespace tgui
         m_type = "MessageBox";
 
         m_renderer = aurora::makeCopied<MessageBoxRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
-
-        getRenderer()->getCloseButton()->propertyValuePairs["borders"] = {Borders{1}};
-        getRenderer()->getMaximizeButton()->propertyValuePairs["borders"] = {Borders{1}};
-        getRenderer()->getMinimizeButton()->propertyValuePairs["borders"] = {Borders{1}};
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         add(m_label, "#TGUI_INTERNAL$MessageBoxText#");
         m_label->setTextSize(m_textSize);
@@ -176,6 +159,34 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    MessageBoxRenderer* MessageBox::getSharedRenderer()
+    {
+        return aurora::downcast<MessageBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const MessageBoxRenderer* MessageBox::getSharedRenderer() const
+    {
+        return aurora::downcast<const MessageBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    MessageBoxRenderer* MessageBox::getRenderer()
+    {
+        return aurora::downcast<MessageBoxRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const MessageBoxRenderer* MessageBox::getRenderer() const
+    {
+        return aurora::downcast<const MessageBoxRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MessageBox::setText(const sf::String& text)
     {
         m_label->setText(text);
@@ -216,11 +227,9 @@ namespace tgui
     void MessageBox::addButton(const sf::String& caption)
     {
         auto button = Button::create(caption);
+        button->setRenderer(getSharedRenderer()->getButton());
         button->setTextSize(m_textSize);
         button->connect("Pressed", [=]() { onButtonPress.emit(this, caption); });
-
-        if (!getRenderer()->getButton()->propertyValuePairs.empty())
-            button->setRenderer(getRenderer()->getButton());
 
         add(button, "#TGUI_INTERNAL$MessageBoxButton:" + caption + "#");
         m_buttons.push_back(button);
@@ -309,11 +318,11 @@ namespace tgui
     {
         if (property == "textcolor")
         {
-            m_label->getRenderer()->setTextColor(getRenderer()->getTextColor());
+            m_label->getRenderer()->setTextColor(getSharedRenderer()->getTextColor());
         }
         else if (property == "button")
         {
-            const auto& renderer = getRenderer()->getButton();
+            const auto& renderer = getSharedRenderer()->getButton();
             for (auto& button : m_buttons)
                 button->setRenderer(renderer);
         }
@@ -321,10 +330,10 @@ namespace tgui
         {
             ChildWindow::rendererChanged(property);
 
-            m_label->getRenderer()->setFont(m_fontCached);
+            m_label->setInheritedFont(m_fontCached);
 
             for (auto& button : m_buttons)
-                button->getRenderer()->setFont(m_fontCached);
+                button->setInheritedFont(m_fontCached);
 
             rearrange();
         }

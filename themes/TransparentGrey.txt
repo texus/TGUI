@@ -33,6 +33,8 @@ ChildWindow {
     BackgroundColor = rgba(180, 180, 180, 215);
     BorderColor = rgba(240, 240, 240, 215);
     Borders = (1, 1, 1, 1);
+    DistanceToSide = 3;
+    PaddingBetweenButtons = 1;
     CloseButton = &Button;
     MaximizeButton = &Button;
     MinimizeButton = &Button;

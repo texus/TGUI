@@ -43,25 +43,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{2}},
-                {"padding", Padding{4, 2, 4, 2}},
-                {"caretwidth", 1.f},
-                {"caretcolor", sf::Color::Black},
-                {"bordercolor", Color{60, 60, 60}},
-                {"bordercolorhover", sf::Color::Black},
-                {"textcolor", Color{60, 60, 60}},
-                {"selectedtextcolor", sf::Color::White},
-                {"selectedtextbackgroundcolor", Color{0, 110, 255}},
-                {"defaulttextcolor", Color{160, 160, 160}},
-                {"backgroundcolor", Color{245, 245, 245}},
-                {"backgroundcolorhover", sf::Color::White}
-                ///TODO: Define default disabled colors
-            };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     EditBox::EditBox()
     {
         m_type = "EditBox";
@@ -70,7 +51,7 @@ namespace tgui
         m_allowFocus = true;
 
         m_renderer = aurora::makeCopied<EditBoxRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize({240, 30});
     }
@@ -90,6 +71,34 @@ namespace tgui
             return std::static_pointer_cast<EditBox>(editBox->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    EditBoxRenderer* EditBox::getSharedRenderer()
+    {
+        return aurora::downcast<EditBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const EditBoxRenderer* EditBox::getSharedRenderer() const
+    {
+        return aurora::downcast<const EditBoxRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    EditBoxRenderer* EditBox::getRenderer()
+    {
+        return aurora::downcast<EditBoxRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const EditBoxRenderer* EditBox::getRenderer() const
+    {
+        return aurora::downcast<const EditBoxRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,8 +132,8 @@ namespace tgui
     {
         Widget::enable();
 
-        m_textBeforeSelection.setColor(getRenderer()->getTextColor());
-        m_textAfterSelection.setColor(getRenderer()->getTextColor());
+        m_textBeforeSelection.setColor(getSharedRenderer()->getTextColor());
+        m_textAfterSelection.setColor(getSharedRenderer()->getTextColor());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,10 +142,10 @@ namespace tgui
     {
         Widget::disable();
 
-        if (getRenderer()->getTextColorDisabled().isSet())
+        if (getSharedRenderer()->getTextColorDisabled().isSet())
         {
-            m_textBeforeSelection.setColor(getRenderer()->getTextColorDisabled());
-            m_textAfterSelection.setColor(getRenderer()->getTextColorDisabled());
+            m_textBeforeSelection.setColor(getSharedRenderer()->getTextColorDisabled());
+            m_textAfterSelection.setColor(getSharedRenderer()->getTextColorDisabled());
         }
     }
 
@@ -940,12 +949,12 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if (property == "padding")
         {
-            m_paddingCached = getRenderer()->getPadding();
+            m_paddingCached = getSharedRenderer()->getPadding();
             m_paddingCached.updateParentSize(getSize());
 
             setText(m_text);
@@ -954,50 +963,50 @@ namespace tgui
         }
         else if (property == "caretwidth")
         {
-            m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - getRenderer()->getCaretWidth()) / 2.0f), m_caret.getPosition().y});
-            m_caret.setSize({getRenderer()->getCaretWidth(), getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
+            m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - getSharedRenderer()->getCaretWidth()) / 2.0f), m_caret.getPosition().y});
+            m_caret.setSize({getSharedRenderer()->getCaretWidth(), getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
         }
         else if ((property == "textcolor") || (property == "textcolordisabled"))
         {
-            if (m_enabled || !getRenderer()->getTextColorDisabled().isSet())
+            if (m_enabled || !getSharedRenderer()->getTextColorDisabled().isSet())
             {
-                m_textBeforeSelection.setColor(getRenderer()->getTextColor());
-                m_textAfterSelection.setColor(getRenderer()->getTextColor());
+                m_textBeforeSelection.setColor(getSharedRenderer()->getTextColor());
+                m_textAfterSelection.setColor(getSharedRenderer()->getTextColor());
             }
             else
             {
-                m_textBeforeSelection.setColor(getRenderer()->getTextColorDisabled());
-                m_textAfterSelection.setColor(getRenderer()->getTextColorDisabled());
+                m_textBeforeSelection.setColor(getSharedRenderer()->getTextColorDisabled());
+                m_textAfterSelection.setColor(getSharedRenderer()->getTextColorDisabled());
             }
         }
         else if (property == "selectedtextcolor")
         {
-            m_textSelection.setColor(getRenderer()->getSelectedTextColor());
+            m_textSelection.setColor(getSharedRenderer()->getSelectedTextColor());
         }
         else if (property == "defaulttextcolor")
         {
-            m_defaultText.setColor(getRenderer()->getDefaultTextColor());
+            m_defaultText.setColor(getSharedRenderer()->getDefaultTextColor());
         }
         else if (property == "texture")
         {
-            m_sprite.setTexture(getRenderer()->getTexture());
+            m_sprite.setTexture(getSharedRenderer()->getTexture());
         }
         else if (property == "texturehover")
         {
-            m_spriteHover.setTexture(getRenderer()->getTextureHover());
+            m_spriteHover.setTexture(getSharedRenderer()->getTextureHover());
         }
         else if (property == "texturedisabled")
         {
-            m_spriteDisabled.setTexture(getRenderer()->getTextureDisabled());
+            m_spriteDisabled.setTexture(getSharedRenderer()->getTextureDisabled());
         }
         else if (property == "texturefocused")
         {
-            m_spriteFocused.setTexture(getRenderer()->getTextureFocused());
+            m_spriteFocused.setTexture(getSharedRenderer()->getTextureFocused());
             m_allowFocus = m_spriteFocused.isSet();
         }
         else if (property == "textstyle")
         {
-            const TextStyle style = getRenderer()->getTextStyle();
+            const TextStyle style = getSharedRenderer()->getTextStyle();
             m_textBeforeSelection.setStyle(style);
             m_textAfterSelection.setStyle(style);
             m_textSelection.setStyle(style);
@@ -1005,47 +1014,47 @@ namespace tgui
         }
         else if (property == "defaulttextstyle")
         {
-            m_defaultText.setStyle(getRenderer()->getDefaultTextStyle());
+            m_defaultText.setStyle(getSharedRenderer()->getDefaultTextStyle());
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "bordercolorhover")
         {
-            m_borderColorHoverCached = getRenderer()->getBorderColorHover();
+            m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
         else if (property == "bordercolordisabled")
         {
-            m_borderColorDisabledCached = getRenderer()->getBorderColorDisabled();
+            m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "backgroundcolorhover")
         {
-            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+            m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
         else if (property == "backgroundcolordisabled")
         {
-            m_backgroundColorDisabledCached = getRenderer()->getBackgroundColorDisabled();
+            m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
         else if (property == "caretcolor")
         {
-            m_caretColorCached = getRenderer()->getCaretColor();
+            m_caretColorCached = getSharedRenderer()->getCaretColor();
         }
         else if (property == "caretcolorhover")
         {
-            m_caretColorHoverCached = getRenderer()->getCaretColorHover();
+            m_caretColorHoverCached = getSharedRenderer()->getCaretColorHover();
         }
         else if (property == "caretcolordisabled")
         {
-            m_caretColorDisabledCached = getRenderer()->getCaretColorDisabled();
+            m_caretColorDisabledCached = getSharedRenderer()->getCaretColorDisabled();
         }
         else if (property == "selectedtextbackgroundcolor")
         {
-            m_selectedTextBackgroundColorCached = getRenderer()->getSelectedTextBackgroundColor();
+            m_selectedTextBackgroundColorCached = getSharedRenderer()->getSelectedTextBackgroundColor();
         }
         else if (property == "opacity")
         {

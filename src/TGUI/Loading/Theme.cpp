@@ -31,8 +31,191 @@
 
 namespace tgui
 {
+    namespace
+    {
+        struct DefaultTheme : public Theme
+        {
+            DefaultTheme()
+            {
+                m_renderers = {
+                    {"button", RendererData::create({{"borders", Borders{2}},
+                                                     {"bordercolor", Color{60, 60, 60}},
+                                                     {"bordercolorhover", sf::Color::Black},
+                                                     {"bordercolordown", sf::Color::Black},
+                                                     {"textcolor", Color{60, 60, 60}},
+                                                     {"textcolorhover", sf::Color::Black},
+                                                     {"textcolordown", sf::Color::Black},
+                                                     {"backgroundcolor", Color{245, 245, 245}},
+                                                     {"backgroundcolorhover", sf::Color::White},
+                                                     {"backgroundcolordown", sf::Color::White}})},  ///TODO: Define default disabled colors
+                    {"chatbox", RendererData::create({{"borders", Borders{2}},
+                                                      {"padding", Padding{2, 0, 0, 0}},
+                                                      {"bordercolor", sf::Color::Black},
+                                                      {"backgroundcolor", Color{245, 245, 245}}})},
+                    {"checkbox", RendererData::create({{"borders", Borders{3}},
+                                                       {"bordercolor", Color{60, 60, 60}},
+                                                       {"bordercolorhover", sf::Color::Black},
+                                                       {"textcolor", Color{60, 60, 60}},
+                                                       {"textcolorhover", sf::Color::Black},
+                                                       {"backgroundcolor", Color{245, 245, 245}},
+                                                       {"backgroundcolorhover", sf::Color::White},
+                                                       {"checkcolor", Color{60, 60, 60}},
+                                                       {"checkcolorhover", sf::Color::Black},
+                                                       {"textdistanceratio", 0.2f}})},   ///TODO: Define default disabled colors
+                    {"childwindow", RendererData::create({{"borders", Borders{1}},
+                                                          {"bordercolor", sf::Color::Black},
+                                                          {"titlecolor", sf::Color::Black},
+                                                          {"titlebarcolor", sf::Color::White},
+                                                          {"backgroundcolor", Color{230, 230, 230}},
+                                                          {"distancetoside", 3.f},
+                                                          {"paddingbetweenbuttons", 1.f}})},
+                    {"childwindowbutton", RendererData::create({{"borders", Borders{1}},
+                                                                {"bordercolor", Color{60, 60, 60}},
+                                                                {"bordercolorhover", sf::Color::Black},
+                                                                {"bordercolordown", sf::Color::Black},
+                                                                {"textcolor", Color{60, 60, 60}},
+                                                                {"textcolorhover", sf::Color::Black},
+                                                                {"textcolordown", sf::Color::Black},
+                                                                {"backgroundcolor", Color{245, 245, 245}},
+                                                                {"backgroundcolorhover", sf::Color::White},
+                                                                {"backgroundcolordown", sf::Color::White}})},
+                    {"combobox", RendererData::create({{"borders", Borders{2}},
+                                                       {"padding", Padding{0}},
+                                                       {"bordercolor", sf::Color::Black},
+                                                       {"textcolor", sf::Color::Black},
+                                                       {"backgroundcolor", Color{245, 245, 245}},
+                                                       {"arrowcolor", Color{60, 60, 60}},
+                                                       {"arrowcolorhover", sf::Color::Black},
+                                                       {"arrowbackgroundcolor", Color{245, 245, 245}},
+                                                       {"arrowbackgroundcolorhover", sf::Color::White}})},
+                    {"editbox", RendererData::create({{"borders", Borders{2}},
+                                                      {"padding", Padding{4, 2, 4, 2}},
+                                                      {"caretwidth", 1.f},
+                                                      {"caretcolor", sf::Color::Black},
+                                                      {"bordercolor", Color{60, 60, 60}},
+                                                      {"bordercolorhover", sf::Color::Black},
+                                                      {"textcolor", Color{60, 60, 60}},
+                                                      {"selectedtextcolor", sf::Color::White},
+                                                      {"selectedtextbackgroundcolor", Color{0, 110, 255}},
+                                                      {"defaulttextcolor", Color{160, 160, 160}},
+                                                      {"backgroundcolor", Color{245, 245, 245}},
+                                                      {"backgroundcolorhover", sf::Color::White}})},   ///TODO: Define default disabled colors
+                    {"group", RendererData::create()},
+                    {"horizontallayout", RendererData::create()},
+                    {"horizontalwrap", RendererData::create()},
+                    {"knob", RendererData::create({{"borders", Borders{5}},
+                                                   {"imagerotation", 0.f},
+                                                   {"bordercolor", sf::Color::Black},
+                                                   {"thumbcolor", sf::Color::Black},
+                                                   {"backgroundcolor", sf::Color::White}})},
+                    {"label", RendererData::create({{"borders", Borders{}},
+                                                    {"bordercolor", Color{60, 60, 60}},
+                                                    {"textcolor", Color{60, 60, 60}},
+                                                    {"backgroundcolor", sf::Color::Transparent}})},
+                    {"listbox", RendererData::create({{"borders", Borders{2}},
+                                                      {"padding", Padding{0}},
+                                                      {"bordercolor", sf::Color::Black},
+                                                      {"textcolor", Color{60, 60, 60}},
+                                                      {"textcolorhover", sf::Color::Black},
+                                                      {"selectedtextcolor", sf::Color::White},
+                                                      {"backgroundcolor", Color{245, 245, 245}},
+                                                      {"backgroundcolorhover", sf::Color::White},
+                                                      {"selectedbackgroundcolor", Color{0, 110, 255}},
+                                                      {"selectedbackgroundcolorhover", Color{30, 150, 255}}})},
+                    {"menubar", RendererData::create({{"textcolor", sf::Color::Black},
+                                                      {"selectedtextcolor", sf::Color::White},
+                                                      {"backgroundcolor", sf::Color::White},
+                                                      {"selectedbackgroundcolor", Color{0, 110, 255}},
+                                                      {"distancetoside", 4.f}})},
+                    {"messagebox", RendererData::create({{"borders", Borders{1}},
+                                                         {"bordercolor", sf::Color::Black},
+                                                         {"titlecolor", sf::Color::Black},
+                                                         {"titlebarcolor", sf::Color::White},
+                                                         {"backgroundcolor", Color{230, 230, 230}},
+                                                         {"distancetoside", 3.f},
+                                                         {"paddingbetweenbuttons", 1.f},
+                                                         {"textcolor", sf::Color::Black}})},
+                    {"panel", RendererData::create({{"bordercolor", sf::Color::Black},
+                                                    {"backgroundcolor", sf::Color::Transparent}})},
+                    {"picture", RendererData::create()},
+                    {"progressbar", RendererData::create({{"borders", Borders{2}},
+                                                          {"bordercolor", sf::Color::Black},
+                                                          {"textcolor", sf::Color::Black},
+                                                          {"textcolorfilled", sf::Color::White},
+                                                          {"backgroundcolor", Color{245, 245, 245}},
+                                                          {"fillcolor", Color{0, 110, 255}}})},
+                    {"radiobutton", RendererData::create({{"borders", Borders{3}},
+                                                          {"bordercolor", Color{60, 60, 60}},
+                                                          {"bordercolorhover", sf::Color::Black},
+                                                          {"textcolor", Color{60, 60, 60}},
+                                                          {"textcolorhover", sf::Color::Black},
+                                                          {"backgroundcolor", Color{245, 245, 245}},
+                                                          {"backgroundcolorhover", sf::Color::White},
+                                                          {"checkcolor", Color{60, 60, 60}},
+                                                          {"checkcolorhover", sf::Color::Black},
+                                                          {"textdistanceratio", 0.2f}})},   ///TODO: Define default disabled colors
+                    {"rangeslider", RendererData::create({{"borders", Borders{2}},
+                                                          {"bordercolor", Color{60, 60, 60}},
+                                                          {"bordercolorhover", sf::Color::Black},
+                                                          {"trackcolor", Color{245, 245, 245}},
+                                                          {"trackcolorhover", Color{255, 255, 255}},
+                                                          {"thumbcolor", Color{245, 245, 245}},
+                                                          {"thumbcolorhover", Color{255, 255, 255}}})},
+                    {"scrollablepanel", RendererData::create({{"bordercolor", sf::Color::Black},
+                                                              {"backgroundcolor", sf::Color::Transparent}})},
+                    {"scrollbar", RendererData::create({{"trackcolor", Color{245, 245, 245}},
+                                                        {"thumbcolor", Color{220, 220, 220}},
+                                                        {"thumbcolorhover", Color{230, 230, 230}},
+                                                        {"arrowbackgroundcolor", Color{245, 245, 245}},
+                                                        {"arrowbackgroundcolorhover", Color{255, 255, 255}},
+                                                        {"arrowcolor", Color{60, 60, 60}},
+                                                        {"arrowcolorhover", Color{0, 0, 0}}})},
+                    {"slider", RendererData::create({{"borders", Borders{2}},
+                                                     {"bordercolor", Color{60, 60, 60}},
+                                                     {"bordercolorhover", sf::Color::Black},
+                                                     {"trackcolor", Color{245, 245, 245}},
+                                                     {"trackcolorhover", Color{255, 255, 255}},
+                                                     {"thumbcolor", Color{245, 245, 245}},
+                                                     {"thumbcolorhover", Color{255, 255, 255}}})},
+                    {"spinbutton", RendererData::create({{"borders", Borders{2}},
+                                                         {"bordercolor", sf::Color::Black},
+                                                         {"backgroundcolor", Color{245, 245, 245}},
+                                                         {"backgroundcolorhover", sf::Color::White},
+                                                         {"arrowcolor", Color{60, 60, 60}},
+                                                         {"arrowcolorhover", sf::Color::Black},
+                                                         {"spacebetweenarrows", 2.f}})},
+                    {"tabs", RendererData::create({{"borders", Borders{2}},
+                                                   {"bordercolor", sf::Color::Black},
+                                                   {"textcolor", Color{60, 60, 60}},
+                                                   {"textcolorhover", sf::Color::Black},
+                                                   {"selectedtextcolor", sf::Color::White},
+                                                   {"backgroundcolor", Color{245, 245, 245}},
+                                                   {"backgroundcolorhover", sf::Color::White},
+                                                   {"selectedbackgroundcolor", Color{0, 110, 255}},
+                                                   {"selectedbackgroundcolorhover", Color{30, 150, 255}},
+                                                   {"distancetoside", 1.f}})},
+                    {"textbox", RendererData::create({{"borders", Borders{2}},
+                                                      {"padding", Padding{2, 0, 0, 0}},
+                                                      {"caretwidth", 1.f},
+                                                      {"caretcolor", sf::Color::Black},
+                                                      {"bordercolor", sf::Color::Black},
+                                                      {"textcolor", sf::Color::Black},
+                                                      {"selectedtextcolor", sf::Color::White},
+                                                      {"selectedtextbackgroundcolor", Color{0, 110, 255}},
+                                                      {"backgroundcolor", sf::Color::White}})},
+                    {"verticallayout", RendererData::create({})}
+               };
+            }
+        };
+
+
+
+        DefaultTheme defaultTheme;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Theme* Theme::m_defaultTheme = &defaultTheme;
     std::shared_ptr<BaseThemeLoader> Theme::m_themeLoader = std::make_shared<DefaultThemeLoader>();
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +229,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Theme::~Theme()
+    {
+        if (m_defaultTheme == this)
+            setDefault(nullptr);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Theme::load(const std::string& primary)
     {
         m_primary = primary;
@@ -55,37 +246,17 @@ namespace tgui
         for (auto& pair : m_renderers)
         {
             auto& renderer = pair.second;
-            auto oldData = renderer;
+            const auto oldData = renderer;
 
-            /// TODO: Exceptions should not be used for such situations!
-            ///       Add a function to ThemeLoader that lists which sections exist.
-
-            // Try to load the new renderer
-            const std::map<sf::String, sf::String>* properties;
-            try
-            {
-                properties = &m_themeLoader->load(m_primary, pair.first);
-            }
-            catch (const Exception&)
-            {
-                // Exceptions are ignored. When a renderer was loaded from the old theme but is no longer found
-                // in the new theme then just ignore it and keep the old renderer.
+            if (!m_themeLoader->canLoad(m_primary, pair.first))
                 continue;
-            }
 
-            // Keep track of the old font
-            Font oldFont;
-            if (renderer->propertyValuePairs.find("font") != pair.second->propertyValuePairs.end())
-                oldFont = renderer->propertyValuePairs["font"].getFont();
+            auto& properties = m_themeLoader->load(m_primary, pair.first);
 
             // Update the property-value pairs of the renderer
             renderer->propertyValuePairs = std::map<std::string, ObjectConverter>{};
-            for (const auto& property : *properties)
+            for (const auto& property : properties)
                 renderer->propertyValuePairs[property.first] = ObjectConverter(property.second);
-
-            // If there used to be a font but no new font was set then keep the old font
-            if ((properties->find("font") == properties->end()) && (oldFont != nullptr))
-                renderer->propertyValuePairs["font"] = ObjectConverter(oldFont);
 
             // Tell the widgets that were using this renderer about all the updated properties, both new ones and old ones that were now reset to their default value
             auto oldIt = oldData->propertyValuePairs.begin();
@@ -153,6 +324,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::shared_ptr<RendererData> Theme::getRendererNoThrow(const std::string& id)
+    {
+        std::string lowercaseSecondary = toLower(id);
+
+        // If we already have this renderer in cache then just return it
+        auto it = m_renderers.find(lowercaseSecondary);
+        if (it != m_renderers.end())
+            return it->second;
+
+        m_renderers[lowercaseSecondary] = RendererData::create();
+
+        if (!m_themeLoader->canLoad(m_primary, lowercaseSecondary))
+            return nullptr;
+
+        auto& properties = m_themeLoader->load(m_primary, lowercaseSecondary);
+        for (const auto& property : properties)
+            m_renderers[lowercaseSecondary]->propertyValuePairs[property.first] = ObjectConverter(property.second);
+
+        return m_renderers[lowercaseSecondary];
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Theme::addRenderer(const std::string& id, std::shared_ptr<RendererData> renderer)
     {
         m_renderers[id] = renderer;
@@ -184,6 +378,26 @@ namespace tgui
     std::shared_ptr<BaseThemeLoader> Theme::getThemeLoader()
     {
         return m_themeLoader;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Theme::setDefault(Theme* theme)
+    {
+        if (theme)
+            m_defaultTheme = theme;
+        else
+        {
+            defaultTheme = {};
+            m_defaultTheme = &defaultTheme;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Theme* Theme::getDefault()
+    {
+        return m_defaultTheme;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

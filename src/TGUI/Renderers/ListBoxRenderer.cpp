@@ -48,7 +48,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ListBoxRenderer, TextStyle, sf::Text::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ListBoxRenderer, SelectedTextStyle, {})
 
-    TGUI_RENDERER_PROPERTY_RENDERER(ListBoxRenderer, Scrollbar)
+    TGUI_RENDERER_PROPERTY_RENDERER(ListBoxRenderer, Scrollbar, "scrollbar")
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

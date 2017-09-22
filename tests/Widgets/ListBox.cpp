@@ -325,8 +325,6 @@ TEST_CASE("[ListBox]")
                 renderer->setPadding({5, 6, 7, 8});
                 renderer->setTextStyle(sf::Text::Bold);
                 renderer->setSelectedTextStyle(sf::Text::Italic);
-
-                REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 0);
                 renderer->setScrollbar(scrollbarRenderer.getData());
             }
 

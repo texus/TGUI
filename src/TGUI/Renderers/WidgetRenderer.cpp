@@ -68,10 +68,13 @@ namespace tgui
     {
         std::string lowercaseProperty = toLower(property);
 
-        m_data->propertyValuePairs[lowercaseProperty] = value;
+        if (m_data->propertyValuePairs[lowercaseProperty] != value)
+        {
+            m_data->propertyValuePairs[lowercaseProperty] = value;
 
-        for (const auto& observer : m_data->observers)
-            observer.second(lowercaseProperty);
+            for (const auto& observer : m_data->observers)
+                observer.second(lowercaseProperty);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,14 +97,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::subscribe(void* id, const std::function<void(const std::string& property)>& function)
+    void WidgetRenderer::subscribe(const void* id, const std::function<void(const std::string& property)>& function)
     {
         m_data->observers[id] = function;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void WidgetRenderer::unsubscribe(void* id)
+    void WidgetRenderer::unsubscribe(const void* id)
     {
         m_data->observers.erase(id);
     }
@@ -124,7 +127,9 @@ namespace tgui
 
     std::shared_ptr<RendererData> WidgetRenderer::clone() const
     {
-        return std::make_shared<RendererData>(*m_data);
+        auto data = std::make_shared<RendererData>(*m_data);
+        data->observers = {};
+        return data;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

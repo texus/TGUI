@@ -138,16 +138,15 @@ namespace tgui
     {
         assert(widgetPtr != nullptr);
 
-        // Let the widget inherit our font if it did not had a font yet
-        if (!widgetPtr->getRenderer()->getFont() && m_fontCached)
-            widgetPtr->getRenderer()->setFont(m_fontCached);
-
         widgetPtr->setParent(this);
         m_widgets.push_back(widgetPtr);
         m_widgetNames.push_back(widgetName);
 
+        if (m_fontCached)
+            widgetPtr->setInheritedFont(m_fontCached);
+
         if (m_opacityCached < 1)
-            widgetPtr->getRenderer()->setOpacity(m_opacityCached);
+            widgetPtr->setInheritedOpacity(m_opacityCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -677,16 +676,12 @@ namespace tgui
         if (property == "opacity")
         {
             for (std::size_t i = 0; i < m_widgets.size(); ++i)
-                m_widgets[i]->getRenderer()->setOpacity(m_opacityCached);
+                m_widgets[i]->setInheritedOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
-            // Update the font of child widgets when a font was set (but let them keep their font if the container font was removed)
-            if (m_fontCached != nullptr)
-            {
-                for (const auto& widget : m_widgets)
-                    widget->getRenderer()->setFont(m_fontCached);
-            }
+            for (const auto& widget : m_widgets)
+                widget->setInheritedFont(m_fontCached);
         }
     }
 

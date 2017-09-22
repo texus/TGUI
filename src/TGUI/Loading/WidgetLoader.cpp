@@ -180,6 +180,7 @@ namespace tgui
                 else if (toLower(childNode->name) == "renderer")
                 {
                     auto rendererData = RendererData::create();
+                    rendererData->shared = false;
 
                     for (const auto& pair : childNode->propertyValuePairs)
                         rendererData->propertyValuePairs[pair.first] = {pair.second->value};

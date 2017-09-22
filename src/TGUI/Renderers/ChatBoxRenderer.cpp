@@ -38,7 +38,7 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ChatBoxRenderer, TextureBackground)
 
-    TGUI_RENDERER_PROPERTY_RENDERER(ChatBoxRenderer, Scrollbar)
+    TGUI_RENDERER_PROPERTY_RENDERER(ChatBoxRenderer, Scrollbar, "scrollbar")
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

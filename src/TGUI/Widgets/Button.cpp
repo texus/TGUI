@@ -29,21 +29,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{2}},
-                {"bordercolor", Color{60, 60, 60}},
-                {"bordercolorhover", sf::Color::Black},
-                {"bordercolordown", sf::Color::Black},
-                {"textcolor", Color{60, 60, 60}},
-                {"textcolorhover", sf::Color::Black},
-                {"textcolordown", sf::Color::Black},
-                {"backgroundcolor", Color{245, 245, 245}},
-                {"backgroundcolorhover", sf::Color::White},
-                {"backgroundcolordown", sf::Color::White}
-                ///TODO: Define default disabled colors
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Button::Button()
@@ -51,7 +36,7 @@ namespace tgui
         m_type = "Button";
 
         m_renderer = aurora::makeCopied<ButtonRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize(120, 30);
     }
@@ -76,6 +61,34 @@ namespace tgui
             return std::static_pointer_cast<Button>(button->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ButtonRenderer* Button::getSharedRenderer()
+    {
+        return aurora::downcast<ButtonRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ButtonRenderer* Button::getSharedRenderer() const
+    {
+        return aurora::downcast<const ButtonRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ButtonRenderer* Button::getRenderer()
+    {
+        return aurora::downcast<ButtonRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ButtonRenderer* Button::getRenderer() const
+    {
+        return aurora::downcast<const ButtonRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,16 +132,18 @@ namespace tgui
     void Button::setText(const sf::String& text)
     {
         m_string = text;
+        m_text.setString(text);
 
         // Set the text size when the text has a fixed size
         if (m_textSize != 0)
             m_text.setCharacterSize(m_textSize);
 
+        if ((getInnerSize().x < 0) || (getInnerSize().y < 0))
+            return;
+
         // Draw the text normally unless the height is more than double of the width
         if (getInnerSize().y <= getInnerSize().x * 2)
         {
-            m_text.setString(text);
-
             // Auto size the text when necessary
             if (m_textSize == 0)
             {
@@ -263,7 +278,7 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordown") || (property == "textcolordisabled")
@@ -273,56 +288,56 @@ namespace tgui
         }
         else if (property == "texture")
         {
-            m_sprite.setTexture(getRenderer()->getTexture());
+            m_sprite.setTexture(getSharedRenderer()->getTexture());
         }
         else if (property == "texturehover")
         {
-            m_spriteHover.setTexture(getRenderer()->getTextureHover());
+            m_spriteHover.setTexture(getSharedRenderer()->getTextureHover());
         }
         else if (property == "texturedown")
         {
-            m_spriteDown.setTexture(getRenderer()->getTextureDown());
+            m_spriteDown.setTexture(getSharedRenderer()->getTextureDown());
         }
         else if (property == "texturedisabled")
         {
-            m_spriteDisabled.setTexture(getRenderer()->getTextureDisabled());
+            m_spriteDisabled.setTexture(getSharedRenderer()->getTextureDisabled());
         }
         else if (property == "texturefocused")
         {
-            m_spriteFocused.setTexture(getRenderer()->getTextureFocused());
+            m_spriteFocused.setTexture(getSharedRenderer()->getTextureFocused());
             m_allowFocus = m_spriteFocused.isSet();
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "bordercolorhover")
         {
-            m_borderColorHoverCached = getRenderer()->getBorderColorHover();
+            m_borderColorHoverCached = getSharedRenderer()->getBorderColorHover();
         }
         else if (property == "bordercolordown")
         {
-            m_borderColorDownCached = getRenderer()->getBorderColorDown();
+            m_borderColorDownCached = getSharedRenderer()->getBorderColorDown();
         }
         else if (property == "bordercolordisabled")
         {
-            m_borderColorDisabledCached = getRenderer()->getBorderColorDisabled();
+            m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "backgroundcolorhover")
         {
-            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+            m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
         else if (property == "backgroundcolordown")
         {
-            m_backgroundColorDownCached = getRenderer()->getBackgroundColorDown();
+            m_backgroundColorDownCached = getSharedRenderer()->getBackgroundColorDown();
         }
         else if (property == "backgroundcolordisabled")
         {
-            m_backgroundColorDisabledCached = getRenderer()->getBackgroundColorDisabled();
+            m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
         else if (property == "opacity")
         {
@@ -387,24 +402,24 @@ namespace tgui
 
     void Button::updateTextColorAndStyle()
     {
-        if (!m_enabled && getRenderer()->getTextStyleDisabled().isSet())
-            m_text.setStyle(getRenderer()->getTextStyleDisabled());
-        else if (m_mouseHover && m_mouseDown && getRenderer()->getTextStyleDown().isSet())
-            m_text.setStyle(getRenderer()->getTextStyleDown());
-        else if (m_mouseHover && getRenderer()->getTextStyleHover().isSet())
-            m_text.setStyle(getRenderer()->getTextStyleHover());
+        if (!m_enabled && getSharedRenderer()->getTextStyleDisabled().isSet())
+            m_text.setStyle(getSharedRenderer()->getTextStyleDisabled());
+        else if (m_mouseHover && m_mouseDown && getSharedRenderer()->getTextStyleDown().isSet())
+            m_text.setStyle(getSharedRenderer()->getTextStyleDown());
+        else if (m_mouseHover && getSharedRenderer()->getTextStyleHover().isSet())
+            m_text.setStyle(getSharedRenderer()->getTextStyleHover());
         else
-            m_text.setStyle(getRenderer()->getTextStyle());
+            m_text.setStyle(getSharedRenderer()->getTextStyle());
 
         sf::Color color;
-        if (!m_enabled && getRenderer()->getTextColorDisabled().isSet())
-            color = getRenderer()->getTextColorDisabled();
-        else if (m_mouseHover && m_mouseDown && getRenderer()->getTextColorDown().isSet())
-            color = getRenderer()->getTextColorDown();
-        else if (m_mouseHover && getRenderer()->getTextColorHover().isSet())
-            color = getRenderer()->getTextColorHover();
+        if (!m_enabled && getSharedRenderer()->getTextColorDisabled().isSet())
+            color = getSharedRenderer()->getTextColorDisabled();
+        else if (m_mouseHover && m_mouseDown && getSharedRenderer()->getTextColorDown().isSet())
+            color = getSharedRenderer()->getTextColorDown();
+        else if (m_mouseHover && getSharedRenderer()->getTextColorHover().isSet())
+            color = getSharedRenderer()->getTextColorHover();
         else
-            color = getRenderer()->getTextColor();
+            color = getSharedRenderer()->getTextColor();
 
         m_text.setColor(color);
     }

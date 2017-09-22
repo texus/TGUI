@@ -30,17 +30,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{2}},
-                {"bordercolor", sf::Color::Black},
-                {"backgroundcolor", Color{245, 245, 245}},
-                {"backgroundcolorhover", sf::Color::White},
-                {"arrowcolor", Color{60, 60, 60}},
-                {"arrowcolorhover", sf::Color::Black},
-                {"spacebetweenarrows", 2.f}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     SpinButton::SpinButton()
@@ -48,7 +37,7 @@ namespace tgui
         m_type = "SpinButton";
 
         m_renderer = aurora::makeCopied<SpinButtonRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize(20, 42);
     }
@@ -73,6 +62,34 @@ namespace tgui
             return std::static_pointer_cast<SpinButton>(spinButton->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SpinButtonRenderer* SpinButton::getSharedRenderer()
+    {
+        return aurora::downcast<SpinButtonRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const SpinButtonRenderer* SpinButton::getSharedRenderer() const
+    {
+        return aurora::downcast<const SpinButtonRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SpinButtonRenderer* SpinButton::getRenderer()
+    {
+        return aurora::downcast<SpinButtonRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const SpinButtonRenderer* SpinButton::getRenderer() const
+    {
+        return aurora::downcast<const SpinButtonRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,49 +321,49 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if (property == "spacebetweenarrows")
         {
-            m_spaceBetweenArrowsCached = getRenderer()->getSpaceBetweenArrows();
+            m_spaceBetweenArrowsCached = getSharedRenderer()->getSpaceBetweenArrows();
             setSize(m_size);
         }
         else if (property == "texturearrowup")
         {
-            m_spriteArrowUp.setTexture(getRenderer()->getTextureArrowUp());
+            m_spriteArrowUp.setTexture(getSharedRenderer()->getTextureArrowUp());
         }
         else if (property == "texturearrowuphover")
         {
-            m_spriteArrowUpHover.setTexture(getRenderer()->getTextureArrowUpHover());
+            m_spriteArrowUpHover.setTexture(getSharedRenderer()->getTextureArrowUpHover());
         }
         else if (property == "texturearrowdown")
         {
-            m_spriteArrowDown.setTexture(getRenderer()->getTextureArrowDown());
+            m_spriteArrowDown.setTexture(getSharedRenderer()->getTextureArrowDown());
         }
         else if (property == "texturearrowdownhover")
         {
-            m_spriteArrowDownHover.setTexture(getRenderer()->getTextureArrowDownHover());
+            m_spriteArrowDownHover.setTexture(getSharedRenderer()->getTextureArrowDownHover());
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "backgroundcolorhover")
         {
-            m_backgroundColorHoverCached = getRenderer()->getBackgroundColorHover();
+            m_backgroundColorHoverCached = getSharedRenderer()->getBackgroundColorHover();
         }
         else if (property == "arrowcolor")
         {
-            m_arrowColorCached = getRenderer()->getArrowColor();
+            m_arrowColorCached = getSharedRenderer()->getArrowColor();
         }
         else if (property == "arrowcolorhover")
         {
-            m_arrowColorHoverCached = getRenderer()->getArrowColorHover();
+            m_arrowColorHoverCached = getSharedRenderer()->getArrowColorHover();
         }
         else if (property == "opacity")
         {

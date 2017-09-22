@@ -30,7 +30,7 @@
 
 namespace tgui
 {
-    TGUI_RENDERER_PROPERTY_RENDERER(ScrollablePanelRenderer, Scrollbar)
+    TGUI_RENDERER_PROPERTY_RENDERER(ScrollablePanelRenderer, Scrollbar, "scrollbar")
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

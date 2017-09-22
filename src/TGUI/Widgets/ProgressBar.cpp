@@ -30,16 +30,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{2}},
-                {"bordercolor", sf::Color::Black},
-                {"textcolor", sf::Color::Black},
-                {"textcolorfilled", sf::Color::White},
-                {"backgroundcolor", Color{245, 245, 245}},
-                {"fillcolor", Color{0, 110, 255}}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ProgressBar::ProgressBar()
@@ -47,7 +37,7 @@ namespace tgui
         m_type = "ProgressBar";
 
         m_renderer = aurora::makeCopied<ProgressBarRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setSize(160, 20);
     }
@@ -67,6 +57,34 @@ namespace tgui
             return std::static_pointer_cast<ProgressBar>(progressBar->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ProgressBarRenderer* ProgressBar::getSharedRenderer()
+    {
+        return aurora::downcast<ProgressBarRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ProgressBarRenderer* ProgressBar::getSharedRenderer() const
+    {
+        return aurora::downcast<const ProgressBarRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ProgressBarRenderer* ProgressBar::getRenderer()
+    {
+        return aurora::downcast<ProgressBarRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const ProgressBarRenderer* ProgressBar::getRenderer() const
+    {
+        return aurora::downcast<const ProgressBarRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -269,43 +287,43 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
         else if ((property == "textcolor") || (property == "textcolorfilled"))
         {
-            m_textBack.setColor(getRenderer()->getTextColor());
+            m_textBack.setColor(getSharedRenderer()->getTextColor());
 
-            if (getRenderer()->getTextColorFilled().isSet())
-                m_textFront.setColor(getRenderer()->getTextColorFilled());
+            if (getSharedRenderer()->getTextColorFilled().isSet())
+                m_textFront.setColor(getSharedRenderer()->getTextColorFilled());
             else
-                m_textFront.setColor(getRenderer()->getTextColor());
+                m_textFront.setColor(getSharedRenderer()->getTextColor());
         }
         else if (property == "texturebackground")
         {
-            m_spriteBackground.setTexture(getRenderer()->getTextureBackground());
+            m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
         else if (property == "texturefill")
         {
-            m_spriteFill.setTexture(getRenderer()->getTextureFill());
+            m_spriteFill.setTexture(getSharedRenderer()->getTextureFill());
             recalculateFillSize();
         }
         else if (property == "textstyle")
         {
-            m_textBack.setStyle(getRenderer()->getTextStyle());
-            m_textFront.setStyle(getRenderer()->getTextStyle());
+            m_textBack.setStyle(getSharedRenderer()->getTextStyle());
+            m_textFront.setStyle(getSharedRenderer()->getTextStyle());
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "fillcolor")
         {
-            m_fillColorCached = getRenderer()->getFillColor();
+            m_fillColorCached = getSharedRenderer()->getFillColor();
         }
         else if (property == "opacity")
         {

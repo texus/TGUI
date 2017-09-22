@@ -62,10 +62,7 @@ namespace tgui
 
     Widget::Widget()
     {
-        m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
-
-        // The opacity is 1 by default and thus has to be explicitly initialized
-        m_opacityCached = getRenderer()->getOpacity();
+        m_renderer->subscribe(this, m_rendererChangedCallback);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +107,7 @@ namespace tgui
         m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
         m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
-        m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
+        m_renderer->subscribe(this, m_rendererChangedCallback);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +148,7 @@ namespace tgui
         m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
         other.m_renderer->unsubscribe(&other);
-        m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
+        m_renderer->subscribe(this, m_rendererChangedCallback);
 
         other.m_renderer = nullptr;
     }
@@ -200,7 +197,7 @@ namespace tgui
             m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
             m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
-            m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
+            m_renderer->subscribe(this, m_rendererChangedCallback);
         }
 
         return *this;
@@ -250,7 +247,7 @@ namespace tgui
             m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
             m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
 
-            m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
+            m_renderer->subscribe(this, m_rendererChangedCallback);
 
             other.m_renderer = nullptr;
         }
@@ -260,18 +257,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::setRenderer(const std::shared_ptr<RendererData>& rendererData)
+    void Widget::setRenderer(std::shared_ptr<RendererData> rendererData)
     {
-        std::shared_ptr<RendererData> oldData = m_renderer->getData();
+        if (rendererData == nullptr)
+            rendererData = RendererData::create();
 
-        // If no font is given then try to use the one from the parent
-        if (m_parent && m_parent->getRenderer()->getFont() && (rendererData->propertyValuePairs.find("font") == rendererData->propertyValuePairs.end()))
-            rendererData->propertyValuePairs["font"] = ObjectConverter(m_parent->getRenderer()->getFont());
+        std::shared_ptr<RendererData> oldData = m_renderer->getData();
 
         // Update the data
         m_renderer->unsubscribe(this);
         m_renderer->setData(rendererData);
-        m_renderer->subscribe(this, [this](const std::string& property){ rendererChangedCallback(property); });
+        m_renderer->subscribe(this, m_rendererChangedCallback);
+        rendererData->shared = true;
 
         // Tell the widget about all the updated properties, both new ones and old ones that were now reset to their default value
         auto oldIt = oldData->propertyValuePairs.begin();
@@ -312,8 +309,47 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    WidgetRenderer* Widget::getRenderer() const
+    const WidgetRenderer* Widget::getSharedRenderer() const
     {
+        // You should not be allowed to call setters on the renderer when the widget is const
+        return m_renderer.get();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    WidgetRenderer* Widget::getSharedRenderer()
+    {
+        return m_renderer.get();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const WidgetRenderer* Widget::getRenderer() const
+    {
+        if (m_renderer->getData()->shared)
+        {
+            m_renderer->unsubscribe(this);
+            m_renderer->setData(m_renderer->clone());
+            m_renderer->subscribe(this, m_rendererChangedCallback);
+            m_renderer->getData()->shared = false;
+        }
+
+        // You should not be allowed to call setters on the renderer when the widget is const
+        return m_renderer.get();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    WidgetRenderer* Widget::getRenderer()
+    {
+        if (m_renderer->getData()->shared)
+        {
+            m_renderer->unsubscribe(this);
+            m_renderer->setData(m_renderer->clone());
+            m_renderer->subscribe(this, m_rendererChangedCallback);
+            m_renderer->getData()->shared = false;
+        }
+
         return m_renderer.get();
     }
 
@@ -394,8 +430,8 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, m_opacityCached, duration));
-                getRenderer()->setOpacity(0);
+                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), 0.f, getInheritedOpacity(), duration));
+                setInheritedOpacity(0);
                 break;
             }
             case ShowAnimationType::Scale:
@@ -466,8 +502,8 @@ namespace tgui
         {
             case ShowAnimationType::Fade:
             {
-                float opacity = m_opacityCached;
-                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), m_opacityCached, 0.f, duration, [=](){ hide(); getRenderer()->setOpacity(opacity); }));
+                float opacity = getInheritedOpacity();
+                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), getInheritedOpacity(), 0.f, duration, [=](){ hide(); setInheritedOpacity(opacity); }));
                 break;
             }
             case ShowAnimationType::Scale:
@@ -565,6 +601,36 @@ namespace tgui
     {
         if (m_parent)
             m_parent->moveWidgetToBack(shared_from_this());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setInheritedFont(const Font& font)
+    {
+        m_inheritedFont = font;
+        rendererChanged("font");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const Font& Widget::getInheritedFont() const
+    {
+        return m_inheritedFont;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setInheritedOpacity(float opacity)
+    {
+        m_inheritedOpacity = opacity;
+        rendererChanged("opacity");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Widget::getInheritedOpacity() const
+    {
+        return m_inheritedOpacity;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -755,14 +821,15 @@ namespace tgui
     void Widget::rendererChanged(const std::string& property)
     {
         if (property == "opacity")
-            m_opacityCached = getRenderer()->getOpacity();
+        {
+            m_opacityCached = getSharedRenderer()->getOpacity() * m_inheritedOpacity;
+        }
         else if (property == "font")
         {
-            m_fontCached = getRenderer()->getFont();
-
-            // Try to use the font of the parent when the font is removed
-            if (!m_fontCached && m_parent && m_parent->getRenderer()->getFont())
-                getRenderer()->setFont(m_parent->getRenderer()->getFont());
+            if (getSharedRenderer()->getFont())
+                m_fontCached = getSharedRenderer()->getFont();
+            else
+                m_fontCached = m_inheritedFont;
         }
         else
             throw Exception{"Could not set property '" + property + "', widget of type '" + getWidgetType() + "' does not has this property."};

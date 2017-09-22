@@ -37,6 +37,8 @@ namespace tgui
     CheckBox::CheckBox()
     {
         m_type = "CheckBox";
+
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,9 +159,9 @@ namespace tgui
     void CheckBox::rendererChanged(const std::string& property)
     {
         if (property == "textureunchecked")
-            m_textureUncheckedCached = getRenderer()->getTextureUnchecked();
+            m_textureUncheckedCached = getSharedRenderer()->getTextureUnchecked();
         else if (property == "texturechecked")
-            m_textureCheckedCached = getRenderer()->getTextureChecked();
+            m_textureCheckedCached = getSharedRenderer()->getTextureChecked();
 
         RadioButton::rendererChanged(property);
     }

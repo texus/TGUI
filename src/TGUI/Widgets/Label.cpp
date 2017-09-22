@@ -32,14 +32,6 @@
 
 namespace tgui
 {
-    static std::map<std::string, ObjectConverter> defaultRendererValues =
-            {
-                {"borders", Borders{}},
-                {"bordercolor", Color{60, 60, 60}},
-                {"textcolor", Color{60, 60, 60}},
-                {"backgroundcolor", sf::Color::Transparent}
-            };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Label::Label()
@@ -47,7 +39,7 @@ namespace tgui
         m_type = "Label";
 
         m_renderer = aurora::makeCopied<LabelRenderer>();
-        setRenderer(RendererData::create(defaultRendererValues));
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +62,34 @@ namespace tgui
             return std::static_pointer_cast<Label>(label->clone());
         else
             return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    LabelRenderer* Label::getSharedRenderer()
+    {
+        return aurora::downcast<LabelRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const LabelRenderer* Label::getSharedRenderer() const
+    {
+        return aurora::downcast<const LabelRenderer*>(Widget::getSharedRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    LabelRenderer* Label::getRenderer()
+    {
+        return aurora::downcast<LabelRenderer*>(Widget::getRenderer());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const LabelRenderer* Label::getRenderer() const
+    {
+        return aurora::downcast<const LabelRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,34 +271,34 @@ namespace tgui
     {
         if (property == "borders")
         {
-            m_bordersCached = getRenderer()->getBorders();
+            m_bordersCached = getSharedRenderer()->getBorders();
             m_bordersCached.updateParentSize(getSize());
             rearrangeText();
         }
         else if (property == "padding")
         {
-            m_paddingCached = getRenderer()->getPadding();
+            m_paddingCached = getSharedRenderer()->getPadding();
             m_paddingCached.updateParentSize(getSize());
             rearrangeText();
         }
         else if (property == "textstyle")
         {
-            m_textStyleCached = getRenderer()->getTextStyle();
+            m_textStyleCached = getSharedRenderer()->getTextStyle();
             rearrangeText();
         }
         else if (property == "textcolor")
         {
-            m_textColorCached = getRenderer()->getTextColor();
+            m_textColorCached = getSharedRenderer()->getTextColor();
             for (auto& line : m_lines)
                 line.setColor(m_textColorCached);
         }
         else if (property == "bordercolor")
         {
-            m_borderColorCached = getRenderer()->getBorderColor();
+            m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
         else if (property == "backgroundcolor")
         {
-            m_backgroundColorCached = getRenderer()->getBackgroundColor();
+            m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
         else if (property == "font")
         {
@@ -443,7 +463,7 @@ namespace tgui
         }
 
         // Draw the background
-        if (m_backgroundColorCached != sf::Color::Transparent)
+        if (m_backgroundColorCached.isSet() && (m_backgroundColorCached != sf::Color::Transparent))
             drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         // Apply clipping when needed

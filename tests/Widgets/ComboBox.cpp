@@ -284,8 +284,6 @@ TEST_CASE("[ComboBox]")
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
                 renderer->setTextStyle(sf::Text::Bold);
-
-                REQUIRE(renderer->getListBox()->propertyValuePairs.size() == 0);
                 renderer->setListBox(listBoxRenderer.getData());
             }
 

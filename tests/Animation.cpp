@@ -35,7 +35,8 @@ TEST_CASE("[Animation]") {
     tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
     widget->setPosition(30, 15);
     widget->setSize(120, 30);
-    widget->getRenderer()->setOpacity(0.9f);
+    widget->setInheritedOpacity(0.9f);
+    widget->getRenderer()->setOpacity(0.5f);
 
     tgui::Panel::Ptr parent = tgui::Panel::create();
     parent->setSize(480, 360);
@@ -73,11 +74,11 @@ TEST_CASE("[Animation]") {
         SECTION("showWithEffect") {
             SECTION("Fade") {
                 widget->showWithEffect(tgui::ShowAnimationType::Fade, sf::milliseconds(300));
-                REQUIRE(widget->getRenderer()->getOpacity() == 0);
+                REQUIRE(widget->getInheritedOpacity() == 0);
                 widget->update(sf::milliseconds(100));
-                REQUIRE(tgui::compareFloats(widget->getRenderer()->getOpacity(), 0.3f));
+                REQUIRE(tgui::compareFloats(widget->getInheritedOpacity(), 0.3f));
                 widget->update(sf::milliseconds(200));
-                REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
+                REQUIRE(widget->getInheritedOpacity() == 0.9f);
             }
 
             SECTION("Scale") {
@@ -132,15 +133,15 @@ TEST_CASE("[Animation]") {
             widget->update(sf::milliseconds(100));
             REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             REQUIRE(widget->getSize() == sf::Vector2f(120, 30));
-            REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
+            REQUIRE(widget->getInheritedOpacity() == 0.9f);
         }
 
         SECTION("hideWithEffect") {
             SECTION("Fade") {
                 widget->hideWithEffect(tgui::ShowAnimationType::Fade, sf::milliseconds(300));
-                REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
+                REQUIRE(widget->getInheritedOpacity() == 0.9f);
                 widget->update(sf::milliseconds(100));
-                REQUIRE(tgui::compareFloats(widget->getRenderer()->getOpacity(), 0.6f));
+                REQUIRE(tgui::compareFloats(widget->getInheritedOpacity(), 0.6f));
             }
 
             SECTION("Scale") {
@@ -185,14 +186,14 @@ TEST_CASE("[Animation]") {
             widget->update(sf::milliseconds(200));
             REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             REQUIRE(widget->getSize() == sf::Vector2f(120, 30));
-            REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
+            REQUIRE(widget->getInheritedOpacity() == 0.9f);
             REQUIRE(!widget->isVisible());
 
             // The widget no longer changes after the animation is over
             widget->update(sf::milliseconds(100));
             REQUIRE(widget->getPosition() == sf::Vector2f(30, 15));
             REQUIRE(widget->getSize() == sf::Vector2f(120, 30));
-            REQUIRE(widget->getRenderer()->getOpacity() == 0.9f);
+            REQUIRE(widget->getInheritedOpacity() == 0.9f);
             REQUIRE(!widget->isVisible());
         }
 

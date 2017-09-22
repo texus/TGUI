@@ -214,6 +214,69 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ObjectConverter::operator==(const ObjectConverter& right) const
+    {
+        if (this == &right)
+            return true;
+
+        if (m_type != right.m_type)
+            return false;
+
+        switch (m_type)
+        {
+        case Type::None:
+            return true;
+        case Type::String:
+            return m_string == right.m_string;
+    #ifdef TGUI_USE_VARIANT
+        case Type::Bool:
+            return std::get<bool>(m_value) == std::get<bool>(right.m_value);
+        case Type::Font:
+            return std::get<Font>(m_value) == std::get<Font>(right.m_value);
+        case Type::Color:
+            return std::get<Color>(m_value) == std::get<Color>(right.m_value);
+        case Type::Number:
+            return std::get<float>(m_value) == std::get<float>(right.m_value);
+        case Type::Outline:
+            return std::get<Outline>(m_value) == std::get<Outline>(right.m_value);
+        case Type::Texture:
+            return std::get<Texture>(m_value) == std::get<Texture>(right.m_value);
+        case Type::TextStyle:
+            return std::get<TextStyle>(m_value) == std::get<TextStyle>(right.m_value);
+        case Type::RendererData:
+            return std::get<std::shared_ptr<RendererData>>(m_value) == std::get<std::shared_ptr<RendererData>>(right.m_value);
+    #else
+        case Type::Bool:
+            return m_value.as<bool>() == right.m_value.as<bool>();
+        case Type::Font:
+            return m_value.as<Font>() == right.m_value.as<Font>();
+        case Type::Color:
+            return m_value.as<Color>() == right.m_value.as<Color>();
+        case Type::Number:
+            return m_value.as<float>() == right.m_value.as<float>();
+        case Type::Outline:
+            return m_value.as<Outline>() == right.m_value.as<Outline>();
+        case Type::Texture:
+            return m_value.as<Texture>() == right.m_value.as<Texture>();
+        case Type::TextStyle:
+            return m_value.as<TextStyle>() == right.m_value.as<TextStyle>();
+        case Type::RendererData:
+            return m_value.as<std::shared_ptr<RendererData>>() == right.m_value.as<std::shared_ptr<RendererData>>();
+    #endif
+        default: // This case should never occur, but prevents a warning that control reaches end of non-void function
+            return false;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ObjectConverter::operator!=(const ObjectConverter& right) const
+    {
+        return !(*this == right);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
