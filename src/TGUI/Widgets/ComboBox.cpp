@@ -56,6 +56,7 @@ namespace tgui
         m_nrOfItemsToDisplay             {other.m_nrOfItemsToDisplay},
         m_listBox                        {ListBox::copy(other.m_listBox)},
         m_text                           {other.m_text},
+        m_expandDirection                {other.m_expandDirection},
         m_spriteBackground               {other.m_spriteBackground},
         m_spriteArrowUp                  {other.m_spriteArrowUp},
         m_spriteArrowDown                {other.m_spriteArrowDown},
@@ -81,6 +82,7 @@ namespace tgui
         m_nrOfItemsToDisplay             {std::move(other.m_nrOfItemsToDisplay)},
         m_listBox                        {std::move(other.m_listBox)},
         m_text                           {std::move(other.m_text)},
+        m_expandDirection                {std::move(other.m_expandDirection)},
         m_spriteBackground               {std::move(other.m_spriteBackground)},
         m_spriteArrowUp                  {std::move(other.m_spriteArrowUp)},
         m_spriteArrowDown                {std::move(other.m_spriteArrowDown)},
@@ -111,6 +113,7 @@ namespace tgui
             std::swap(m_nrOfItemsToDisplay,              temp.m_nrOfItemsToDisplay);
             std::swap(m_listBox,                         temp.m_listBox);
             std::swap(m_text,                            temp.m_text);
+            std::swap(m_expandDirection,                 temp.m_expandDirection);
             std::swap(m_spriteBackground,                temp.m_spriteBackground);
             std::swap(m_spriteArrowUp,                   temp.m_spriteArrowUp);
             std::swap(m_spriteArrowDown,                 temp.m_spriteArrowDown);
@@ -140,6 +143,7 @@ namespace tgui
             m_nrOfItemsToDisplay              = std::move(other.m_nrOfItemsToDisplay);
             m_listBox                         = std::move(other.m_listBox);
             m_text                            = std::move(other.m_text);
+            m_expandDirection                 = std::move(other.m_expandDirection);
             m_spriteBackground                = std::move(other.m_spriteBackground);
             m_spriteArrowUp                   = std::move(other.m_spriteArrowUp);
             m_spriteArrowDown                 = std::move(other.m_spriteArrowDown);
@@ -458,6 +462,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::setExpandDirection(ExpandDirection direction)
+    {
+        m_expandDirection = direction;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ComboBox::ExpandDirection ComboBox::getExpandDirection() const
+    {
+        return m_expandDirection;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::setParent(Container* parent)
     {
         hideListBox();
@@ -664,7 +682,11 @@ namespace tgui
             while (container->getParent() != nullptr)
                 container = container->getParent();
 
-            m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - m_bordersCached.getBottom()});
+            if (m_expandDirection == ExpandDirection::Down)
+                m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - m_bordersCached.getBottom()});
+            else // if (m_expandDirection == ExpandDirection::Up)
+                m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop()});
+
             container->add(m_listBox, "#TGUI_INTERNAL$ComboBoxListBox#");
             m_listBox->focus();
         }

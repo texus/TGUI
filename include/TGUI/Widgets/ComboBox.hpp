@@ -41,6 +41,15 @@ namespace tgui
     {
     public:
 
+        /// @brief The side where the list will be displayed
+        enum class ExpandDirection
+        {
+            Down, ///< Display the list below the combo box
+            Up    ///< Display the list above the combo box
+        };
+
+    public:
+
         typedef std::shared_ptr<ComboBox> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const ComboBox> ConstPtr; ///< Shared constant widget pointer
 
@@ -446,6 +455,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the side where the list is displayed
+        ///
+        /// @param On which side of the combo box should the list be displayed?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setExpandDirection(ExpandDirection direction);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the side where the list is displayed
+        ///
+        /// @return On which side of the combo box is the list be displayed?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ExpandDirection getExpandDirection() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// This function is called when the widget is added to a container.
         /// You should not call this function yourself.
@@ -562,6 +587,8 @@ namespace tgui
         ListBox::Ptr m_listBox = ListBox::create();
 
         Text m_text;
+
+        ExpandDirection m_expandDirection = ExpandDirection::Down;
 
         Sprite m_spriteBackground;
         Sprite m_spriteArrowUp;
