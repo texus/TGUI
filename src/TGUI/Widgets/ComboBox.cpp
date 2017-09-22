@@ -179,8 +179,11 @@ namespace tgui
         m_nrOfItemsToDisplay = nrOfItemsInList;
 
         Padding padding = m_listBox->getRenderer()->getScaledPadding();
-        if (m_nrOfItemsToDisplay < m_listBox->m_items.size())
+
+        if (m_nrOfItemsToDisplay > 0)
             m_listBox->setSize({m_listBox->getSize().x, (m_nrOfItemsToDisplay * m_listBox->getItemHeight()) + padding.top + padding.bottom});
+        else
+            m_listBox->setSize({m_listBox->getSize().x, (m_listBox->m_items.size() * m_listBox->getItemHeight()) + padding.top + padding.bottom});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,8 @@ TGUI 0.7.6  (TBD)
 - Knob did not display correctly when using textures
 - Fixed crash in layouts in specific case with GCC 7
 - ChildWindow::setTitleButtons did not accept combinations of buttons
+- Theme files missed MinimizeButton and MaximizeButton in ChildWindow section
+- ComboBox::setItemsToDisplay did not show full list when 0 was passed
 
 
 TGUI 0.7.5  (11 September 2017)
