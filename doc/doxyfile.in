@@ -843,6 +843,7 @@ EXCLUDE_PATTERNS       =
 # exclude all test directories use the pattern */test/*
 
 EXCLUDE_SYMBOLS        = priv \
+                         internal_signal \
                          DataIO \
                          LayoutImpl \
                          TextureData \
