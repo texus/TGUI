@@ -362,6 +362,7 @@ TEST_CASE("[ComboBox]")
         comboBox->addItem("Item 3", "3");
         comboBox->setItemsToDisplay(3);
         comboBox->setMaximumItems(5);
+        comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Up);
 
         testSavingWidget("ComboBox", comboBox);
     }

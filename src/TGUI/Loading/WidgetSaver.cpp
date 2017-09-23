@@ -378,6 +378,9 @@ namespace tgui
             SET_PROPERTY("TextSize", to_string(comboBox->getTextSize()));
             SET_PROPERTY("MaximumItems", to_string(comboBox->getMaximumItems()));
 
+            if (comboBox->getExpandDirection() != ComboBox::ExpandDirection::Down)
+                SET_PROPERTY("ExpandDirection", "Up");
+
             return node;
         }
 

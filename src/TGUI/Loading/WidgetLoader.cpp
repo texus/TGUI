@@ -486,6 +486,16 @@ namespace tgui
             if (node->propertyValuePairs["maximumitems"])
                 comboBox->setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
 
+            if (node->propertyValuePairs["expanddirection"])
+            {
+                if (toLower(node->propertyValuePairs["expanddirection"]->value) == "up")
+                    comboBox->setExpandDirection(ComboBox::ExpandDirection::Up);
+                else if (toLower(node->propertyValuePairs["expanddirection"]->value) == "down")
+                    comboBox->setExpandDirection(ComboBox::ExpandDirection::Down);
+                else
+                    throw Exception{"Failed to parse ExpandDirection property. Only the values Up and Down are correct."};
+            }
+
             return comboBox;
         }
 
