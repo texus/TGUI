@@ -3,34 +3,25 @@ layout: page
 title: Renderers
 breadcrumb: renderers
 ---
-<div>
-  <h3 id="accessing-renderer-properties">Accessing renderer properties</h3>
-  <p>Every widget has a renderer which contains the properties of how the widget should look (e.g. background and text color). When creating a widget, such a renderer is automatically created with it.</p>
 
-  <p class="SmallBottomMargin">The widgets all have a getRenderer() method which will return a pointer to the renderer. The renderer returned by this function will have setters and getters for the properties available for that particular type of widget (i.e. the renderer of a list box has different functions than the one from a button).</p>
-{% highlight c++ %}
+### Accessing renderer properties
+Every widget has a renderer which contains the properties of how the widget should look (e.g. background and text color).
+
+The widgets all have a getRenderer() method which will return a pointer to the renderer. The renderer returned by this function will have setters and getters for the properties available for that particular type of widget (i.e. the renderer of a list box has different functions than the one from a button).
+```c++
 auto slider = tgui::Slider::create();
 slider->getRenderer()->setTrackColor(sf::Color::Green);
 sf::Color thumbColor = slider->getRenderer()->getThumbColor();
-{% endhighlight %}
-</div>
+```
 
-<div>
-  <h3 id="sharing-renderer">Sharing renderer</h3>
-  <p class="SmallBottomMargin">When not calling the setRenderer function, each widget will have its own renderer. You can however set the same renderer in multiple widgets so that changing the renderer changes all these widgets. Renderers that you get from <a href="../using-themes">themes</a> are always shared.</p>
-{% highlight c++ %}
+### Sharing renderers
+Renderers (which typically come from [themes](../using-themes)) are shared by default. If the theme (or the renderer which represents the theme) is changed, all widgets using the renderer will be updated. When `widget->getRenderer()` is called, the widget will however switch to a local copy of the renderer. If you want to access the renderer that is shared between the widgets then you must use `widget->getSharedRenderer()` instead.
+```c++
 Theme theme{"TGUI/themes/Black.txt"};
 button1->setRenderer(theme.getRenderer("Button"));
 button2->setRenderer(theme.getRenderer("Button"));
-button3->setRenderer(button2->getRenderer());
 
-button3->getRenderer()->setBackgroundColor(sf::Color::Red); // Changes button1 and button2 as well
-{% endhighlight %}
-
-  <p class="SmallBottomMargin">If you want to copy a renderer and not have other widgets be affected when you change it then you should clone the renderer:</p>
-{% highlight c++ %}
-button3->setRenderer(button2->getRenderer()->clone());
-
-button3->getRenderer()->setBackgroundColor(sf::Color::Red); // Does not affect other buttons
-{% endhighlight %}
-</div>
+button1->getSharedRenderer()->setBackgroundColor(sf::Color::Red); // Changes button2 too
+button1->getRenderer()->setBackgroundColor(sf::Color::Green); // Does not affect button2
+button1->getSharedRenderer()->setBackgroundColor(sf::Color::Blue); // Does not affect button2, relation was broken with getRenderer() call
+```
