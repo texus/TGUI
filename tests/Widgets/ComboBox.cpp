@@ -221,6 +221,21 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getItems()[2] == "Item 3");
     }
 
+    SECTION("TextSize")
+    {
+        comboBox->setTextSize(25);
+        REQUIRE(comboBox->getTextSize() == 25);
+    }
+
+    SECTION("ExpandDirection")
+    {
+        REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Down);
+        comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Up);
+        REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Up);
+        comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Down);
+        REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Down);
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("Widget")
