@@ -309,6 +309,9 @@ $(function() {
 <li>setCopyCallback()
 : <a class="el" href="classtgui_1_1Texture.html#ad59af8931b0988fb49d4c27887e71e8b">tgui::Texture</a>
 </li>
+<li>setDefault()
+: <a class="el" href="classtgui_1_1Theme.html#a1923b7038e6bcc6de280884723a560ab">tgui::Theme</a>
+</li>
 <li>setDefaultText()
 : <a class="el" href="classtgui_1_1EditBox.html#ad2d38b2a46950a2cbb1b721459a113f3">tgui::EditBox</a>
 </li>
@@ -332,6 +335,9 @@ $(function() {
 <li>setEndRotation()
 : <a class="el" href="classtgui_1_1Knob.html#a57f07b93ee8956d33fd327333f3b9801">tgui::Knob</a>
 </li>
+<li>setExpandDirection()
+: <a class="el" href="classtgui_1_1ComboBox.html#a8a2c83109ead375ab50d5e7748990c07">tgui::ComboBox</a>
+</li>
 <li>setFillColor()
 : <a class="el" href="classtgui_1_1ProgressBarRenderer.html#a165016ed1779eba50c0ab9494a10fd2a">tgui::ProgressBarRenderer</a>
 </li>
@@ -346,11 +352,20 @@ $(function() {
 <li>setHorizontalAlignment()
 : <a class="el" href="classtgui_1_1Label.html#afa6f60c5f7d77e3608132f5506af1838">tgui::Label</a>
 </li>
+<li>setIgnoreTransparentParts()
+: <a class="el" href="classtgui_1_1PictureRenderer.html#aa9540a209b94e02396171629d5ba8656">tgui::PictureRenderer</a>
+</li>
 <li>setImageLoader()
 : <a class="el" href="classtgui_1_1Texture.html#a4f8e5fcf1d281d52e9d549cdbeff49d3">tgui::Texture</a>
 </li>
 <li>setImageRotation()
 : <a class="el" href="classtgui_1_1KnobRenderer.html#a6cd5c4ac31ebc106fbc6fad5e07f25e5">tgui::KnobRenderer</a>
+</li>
+<li>setInheritedFont()
+: <a class="el" href="classtgui_1_1Widget.html#ae73453f5fc8a51710d82d6e0433fbb77">tgui::Widget</a>
+</li>
+<li>setInheritedOpacity()
+: <a class="el" href="classtgui_1_1Widget.html#ad1db932960b6cd9e1c58580bff7320ad">tgui::Widget</a>
 </li>
 <li>setInputValidator()
 : <a class="el" href="classtgui_1_1EditBox.html#a63373603e9d2e70d2f21766041712ade">tgui::EditBox</a>
@@ -458,14 +473,17 @@ $(function() {
 , <a class="el" href="classtgui_1_1Widget.html#afc57c2d17eebd0a528e7f5ca8e088011">tgui::Widget</a>
 </li>
 <li>setProperty()
-: <a class="el" href="classtgui_1_1WidgetRenderer.html#a1fc33127f3ef7ca58502e59a9bb08341">tgui::WidgetRenderer</a>
+: <a class="el" href="classtgui_1_1WidgetRenderer.html#a7042cf28c8d3e4a5529e773a7405fed8">tgui::WidgetRenderer</a>
+</li>
+<li>setRatio()
+: <a class="el" href="classtgui_1_1BoxLayoutRatios.html#a3447350db85af4247717184cd214eecb">tgui::BoxLayoutRatios</a>
 </li>
 <li>setReadOnly()
 : <a class="el" href="classtgui_1_1EditBox.html#a1caadd18a8b7ffaae1b8ee7519ff96af">tgui::EditBox</a>
 , <a class="el" href="classtgui_1_1TextBox.html#ac5ed194b6403237a6bec0f358fd1ebdf">tgui::TextBox</a>
 </li>
 <li>setRenderer()
-: <a class="el" href="classtgui_1_1Widget.html#a7f3572a2cd08743a5a0ea2431b898299">tgui::Widget</a>
+: <a class="el" href="classtgui_1_1Widget.html#ae6e8442ddaf82bbfc2c6f2a4b5f1a9b9">tgui::Widget</a>
 </li>
 <li>setResizable()
 : <a class="el" href="classtgui_1_1ChildWindow.html#adff7250eb57aade399b814f814e0ca92">tgui::ChildWindow</a>
@@ -560,7 +578,7 @@ $(function() {
 , <a class="el" href="classtgui_1_1Sprite.html#a34af5acc8242ad3298f5a5a1e1aa42a1">tgui::Sprite</a>
 , <a class="el" href="classtgui_1_1Tabs.html#a9c423f93f83d868f65a4c45dd695447e">tgui::Tabs</a>
 , <a class="el" href="classtgui_1_1TextBox.html#a434d8c1dd0932bfbf7ef2bbf74fe77aa">tgui::TextBox</a>
-, <a class="el" href="classtgui_1_1Widget.html#aa593c0cf9c1dca1393e60849719417cf">tgui::Widget</a>
+, <a class="el" href="classtgui_1_1Widget.html#a087a60617c86fcf6521da7bc9f4723bd">tgui::Widget</a>
 </li>
 <li>setSmooth()
 : <a class="el" href="classtgui_1_1Texture.html#a955bff3e4065fa08d44be9965412ff27">tgui::Texture</a>
@@ -679,27 +697,29 @@ $(function() {
 <li>setTexture()
 : <a class="el" href="classtgui_1_1ButtonRenderer.html#a5203d15ade541eea1a92ce150ee22a85">tgui::ButtonRenderer</a>
 , <a class="el" href="classtgui_1_1EditBoxRenderer.html#a7260c6dc3eb21cae43b93664f8f792de">tgui::EditBoxRenderer</a>
-, <a class="el" href="classtgui_1_1Picture.html#a1855f6ffddc95165013843c1738327e7">tgui::Picture</a>
+, <a class="el" href="classtgui_1_1PictureRenderer.html#aef285495b53accf29a3f61963b024bdb">tgui::PictureRenderer</a>
 , <a class="el" href="classtgui_1_1Sprite.html#ab6d8c4eebc848b0362f7efb78d56f509">tgui::Sprite</a>
 </li>
+<li>setTextureArrow()
+: <a class="el" href="classtgui_1_1ComboBoxRenderer.html#aff60d7dc2d03dbe10032be9287d3ad24">tgui::ComboBoxRenderer</a>
+</li>
 <li>setTextureArrowDown()
-: <a class="el" href="classtgui_1_1ComboBoxRenderer.html#a89659d11a7d0f4ec0c92f43ff1e08767">tgui::ComboBoxRenderer</a>
-, <a class="el" href="classtgui_1_1ScrollbarRenderer.html#a617bd53d7c6337ff10608946be70ac34">tgui::ScrollbarRenderer</a>
+: <a class="el" href="classtgui_1_1ScrollbarRenderer.html#a617bd53d7c6337ff10608946be70ac34">tgui::ScrollbarRenderer</a>
 , <a class="el" href="classtgui_1_1SpinButtonRenderer.html#a67dfb097c9da79793517c96bd0cec571">tgui::SpinButtonRenderer</a>
 </li>
 <li>setTextureArrowDownHover()
-: <a class="el" href="classtgui_1_1ComboBoxRenderer.html#a8a960bebf47881c655bf1688fa31567b">tgui::ComboBoxRenderer</a>
-, <a class="el" href="classtgui_1_1ScrollbarRenderer.html#a393415354bc5b7b2229cb833c2cc55a2">tgui::ScrollbarRenderer</a>
+: <a class="el" href="classtgui_1_1ScrollbarRenderer.html#a393415354bc5b7b2229cb833c2cc55a2">tgui::ScrollbarRenderer</a>
 , <a class="el" href="classtgui_1_1SpinButtonRenderer.html#ae573bd055b26069418da378668ab856a">tgui::SpinButtonRenderer</a>
 </li>
+<li>setTextureArrowHover()
+: <a class="el" href="classtgui_1_1ComboBoxRenderer.html#adfcaf822abe7e70ffe989468d4de8b86">tgui::ComboBoxRenderer</a>
+</li>
 <li>setTextureArrowUp()
-: <a class="el" href="classtgui_1_1ComboBoxRenderer.html#a80d6de44975e1a27082fe082588f3c3a">tgui::ComboBoxRenderer</a>
-, <a class="el" href="classtgui_1_1ScrollbarRenderer.html#ae8216f1dfe9fd041b3b48f74c1c414ef">tgui::ScrollbarRenderer</a>
+: <a class="el" href="classtgui_1_1ScrollbarRenderer.html#ae8216f1dfe9fd041b3b48f74c1c414ef">tgui::ScrollbarRenderer</a>
 , <a class="el" href="classtgui_1_1SpinButtonRenderer.html#a66a317a3ee1aebbef5e3b4da2e51df8b">tgui::SpinButtonRenderer</a>
 </li>
 <li>setTextureArrowUpHover()
-: <a class="el" href="classtgui_1_1ComboBoxRenderer.html#ab6e41ed172bebeec2fe7976de7c43f03">tgui::ComboBoxRenderer</a>
-, <a class="el" href="classtgui_1_1ScrollbarRenderer.html#a68f1a66d3bd5a46731ce9f01e3291288">tgui::ScrollbarRenderer</a>
+: <a class="el" href="classtgui_1_1ScrollbarRenderer.html#a68f1a66d3bd5a46731ce9f01e3291288">tgui::ScrollbarRenderer</a>
 , <a class="el" href="classtgui_1_1SpinButtonRenderer.html#abbe78674171b0985677179918c53ae87">tgui::SpinButtonRenderer</a>
 </li>
 <li>setTextureBackground()
@@ -852,10 +872,10 @@ $(function() {
 : <a class="el" href="classtgui_1_1Sprite.html#a24d896fe63bb1cc5319546fcf02b6e53">tgui::Sprite</a>
 </li>
 <li>setWidgetAlignment()
-: <a class="el" href="classtgui_1_1Grid.html#afa14f568c3bf8fb9d158d66848adec39">tgui::Grid</a>
+: <a class="el" href="classtgui_1_1Grid.html#ad1f289139d633e96d8c67e71b02a5754">tgui::Grid</a>
 </li>
 <li>setWidgetBorders()
-: <a class="el" href="classtgui_1_1Grid.html#acdcec25aea98f5803e5270d282ab3c67">tgui::Grid</a>
+: <a class="el" href="classtgui_1_1Grid.html#ae567093dd02722aec752b65baee6b751">tgui::Grid</a>
 </li>
 <li>setWidgetName()
 : <a class="el" href="classtgui_1_1Container.html#a1df09925591bb67f1ce3a73ec1aa1285">tgui::Container</a>
@@ -868,7 +888,7 @@ $(function() {
 : <a class="el" href="classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b">tgui::Widget</a>
 </li>
 <li>Signal()
-: <a class="el" href="classtgui_1_1Signal.html#a2533de4f7124de8b8ae4644dad19717f">tgui::Signal</a>
+: <a class="el" href="classtgui_1_1Signal.html#ae66e7edf6a6a62c1d6d87a767e349241">tgui::Signal</a>
 </li>
 <li>SignalChildWindow()
 : <a class="el" href="classtgui_1_1SignalChildWindow.html#a5fdab32a0a953f66425efbe7e76a65c7">tgui::SignalChildWindow</a>
@@ -883,14 +903,14 @@ $(function() {
 : <a class="el" href="classtgui_1_1SignalRange.html#a02f852462f176fe6a8f6af62497b3e31">tgui::SignalRange</a>
 </li>
 <li>subscribe()
-: <a class="el" href="classtgui_1_1WidgetRenderer.html#a429c4ba602b77ccc55ff7f21237674ee">tgui::WidgetRenderer</a>
+: <a class="el" href="classtgui_1_1WidgetRenderer.html#ab7dff3ca35fc2667796594d8cc6d4cdb">tgui::WidgetRenderer</a>
 </li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 27 2017 22:48:29 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 23 2017 16:06:55 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

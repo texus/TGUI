@@ -136,6 +136,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0f3a4959e6fc97b6115453e95e124789"><td class="memItemLeft" align="right" valign="top">const std::map&lt; sf::String, sf::String &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1DefaultThemeLoader.html#a0f3a4959e6fc97b6115453e95e124789">load</a> (const std::string &amp;filename, const std::string &amp;section) override</td></tr>
 <tr class="memdesc:a0f3a4959e6fc97b6115453e95e124789"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the property-value pairs from the theme file.  <a href="#a0f3a4959e6fc97b6115453e95e124789">More...</a><br /></td></tr>
 <tr class="separator:a0f3a4959e6fc97b6115453e95e124789"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b5616457659850fe3fb335ae6c285bb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1DefaultThemeLoader.html#a0b5616457659850fe3fb335ae6c285bb">canLoad</a> (const std::string &amp;filename, const std::string &amp;section) override</td></tr>
+<tr class="memdesc:a0b5616457659850fe3fb335ae6c285bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the requested property-value pairs are available.  <a href="#a0b5616457659850fe3fb335ae6c285bb">More...</a><br /></td></tr>
+<tr class="separator:a0b5616457659850fe3fb335ae6c285bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtgui_1_1BaseThemeLoader"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1BaseThemeLoader')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1BaseThemeLoader.html">tgui::BaseThemeLoader</a></td></tr>
 <tr class="memitem:ab43fb2866b0f51f853446b9bf2c6174c inherit pub_methods_classtgui_1_1BaseThemeLoader"><td class="memItemLeft" align="right" valign="top"><a id="ab43fb2866b0f51f853446b9bf2c6174c"></a>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BaseThemeLoader.html#ab43fb2866b0f51f853446b9bf2c6174c">~BaseThemeLoader</a> ()=default</td></tr>
@@ -159,6 +162,54 @@ Protected Member Functions</h2></td></tr>
 <p>Themes are stored on disk in files which contain sections with a syntax similar to CSS. This loader will be able to extract the data from these files.</p>
 <p>On first access, the entire file will be cached, the next times the cached map is simply returned. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a0b5616457659850fe3fb335ae6c285bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b5616457659850fe3fb335ae6c285bb">&#9670;&nbsp;</a></span>canLoad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::DefaultThemeLoader::canLoad </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>section</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Check if the requested property-value pairs are available. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Filename of the theme file </td></tr>
+    <tr><td class="paramname">section</td><td>Name of the section inside the theme file</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether a map op property-value pairs is available </dd></dl>
+
+<p>Implements <a class="el" href="classtgui_1_1BaseThemeLoader.html#ae00047904a9dff63acbfbe670e657f9b">tgui::BaseThemeLoader</a>.</p>
+
+</div>
+</div>
 <a id="a9ca655747fb6516a5400e3200fbdc2e9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9ca655747fb6516a5400e3200fbdc2e9">&#9670;&nbsp;</a></span>flushCache()</h2>
 
@@ -342,7 +393,7 @@ Protected Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 27 2017 22:48:29 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 23 2017 16:06:54 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

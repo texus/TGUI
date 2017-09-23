@@ -1,10 +1,14 @@
 var searchData=
 [
+  ['ignoremouseevents',['ignoreMouseEvents',['../classtgui_1_1Label.html#a32bbfe0091524b8f43d09a47fa33cbb3',1,'tgui::Label::ignoreMouseEvents()'],['../classtgui_1_1Picture.html#acca39a900a5095ea2979eb7ddb2f966c',1,'tgui::Picture::ignoreMouseEvents()']]],
   ['incrementvalue',['incrementValue',['../classtgui_1_1ProgressBar.html#aa3fe640b75753e5e9353b1b754202d37',1,'tgui::ProgressBar']]],
-  ['insert',['insert',['../classtgui_1_1BoxLayout.html#aa13ab97044e8288bb5dcc3ad9e1000c4',1,'tgui::BoxLayout::insert()'],['../classtgui_1_1Tabs.html#a393fd1ff44ccd470a039e42d53a86c4d',1,'tgui::Tabs::insert()']]],
+  ['insert',['insert',['../classtgui_1_1BoxLayout.html#a213d5af92172ebfc327de225fc6e199c',1,'tgui::BoxLayout::insert()'],['../classtgui_1_1BoxLayoutRatios.html#ac0aa7728e982b902d1ae82f427d7eaea',1,'tgui::BoxLayoutRatios::insert(std::size_t index, const tgui::Widget::Ptr &amp;widget, const sf::String &amp;widgetName=&quot;&quot;) override'],['../classtgui_1_1BoxLayoutRatios.html#a4085a66d91ab52b169e81e6d5fa653d7',1,'tgui::BoxLayoutRatios::insert(std::size_t index, const tgui::Widget::Ptr &amp;widget, float ratio, const sf::String &amp;widgetName=&quot;&quot;)'],['../classtgui_1_1Tabs.html#a393fd1ff44ccd470a039e42d53a86c4d',1,'tgui::Tabs::insert()']]],
+  ['insertspace',['insertSpace',['../classtgui_1_1BoxLayoutRatios.html#abf8acefc66c7272ffe9e69d1550d017e',1,'tgui::BoxLayoutRatios']]],
   ['ischecked',['isChecked',['../classtgui_1_1RadioButton.html#a0bd329e6a6fdafe65031f17ec856f257',1,'tgui::RadioButton']]],
+  ['isconstant',['isConstant',['../classtgui_1_1AbsoluteOrRelativeValue.html#a6a6e96d75bf58f12dbc87a4b94219545',1,'tgui::AbsoluteOrRelativeValue']]],
   ['isenabled',['isEnabled',['../classtgui_1_1Widget.html#aa1dcaa2bb45dd0b16b66095c1d197e36',1,'tgui::Widget']]],
   ['isfocused',['isFocused',['../classtgui_1_1Widget.html#aff719de74e3d9a59ff23a034ae3bd427',1,'tgui::Widget']]],
+  ['isignoringmouseevents',['isIgnoringMouseEvents',['../classtgui_1_1Label.html#a8e025076fe6c01a6030856aedd13d309',1,'tgui::Label::isIgnoringMouseEvents()'],['../classtgui_1_1Picture.html#a5592db723eae334ce2de371261a20db1',1,'tgui::Picture::isIgnoringMouseEvents()']]],
   ['iskeptinparent',['isKeptInParent',['../classtgui_1_1ChildWindow.html#addbf79ac606e11a0aa3de87e6ab9619c',1,'tgui::ChildWindow']]],
   ['ismousedown',['isMouseDown',['../classtgui_1_1ScrollbarChildWidget.html#ac064716d3bb6c4e7db43d3444fe3a548',1,'tgui::ScrollbarChildWidget']]],
   ['ismousedownonthumb',['isMouseDownOnThumb',['../classtgui_1_1ScrollbarChildWidget.html#a84947d25d8c4f825c31833e0d023e7ac',1,'tgui::ScrollbarChildWidget']]],

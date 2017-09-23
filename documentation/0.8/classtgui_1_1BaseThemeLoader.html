@@ -138,10 +138,62 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memitem:ab99538370477d8e7c76f0150384401f5"><td class="memItemLeft" align="right" valign="top">virtual const std::map&lt; sf::String, sf::String &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BaseThemeLoader.html#ab99538370477d8e7c76f0150384401f5">load</a> (const std::string &amp;primary, const std::string &amp;secondary)=0</td></tr>
 <tr class="memdesc:ab99538370477d8e7c76f0150384401f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the property-value pairs from the theme.  <a href="#ab99538370477d8e7c76f0150384401f5">More...</a><br /></td></tr>
 <tr class="separator:ab99538370477d8e7c76f0150384401f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae00047904a9dff63acbfbe670e657f9b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1BaseThemeLoader.html#ae00047904a9dff63acbfbe670e657f9b">canLoad</a> (const std::string &amp;primary, const std::string &amp;secondary)=0</td></tr>
+<tr class="memdesc:ae00047904a9dff63acbfbe670e657f9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the requested property-value pairs are available.  <a href="#ae00047904a9dff63acbfbe670e657f9b">More...</a><br /></td></tr>
+<tr class="separator:ae00047904a9dff63acbfbe670e657f9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class for theme loader implementations. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae00047904a9dff63acbfbe670e657f9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae00047904a9dff63acbfbe670e657f9b">&#9670;&nbsp;</a></span>canLoad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool tgui::BaseThemeLoader::canLoad </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>primary</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>secondary</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Check if the requested property-value pairs are available. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">primary</td><td>Primary parameter of the loader </td></tr>
+    <tr><td class="paramname">secondary</td><td>Secondary parameter of the loader</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>For the default loader, the primary parameter is the filename while the secondary parameter is the section name.</p>
+<dl class="section return"><dt>Returns</dt><dd>Whether a map op property-value pairs is available </dd></dl>
+
+<p>Implemented in <a class="el" href="classtgui_1_1DefaultThemeLoader.html#a0b5616457659850fe3fb335ae6c285bb">tgui::DefaultThemeLoader</a>.</p>
+
+</div>
+</div>
 <a id="ab99538370477d8e7c76f0150384401f5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab99538370477d8e7c76f0150384401f5">&#9670;&nbsp;</a></span>load()</h2>
 
@@ -234,7 +286,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 27 2017 22:48:28 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 23 2017 16:06:54 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>
