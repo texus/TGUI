@@ -48,10 +48,8 @@ ChildWindow {
 
 ComboBox {
     TextureBackground     = "Black.png" Part(0, 154, 48, 48) Middle(16, 16, 16, 16);
-    TextureArrowDown      = "Black.png" Part(60,  0, 32, 32);
-    TextureArrowDownHover = "Black.png" Part(60, 32, 32, 32);
-    TextureArrowUp        = "Black.png" Part(92,  0, 32, 32);
-    TextureArrowUpHover   = "Black.png" Part(92, 32, 32, 32);
+    TextureArrow          = "Black.png" Part(60,  0, 32, 32);
+    TextureArrowHover     = "Black.png" Part(60, 32, 32, 32);
     TextColor             = rgb(190, 190, 190);
     Padding               = (3, 3, 3, 3);
     ListBox               = &ListBox;

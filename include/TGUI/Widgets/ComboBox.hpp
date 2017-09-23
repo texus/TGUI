@@ -591,10 +591,8 @@ namespace tgui
         ExpandDirection m_expandDirection = ExpandDirection::Down;
 
         Sprite m_spriteBackground;
-        Sprite m_spriteArrowUp;
-        Sprite m_spriteArrowDown;
-        Sprite m_spriteArrowUpHover;
-        Sprite m_spriteArrowDownHover;
+        Sprite m_spriteArrow;
+        Sprite m_spriteArrowHover;
 
         // Cached renderer properties
         Borders m_bordersCached;

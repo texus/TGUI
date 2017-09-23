@@ -50,8 +50,7 @@ ChildWindow {
 }
 
 ComboBox {
-    TextureArrowUp   = "BabyBlue.png" Part(199, 2, 20, 26);
-    TextureArrowDown = "BabyBlue.png" Part(177, 2, 20, 26);
+    TextureArrow     = "BabyBlue.png" Part(177, 2, 20, 26);
     BackgroundColor  = rgb(210, 210, 210);
     TextColor        = rgb(100, 100, 100);
     BorderColor      = White;

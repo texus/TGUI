@@ -42,10 +42,8 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BorderColor, sf::Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureBackground)
-    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowUp)
-    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowUpHover)
-    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowDown)
-    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowDownHover)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrow)
+    TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowHover)
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, TextStyle, sf::Text::Regular)
 

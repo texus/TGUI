@@ -58,10 +58,8 @@ namespace tgui
         m_text                           {other.m_text},
         m_expandDirection                {other.m_expandDirection},
         m_spriteBackground               {other.m_spriteBackground},
-        m_spriteArrowUp                  {other.m_spriteArrowUp},
-        m_spriteArrowDown                {other.m_spriteArrowDown},
-        m_spriteArrowUpHover             {other.m_spriteArrowUpHover},
-        m_spriteArrowDownHover           {other.m_spriteArrowDownHover},
+        m_spriteArrow                    {other.m_spriteArrow},
+        m_spriteArrowHover               {other.m_spriteArrowHover},
         m_bordersCached                  {other.m_bordersCached},
         m_paddingCached                  {other.m_paddingCached},
         m_borderColorCached              {other.m_borderColorCached},
@@ -84,10 +82,8 @@ namespace tgui
         m_text                           {std::move(other.m_text)},
         m_expandDirection                {std::move(other.m_expandDirection)},
         m_spriteBackground               {std::move(other.m_spriteBackground)},
-        m_spriteArrowUp                  {std::move(other.m_spriteArrowUp)},
-        m_spriteArrowDown                {std::move(other.m_spriteArrowDown)},
-        m_spriteArrowUpHover             {std::move(other.m_spriteArrowUpHover)},
-        m_spriteArrowDownHover           {std::move(other.m_spriteArrowDownHover)},
+        m_spriteArrow                    {std::move(other.m_spriteArrow)},
+        m_spriteArrowHover               {std::move(other.m_spriteArrowHover)},
         m_bordersCached                  {std::move(other.m_bordersCached)},
         m_paddingCached                  {std::move(other.m_paddingCached)},
         m_borderColorCached              {std::move(other.m_borderColorCached)},
@@ -115,10 +111,8 @@ namespace tgui
             std::swap(m_text,                            temp.m_text);
             std::swap(m_expandDirection,                 temp.m_expandDirection);
             std::swap(m_spriteBackground,                temp.m_spriteBackground);
-            std::swap(m_spriteArrowUp,                   temp.m_spriteArrowUp);
-            std::swap(m_spriteArrowDown,                 temp.m_spriteArrowDown);
-            std::swap(m_spriteArrowUpHover,              temp.m_spriteArrowUpHover);
-            std::swap(m_spriteArrowDownHover,            temp.m_spriteArrowDownHover);
+            std::swap(m_spriteArrow,                     temp.m_spriteArrow);
+            std::swap(m_spriteArrowHover,                temp.m_spriteArrowHover);
             std::swap(m_bordersCached,                   temp.m_bordersCached);
             std::swap(m_paddingCached,                   temp.m_paddingCached);
             std::swap(m_borderColorCached,               temp.m_borderColorCached);
@@ -145,10 +139,8 @@ namespace tgui
             m_text                            = std::move(other.m_text);
             m_expandDirection                 = std::move(other.m_expandDirection);
             m_spriteBackground                = std::move(other.m_spriteBackground);
-            m_spriteArrowUp                   = std::move(other.m_spriteArrowUp);
-            m_spriteArrowDown                 = std::move(other.m_spriteArrowDown);
-            m_spriteArrowUpHover              = std::move(other.m_spriteArrowUpHover);
-            m_spriteArrowDownHover            = std::move(other.m_spriteArrowDownHover);
+            m_spriteArrow                     = std::move(other.m_spriteArrow);
+            m_spriteArrowHover                = std::move(other.m_spriteArrowHover);
             m_bordersCached                   = std::move(other.m_bordersCached);
             m_paddingCached                   = std::move(other.m_paddingCached);
             m_borderColorCached               = std::move(other.m_borderColorCached);
@@ -226,13 +218,10 @@ namespace tgui
             updateListBoxHeight();
         }
 
-        if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
+        if (m_spriteArrow.isSet())
         {
-            m_spriteArrowUp.setSize({m_spriteArrowUp.getTexture().getImageSize().x * (height / m_spriteArrowUp.getTexture().getImageSize().y), height});
-            m_spriteArrowDown.setSize({m_spriteArrowDown.getTexture().getImageSize().x * (height / m_spriteArrowDown.getTexture().getImageSize().y), height});
-
-            m_spriteArrowUpHover.setSize(m_spriteArrowUp.getSize());
-            m_spriteArrowDownHover.setSize(m_spriteArrowDown.getSize());
+            m_spriteArrow.setSize({m_spriteArrow.getTexture().getImageSize().x * (height / m_spriteArrow.getTexture().getImageSize().y), height});
+            m_spriteArrowHover.setSize(m_spriteArrow.getSize());
         }
 
         m_text.setCharacterSize(m_listBox->getTextSize());
@@ -574,23 +563,14 @@ namespace tgui
         {
             m_spriteBackground.setTexture(getSharedRenderer()->getTextureBackground());
         }
-        else if (property == "texturearrowup")
+        else if (property == "texturearrow")
         {
-            m_spriteArrowUp.setTexture(getSharedRenderer()->getTextureArrowUp());
+            m_spriteArrow.setTexture(getSharedRenderer()->getTextureArrow());
             setSize(m_size);
         }
-        else if (property == "texturearrowuphover")
+        else if (property == "texturearrowhover")
         {
-            m_spriteArrowUpHover.setTexture(getSharedRenderer()->getTextureArrowUpHover());
-        }
-        else if (property == "texturearrowdown")
-        {
-            m_spriteArrowDown.setTexture(getSharedRenderer()->getTextureArrowDown());
-            setSize(m_size);
-        }
-        else if (property == "texturearrowdownhover")
-        {
-            m_spriteArrowDownHover.setTexture(getSharedRenderer()->getTextureArrowDownHover());
+            m_spriteArrowHover.setTexture(getSharedRenderer()->getTextureArrowHover());
         }
         else if (property == "listbox")
         {
@@ -625,10 +605,8 @@ namespace tgui
             Widget::rendererChanged(property);
 
             m_spriteBackground.setOpacity(m_opacityCached);
-            m_spriteArrowUp.setOpacity(m_opacityCached);
-            m_spriteArrowUpHover.setOpacity(m_opacityCached);
-            m_spriteArrowDown.setOpacity(m_opacityCached);
-            m_spriteArrowDownHover.setOpacity(m_opacityCached);
+            m_spriteArrow.setOpacity(m_opacityCached);
+            m_spriteArrowHover.setOpacity(m_opacityCached);
 
             m_text.setOpacity(m_opacityCached);
         }
@@ -752,31 +730,17 @@ namespace tgui
         else
             drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
 
-        // Check if we have textures for the arrow
+        // Check if we have a texture for the arrow
         float arrowSize;
-        if (m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
+        if (m_spriteArrow.isSet())
         {
-            // Set the arrow like it should (down when list box is invisible, up when it is visible)
-            if (m_listBox->isVisible())
-            {
-                arrowSize = m_spriteArrowUp.getSize().x;
-                states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
+            arrowSize = m_spriteArrow.getSize().x;
+            states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
 
-                if (m_mouseHover && m_spriteArrowUpHover.isSet())
-                    m_spriteArrowUpHover.draw(target, states);
-                else
-                    m_spriteArrowUp.draw(target, states);
-            }
+            if (m_mouseHover && m_spriteArrowHover.isSet())
+                m_spriteArrowHover.draw(target, states);
             else
-            {
-                arrowSize = m_spriteArrowDown.getSize().x;
-                states.transform.translate({getInnerSize().x - m_paddingCached.getRight() - arrowSize, m_paddingCached.getTop()});
-
-                if (m_mouseHover && m_spriteArrowDownHover.isSet())
-                    m_spriteArrowDownHover.draw(target, states);
-                else
-                    m_spriteArrowDown.draw(target, states);
-            }
+                m_spriteArrow.draw(target, states);
         }
         else // There are no textures for the arrow
         {
@@ -789,18 +753,9 @@ namespace tgui
                 drawRectangleShape(target, states, {arrowSize, arrowSize}, m_arrowBackgroundColorCached);
 
             sf::ConvexShape arrow{3};
-            if (m_listBox->isVisible())
-            {
-                arrow.setPoint(0, {arrowSize / 5, arrowSize * 4/5});
-                arrow.setPoint(1, {arrowSize / 2, arrowSize / 5});
-                arrow.setPoint(2, {arrowSize * 4/5, arrowSize * 4/5});
-            }
-            else // The listbox is not visible, the arrow points down
-            {
-                arrow.setPoint(0, {arrowSize / 5, arrowSize / 5});
-                arrow.setPoint(1, {arrowSize / 2, arrowSize * 4/5});
-                arrow.setPoint(2, {arrowSize * 4/5, arrowSize / 5});
-            }
+            arrow.setPoint(0, {arrowSize / 5, arrowSize / 5});
+            arrow.setPoint(1, {arrowSize / 2, arrowSize * 4/5});
+            arrow.setPoint(2, {arrowSize * 4/5, arrowSize / 5});
 
             if (m_mouseHover && m_arrowColorHoverCached.isSet())
                 arrow.setFillColor(m_arrowColorHoverCached);

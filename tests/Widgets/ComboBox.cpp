@@ -306,49 +306,37 @@ TEST_CASE("[ComboBox]")
         SECTION("textured")
         {
             tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
-            tgui::Texture textureArrowUp("resources/Black.png", {60,  0, 32, 32});
-            tgui::Texture textureArrowUpHover("resources/Black.png", {60, 32, 32, 32});
-            tgui::Texture textureArrowDown("resources/Black.png", {92,  0, 32, 32});
-            tgui::Texture textureArrowDownHover("resources/Black.png", {92, 32, 32, 32});
+            tgui::Texture textureArrow("resources/Black.png", {92,  0, 32, 32});
+            tgui::Texture textureArrowHover("resources/Black.png", {92, 32, 32, 32});
 
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUp", tgui::Serializer::serialize(textureArrowUp)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUpHover", tgui::Serializer::serialize(textureArrowUpHover)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDown", tgui::Serializer::serialize(textureArrowDown)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDownHover", tgui::Serializer::serialize(textureArrowDownHover)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrow", tgui::Serializer::serialize(textureArrow)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowHover", tgui::Serializer::serialize(textureArrowHover)));
             }
 
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUp", textureArrowUp));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowUpHover", textureArrowUpHover));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDown", textureArrowDown));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDownHover", textureArrowDownHover));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrow", textureArrow));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureArrowHover", textureArrowHover));
             }
 
             SECTION("functions")
             {
                 renderer->setTextureBackground(textureBackground);
-                renderer->setTextureArrowUp(textureArrowUp);
-                renderer->setTextureArrowUpHover(textureArrowUpHover);
-                renderer->setTextureArrowDown(textureArrowDown);
-                renderer->setTextureArrowDownHover(textureArrowDownHover);
+                renderer->setTextureArrow(textureArrow);
+                renderer->setTextureArrowHover(textureArrowHover);
             }
 
             REQUIRE(renderer->getProperty("TextureBackground").getTexture().getData() != nullptr);
-            REQUIRE(renderer->getProperty("TextureArrowUp").getTexture().getData() != nullptr);
-            REQUIRE(renderer->getProperty("TextureArrowUpHover").getTexture().getData() != nullptr);
-            REQUIRE(renderer->getProperty("TextureArrowDown").getTexture().getData() != nullptr);
-            REQUIRE(renderer->getProperty("TextureArrowDownHover").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrow").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureArrowHover").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureBackground().getData() == textureBackground.getData());
-            REQUIRE(renderer->getTextureArrowUp().getData() == textureArrowUp.getData());
-            REQUIRE(renderer->getTextureArrowUpHover().getData() == textureArrowUpHover.getData());
-            REQUIRE(renderer->getTextureArrowDown().getData() == textureArrowDown.getData());
-            REQUIRE(renderer->getTextureArrowDownHover().getData() == textureArrowDownHover.getData());
+            REQUIRE(renderer->getTextureArrow().getData() == textureArrow.getData());
+            REQUIRE(renderer->getTextureArrowHover().getData() == textureArrowHover.getData());
         }
     }
 
