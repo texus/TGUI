@@ -4,32 +4,34 @@ title: Minimal code
 breadcrumb: minimal code
 ---
 
-<p>There are four things you need to change in your code to get TGUI working.</p>
+There are four things you need to change in your code to get TGUI working.
 
-<p class="SmallBottomMargin">The first thing to do is including it. TGUI will include "SFML/Graphics.hpp" for you.</p>
-{% highlight c++ %}
+The first thing to do is including it. TGUI will include "SFML/Graphics.hpp" for you.
+```c++
 #include <TGUI/TGUI.hpp>
-{% endhighlight %}
+```
 
-<p class="SmallBottomMargin">The next thing to do is creating the Gui object.</p>
-{% highlight c++ %}{% raw %}
+The next thing to do is creating the Gui object.
+{% raw %}
+```c++
 sf::RenderWindow window{{800, 600}, "Window"};
 tgui::Gui gui{window};
-{% endraw %}{% endhighlight %}
+```
+{% endraw %}
 
-<p class="SmallBottomMargin">When you will have widgets, they will need to receive events. Otherwise they wouldn’t know if your mouse is on top of them or not. Every time you receive an event, you will have to tell the gui about this event. So in your event loop you must add the following line:
-</p>
-{% highlight c++ %}
+When you will have widgets, they will need to receive events. Otherwise they wouldn’t know if your mouse is on top of them or not. Every time you receive an event, you will have to tell the gui about this event. So in your event loop you must add the following line:
+```c++
 gui.handleEvent(event);
-{% endhighlight %}
+```
 
-<p class="SmallBottomMargin">The last thing to do is drawing the widgets on the screen. For this you must call the draw function of the gui.</p>
-{% highlight c++ %}
+The last thing to do is drawing the widgets on the screen. For this you must call the draw function of the gui.
+```c++
 gui.draw();
-{% endhighlight %}
+```
 
-<p class="SmallBottomMargin">So the full code will look like this:</p>
-{% highlight c++ %}{% raw %}
+So the full code will look like this:
+{% raw %}
+```c++
 #include <TGUI/TGUI.hpp>
 
 int main()
@@ -53,4 +55,5 @@ int main()
         window.display();
     }
 }
-{% endraw %}{% endhighlight %}
+```
+{% endraw %}

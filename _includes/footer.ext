@@ -1,0 +1,8 @@
+<script type="text/javascript">
+  var headers = document.getElementsByTagName("h3");
+  headers = Array.prototype.slice.call(headers)
+  for (var i in headers) {
+    if (headers[i].id)
+      headers[i].innerHTML = '<a class="HeaderLink" href="#' + headers[i].id + '">' + headers[i].innerHTML + '</a>';
+  }
+</script>

@@ -319,32 +319,21 @@ changelog:
       changes: |
         First public release.
 ---
-<style>
-a.ChangelogLink {
-    color: #000;
-    text-decoration: none;
-}
-</style>
 
-<div>
 {% for major in page.changelog %}
   {% for minor in major.minors %}
     {% for patch in minor.patches %}
-    <div>
       {% capture version %}0.{{minor.version}}.{{patch.version}}{% endcapture %}
-      <h3 id="{{version}}"><a class="ChangelogLink" href="#{{version}}">TGUI {{version}}</a> <span class="ChangelogDate">({{patch.date}})</span></h3>
-      <ul>
+<h3 id="{{version}}">TGUI {{version}} <span class="ChangelogDate">({{patch.date}})</span></h3>
         {% assign changes = patch.changes | newline_to_br | strip_newlines | split: '<br />' %}
         {% for change in changes %}
-          <li>{{change}}</li>
+- {{change}}
         {% endfor %}
-      </ul>
-    </div>
     {% endfor %}
 
     {% if forloop.last == false %}
-      <hr>
+<br>
+<hr>
     {% endif %}
   {% endfor %}
 {% endfor %}
-</div>

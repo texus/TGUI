@@ -13,6 +13,5 @@ var searchData=
   ['addwidget',['addWidget',['../classtgui_1_1Grid.html#a2f4565719a147310dc4c388bcf684964',1,'tgui::Grid']]],
   ['alignment',['Alignment',['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393',1,'tgui::EditBox::Alignment()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9',1,'tgui::Grid::Alignment()']]],
   ['all',['All',['../structtgui_1_1EditBox_1_1Validator.html#aaa5872e41672bfb5e279ffdd5cd34e92',1,'tgui::EditBox::Validator']]],
-  ['always_5ffalse',['always_false',['../structtgui_1_1internal__signal_1_1always__false.html',1,'tgui::internal_signal']]],
   ['any',['Any',['../structtgui_1_1Any.html',1,'tgui']]]
 ];

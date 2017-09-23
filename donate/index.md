@@ -4,7 +4,9 @@ title: Donate
 ---
 If you really like this library then feel free to donate.
 
-My yearly cost on domain names and hosting is less than 30 euros and I have no problem paying this with my own money. But if you want to help paying part of the cost, you are welcome.
+My yearly cost on domain names and hosting is around 80 euros and I have no problem paying this with my own money. But if you want to help paying part of the cost, donations are welcome.
+
+<p></p>
 
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick">

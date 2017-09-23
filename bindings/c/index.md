@@ -21,7 +21,7 @@ Precompiled libraries will be added in the future as well.
 
 
 ### Example code
-``` c++
+```c
 #include <CTGUI/CTGUI.h>
 #include <assert.h>
 #include <stdio.h>

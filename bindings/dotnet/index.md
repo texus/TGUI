@@ -17,7 +17,7 @@ To install, follow the instructions in the README.
 
 
 ### Example code (C#)
-``` c#
+```c#
 using System;
 using SFML.System;
 using SFML.Window;
@@ -74,7 +74,7 @@ class Example
 
 
 ### Example code (VB.Net)
-``` vbnet
+```vbnet
 Imports SFML.System
 Imports SFML.Window
 Imports SFML.Graphics
