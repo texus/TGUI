@@ -47,7 +47,7 @@ namespace tgui
                                                      {"textcolordown", sf::Color::Black},
                                                      {"backgroundcolor", Color{245, 245, 245}},
                                                      {"backgroundcolorhover", sf::Color::White},
-                                                     {"backgroundcolordown", sf::Color::White}})},  ///TODO: Define default disabled colors
+                                                     {"backgroundcolordown", Color{235, 235, 235}}})},  ///TODO: Define default disabled colors
                     {"chatbox", RendererData::create({{"borders", Borders{2}},
                                                       {"padding", Padding{2, 0, 0, 0}},
                                                       {"bordercolor", sf::Color::Black},
@@ -78,7 +78,7 @@ namespace tgui
                                                                 {"textcolordown", sf::Color::Black},
                                                                 {"backgroundcolor", Color{245, 245, 245}},
                                                                 {"backgroundcolorhover", sf::Color::White},
-                                                                {"backgroundcolordown", sf::Color::White}})},
+                                                                {"backgroundcolordown", Color{235, 235, 235}}})},
                     {"combobox", RendererData::create({{"borders", Borders{2}},
                                                        {"padding", Padding{0}},
                                                        {"bordercolor", sf::Color::Black},
