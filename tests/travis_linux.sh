@@ -26,6 +26,6 @@ cd ..
 
 mkdir build_gcc-$CXX
 cd build_gcc-$CXX
-cmake -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=TRUE ..
+cmake -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE ..
 make -j2
 cd ..
