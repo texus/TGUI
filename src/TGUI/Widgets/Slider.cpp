@@ -380,7 +380,7 @@ namespace tgui
 
     void Slider::mouseWheelScrolled(float delta, sf::Vector2f)
     {
-        if (m_value - delta < m_minimum)
+        if (static_cast<int>(m_value - delta) < m_minimum)
             setValue(m_minimum);
         else
             setValue(static_cast<int>(m_value - delta));

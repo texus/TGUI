@@ -84,7 +84,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool isWhitespace(char character)
+    bool isWhitespace(sf::Uint32 character)
     {
         if (character == ' ' || character == '\t' || character == '\r' || character == '\n')
             return true;
