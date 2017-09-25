@@ -1,0 +1,87 @@
+Panel.MainPanel {
+    Position = ("(&.w - w) / 2", "(&.h - h) / 2");
+    Size = (400, 200);
+
+    Renderer {
+        backgroundcolor = #E6E6E6;
+        bordercolor = Black;
+        borders = (2, 2, 2, 2);
+    }
+
+    Label {
+        AutoSize = true;
+        Position = (50, 35);
+        Size = (74, 19);
+        Text = "Filename";
+        TextSize = 16;
+    
+        Renderer {
+            backgroundcolor = Transparent;
+            bordercolor = #3C3C3C;
+            borders = (0, 0, 0, 0);
+            textcolor = #3C3C3C;
+        }
+    }
+
+    EditBox.FilenameEditBox {
+        Position = (50, 60);
+        Size = (300, 30);
+        Text = "form.txt";
+        TextSize = 15;
+    
+        Renderer {
+            backgroundcolor = #F5F5F5;
+            backgroundcolorhover = White;
+            bordercolor = #3C3C3C;
+            bordercolorhover = Black;
+            borders = (2, 2, 2, 2);
+            caretcolor = Black;
+            caretwidth = 1;
+            defaulttextcolor = #A0A0A0;
+            padding = (4, 2, 4, 2);
+            selectedtextbackgroundcolor = #006EFF;
+            selectedtextcolor = White;
+            textcolor = #3C3C3C;
+        }
+    }
+
+    Button.LoadButton {
+        Position = (50, 130);
+        Size = (125, 30);
+        Text = "Load";
+        TextSize = 17;
+    
+        Renderer {
+            backgroundcolor = #F5F5F5;
+            backgroundcolordown = #EBEBEB;
+            backgroundcolorhover = White;
+            bordercolor = #3C3C3C;
+            bordercolordown = Black;
+            bordercolorhover = Black;
+            borders = (2, 2, 2, 2);
+            textcolor = #3C3C3C;
+            textcolordown = Black;
+            textcolorhover = Black;
+        }
+    }
+
+    Button.NewButton {
+        Position = (225, 130);
+        Size = (125, 30);
+        Text = "New";
+        TextSize = 17;
+    
+        Renderer {
+            backgroundcolor = #F5F5F5;
+            backgroundcolordown = #EBEBEB;
+            backgroundcolorhover = White;
+            bordercolor = #3C3C3C;
+            bordercolordown = Black;
+            bordercolorhover = Black;
+            borders = (2, 2, 2, 2);
+            textcolor = #3C3C3C;
+            textcolordown = Black;
+            textcolorhover = Black;
+        }
+    }
+}

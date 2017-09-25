@@ -1,0 +1,4 @@
+Square {
+    Texture = "SelectionSquare.png" Part(6, 0, 6, 6);
+    TextureHover = "SelectionSquare.png" Part(0, 0, 6, 6);
+}

@@ -1,0 +1,99 @@
+ChildWindow.PropertiesWindow {
+    Position = ("&.w - w", 0);
+    Size = (24%, "&.h - 20");
+    Title = "Properties";
+    TitleAlignment = Center;
+    TitleButtons = None;
+
+    Renderer {
+        backgroundcolor = #E6E6E6;
+        bordercolor = Black;
+        borders = (1, 1, 1, 1);
+        distancetoside = 3;
+        paddingbetweenbuttons = 1;
+        titlebarcolor = White;
+        titlecolor = Black;
+    }
+
+    ComboBox.SelectedWidgetComboBox {
+        Position = (10, 10);
+        Size = (100% - 20, 24);
+        ItemsToDisplay = 15;
+        MaximumItems = 0;
+        TextSize = 13;
+
+        Renderer {
+            arrowbackgroundcolor = #F5F5F5;
+            arrowbackgroundcolorhover = White;
+            arrowcolor = #3C3C3C;
+            arrowcolorhover = Black;
+            backgroundcolor = #F5F5F5;
+            bordercolor = Black;
+            borders = (2, 2, 2, 2);
+            padding = (2, 0, 0, 0);
+            textcolor = Black;
+        }
+    }
+
+    ScrollablePanel.Properties {
+        Position = (10, 10 + 24 + 10);
+        Size = ("&.w - x - 5", "&.h - y - 10");
+    }
+}
+
+ChildWindow.ToolboxWindow {
+    Size = (12.5%, "&.h - 20");
+    Title = "Toolbox";
+    TitleAlignment = Center;
+    TitleButtons = None;
+
+    Renderer {
+        backgroundcolor = #E6E6E6;
+        bordercolor = Black;
+        borders = (1, 1, 1, 1);
+        distancetoside = 3;
+        paddingbetweenbuttons = 1;
+        titlebarcolor = White;
+        titlecolor = Black;
+    }
+
+    ScrollablePanel.Widgets {
+        Size = (100%, 100%);
+    }
+}
+
+ChildWindow.Form {
+    Position = ("((&.w - ToolboxWindow.w - PropertiesWindow.w - w) / 2) + ToolboxWindow.w", "(&.h - h) / 2 - 20");
+    Size = (800, 600);
+    TitleAlignment = Center;
+    TitleButtons = Close;
+    Resizable = true;
+
+    Renderer {
+        backgroundcolor = #E6E6E6;
+        bordercolor = Black;
+        borders = (1, 1, 1, 1);
+        distancetoside = 3;
+        paddingbetweenbuttons = 1;
+        titlebarcolor = White;
+        titlecolor = Black;
+
+        closebutton {
+            borders = (1, 1, 1, 1);
+        }
+    }
+
+    ScrollablePanel.ScrollablePanel {
+        Renderer {
+            backgroundcolor = #D7D7D7;
+        }
+
+        Panel.WidgetContainer {
+            Enabled = false;
+
+            Renderer {
+                backgroundcolor = #E6E6E6;
+            }
+        }
+    }
+}
