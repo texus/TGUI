@@ -83,8 +83,8 @@ void GuiBuilder::mainLoop()
         {
             if (event.type == sf::Event::Closed)
             {
-                for (auto& form : m_forms)
-                    closeForm(form.get());
+                while (!m_forms.empty())
+                    closeForm(m_forms[0].get());
 
                 m_window.close();
             }
@@ -210,8 +210,8 @@ void GuiBuilder::closeForm(Form* form)
 
 void GuiBuilder::loadStartScreen()
 {
-    for (auto& form : m_forms)
-        closeForm(form.get());
+    while (!m_forms.empty())
+        closeForm(m_forms[0].get());
 
     m_propertiesWindow = nullptr;
     m_propertiesContainer = nullptr;
