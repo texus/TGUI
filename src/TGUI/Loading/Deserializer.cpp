@@ -402,7 +402,7 @@ namespace tgui
 
             auto rendererData = RendererData::create();
             for (const auto& pair : node->propertyValuePairs)
-                rendererData->propertyValuePairs[pair.first] = {pair.second->value};
+                rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile with VS2015 Update 2 when using braces
 
             for (const auto& child : node->children)
             {

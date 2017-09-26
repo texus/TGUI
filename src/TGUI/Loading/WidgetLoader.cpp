@@ -183,7 +183,7 @@ namespace tgui
                     rendererData->shared = false;
 
                     for (const auto& pair : childNode->propertyValuePairs)
-                        rendererData->propertyValuePairs[pair.first] = {pair.second->value};
+                        rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile with VS2015 Update 2 when using braces
 
                     for (const auto& nestedProperty : childNode->children)
                     {
