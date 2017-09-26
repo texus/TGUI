@@ -119,13 +119,13 @@ build_script:
       cd .. &&
       mkdir build-Win32 &&
       cd build-Win32 &&
-      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=TRUE ..\tgui &&
+      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_DOC=TRUE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% ..\tgui &&
+      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Debug /m &&
-      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% ..\tgui &&
+      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_DOC=TRUE ..\tgui &&
+      cmake -G "Visual Studio 14 2015" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Debug /m &&
       mkdir ..\tgui\lib &&
       move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
@@ -145,13 +145,13 @@ build_script:
       rmdir /S /Q tgui\lib > nul &&
       mkdir build-Win64 &&
       cd build-Win64 &&
-      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=TRUE ..\tgui &&
+      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_DOC=TRUE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% ..\tgui &&
+      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Debug /m &&
-      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% ..\tgui &&
+      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_DOC=TRUE ..\tgui &&
+      cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Debug /m &&
       mkdir ..\tgui\lib &&
       move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
