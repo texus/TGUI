@@ -242,13 +242,6 @@ namespace tgui
         if (index >= m_items.size())
             return false;
 
-        // Remove the item
-        m_items.erase(m_items.begin() + index);
-        m_itemIds.erase(m_itemIds.begin() + index);
-
-        m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
-        setPosition(m_position);
-
         // Keep it simple and forget hover when an item is removed
         updateHoveringItem(-1);
 
@@ -256,7 +249,17 @@ namespace tgui
         if (m_selectedItem == static_cast<int>(index))
             updateSelectedItem(-1);
         else if (m_selectedItem > static_cast<int>(index))
-            updateSelectedItem(m_selectedItem - 1);
+        {
+            // Don't call updateSelectedItem here, there should not be no callback and the item hasn't been erased yet so it would point to the wrong place
+            m_selectedItem = m_selectedItem - 1;
+        }
+
+        // Remove the item
+        m_items.erase(m_items.begin() + index);
+        m_itemIds.erase(m_itemIds.begin() + index);
+
+        m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+        setPosition(m_position);
 
         return true;
     }
