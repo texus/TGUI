@@ -333,6 +333,8 @@ TEST_CASE("[Button]")
                                             renderer.setTextureDisabled("resources/Texture4.png");
                                     };
 
+        const auto mousePos = button->getPosition() + (button->getSize() / 2.f);
+
         SECTION("Colored")
         {
             SECTION("NormalState")
@@ -354,7 +356,7 @@ TEST_CASE("[Button]")
 
             SECTION("HoverState")
             {
-                button->mouseMoved({0,0});
+                button->mouseMoved(mousePos);
 
                 TEST_DRAW("Button_Hover_NormalSet.png")
 
@@ -373,8 +375,8 @@ TEST_CASE("[Button]")
 
             SECTION("DownState")
             {
-                button->mouseMoved({0,0});
-                button->leftMousePressed({0,0});
+                button->mouseMoved(mousePos);
+                button->leftMousePressed(mousePos);
 
                 TEST_DRAW("Button_Down_NormalSet.png")
 
@@ -428,7 +430,7 @@ TEST_CASE("[Button]")
 
             SECTION("HoverState")
             {
-                button->mouseMoved({0,0});
+                button->mouseMoved(mousePos);
 
                 TEST_DRAW("Button_Hover_TextureNormalSet.png")
 
@@ -447,8 +449,8 @@ TEST_CASE("[Button]")
 
             SECTION("DownState")
             {
-                button->mouseMoved({0,0});
-                button->leftMousePressed({0,0});
+                button->mouseMoved(mousePos);
+                button->leftMousePressed(mousePos);
 
                 TEST_DRAW("Button_Down_TextureNormalSet.png")
 

@@ -473,6 +473,8 @@ TEST_CASE("[RadioButton]")
                                                 renderer.setTextureCheckedDisabled("resources/Texture6.png");
                                         };
 
+        const auto mousePos = radioButton->getPosition() + (radioButton->getSize() / 2.f);
+
         SECTION("Colored")
         {
             renderer.setBorders({2});
@@ -503,7 +505,7 @@ TEST_CASE("[RadioButton]")
 
             SECTION("HoverState")
             {
-                radioButton->mouseMoved({0,0});
+                radioButton->mouseMoved(mousePos);
 
                 TEST_DRAW("RadioButton_Hover_NormalSet.png")
 
@@ -517,7 +519,7 @@ TEST_CASE("[RadioButton]")
             SECTION("CheckedHoverState")
             {
                 radioButton->check();
-                radioButton->mouseMoved({0,0});
+                radioButton->mouseMoved(mousePos);
 
                 TEST_DRAW("RadioButton_CheckedHover_NormalSet.png")
 
@@ -587,7 +589,7 @@ TEST_CASE("[RadioButton]")
 
             SECTION("HoverState")
             {
-                radioButton->mouseMoved({0,0});
+                radioButton->mouseMoved(mousePos);
 
                 TEST_DRAW("RadioButton_Hover_TextureNormalSet.png")
 
@@ -601,7 +603,7 @@ TEST_CASE("[RadioButton]")
             SECTION("CheckedHoverState")
             {
                 radioButton->check();
-                radioButton->mouseMoved({0,0});
+                radioButton->mouseMoved(mousePos);
 
                 TEST_DRAW("RadioButton_CheckedHover_TextureNormalSet.png")
 

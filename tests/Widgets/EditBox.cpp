@@ -617,6 +617,8 @@ TEST_CASE("[EditBox]")
                                             renderer.setTextureDisabled("resources/Texture3.png");
                                     };
 
+        const auto mousePos = editBox->getPosition() + (editBox->getSize() / 2.f);
+
         editBox->selectText(2, 3);
         editBox->focus();
 
@@ -635,7 +637,7 @@ TEST_CASE("[EditBox]")
 
             SECTION("HoverState")
             {
-                editBox->mouseMoved({0,0});
+                editBox->mouseMoved(mousePos);
 
                 TEST_DRAW("EditBox_Hover_NormalSet.png")
 
@@ -677,7 +679,7 @@ TEST_CASE("[EditBox]")
 
             SECTION("HoverState")
             {
-                editBox->mouseMoved({0,0});
+                editBox->mouseMoved(mousePos);
 
                 TEST_DRAW("EditBox_Hover_TextureNormalSet.png")
 

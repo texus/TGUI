@@ -297,6 +297,8 @@ TEST_CASE("[CheckBox]")
                                                 renderer.setTextureCheckedDisabled("resources/Texture6.png");
                                         };
 
+        const auto mousePos = checkBox->getPosition() + (checkBox->getSize() / 2.f);
+
         SECTION("Colored")
         {
             SECTION("NormalState")
@@ -325,7 +327,7 @@ TEST_CASE("[CheckBox]")
 
             SECTION("HoverState")
             {
-                checkBox->mouseMoved({0,0});
+                checkBox->mouseMoved(mousePos);
 
                 TEST_DRAW("CheckBox_Hover_NormalSet.png")
 
@@ -339,7 +341,7 @@ TEST_CASE("[CheckBox]")
             SECTION("CheckedHoverState")
             {
                 checkBox->check();
-                checkBox->mouseMoved({0,0});
+                checkBox->mouseMoved(mousePos);
 
                 TEST_DRAW("CheckBox_CheckedHover_NormalSet.png")
 
@@ -409,7 +411,7 @@ TEST_CASE("[CheckBox]")
 
             SECTION("HoverState")
             {
-                checkBox->mouseMoved({0,0});
+                checkBox->mouseMoved(mousePos);
 
                 TEST_DRAW("CheckBox_Hover_TextureNormalSet.png")
 
@@ -423,7 +425,7 @@ TEST_CASE("[CheckBox]")
             SECTION("CheckedHoverState")
             {
                 checkBox->check();
-                checkBox->mouseMoved({0,0});
+                checkBox->mouseMoved(mousePos);
 
                 TEST_DRAW("CheckBox_CheckedHover_TextureNormalSet.png")
 
