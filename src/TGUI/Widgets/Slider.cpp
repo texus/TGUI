@@ -497,15 +497,17 @@ namespace tgui
 
     void Slider::updateThumbPosition()
     {
+        const sf::Vector2f innerSize = getInnerSize();
+
         if (m_verticalScroll)
         {
-            m_thumb.left = (getSize().x - m_thumb.width) / 2.0f;
-            m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
+            m_thumb.left = m_bordersCached.getLeft() + (innerSize.x - m_thumb.width) / 2.0f;
+            m_thumb.top = (innerSize.y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
         }
         else
         {
-            m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
-            m_thumb.top = (getSize().y - m_thumb.height) / 2.0f;
+            m_thumb.left = (innerSize.x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
+            m_thumb.top = m_bordersCached.getTop() + (innerSize.y - m_thumb.height) / 2.0f;
         }
     }
 
@@ -544,8 +546,8 @@ namespace tgui
 
         states.transform.translate({-m_bordersCached.getLeft() + m_thumb.left, -m_bordersCached.getTop() + m_thumb.top});
 
-        // Draw the borders around the thumb
-        if (m_bordersCached != Borders{0})
+        // Draw the borders around the thumb when using colors
+        if ((m_bordersCached != Borders{0}) && !(m_spriteTrack.isSet() && m_spriteThumb.isSet()))
         {
             if (m_mouseHover && m_borderColorHoverCached.isSet())
                 drawBorders(target, states, m_bordersCached, {m_thumb.width, m_thumb.height}, m_borderColorHoverCached);
