@@ -40,8 +40,6 @@ struct SpinButtonProperties : WidgetProperties
             spinButton->setMaximum(tgui::stoi(value));
         else if (property == "Value")
             spinButton->setValue(tgui::stoi(value));
-        else if (property == "VerticalScroll")
-            spinButton->setVerticalScroll(parseBoolean(value, true));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -53,7 +51,6 @@ struct SpinButtonProperties : WidgetProperties
         pairs["Minimum"] = {"Int", tgui::to_string(spinButton->getMinimum())};
         pairs["Maximum"] = {"Int", tgui::to_string(spinButton->getMaximum())};
         pairs["Value"] = {"Int", tgui::to_string(spinButton->getValue())};
-        pairs["VerticalScroll"] = {"Bool", tgui::Serializer::serialize(spinButton->getVerticalScroll())};
 
         const auto renderer = spinButton->getRenderer();
         pairs["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

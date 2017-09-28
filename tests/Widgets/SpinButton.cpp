@@ -113,14 +113,6 @@ TEST_CASE("[SpinButton]")
         REQUIRE(spinButton->getValue() == 20);
     }
 
-    SECTION("VerticalScroll")
-    {
-        spinButton->setVerticalScroll(false);
-        REQUIRE(!spinButton->getVerticalScroll());
-        spinButton->setVerticalScroll(true);
-        REQUIRE(spinButton->getVerticalScroll());
-    }
-
     SECTION("Events / Signals")
     {
         SECTION("ClickableWidget")

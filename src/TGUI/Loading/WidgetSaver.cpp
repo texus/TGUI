@@ -755,11 +755,6 @@ namespace tgui
             auto spinButton = std::static_pointer_cast<SpinButton>(widget);
             auto node = WidgetSaver::getSaveFunction("widget")(spinButton);
 
-            if (spinButton->getVerticalScroll())
-                SET_PROPERTY("VerticalScroll", "true");
-            else
-                SET_PROPERTY("VerticalScroll", "false");
-
             SET_PROPERTY("Minimum", to_string(spinButton->getMinimum()));
             SET_PROPERTY("Maximum", to_string(spinButton->getMaximum()));
             SET_PROPERTY("Value", to_string(spinButton->getValue()));

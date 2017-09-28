@@ -100,6 +100,22 @@ namespace tgui
 
         m_bordersCached.updateParentSize(getSize());
 
+        m_verticalScroll = (getSize().y >= getSize().x);
+        if (m_verticalScroll)
+        {
+            m_spriteArrowUp.setRotation(0);
+            m_spriteArrowUpHover.setRotation(0);
+            m_spriteArrowDown.setRotation(0);
+            m_spriteArrowDownHover.setRotation(0);
+        }
+        else
+        {
+            m_spriteArrowUp.setRotation(-90);
+            m_spriteArrowUpHover.setRotation(-90);
+            m_spriteArrowDown.setRotation(-90);
+            m_spriteArrowDownHover.setRotation(-90);
+        }
+
         const sf::Vector2f arrowSize = getArrowSize();
         m_spriteArrowUp.setSize(arrowSize);
         m_spriteArrowUpHover.setSize(arrowSize);
@@ -174,37 +190,6 @@ namespace tgui
     int SpinButton::getValue() const
     {
         return m_value;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void SpinButton::setVerticalScroll(bool verticalScroll)
-    {
-        m_verticalScroll = verticalScroll;
-
-        if (verticalScroll)
-        {
-            m_spriteArrowUp.setRotation(0);
-            m_spriteArrowUpHover.setRotation(0);
-            m_spriteArrowDown.setRotation(0);
-            m_spriteArrowDownHover.setRotation(0);
-        }
-        else
-        {
-            m_spriteArrowUp.setRotation(-90);
-            m_spriteArrowUpHover.setRotation(-90);
-            m_spriteArrowDown.setRotation(-90);
-            m_spriteArrowDownHover.setRotation(-90);
-        }
-
-        setSize(m_size);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool SpinButton::getVerticalScroll() const
-    {
-        return m_verticalScroll;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

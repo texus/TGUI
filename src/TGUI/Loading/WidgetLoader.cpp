@@ -1099,8 +1099,6 @@ namespace tgui
                 spinButton->setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
             if (node->propertyValuePairs["value"])
                 spinButton->setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
-            if (node->propertyValuePairs["verticalscroll"])
-                spinButton->setVerticalScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["verticalscroll"]->value).getBool());
 
             return spinButton;
         }
