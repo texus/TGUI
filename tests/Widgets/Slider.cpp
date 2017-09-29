@@ -242,4 +242,94 @@ TEST_CASE("[Slider]")
 
         testSavingWidget("Slider", slider);
     }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(120, 60, slider)
+
+        slider->enable();
+        slider->setPosition({10, 15});
+        slider->setSize({100, 30});
+        slider->setMinimum(1000);
+        slider->setMaximum(2000);
+        slider->setValue(1600);
+
+        tgui::SliderRenderer renderer = tgui::RendererData::create();
+        renderer.setTrackColor(sf::Color::Green);
+        renderer.setThumbColor(sf::Color::Red);
+        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setOpacity(0.7f);
+        slider->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+                                        renderer.setTrackColorHover(sf::Color::Cyan);
+                                        renderer.setThumbColorHover(sf::Color::Magenta);
+                                        renderer.setBorderColorHover(sf::Color::Yellow);
+                                        if (textured)
+                                        {
+                                            renderer.setTextureTrackHover("resources/Texture3.png");
+                                            renderer.setTextureThumbHover("resources/Texture4.png");
+                                        }
+                                     };
+
+        const auto mousePos = slider->getPosition() + (slider->getSize() / 2.f);
+
+        SECTION("Colored")
+        {
+            SECTION("NormalState")
+            {
+                TEST_DRAW("Slider_Normal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Slider_Normal_HoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                slider->mouseMoved(mousePos);
+
+                TEST_DRAW("Slider_Hover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Slider_Hover_HoverSet.png")
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureTrack("resources/Texture1.png");
+            renderer.setTextureThumb("resources/Texture2.png");
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("Slider_Normal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Slider_Normal_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                slider->mouseMoved(mousePos);
+
+                TEST_DRAW("Slider_Hover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Slider_Hover_TextureHoverSet.png")
+                }
+            }
+        }
+    }
 }

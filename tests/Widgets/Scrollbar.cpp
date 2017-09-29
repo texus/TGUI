@@ -273,4 +273,123 @@ TEST_CASE("[Scrollbar]")
 
         testSavingWidget("Scrollbar", scrollbar);
     }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(120, 60, scrollbar)
+
+        scrollbar->enable();
+        scrollbar->setPosition({10, 15});
+        scrollbar->setSize({100, 30});
+        scrollbar->setLowValue(120);
+        scrollbar->setMaximum(200);
+        scrollbar->setValue(30);
+
+        tgui::ScrollbarRenderer renderer = tgui::RendererData::create();
+        renderer.setTrackColor(sf::Color::Green);
+        renderer.setThumbColor(sf::Color::Red);
+        renderer.setArrowBackgroundColor(sf::Color::Blue);
+        renderer.setArrowColor(sf::Color::White);
+        renderer.setOpacity(0.7f);
+        scrollbar->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+                                        renderer.setTrackColorHover(sf::Color::Cyan);
+                                        renderer.setThumbColorHover(sf::Color::Magenta);
+                                        renderer.setArrowBackgroundColorHover(sf::Color::Yellow);
+                                        renderer.setArrowColorHover(sf::Color::Black);
+                                        if (textured)
+                                        {
+                                            renderer.setTextureTrackHover("resources/Texture5.png");
+                                            renderer.setTextureThumbHover("resources/Texture6.png");
+                                            renderer.setTextureArrowUpHover("resources/Texture7.png");
+                                            renderer.setTextureArrowDownHover("resources/Texture8.png");
+                                        }
+                                     };
+
+        auto mousePos = scrollbar->getPosition();
+
+        SECTION("Colored")
+        {
+            SECTION("NormalState")
+            {
+                TEST_DRAW("Scrollbar_Normal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Scrollbar_Normal_HoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                scrollbar->mouseMoved(mousePos);
+
+                TEST_DRAW("Scrollbar_Hover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Scrollbar_HoverArrowLeft_HoverSet.png")
+
+                    scrollbar->mouseMoved({mousePos.x + 32, mousePos.y});
+                    TEST_DRAW("Scrollbar_HoverTrackLeft_HoverSet.png");
+
+                    scrollbar->mouseMoved({mousePos.x + 48, mousePos.y});
+                    TEST_DRAW("Scrollbar_HoverThumb_HoverSet.png");
+
+                    scrollbar->mouseMoved({mousePos.x + 65, mousePos.y});
+                    TEST_DRAW("Scrollbar_HoverTrackRight_HoverSet.png");
+
+                    scrollbar->mouseMoved({mousePos.x + 80, mousePos.y});
+                    TEST_DRAW("Scrollbar_HoverArrowRight_HoverSet.png");
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureTrack("resources/Texture1.png");
+            renderer.setTextureThumb("resources/Texture2.png");
+            renderer.setTextureArrowUp("resources/Texture3.png");
+            renderer.setTextureArrowDown("resources/Texture4.png");
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("Scrollbar_Normal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Scrollbar_Normal_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                scrollbar->mouseMoved(mousePos);
+
+                TEST_DRAW("Scrollbar_Hover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Scrollbar_HoverArrowLeft_TextureHoverSet.png")
+
+                    scrollbar->mouseMoved({mousePos.x + 32, mousePos.y});
+                    TEST_DRAW("Scrollbar_HoverTrackLeft_TextureHoverSet.png");
+
+                    scrollbar->mouseMoved({mousePos.x + 48, mousePos.y});
+                    TEST_DRAW("Scrollbar_HoverThumb_TextureHoverSet.png");
+
+                    scrollbar->mouseMoved({mousePos.x + 65, mousePos.y});
+                    TEST_DRAW("Scrollbar_HoverTrackRight_TextureHoverSet.png");
+
+                    scrollbar->mouseMoved({mousePos.x + 80, mousePos.y});
+                    TEST_DRAW("Scrollbar_HoverArrowRight_TextureHoverSet.png");
+                }
+            }
+        }
+    }
 }

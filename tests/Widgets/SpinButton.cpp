@@ -263,8 +263,124 @@ TEST_CASE("[SpinButton]")
         spinButton->setMinimum(10);
         spinButton->setMaximum(50);
         spinButton->setValue(20);
-        spinButton->setVerticalScroll(false);
 
         testSavingWidget("SpinButton", spinButton);
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(64, 35, spinButton)
+
+        spinButton->enable();
+        spinButton->setPosition(10, 5);
+        spinButton->setSize(50, 25);
+        spinButton->setMinimum(7);
+        spinButton->setMaximum(12);
+        spinButton->setValue(11);
+
+        tgui::SpinButtonRenderer renderer = tgui::RendererData::create();
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setArrowColor(sf::Color::Red);
+        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setSpaceBetweenArrows(5);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setOpacity(0.7f);
+        spinButton->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+                                        renderer.setBackgroundColorHover(sf::Color::Cyan);
+                                        renderer.setArrowColorHover(sf::Color::Magenta);
+                                        if (textured)
+                                        {
+                                            renderer.setTextureArrowUpHover("resources/Texture3.png");
+                                            renderer.setTextureArrowDownHover("resources/Texture4.png");
+                                        }
+                                     };
+
+        const auto mousePosLeft = spinButton->getPosition() + (spinButton->getSize() * (1.f / 4.f));
+        const auto mousePosRight = spinButton->getPosition() + (spinButton->getSize() * (3.f / 4.f));
+
+        SECTION("Colored")
+        {
+            SECTION("NormalState")
+            {
+                TEST_DRAW("SpinButton_Normal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("SpinButton_Normal_HoverSet.png")
+                }
+            }
+
+            SECTION("HoverState (mouse on left arrow)")
+            {
+                spinButton->mouseMoved(mousePosLeft);
+
+                TEST_DRAW("SpinButton_HoverLeft_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("SpinButton_HoverLeft_HoverSet.png")
+                }
+            }
+
+            SECTION("HoverState (mouse on right arrow)")
+            {
+                spinButton->mouseMoved(mousePosRight);
+
+                TEST_DRAW("SpinButton_HoverRight_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("SpinButton_HoverRight_HoverSet.png")
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureArrowUp("resources/Texture1.png");
+            renderer.setTextureArrowDown("resources/Texture2.png");
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("SpinButton_Normal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("SpinButton_Normal_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("HoverState (mouse on left arrow)")
+            {
+                spinButton->mouseMoved(mousePosLeft);
+
+                TEST_DRAW("SpinButton_HoverLeft_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("SpinButton_HoverLeft_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("HoverState (mouse on right arrow)")
+            {
+                spinButton->mouseMoved(mousePosRight);
+
+                TEST_DRAW("SpinButton_HoverRight_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("SpinButton_HoverRight_TextureHoverSet.png")
+                }
+            }
+        }
     }
 }

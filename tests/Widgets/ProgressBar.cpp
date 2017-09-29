@@ -305,4 +305,122 @@ TEST_CASE("[ProgressBar]")
 
         testSavingWidget("ProgressBar", progressBar);
     }
+
+    SECTION("Draw")
+    {
+        progressBar->enable();
+        progressBar->setPosition(10, 5);
+        progressBar->setMinimum(1000);
+        progressBar->setMaximum(2000);
+        progressBar->setValue(1600);
+
+        tgui::ProgressBarRenderer renderer = tgui::RendererData::create();
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setFillColor(sf::Color::Yellow);
+        renderer.setTextColor(sf::Color::Red);
+        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setTextStyle(sf::Text::Style::Italic);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setOpacity(0.7f);
+        progressBar->setRenderer(renderer.getData());
+
+        SECTION("Colored")
+        {
+            SECTION("Horizontal")
+            {
+                TEST_DRAW_INIT(110, 40, progressBar)
+
+                progressBar->setSize({90, 30});
+                progressBar->setText("60% done");
+
+                SECTION("LeftToRight")
+                {
+                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::LeftToRight);
+                    TEST_DRAW("ProgressBar_LeftToRight.png")
+
+                    renderer.setTextColorFilled(sf::Color::Magenta);
+                    TEST_DRAW("ProgressBar_LeftToRight_TextFillColor.png")
+                }
+
+                SECTION("RightToLeft")
+                {
+                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
+                    TEST_DRAW("ProgressBar_RightToLeft.png")
+
+                    renderer.setTextColorFilled(sf::Color::Magenta);
+                    TEST_DRAW("ProgressBar_RightToLeft_TextFillColor.png")
+                }
+            }
+
+            SECTION("Vertical")
+            {
+                TEST_DRAW_INIT(50, 100, progressBar)
+
+                progressBar->setSize({30, 90});
+
+                SECTION("LeftToRight")
+                {
+                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
+                    TEST_DRAW("ProgressBar_TopToBottom.png")
+                }
+
+                SECTION("RightToLeft")
+                {
+                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::BottomToTop);
+                    TEST_DRAW("ProgressBar_BottomToTop.png")
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureBackground("resources/Texture1.png");
+            renderer.setTextureFill("resources/Texture2.png");
+
+            SECTION("Horizontal")
+            {
+                TEST_DRAW_INIT(110, 40, progressBar)
+
+                progressBar->setSize({90, 30});
+                progressBar->setText("60% done");
+
+                SECTION("LeftToRight")
+                {
+                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::LeftToRight);
+                    TEST_DRAW("ProgressBar_Textured_LeftToRight.png")
+
+                    renderer.setTextColorFilled(sf::Color::Magenta);
+                    TEST_DRAW("ProgressBar_Textured_LeftToRight_TextFillColor.png")
+                }
+
+                SECTION("RightToLeft")
+                {
+                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
+                    TEST_DRAW("ProgressBar_Textured_RightToLeft.png")
+
+                    renderer.setTextColorFilled(sf::Color::Magenta);
+                    TEST_DRAW("ProgressBar_Textured_RightToLeft_TextFillColor.png")
+                }
+            }
+
+            SECTION("Vertical")
+            {
+                TEST_DRAW_INIT(50, 100, progressBar)
+
+                progressBar->setSize({30, 90});
+
+                SECTION("LeftToRight")
+                {
+                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
+                    TEST_DRAW("ProgressBar_Textured_TopToBottom.png")
+                }
+
+                SECTION("RightToLeft")
+                {
+                    progressBar->setFillDirection(tgui::ProgressBar::FillDirection::BottomToTop);
+                    TEST_DRAW("ProgressBar_Textured_BottomToTop.png")
+                }
+            }
+        }
+    }
 }
