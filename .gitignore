@@ -1,5 +1,7 @@
 /build*
-/form-builder/tgui-form-builder
+/gui-builder/gui-builder
+/gui-builder/gui-builder.exe
+/gui-builder/form.txt
 /_site
 /examples/Android/libs
 /examples/Android/obj
