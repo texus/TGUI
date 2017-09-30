@@ -51,7 +51,7 @@ public:
     sf::Vector2i getSize() const;
     void setChanged(bool changed);
     bool isChanged() const;
-    void load();
+    bool load();
     void save();
 
 private:

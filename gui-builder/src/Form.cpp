@@ -240,9 +240,17 @@ bool Form::isChanged() const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::load()
+bool Form::load()
 {
-    m_widgetsContainer->loadWidgetsFromFile(getFilename());
+    try
+    {
+        m_widgetsContainer->loadWidgetsFromFile(getFilename());
+    }
+    catch (const tgui::Exception&)
+    {
+        // Failed to open file
+        return false;
+    }
 
     const auto& widgets = m_widgetsContainer->getWidgets();
     const auto& widgetNames = m_widgetsContainer->getWidgetNames();
@@ -259,6 +267,8 @@ void Form::load()
                 m_idCounter = std::max<unsigned int>(m_idCounter, tgui::stoi(potentialNumber));
         }
     }
+
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

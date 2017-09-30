@@ -225,8 +225,10 @@ void GuiBuilder::loadStartScreen()
 
     m_gui.get<tgui::Panel>("MainPanel")->get("LoadButton")->connect("pressed", [=]{
         loadEditingScreen(filenameEditBox->getText());
-        m_selectedForm->load();
-        initSelectedWidgetComboBoxAfterLoad();
+        if (m_selectedForm->load())
+            initSelectedWidgetComboBoxAfterLoad();
+        else
+            loadStartScreen();
     });
 }
 
