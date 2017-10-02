@@ -155,4 +155,121 @@ TEST_CASE("[Tabs]")
 
         testSavingWidget("Tabs", tabs);
     }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(120, 40, tabs)
+
+        tabs->enable();
+        tabs->setPosition({10, 5});
+        tabs->setSize({100, 30});
+        tabs->add("1");
+        tabs->add("2");
+        tabs->add("3");
+
+        tgui::TabsRenderer renderer = tgui::RendererData::create();
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setSelectedBackgroundColor(sf::Color::Black);
+        renderer.setTextColor(sf::Color::Red);
+        renderer.setSelectedTextColor(sf::Color::White);
+        renderer.setBorderColor({235, 125, 0});
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setOpacity(0.7f);
+        tabs->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+                                        renderer.setBackgroundColorHover(sf::Color::Cyan);
+                                        renderer.setSelectedBackgroundColorHover(sf::Color::Blue);
+                                        renderer.setTextColorHover(sf::Color::Magenta);
+                                        renderer.setSelectedTextColorHover(sf::Color::Yellow);
+                                        if (textured)
+                                        {
+                                            //renderer.setTextureTabHover("resources/Texture3.png");
+                                            //renderer.setTextureSelectedTabHover("resources/Texture4.png");
+                                        }
+                                     };
+
+        SECTION("Colored")
+        {
+            SECTION("NormalState")
+            {
+                TEST_DRAW("Tabs_Normal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Tabs_Normal_HoverSet.png")
+                }
+            }
+
+            SECTION("HoverState (mouse not over selected tab)")
+            {
+                tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() / 2.f));
+
+                TEST_DRAW("Tabs_Hover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Tabs_Hover_HoverSet.png")
+                }
+            }
+
+            SECTION("HoverState (mouse on selected tab)")
+            {
+                tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() * (2.f / 3.f)));
+
+                TEST_DRAW("Tabs_HoverSelected_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("Tabs_HoverSelected_HoverSet.png")
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureTab("resources/Texture1.png");
+            renderer.setTextureSelectedTab("resources/Texture2.png");
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("Tabs_Normal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Tabs_Normal_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() / 2.f));
+
+                TEST_DRAW("Tabs_Hover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Tabs_Hover_TextureHoverSet.png")
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() * (2.f / 3.f)));
+
+                TEST_DRAW("Tabs_HoverSelected_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("Tabs_HoverSelected_TextureHoverSet.png")
+                }
+            }
+        }
+    }
 }

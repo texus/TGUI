@@ -115,17 +115,20 @@ TEST_CASE("[MenuBar]")
             menuBar->addMenu("Help");
             menuBar->addMenuItem("About");
 
-            REQUIRE(menuBar->getMenus().size() == 3);
-            REQUIRE(menuBar->getMenus()["File"].size() == 2);
-            REQUIRE(menuBar->getMenus()["File"][0] == "Load");
-            REQUIRE(menuBar->getMenus()["File"][1] == "Save");
-            REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
-            REQUIRE(menuBar->getMenus()["Edit"][0] == "Undo");
-            REQUIRE(menuBar->getMenus()["Edit"][1] == "Redo");
-            REQUIRE(menuBar->getMenus()["Edit"][2] == "Copy");
-            REQUIRE(menuBar->getMenus()["Edit"][3] == "Paste");
-            REQUIRE(menuBar->getMenus()["Help"].size() == 1);
-            REQUIRE(menuBar->getMenus()["Help"][0] == "About");
+            SECTION("Verify that menus were added")
+            {
+                REQUIRE(menuBar->getMenus().size() == 3);
+                REQUIRE(menuBar->getMenus()["File"].size() == 2);
+                REQUIRE(menuBar->getMenus()["File"][0] == "Load");
+                REQUIRE(menuBar->getMenus()["File"][1] == "Save");
+                REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
+                REQUIRE(menuBar->getMenus()["Edit"][0] == "Undo");
+                REQUIRE(menuBar->getMenus()["Edit"][1] == "Redo");
+                REQUIRE(menuBar->getMenus()["Edit"][2] == "Copy");
+                REQUIRE(menuBar->getMenus()["Edit"][3] == "Paste");
+                REQUIRE(menuBar->getMenus()["Help"].size() == 1);
+                REQUIRE(menuBar->getMenus()["Help"][0] == "About");
+            }
 
             SECTION("Adding menu items to older menu")
             {
@@ -161,6 +164,12 @@ TEST_CASE("[MenuBar]")
                 REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
                 REQUIRE(menuBar->getMenus()["Help"].size() == 1);
             }
+
+            SECTION("Removing all menus")
+            {
+                menuBar->removeAllMenus();
+                REQUIRE(menuBar->getMenus().empty());
+            }
         }
 
         SECTION("Invalid addMenuItem calls")
@@ -184,7 +193,14 @@ TEST_CASE("[MenuBar]")
         REQUIRE(menuBar->getMinimumSubMenuWidth() == 150);
     }
 
-    // TODO: setInvertedMenuDirection
+    SECTION("InvertedMenuDirection")
+    {
+        REQUIRE(!menuBar->getInvertedMenuDirection());
+        menuBar->setInvertedMenuDirection(true);
+        REQUIRE(menuBar->getInvertedMenuDirection());
+        menuBar->setInvertedMenuDirection(false);
+        REQUIRE(!menuBar->getInvertedMenuDirection());
+    }
 
     SECTION("Events / Signals")
     {
@@ -287,5 +303,46 @@ TEST_CASE("[MenuBar]")
         menuBar->setTextSize(25); // TextSize is currently reset when copying (due to setSize calling setTextSize)
 
         testSavingWidget("MenuBar", menuBar);
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(150, 70, menuBar)
+
+        menuBar->enable();
+        menuBar->setPosition(10, 5);
+        menuBar->setSize(130, 20);
+        menuBar->setTextSize(16);
+        menuBar->setMinimumSubMenuWidth(60);
+
+        menuBar->addMenu("File");
+        menuBar->addMenuItem("Quit");
+        menuBar->addMenu("Edit");
+        menuBar->addMenuItem("Undo");
+        menuBar->addMenuItem("Redo");
+        menuBar->addMenu("Help");
+
+        tgui::MenuBarRenderer renderer = tgui::RendererData::create();
+        renderer.setTextColor(sf::Color::Red);
+        renderer.setSelectedTextColor(sf::Color::Blue);
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setSelectedBackgroundColor(sf::Color::Yellow);
+        renderer.setDistanceToSide(3);
+        renderer.setOpacity(0.7f);
+        menuBar->setRenderer(renderer.getData());
+
+        TEST_DRAW("MenuBar.png")
+
+        sf::Vector2f mousePos = {52, 15};
+        menuBar->mouseMoved(mousePos);
+        menuBar->leftMousePressed(mousePos);
+        menuBar->leftMouseReleased(mousePos);
+
+        TEST_DRAW("MenuBar_MenuOpen.png")
+
+        mousePos = {52, 55};
+        menuBar->mouseMoved(mousePos);
+
+        TEST_DRAW("MenuBar_MenuHover.png")
     }
 }

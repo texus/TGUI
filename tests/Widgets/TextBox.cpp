@@ -150,8 +150,30 @@ TEST_CASE("[TextBox]")
         REQUIRE(textBox->isVerticalScrollbarPresent() == true);
     }
 
-    // TODO: setCaretPosition
-    // TODO: getLinesCount
+    SECTION("CaretPosition")
+    {
+        REQUIRE(textBox->getCaretPosition() == 0);
+
+        textBox->setText("Some\ntext");
+        REQUIRE(textBox->getCaretPosition() == 9);
+
+        textBox->setCaretPosition(7);
+        REQUIRE(textBox->getCaretPosition() == 7);
+
+        textBox->setCaretPosition(25);
+        REQUIRE(textBox->getCaretPosition() == 9);
+    }
+
+    SECTION("LinesCount")
+    {
+        REQUIRE(textBox->getLinesCount() == 1);
+
+        textBox->setText("Some text");
+        REQUIRE(textBox->getLinesCount() == 1);
+
+        textBox->setText("More\nthan\none\nline");
+        REQUIRE(textBox->getLinesCount() == 4);
+    }
 
     SECTION("Events / Signals")
     {
@@ -265,6 +287,50 @@ TEST_CASE("[TextBox]")
         textBox->setVerticalScrollbarPresent(false);
 
         testSavingWidget("TextBox", textBox);
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(270, 160, textBox)
+
+        textBox->enable();
+        textBox->setPosition(10, 5);
+        textBox->setSize(250, 150);
+        textBox->setText("Something");
+        textBox->setTextSize(16);
+        textBox->setText("Cupcake ipsum dolor sit. Amet candy canes sesame snaps cupcake apple pie lemon drops jelly apple pie candy canes. Powder donut sugar plum croissant gingerbread sesame snaps pie. Caramels cupcake icing. Bear claw lemon drops carrot cake chocolate ice cream jelly beans gummi bears.");
+
+        tgui::TextBoxRenderer renderer = tgui::RendererData::create();
+        renderer.setBackgroundColor(sf::Color::Yellow);
+        renderer.setTextColor(sf::Color::Blue);
+        renderer.setSelectedTextColor(sf::Color::Red);
+        renderer.setSelectedTextBackgroundColor(sf::Color::Cyan);
+        renderer.setCaretColor(sf::Color::Green);
+        renderer.setBorderColor(sf::Color::Magenta);
+        renderer.setCaretWidth(1);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setPadding({4, 3, 2, 1});
+        renderer.setOpacity(0.7f);
+        textBox->setRenderer(renderer.getData());
+
+        tgui::ScrollbarRenderer scrollbarRenderer = tgui::RendererData::create();
+        scrollbarRenderer.setTrackColor(sf::Color::Green);
+        scrollbarRenderer.setThumbColor(sf::Color::Red);
+        scrollbarRenderer.setArrowBackgroundColor(sf::Color::Blue);
+        scrollbarRenderer.setArrowColor(sf::Color::White);
+        scrollbarRenderer.setOpacity(0.7f);
+        renderer.setScrollbar(scrollbarRenderer.getData());
+
+        SECTION("Colored")
+        {
+            TEST_DRAW("TextBox.png")
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureBackground("resources/Texture1.png");
+            TEST_DRAW("TextBox_Textured.png")
+        }
     }
 
     SECTION("Bug Fixes")
