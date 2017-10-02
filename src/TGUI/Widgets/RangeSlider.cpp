@@ -566,21 +566,23 @@ namespace tgui
 
     void RangeSlider::updateThumbPositions()
     {
+        const sf::Vector2f innerSize = getInnerSize();
+
         if (m_verticalScroll)
         {
-            m_thumbs.first.left = (getSize().x - m_thumbs.first.width) / 2.0f;
-            m_thumbs.first.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_selectionStart)) - (m_thumbs.first.height / 2.0f);
+            m_thumbs.first.left = m_bordersCached.getLeft() + (innerSize.x - m_thumbs.first.width) / 2.0f;
+            m_thumbs.first.top = (innerSize.y / (m_maximum - m_minimum) * (m_maximum - m_selectionStart)) - (m_thumbs.first.height / 2.0f);
 
-            m_thumbs.second.left = (getSize().x - m_thumbs.second.width) / 2.0f;
-            m_thumbs.second.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_selectionEnd)) - (m_thumbs.second.height / 2.0f);
+            m_thumbs.second.left = m_bordersCached.getLeft() + (innerSize.x - m_thumbs.second.width) / 2.0f;
+            m_thumbs.second.top = (innerSize.y / (m_maximum - m_minimum) * (m_maximum - m_selectionEnd)) - (m_thumbs.second.height / 2.0f);
         }
-        else
+        else // horizontal
         {
-            m_thumbs.first.left = (getSize().x / (m_maximum - m_minimum) * (m_selectionStart - m_minimum)) - (m_thumbs.first.width / 2.0f);
-            m_thumbs.first.top = (getSize().y - m_thumbs.first.height) / 2.0f;
+            m_thumbs.first.left = (innerSize.x / (m_maximum - m_minimum) * (m_selectionStart - m_minimum)) - (m_thumbs.first.width / 2.0f);
+            m_thumbs.first.top = m_bordersCached.getTop() + (innerSize.y - m_thumbs.first.height) / 2.0f;
 
-            m_thumbs.second.left = (getSize().x / (m_maximum - m_minimum) * (m_selectionEnd - m_minimum)) - (m_thumbs.second.width / 2.0f);
-            m_thumbs.second.top = (getSize().y - m_thumbs.second.height) / 2.0f;
+            m_thumbs.second.left = (innerSize.x / (m_maximum - m_minimum) * (m_selectionEnd - m_minimum)) - (m_thumbs.second.width / 2.0f);
+            m_thumbs.second.top = m_bordersCached.getTop() + (innerSize.y - m_thumbs.second.height) / 2.0f;
         }
     }
 
@@ -645,8 +647,8 @@ namespace tgui
         {
             states.transform.translate({-m_bordersCached.getLeft() + m_thumbs.first.left, -m_bordersCached.getTop() + m_thumbs.first.top});
 
-            // Draw the borders around the thumb
-            if (m_bordersCached != Borders{0})
+            // Draw the borders around the thumb when using colors
+            if ((m_bordersCached != Borders{0}) && !(m_spriteTrack.isSet() && m_spriteThumb.isSet()))
             {
                 if (m_mouseHover && m_borderColorHoverCached.isSet())
                     drawBorders(target, states, m_bordersCached, {m_thumbs.first.width, m_thumbs.first.height}, m_borderColorHoverCached);
@@ -682,8 +684,8 @@ namespace tgui
         {
             states.transform.translate({-m_bordersCached.getLeft() + m_thumbs.second.left, -m_bordersCached.getTop() + m_thumbs.second.top});
 
-            // Draw the borders around the thumb
-            if (m_bordersCached != Borders{0})
+            // Draw the borders around the thumb when using colors
+            if ((m_bordersCached != Borders{0}) && !(m_spriteTrack.isSet() && m_spriteThumb.isSet()))
             {
                 if (m_mouseHover && m_borderColorHoverCached.isSet())
                     drawBorders(target, states, m_bordersCached, {m_thumbs.second.width, m_thumbs.second.height}, m_borderColorHoverCached);
