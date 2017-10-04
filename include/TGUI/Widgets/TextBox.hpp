@@ -488,7 +488,7 @@ namespace tgui
         Color   m_backgroundColorCached;
         Color   m_caretColorCached;
         Color   m_selectedTextBackgroundColorCached;
-        float   m_caretWidthCached = 0;
+        float   m_caretWidthCached = 1;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

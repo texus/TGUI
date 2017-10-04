@@ -560,7 +560,7 @@ namespace tgui
         FloatRect     m_selectedTextBackground;
 
         // The blinking caret
-        FloatRect     m_caret;
+        FloatRect     m_caret = {{0, 0, 1, 0}};
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick = false;
