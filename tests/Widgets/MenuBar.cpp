@@ -331,18 +331,42 @@ TEST_CASE("[MenuBar]")
         renderer.setOpacity(0.7f);
         menuBar->setRenderer(renderer.getData());
 
-        TEST_DRAW("MenuBar.png")
+        SECTION("Colored")
+        {
+            TEST_DRAW("MenuBar.png")
 
-        sf::Vector2f mousePos = {52, 15};
-        menuBar->mouseMoved(mousePos);
-        menuBar->leftMousePressed(mousePos);
-        menuBar->leftMouseReleased(mousePos);
+            sf::Vector2f mousePos = {52, 15};
+            menuBar->mouseMoved(mousePos);
+            menuBar->leftMousePressed(mousePos);
+            menuBar->leftMouseReleased(mousePos);
 
-        TEST_DRAW("MenuBar_MenuOpen.png")
+            TEST_DRAW("MenuBar_MenuOpen.png")
 
-        mousePos = {52, 55};
-        menuBar->mouseMoved(mousePos);
+            mousePos = {52, 55};
+            menuBar->mouseMoved(mousePos);
 
-        TEST_DRAW("MenuBar_MenuHover.png")
+            TEST_DRAW("MenuBar_MenuHover.png")
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureBackground("resources/Texture1.png");
+            renderer.setTextureItemBackground("resources/Texture2.png");
+            renderer.setTextureSelectedItemBackground("resources/Texture3.png");
+
+            TEST_DRAW("MenuBar_Textured.png")
+
+            sf::Vector2f mousePos = {52, 15};
+            menuBar->mouseMoved(mousePos);
+            menuBar->leftMousePressed(mousePos);
+            menuBar->leftMouseReleased(mousePos);
+
+            TEST_DRAW("MenuBar_MenuOpen_Textured.png")
+
+            mousePos = {52, 55};
+            menuBar->mouseMoved(mousePos);
+
+            TEST_DRAW("MenuBar_MenuHover_Textured.png")
+        }
     }
 }

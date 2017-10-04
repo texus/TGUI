@@ -238,4 +238,42 @@ TEST_CASE("[Knob]")
 
         testSavingWidget("Knob", knob, false);
     }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(70, 60, knob)
+
+        knob->enable();
+        knob->setPosition({10, 5});
+        knob->setSize({50, 50});
+        knob->setMinimum(1000);
+        knob->setMaximum(2000);
+        knob->setValue(1700);
+        knob->setStartRotation(-60);
+        knob->setEndRotation(-120);
+        knob->setClockwiseTurning(false);
+
+        tgui::KnobRenderer renderer = tgui::RendererData::create();
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setThumbColor(sf::Color::Red);
+        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setImageRotation(-90);
+        renderer.setOpacity(0.7f);
+        knob->setRenderer(renderer.getData());
+
+        SECTION("Colored")
+        {
+            renderer.setBorders({2});
+
+            TEST_DRAW("Knob.png")
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureBackground("resources/Texture1.png");
+            renderer.setTextureForeground("resources/Texture2.png");
+
+            TEST_DRAW("Knob_Textured.png")
+        }
+    }
 }

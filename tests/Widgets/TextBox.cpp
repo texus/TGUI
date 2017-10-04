@@ -294,6 +294,7 @@ TEST_CASE("[TextBox]")
         TEST_DRAW_INIT(270, 160, textBox)
 
         textBox->enable();
+        textBox->focus();
         textBox->setPosition(10, 5);
         textBox->setSize(250, 150);
         textBox->setText("Something");
@@ -307,7 +308,7 @@ TEST_CASE("[TextBox]")
         renderer.setSelectedTextBackgroundColor(sf::Color::Cyan);
         renderer.setCaretColor(sf::Color::Green);
         renderer.setBorderColor(sf::Color::Magenta);
-        renderer.setCaretWidth(1);
+        renderer.setCaretWidth(2);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setPadding({4, 3, 2, 1});
         renderer.setOpacity(0.7f);
@@ -320,6 +321,10 @@ TEST_CASE("[TextBox]")
         scrollbarRenderer.setArrowColor(sf::Color::White);
         scrollbarRenderer.setOpacity(0.7f);
         renderer.setScrollbar(scrollbarRenderer.getData());
+
+        textBox->leftMousePressed({87, 66});
+        textBox->mouseMoved({136, 105});
+        textBox->leftMouseReleased({136, 105});
 
         SECTION("Colored")
         {

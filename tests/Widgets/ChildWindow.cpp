@@ -24,6 +24,7 @@
 
 #include "../Tests.hpp"
 #include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 
 TEST_CASE("[ChildWindow]")
@@ -379,6 +380,53 @@ TEST_CASE("[ChildWindow]")
             childWindow->add(widget);
 
             testSavingWidget("ChildWindow", childWindow);
+        }
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(200, 170, childWindow)
+
+        childWindow->setSize({180, 140});
+        childWindow->setPosition({10, 5});
+        childWindow->setTitle("Window");
+        childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::Maximize | tgui::ChildWindow::TitleButton::Minimize);
+
+        tgui::ChildWindowRenderer renderer = tgui::RendererData::create();
+        renderer.setTitleBarColor(sf::Color::Blue);
+        renderer.setTitleColor(sf::Color::Magenta);
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setBorderColor(sf::Color::Red);
+        renderer.setDistanceToSide(10);
+        renderer.setPaddingBetweenButtons(5);
+        renderer.setTitleBarHeight(15);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setOpacity(0.7f);
+        childWindow->setRenderer(renderer.getData());
+
+        tgui::ButtonRenderer buttonRenderer = tgui::RendererData::create();
+        buttonRenderer.setBackgroundColor(sf::Color::Red);
+        buttonRenderer.setBorderColor(sf::Color::Green);
+        buttonRenderer.setBorders({2});
+        renderer.setCloseButton(buttonRenderer.getData());
+        renderer.setMaximizeButton(buttonRenderer.getData());
+        renderer.setMinimizeButton(buttonRenderer.getData());
+
+        auto picture = tgui::Picture::create("resources/image.png");
+        picture->setSize({150, 100});
+        picture->setPosition({50, 55});
+        childWindow->add(picture);
+
+        SECTION("Colored")
+        {
+            TEST_DRAW("ChildWindow.png")
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureTitleBar("resources/Texture1.png");
+
+            TEST_DRAW("ChildWindow_Textured.png")
         }
     }
 }
