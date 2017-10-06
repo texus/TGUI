@@ -149,7 +149,11 @@ namespace tgui
 
     sf::String TextBox::getSelectedText() const
     {
-        return m_textSelection1.getString() + m_textSelection2.getString();
+        auto pos = findTextSelectionPositions();
+        if (pos.first > pos.second)
+            std::swap(pos.first, pos.second);
+
+        return m_text.substring(pos.first, pos.second - pos.first);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
