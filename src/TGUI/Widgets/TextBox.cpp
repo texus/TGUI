@@ -540,7 +540,12 @@ namespace tgui
                 }
                 else // Control key is not being pressed
                 {
-                    if (m_selEnd.x > 0)
+                    if ((m_selStart != m_selEnd) && !event.shift)
+                    {
+                        if ((m_selStart.y < m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x < m_selEnd.x)))
+                            m_selEnd = m_selStart;
+                    }
+                    else if (m_selEnd.x > 0)
                         m_selEnd.x--;
                     else
                     {
@@ -609,17 +614,25 @@ namespace tgui
                 }
                 else // Control key is not being pressed
                 {
-                    // Move to the next line if you are at the end of the line
-                    if (m_selEnd.x == m_lines[m_selEnd.y].getSize())
+                    if ((m_selStart != m_selEnd) && !event.shift)
                     {
-                        if (m_selEnd.y + 1 < m_lines.size())
-                        {
-                            m_selEnd.y++;
-                            m_selEnd.x = 0;
-                        }
+                        if ((m_selStart.y > m_selEnd.y) || ((m_selStart.y == m_selEnd.y) && (m_selStart.x > m_selEnd.x)))
+                            m_selEnd = m_selStart;
                     }
                     else
-                        m_selEnd.x++;
+                    {
+                        // Move to the next line if you are at the end of the line
+                        if (m_selEnd.x == m_lines[m_selEnd.y].getSize())
+                        {
+                            if (m_selEnd.y + 1 < m_lines.size())
+                            {
+                                m_selEnd.y++;
+                                m_selEnd.x = 0;
+                            }
+                        }
+                        else
+                            m_selEnd.x++;
+                    }
                 }
 
                 if (!event.shift)
