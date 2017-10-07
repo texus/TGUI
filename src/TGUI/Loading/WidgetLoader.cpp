@@ -122,13 +122,33 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadWidget(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        std::shared_ptr<RendererData> parseRenderer(const std::unique_ptr<DataIO::Node>& node)
+        {
+            auto rendererData = RendererData::create();
+            rendererData->shared = false;
+
+            for (const auto& pair : node->propertyValuePairs)
+                rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile with VS2015 Update 2 when using braces
+
+            for (const auto& nestedProperty : node->children)
+            {
+                std::stringstream ss;
+                DataIO::emit(nestedProperty, ss);
+                rendererData->propertyValuePairs[toLower(nestedProperty->name)] = {sf::String{"{\n" + ss.str() + "}"}};
+            }
+
+            return rendererData;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Widget::Ptr loadWidget(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             assert(widget != nullptr);
 
             if (node->propertyValuePairs["visible"])
             {
-                bool visible = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["visible"]->value).getBool();
+                const bool visible = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["visible"]->value).getBool();
                 if (visible)
                     widget->show();
                 else
@@ -136,7 +156,7 @@ namespace tgui
             }
             if (node->propertyValuePairs["enabled"])
             {
-                bool enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["enabled"]->value).getBool();
+                const bool enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["enabled"]->value).getBool();
                 if (enabled)
                     widget->enable();
                 else
@@ -146,6 +166,19 @@ namespace tgui
                 widget->setPosition(parseLayout(node->propertyValuePairs["position"]->value));
             if (node->propertyValuePairs["size"])
                 widget->setSize(parseLayout(node->propertyValuePairs["size"]->value));
+
+            if (node->propertyValuePairs["renderer"])
+            {
+                const sf::String value = node->propertyValuePairs["renderer"]->value;
+                if (value.isEmpty() || (value[0] != '&'))
+                    throw Exception{"Expected reference to renderer, did not find '&' character"};
+
+                const auto it = availableRenderers.find(toLower(value.substring(1)));
+                if (it == availableRenderers.end())
+                    throw Exception{"Widget refers to renderer with name '" + value.substring(1) + "', but no such renderer was found"};
+
+                widget->setRenderer(it->second);
+            }
 
             for (const auto& childNode : node->children)
             {
@@ -168,32 +201,15 @@ namespace tgui
                         const auto& toolTipWidgetNode = childNode->children[0];
                         const auto& loadFunction = WidgetLoader::getLoadFunction(toolTipWidgetNode->name);
                         if (loadFunction)
-                            widget->setToolTip(loadFunction(toolTipWidgetNode, nullptr));
+                            widget->setToolTip(loadFunction(toolTipWidgetNode, nullptr, availableRenderers));
                         else
                             throw Exception{"No load function exists for widget type '" + toolTipWidgetNode->name + "'."};
                     }
                 }
+                else if (toLower(childNode->name) == "renderer")
+                    widget->setRenderer(parseRenderer(childNode));
 
                 /// TODO: Signals?
-
-                /// TODO: Separate renderer section?
-                else if (toLower(childNode->name) == "renderer")
-                {
-                    auto rendererData = RendererData::create();
-                    rendererData->shared = false;
-
-                    for (const auto& pair : childNode->propertyValuePairs)
-                        rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile with VS2015 Update 2 when using braces
-
-                    for (const auto& nestedProperty : childNode->children)
-                    {
-                        std::stringstream ss;
-                        DataIO::emit(nestedProperty, ss);
-                        rendererData->propertyValuePairs[toLower(nestedProperty->name)] = {sf::String{"{\n" + ss.str() + "}"}};
-                    }
-
-                    widget->setRenderer(rendererData);
-                }
             }
             REMOVE_CHILD("tooltip");
             REMOVE_CHILD("renderer");
@@ -203,11 +219,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadContainer(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadContainer(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             assert(widget != nullptr);
             Container::Ptr container = std::static_pointer_cast<Container>(widget);
-            loadWidget(node, container);
+            loadWidget(node, container, availableRenderers);
 
             for (const auto& childNode : node->children)
             {
@@ -220,7 +236,7 @@ namespace tgui
                     if (nameSeparator != std::string::npos)
                         className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
 
-                    tgui::Widget::Ptr childWidget = loadFunction(childNode, nullptr);
+                    tgui::Widget::Ptr childWidget = loadFunction(childNode, nullptr, availableRenderers);
                     container->add(childWidget, className);
                 }
                 else
@@ -232,7 +248,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadButton(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadButton(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             Button::Ptr button;
             if (widget)
@@ -240,7 +256,7 @@ namespace tgui
             else
                 button = Button::create();
 
-            loadWidget(node, button);
+            loadWidget(node, button, availableRenderers);
             if (node->propertyValuePairs["text"])
                 button->setText(DESERIALIZE_STRING("text"));
             if (node->propertyValuePairs["textsize"])
@@ -251,12 +267,12 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadBoxLayoutRatios(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadBoxLayoutRatios(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             assert(widget != nullptr);
             BoxLayoutRatios::Ptr layout = std::static_pointer_cast<BoxLayoutRatios>(widget);
 
-            loadContainer(node, layout);
+            loadContainer(node, layout, availableRenderers);
 
             if (node->propertyValuePairs["ratios"])
             {
@@ -275,17 +291,17 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadCanvas(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadCanvas(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             if (widget)
-                return loadWidget(node, widget);
+                return loadWidget(node, widget, availableRenderers);
             else
-                return loadWidget(node, Canvas::create());
+                return loadWidget(node, Canvas::create(), availableRenderers);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadChatBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadChatBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             ChatBox::Ptr chatBox;
             if (widget)
@@ -293,7 +309,7 @@ namespace tgui
             else
                 chatBox = ChatBox::create();
 
-            loadWidget(node, chatBox);
+            loadWidget(node, chatBox, availableRenderers);
 
             if (node->propertyValuePairs["textsize"])
                 chatBox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
@@ -336,7 +352,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadCheckBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadCheckBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             CheckBox::Ptr checkbox;
             if (widget)
@@ -344,7 +360,7 @@ namespace tgui
             else
                 checkbox = CheckBox::create();
 
-            loadWidget(node, checkbox);
+            loadWidget(node, checkbox, availableRenderers);
             if (node->propertyValuePairs["text"])
                 checkbox->setText(DESERIALIZE_STRING("text"));
             if (node->propertyValuePairs["textsize"])
@@ -362,7 +378,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadChildWindow(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadChildWindow(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             ChildWindow::Ptr childWindow;
             if (widget)
@@ -415,24 +431,24 @@ namespace tgui
             if (node->propertyValuePairs["maximumsize"])
                 childWindow->setMaximumSize(parseVector2f(node->propertyValuePairs["maximumsize"]->value));
 
-            loadContainer(node, childWindow);
+            loadContainer(node, childWindow, availableRenderers);
 
             return childWindow;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadClickableWidget(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadClickableWidget(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             if (widget)
-                return loadWidget(node, widget);
+                return loadWidget(node, widget, availableRenderers);
             else
-                return loadWidget(node, ClickableWidget::create());
+                return loadWidget(node, ClickableWidget::create(), availableRenderers);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadComboBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadComboBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             ComboBox::Ptr comboBox;
             if (widget)
@@ -440,7 +456,7 @@ namespace tgui
             else
                 comboBox = ComboBox::create();
 
-            loadWidget(node, comboBox);
+            loadWidget(node, comboBox, availableRenderers);
 
             if (node->propertyValuePairs["items"])
             {
@@ -501,7 +517,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadEditBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadEditBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             EditBox::Ptr editBox;
             if (widget)
@@ -509,7 +525,7 @@ namespace tgui
             else
                 editBox = EditBox::create();
 
-            loadWidget(node, editBox);
+            loadWidget(node, editBox, availableRenderers);
 
             if (node->propertyValuePairs["text"])
                 editBox->setText(DESERIALIZE_STRING("text"));
@@ -555,7 +571,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadGrid(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadGrid(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             Grid::Ptr grid;
             if (widget)
@@ -563,7 +579,7 @@ namespace tgui
             else
                 grid = Grid::create();
 
-            loadContainer(node, grid);
+            loadContainer(node, grid, availableRenderers);
 
             if (node->propertyValuePairs["autosize"])
                 grid->setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autosize"]->value).getBool());
@@ -663,37 +679,37 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadGroup(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadGroup(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             if (widget)
-                return loadContainer(node, std::static_pointer_cast<Group>(widget));
+                return loadContainer(node, std::static_pointer_cast<Group>(widget), availableRenderers);
             else
-                return loadContainer(node, Group::create());
+                return loadContainer(node, Group::create(), availableRenderers);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadHorizontalLayout(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadHorizontalLayout(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             if (widget)
-                return loadBoxLayoutRatios(node, std::static_pointer_cast<HorizontalLayout>(widget));
+                return loadBoxLayoutRatios(node, std::static_pointer_cast<HorizontalLayout>(widget), availableRenderers);
             else
-                return loadBoxLayoutRatios(node, HorizontalLayout::create());
+                return loadBoxLayoutRatios(node, HorizontalLayout::create(), availableRenderers);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadHorizontalWrap(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadHorizontalWrap(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             if (widget)
-                return loadContainer(node, std::static_pointer_cast<HorizontalWrap>(widget));
+                return loadContainer(node, std::static_pointer_cast<HorizontalWrap>(widget), availableRenderers);
             else
-                return loadContainer(node, HorizontalWrap::create());
+                return loadContainer(node, HorizontalWrap::create(), availableRenderers);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadKnob(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadKnob(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             Knob::Ptr knob;
             if (widget)
@@ -701,7 +717,7 @@ namespace tgui
             else
                 knob = Knob::create();
 
-            loadWidget(node, knob);
+            loadWidget(node, knob, availableRenderers);
             if (node->propertyValuePairs["startrotation"])
                 knob->setStartRotation(tgui::stof(node->propertyValuePairs["startrotation"]->value));
             if (node->propertyValuePairs["endrotation"])
@@ -720,7 +736,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadLabel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadLabel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             Label::Ptr label;
             if (widget)
@@ -728,7 +744,7 @@ namespace tgui
             else
                 label = Label::create();
 
-            loadWidget(node, label);
+            loadWidget(node, label, availableRenderers);
 
             if (node->propertyValuePairs["horizontalalignment"])
             {
@@ -769,7 +785,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadListBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadListBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             ListBox::Ptr listBox;
             if (widget)
@@ -777,7 +793,7 @@ namespace tgui
             else
                 listBox = ListBox::create();
 
-            loadWidget(node, listBox);
+            loadWidget(node, listBox, availableRenderers);
 
             if (node->propertyValuePairs["items"])
             {
@@ -830,7 +846,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadMenuBar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadMenuBar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             MenuBar::Ptr menuBar;
             if (widget)
@@ -838,7 +854,7 @@ namespace tgui
             else
                 menuBar = MenuBar::create();
 
-            loadWidget(node, menuBar);
+            loadWidget(node, menuBar, availableRenderers);
 
             if (node->propertyValuePairs["textsize"])
                 menuBar->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
@@ -871,7 +887,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadMessageBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadMessageBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             MessageBox::Ptr messageBox;
             if (widget)
@@ -882,7 +898,7 @@ namespace tgui
             // Remove the label that the MessageBox constructor creates because it will be created when loading the child window
             messageBox->removeAllWidgets();
 
-            loadChildWindow(node, messageBox);
+            loadChildWindow(node, messageBox, availableRenderers);
 
             if (node->propertyValuePairs["textsize"])
                 messageBox->setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
@@ -893,17 +909,17 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadPanel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadPanel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             if (widget)
-                return loadContainer(node, std::static_pointer_cast<Panel>(widget));
+                return loadContainer(node, std::static_pointer_cast<Panel>(widget), availableRenderers);
             else
-                return loadContainer(node, Panel::create());
+                return loadContainer(node, Panel::create(), availableRenderers);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadPicture(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadPicture(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             Picture::Ptr picture;
             if (widget)
@@ -914,14 +930,14 @@ namespace tgui
             if (node->propertyValuePairs["ignoremouseevents"])
                 picture->ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ignoremouseevents"]->value).getBool());
 
-            loadWidget(node, picture);
+            loadWidget(node, picture, availableRenderers);
 
             return picture;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadProgressBar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadProgressBar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             ProgressBar::Ptr progressBar;
             if (widget)
@@ -929,7 +945,7 @@ namespace tgui
             else
                 progressBar = ProgressBar::create();
 
-            loadWidget(node, progressBar);
+            loadWidget(node, progressBar, availableRenderers);
             if (node->propertyValuePairs["minimum"])
                 progressBar->setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
             if (node->propertyValuePairs["maximum"])
@@ -961,7 +977,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadRadioButton(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadRadioButton(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             RadioButton::Ptr radioButton;
             if (widget)
@@ -969,7 +985,7 @@ namespace tgui
             else
                 radioButton = RadioButton::create();
 
-            loadWidget(node, radioButton);
+            loadWidget(node, radioButton, availableRenderers);
             if (node->propertyValuePairs["text"])
                 radioButton->setText(DESERIALIZE_STRING("text"));
             if (node->propertyValuePairs["textsize"])
@@ -987,17 +1003,17 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadRadioButtonGroup(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadRadioButtonGroup(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             if (widget)
-                return loadContainer(node, std::static_pointer_cast<RadioButtonGroup>(widget));
+                return loadContainer(node, std::static_pointer_cast<RadioButtonGroup>(widget), availableRenderers);
             else
-                return loadContainer(node, RadioButtonGroup::create());
+                return loadContainer(node, RadioButtonGroup::create(), availableRenderers);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadRangeSlider(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadRangeSlider(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             RangeSlider::Ptr slider;
             if (widget)
@@ -1005,7 +1021,7 @@ namespace tgui
             else
                 slider = RangeSlider::create();
 
-            loadWidget(node, slider);
+            loadWidget(node, slider, availableRenderers);
             if (node->propertyValuePairs["minimum"])
                 slider->setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
             if (node->propertyValuePairs["maximum"])
@@ -1020,7 +1036,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadScrollablePanel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadScrollablePanel(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             ScrollablePanel::Ptr panel;
             if (widget)
@@ -1031,14 +1047,14 @@ namespace tgui
             if (node->propertyValuePairs["contentsize"])
                 panel->setContentSize(parseVector2f(node->propertyValuePairs["contentsize"]->value));
 
-            loadPanel(node, panel);
+            loadPanel(node, panel, availableRenderers);
 
             return panel;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadScrollbar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadScrollbar(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             Scrollbar::Ptr scrollbar;
             if (widget)
@@ -1046,7 +1062,7 @@ namespace tgui
             else
                 scrollbar = Scrollbar::create();
 
-            loadWidget(node, scrollbar);
+            loadWidget(node, scrollbar, availableRenderers);
             if (node->propertyValuePairs["lowvalue"])
                 scrollbar->setLowValue(tgui::stoi(node->propertyValuePairs["lowvalue"]->value));
             if (node->propertyValuePairs["maximum"])
@@ -1063,7 +1079,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadSlider(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadSlider(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             Slider::Ptr slider;
             if (widget)
@@ -1071,7 +1087,7 @@ namespace tgui
             else
                 slider = Slider::create();
 
-            loadWidget(node, slider);
+            loadWidget(node, slider, availableRenderers);
             if (node->propertyValuePairs["minimum"])
                 slider->setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
             if (node->propertyValuePairs["maximum"])
@@ -1084,7 +1100,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadSpinButton(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadSpinButton(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             SpinButton::Ptr spinButton;
             if (widget)
@@ -1092,7 +1108,7 @@ namespace tgui
             else
                 spinButton = SpinButton::create();
 
-            loadWidget(node, spinButton);
+            loadWidget(node, spinButton, availableRenderers);
             if (node->propertyValuePairs["minimum"])
                 spinButton->setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
             if (node->propertyValuePairs["maximum"])
@@ -1105,7 +1121,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadTabs(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadTabs(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             Tabs::Ptr tabs;
             if (widget)
@@ -1113,7 +1129,7 @@ namespace tgui
             else
                 tabs = Tabs::create();
 
-            loadWidget(node, tabs);
+            loadWidget(node, tabs, availableRenderers);
 
             if (node->propertyValuePairs["tabs"])
             {
@@ -1138,7 +1154,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadTextBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadTextBox(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             TextBox::Ptr textBox;
             if (widget)
@@ -1146,7 +1162,7 @@ namespace tgui
             else
                 textBox = TextBox::create();
 
-            loadWidget(node, textBox);
+            loadWidget(node, textBox, availableRenderers);
 
             if (node->propertyValuePairs["text"])
                 textBox->setText(DESERIALIZE_STRING("text"));
@@ -1164,12 +1180,12 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        Widget::Ptr loadVerticalLayout(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget)
+        Widget::Ptr loadVerticalLayout(const std::unique_ptr<DataIO::Node>& node, Widget::Ptr widget, const std::map<std::string, std::shared_ptr<RendererData>>& availableRenderers)
         {
             if (widget)
-                return loadBoxLayoutRatios(node, std::static_pointer_cast<VerticalLayout>(widget));
+                return loadBoxLayoutRatios(node, std::static_pointer_cast<VerticalLayout>(widget), availableRenderers);
             else
-                return loadBoxLayoutRatios(node, VerticalLayout::create());
+                return loadBoxLayoutRatios(node, VerticalLayout::create(), availableRenderers);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1220,24 +1236,34 @@ namespace tgui
         auto rootNode = DataIO::parse(stream);
 
         if (rootNode->propertyValuePairs.size() != 0)
-            loadWidget(rootNode, parent);
+            loadWidget(rootNode, parent, {});
 
+        std::map<std::string, std::shared_ptr<RendererData>> availableRenderers;
         for (const auto& node : rootNode->children)
         {
             auto nameSeparator = node->name.find('.');
             auto widgetType = node->name.substr(0, nameSeparator);
-            auto& loadFunction = m_loadFunctions[toLower(widgetType)];
-            if (loadFunction)
-            {
-                std::string className;
-                if (nameSeparator != std::string::npos)
-                    className = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
 
-                tgui::Widget::Ptr widget = loadFunction(node, nullptr);
-                parent->add(widget, className);
+            std::string objectName;
+            if (nameSeparator != std::string::npos)
+                objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
+
+            if (toLower(widgetType) == "renderer")
+            {
+                if (!objectName.empty())
+                    availableRenderers[toLower(objectName)] = parseRenderer(node);
             }
-            else
-                throw Exception{"No load function exists for widget type '" + widgetType + "'."};
+            else // Section describes a widget
+            {
+                auto& loadFunction = m_loadFunctions[toLower(widgetType)];
+                if (loadFunction)
+                {
+                    tgui::Widget::Ptr widget = loadFunction(node, nullptr, availableRenderers);
+                    parent->add(widget, objectName);
+                }
+                else
+                    throw Exception{"No load function exists for widget type '" + widgetType + "'."};
+            }
         }
     }
 
