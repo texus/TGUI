@@ -301,6 +301,15 @@ TEST_CASE("[TextBox]")
 
                 textBox->keyPressed({sf::Keyboard::Key::BackSpace, false, false, false, false});
                 REQUIRE(textBox->getText() == "AB\nFGHIJKLPQ\n\nTXYZ");
+
+                // The caret should not move when adding a newline at the start of a line that only exists due to word-wrap
+                textBox->setText(""); // Make sure the scrollbar is gone
+                textBox->setText("ABCDEFGHIJKLMONPQRSTUVWXYZ");
+                for (unsigned int i = 0; i < 17; ++i)
+                    textBox->keyPressed({sf::Keyboard::Key::Left, false, false, false, false});
+                textBox->keyPressed({sf::Keyboard::Key::Return, false, false, false, false});
+                textBox->keyPressed({sf::Keyboard::Key::Delete, false, false, false, false});
+                REQUIRE(textBox->getText() == "ABCDEFGHIJ\nLMONPQRSTUVWXYZ");
             }
 
             SECTION("Copy and Paste")

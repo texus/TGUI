@@ -890,8 +890,12 @@ namespace tgui
             m_text.insert(caretPosition, key);
             m_lines[m_selEnd.y].insert(m_selEnd.x, key);
 
-            m_selStart.x++;
-            m_selEnd.x++;
+            // Increment the caret position, unless you type a newline at the start of a line while that line only existed due to word wrapping
+            if ((key != '\n') || (m_selEnd.x > 0) || (m_selEnd.y == 0) || m_lines[m_selEnd.y-1].isEmpty() || (m_text[caretPosition-1] == '\n'))
+            {
+                m_selStart.x++;
+                m_selEnd.x++;
+            }
 
             rearrangeText(true);
         };
