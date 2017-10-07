@@ -7,6 +7,7 @@ TGUI 0.7.6  (TBD)
 - ChildWindow::setTitleButtons did not accept combinations of buttons
 - Theme files missed MinimizeButton and MaximizeButton in ChildWindow section
 - ComboBox::setItemsToDisplay did not show full list when 0 was passed
+- Non-string layouts are now also copied when copying a widget
 
 
 TGUI 0.7.5  (11 September 2017)

@@ -172,9 +172,9 @@ TEST_CASE("[Widget]") {
             container->add(widget3);
             REQUIRE(widget3->getPosition() == sf::Vector2f(50, 30));
 
-            // Layout can only be copied when it is a string
+            // Layout can be copied with the widget
             widget2->setPosition(20, 40);
-            REQUIRE(widget3->getPosition() == sf::Vector2f(50, 40));
+            REQUIRE(widget3->getPosition() == sf::Vector2f(20, 40));
 
             // String is re-evaluated and new widgets are bound after copying
             widget->setPosition({"{width, height}"});
@@ -201,9 +201,9 @@ TEST_CASE("[Widget]") {
             container->add(widget3);
             REQUIRE(widget3->getSize() == sf::Vector2f(50, 30));
 
-            // Layout can only be copied when it is a string
+            // Layout can be copied with the widget
             widget2->setSize(20, 40);
-            REQUIRE(widget3->getSize() == sf::Vector2f(20, 30));
+            REQUIRE(widget3->getSize() == sf::Vector2f(20, 40));
 
             // String is re-evaluated and new widgets are bound after copying
             widget->setSize({"position"});

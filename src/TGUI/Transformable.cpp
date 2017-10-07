@@ -33,9 +33,8 @@ namespace tgui
 
     Transformable::Transformable(const Transformable& other)
     {
-        // We can only copy the layouts when they are strings
-        Layout2d position = {other.getPosition()};
-        Layout2d size = {other.getSize()};
+        Layout2d position = other.getPositionLayout();
+        Layout2d size = other.getSizeLayout();
 
         if (other.m_position.x.getImpl()->operation == LayoutImpl::Operation::String)
             position.x = other.m_position.x.getImpl()->stringExpression;
