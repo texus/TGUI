@@ -912,7 +912,7 @@ namespace tgui
             insert();
 
             // Undo the insert if the text does not fit
-            if (oldText.getSize() + 1 != m_text.getSize())
+            if (m_lines.size() > getInnerSize().y / m_lineHeight)
             {
                 m_text = oldText;
                 m_selStart = oldSelStart;
