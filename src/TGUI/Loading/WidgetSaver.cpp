@@ -130,7 +130,75 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveWidget(Widget::Ptr widget)
+        void getAllRenderers(std::map<RendererData*, std::vector<const Widget*>>& renderers, const Container* container)
+        {
+            for (const auto& child : container->getWidgets())
+            {
+                renderers[child->getSharedRenderer()->getData().get()].push_back(child.get());
+
+                Container* childContainer = dynamic_cast<Container*>(child.get());
+                if (childContainer)
+                    getAllRenderers(renderers, childContainer);
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::unique_ptr<DataIO::Node> saveRenderer(RendererData* renderer, const std::string& name)
+        {
+            auto node = make_unique<DataIO::Node>();
+            node->name = name;
+            for (const auto& pair : renderer->propertyValuePairs)
+            {
+                // Skip "font = null"
+                if (pair.first == "font" && ObjectConverter{pair.second}.getString() == "null")
+                    continue;
+
+                sf::String value = ObjectConverter{pair.second}.getString();
+
+                // Turn absolute paths (which were likely caused by loading from a theme) into relative paths if the first part of the path matches the current working directory
+                if (!workingDirectory.empty())
+                {
+                    if ((pair.second.getType() == ObjectConverter::Type::Font) || (pair.second.getType() == ObjectConverter::Type::Texture))
+                        value = tryRemoveAbsolutePath(value);
+                }
+
+                if (pair.second.getType() == ObjectConverter::Type::RendererData)
+                {
+                    std::stringstream ss{value};
+                    auto rendererRootNode = DataIO::parse(ss);
+                    if (!rendererRootNode->children.empty())
+                        rendererRootNode = std::move(rendererRootNode->children[0]);
+
+                    recursiveTryRemoveAbsolutePath(rendererRootNode);
+
+                    rendererRootNode->name = pair.first;
+                    node->children.push_back(std::move(rendererRootNode));
+                }
+                else
+                    node->propertyValuePairs[pair.first] = make_unique<DataIO::ValueNode>(value);
+            }
+
+            return node;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void saveChildWidgets(Container::ConstPtr container, std::unique_ptr<DataIO::Node>& node, const std::map<const Widget*, std::string>& externalRenderers)
+        {
+            for (const auto& child : container->getWidgets())
+            {
+                auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));
+                if (saveFunction)
+                    node->children.emplace_back(saveFunction(child, externalRenderers));
+                else
+                    throw Exception{"No save function exists for widget type '" + child->getWidgetType() + "'."};
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::unique_ptr<DataIO::Node> saveWidget(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             sf::String widgetName;
             if (widget->getParent())
@@ -153,7 +221,7 @@ namespace tgui
 
             if (widget->getToolTip() != nullptr)
             {
-                auto toolTipWidgetNode = WidgetSaver::getSaveFunction("widget")(widget->getToolTip());
+                auto toolTipWidgetNode = WidgetSaver::getSaveFunction("widget")(widget->getToolTip(), externalRenderers);
 
                 auto toolTipNode = make_unique<DataIO::Node>();
                 toolTipNode->name = "ToolTip";
@@ -165,71 +233,33 @@ namespace tgui
                 node->children.emplace_back(std::move(toolTipNode));
             }
 
-            /// TODO: Separate renderer section?
-            if (!widget->getSharedRenderer()->getPropertyValuePairs().empty())
-            {
-                node->children.emplace_back(make_unique<DataIO::Node>());
-                node->children.back()->name = "Renderer";
-                for (const auto& pair : widget->getSharedRenderer()->getPropertyValuePairs())
-                {
-                    // Skip "font = null"
-                    if (pair.first == "font" && ObjectConverter{pair.second}.getString() == "null")
-                        continue;
-
-                    sf::String value = ObjectConverter{pair.second}.getString();
-
-                    // Turn absolute paths (which were likely caused by loading from a theme) into relative paths if the first part of the path matches the current working directory
-                    if (!workingDirectory.empty())
-                    {
-                        if ((pair.second.getType() == ObjectConverter::Type::Font) || (pair.second.getType() == ObjectConverter::Type::Texture))
-                            value = tryRemoveAbsolutePath(value);
-                    }
-
-                    if (pair.second.getType() == ObjectConverter::Type::RendererData)
-                    {
-                        std::stringstream ss{value};
-                        auto rendererRootNode = DataIO::parse(ss);
-                        if (!rendererRootNode->children.empty())
-                            rendererRootNode = std::move(rendererRootNode->children[0]);
-
-                        recursiveTryRemoveAbsolutePath(rendererRootNode);
-
-                        rendererRootNode->name = pair.first;
-                        node->children.back()->children.push_back(std::move(rendererRootNode));
-                    }
-                    else
-                        node->children.back()->propertyValuePairs[pair.first] = make_unique<DataIO::ValueNode>(value);
-                }
-            }
+            const auto rendererIt = externalRenderers.find(widget.get());
+            if (rendererIt != externalRenderers.end())
+                node->propertyValuePairs["renderer"] = make_unique<DataIO::ValueNode>("&" + rendererIt->second);
+            else
+                node->children.emplace_back(saveRenderer(widget->getSharedRenderer()->getData().get(), "Renderer"));
 
             return node;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveContainer(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveContainer(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
-            auto container = std::static_pointer_cast<Container>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(container);
+            const auto container = std::static_pointer_cast<Container>(widget);
+            auto node = WidgetSaver::getSaveFunction("widget")(container, externalRenderers);
 
-            for (const auto& child : container->getWidgets())
-            {
-                auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));
-                if (saveFunction)
-                    node->children.emplace_back(saveFunction(child));
-                else
-                    throw Exception{"No save function exists for widget type '" + child->getWidgetType() + "'."};
-            }
+            saveChildWidgets(container, node, externalRenderers);
 
             return node;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveButton(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveButton(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto button = std::static_pointer_cast<Button>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(button);
+            auto node = WidgetSaver::getSaveFunction("widget")(button, externalRenderers);
 
             if (!button->getText().isEmpty())
                 SET_PROPERTY("Text", Serializer::serialize(button->getText()));
@@ -240,10 +270,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveBoxLayoutRatios(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveBoxLayoutRatios(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto layout = std::static_pointer_cast<BoxLayoutRatios>(widget);
-            auto node = WidgetSaver::getSaveFunction("container")(layout);
+            auto node = WidgetSaver::getSaveFunction("container")(layout, externalRenderers);
 
             if (layout->getWidgets().size() > 0)
             {
@@ -260,10 +290,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveChatBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveChatBox(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto chatBox = std::static_pointer_cast<ChatBox>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(chatBox);
+            auto node = WidgetSaver::getSaveFunction("widget")(chatBox, externalRenderers);
 
             SET_PROPERTY("TextSize", to_string(chatBox->getTextSize()));
             SET_PROPERTY("TextColor", Serializer::serialize(chatBox->getTextColor()));
@@ -287,7 +317,6 @@ namespace tgui
                 sf::Color lineTextColor = chatBox->getLineColor(i);
 
                 auto lineNode = make_unique<DataIO::Node>();
-                lineNode->parent = node.get();
                 lineNode->name = "Line";
 
                 lineNode->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(chatBox->getLine(i)));
@@ -304,10 +333,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveChildWindow(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveChildWindow(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto childWindow = std::static_pointer_cast<ChildWindow>(widget);
-            auto node = WidgetSaver::getSaveFunction("container")(childWindow);
+            auto node = WidgetSaver::getSaveFunction("container")(childWindow, externalRenderers);
 
             if (childWindow->getTitleAlignment() == ChildWindow::TitleAlignment::Left)
                 SET_PROPERTY("TitleAlignment", "Left");
@@ -350,10 +379,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveComboBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveComboBox(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto comboBox = std::static_pointer_cast<ComboBox>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(comboBox);
+            auto node = WidgetSaver::getSaveFunction("widget")(comboBox, externalRenderers);
 
             if (comboBox->getItemCount() > 0)
             {
@@ -386,10 +415,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveEditBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveEditBox(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto editBox = std::static_pointer_cast<EditBox>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(editBox);
+            auto node = WidgetSaver::getSaveFunction("widget")(editBox, externalRenderers);
 
             if (editBox->getAlignment() != EditBox::Alignment::Left)
             {
@@ -428,10 +457,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveGrid(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveGrid(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto grid = std::static_pointer_cast<Grid>(widget);
-            auto node = WidgetSaver::getSaveFunction("container")(grid);
+            auto node = WidgetSaver::getSaveFunction("container")(grid, externalRenderers);
 
             const auto& children = grid->getWidgets();
             auto widgetsMap = grid->getWidgetLocations();
@@ -497,10 +526,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveKnob(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveKnob(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto knob = std::static_pointer_cast<Knob>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(knob);
+            auto node = WidgetSaver::getSaveFunction("widget")(knob, externalRenderers);
 
             if (knob->getClockwiseTurning())
                 SET_PROPERTY("ClockwiseTurning", "true");
@@ -517,10 +546,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveLabel(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveLabel(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto label = std::static_pointer_cast<Label>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(label);
+            auto node = WidgetSaver::getSaveFunction("widget")(label, externalRenderers);
 
             if (label->getHorizontalAlignment() == Label::HorizontalAlignment::Center)
                 SET_PROPERTY("HorizontalAlignment", "Center");
@@ -548,10 +577,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveListBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveListBox(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto listBox = std::static_pointer_cast<ListBox>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(listBox);
+            auto node = WidgetSaver::getSaveFunction("widget")(listBox, externalRenderers);
 
             if (listBox->getItemCount() > 0)
             {
@@ -584,16 +613,15 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveMenuBar(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveMenuBar(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto menuBar = std::static_pointer_cast<MenuBar>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(menuBar);
+            auto node = WidgetSaver::getSaveFunction("widget")(menuBar, externalRenderers);
 
             std::map<sf::String, std::vector<sf::String>> menus = menuBar->getMenus();
             for (const auto& menu : menus)
             {
                 auto menuNode = make_unique<DataIO::Node>();
-                menuNode->parent = node.get();
                 menuNode->name = "Menu";
 
                 menuNode->propertyValuePairs["Name"] = make_unique<DataIO::ValueNode>(Serializer::serialize(menu.first));
@@ -620,10 +648,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveMessageBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveMessageBox(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto messageBox = std::static_pointer_cast<MessageBox>(widget);
-            auto node = WidgetSaver::getSaveFunction("childwindow")(messageBox);
+            auto node = WidgetSaver::getSaveFunction("childwindow")(messageBox, externalRenderers);
 
             SET_PROPERTY("TextSize", to_string(messageBox->getTextSize()));
 
@@ -634,10 +662,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> savePicture(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> savePicture(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto picture = std::static_pointer_cast<Picture>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(picture);
+            auto node = WidgetSaver::getSaveFunction("widget")(picture, externalRenderers);
 
             if (picture->isIgnoringMouseEvents())
                 SET_PROPERTY("IgnoreMouseEvents", Serializer::serialize(picture->isIgnoringMouseEvents()));
@@ -647,10 +675,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveProgressBar(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveProgressBar(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto progressBar = std::static_pointer_cast<ProgressBar>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(progressBar);
+            auto node = WidgetSaver::getSaveFunction("widget")(progressBar, externalRenderers);
 
             if (!progressBar->getText().isEmpty())
                 SET_PROPERTY("Text", Serializer::serialize(progressBar->getText()));
@@ -674,10 +702,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveRadioButton(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveRadioButton(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto radioButton = std::static_pointer_cast<RadioButton>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(radioButton);
+            auto node = WidgetSaver::getSaveFunction("widget")(radioButton, externalRenderers);
 
             if (!radioButton->getText().isEmpty())
                 SET_PROPERTY("Text", Serializer::serialize(radioButton->getText()));
@@ -692,10 +720,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveRangeSlider(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveRangeSlider(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto slider = std::static_pointer_cast<RangeSlider>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(slider);
+            auto node = WidgetSaver::getSaveFunction("widget")(slider, externalRenderers);
 
             SET_PROPERTY("Minimum", to_string(slider->getMinimum()));
             SET_PROPERTY("Maximum", to_string(slider->getMaximum()));
@@ -706,10 +734,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveScrollablePanel(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveScrollablePanel(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto panel = std::static_pointer_cast<ScrollablePanel>(widget);
-            auto node = WidgetSaver::getSaveFunction("panel")(panel);
+            auto node = WidgetSaver::getSaveFunction("panel")(panel, externalRenderers);
 
             SET_PROPERTY("CententSize", "(" + to_string(panel->getContentSize().x) + ", " + to_string(panel->getContentSize().y) + ")");
 
@@ -718,10 +746,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveScrollbar(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveScrollbar(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto scrollbar = std::static_pointer_cast<Scrollbar>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(scrollbar);
+            auto node = WidgetSaver::getSaveFunction("widget")(scrollbar, externalRenderers);
 
             if (scrollbar->getAutoHide())
                 SET_PROPERTY("AutoHide", "true");
@@ -737,10 +765,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveSlider(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveSlider(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto slider = std::static_pointer_cast<Slider>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(slider);
+            auto node = WidgetSaver::getSaveFunction("widget")(slider, externalRenderers);
 
             SET_PROPERTY("Minimum", to_string(slider->getMinimum()));
             SET_PROPERTY("Maximum", to_string(slider->getMaximum()));
@@ -750,10 +778,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveSpinButton(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveSpinButton(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto spinButton = std::static_pointer_cast<SpinButton>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(spinButton);
+            auto node = WidgetSaver::getSaveFunction("widget")(spinButton, externalRenderers);
 
             SET_PROPERTY("Minimum", to_string(spinButton->getMinimum()));
             SET_PROPERTY("Maximum", to_string(spinButton->getMaximum()));
@@ -763,10 +791,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveTabs(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveTabs(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto tabs = std::static_pointer_cast<Tabs>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(tabs);
+            auto node = WidgetSaver::getSaveFunction("widget")(tabs, externalRenderers);
 
             if (tabs->getTabsCount() > 0)
             {
@@ -797,10 +825,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveTextBox(Widget::Ptr widget)
+        std::unique_ptr<DataIO::Node> saveTextBox(Widget::Ptr widget, const std::map<const Widget*, std::string>& externalRenderers)
         {
             auto textBox = std::static_pointer_cast<TextBox>(widget);
-            auto node = WidgetSaver::getSaveFunction("widget")(textBox);
+            auto node = WidgetSaver::getSaveFunction("widget")(textBox, externalRenderers);
 
             SET_PROPERTY("Text", Serializer::serialize(textBox->getText()));
             SET_PROPERTY("TextSize", to_string(textBox->getTextSize()));
@@ -889,14 +917,27 @@ namespace tgui
         }
 
         auto node = make_unique<DataIO::Node>();
-        for (const auto& child : widget->getWidgets())
+
+        std::map<RendererData*, std::vector<const Widget*>> renderers;
+        getAllRenderers(renderers, widget.get());
+
+        unsigned int id = 0;
+        std::map<const Widget*, std::string> renderersMap;
+        for (const auto& renderer : renderers)
         {
-            auto& saveFunction = WidgetSaver::getSaveFunction(toLower(child->getWidgetType()));
-            if (saveFunction)
-                node->children.emplace_back(saveFunction(child));
-            else
-                throw Exception{"No save function exists for widget type '" + child->getWidgetType() + "'."};
+            // The renderer can remain inside the widget if it is not shared
+            if (renderer.second.size() == 1)
+                continue;
+
+            ++id;
+            const std::string idStr = to_string(id);
+            for (const auto& child : renderer.second)
+                renderersMap[child] = idStr;
+
+            node->children.push_back(saveRenderer(renderer.first, "Renderer." + idStr));
         }
+
+        saveChildWidgets(widget, node, renderersMap);
 
         DataIO::emit(node, stream);
     }
