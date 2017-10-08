@@ -283,7 +283,7 @@ namespace tgui
                     throw Exception{"Amounts of values for 'Ratios' differs from the amount in child widgets"};
 
                 for (std::size_t i = 0; i < node->propertyValuePairs["ratios"]->valueList.size(); ++i)
-                    layout->setRatio(i, Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["ratios"]->valueList[i]).getNumber());
+                    layout->setRatio(i, Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs["ratios"]->valueList[i]).getNumber());
             }
 
             return layout;
