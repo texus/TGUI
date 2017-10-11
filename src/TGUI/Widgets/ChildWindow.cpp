@@ -760,6 +760,51 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> ChildWindow::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Container::save(renderers);
+
+        if (m_titleAlignment == ChildWindow::TitleAlignment::Left)
+            node->propertyValuePairs["TitleAlignment"] = make_unique<DataIO::ValueNode>("Left");
+        else if (m_titleAlignment == ChildWindow::TitleAlignment::Center)
+            node->propertyValuePairs["TitleAlignment"] = make_unique<DataIO::ValueNode>("Center");
+        else if (m_titleAlignment == ChildWindow::TitleAlignment::Right)
+            node->propertyValuePairs["TitleAlignment"] = make_unique<DataIO::ValueNode>("Right");
+
+        if (getTitle().getSize() > 0)
+            node->propertyValuePairs["Title"] = make_unique<DataIO::ValueNode>(Serializer::serialize(getTitle()));
+
+        if (m_keepInParent)
+            node->propertyValuePairs["KeepInParent"] = make_unique<DataIO::ValueNode>("true");
+
+        if (m_resizable)
+            node->propertyValuePairs["Resizable"] = make_unique<DataIO::ValueNode>("true");
+
+        if (m_minimumSize != sf::Vector2f{})
+            node->propertyValuePairs["MinimumSize"] = make_unique<DataIO::ValueNode>("(" + to_string(m_minimumSize.x) + ", " + to_string(m_minimumSize.y) + ")");
+        if (m_maximumSize != sf::Vector2f{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()})
+            node->propertyValuePairs["MaximumSize"] = make_unique<DataIO::ValueNode>("(" + to_string(m_maximumSize.x) + ", " + to_string(m_maximumSize.y) + ")");
+
+        std::string serializedTitleButtons;
+        if (m_titleButtons & ChildWindow::TitleButton::Minimize)
+            serializedTitleButtons += " | Minimize";
+        if (m_titleButtons & ChildWindow::TitleButton::Maximize)
+            serializedTitleButtons += " | Maximize";
+        if (m_titleButtons & ChildWindow::TitleButton::Close)
+            serializedTitleButtons += " | Close";
+
+        if (!serializedTitleButtons.empty())
+            serializedTitleButtons.erase(0, 3);
+        else
+            serializedTitleButtons = "None";
+
+        node->propertyValuePairs["TitleButtons"] = make_unique<DataIO::ValueNode>(serializedTitleButtons);
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());

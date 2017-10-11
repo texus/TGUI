@@ -262,9 +262,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::map<sf::String, std::vector<sf::String>> MenuBar::getMenus() const
+    std::vector<std::pair<sf::String, std::vector<sf::String>>> MenuBar::getMenus() const
     {
-        std::map<sf::String, std::vector<sf::String>> menus;
+        std::vector<std::pair<sf::String, std::vector<sf::String>>> menus;
 
         for (const auto& menu : m_menus)
         {
@@ -272,7 +272,7 @@ namespace tgui
             for (const auto& item : menu.menuItems)
                 items.push_back(item.getString());
 
-            menus[menu.text.getString()] = items;
+            menus.emplace_back(menu.text.getString(), std::move(items));
         }
 
         return menus;
@@ -628,6 +628,40 @@ namespace tgui
         }
         else
             Widget::rendererChanged(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::unique_ptr<DataIO::Node> MenuBar::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        const auto& menus = getMenus();
+        for (const auto& menu : menus)
+        {
+            auto menuNode = make_unique<DataIO::Node>();
+            menuNode->name = "Menu";
+
+            menuNode->propertyValuePairs["Name"] = make_unique<DataIO::ValueNode>(Serializer::serialize(menu.first));
+
+            const auto& items = menu.second;
+            if (!items.empty())
+            {
+                std::string itemList = "[" + Serializer::serialize(items[0]);
+                for (std::size_t i = 1; i < items.size(); ++i)
+                    itemList += ", " + Serializer::serialize(items[i]);
+                itemList += "]";
+
+                menuNode->propertyValuePairs["Items"] = make_unique<DataIO::ValueNode>(itemList);
+            }
+
+            node->children.push_back(std::move(menuNode));
+        }
+
+        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["MinimumSubMenuWidth"] = make_unique<DataIO::ValueNode>(to_string(m_minimumSubMenuWidth));
+
+        return node;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

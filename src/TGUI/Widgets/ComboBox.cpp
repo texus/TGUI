@@ -408,14 +408,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::vector<sf::String> ComboBox::getItems()
+    std::vector<sf::String> ComboBox::getItems() const
     {
         return m_listBox->getItems();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const std::vector<sf::String>& ComboBox::getItemIds()
+    const std::vector<sf::String>& ComboBox::getItemIds() const
     {
         return m_listBox->getItemIds();
     }
@@ -621,6 +621,41 @@ namespace tgui
         }
         else
             Widget::rendererChanged(property);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::unique_ptr<DataIO::Node> ComboBox::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        if (getItemCount() > 0)
+        {
+            auto items = getItems();
+            auto& ids = getItemIds();
+
+            std::string itemList = "[" + Serializer::serialize(items[0]);
+            std::string itemIdList = "[" + Serializer::serialize(ids[0]);
+            for (std::size_t i = 1; i < items.size(); ++i)
+            {
+                itemList += ", " + Serializer::serialize(items[i]);
+                itemIdList += ", " + Serializer::serialize(ids[i]);
+            }
+            itemList += "]";
+            itemIdList += "]";
+
+            node->propertyValuePairs["Items"] = make_unique<DataIO::ValueNode>(itemList);
+            node->propertyValuePairs["ItemIds"] = make_unique<DataIO::ValueNode>(itemIdList);
+        }
+
+        node->propertyValuePairs["ItemsToDisplay"] = make_unique<DataIO::ValueNode>(to_string(getItemsToDisplay()));
+        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(getTextSize()));
+        node->propertyValuePairs["MaximumItems"] = make_unique<DataIO::ValueNode>(to_string(getMaximumItems()));
+
+        if (getExpandDirection() != ComboBox::ExpandDirection::Down)
+            node->propertyValuePairs["ExpandDirection"] = make_unique<DataIO::ValueNode>("Up");
+
+        return node;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

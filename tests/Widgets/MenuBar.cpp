@@ -94,12 +94,14 @@ TEST_CASE("[MenuBar]")
             REQUIRE(menuBar->getMenus().empty());
             menuBar->addMenu("Help");
             REQUIRE(menuBar->getMenus().size() == 1);
-            REQUIRE(menuBar->getMenus()["Help"].empty());
+            REQUIRE(menuBar->getMenus()[0].first == "Help");
+            REQUIRE(menuBar->getMenus()[0].second.empty());
 
             menuBar->addMenuItem("About");
             REQUIRE(menuBar->getMenus().size() == 1);
-            REQUIRE(menuBar->getMenus()["Help"].size() == 1);
-            REQUIRE(menuBar->getMenus()["Help"][0] == "About");
+            REQUIRE(menuBar->getMenus()[0].first == "Help");
+            REQUIRE(menuBar->getMenus()[0].second.size() == 1);
+            REQUIRE(menuBar->getMenus()[0].second[0] == "About");
         }
 
         SECTION("Multiple menus")
@@ -118,16 +120,19 @@ TEST_CASE("[MenuBar]")
             SECTION("Verify that menus were added")
             {
                 REQUIRE(menuBar->getMenus().size() == 3);
-                REQUIRE(menuBar->getMenus()["File"].size() == 2);
-                REQUIRE(menuBar->getMenus()["File"][0] == "Load");
-                REQUIRE(menuBar->getMenus()["File"][1] == "Save");
-                REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
-                REQUIRE(menuBar->getMenus()["Edit"][0] == "Undo");
-                REQUIRE(menuBar->getMenus()["Edit"][1] == "Redo");
-                REQUIRE(menuBar->getMenus()["Edit"][2] == "Copy");
-                REQUIRE(menuBar->getMenus()["Edit"][3] == "Paste");
-                REQUIRE(menuBar->getMenus()["Help"].size() == 1);
-                REQUIRE(menuBar->getMenus()["Help"][0] == "About");
+                REQUIRE(menuBar->getMenus()[0].first == "File");
+                REQUIRE(menuBar->getMenus()[0].second.size() == 2);
+                REQUIRE(menuBar->getMenus()[0].second[0] == "Load");
+                REQUIRE(menuBar->getMenus()[0].second[1] == "Save");
+                REQUIRE(menuBar->getMenus()[1].first == "Edit");
+                REQUIRE(menuBar->getMenus()[1].second.size() == 4);
+                REQUIRE(menuBar->getMenus()[1].second[0] == "Undo");
+                REQUIRE(menuBar->getMenus()[1].second[1] == "Redo");
+                REQUIRE(menuBar->getMenus()[1].second[2] == "Copy");
+                REQUIRE(menuBar->getMenus()[1].second[3] == "Paste");
+                REQUIRE(menuBar->getMenus()[2].first == "Help");
+                REQUIRE(menuBar->getMenus()[2].second.size() == 1);
+                REQUIRE(menuBar->getMenus()[2].second[0] == "About");
             }
 
             SECTION("Adding menu items to older menu")
@@ -135,12 +140,15 @@ TEST_CASE("[MenuBar]")
                 REQUIRE(menuBar->addMenuItem("File", "Quit"));
 
                 REQUIRE(menuBar->getMenus().size() == 3);
-                REQUIRE(menuBar->getMenus()["File"].size() == 3);
-                REQUIRE(menuBar->getMenus()["File"][0] == "Load");
-                REQUIRE(menuBar->getMenus()["File"][1] == "Save");
-                REQUIRE(menuBar->getMenus()["File"][2] == "Quit");
-                REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
-                REQUIRE(menuBar->getMenus()["Help"].size() == 1);
+                REQUIRE(menuBar->getMenus()[0].first == "File");
+                REQUIRE(menuBar->getMenus()[0].second.size() == 3);
+                REQUIRE(menuBar->getMenus()[0].second[0] == "Load");
+                REQUIRE(menuBar->getMenus()[0].second[1] == "Save");
+                REQUIRE(menuBar->getMenus()[0].second[2] == "Quit");
+                REQUIRE(menuBar->getMenus()[1].first == "Edit");
+                REQUIRE(menuBar->getMenus()[1].second.size() == 4);
+                REQUIRE(menuBar->getMenus()[2].first == "Help");
+                REQUIRE(menuBar->getMenus()[2].second.size() == 1);
             }
 
             SECTION("Removing menu items")
@@ -149,11 +157,14 @@ TEST_CASE("[MenuBar]")
                 menuBar->removeMenuItem("Edit", "Paste");
                 menuBar->removeMenuItem("Help", "About");
 
-                REQUIRE(menuBar->getMenus()["File"].size() == 2);
-                REQUIRE(menuBar->getMenus()["Edit"].size() == 2);
-                REQUIRE(menuBar->getMenus()["Edit"][0] == "Redo");
-                REQUIRE(menuBar->getMenus()["Edit"][1] == "Copy");
-                REQUIRE(menuBar->getMenus()["Help"].size() == 0);
+                REQUIRE(menuBar->getMenus()[0].first == "File");
+                REQUIRE(menuBar->getMenus()[0].second.size() == 2);
+                REQUIRE(menuBar->getMenus()[1].first == "Edit");
+                REQUIRE(menuBar->getMenus()[1].second.size() == 2);
+                REQUIRE(menuBar->getMenus()[1].second[0] == "Redo");
+                REQUIRE(menuBar->getMenus()[1].second[1] == "Copy");
+                REQUIRE(menuBar->getMenus()[2].first == "Help");
+                REQUIRE(menuBar->getMenus()[2].second.size() == 0);
             }
 
             SECTION("Removing menu")
@@ -161,8 +172,10 @@ TEST_CASE("[MenuBar]")
                 menuBar->removeMenu("File");
 
                 REQUIRE(menuBar->getMenus().size() == 2);
-                REQUIRE(menuBar->getMenus()["Edit"].size() == 4);
-                REQUIRE(menuBar->getMenus()["Help"].size() == 1);
+                REQUIRE(menuBar->getMenus()[0].first == "Edit");
+                REQUIRE(menuBar->getMenus()[0].second.size() == 4);
+                REQUIRE(menuBar->getMenus()[1].first == "Help");
+                REQUIRE(menuBar->getMenus()[1].second.size() == 1);
             }
 
             SECTION("Removing all menus")

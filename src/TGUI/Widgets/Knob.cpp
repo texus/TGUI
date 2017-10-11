@@ -525,6 +525,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> Knob::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        node->propertyValuePairs["ClockwiseTurning"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_clockwiseTurning));
+        node->propertyValuePairs["StartRotation"] = make_unique<DataIO::ValueNode>(to_string(m_startRotation));
+        node->propertyValuePairs["EndRotation"] = make_unique<DataIO::ValueNode>(to_string(m_endRotation));
+        node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
+        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f Knob::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(), getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};

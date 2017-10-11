@@ -525,6 +525,48 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> ChatBox::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["TextColor"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_textColor));
+
+        if (m_maxLines > 0)
+            node->propertyValuePairs["LineLimit"] = make_unique<DataIO::ValueNode>(to_string(m_maxLines));
+
+        if (m_linesStartFromTop)
+            node->propertyValuePairs["LinesStartFromTop"] = make_unique<DataIO::ValueNode>("true");
+        else
+            node->propertyValuePairs["LinesStartFromTop"] = make_unique<DataIO::ValueNode>("false");
+
+        if (m_newLinesBelowOthers)
+            node->propertyValuePairs["NewLinesBelowOthers"] = make_unique<DataIO::ValueNode>("true");
+        else
+            node->propertyValuePairs["NewLinesBelowOthers"] = make_unique<DataIO::ValueNode>("false");
+
+        for (std::size_t i = 0; i < m_lines.size(); ++i)
+        {
+            const unsigned int lineTextSize = getLineTextSize(i);
+            const sf::Color lineTextColor = getLineColor(i);
+
+            auto lineNode = make_unique<DataIO::Node>();
+            lineNode->name = "Line";
+
+            lineNode->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(getLine(i)));
+            if (lineTextSize != m_textSize)
+                lineNode->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(lineTextSize));
+            if (lineTextColor != m_textColor)
+                lineNode->propertyValuePairs["Color"] = make_unique<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
+
+            node->children.push_back(std::move(lineNode));
+        }
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f ChatBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

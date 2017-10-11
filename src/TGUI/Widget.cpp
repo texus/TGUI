@@ -642,7 +642,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Widget::getToolTip()
+    Widget::Ptr Widget::getToolTip() const
     {
         return m_toolTip;
     }
@@ -833,6 +833,51 @@ namespace tgui
         }
         else
             throw Exception{"Could not set property '" + property + "', widget of type '" + getWidgetType() + "' does not has this property."};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::unique_ptr<DataIO::Node> Widget::save(SavingRenderersMap& renderers) const
+    {
+        sf::String widgetName;
+        if (getParent())
+            widgetName = getParent()->getWidgetName(shared_from_this());
+
+        auto node = make_unique<DataIO::Node>();
+        if (widgetName.isEmpty())
+            node->name = getWidgetType();
+        else
+            node->name = getWidgetType() + "." + Serializer::serialize(widgetName);
+
+        if (!isVisible())
+            node->propertyValuePairs["Visible"] = make_unique<DataIO::ValueNode>("false");
+        if (!isEnabled())
+            node->propertyValuePairs["Enabled"] = make_unique<DataIO::ValueNode>("false");
+        if (getPosition() != sf::Vector2f{})
+            node->propertyValuePairs["Position"] = make_unique<DataIO::ValueNode>(m_position.toString());
+        if (getSize() != sf::Vector2f{})
+            node->propertyValuePairs["Size"] = make_unique<DataIO::ValueNode>(m_size.toString());
+
+        if (getToolTip() != nullptr)
+        {
+            auto toolTipWidgetNode = getToolTip()->save(renderers);
+
+            auto toolTipNode = make_unique<DataIO::Node>();
+            toolTipNode->name = "ToolTip";
+            toolTipNode->children.emplace_back(std::move(toolTipWidgetNode));
+
+            toolTipNode->propertyValuePairs["TimeToDisplay"] = make_unique<DataIO::ValueNode>(to_string(ToolTip::getTimeToDisplay().asSeconds()));
+            toolTipNode->propertyValuePairs["DistanceToMouse"] = make_unique<DataIO::ValueNode>("(" + to_string(ToolTip::getDistanceToMouse().x) + "," + to_string(ToolTip::getDistanceToMouse().y) + ")");
+
+            node->children.emplace_back(std::move(toolTipNode));
+        }
+
+        if (renderers.at(this).first)
+            node->children.emplace_back(std::move(renderers.at(this).first));
+        else
+            node->propertyValuePairs["renderer"] = make_unique<DataIO::ValueNode>("&" + renderers.at(this).second);
+
+        return node;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -349,14 +349,14 @@ namespace tgui
 
     void Theme::addRenderer(const std::string& id, std::shared_ptr<RendererData> renderer)
     {
-        m_renderers[id] = renderer;
+        m_renderers[toLower(id)] = renderer;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Theme::removeRenderer(const std::string& id)
     {
-        auto it = m_renderers.find(id);
+        auto it = m_renderers.find(toLower(id));
         if (it != m_renderers.end())
         {
             m_renderers.erase(it);

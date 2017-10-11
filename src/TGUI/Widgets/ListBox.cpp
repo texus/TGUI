@@ -747,6 +747,41 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> ListBox::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        if (getItemCount() > 0)
+        {
+            auto items = getItems();
+            auto& ids = getItemIds();
+
+            std::string itemList = "[" + Serializer::serialize(items[0]);
+            std::string itemIdList = "[" + Serializer::serialize(ids[0]);
+            for (std::size_t i = 1; i < items.size(); ++i)
+            {
+                itemList += ", " + Serializer::serialize(items[i]);
+                itemIdList += ", " + Serializer::serialize(ids[i]);
+            }
+            itemList += "]";
+            itemIdList += "]";
+
+            node->propertyValuePairs["Items"] = make_unique<DataIO::ValueNode>(itemList);
+            node->propertyValuePairs["ItemIds"] = make_unique<DataIO::ValueNode>(itemIdList);
+        }
+
+        if (!m_autoScroll)
+            node->propertyValuePairs["AutoScroll"] = make_unique<DataIO::ValueNode>("false");
+
+        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["ItemHeight"] = make_unique<DataIO::ValueNode>(to_string(m_itemHeight));
+        node->propertyValuePairs["MaximumItems"] = make_unique<DataIO::ValueNode>(to_string(m_maxItems));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f ListBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(), getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};

@@ -782,6 +782,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> Scrollbar::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        node->propertyValuePairs["AutoHide"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoHide));
+        node->propertyValuePairs["LowValue"] = make_unique<DataIO::ValueNode>(to_string(m_lowValue));
+        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
+        node->propertyValuePairs["ScrollAmount"] = make_unique<DataIO::ValueNode>(to_string(m_scrollAmount));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Scrollbar::updateThumbPosition()
     {
         if (m_verticalScroll)

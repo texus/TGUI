@@ -150,6 +150,25 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::unique_ptr<DataIO::Node> BoxLayoutRatios::save(SavingRenderersMap& renderers) const
+    {
+        auto node = BoxLayout::save(renderers);
+
+        if (m_widgets.size() > 0)
+        {
+            std::string ratioList = "[" + Serializer::serialize(m_ratios[0]);
+            for (std::size_t i = 1; i < m_widgets.size(); ++i)
+                ratioList += ", " + Serializer::serialize(m_ratios[i]);
+
+            ratioList += "]";
+            node->propertyValuePairs["Ratios"] = make_unique<DataIO::ValueNode>(ratioList);
+        }
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

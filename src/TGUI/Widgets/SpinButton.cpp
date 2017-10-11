@@ -365,6 +365,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> SpinButton::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+        node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
+        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f SpinButton::getArrowSize() const
     {
         if (m_verticalScroll)

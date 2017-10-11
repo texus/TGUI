@@ -443,6 +443,74 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> Grid::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Container::save(renderers);
+
+        const auto& children = getWidgets();
+        auto widgetsMap = getWidgetLocations();
+        if (!widgetsMap.empty())
+        {
+            auto alignmentToString = [](Grid::Alignment alignment) -> std::string {
+                switch (alignment)
+                {
+                case Grid::Alignment::Center:
+                    return "Center";
+                case Grid::Alignment::UpperLeft:
+                    return "UpperLeft";
+                case Grid::Alignment::Up:
+                    return "Up";
+                case Grid::Alignment::UpperRight:
+                    return "UpperRight";
+                case Grid::Alignment::Right:
+                    return "Right";
+                case Grid::Alignment::BottomRight:
+                    return "BottomRight";
+                case Grid::Alignment::Bottom:
+                    return "Bottom";
+                case Grid::Alignment::BottomLeft:
+                    return "BottomLeft";
+                case Grid::Alignment::Left:
+                    return "Left";
+                default:
+                    throw Exception{"Invalid grid alignment encountered."};
+                }
+            };
+
+            auto getWidgetsInGridString = [&](const tgui::Widget::Ptr& w) -> std::string {
+                auto it = widgetsMap.find(w);
+                if (it != widgetsMap.end())
+                {
+                    const auto row = it->second.first;
+                    const auto col = it->second.second;
+                    return "\"(" + to_string(row)
+                         + ", " + to_string(col)
+                         + ", " + getWidgetBorders(row, col).toString()
+                         + ", " + alignmentToString(getWidgetAlignment(row, col))
+                         + ")\"";
+                }
+                else
+                    return "\"()\"";
+            };
+
+            std::string str = "[" + getWidgetsInGridString(children[0]);
+
+            for (std::size_t i = 1; i < children.size(); ++i)
+                str += ", " + getWidgetsInGridString(children[i]);
+
+            str += "]";
+            node->propertyValuePairs["GridWidgets"] = make_unique<DataIO::ValueNode>(str);
+        }
+
+        if (m_autoSize)
+            node->propertyValuePairs.erase("Size");
+
+        node->propertyValuePairs["AutoSize"] = make_unique<DataIO::ValueNode>(to_string(m_autoSize));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f Grid::getMinimumSize() const
     {
         // Calculate the required space to have all widgets in the grid.

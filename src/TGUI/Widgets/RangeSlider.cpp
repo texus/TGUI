@@ -556,6 +556,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> RangeSlider::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
+        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["SelectionStart"] = make_unique<DataIO::ValueNode>(to_string(m_selectionStart));
+        node->propertyValuePairs["SelectionEnd"] = make_unique<DataIO::ValueNode>(to_string(m_selectionEnd));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f RangeSlider::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

@@ -1089,6 +1089,48 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> EditBox::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        if (getAlignment() != EditBox::Alignment::Left)
+        {
+            if (getAlignment() == EditBox::Alignment::Center)
+                node->propertyValuePairs["Alignment"] = make_unique<DataIO::ValueNode>("Center");
+            else
+                node->propertyValuePairs["Alignment"] = make_unique<DataIO::ValueNode>("Right");
+        }
+
+        if (getInputValidator() != ".*")
+        {
+            if (getInputValidator() == EditBox::Validator::Int)
+                node->propertyValuePairs["InputValidator"] = make_unique<DataIO::ValueNode>("Int");
+            else if (getInputValidator() == EditBox::Validator::UInt)
+                node->propertyValuePairs["InputValidator"] = make_unique<DataIO::ValueNode>("UInt");
+            else if (getInputValidator() == EditBox::Validator::Float)
+                node->propertyValuePairs["InputValidator"] = make_unique<DataIO::ValueNode>("Float");
+            else
+                node->propertyValuePairs["InputValidator"] = make_unique<DataIO::ValueNode>(Serializer::serialize(sf::String{getInputValidator()}));
+        }
+
+        if (!m_text.isEmpty())
+            node->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_text));
+        if (!getDefaultText().isEmpty())
+            node->propertyValuePairs["DefaultText"] = make_unique<DataIO::ValueNode>(Serializer::serialize(getDefaultText()));
+        if (getPasswordCharacter() != '\0')
+            node->propertyValuePairs["PasswordCharacter"] = make_unique<DataIO::ValueNode>(Serializer::serialize(sf::String(getPasswordCharacter())));
+        if (getMaximumCharacters() != 0)
+            node->propertyValuePairs["MaximumCharacters"] = make_unique<DataIO::ValueNode>(to_string(getMaximumCharacters()));
+        if (isTextWidthLimited())
+            node->propertyValuePairs["TextWidthLimited"] = make_unique<DataIO::ValueNode>("true");
+
+        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f EditBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

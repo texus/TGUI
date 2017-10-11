@@ -349,6 +349,33 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> ProgressBar::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        if (!getText().isEmpty())
+            node->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(getText()));
+
+        if (m_fillDirection != ProgressBar::FillDirection::LeftToRight)
+        {
+            if (m_fillDirection == ProgressBar::FillDirection::RightToLeft)
+                node->propertyValuePairs["FillDirection"] = make_unique<DataIO::ValueNode>("RightToLeft");
+            else if (m_fillDirection == ProgressBar::FillDirection::TopToBottom)
+                node->propertyValuePairs["FillDirection"] = make_unique<DataIO::ValueNode>("TopToBottom");
+            else if (m_fillDirection == ProgressBar::FillDirection::BottomToTop)
+                node->propertyValuePairs["FillDirection"] = make_unique<DataIO::ValueNode>("BottomToTop");
+        }
+
+        node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
+        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
+        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f ProgressBar::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

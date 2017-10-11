@@ -364,6 +364,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> Button::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        if (!m_string.isEmpty())
+            node->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
+        if (m_textSize > 0)
+            node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f Button::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

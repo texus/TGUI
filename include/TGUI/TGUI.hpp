@@ -38,7 +38,6 @@
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/WidgetLoader.hpp>
-#include <TGUI/Loading/WidgetSaver.hpp>
 
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Canvas.hpp>

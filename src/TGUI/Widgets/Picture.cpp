@@ -198,6 +198,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> Picture::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        if (m_ignoringMouseEvents)
+            node->propertyValuePairs["IgnoreMouseEvents"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Picture::update(sf::Time elapsedTime)
     {
         Widget::update(elapsedTime);

@@ -26,17 +26,182 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
-#include <TGUI/Loading/WidgetSaver.hpp>
 #include <TGUI/Loading/WidgetLoader.hpp>
 
 #include <cassert>
 #include <fstream>
+
+#ifdef SFML_SYSTEM_WINDOWS
+    #include <direct.h> // _getcwd
+#else
+    #include <unistd.h> // getcwd
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
     extern TGUI_API bool TGUI_TabKeyUsageEnabled;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    namespace
+    {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::string getWorkingDirectory()
+        {
+            const std::string resourcePath = getResourcePath();
+
+            std::string workingDirectory;
+        #ifdef SFML_SYSTEM_WINDOWS
+            if ((resourcePath[0] == '/') || (resourcePath[0] == '\\') || ((resourcePath.size() > 1) && (resourcePath[1] == ':')))
+        #else
+            if (resourcePath[0] == '/')
+        #endif
+            {
+                // The resource path is already an absolute path, we don't even need to find out the current working directory
+                workingDirectory = resourcePath;
+            }
+            else
+            {
+                // Get the current working directory (used for turning absolute into relative paths in saveWidget)
+            #ifdef SFML_SYSTEM_WINDOWS
+                char* buffer = _getcwd(nullptr, 0);
+            #else
+                char* buffer = getcwd(nullptr, 0);
+            #endif
+                if (buffer)
+                {
+                    workingDirectory = buffer;
+                    free(buffer);
+
+                    if (!workingDirectory.empty() && (workingDirectory[workingDirectory.size() - 1] != '/') && (workingDirectory[workingDirectory.size() - 1] != '\\'))
+                        workingDirectory.push_back('/');
+
+                    workingDirectory += resourcePath;
+                }
+            }
+
+            return workingDirectory;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        sf::String tryRemoveAbsolutePath(const sf::String& value, const std::string& workingDirectory)
+        {
+            if (!value.isEmpty() && (value != "null") && (value != "nullptr"))
+            {
+                if (value[0] != '"')
+                {
+                #ifdef SFML_SYSTEM_WINDOWS
+                    if ((value[0] == '/') || (value[0] == '\\') || ((value.getSize() > 1) && (value[1] == ':')))
+                #else
+                    if (value[0] == '/')
+                #endif
+                    {
+                        if ((value.getSize() > workingDirectory.size()) && (value.substring(0, workingDirectory.size()) == workingDirectory))
+                        {
+                            if ((value[workingDirectory.size()] != '/') && (value[workingDirectory.size()] != '\\'))
+                                return value.substring(workingDirectory.size());
+                            else
+                                return value.substring(workingDirectory.size() + 1);
+                        }
+                    }
+                }
+                else // The filename is between quotes
+                {
+                    if (value.getSize() <= 1)
+                        return value;
+
+                #ifdef SFML_SYSTEM_WINDOWS
+                    if ((value[1] == '/') || (value[1] == '\\') || ((value.getSize() > 2) && (value[2] == ':')))
+                #else
+                    if (value[1] == '/')
+                #endif
+                    {
+                        if ((value.getSize() + 1 > workingDirectory.size()) && (value.substring(1, workingDirectory.size()) == workingDirectory))
+                            return '"' + value.substring(workingDirectory.size() + 1);
+                    }
+                }
+            }
+
+            return value;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void recursiveTryRemoveAbsolutePath(std::unique_ptr<DataIO::Node>& node, const std::string& workingDirectory)
+        {
+            for (auto& pair : node->propertyValuePairs)
+            {
+                if (((pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture")) || (pair.first == "font"))
+                    pair.second->value = tryRemoveAbsolutePath(pair.second->value, workingDirectory);
+            }
+
+            for (auto& child : node->children)
+                recursiveTryRemoveAbsolutePath(child, workingDirectory);
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void getAllRenderers(std::map<RendererData*, std::vector<const Widget*>>& renderers, const Container* container)
+        {
+            for (const auto& child : container->getWidgets())
+            {
+                renderers[child->getSharedRenderer()->getData().get()].push_back(child.get());
+
+                if (child->getToolTip())
+                    renderers[child->getToolTip()->getSharedRenderer()->getData().get()].push_back(child->getToolTip().get());
+
+                Container* childContainer = dynamic_cast<Container*>(child.get());
+                if (childContainer)
+                    getAllRenderers(renderers, childContainer);
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::unique_ptr<DataIO::Node> saveRenderer(RendererData* renderer, const std::string& name, const std::string& workingDirectory)
+        {
+            auto node = make_unique<DataIO::Node>();
+            node->name = name;
+            for (const auto& pair : renderer->propertyValuePairs)
+            {
+                // Skip "font = null"
+                if (pair.first == "font" && ObjectConverter{pair.second}.getString() == "null")
+                    continue;
+
+                sf::String value = ObjectConverter{pair.second}.getString();
+
+                // Turn absolute paths (which were likely caused by loading from a theme) into relative paths if the first part of the path matches the current working directory
+                if (!workingDirectory.empty())
+                {
+                    if ((pair.second.getType() == ObjectConverter::Type::Font) || (pair.second.getType() == ObjectConverter::Type::Texture))
+                        value = tryRemoveAbsolutePath(value, workingDirectory);
+                }
+
+                if (pair.second.getType() == ObjectConverter::Type::RendererData)
+                {
+                    std::stringstream ss{value};
+                    auto rendererRootNode = DataIO::parse(ss);
+                    if (!rendererRootNode->children.empty())
+                        rendererRootNode = std::move(rendererRootNode->children[0]);
+
+                    recursiveTryRemoveAbsolutePath(rendererRootNode, workingDirectory);
+
+                    rendererRootNode->name = pair.first;
+                    node->children.push_back(std::move(rendererRootNode));
+                }
+                else
+                    node->propertyValuePairs[pair.first] = make_unique<DataIO::ValueNode>(value);
+            }
+
+            return node;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -240,7 +405,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string Container::getWidgetName(const Widget::Ptr& widget) const
+    std::string Container::getWidgetName(const Widget::ConstPtr& widget) const
     {
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
@@ -440,7 +605,7 @@ namespace tgui
     void Container::saveWidgetsToFile(const std::string& filename)
     {
         std::stringstream stream;
-        WidgetSaver::save(std::static_pointer_cast<Container>(shared_from_this()), stream);
+        saveWidgetsToStream(stream);
 
         std::ofstream out{filename};
         if (!out.is_open())
@@ -467,7 +632,36 @@ namespace tgui
 
     void Container::saveWidgetsToStream(std::stringstream& stream) const
     {
-        WidgetSaver::save(std::static_pointer_cast<const Container>(shared_from_this()), stream);
+        const std::string workingDirectory = getWorkingDirectory();
+
+        auto node = make_unique<DataIO::Node>();
+
+        std::map<RendererData*, std::vector<const Widget*>> renderers;
+        getAllRenderers(renderers, this);
+
+        unsigned int id = 0;
+        SavingRenderersMap renderersMap;
+        for (const auto& renderer : renderers)
+        {
+            // The renderer can remain inside the widget if it is not shared, so provide the node to be included inside the widget
+            if (renderer.second.size() == 1)
+            {
+                renderersMap[renderer.second[0]] = {saveRenderer(renderer.first, "Renderer", workingDirectory), ""};
+                continue;
+            }
+
+            // When the widget is shared, only provide the id instead of the node itself
+            ++id;
+            const std::string idStr = to_string(id);
+            node->children.push_back(saveRenderer(renderer.first, "Renderer." + idStr, workingDirectory));
+            for (const auto& child : renderer.second)
+                renderersMap[child] = {nullptr, idStr};
+        }
+
+        for (const auto& child : getWidgets())
+            node->children.emplace_back(child->save(renderersMap));
+
+        DataIO::emit(node, stream);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -683,6 +877,18 @@ namespace tgui
             for (const auto& widget : m_widgets)
                 widget->setInheritedFont(m_fontCached);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::unique_ptr<DataIO::Node> Container::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        for (const auto& child : getWidgets())
+            node->children.emplace_back(child->save(renderers));
+
+        return node;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

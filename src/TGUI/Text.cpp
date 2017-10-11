@@ -122,16 +122,18 @@ namespace tgui
             // We can't keep using a pointer to the old font (it might be destroyed), but sf::Text has no function to pass an empty font
             if (m_text.getFont())
             {
-                m_text = {};
-                m_text.setString(getString());
-                m_text.setCharacterSize(getCharacterSize());
-                m_text.setStyle(getStyle());
+                sf::Text text;
+                text.setString(getString());
+                text.setCharacterSize(getCharacterSize());
+                text.setStyle(getStyle());
 
             #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
-                m_text.setFillColor(Color::calcColorOpacity(getColor(), getOpacity()));
+                text.setFillColor(Color::calcColorOpacity(getColor(), getOpacity()));
             #else
-                m_text.setColor(Color::calcColorOpacity(getColor(), getOpacity()));
+                text.setColor(Color::calcColorOpacity(getColor(), getOpacity()));
             #endif
+
+                m_text = std::move(text);
             }
         }
 

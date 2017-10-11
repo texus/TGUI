@@ -332,6 +332,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> ScrollablePanel::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Panel::save(renderers);
+        node->propertyValuePairs["ContentSize"] = make_unique<DataIO::ValueNode>("(" + to_string(m_contentSize.x) + ", " + to_string(m_contentSize.y) + ")");
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ScrollablePanel::updateScrollbars()
     {
         const sf::Vector2f visibleSize = getInnerSize();

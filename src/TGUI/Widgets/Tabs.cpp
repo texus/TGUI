@@ -572,6 +572,40 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> Tabs::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        if (getTabsCount() > 0)
+        {
+            std::string tabList = "[" + Serializer::serialize(getText(0));
+            for (std::size_t i = 1; i < getTabsCount(); ++i)
+                tabList += ", " + Serializer::serialize(getText(i));
+
+            tabList += "]";
+            node->propertyValuePairs["Tabs"] = make_unique<DataIO::ValueNode>(tabList);
+        }
+
+        if (getSelectedIndex() >= 0)
+            node->propertyValuePairs["Selected"] = make_unique<DataIO::ValueNode>(to_string(getSelectedIndex()));
+
+        if (m_maximumTabWidth > 0)
+            node->propertyValuePairs["MaximumTabWidth"] = make_unique<DataIO::ValueNode>(to_string(m_maximumTabWidth));
+
+        if (m_autoSize)
+        {
+            node->propertyValuePairs.erase("Size");
+            node->propertyValuePairs["TabHeight"] = make_unique<DataIO::ValueNode>(to_string(getSize().y));
+        }
+
+        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["AutoSize"] = make_unique<DataIO::ValueNode>(to_string(m_autoSize));
+
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Tabs::updateTextColors()
     {
         for (auto& tabText : m_tabTexts)

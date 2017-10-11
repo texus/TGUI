@@ -318,6 +318,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::unique_ptr<DataIO::Node> Label::save(SavingRenderersMap& renderers) const
+    {
+        auto node = Widget::save(renderers);
+
+        if (m_horizontalAlignment == Label::HorizontalAlignment::Center)
+            node->propertyValuePairs["HorizontalAlignment"] = make_unique<DataIO::ValueNode>("Center");
+        else if (m_horizontalAlignment == Label::HorizontalAlignment::Right)
+            node->propertyValuePairs["HorizontalAlignment"] = make_unique<DataIO::ValueNode>("Right");
+
+        if (m_verticalAlignment == Label::VerticalAlignment::Center)
+            node->propertyValuePairs["VerticalAlignment"] = make_unique<DataIO::ValueNode>("Center");
+        else if (m_verticalAlignment == Label::VerticalAlignment::Bottom)
+            node->propertyValuePairs["VerticalAlignment"] = make_unique<DataIO::ValueNode>("Bottom");
+
+        if (!m_string.isEmpty())
+            node->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
+        if (m_maximumTextWidth > 0)
+            node->propertyValuePairs["MaximumTextWidth"] = make_unique<DataIO::ValueNode>(to_string(m_maximumTextWidth));
+        if (m_autoSize)
+            node->propertyValuePairs["AutoSize"] = make_unique<DataIO::ValueNode>("true");
+        if (m_ignoringMouseEvents)
+            node->propertyValuePairs["IgnoreMouseEvents"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
+
+        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::update(sf::Time elapsedTime)
     {
         Widget::update(elapsedTime);

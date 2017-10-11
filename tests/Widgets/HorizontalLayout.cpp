@@ -126,9 +126,12 @@ TEST_CASE("[HorizontalLayout]")
 
     SECTION("Saving and loading from file")
     {
+        tgui::Theme::getDefault()->addRenderer("Button", std::make_shared<tgui::RendererData>());
+
         layout->add(tgui::Button::create("Hello"));
         layout->addSpace(0.5);
         layout->add(tgui::Button::create("Hi"), 3, "Button2");
+
         testSavingWidget("HorizontalLayout", layout, false);
     }
 }
