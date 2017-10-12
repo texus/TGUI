@@ -157,7 +157,7 @@ namespace tgui
 
                 if (bracketPos == std::string::npos)
                 {
-                    sf::err() << "TGUI warning: bracket mismatch while parsing layout string '" << expression << "'." << std::endl;
+                    TGUI_PRINT_WARNING("bracket mismatch while parsing layout string '" << expression << "'.");
                     return;
                 }
                 else
@@ -168,7 +168,7 @@ namespace tgui
                 }
             }
             case ')':
-                sf::err() << "TGUI warning: bracket mismatch while parsing layout string '" << expression << "'." << std::endl;
+                TGUI_PRINT_WARNING("bracket mismatch while parsing layout string '" << expression << "'.");
                 return;
             };
 

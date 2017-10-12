@@ -111,6 +111,14 @@
 
 #ifndef TGUI_NO_DEPRECATED_WARNINGS
     #define TGUI_DEPRECATED(msg) [[deprecated(msg)]]
+#else
+    #define TGUI_DEPRECATED(msg)
+#endif
+
+#ifndef TGUI_NO_RUNTIME_WARNINGS
+    #define TGUI_PRINT_WARNING(msg) sf::err() << "TGUI Warning: " << msg << std::endl;
+#else
+    #define TGUI_PRINT_WARNING(msg)
 #endif
 
 #endif // TGUI_CONFIG_HPP
