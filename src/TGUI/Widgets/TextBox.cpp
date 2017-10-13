@@ -1539,6 +1539,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["maximumcharacters"])
+            setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
+        if (node->propertyValuePairs["readonly"])
+            setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["readonly"]->value).getBool());
+        if (node->propertyValuePairs["verticalscrollbarpresent"])
+            setVerticalScrollbarPresent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["verticalscrollbarpresent"]->value).getBool());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());

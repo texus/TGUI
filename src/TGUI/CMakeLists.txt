@@ -21,7 +21,7 @@ set(TGUI_SRC
     Loading/Serializer.cpp
     Loading/Theme.cpp
     Loading/ThemeLoader.cpp
-    Loading/WidgetLoader.cpp
+    Loading/WidgetFactory.cpp
     Renderers/BoxLayoutRenderer.cpp
     Renderers/ButtonRenderer.cpp
     Renderers/ChatBoxRenderer.cpp

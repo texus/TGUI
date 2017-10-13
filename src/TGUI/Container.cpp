@@ -26,7 +26,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
-#include <TGUI/Loading/WidgetLoader.hpp>
+#include <TGUI/Loading/WidgetFactory.hpp>
 
 #include <cassert>
 #include <fstream>
@@ -597,7 +597,7 @@ namespace tgui
 
         std::stringstream stream;
         stream << in.rdbuf();
-        WidgetLoader::load(std::static_pointer_cast<Container>(shared_from_this()), stream);
+        loadWidgetsFromStream(stream);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -618,7 +618,41 @@ namespace tgui
 
     void Container::loadWidgetsFromStream(std::stringstream& stream)
     {
-        WidgetLoader::load(std::static_pointer_cast<Container>(shared_from_this()), stream);
+        auto rootNode = DataIO::parse(stream);
+
+        removeAllWidgets(); // The existing widgets will be replaced by the ones that will be loaded
+
+        if (rootNode->propertyValuePairs.size() != 0)
+            Widget::load(rootNode, {});
+
+        std::map<std::string, std::shared_ptr<RendererData>> availableRenderers;
+        for (const auto& node : rootNode->children)
+        {
+            auto nameSeparator = node->name.find('.');
+            auto widgetType = node->name.substr(0, nameSeparator);
+
+            std::string objectName;
+            if (nameSeparator != std::string::npos)
+                objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
+
+            if (toLower(widgetType) == "renderer")
+            {
+                if (!objectName.empty())
+                    availableRenderers[toLower(objectName)] = RendererData::createFromDataIONode(node.get());
+            }
+            else // Section describes a widget
+            {
+                const auto& constructor = WidgetFactory::getConstructFunction(toLower(widgetType));
+                if (constructor)
+                {
+                    tgui::Widget::Ptr widget = constructor();
+                    widget->load(node, availableRenderers);
+                    add(widget, objectName);
+                }
+                else
+                    throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -889,6 +923,33 @@ namespace tgui
             node->children.emplace_back(child->save(renderers));
 
         return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        for (const auto& childNode : node->children)
+        {
+            const auto nameSeparator = childNode->name.find('.');
+            const auto widgetType = childNode->name.substr(0, nameSeparator);
+
+            const auto& constructor = WidgetFactory::getConstructFunction(toLower(widgetType));
+            if (constructor)
+            {
+                std::string className;
+                if (nameSeparator != std::string::npos)
+                    className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
+
+                tgui::Widget::Ptr childWidget = constructor();
+                childWidget->load(childNode, renderers);
+                add(childWidget, className);
+            }
+            else
+                throw Exception{"No construct function exists for widget type '" + widgetType + "'."};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

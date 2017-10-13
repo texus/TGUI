@@ -227,7 +227,6 @@ TEST_CASE("[ScrollablePanel]")
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("ScrollablePanelWidgetFile1.txt"));
 
             panel->setSize(200, 100);
-            panel->removeAllWidgets();
             REQUIRE_NOTHROW(panel->loadWidgetsFromFile("ScrollablePanelWidgetFile1.txt"));
             REQUIRE(panel->getSize() == sf::Vector2f(200, 100)); // The Panel itself is not saved, only its children
 

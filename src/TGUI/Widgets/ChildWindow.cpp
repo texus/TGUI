@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Vector2f.hpp>
 #include <TGUI/Clipping.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -801,6 +802,58 @@ namespace tgui
         node->propertyValuePairs["TitleButtons"] = make_unique<DataIO::ValueNode>(serializedTitleButtons);
 
         return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChildWindow::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Container::load(node, renderers);
+
+        if (node->propertyValuePairs["titlealignment"])
+        {
+            if (toLower(node->propertyValuePairs["titlealignment"]->value) == "left")
+                setTitleAlignment(ChildWindow::TitleAlignment::Left);
+            else if (toLower(node->propertyValuePairs["titlealignment"]->value) == "center")
+                setTitleAlignment(ChildWindow::TitleAlignment::Center);
+            else if (toLower(node->propertyValuePairs["titlealignment"]->value) == "right")
+                setTitleAlignment(ChildWindow::TitleAlignment::Right);
+            else
+                throw Exception{"Failed to parse TitleAlignment property. Only the values Left, Center and Right are correct."};
+        }
+
+        if (node->propertyValuePairs["titlebuttons"])
+        {
+            int decodedTitleButtons = ChildWindow::TitleButton::None;
+            std::vector<std::string> titleButtons = Deserializer::split(node->propertyValuePairs["titlebuttons"]->value, '|');
+            for (const auto& elem : titleButtons)
+            {
+                std::string requestedTitleButton = toLower(trim(elem));
+                if (requestedTitleButton == "close")
+                    decodedTitleButtons |= sf::Text::Bold;
+                else if (requestedTitleButton == "maximize")
+                    decodedTitleButtons |= sf::Text::Italic;
+                else if (requestedTitleButton == "minimize")
+                    decodedTitleButtons |= sf::Text::Underlined;
+            }
+
+            setTitleButtons(decodedTitleButtons);
+        }
+
+        if (node->propertyValuePairs["title"])
+            setTitle(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["title"]->value).getString());
+
+        if (node->propertyValuePairs["keepinparent"])
+            keepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["keepinparent"]->value).getBool());
+
+        if (node->propertyValuePairs["resizable"])
+            setResizable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["resizable"]->value).getBool());
+
+        if (node->propertyValuePairs["minimumsize"])
+            setMinimumSize(Vector2f{node->propertyValuePairs["minimumsize"]->value});
+
+        if (node->propertyValuePairs["maximumsize"])
+            setMaximumSize(Vector2f{node->propertyValuePairs["maximumsize"]->value});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

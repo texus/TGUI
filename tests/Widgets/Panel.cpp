@@ -234,7 +234,6 @@ TEST_CASE("[Panel]")
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("PanelWidgetFile1.txt"));
             
             panel->setSize(200, 100);
-            panel->removeAllWidgets();
             REQUIRE_NOTHROW(panel->loadWidgetsFromFile("PanelWidgetFile1.txt"));
             REQUIRE(panel->getSize() == sf::Vector2f(200, 100)); // The Panel itself is not saved, only its children
 

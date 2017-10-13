@@ -29,6 +29,7 @@
 
 #include <TGUI/Config.hpp>
 #include <TGUI/ObjectConverter.hpp>
+#include <TGUI/Loading/DataIO.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,6 +48,25 @@ namespace tgui
             data->propertyValuePairs = init;
             return data;
         }
+
+        /// @internal
+        static std::shared_ptr<RendererData> createFromDataIONode(const DataIO::Node* rendererNode)
+        {
+            auto rendererData = std::make_shared<RendererData>();
+            rendererData->shared = false;
+
+            for (const auto& pair : rendererNode->propertyValuePairs)
+                rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile with VS2015 Update 2 when using braces
+
+            for (const auto& nestedProperty : rendererNode->children)
+            {
+                std::stringstream ss;
+                DataIO::emit(nestedProperty, ss);
+                rendererData->propertyValuePairs[toLower(nestedProperty->name)] = {sf::String{"{\n" + ss.str() + "}"}};
+            }
+
+            return rendererData;
+        };
 
         std::map<std::string, ObjectConverter> propertyValuePairs;
         std::map<const void*, std::function<void(const std::string& property)>> observers;

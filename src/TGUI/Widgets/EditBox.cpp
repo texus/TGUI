@@ -1131,6 +1131,52 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
+        if (node->propertyValuePairs["defaulttext"])
+            setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["defaulttext"]->value).getString());
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["maximumcharacters"])
+            setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
+        if (node->propertyValuePairs["textwidthlimited"])
+            limitTextWidth(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["textwidthlimited"]->value).getBool());
+        if (node->propertyValuePairs["passwordcharacter"])
+        {
+            const std::string pass = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["passwordcharacter"]->value).getString();
+            if (!pass.empty())
+                setPasswordCharacter(pass[0]);
+        }
+        if (node->propertyValuePairs["alignment"])
+        {
+            if (toLower(node->propertyValuePairs["alignment"]->value) == "left")
+                setAlignment(EditBox::Alignment::Left);
+            else if (toLower(node->propertyValuePairs["alignment"]->value) == "center")
+                setAlignment(EditBox::Alignment::Center);
+            else if (toLower(node->propertyValuePairs["alignment"]->value) == "right")
+                setAlignment(EditBox::Alignment::Right);
+            else
+                throw Exception{"Failed to parse Alignment property. Only the values Left, Center and Right are correct."};
+        }
+        if (node->propertyValuePairs["inputvalidator"])
+        {
+            if (toLower(node->propertyValuePairs["inputvalidator"]->value) == "int")
+                setInputValidator(EditBox::Validator::Int);
+            else if (toLower(node->propertyValuePairs["inputvalidator"]->value) == "uint")
+                setInputValidator(EditBox::Validator::UInt);
+            else if (toLower(node->propertyValuePairs["inputvalidator"]->value) == "float")
+                setInputValidator(EditBox::Validator::Float);
+            else
+                setInputValidator(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["inputvalidator"]->value).getString());
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f EditBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

@@ -35,6 +35,7 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Loading/Serializer.hpp>
+#include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
 #include <TGUI/Aurora/Tools/Downcast.hpp>
@@ -630,6 +631,7 @@ namespace tgui
     protected:
 
         using SavingRenderersMap = std::map<const Widget*, std::pair<std::unique_ptr<DataIO::Node>, std::string>>;
+        using LoadingRenderersMap = std::map<std::string, std::shared_ptr<RendererData>>;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -653,9 +655,15 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Save the widget as a tree node in order to save it to a file
+        /// @brief Saves the widget as a tree node in order to save it to a file
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads the widget from a tree of nodes
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual void load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

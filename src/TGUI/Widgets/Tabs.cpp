@@ -606,6 +606,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Tabs::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["tabs"])
+        {
+            if (!node->propertyValuePairs["tabs"]->listNode)
+                throw Exception{"Failed to parse 'Tabs' property, expected a list as value"};
+
+            for (const auto& tabText : node->propertyValuePairs["tabs"]->valueList)
+                add(Deserializer::deserialize(ObjectConverter::Type::String, tabText).getString());
+        }
+
+        if (node->propertyValuePairs["maximumtabwidth"])
+            setMaximumTabWidth(tgui::stof(node->propertyValuePairs["maximumtabwidth"]->value));
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["tabheight"])
+            setTabHeight(tgui::stof(node->propertyValuePairs["tabheight"]->value));
+        if (node->propertyValuePairs["selected"])
+            select(tgui::stoi(node->propertyValuePairs["selected"]->value));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Tabs::updateTextColors()
     {
         for (auto& tabText : m_tabTexts)

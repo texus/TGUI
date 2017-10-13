@@ -511,6 +511,106 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Grid::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Container::load(node, renderers);
+
+        if (node->propertyValuePairs["autosize"])
+            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autosize"]->value).getBool());
+
+        if (node->propertyValuePairs["gridwidgets"])
+        {
+            if (!node->propertyValuePairs["gridwidgets"]->listNode)
+                throw Exception{"Failed to parse 'GridWidgets' property, expected a list as value"};
+
+            const auto& elements = node->propertyValuePairs["gridwidgets"]->valueList;
+            if (elements.size() != getWidgets().size())
+                throw Exception{"Failed to parse 'GridWidgets' property, the amount of items has to match with the amount of child widgets"};
+
+            for (unsigned int i = 0; i < elements.size(); ++i)
+            {
+                std::string str = elements[i].toAnsiString();
+
+                // Remove quotes
+                if ((str.size() >= 2) && (str[0] == '"') && (str[str.size()-1] == '"'))
+                    str = str.substr(1, str.size()-2);
+
+                // Remove brackets
+                if ((str.size() >= 2) && (str[0] == '(') && (str[str.size()-1] == ')'))
+                    str = str.substr(1, str.size()-2);
+
+                // Ignore empty values (which are widgets that have not been given a location in the grid)
+                if (str.empty())
+                    continue;
+
+                int row;
+                int col;
+                Borders borders;
+                auto alignment = Grid::Alignment::Center;
+
+                std::size_t index = 0;
+                std::size_t pos = str.find(',');
+                if (pos == std::string::npos)
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after row."};
+
+                row = tgui::stoi(str.substr(index, pos - index));
+                index = pos + 1;
+
+                pos = str.find(',', index);
+                if (pos == std::string::npos)
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after column."};
+
+                col = tgui::stoi(str.substr(index, pos - index));
+                index = pos + 1;
+
+                if (row < 0 || col < 0)
+                    throw Exception{"Failed to parse 'GridWidgets' property, row and column have to be positive integers"};
+
+                pos = str.find('(', index);
+                if (pos == std::string::npos)
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing opening bracket for borders."};
+
+                index = pos;
+                pos = str.find(')', index);
+                if (pos == std::string::npos)
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing closing bracket for borders."};
+
+                borders = Deserializer::deserialize(ObjectConverter::Type::Outline, str.substr(index, pos+1 - index)).getOutline();
+                index = pos + 1;
+
+                pos = str.find(',', index);
+                if (pos == std::string::npos)
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after borders."};
+
+                std::string alignmentStr = toLower(trim(str.substr(pos + 1)));
+                if (alignmentStr == "center")
+                    alignment = Grid::Alignment::Center;
+                else if (alignmentStr == "upperleft")
+                    alignment = Grid::Alignment::UpperLeft;
+                else if (alignmentStr == "up")
+                    alignment = Grid::Alignment::Up;
+                else if (alignmentStr == "upperright")
+                    alignment = Grid::Alignment::UpperRight;
+                else if (alignmentStr == "right")
+                    alignment = Grid::Alignment::Right;
+                else if (alignmentStr == "bottomright")
+                    alignment = Grid::Alignment::BottomRight;
+                else if (alignmentStr == "bottom")
+                    alignment = Grid::Alignment::Bottom;
+                else if (alignmentStr == "bottomleft")
+                    alignment = Grid::Alignment::BottomLeft;
+                else if (alignmentStr == "left")
+                    alignment = Grid::Alignment::Left;
+                else
+                    throw Exception{"Failed to parse 'GridWidgets' property. Invalid alignment '" + alignmentStr + "'."};
+
+                addWidget(getWidgets()[i], static_cast<std::size_t>(row), static_cast<std::size_t>(col), borders, alignment);
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f Grid::getMinimumSize() const
     {
         // Calculate the required space to have all widgets in the grid.

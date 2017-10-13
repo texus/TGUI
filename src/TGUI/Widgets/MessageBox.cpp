@@ -54,21 +54,7 @@ namespace tgui
         m_buttonClassName{other.m_buttonClassName},
         m_textSize       {other.m_textSize}
     {
-        m_label = get<tgui::Label>("#TGUI_INTERNAL$MessageBoxText#");
-
-        for (unsigned int i = 0; i < m_widgets.size(); ++i)
-        {
-            if ((m_widgetNames[i].getSize() >= 32) && (m_widgetNames[i].substring(0, 32) == "#TGUI_INTERNAL$MessageBoxButton:"))
-            {
-                auto button = std::dynamic_pointer_cast<Button>(m_widgets[i]);
-
-                button->disconnectAll("Pressed");
-                button->connect("Pressed", [=]() { onButtonPress.emit(this, button->getText()); });
-                m_buttons.push_back(button);
-            }
-        }
-
-        rearrange();
+        identifyLabelAndButtons();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +335,42 @@ namespace tgui
         node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
         // Label and buttons are saved indirectly by saving the child window
         return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        // Remove the label that the MessageBox constructor creates because it will be created when loading the child window
+        removeAllWidgets();
+
+        ChildWindow::load(node, renderers);
+
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+
+        identifyLabelAndButtons();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MessageBox::identifyLabelAndButtons()
+    {
+        m_label = get<tgui::Label>("#TGUI_INTERNAL$MessageBoxText#");
+
+        for (unsigned int i = 0; i < m_widgets.size(); ++i)
+        {
+            if ((m_widgetNames[i].getSize() >= 32) && (m_widgetNames[i].substring(0, 32) == "#TGUI_INTERNAL$MessageBoxButton:"))
+            {
+                auto button = std::dynamic_pointer_cast<Button>(m_widgets[i]);
+
+                button->disconnectAll("Pressed");
+                button->connect("Pressed", [=]() { onButtonPress.emit(this, button->getText()); });
+                m_buttons.push_back(button);
+            }
+        }
+
+        rearrange();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

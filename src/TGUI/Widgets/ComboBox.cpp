@@ -660,6 +660,67 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["items"])
+        {
+            if (!node->propertyValuePairs["items"]->listNode)
+                throw Exception{"Failed to parse 'Items' property, expected a list as value"};
+
+            if (node->propertyValuePairs["itemids"])
+            {
+                if (!node->propertyValuePairs["itemids"]->listNode)
+                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+
+                if (node->propertyValuePairs["items"]->valueList.size() != node->propertyValuePairs["itemids"]->valueList.size())
+                    throw Exception{"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
+
+                for (std::size_t i = 0; i < node->propertyValuePairs["items"]->valueList.size(); ++i)
+                {
+                    addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["items"]->valueList[i]).getString(),
+                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["itemids"]->valueList[i]).getString());
+                }
+            }
+            else // There are no item ids
+            {
+                for (const auto& item : node->propertyValuePairs["items"]->valueList)
+                    addItem(item);
+            }
+        }
+        else // If there are no items, there should be no item ids
+        {
+            if (node->propertyValuePairs["itemids"])
+            {
+                if (!node->propertyValuePairs["itemids"]->listNode)
+                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+
+                if (!node->propertyValuePairs["itemids"]->valueList.empty())
+                    throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
+            }
+        }
+
+        if (node->propertyValuePairs["itemstodisplay"])
+            setItemsToDisplay(tgui::stoi(node->propertyValuePairs["itemstodisplay"]->value));
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["maximumitems"])
+            setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
+
+        if (node->propertyValuePairs["expanddirection"])
+        {
+            if (toLower(node->propertyValuePairs["expanddirection"]->value) == "up")
+                setExpandDirection(ComboBox::ExpandDirection::Up);
+            else if (toLower(node->propertyValuePairs["expanddirection"]->value) == "down")
+                setExpandDirection(ComboBox::ExpandDirection::Down);
+            else
+                throw Exception{"Failed to parse ExpandDirection property. Only the values Up and Down are correct."};
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f ComboBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

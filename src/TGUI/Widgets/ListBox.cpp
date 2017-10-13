@@ -782,6 +782,59 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["items"])
+        {
+            if (!node->propertyValuePairs["items"]->listNode)
+                throw Exception{"Failed to parse 'Items' property, expected a list as value"};
+
+            if (node->propertyValuePairs["itemids"])
+            {
+                if (!node->propertyValuePairs["itemids"]->listNode)
+                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+
+                if (node->propertyValuePairs["items"]->valueList.size() != node->propertyValuePairs["itemids"]->valueList.size())
+                    throw Exception{"Amounts of values for 'Items' differs from the amount in 'ItemIds'"};
+
+                for (std::size_t i = 0; i < node->propertyValuePairs["items"]->valueList.size(); ++i)
+                {
+                    addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["items"]->valueList[i]).getString(),
+                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["itemids"]->valueList[i]).getString());
+                }
+            }
+            else // There are no item ids
+            {
+                for (const auto& item : node->propertyValuePairs["items"]->valueList)
+                    addItem(item);
+            }
+        }
+        else // If there are no items, there should be no item ids
+        {
+            if (node->propertyValuePairs["itemids"])
+            {
+                if (!node->propertyValuePairs["itemids"]->listNode)
+                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
+
+                if (!node->propertyValuePairs["itemids"]->valueList.empty())
+                    throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
+            }
+        }
+
+        if (node->propertyValuePairs["autoscroll"])
+            setAutoScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autoscroll"]->value).getBool());
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["itemheight"])
+            setItemHeight(tgui::stoi(node->propertyValuePairs["itemheight"]->value));
+        if (node->propertyValuePairs["maximumitems"])
+            setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f ListBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(), getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};

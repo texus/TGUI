@@ -83,7 +83,6 @@ TEST_CASE("[RadioButtonGroup]")
             REQUIRE_NOTHROW(group->saveWidgetsToFile("RadioButtonGroupWidgetFile1.txt"));
             
             group->setSize(200, 100);
-            group->removeAllWidgets();
             REQUIRE_NOTHROW(group->loadWidgetsFromFile("RadioButtonGroupWidgetFile1.txt"));
             REQUIRE(group->getSize() == sf::Vector2f(200, 100)); // The Group itself is not saved, only its children
 

@@ -376,6 +376,39 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ProgressBar::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["minimum"])
+            setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+        if (node->propertyValuePairs["maximum"])
+            setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+        if (node->propertyValuePairs["value"])
+            setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+        if (node->propertyValuePairs["text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+
+        if (node->propertyValuePairs["filldirection"])
+        {
+            std::string requestedStyle = toLower(trim(node->propertyValuePairs["filldirection"]->value));
+            if (requestedStyle == "lefttoright")
+                setFillDirection(tgui::ProgressBar::FillDirection::LeftToRight);
+            else if (requestedStyle == "righttoleft")
+                setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
+            else if (requestedStyle == "toptobottom")
+                setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
+            else if (requestedStyle == "bottomtotop")
+                setFillDirection(tgui::ProgressBar::FillDirection::BottomToTop);
+            else
+                throw Exception{"Failed to parse FillDirection property, found unknown value."};
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f ProgressBar::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

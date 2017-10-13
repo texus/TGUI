@@ -113,7 +113,6 @@ void testSavingWidget(std::string name, std::shared_ptr<WidgetType> widget, bool
 
     SECTION("Saving again after loading")
     {
-        parent->removeAllWidgets();
         parent = std::make_shared<tgui::GuiContainer>();
         REQUIRE_NOTHROW(parent->loadWidgetsFromFile(name + "WidgetFile1.txt"));
 

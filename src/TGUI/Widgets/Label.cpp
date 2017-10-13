@@ -347,6 +347,47 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Label::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["horizontalalignment"])
+        {
+            std::string alignment = toLower(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["horizontalalignment"]->value).getString());
+            if (alignment == "right")
+                setHorizontalAlignment(Label::HorizontalAlignment::Right);
+            else if (alignment == "center")
+                setHorizontalAlignment(Label::HorizontalAlignment::Center);
+            else if (alignment != "left")
+                throw Exception{"Failed to parse HorizontalAlignment property, found unknown value."};
+        }
+
+        if (node->propertyValuePairs["verticalalignment"])
+        {
+            std::string alignment = toLower(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["verticalalignment"]->value).getString());
+            if (alignment == "bottom")
+                setVerticalAlignment(Label::VerticalAlignment::Bottom);
+            else if (alignment == "center")
+                setVerticalAlignment(Label::VerticalAlignment::Center);
+            else if (alignment != "top")
+                throw Exception{"Failed to parse VerticalAlignment property, found unknown value."};
+        }
+
+        if (node->propertyValuePairs["text"])
+            setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["text"]->value).getString());
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["maximumtextwidth"])
+            setMaximumTextWidth(tgui::stof(node->propertyValuePairs["maximumtextwidth"]->value));
+        if (node->propertyValuePairs["autosize"])
+            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autosize"]->value).getBool());
+
+        if (node->propertyValuePairs["ignoremouseevents"])
+            ignoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["ignoremouseevents"]->value).getBool());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::update(sf::Time elapsedTime)
     {
         Widget::update(elapsedTime);

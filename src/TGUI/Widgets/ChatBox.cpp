@@ -567,6 +567,46 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChatBox::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["textcolor"])
+            setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["textcolor"]->value).getColor());
+        if (node->propertyValuePairs["linelimit"])
+            setLineLimit(tgui::stoi(node->propertyValuePairs["linelimit"]->value));
+
+        for (const auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "line")
+            {
+                unsigned int lineTextSize = getTextSize();
+                sf::Color lineTextColor = getTextColor();
+
+                if (childNode->propertyValuePairs["textsize"])
+                    lineTextSize = tgui::stoi(childNode->propertyValuePairs["textsize"]->value);
+                if (childNode->propertyValuePairs["color"])
+                    lineTextColor = Deserializer::deserialize(ObjectConverter::Type::Color, childNode->propertyValuePairs["color"]->value).getColor();
+
+                if (childNode->propertyValuePairs["text"])
+                    addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString(), lineTextColor, lineTextSize);
+            }
+        }
+        node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
+                                        [](const std::unique_ptr<DataIO::Node>& child){ return toLower(child->name) == "line"; }), node->children.end());
+
+        if (node->propertyValuePairs["linesstartfromtop"])
+            setLinesStartFromTop(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["linesstartfromtop"]->value).getBool());
+
+        // This has to be parsed after the lines have been added
+        if (node->propertyValuePairs["newlinesbelowothers"])
+            setNewLinesBelowOthers(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["newlinesbelowothers"]->value).getBool());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f ChatBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

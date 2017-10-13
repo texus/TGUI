@@ -570,6 +570,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void RangeSlider::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["minimum"])
+            setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+        if (node->propertyValuePairs["maximum"])
+            setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+        if (node->propertyValuePairs["selectionstart"])
+            setSelectionStart(tgui::stoi(node->propertyValuePairs["selectionstart"]->value));
+        if (node->propertyValuePairs["selectionend"])
+            setSelectionEnd(tgui::stoi(node->propertyValuePairs["selectionend"]->value));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f RangeSlider::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),

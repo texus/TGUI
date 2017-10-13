@@ -26,6 +26,8 @@
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Animation.hpp>
+#include <TGUI/Vector2f.hpp>
+#include <TGUI/Loading/WidgetFactory.hpp>
 #include <SFML/System/Err.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
@@ -886,6 +888,112 @@ namespace tgui
             node->propertyValuePairs["renderer"] = make_unique<DataIO::ValueNode>("&" + renderers.at(this).second);
 
         return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        auto parseLayout = [](std::string str) -> Layout2d
+            {
+                if (str.empty())
+                    throw Exception{"Failed to parse layout. String was empty."};
+
+                // Remove the brackets around the value
+                if (((str.front() == '(') && (str.back() == ')')) || ((str.front() == '{') && (str.back() == '}')))
+                    str = str.substr(1, str.length() - 2);
+
+                if (str.empty())
+                    return {0, 0};
+
+                const auto commaPos = str.find(',');
+                if (commaPos == std::string::npos)
+                    throw Exception{"Failed to parse layout '" + str + "'. Expected expressions separated with a comma."};
+
+                // Remove quotes around the values
+                std::string x = trim(str.substr(0, commaPos));
+                if ((x.size() >= 2) && ((x[0] == '"') && (x[x.length()-1] == '"')))
+                    x = x.substr(1, x.length()-2);
+
+                std::string y = trim(str.substr(commaPos + 1));
+                if ((y.size() >= 2) && ((y[0] == '"') && (y[y.length()-1] == '"')))
+                    y = y.substr(1, y.length()-2);
+
+                return {x, y};
+            };
+
+        if (node->propertyValuePairs["visible"])
+        {
+            const bool visible = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["visible"]->value).getBool();
+            if (visible)
+                show();
+            else
+                hide();
+        }
+        if (node->propertyValuePairs["enabled"])
+        {
+            const bool enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["enabled"]->value).getBool();
+            if (enabled)
+                enable();
+            else
+                disable();
+        }
+        if (node->propertyValuePairs["position"])
+            setPosition(parseLayout(node->propertyValuePairs["position"]->value));
+        if (node->propertyValuePairs["size"])
+            setSize(parseLayout(node->propertyValuePairs["size"]->value));
+
+        if (node->propertyValuePairs["renderer"])
+        {
+            const sf::String value = node->propertyValuePairs["renderer"]->value;
+            if (value.isEmpty() || (value[0] != '&'))
+                throw Exception{"Expected reference to renderer, did not find '&' character"};
+
+            const auto it = renderers.find(toLower(value.substring(1)));
+            if (it == renderers.end())
+                throw Exception{"Widget refers to renderer with name '" + value.substring(1) + "', but no such renderer was found"};
+
+            setRenderer(it->second);
+        }
+
+        for (const auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "tooltip")
+            {
+                for (const auto& pair : childNode->propertyValuePairs)
+                {
+                    if (pair.first == "timetodisplay")
+                        ToolTip::setTimeToDisplay(sf::seconds(tgui::stof(pair.second->value)));
+                    else if (pair.first == "distancetomouse")
+                        ToolTip::setDistanceToMouse(Vector2f{pair.second->value});
+                }
+
+                if (!childNode->children.empty())
+                {
+                    // There can only be one child in the tool tip section
+                    if (childNode->children.size() > 1)
+                        throw Exception{"ToolTip section contained multiple children."};
+
+                    const auto& toolTipWidgetNode = childNode->children[0];
+                    const auto& constructor = WidgetFactory::getConstructFunction(toolTipWidgetNode->name);
+                    if (constructor)
+                    {
+                        tgui::Widget::Ptr toolTip = constructor();
+                        toolTip->load(toolTipWidgetNode, renderers);
+                        setToolTip(toolTip);
+                    }
+                    else
+                        throw Exception{"No construct function exists for widget type '" + toolTipWidgetNode->name + "'."};
+                }
+            }
+            else if (toLower(childNode->name) == "renderer")
+                setRenderer(RendererData::createFromDataIONode(childNode.get()));
+
+            /// TODO: Signals?
+        }
+        node->children.erase(std::remove_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
+                return (toLower(child->name) == "tooltip") || (toLower(child->name) == "renderer");
+            }), node->children.end());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

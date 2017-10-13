@@ -541,6 +541,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Knob::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["startrotation"])
+            setStartRotation(tgui::stof(node->propertyValuePairs["startrotation"]->value));
+        if (node->propertyValuePairs["endrotation"])
+            setEndRotation(tgui::stof(node->propertyValuePairs["endrotation"]->value));
+        if (node->propertyValuePairs["minimum"])
+            setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+        if (node->propertyValuePairs["maximum"])
+            setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+        if (node->propertyValuePairs["value"])
+            setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+        if (node->propertyValuePairs["clockwiseturning"])
+            setClockwiseTurning(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["clockwiseturning"]->value).getBool());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::Vector2f Knob::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(), getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};

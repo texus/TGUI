@@ -797,6 +797,24 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Scrollbar::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["lowvalue"])
+            setLowValue(tgui::stoi(node->propertyValuePairs["lowvalue"]->value));
+        if (node->propertyValuePairs["maximum"])
+            setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+        if (node->propertyValuePairs["value"])
+            setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+        if (node->propertyValuePairs["scrollamount"])
+            setScrollAmount(tgui::stoi(node->propertyValuePairs["scrollamount"]->value));
+        if (node->propertyValuePairs["autohide"])
+            setAutoHide(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["autohide"]->value).getBool());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Scrollbar::updateThumbPosition()
     {
         if (m_verticalScroll)

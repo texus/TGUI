@@ -116,7 +116,6 @@ TEST_CASE("[Group]")
             REQUIRE_NOTHROW(group->saveWidgetsToFile("GroupWidgetFile1.txt"));
             
             group->setSize(200, 100);
-            group->removeAllWidgets();
             REQUIRE_NOTHROW(group->loadWidgetsFromFile("GroupWidgetFile1.txt"));
             REQUIRE(group->getSize() == sf::Vector2f(200, 100)); // The Group itself is not saved, only its children
 

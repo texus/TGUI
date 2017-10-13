@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/ScrollablePanel.hpp>
+#include <TGUI/Vector2f.hpp>
 #include <TGUI/Clipping.hpp>
 #include <cmath>
 
@@ -337,6 +338,16 @@ namespace tgui
         auto node = Panel::save(renderers);
         node->propertyValuePairs["ContentSize"] = make_unique<DataIO::ValueNode>("(" + to_string(m_contentSize.x) + ", " + to_string(m_contentSize.y) + ")");
         return node;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollablePanel::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Panel::load(node, renderers);
+
+        if (node->propertyValuePairs["contentsize"])
+            setContentSize(Vector2f{node->propertyValuePairs["contentsize"]->value});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

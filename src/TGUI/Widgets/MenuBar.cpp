@@ -666,6 +666,40 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MenuBar::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        Widget::load(node, renderers);
+
+        if (node->propertyValuePairs["textsize"])
+            setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
+        if (node->propertyValuePairs["minimumsubmenuwidth"])
+            setMinimumSubMenuWidth(tgui::stof(node->propertyValuePairs["minimumsubmenuwidth"]->value));
+
+        for (const auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) == "menu")
+            {
+                if (childNode->propertyValuePairs["name"])
+                {
+                    addMenu(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["name"]->value).getString());
+
+                    if (childNode->propertyValuePairs["items"])
+                    {
+                        if (!childNode->propertyValuePairs["items"]->listNode)
+                            throw Exception{"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
+
+                        for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
+                            addMenuItem(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString());
+                    }
+                }
+            }
+        }
+        node->children.erase(std::remove_if(node->children.begin(), node->children.end(), \
+                                        [](const std::unique_ptr<DataIO::Node>& child){ return toLower(child->name) == "menu"; }), node->children.end());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MenuBar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
