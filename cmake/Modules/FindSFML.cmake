@@ -318,10 +318,16 @@ if(SFML_STATIC_LIBRARIES)
 
         # find libraries
         find_sfml_dependency(FREETYPE_LIBRARY "FreeType" freetype)
-        find_sfml_dependency(JPEG_LIBRARY "libjpeg" jpeg)
+        if (${SFML_VERSION_MAJOR} EQUAL 2 AND ${SFML_VERSION_MINOR} LESS 5)
+            find_sfml_dependency(JPEG_LIBRARY "libjpeg" jpeg)
+        endif()
 
         # update the list
-        set(SFML_GRAPHICS_DEPENDENCIES ${FREETYPE_LIBRARY} ${JPEG_LIBRARY})
+        if (${SFML_VERSION_MAJOR} EQUAL 2 AND ${SFML_VERSION_MINOR} LESS 5)
+            set(SFML_GRAPHICS_DEPENDENCIES ${FREETYPE_LIBRARY} ${JPEG_LIBRARY})
+        else()
+            set(SFML_GRAPHICS_DEPENDENCIES ${FREETYPE_LIBRARY})
+        endif()
         set(SFML_DEPENDENCIES ${SFML_GRAPHICS_DEPENDENCIES} ${SFML_DEPENDENCIES})
     endif()
 
