@@ -34,7 +34,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Clipping::Clipping(sf::RenderTarget& target, const sf::RenderStates& states, sf::Vector2f topLeft, sf::Vector2f size) :
-        m_target {target},
+        m_target (target), // Did not compile with GCC 4.7 when using braces
         m_oldView{target.getView()}
     {
         sf::Vector2f bottomRight = sf::Vector2f(states.transform.transformPoint(topLeft + size));
