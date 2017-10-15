@@ -1,6 +1,7 @@
 set(TGUI_SRC
     Animation.cpp
     Clipboard.cpp
+    Clipping.cpp
     Color.cpp
     Container.cpp
     Font.cpp

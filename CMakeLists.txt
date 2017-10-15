@@ -83,7 +83,6 @@ endif()
 tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
 tgui_set_option(TGUI_BUILD_GUI_BUILDER FALSE BOOL "TRUE to compile the GUI Builder")
 tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
-tgui_set_option(TGUI_OPENGL_ES ${OPENGL_ES} BOOL "TRUE to use an OpenGL ES implementation, FALSE to use a desktop OpenGL implementation")
 
 # Set compile flags for gcc and clang
 if (SFML_OS_ANDROID)
@@ -295,31 +294,9 @@ set( LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
 include_directories( ${SFML_INCLUDE_DIR} )
 
-# OpenGL is required (due to a temporary fix)
-if (NOT TGUI_OPENGL_ES)
-    find_package(OpenGL REQUIRED)
-    set(TGUI_EXT_LIBS ${OPENGL_gl_LIBRARY} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
-else()
-    if (SFML_OS_LINUX)
-        # Try to manually find the packages for when we are on Raspberry Pi
-        find_path(EGL_INCLUDE_DIR EGL/egl.h PATHS /opt/vc/include)
-        find_path(GLES_INCLUDE_DIR GLES/gl.h PATHS /opt/vc/include)
-        find_library(EGL_LIBRARY NAMES EGL PATHS /opt/vc/lib)
-        find_library(GLES_LIBRARY NAMES GLESv1_CM PATHS /opt/vc/lib)
-
-        # Search on other places in case we did not find them yet
-        find_package(EGL REQUIRED)
-        find_package(GLES REQUIRED)
-
-        add_definitions(-DSFML_OPENGL_ES)
-        include_directories(${EGL_INCLUDE_DIR} ${GLES_INCLUDE_DIR})
-    elseif(SFML_OS_ANDROID)
-        set(TGUI_EXT_LIBS ${SFML_LIBRARIES} ${SFML_DEPENDENCIES} "-lEGL -lGLESv1_CM")
-    endif()
-endif()
-
-# We need to link to an extra library on android (to use the asset manager)
+set(TGUI_EXT_LIBS ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 if(SFML_OS_ANDROID)
+    # We need to link to an extra library on android (to use the asset manager)
     set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
 endif()
 

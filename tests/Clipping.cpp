@@ -25,31 +25,68 @@
 #include "Tests.hpp"
 #include <TGUI/Clipping.hpp>
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
 
 TEST_CASE("[Clipping]")
 {
-    auto panel = tgui::Panel::create({40, 30});
-    panel->setPosition(395, 305);
-    panel->getRenderer()->setBackgroundColor(sf::Color::Green);
+    SECTION("Panel")
+    {
+        auto panel = tgui::Panel::create({40, 30});
+        panel->setPosition(395, 305);
+        panel->getRenderer()->setBackgroundColor(sf::Color::Green);
 
-    auto clippedPanel = tgui::Panel::create({200, 200});
-    clippedPanel->setPosition(-50, -50);
-    clippedPanel->getRenderer()->setBackgroundColor({255, 0, 0, 100});
-    panel->add(clippedPanel);
+        auto clippedPanel = tgui::Panel::create({200, 200});
+        clippedPanel->setPosition(-50, -50);
+        clippedPanel->getRenderer()->setBackgroundColor({255, 0, 0, 100});
+        panel->add(clippedPanel);
 
-    TEST_DRAW_INIT(80, 80, panel)
+        TEST_DRAW_INIT(80, 80, panel)
 
-    auto background = tgui::Panel::create();
-    background->setSize({800, 600});
-    background->getRenderer()->setBackgroundColor(sf::Color::Blue);
-    gui.add(background);
-    background->moveToBack();
+        auto background = tgui::Panel::create();
+        background->setSize({800, 600});
+        background->getRenderer()->setBackgroundColor(sf::Color::Blue);
+        gui.add(background);
+        background->moveToBack();
 
-    sf::View view = gui.getView();
-    view.setViewport({0.1f, 0.2f, 0.8f, 0.6f});
-    view.setCenter(415, 320);
-    view.setSize(80, 40);
-    gui.setView(view);
+        sf::View view = gui.getView();
+        view.setViewport({0.1f, 0.2f, 0.8f, 0.6f});
+        view.setCenter(415, 320);
+        view.setSize(80, 40);
+        gui.setView(view);
 
-    TEST_DRAW("Clipping.png")
+        TEST_DRAW("Clipping_Panel.png")
+    }
+
+    SECTION("EditBox")
+    {
+        auto background = tgui::Panel::create({800, 600});
+        background->getRenderer()->setBackgroundColor(sf::Color::Blue);
+        TEST_DRAW_INIT(400, 300, background)
+
+        auto editBox = tgui::EditBox::create();
+        editBox->setPosition({260, 165});
+        editBox->setSize({200, 32});
+        editBox->setText("Too long to fit inside the EditBox");
+        gui.add(editBox);
+
+        editBox = tgui::EditBox::copy(editBox);
+        editBox->setPosition({editBox->getPosition().x, editBox->getPosition().y + editBox->getSize().y + 2});
+        gui.add(editBox);
+        editBox->setCaretPosition(0);
+
+        sf::View view({250, 160, 140, 57});
+        view.setViewport({0.1f, 0.2f, 0.7f, 0.76f});
+        gui.setView(view);
+
+        TEST_DRAW("Clipping_EditBox.png")
+
+        SECTION("Outside viewport")
+        {
+            sf::View view2({250, 160, 210, 38});
+            view2.setViewport({0.2, 0.1, 0.7, 0.6});
+            gui.setView(view2);
+
+            TEST_DRAW("Clipping_EditBox_OutsideViewport.png")
+        }
+    }
 }

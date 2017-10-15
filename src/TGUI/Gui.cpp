@@ -26,9 +26,9 @@
 #include <TGUI/DefaultFont.hpp>
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/ToolTip.hpp>
+#include <TGUI/Clipping.hpp>
 
 #include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/OpenGL.hpp>
 
 #include <cassert>
 
@@ -141,6 +141,8 @@ namespace tgui
         }
         else // Set it anyway in case something changed that we didn't care to check
             m_view = view;
+
+        Clipping::setGuiView(m_view);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,38 +247,11 @@ namespace tgui
     {
         assert(m_target != nullptr);
 
-        // Make sure the right opengl context is set when clipping
-        // This is necessary when something is drawn to a RenderTexture directly before calling gui.draw()
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
-        if (dynamic_cast<sf::RenderWindow*>(m_target))
-            dynamic_cast<sf::RenderWindow*>(m_target)->setActive(true);
-        else if (dynamic_cast<sf::RenderTexture*>(m_target))
-            dynamic_cast<sf::RenderTexture*>(m_target)->setActive(true);
-#else
-        m_target->setActive(true);
-#endif
-
         // Update the time
         if (m_container->m_focused)
             updateTime(m_clock.restart());
         else
             m_clock.restart();
-
-        // Check if clipping is enabled
-        const GLboolean clippingEnabled = glIsEnabled(GL_SCISSOR_TEST);
-        GLint scissor[4];
-
-        if (clippingEnabled)
-        {
-            // Remember the old clipping area
-            glGetIntegerv(GL_SCISSOR_BOX, scissor);
-        }
-        else // Clipping was disabled
-        {
-            // Enable clipping
-            glEnable(GL_SCISSOR_TEST);
-            glScissor(0, 0, m_target->getSize().x, m_target->getSize().y);
-        }
 
         // Change the view
         const sf::View oldView = m_target->getView();
@@ -287,12 +262,6 @@ namespace tgui
 
         // Restore the old view
         m_target->setView(oldView);
-
-        // Reset clipping to its original state
-        if (clippingEnabled)
-            glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
-        else
-            glDisable(GL_SCISSOR_TEST);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
