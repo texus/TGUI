@@ -2,9 +2,6 @@
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(SFML_OS_WINDOWS 1)
 
-    # don't use the OpenGL ES implementation on Windows
-    set(OPENGL_ES 0)
-
     # detect the architecture (note: this test won't work for cross-compilation)
     include(CheckTypeSize)
     check_type_size(void* SIZEOF_VOID_PTR)
@@ -20,17 +17,11 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(SFML_OS_UNIX 1)
     if(ANDROID)
         set(SFML_OS_ANDROID 1)
-        # use the OpenGL ES implementation on Android
-        set(OPENGL_ES 1)
     else()
         set(SFML_OS_LINUX 1)
-        # don't use the OpenGL ES implementation on Linux
-        set(OPENGL_ES 0)
     endif()
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
     set(SFML_OS_FREEBSD 1)
-    # don't use the OpenGL ES implementation on FreeBSD
-    set(OPENGL_ES 0)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     if(IOS)
         set(SFML_OS_IOS 1)
@@ -42,14 +33,8 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
         # help the compiler detection script below
         set(CMAKE_COMPILER_IS_GNUCXX 1)
-
-        # use the OpenGL ES implementation on iOS
-        set(OPENGL_ES 1)
     else()
         set(SFML_OS_MACOSX 1)
-
-        # don't use the OpenGL ES implementation on Mac OS X
-        set(OPENGL_ES 0)
 
         # detect OS X version. (use '/usr/bin/sw_vers -productVersion' to extract V from '10.V.x'.)
         EXEC_PROGRAM(/usr/bin/sw_vers ARGS -productVersion OUTPUT_VARIABLE MACOSX_VERSION_RAW)
@@ -61,9 +46,6 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     endif()
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Android")
     set(SFML_OS_ANDROID 1)
-
-    # use the OpenGL ES implementation on Android
-    set(OPENGL_ES 1)
 else()
     message(FATAL_ERROR "Unsupported operating system")
     return()

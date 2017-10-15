@@ -29,7 +29,6 @@
 #include <TGUI/Global.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/View.hpp>
-#include <SFML/OpenGL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,51 +47,33 @@ namespace tgui
         /// @param states  Current render states
         /// @param topLeft Position of the top left corner of the clipping area relative to the view
         /// @param size    Size of the clipping area relative to the view
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Clipping(const sf::RenderTarget& target, const sf::RenderStates& states, sf::Vector2f topLeft, sf::Vector2f size)
-        {
-            sf::Vector2i topLeftPosition = target.mapCoordsToPixel(states.transform.transformPoint(topLeft));
-            sf::Vector2i bottomRightPosition = target.mapCoordsToPixel(states.transform.transformPoint(topLeft + size));
+        Clipping(sf::RenderTarget& target, const sf::RenderStates& states, sf::Vector2f topLeft, sf::Vector2f size);
 
-            // Get the old clipping area
-            glGetIntegerv(GL_SCISSOR_BOX, m_scissor);
-
-            // Calculate the clipping area
-            GLint scissorLeft = std::max(static_cast<GLint>(topLeftPosition.x), m_scissor[0]);
-            GLint scissorTop = std::max(static_cast<GLint>(topLeftPosition.y), static_cast<GLint>(target.getSize().y) - m_scissor[1] - m_scissor[3]);
-            GLint scissorRight = std::min(static_cast<GLint>(bottomRightPosition.x), m_scissor[0] + m_scissor[2]);
-            GLint scissorBottom = std::min(static_cast<GLint>(bottomRightPosition.y), static_cast<GLint>(target.getSize().y) - m_scissor[1]);
-
-            // If the object outside the window then don't draw anything
-            if (scissorRight < scissorLeft)
-                scissorRight = scissorLeft;
-            else if (scissorBottom < scissorTop)
-                scissorTop = scissorBottom;
-
-            // Set the clipping area
-            glScissor(scissorLeft, target.getSize().y - scissorBottom, scissorRight - scissorLeft, scissorBottom - scissorTop);
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // The clipping object cannot be copied
         Clipping(const Clipping& copy) = delete;
         Clipping& operator=(const Clipping& right) = delete;
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // When the clipping object is destroyed, the old clipping is restored
-        ~Clipping()
-        {
-            glScissor(m_scissor[0], m_scissor[1], m_scissor[2], m_scissor[3]);
-        };
+        ~Clipping();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        // Sets the view used by the gui, which the calculations have to take into account when changing the view for clipping
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        static void setGuiView(const sf::View& view);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        GLint m_scissor[4];
+        sf::RenderTarget& m_target;
+        sf::View m_oldView;
+
+        static sf::View m_originalView;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
