@@ -83,7 +83,7 @@ TEST_CASE("[Clipping]")
         SECTION("Outside viewport")
         {
             sf::View view2({250, 160, 210, 38});
-            view2.setViewport({0.2, 0.1, 0.7, 0.6});
+            view2.setViewport({0.2f, 0.1f, 0.7f, 0.6f});
             gui.setView(view2);
 
             TEST_DRAW("Clipping_EditBox_OutsideViewport.png")
