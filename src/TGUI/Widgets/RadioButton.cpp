@@ -103,7 +103,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f RadioButton::getFullSize() const
+    Vector2f RadioButton::getFullSize() const
     {
         if (getText().isEmpty())
             return getSize();
@@ -113,7 +113,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f RadioButton::getWidgetOffset() const
+    Vector2f RadioButton::getWidgetOffset() const
     {
         if (getText().isEmpty() || (getSize().y >= m_text.getSize().y))
             return {0, 0};
@@ -211,25 +211,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool RadioButton::mouseOnWidget(sf::Vector2f pos) const
+    bool RadioButton::mouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 
         if (m_allowTextClick && !getText().isEmpty())
         {
             // Check if the mouse is on top of the image or the small gap between image and text
-            if (sf::FloatRect{0, 0, getSize().x + getSize().x * m_textDistanceRatioCached, getSize().y}.contains(pos))
+            if (FloatRect{0, 0, getSize().x + getSize().x * m_textDistanceRatioCached, getSize().y}.contains(pos))
                 return true;
 
             // Check if the mouse is on top of the text
-            if (sf::FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains(pos.x - (getSize().x + (getSize().x * m_textDistanceRatioCached)),
-                                                                                     pos.y - ((getSize().y - m_text.getSize().y) / 2.0f)))
+            if (FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains(pos.x - (getSize().x + (getSize().x * m_textDistanceRatioCached)),
+                                                                                 pos.y - ((getSize().y - m_text.getSize().y) / 2.0f)))
                 return true;
         }
         else // You are not allowed to click on the text
         {
             // Check if the mouse is on top of the image
-            if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+            if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
                 return true;
         }
 
@@ -238,7 +238,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::leftMouseReleased(sf::Vector2f pos)
+    void RadioButton::leftMouseReleased(Vector2f pos)
     {
         const bool mouseDown = m_mouseDown;
 
@@ -487,7 +487,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f RadioButton::getInnerSize() const
+    Vector2f RadioButton::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
@@ -495,93 +495,93 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color RadioButton::getCurrentCheckColor() const
+    const Color& RadioButton::getCurrentCheckColor() const
     {
-        if (!m_enabled && getSharedRenderer()->getCheckColorDisabled().isSet())
-            return getSharedRenderer()->getCheckColorDisabled();
-        else if (m_mouseHover && getSharedRenderer()->getCheckColorHover().isSet())
-            return getSharedRenderer()->getCheckColorHover();
+        if (!m_enabled && m_checkColorDisabledCached.isSet())
+            return m_checkColorDisabledCached;
+        else if (m_mouseHover && m_checkColorHoverCached.isSet())
+            return m_checkColorHoverCached;
         else
-            return getSharedRenderer()->getCheckColor();
+            return m_checkColorCached;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color RadioButton::getCurrentBackgroundColor() const
+    const Color& RadioButton::getCurrentBackgroundColor() const
     {
         if (m_checked)
         {
-            if (!m_enabled && getSharedRenderer()->getBackgroundColorCheckedDisabled().isSet())
-                return getSharedRenderer()->getBackgroundColorCheckedDisabled();
-            else if (!m_enabled && getSharedRenderer()->getBackgroundColorDisabled().isSet())
-                return getSharedRenderer()->getBackgroundColorDisabled();
+            if (!m_enabled && m_backgroundColorCheckedDisabledCached.isSet())
+                return m_backgroundColorCheckedDisabledCached;
+            else if (!m_enabled && m_backgroundColorDisabledCached.isSet())
+                return m_backgroundColorDisabledCached;
             else if (m_mouseHover)
             {
-                if (getSharedRenderer()->getBackgroundColorCheckedHover().isSet())
-                    return getSharedRenderer()->getBackgroundColorCheckedHover();
-                else if (getSharedRenderer()->getBackgroundColorChecked().isSet())
-                    return getSharedRenderer()->getBackgroundColorChecked();
-                else if (getSharedRenderer()->getBackgroundColorHover().isSet())
-                    return getSharedRenderer()->getBackgroundColorHover();
+                if (m_backgroundColorCheckedHoverCached.isSet())
+                    return m_backgroundColorCheckedHoverCached;
+                else if (m_backgroundColorCheckedCached.isSet())
+                    return m_backgroundColorCheckedCached;
+                else if (m_backgroundColorHoverCached.isSet())
+                    return m_backgroundColorHoverCached;
                 else
-                    return getSharedRenderer()->getBackgroundColor();
+                    return m_backgroundColorCached;
             }
             else
             {
-                if (getSharedRenderer()->getBackgroundColorChecked().isSet())
-                    return getSharedRenderer()->getBackgroundColorChecked();
+                if (m_backgroundColorCheckedCached.isSet())
+                    return m_backgroundColorCheckedCached;
                 else
-                    return getSharedRenderer()->getBackgroundColor();
+                    return m_backgroundColorCached;
             }
         }
         else
         {
-            if (!m_enabled && getSharedRenderer()->getBackgroundColorDisabled().isSet())
-                return getSharedRenderer()->getBackgroundColorDisabled();
-            else if (m_mouseHover && getSharedRenderer()->getBackgroundColorHover().isSet())
-                return getSharedRenderer()->getBackgroundColorHover();
+            if (!m_enabled && m_backgroundColorDisabledCached.isSet())
+                return m_backgroundColorDisabledCached;
+            else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
+                return m_backgroundColorHoverCached;
             else
-                return getSharedRenderer()->getBackgroundColor();
+                return m_backgroundColorCached;
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color RadioButton::getCurrentBorderColor() const
+    const Color& RadioButton::getCurrentBorderColor() const
     {
         if (m_checked)
         {
-            if (!m_enabled && getSharedRenderer()->getBorderColorCheckedDisabled().isSet())
-                return getSharedRenderer()->getBorderColorCheckedDisabled();
-            else if (!m_enabled && getSharedRenderer()->getBorderColorDisabled().isSet())
-                return getSharedRenderer()->getBorderColorDisabled();
+            if (!m_enabled && m_borderColorCheckedDisabledCached.isSet())
+                return m_borderColorCheckedDisabledCached;
+            else if (!m_enabled && m_borderColorDisabledCached.isSet())
+                return m_borderColorDisabledCached;
             else if (m_mouseHover)
             {
-                if (getSharedRenderer()->getBorderColorCheckedHover().isSet())
-                    return getSharedRenderer()->getBorderColorCheckedHover();
-                else if (getSharedRenderer()->getBorderColorChecked().isSet())
-                    return getSharedRenderer()->getBorderColorChecked();
-                else if (getSharedRenderer()->getBorderColorHover().isSet())
-                    return getSharedRenderer()->getBorderColorHover();
+                if (m_borderColorCheckedHoverCached.isSet())
+                    return m_borderColorCheckedHoverCached;
+                else if (m_borderColorCheckedCached.isSet())
+                    return m_borderColorCheckedCached;
+                else if (m_borderColorHoverCached.isSet())
+                    return m_borderColorHoverCached;
                 else
-                    return getSharedRenderer()->getBorderColor();
+                    return m_borderColorCached;
             }
             else
             {
-                if (getSharedRenderer()->getBorderColorChecked().isSet())
-                    return getSharedRenderer()->getBorderColorChecked();
+                if (m_borderColorCheckedCached.isSet())
+                    return m_borderColorCheckedCached;
                 else
-                    return getSharedRenderer()->getBorderColor();
+                    return m_borderColorCached;
             }
         }
         else
         {
-            if (!m_enabled && getSharedRenderer()->getBorderColorDisabled().isSet())
-                return getSharedRenderer()->getBorderColorDisabled();
-            else if (m_mouseHover && getSharedRenderer()->getBorderColorHover().isSet())
-                return getSharedRenderer()->getBorderColorHover();
+            if (!m_enabled && m_borderColorDisabledCached.isSet())
+                return m_borderColorDisabledCached;
+            else if (m_mouseHover && m_borderColorHoverCached.isSet())
+                return m_borderColorHoverCached;
             else
-                return getSharedRenderer()->getBorderColor();
+                return m_borderColorCached;
         }
     }
 
@@ -650,7 +650,7 @@ namespace tgui
         {
             sf::CircleShape circle{innerRadius + m_bordersCached.getLeft()};
             circle.setOutlineThickness(-m_bordersCached.getLeft());
-            circle.setFillColor(sf::Color::Transparent);
+            circle.setFillColor(Color::Transparent);
             circle.setOutlineColor(Color::calcColorOpacity(getCurrentBorderColor(), m_opacityCached));
             target.draw(circle, states);
         }

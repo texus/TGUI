@@ -32,11 +32,11 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(ProgressBarRenderer, Borders)
 
-    TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, TextColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, TextColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, TextColorFilled, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, BackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, BackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, FillColor, Color(0, 110, 255))
-    TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ProgressBarRenderer, TextureBackground)
     TGUI_RENDERER_PROPERTY_TEXTURE(ProgressBarRenderer, TextureFill)

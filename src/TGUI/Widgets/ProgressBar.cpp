@@ -395,13 +395,13 @@ namespace tgui
         {
             std::string requestedStyle = toLower(trim(node->propertyValuePairs["filldirection"]->value));
             if (requestedStyle == "lefttoright")
-                setFillDirection(tgui::ProgressBar::FillDirection::LeftToRight);
+                setFillDirection(ProgressBar::FillDirection::LeftToRight);
             else if (requestedStyle == "righttoleft")
-                setFillDirection(tgui::ProgressBar::FillDirection::RightToLeft);
+                setFillDirection(ProgressBar::FillDirection::RightToLeft);
             else if (requestedStyle == "toptobottom")
-                setFillDirection(tgui::ProgressBar::FillDirection::TopToBottom);
+                setFillDirection(ProgressBar::FillDirection::TopToBottom);
             else if (requestedStyle == "bottomtotop")
-                setFillDirection(tgui::ProgressBar::FillDirection::BottomToTop);
+                setFillDirection(ProgressBar::FillDirection::BottomToTop);
             else
                 throw Exception{"Failed to parse FillDirection property, found unknown value."};
         }
@@ -409,7 +409,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f ProgressBar::getInnerSize() const
+    Vector2f ProgressBar::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
@@ -419,10 +419,10 @@ namespace tgui
 
     void ProgressBar::recalculateFillSize()
     {
-        sf::Vector2f size;
+        Vector2f size;
         if (m_spriteFill.isSet())
         {
-            const sf::Vector2f frontSize = getFrontImageSize();
+            const Vector2f frontSize = getFrontImageSize();
             m_spriteFill.setSize(frontSize);
             size = frontSize;
         }
@@ -460,7 +460,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f ProgressBar::getFrontImageSize() const
+    Vector2f ProgressBar::getFrontImageSize() const
     {
         if (m_spriteBackground.isSet())
         {
@@ -505,7 +505,7 @@ namespace tgui
             m_spriteBackground.draw(target, states);
         else
         {
-            sf::Vector2f positionOffset = {m_backRect.left, m_backRect.top};
+            Vector2f positionOffset = {m_backRect.left, m_backRect.top};
 
             states.transform.translate(positionOffset);
             drawRectangleShape(target, states, {m_backRect.width, m_backRect.height}, m_backgroundColorCached);
@@ -513,7 +513,7 @@ namespace tgui
         }
 
         // Draw the filled area
-        sf::Vector2f imageShift;
+        Vector2f imageShift;
         if (m_spriteFill.isSet())
         {
             if (m_spriteBackground.isSet() && (m_spriteBackground.getSize() != m_spriteFill.getSize()))
@@ -529,7 +529,7 @@ namespace tgui
         }
         else // Using colors instead of a texture
         {
-            sf::Vector2f positionOffset = {m_frontRect.left, m_frontRect.top};
+            Vector2f positionOffset = {m_frontRect.left, m_frontRect.top};
 
             states.transform.translate(positionOffset);
             drawRectangleShape(target, states, {m_frontRect.width, m_frontRect.height}, m_fillColorCached);
@@ -539,9 +539,9 @@ namespace tgui
         // Draw the text
         if (m_textBack.getString() != "")
         {
-            sf::Vector2f textTranslation = (getInnerSize() - m_textBack.getSize()) / 2.f;
+            Vector2f textTranslation = (getInnerSize() - m_textBack.getSize()) / 2.f;
 
-            if (sf::Color(m_textBack.getColor()) == sf::Color(m_textFront.getColor()))
+            if (Color(m_textBack.getColor()) == Color(m_textFront.getColor()))
             {
                 states.transform.translate(textTranslation);
                 m_textBack.draw(target, states);
@@ -551,7 +551,7 @@ namespace tgui
             {
                 // Draw the text on top of the unfilled part
                 {
-                    Clipping clipping{target, states, imageShift + sf::Vector2f{m_backRect.left, m_backRect.top}, {m_backRect.width, m_backRect.height}};
+                    Clipping clipping{target, states, imageShift + Vector2f{m_backRect.left, m_backRect.top}, {m_backRect.width, m_backRect.height}};
 
                     states.transform.translate(textTranslation);
                     m_textBack.draw(target, states);
@@ -560,7 +560,7 @@ namespace tgui
 
                 // Draw the text on top of the filled part
                 {
-                    Clipping clipping{target, states, imageShift + sf::Vector2f{m_frontRect.left, m_frontRect.top}, {m_frontRect.width, m_frontRect.height}};
+                    Clipping clipping{target, states, imageShift + Vector2f{m_frontRect.left, m_frontRect.top}, {m_frontRect.width, m_frontRect.height}};
 
                     states.transform.translate(textTranslation);
                     m_textFront.draw(target, states);

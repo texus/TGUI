@@ -32,8 +32,8 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(PanelRenderer, Borders)
 
-    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BorderColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BackgroundColor, sf::Color::Transparent)
+    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BorderColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BackgroundColor, Color::Transparent)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

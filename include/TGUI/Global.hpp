@@ -30,6 +30,7 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/Exception.hpp>
 #include <iostream>
+#include <cstdint>
 #include <string>
 #include <memory>
 
@@ -96,7 +97,7 @@ namespace tgui
     /// @internal
     // Checks if a character is a whitespace character.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_API bool isWhitespace(sf::Uint32 character);
+    TGUI_API bool isWhitespace(std::uint32_t character);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

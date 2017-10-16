@@ -32,15 +32,15 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(TabsRenderer, Borders)
 
-    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BackgroundColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, SelectedBackgroundColor, Color(0, 110, 255))
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, SelectedBackgroundColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, TextColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, TextColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, TextColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, SelectedTextColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, SelectedTextColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, SelectedTextColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureTab)
     TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureSelectedTab)

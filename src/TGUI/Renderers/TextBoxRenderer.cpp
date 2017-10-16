@@ -33,12 +33,12 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_OUTLINE(TextBoxRenderer, Borders)
     TGUI_RENDERER_PROPERTY_OUTLINE(TextBoxRenderer, Padding)
 
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, BackgroundColor, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, TextColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, SelectedTextColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, BackgroundColor, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, TextColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, SelectedTextColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, SelectedTextBackgroundColor, Color(0, 110, 255))
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, BorderColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, CaretColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, BorderColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(TextBoxRenderer, CaretColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(TextBoxRenderer, TextureBackground)
 

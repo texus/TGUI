@@ -30,13 +30,13 @@
 
 namespace tgui
 {
-    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, TrackColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, TrackColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, TrackColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ThumbColor, sf::Color(128, 128, 128))
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ThumbColor, Color(128, 128, 128))
     TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ThumbColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowBackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowBackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowBackgroundColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(ScrollbarRenderer, ArrowColorHover, {})
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ScrollbarRenderer, TextureTrack)

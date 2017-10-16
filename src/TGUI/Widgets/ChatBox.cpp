@@ -125,7 +125,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const sf::String& text, const sf::Color& color)
+    void ChatBox::addLine(const sf::String& text, Color color)
     {
         addLine(text, color, m_textSize);
     }
@@ -139,7 +139,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::addLine(const sf::String& text, const sf::Color& color, unsigned int textSize, const Font& font)
+    void ChatBox::addLine(const sf::String& text, Color color, unsigned int textSize, const Font& font)
     {
         // Remove the oldest line if you exceed the maximum
         if ((m_maxLines > 0) && (m_maxLines == m_lines.size()))
@@ -182,7 +182,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color ChatBox::getLineColor(std::size_t lineIndex) const
+    Color ChatBox::getLineColor(std::size_t lineIndex) const
     {
         if (lineIndex < m_lines.size())
         {
@@ -302,7 +302,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& ChatBox::getTextColor() const
+    const Color& ChatBox::getTextColor() const
     {
         return m_textColor;
     }
@@ -338,14 +338,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ChatBox::mouseOnWidget(sf::Vector2f pos) const
+    bool ChatBox::mouseOnWidget(Vector2f pos) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::leftMousePressed(sf::Vector2f pos)
+    void ChatBox::leftMousePressed(Vector2f pos)
     {
         // Set the mouse down flag to true
         m_mouseDown = true;
@@ -357,7 +357,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::leftMouseReleased(sf::Vector2f pos)
+    void ChatBox::leftMouseReleased(Vector2f pos)
     {
         if (m_scroll.isMouseDown())
             m_scroll.leftMouseReleased(pos - getPosition());
@@ -365,7 +365,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::mouseMoved(sf::Vector2f pos)
+    void ChatBox::mouseMoved(Vector2f pos)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
@@ -395,7 +395,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChatBox::mouseWheelScrolled(float delta, sf::Vector2f pos)
+    void ChatBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (m_scroll.getLowValue() < m_scroll.getMaximum())
             m_scroll.mouseWheelScrolled(delta, pos - getPosition());
@@ -548,7 +548,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_lines.size(); ++i)
         {
             const unsigned int lineTextSize = getLineTextSize(i);
-            const sf::Color lineTextColor = getLineColor(i);
+            const Color lineTextColor = getLineColor(i);
 
             auto lineNode = make_unique<DataIO::Node>();
             lineNode->name = "Line";
@@ -583,7 +583,7 @@ namespace tgui
             if (toLower(childNode->name) == "line")
             {
                 unsigned int lineTextSize = getTextSize();
-                sf::Color lineTextColor = getTextColor();
+                Color lineTextColor = getTextColor();
 
                 if (childNode->propertyValuePairs["textsize"])
                     lineTextSize = tgui::stoi(childNode->propertyValuePairs["textsize"]->value);
@@ -607,7 +607,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f ChatBox::getInnerSize() const
+    Vector2f ChatBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};

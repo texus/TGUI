@@ -96,30 +96,17 @@ namespace tgui
 
         std::string serializeColor(ObjectConverter&& value)
         {
-            static std::map<std::string, sf::Color> colorMap =
-            {
-                {"Black", sf::Color::Black},
-                {"White", sf::Color::White},
-                {"Red", sf::Color::Red},
-                {"Yellow", sf::Color::Yellow},
-                {"Green", sf::Color::Green},
-                {"Cyan", sf::Color::Cyan},
-                {"Blue", sf::Color::Blue},
-                {"Magenta", sf::Color::Magenta},
-                {"Transparent", sf::Color::Transparent}
-            };
-
-            sf::Color color = value.getColor();
+            Color color = value.getColor();
 
             // Check if the color can be represented by a string with its name
-            for (const auto& pair : colorMap)
+            for (const auto& pair : Color::colorMap)
             {
                 if (color == pair.second)
                     return pair.first;
             }
 
             // Return the color by its rgb value
-            return "#" + decToHex(color.r) + decToHex(color.g) + decToHex(color.b) + (color.a < 255 ? decToHex(color.a) : "");
+            return "#" + decToHex(color.getRed()) + decToHex(color.getGreen()) + decToHex(color.getBlue()) + (color.getAlpha() < 255 ? decToHex(color.getAlpha()) : "");
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,7 +182,7 @@ namespace tgui
 
         std::string serializeTextStyle(ObjectConverter&& value)
         {
-            const sf::Uint32 style = value.getTextStyle();
+            const unsigned int style = value.getTextStyle();
 
             if (style == sf::Text::Regular)
                 return "Regular";

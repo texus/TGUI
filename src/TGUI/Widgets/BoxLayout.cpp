@@ -76,14 +76,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayout::add(const tgui::Widget::Ptr& widget, const sf::String& widgetName)
+    void BoxLayout::add(const Widget::Ptr& widget, const sf::String& widgetName)
     {
         insert(m_widgets.size(), widget, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayout::insert(std::size_t index, const tgui::Widget::Ptr& widget, const sf::String& widgetName)
+    void BoxLayout::insert(std::size_t index, const Widget::Ptr& widget, const sf::String& widgetName)
     {
         // Move the widget to the right position
         if (index < m_widgets.size())
@@ -106,7 +106,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool BoxLayout::remove(const tgui::Widget::Ptr& widget)
+    bool BoxLayout::remove(const Widget::Ptr& widget)
     {
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {

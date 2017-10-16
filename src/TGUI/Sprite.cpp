@@ -39,7 +39,7 @@ namespace tgui
 
         if (isSet())
         {
-            if (getSize() == sf::Vector2f{})
+            if (getSize() == Vector2f{})
                 setSize(texture.getImageSize());
             else
                 updateVertices();
@@ -69,7 +69,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Sprite::setSize(const sf::Vector2f& size)
+    void Sprite::setSize(const Vector2f& size)
     {
         m_size.x = std::max(size.x, 0.f);
         m_size.y = std::max(size.y, 0.f);
@@ -80,14 +80,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Sprite::getSize() const
+    Vector2f Sprite::getSize() const
     {
         return m_size;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Sprite::setColor(const sf::Color& color)
+    void Sprite::setColor(const Color& color)
     {
         m_vertexColor = color;
 
@@ -98,7 +98,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Color& Sprite::getColor() const
+    const Color& Sprite::getColor() const
     {
         return m_vertexColor;
     }
@@ -120,21 +120,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Sprite::setVisibleRect(const sf::FloatRect& visibleRect)
+    void Sprite::setVisibleRect(const FloatRect& visibleRect)
     {
         m_visibleRect = visibleRect;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::FloatRect Sprite::getVisibleRect() const
+    FloatRect Sprite::getVisibleRect() const
     {
         return m_visibleRect;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Sprite::isTransparentPixel(sf::Vector2f pos) const
+    bool Sprite::isTransparentPixel(Vector2f pos) const
     {
         if (!isSet() || !m_texture.getData()->image || (m_size.x == 0) || (m_size.y == 0))
             return false;
@@ -235,9 +235,9 @@ namespace tgui
     void Sprite::updateVertices()
     {
         // Figure out how the image is scaled best
-        sf::Vector2f textureSize{m_texture.getImageSize()};
-        sf::FloatRect middleRect{m_texture.getMiddleRect()};
-        if (middleRect == sf::FloatRect(0, 0, textureSize.x, textureSize.y))
+        Vector2f textureSize{m_texture.getImageSize()};
+        FloatRect middleRect{sf::FloatRect{m_texture.getMiddleRect()}};
+        if (middleRect == FloatRect(0, 0, textureSize.x, textureSize.y))
         {
             m_scalingType = ScalingType::Normal;
         }
@@ -372,8 +372,8 @@ namespace tgui
         // A rotation can cause the image to be shifted, so we move it upfront so that it ends at the correct location
         if (getRotation() != 0)
         {
-            sf::Vector2f pos = {getTransform().transformRect(sf::FloatRect({}, getSize())).left,
-                                getTransform().transformRect(sf::FloatRect({}, getSize())).top};
+            Vector2f pos = {getTransform().transformRect(FloatRect({}, getSize())).left,
+                           getTransform().transformRect(FloatRect({}, getSize())).top};
 
             states.transform.translate(getPosition() - pos);
         }
@@ -384,8 +384,8 @@ namespace tgui
         {
             // Apply clipping when needed
             std::unique_ptr<Clipping> clipping;
-            if (m_visibleRect != sf::FloatRect{0, 0, 0, 0})
-                clipping = make_unique<Clipping>(target, states, sf::Vector2f{m_visibleRect.left, m_visibleRect.top}, sf::Vector2f{m_visibleRect.width, m_visibleRect.height});
+            if (m_visibleRect != FloatRect{0, 0, 0, 0})
+                clipping = make_unique<Clipping>(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
 
             states.texture = &m_texture.getData()->texture;
             target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);

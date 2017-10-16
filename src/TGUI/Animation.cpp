@@ -48,7 +48,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        MoveAnimation::MoveAnimation(Widget::Ptr widget, sf::Vector2f start, sf::Vector2f end, sf::Time duration, std::function<void()> finishedCallback)
+        MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback)
         {
             m_type = Type::Move;
             m_widget = widget;
@@ -83,7 +83,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, sf::Vector2f start, sf::Vector2f end, sf::Time duration, std::function<void()> finishedCallback)
+        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback)
         {
             m_type = Type::Resize;
             m_widget = widget;

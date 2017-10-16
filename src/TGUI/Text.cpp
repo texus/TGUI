@@ -34,7 +34,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Text::getSize() const
+    Vector2f Text::getSize() const
     {
         return m_size;
     }
@@ -167,7 +167,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Text::findCharacterPos(std::size_t index) const
+    Vector2f Text::findCharacterPos(std::size_t index) const
     {
         return m_text.findCharacterPos(index);
     }
@@ -201,7 +201,7 @@ namespace tgui
         float width = 0;
         float maxWidth = 0;
         unsigned int lines = 1;
-        sf::Uint32 prevChar = 0;
+        std::uint32_t prevChar = 0;
         const sf::String& string = m_text.getString();
         const bool bold = (m_text.getStyle() & sf::Text::Bold) != 0;
         const unsigned int textSize = m_text.getCharacterSize();
@@ -302,11 +302,11 @@ namespace tgui
 
             // Find out how many characters we can get on this line
             float width = 0;
-            sf::Uint32 prevChar = 0;
+            std::uint32_t prevChar = 0;
             for (std::size_t i = index; i < text.getSize(); ++i)
             {
                 float charWidth;
-                const sf::Uint32 curChar = text[i];
+                const std::uint32_t curChar = text[i];
                 if (curChar == '\n')
                 {
                     index++;

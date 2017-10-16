@@ -32,15 +32,15 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(ButtonRenderer, Borders)
 
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorDown, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorDisabled, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorDown, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorDisabled, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColorDown, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColorDisabled, {})

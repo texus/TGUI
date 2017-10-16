@@ -33,14 +33,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Clipping::Clipping(sf::RenderTarget& target, const sf::RenderStates& states, sf::Vector2f topLeft, sf::Vector2f size) :
+    Clipping::Clipping(sf::RenderTarget& target, const sf::RenderStates& states, Vector2f topLeft, Vector2f size) :
         m_target {target},
         m_oldView{target.getView()}
     {
-        sf::Vector2f bottomRight = sf::Vector2f(states.transform.transformPoint(topLeft + size));
-        topLeft = sf::Vector2f(states.transform.transformPoint(topLeft));
+        Vector2f bottomRight = Vector2f(states.transform.transformPoint(topLeft + size));
+        topLeft = Vector2f(states.transform.transformPoint(topLeft));
 
-        const sf::Vector2f viewTopLeft = topLeft;
+        const Vector2f viewTopLeft = topLeft;
         size = bottomRight - topLeft;
 
         topLeft.x -= m_originalView.getCenter().x - (m_originalView.getSize().x / 2.f);

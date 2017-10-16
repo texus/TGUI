@@ -106,7 +106,7 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        if (getSize() != sf::Vector2f{})
+        if (getSize() != Vector2f{})
         {
             m_renderTexture.create(static_cast<unsigned int>(getSize().x), static_cast<unsigned int>(getSize().y));
             m_sprite.setTexture(m_renderTexture.getTexture(), true);
@@ -151,7 +151,7 @@ namespace tgui
         Widget::rendererChanged(property);
 
         if (property == "opacity")
-            m_sprite.setColor(Color::calcColorOpacity(sf::Color::White, getSharedRenderer()->getOpacity()));
+            m_sprite.setColor(Color::calcColorOpacity(Color::White, getSharedRenderer()->getOpacity()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

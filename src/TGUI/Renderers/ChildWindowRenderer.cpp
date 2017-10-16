@@ -32,10 +32,10 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(ChildWindowRenderer, Borders)
 
-    TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, TitleBarColor, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, TitleColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, BackgroundColor, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, TitleBarColor, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, TitleColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, BackgroundColor, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ChildWindowRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ChildWindowRenderer, TextureTitleBar)
 

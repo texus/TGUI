@@ -32,9 +32,9 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(KnobRenderer, Borders)
 
-    TGUI_RENDERER_PROPERTY_COLOR(KnobRenderer, BackgroundColor, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(KnobRenderer, ThumbColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(KnobRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(KnobRenderer, BackgroundColor, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(KnobRenderer, ThumbColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(KnobRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(KnobRenderer, TextureBackground)
     TGUI_RENDERER_PROPERTY_TEXTURE(KnobRenderer, TextureForeground)

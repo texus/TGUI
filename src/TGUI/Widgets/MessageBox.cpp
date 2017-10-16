@@ -265,7 +265,7 @@ namespace tgui
         }
 
         // Calculate the suggested size of the window
-        sf::Vector2f size = {2*distance + m_label->getSize().x, 3*distance + m_label->getSize().y + buttonHeight};
+        Vector2f size = {2*distance + m_label->getSize().x, 3*distance + m_label->getSize().y + buttonHeight};
 
         // Make sure the buttons fit inside the message box
         if (buttonsAreaWidth > size.x)
@@ -356,7 +356,7 @@ namespace tgui
 
     void MessageBox::identifyLabelAndButtons()
     {
-        m_label = get<tgui::Label>("#TGUI_INTERNAL$MessageBoxText#");
+        m_label = get<Label>("#TGUI_INTERNAL$MessageBoxText#");
 
         for (unsigned int i = 0; i < m_widgets.size(); ++i)
         {

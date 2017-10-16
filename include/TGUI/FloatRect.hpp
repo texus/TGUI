@@ -39,7 +39,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         FloatRect() = default;
 
@@ -48,7 +47,6 @@ namespace tgui
         /// @brief Constructs the rectangle from an sf::FloatRect
         ///
         /// @param rect  Rectangle to initialize
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         FloatRect(sf::FloatRect rect) :
             sf::FloatRect{rect}
@@ -57,12 +55,37 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructs the rectangle from its position and size
+        ///
+        /// @param rectLeft   Left coordinate of the rectangle
+        /// @param rectTop    Top coordinate of the rectangle
+        /// @param rectWidth  Width of the rectangle
+        /// @param rectHeight Height of the rectangle
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        FloatRect(float rectLeft, float rectTop, float rectWidth, float rectHeight) :
+            sf::FloatRect{rectLeft, rectTop, rectWidth, rectHeight}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructs the rectangle from its position and size
+        ///
+        /// @param position Position of the top-left corner of the rectangle
+        /// @param size     Size of the rectangle
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        FloatRect(Vector2f position, Vector2f size) :
+            sf::FloatRect{position, size}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the position of the rectangle
         ///
         /// @param position  New position for the rectangle
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setPosition(sf::Vector2f position)
+        void setPosition(Vector2f position)
         {
             left = position.x;
             top = position.y;
@@ -73,9 +96,8 @@ namespace tgui
         /// @brief Returns the position of the rectangle
         ///
         /// @return Rectangle position
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f getPosition() const
+        Vector2f getPosition() const
         {
             return {left, top};
         }
@@ -85,9 +107,8 @@ namespace tgui
         /// @brief Sets the size of the rectangle
         ///
         /// @param size  New size for the rectangle
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setSize(sf::Vector2f size)
+        void setSize(Vector2f size)
         {
             width = size.x;
             height = size.y;
@@ -98,9 +119,8 @@ namespace tgui
         /// @brief Returns the size of the rectangle
         ///
         /// @return Rectangle size
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f getSize() const
+        Vector2f getSize() const
         {
             return {width, height};
         }

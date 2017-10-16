@@ -109,7 +109,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    tgui::Widget::Ptr Signal::getWidget()
+    Widget::Ptr Signal::getWidget()
     {
         return internal_signal::dereference<Widget*>(internal_signal::parameters[0])->shared_from_this();
     }
@@ -164,7 +164,7 @@ namespace tgui
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Bool, bool)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Float, float)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(String, const sf::String&)
-    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Vector2f, sf::Vector2f)
+    TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Vector2f, Vector2f)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -241,9 +241,9 @@ namespace tgui
     unsigned int SignalVector2f::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
     #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(sf::Vector2f).name()) == 0))
+        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(Vector2f).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::Vector2f).name()) == 0))
     #else
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(sf::Vector2f)))
+        if ((unboundParameters.size() == 1) && ((*unboundParameters.begin() == typeid(Vector2f)) || (*unboundParameters.begin() == typeid(sf::Vector2f))))
     #endif
             return 1;
         else

@@ -33,8 +33,8 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_OUTLINE(ChatBoxRenderer, Borders)
     TGUI_RENDERER_PROPERTY_OUTLINE(ChatBoxRenderer, Padding)
 
-    TGUI_RENDERER_PROPERTY_COLOR(ChatBoxRenderer, BackgroundColor, sf::Color::White)
-    TGUI_RENDERER_PROPERTY_COLOR(ChatBoxRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ChatBoxRenderer, BackgroundColor, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ChatBoxRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ChatBoxRenderer, TextureBackground)
 

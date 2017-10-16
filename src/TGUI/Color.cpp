@@ -30,11 +30,34 @@
 
 namespace tgui
 {
+    const Color Color::Black      {  0,   0,   0};
+    const Color Color::White      {255, 255, 255};
+    const Color Color::Red        {255,   0,   0};
+    const Color Color::Green      {  0, 255,   0};
+    const Color Color::Blue       {  0,   0, 255};
+    const Color Color::Yellow     {255, 255,   0};
+    const Color Color::Magenta    {255,   0, 255};
+    const Color Color::Cyan       {  0, 255, 255};
+    const Color Color::Transparent{  0,   0,   0,   0};
+
+    const std::map<std::string, Color> Color::colorMap =
+    {
+        {"black", Color::Black},
+        {"white", Color::White},
+        {"red", Color::Red},
+        {"yellow", Color::Yellow},
+        {"green", Color::Green},
+        {"cyan", Color::Cyan},
+        {"blue", Color::Blue},
+        {"magenta", Color::Magenta},
+        {"transparent", Color::Transparent}
+    };
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Color::Color(const std::string& string) :
         m_isSet{true},
-        m_color(Deserializer::deserialize(tgui::ObjectConverter::Type::Color, string).getColor()) // Did not compile with clang 3.6 when using braces
+        m_color(Deserializer::deserialize(ObjectConverter::Type::Color, string).getColor()) // Did not compile with clang 3.6 when using braces
     {
     }
 
@@ -61,28 +84,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Uint8 Color::getRed() const
+    std::uint8_t Color::getRed() const
     {
         return m_color.r;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Uint8 Color::getGreen() const
+    std::uint8_t Color::getGreen() const
     {
         return m_color.g;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Uint8 Color::getBlue() const
+    std::uint8_t Color::getBlue() const
     {
         return m_color.b;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Uint8 Color::getAlpha() const
+    std::uint8_t Color::getAlpha() const
     {
         return m_color.a;
     }

@@ -29,8 +29,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Global.hpp>
+#include <TGUI/Vector2f.hpp>
 #include <SFML/System/String.hpp>
-#include <SFML/System/Vector2.hpp>
 #include <functional>
 #include <typeindex>
 #include <cstddef>
@@ -263,7 +263,7 @@ namespace tgui
     TGUI_SIGNAL_VALUE_DECLARATION(Bool, bool)
     TGUI_SIGNAL_VALUE_DECLARATION(Float, float)
     TGUI_SIGNAL_VALUE_DECLARATION(String, const sf::String&)
-    TGUI_SIGNAL_VALUE_DECLARATION(Vector2f, sf::Vector2f)
+    TGUI_SIGNAL_VALUE_DECLARATION(Vector2f, Vector2f)
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -701,7 +701,18 @@ namespace tgui
             return static_cast<std::string>(*static_cast<const sf::String*>(obj));
         }
 
-        template <typename Type, typename std::enable_if<!std::is_same<Type, std::string>::value>::type* = nullptr>
+        template <typename Type, typename std::enable_if<std::is_same<Type, sf::Vector2f>::value>::type* = nullptr>
+    #ifdef TGUI_NO_CPP14
+        std::string dereference(const void* obj)
+    #else
+        decltype(auto) dereference(const void* obj)
+    #endif
+        {
+            // Signal handlers are allowed to have sf::Vector2f parameters while the signal sends tgui::Vector2f
+            return static_cast<sf::Vector2f>(*static_cast<const Vector2f*>(obj));
+        }
+
+        template <typename Type, typename std::enable_if<!std::is_same<Type, std::string>::value && !std::is_same<Type, sf::Vector2f>::value>::type* = nullptr>
     #ifdef TGUI_NO_CPP14
         const Type& dereference(const void* obj)
     #else

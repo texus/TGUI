@@ -28,6 +28,7 @@
 
 #include <TGUI/Font.hpp>
 #include <TGUI/Color.hpp>
+#include <TGUI/Vector2f.hpp>
 #include <TGUI/TextStyle.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -82,7 +83,7 @@ namespace tgui
         /// @return Size required for drawing the text
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f getSize() const;
+        Vector2f getSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,7 +210,7 @@ namespace tgui
         /// @warning Unlike the function in sf::Text, this function does not take global transformations into account.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f findCharacterPos(std::size_t index) const;
+        Vector2f findCharacterPos(std::size_t index) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,7 +236,7 @@ namespace tgui
     private:
 
         sf::Text     m_text;
-        sf::Vector2f m_size;
+        Vector2f      m_size;
         Font         m_font;
         Color        m_color;
         float        m_opacity = 1;

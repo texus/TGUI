@@ -32,11 +32,11 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(SliderRenderer, Borders)
 
-    TGUI_RENDERER_PROPERTY_COLOR(SliderRenderer, TrackColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(SliderRenderer, TrackColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(SliderRenderer, TrackColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(SliderRenderer, ThumbColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(SliderRenderer, ThumbColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(SliderRenderer, ThumbColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(SliderRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(SliderRenderer, BorderColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(SliderRenderer, BorderColorHover, {})
 
     TGUI_RENDERER_PROPERTY_TEXTURE(SliderRenderer, TextureTrack)

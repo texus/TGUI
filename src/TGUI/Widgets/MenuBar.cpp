@@ -309,10 +309,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool MenuBar::mouseOnWidget(sf::Vector2f pos) const
+    bool MenuBar::mouseOnWidget(Vector2f pos) const
     {
         // Check if the mouse is on top of the menu bar
-        if (sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
+        if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
             return true;
         else
         {
@@ -335,12 +335,12 @@ namespace tgui
                 // Check if the mouse is on top of the open menu
                 if (m_invertedMenuDirection)
                 {
-                    if (sf::FloatRect{left, -(getSize().y * m_menus[m_visibleMenu].menuItems.size()), width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
+                    if (FloatRect{left, -(getSize().y * m_menus[m_visibleMenu].menuItems.size()), width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
                         return true;
                 }
                 else
                 {
-                    if (sf::FloatRect{getPosition().x + left, getPosition().y + getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
+                    if (FloatRect{getPosition().x + left, getPosition().y + getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
                         return true;
                 }
             }
@@ -351,10 +351,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::leftMousePressed(sf::Vector2f pos)
+    void MenuBar::leftMousePressed(Vector2f pos)
     {
         // Check if a menu should be opened or closed
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             // Loop through the menus to check if the mouse is on top of them
             float menuWidth = 0;
@@ -397,14 +397,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::leftMouseReleased(sf::Vector2f pos)
+    void MenuBar::leftMouseReleased(Vector2f pos)
     {
         if (m_mouseDown)
         {
             pos -= getPosition();
 
             // Check if the mouse is on top of one of the menus
-            if (!sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+            if (!FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
             {
                 std::size_t selectedMenuItem;
                 if (m_invertedMenuDirection)
@@ -426,7 +426,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::mouseMoved(sf::Vector2f pos)
+    void MenuBar::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -434,7 +434,7 @@ namespace tgui
             mouseEnteredWidget();
 
         // Check if the mouse is on top of the menu bar (not on an open menus)
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             // Don't open a menu without having clicked first
             if (m_visibleMenu != -1)

@@ -27,7 +27,7 @@
 #define TGUI_LAYOUT_HPP
 
 #include <TGUI/Config.hpp>
-#include <SFML/System/Vector2.hpp>
+#include <TGUI/Vector2f.hpp>
 #include <type_traits>
 #include <functional>
 #include <memory>
@@ -238,18 +238,30 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Class to store the position or size of a widget
     ///
-    /// You don't have to explicitly create an instance of this class, sf::Vector2f is implicitly converted.
+    /// You don't have to explicitly create an instance of this class, sf::Vector2f and tgui::Vector2f are implicitly converted.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Layout2d
     {
     public:
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Default constructor to implicitly construct from an sf::Vector2f.
+        /// @brief Default constructor to implicitly construct from a tgui::Vector2f.
         ///
         /// @param constant  Value of the layout
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Layout2d(sf::Vector2f constant = {0, 0}) :
+        Layout2d(Vector2f constant = {0, 0}) :
+            x{constant.x},
+            y{constant.y}
+        {
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Default constructor to implicitly construct from a sf::Vector2f.
+        ///
+        /// @param constant  Value of the layout
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Layout2d(sf::Vector2f constant) :
             x{constant.x},
             y{constant.y}
         {
@@ -302,7 +314,7 @@ namespace tgui
         ///
         /// @return Value of the layout
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Vector2f getValue() const
+        Vector2f getValue() const
         {
             return {x.getValue(), y.getValue()};
         }

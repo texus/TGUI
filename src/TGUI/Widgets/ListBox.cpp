@@ -466,14 +466,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ListBox::mouseOnWidget(sf::Vector2f pos) const
+    bool ListBox::mouseOnWidget(Vector2f pos) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::leftMousePressed(sf::Vector2f pos)
+    void ListBox::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -485,8 +485,8 @@ namespace tgui
         }
         else
         {
-            if (sf::FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                              getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
+                          getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
@@ -511,7 +511,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::leftMouseReleased(sf::Vector2f pos)
+    void ListBox::leftMouseReleased(Vector2f pos)
     {
         if (m_mouseDown && !m_scroll.isMouseDown())
         {
@@ -538,7 +538,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::mouseMoved(sf::Vector2f pos)
+    void ListBox::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -557,8 +557,8 @@ namespace tgui
             m_scroll.mouseNoLongerOnWidget();
 
             // Find out on which item the mouse is hovering
-            if (sf::FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
-                              m_bordersCached.getTop() + m_paddingCached.getTop(), getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+                          m_bordersCached.getTop() + m_paddingCached.getTop(), getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
@@ -584,7 +584,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::mouseWheelScrolled(float delta, sf::Vector2f pos)
+    void ListBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (m_scroll.isShown())
         {
@@ -835,7 +835,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f ListBox::getInnerSize() const
+    Vector2f ListBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(), getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
@@ -983,7 +983,7 @@ namespace tgui
             {
                 states.transform.translate({0, static_cast<float>(m_selectedItem * m_itemHeight)});
 
-                const sf::Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
+                const Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
                 if ((m_selectedItem == m_hoveringItem) && m_selectedBackgroundColorHoverCached.isSet())
                     drawRectangleShape(target, states, size, m_selectedBackgroundColorHoverCached);
                 else

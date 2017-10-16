@@ -164,7 +164,7 @@ namespace tgui
          || (event.type == sf::Event::MouseButtonReleased) || (event.type == sf::Event::TouchEnded)
          || (event.type == sf::Event::MouseWheelScrolled))
         {
-            sf::Vector2f mouseCoords;
+            Vector2f mouseCoords;
 
             switch (event.type)
             {

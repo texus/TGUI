@@ -98,20 +98,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Group::getChildWidgetsOffset() const
+    Vector2f Group::getChildWidgetsOffset() const
     {
         return {m_paddingCached.getLeft(), m_paddingCached.getTop()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Group::mouseOnWidget(sf::Vector2f pos) const
+    bool Group::mouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
-            const sf::Vector2f offset = getChildWidgetsOffset();
+            const Vector2f offset = getChildWidgetsOffset();
             for (const auto& widget : m_widgets)
             {
                 if (widget->isVisible())
@@ -127,7 +127,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Group::leftMousePressed(sf::Vector2f pos)
+    void Group::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
         Container::leftMousePressed(pos);
@@ -153,7 +153,7 @@ namespace tgui
         states.transform.translate(getPosition().x + m_paddingCached.getLeft(), getPosition().y + m_paddingCached.getTop());
 
         // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        const sf::Vector2f innerSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+        const Vector2f innerSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                         getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
         const Clipping clipping{target, states, {}, innerSize};
 

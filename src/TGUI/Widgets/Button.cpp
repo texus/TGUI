@@ -208,7 +208,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::leftMousePressed(sf::Vector2f pos)
+    void Button::leftMousePressed(Vector2f pos)
     {
         ClickableWidget::leftMousePressed(pos);
 
@@ -217,7 +217,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::leftMouseReleased(sf::Vector2f pos)
+    void Button::leftMouseReleased(Vector2f pos)
     {
         if (m_mouseDown)
             onPress.emit(this, m_text.getString());
@@ -390,7 +390,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Button::getInnerSize() const
+    Vector2f Button::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
@@ -398,7 +398,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color Button::getCurrentBackgroundColor() const
+    const Color& Button::getCurrentBackgroundColor() const
     {
         if (!m_enabled && m_backgroundColorDisabledCached.isSet())
             return m_backgroundColorDisabledCached;
@@ -412,7 +412,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Color Button::getCurrentBorderColor() const
+    const Color& Button::getCurrentBorderColor() const
     {
         if (!m_enabled && m_borderColorDisabledCached.isSet())
             return m_borderColorDisabledCached;
@@ -437,17 +437,14 @@ namespace tgui
         else
             m_text.setStyle(getSharedRenderer()->getTextStyle());
 
-        sf::Color color;
         if (!m_enabled && getSharedRenderer()->getTextColorDisabled().isSet())
-            color = getSharedRenderer()->getTextColorDisabled();
+            m_text.setColor(getSharedRenderer()->getTextColorDisabled());
         else if (m_mouseHover && m_mouseDown && getSharedRenderer()->getTextColorDown().isSet())
-            color = getSharedRenderer()->getTextColorDown();
+            m_text.setColor(getSharedRenderer()->getTextColorDown());
         else if (m_mouseHover && getSharedRenderer()->getTextColorHover().isSet())
-            color = getSharedRenderer()->getTextColorHover();
+            m_text.setColor(getSharedRenderer()->getTextColorHover());
         else
-            color = getSharedRenderer()->getTextColor();
-
-        m_text.setColor(color);
+            m_text.setColor(getSharedRenderer()->getTextColor());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -39,7 +39,7 @@ namespace tgui
     Layout::Layout(std::string expression)
     {
         // Empty strings have value 0 (although this might indicate a mistake in the expression, it is valid for unary minus)
-        expression = tgui::trim(expression);
+        expression = trim(expression);
         if (expression.empty())
             return;
 

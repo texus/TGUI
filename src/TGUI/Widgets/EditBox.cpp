@@ -454,7 +454,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::leftMousePressed(sf::Vector2f pos)
+    void EditBox::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -505,7 +505,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::mouseMoved(sf::Vector2f pos)
+    void EditBox::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -845,7 +845,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::textEntered(sf::Uint32 key)
+    void EditBox::textEntered(std::uint32_t key)
     {
         if (m_readOnly)
             return;
@@ -1177,7 +1177,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f EditBox::getInnerSize() const
+    Vector2f EditBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
@@ -1214,7 +1214,7 @@ namespace tgui
         }
 
         float width = 0;
-        sf::Uint32 prevChar = 0;
+        std::uint32_t prevChar = 0;
         const unsigned int textSize = getTextSize();
         const bool bold = (m_textFull.getStyle() & sf::Text::Bold) != 0;
 
@@ -1222,7 +1222,7 @@ namespace tgui
         for (index = 0; index < m_text.getSize(); ++index)
         {
             float charWidth;
-            sf::Uint32 curChar = m_text[index];
+            std::uint32_t curChar = m_text[index];
             if (curChar == '\n')
             {
                 // This should not happen as edit box is for single line text, but lets try the next line anyway since we haven't found the position yet

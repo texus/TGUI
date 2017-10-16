@@ -333,18 +333,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scrollbar::mouseOnWidget(sf::Vector2f pos) const
+    bool Scrollbar::mouseOnWidget(Vector2f pos) const
     {
         // Don't make any calculations when no scrollbar is needed
         if (m_autoHide && (m_maximum <= m_lowValue))
             return false;
 
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::leftMousePressed(sf::Vector2f pos)
+    void Scrollbar::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -377,7 +377,7 @@ namespace tgui
         }
 
         // Check if the mouse is on top of the thumb
-        if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
+        if (FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
         {
             m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
             m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
@@ -394,7 +394,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::leftMouseReleased(sf::Vector2f pos)
+    void Scrollbar::leftMouseReleased(Vector2f pos)
     {
         // Check if one of the arrows was clicked
         if (m_mouseDown && m_mouseDownOnArrow)
@@ -487,7 +487,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::mouseMoved(sf::Vector2f pos)
+    void Scrollbar::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -639,19 +639,19 @@ namespace tgui
             }
         }
 
-        if (sf::FloatRect{m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height}.contains(pos))
+        if (FloatRect{m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height}.contains(pos))
             m_mouseHoverOverPart = Part::Thumb;
-        else if (sf::FloatRect{m_track.left, m_track.top, m_track.width, m_track.height}.contains(pos))
+        else if (FloatRect{m_track.left, m_track.top, m_track.width, m_track.height}.contains(pos))
             m_mouseHoverOverPart = Part::Track;
-        else if (sf::FloatRect{m_arrowUp.left, m_arrowUp.top, m_arrowUp.width, m_arrowUp.height}.contains(pos))
+        else if (FloatRect{m_arrowUp.left, m_arrowUp.top, m_arrowUp.width, m_arrowUp.height}.contains(pos))
             m_mouseHoverOverPart = Part::ArrowUp;
-        else if (sf::FloatRect{m_arrowDown.left, m_arrowDown.top, m_arrowDown.width, m_arrowDown.height}.contains(pos))
+        else if (FloatRect{m_arrowDown.left, m_arrowDown.top, m_arrowDown.width, m_arrowDown.height}.contains(pos))
             m_mouseHoverOverPart = Part::ArrowDown;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::mouseWheelScrolled(float delta, sf::Vector2f pos)
+    void Scrollbar::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (static_cast<int>(m_value) - static_cast<int>(delta * m_scrollAmount) < 0)
             setValue(0);

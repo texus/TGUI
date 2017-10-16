@@ -119,12 +119,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Picture::mouseOnWidget(sf::Vector2f pos) const
+    bool Picture::mouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 
         // Check if the mouse is on top of the picture
-        if (!m_ignoringMouseEvents && (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos)))
+        if (!m_ignoringMouseEvents && (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos)))
         {
             // We sometimes want clicks to go through transparent parts of the picture
             if (!m_ignoreTransparentParts && m_sprite.isTransparentPixel(pos))
@@ -138,7 +138,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Picture::leftMouseReleased(sf::Vector2f pos)
+    void Picture::leftMouseReleased(Vector2f pos)
     {
         const bool mouseDown = m_mouseDown;
 
@@ -178,7 +178,7 @@ namespace tgui
         {
             const auto& texture = getSharedRenderer()->getTexture();
 
-            if (!m_sprite.isSet() && (getSize() == sf::Vector2f{0,0}))
+            if (!m_sprite.isSet() && (getSize() == Vector2f{0,0}))
                 setSize(texture.getImageSize());
 
             m_sprite.setTexture(texture);

@@ -33,9 +33,9 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_OUTLINE(LabelRenderer, Borders)
     TGUI_RENDERER_PROPERTY_OUTLINE(LabelRenderer, Padding)
 
-    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, TextColor, sf::Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BackgroundColor, sf::Color::Transparent)
-    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, TextColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BackgroundColor, Color::Transparent)
+    TGUI_RENDERER_PROPERTY_COLOR(LabelRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(LabelRenderer, TextStyle, sf::Text::Regular)
 }

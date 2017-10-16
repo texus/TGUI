@@ -34,7 +34,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel::ScrollablePanel(const Layout2d& size, sf::Vector2f contentSize) :
+    ScrollablePanel::ScrollablePanel(const Layout2d& size, Vector2f contentSize) :
         Panel{size}
     {
         m_type = "ScrollablePanel";
@@ -50,7 +50,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel::Ptr ScrollablePanel::create(Layout2d size, sf::Vector2f contentSize)
+    ScrollablePanel::Ptr ScrollablePanel::create(Layout2d size, Vector2f contentSize)
     {
         return std::make_shared<ScrollablePanel>(size, contentSize);
     }
@@ -103,12 +103,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::add(const tgui::Widget::Ptr& widget, const sf::String& widgetName)
+    void ScrollablePanel::add(const Widget::Ptr& widget, const sf::String& widgetName)
     {
         Panel::add(widget, widgetName);
 
-        const sf::Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
-        if (m_contentSize == sf::Vector2f{0, 0})
+        const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
+        if (m_contentSize == Vector2f{0, 0})
         {
             if (bottomRight.x > m_mostBottomRightPosition.x)
                 m_mostBottomRightPosition.x = bottomRight.x;
@@ -123,11 +123,11 @@ namespace tgui
 
     bool ScrollablePanel::remove(const Widget::Ptr& widget)
     {
-        const sf::Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
+        const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
 
         const bool ret = Panel::remove(widget);
 
-        if (m_contentSize == sf::Vector2f{0, 0})
+        if (m_contentSize == Vector2f{0, 0})
         {
             if ((bottomRight.x == m_mostBottomRightPosition.x) || (bottomRight.y == m_mostBottomRightPosition.y))
             {
@@ -145,7 +145,7 @@ namespace tgui
     {
         Panel::removeAllWidgets();
 
-        if (m_contentSize == sf::Vector2f{0, 0})
+        if (m_contentSize == Vector2f{0, 0})
         {
             recalculateMostBottomRightPosition();
             updateScrollbars();
@@ -154,11 +154,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::setContentSize(sf::Vector2f size)
+    void ScrollablePanel::setContentSize(Vector2f size)
     {
         m_contentSize = size;
 
-        if (m_contentSize == sf::Vector2f{0, 0})
+        if (m_contentSize == Vector2f{0, 0})
             recalculateMostBottomRightPosition();
 
         updateScrollbars();
@@ -166,9 +166,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f ScrollablePanel::getContentSize() const
+    Vector2f ScrollablePanel::getContentSize() const
     {
-        if (m_contentSize != sf::Vector2f{0, 0})
+        if (m_contentSize != Vector2f{0, 0})
             return m_contentSize;
         else if (m_widgets.empty())
             return getInnerSize();
@@ -178,14 +178,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f ScrollablePanel::getContentOffset() const
+    Vector2f ScrollablePanel::getContentOffset() const
     {
         return {static_cast<float>(m_horizontalScrollbar.getValue()), static_cast<float>(m_verticalScrollbar.getValue())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::leftMousePressed(sf::Vector2f pos)
+    void ScrollablePanel::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
 
@@ -193,7 +193,7 @@ namespace tgui
             m_verticalScrollbar.leftMousePressed(pos - getPosition());
         else if (m_horizontalScrollbar.mouseOnWidget(pos - getPosition()))
             m_horizontalScrollbar.leftMousePressed(pos - getPosition());
-        else if (sf::FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
         {
             Panel::leftMousePressed({pos.x + static_cast<float>(m_horizontalScrollbar.getValue()),
                                      pos.y + static_cast<float>(m_verticalScrollbar.getValue())});
@@ -202,13 +202,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::leftMouseReleased(sf::Vector2f pos)
+    void ScrollablePanel::leftMouseReleased(Vector2f pos)
     {
         if (m_verticalScrollbar.mouseOnWidget(pos - getPosition()))
             m_verticalScrollbar.leftMouseReleased(pos - getPosition());
         else if (m_horizontalScrollbar.mouseOnWidget(pos - getPosition()))
             m_horizontalScrollbar.leftMouseReleased(pos - getPosition());
-        else if (sf::FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
         {
             Panel::leftMouseReleased({pos.x + static_cast<float>(m_horizontalScrollbar.getValue()),
                                       pos.y + static_cast<float>(m_verticalScrollbar.getValue())});
@@ -217,7 +217,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::mouseMoved(sf::Vector2f pos)
+    void ScrollablePanel::mouseMoved(Vector2f pos)
     {
         // Check if the mouse event should go to the scrollbar
         if ((m_verticalScrollbar.isMouseDown() && m_verticalScrollbar.isMouseDownOnThumb()) || m_verticalScrollbar.mouseOnWidget(pos - getPosition()))
@@ -230,7 +230,7 @@ namespace tgui
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
-            if (sf::FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+            if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
             {
                 Panel::mouseMoved({pos.x + static_cast<float>(m_horizontalScrollbar.getValue()),
                                    pos.y + static_cast<float>(m_verticalScrollbar.getValue())});
@@ -243,7 +243,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::mouseWheelScrolled(float delta, sf::Vector2f pos)
+    void ScrollablePanel::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (m_horizontalScrollbar.isShown() && m_horizontalScrollbar.mouseOnWidget(pos - getPosition()))
         {
@@ -291,12 +291,12 @@ namespace tgui
         }
 
         // Draw the background
-        const sf::Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                         getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
         drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         states.transform.translate(m_paddingCached.getLeft(), m_paddingCached.getTop());
-        sf::Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+        Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                     innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
         if (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue())
@@ -354,11 +354,11 @@ namespace tgui
 
     void ScrollablePanel::updateScrollbars()
     {
-        const sf::Vector2f visibleSize = getInnerSize();
+        const Vector2f visibleSize = getInnerSize();
         m_horizontalScrollbar.setLowValue(static_cast<unsigned int>(visibleSize.x));
         m_verticalScrollbar.setLowValue(static_cast<unsigned int>(visibleSize.y));
 
-        const sf::Vector2f contentSize = getContentSize();
+        const Vector2f contentSize = getContentSize();
         m_horizontalScrollbar.setMaximum(static_cast<unsigned int>(contentSize.x));
         m_verticalScrollbar.setMaximum(static_cast<unsigned int>(contentSize.y));
 
@@ -409,7 +409,7 @@ namespace tgui
 
         for (const auto& widget : m_widgets)
         {
-            const sf::Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
+            const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
             if (bottomRight.x > m_mostBottomRightPosition.x)
                 m_mostBottomRightPosition.x = bottomRight.x;
             if (bottomRight.y > m_mostBottomRightPosition.y)

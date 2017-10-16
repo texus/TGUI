@@ -38,28 +38,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayoutRatios::add(const tgui::Widget::Ptr& widget, const sf::String& widgetName)
+    void BoxLayoutRatios::add(const Widget::Ptr& widget, const sf::String& widgetName)
     {
         insert(m_widgets.size(), widget, 1, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayoutRatios::add(const tgui::Widget::Ptr& widget, float ratio, const sf::String& widgetName)
+    void BoxLayoutRatios::add(const Widget::Ptr& widget, float ratio, const sf::String& widgetName)
     {
         insert(m_widgets.size(), widget, ratio, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayoutRatios::insert(std::size_t index, const tgui::Widget::Ptr& widget, const sf::String& widgetName)
+    void BoxLayoutRatios::insert(std::size_t index, const Widget::Ptr& widget, const sf::String& widgetName)
     {
         insert(index, widget, 1, widgetName);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BoxLayoutRatios::insert(std::size_t index, const tgui::Widget::Ptr& widget, float ratio, const sf::String& widgetName)
+    void BoxLayoutRatios::insert(std::size_t index, const Widget::Ptr& widget, float ratio, const sf::String& widgetName)
     {
         if (index < m_ratios.size())
             m_ratios.insert(m_ratios.begin() + index, ratio);

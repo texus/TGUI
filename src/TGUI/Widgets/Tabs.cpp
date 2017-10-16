@@ -372,14 +372,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Tabs::mouseOnWidget(sf::Vector2f pos) const
+    bool Tabs::mouseOnWidget(Vector2f pos) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::leftMousePressed(sf::Vector2f pos)
+    void Tabs::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -402,7 +402,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::mouseMoved(sf::Vector2f pos)
+    void Tabs::mouseMoved(Vector2f pos)
     {
         Widget::mouseMoved(pos);
 
@@ -716,7 +716,7 @@ namespace tgui
             std::unique_ptr<Clipping> clipping;
             const float usableWidth = m_tabWidth[i] - (2 * m_distanceToSideCached);
             if (m_tabTexts[i].getSize().x > usableWidth)
-                clipping = make_unique<Clipping>(target, textStates, sf::Vector2f{m_distanceToSideCached, 0}, sf::Vector2f{usableWidth, usableHeight});
+                clipping = make_unique<Clipping>(target, textStates, Vector2f{m_distanceToSideCached, 0}, Vector2f{usableWidth, usableHeight});
 
             // Draw the text
             textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabTexts[i].getSize().x) / 2.f), ((usableHeight - m_tabTexts[i].getSize().y) / 2.f)});

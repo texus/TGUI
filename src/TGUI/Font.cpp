@@ -125,7 +125,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const sf::Glyph& Font::getGlyph(sf::Uint32 codePoint, unsigned int characterSize, bool bold, float outlineThickness) const
+    const sf::Glyph& Font::getGlyph(std::uint32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness) const
     {
         assert(m_font != nullptr);
 
@@ -139,7 +139,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Font::getKerning(sf::Uint32 first, sf::Uint32 second, unsigned int characterSize) const
+    float Font::getKerning(std::uint32_t first, std::uint32_t second, unsigned int characterSize) const
     {
         if (m_font)
             return m_font->getKerning(first, second, characterSize);

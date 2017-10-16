@@ -174,7 +174,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f RangeSlider::getFullSize() const
+    Vector2f RangeSlider::getFullSize() const
     {
         if (m_verticalScroll)
             return {std::max(getSize().x, m_thumbs.first.width), getSize().y + m_thumbs.first.height};
@@ -184,7 +184,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f RangeSlider::getWidgetOffset() const
+    Vector2f RangeSlider::getWidgetOffset() const
     {
         if (m_verticalScroll)
             return {std::min(0.f, getSize().x - m_thumbs.first.width), -m_thumbs.first.height / 2.f};
@@ -314,18 +314,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool RangeSlider::mouseOnWidget(sf::Vector2f pos) const
+    bool RangeSlider::mouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 
         // Check if the mouse is on top of the thumbs
-        if (sf::FloatRect(m_thumbs.second.left, m_thumbs.second.top, m_thumbs.second.width, m_thumbs.second.height).contains(pos))
+        if (FloatRect(m_thumbs.second.left, m_thumbs.second.top, m_thumbs.second.width, m_thumbs.second.height).contains(pos))
             return true;
-        if (sf::FloatRect(m_thumbs.first.left, m_thumbs.first.top, m_thumbs.first.width, m_thumbs.first.height).contains(pos))
+        if (FloatRect(m_thumbs.first.left, m_thumbs.first.top, m_thumbs.first.width, m_thumbs.first.height).contains(pos))
             return true;
 
         // Check if the mouse is on top of the track
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
             return true;
 
         return false;
@@ -333,7 +333,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::leftMousePressed(sf::Vector2f pos)
+    void RangeSlider::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
 
@@ -343,7 +343,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::leftMouseReleased(sf::Vector2f)
+    void RangeSlider::leftMouseReleased(Vector2f)
     {
         // The thumb might have been dragged between two values
         if (m_mouseDown)
@@ -352,7 +352,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::mouseMoved(sf::Vector2f pos)
+    void RangeSlider::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -430,13 +430,13 @@ namespace tgui
         else // Normal mouse move
         {
             // Set some variables so that when the mouse goes down we know whether it is on the track or not
-            if (sf::FloatRect(m_thumbs.second.left, m_thumbs.second.top, m_thumbs.second.width, m_thumbs.second.height).contains(pos))
+            if (FloatRect(m_thumbs.second.left, m_thumbs.second.top, m_thumbs.second.width, m_thumbs.second.height).contains(pos))
             {
                 m_mouseDownOnThumb = 2;
                 m_mouseDownOnThumbPos.x = pos.x - m_thumbs.second.left;
                 m_mouseDownOnThumbPos.y = pos.y - m_thumbs.second.top;
             }
-            else if (sf::FloatRect(m_thumbs.first.left, m_thumbs.first.top, m_thumbs.first.width, m_thumbs.first.height).contains(pos))
+            else if (FloatRect(m_thumbs.first.left, m_thumbs.first.top, m_thumbs.first.width, m_thumbs.first.height).contains(pos))
             {
                 m_mouseDownOnThumb = 1;
                 m_mouseDownOnThumbPos.x = pos.x - m_thumbs.first.left;
@@ -586,7 +586,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f RangeSlider::getInnerSize() const
+    Vector2f RangeSlider::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
@@ -596,7 +596,7 @@ namespace tgui
 
     void RangeSlider::updateThumbPositions()
     {
-        const sf::Vector2f innerSize = getInnerSize();
+        const Vector2f innerSize = getInnerSize();
 
         if (m_verticalScroll)
         {
@@ -651,7 +651,7 @@ namespace tgui
             if (m_selectedTrackColorCached.isSet())
             {
                 sf::RenderStates selectedTrackStates = states;
-                sf::Vector2f size;
+                Vector2f size;
 
                 if (m_verticalScroll)
                 {
@@ -698,7 +698,7 @@ namespace tgui
             }
             else // There are no textures
             {
-                const sf::Vector2f thumbInnerSize = {m_thumbs.first.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                const Vector2f thumbInnerSize = {m_thumbs.first.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                                      m_thumbs.first.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
                 if (m_mouseHover && m_thumbColorHoverCached.isSet())
@@ -735,7 +735,7 @@ namespace tgui
             }
             else // There are no textures
             {
-                const sf::Vector2f thumbInnerSize = {m_thumbs.second.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                const Vector2f thumbInnerSize = {m_thumbs.second.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                                      m_thumbs.second.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
                 if (m_mouseHover && m_thumbColorHoverCached.isSet())

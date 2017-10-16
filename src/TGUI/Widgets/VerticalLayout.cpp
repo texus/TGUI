@@ -63,7 +63,7 @@ namespace tgui
     void VerticalLayout::updateWidgets()
     {
         const float totalSpaceBetweenWidgets = (m_spaceBetweenWidgetsCached * m_widgets.size()) - m_spaceBetweenWidgetsCached;
-        const sf::Vector2f contentSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+        const Vector2f contentSize = {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                           getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
         const float totalRatio = std::accumulate(m_ratios.begin(), m_ratios.end(), 0.f);
@@ -80,7 +80,7 @@ namespace tgui
             // Correct the size for widgets that are bigger than what you set (e.g. have borders around it or a text next to them)
             if (widget->getFullSize() != widget->getSize())
             {
-                const sf::Vector2f newSize = widget->getSize() - (widget->getFullSize() - widget->getSize());
+                const Vector2f newSize = widget->getSize() - (widget->getFullSize() - widget->getSize());
                 if (newSize.x > 0 && newSize.y > 0)
                 {
                     widget->setSize(newSize);

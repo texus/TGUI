@@ -265,12 +265,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Knob::mouseOnWidget(sf::Vector2f pos) const
+    bool Knob::mouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 
         // Check if the mouse is on top of the widget
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
             {
@@ -280,7 +280,7 @@ namespace tgui
             }
             else // There is no texture, the widget has a circle shape
             {
-                const sf::Vector2f centerPoint = getSize() / 2.f;
+                const Vector2f centerPoint = getSize() / 2.f;
                 const float distance = std::sqrt(std::pow(centerPoint.x - pos.x, 2) + std::pow(centerPoint.y - pos.y, 2));
                 return (distance <= std::min(getSize().x, getSize().y));
             }
@@ -291,7 +291,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::leftMousePressed(sf::Vector2f pos)
+    void Knob::leftMousePressed(Vector2f pos)
     {
         // Set the mouse down flag
         m_mouseDown = true;
@@ -302,21 +302,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::leftMouseReleased(sf::Vector2f)
+    void Knob::leftMouseReleased(Vector2f)
     {
         m_mouseDown = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Knob::mouseMoved(sf::Vector2f pos)
+    void Knob::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
 
         if (!m_mouseHover)
             mouseEnteredWidget();
 
-        const sf::Vector2f centerPosition = getSize() / 2.0f;
+        const Vector2f centerPosition = getSize() / 2.0f;
 
         // Check if the mouse button is down
         if (m_mouseDown)
@@ -561,7 +561,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Knob::getInnerSize() const
+    Vector2f Knob::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(), getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
     }
@@ -581,7 +581,7 @@ namespace tgui
             states.transform.translate({borderThickness, borderThickness});
 
             sf::CircleShape bordersShape{size / 2};
-            bordersShape.setFillColor(sf::Color::Transparent);
+            bordersShape.setFillColor(Color::Transparent);
             bordersShape.setOutlineColor(Color::calcColorOpacity(m_borderColorCached, m_opacityCached));
             bordersShape.setOutlineThickness(borderThickness);
             target.draw(bordersShape, states);

@@ -171,7 +171,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Slider::getFullSize() const
+    Vector2f Slider::getFullSize() const
     {
         if (m_verticalScroll)
             return {std::max(getSize().x, m_thumb.width), getSize().y + m_thumb.height};
@@ -181,7 +181,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Slider::getWidgetOffset() const
+    Vector2f Slider::getWidgetOffset() const
     {
         if (m_verticalScroll)
             return {std::min(0.f, getSize().x - m_thumb.width), -m_thumb.height / 2.f};
@@ -268,16 +268,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Slider::mouseOnWidget(sf::Vector2f pos) const
+    bool Slider::mouseOnWidget(Vector2f pos) const
     {
         pos -= getPosition();
 
         // Check if the mouse is on top of the thumb
-        if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
+        if (FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
             return true;
 
         // Check if the mouse is on top of the track
-        if (sf::FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
             return true;
 
         return false;
@@ -285,7 +285,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::leftMousePressed(sf::Vector2f pos)
+    void Slider::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
 
@@ -295,7 +295,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::leftMouseReleased(sf::Vector2f)
+    void Slider::leftMouseReleased(Vector2f)
     {
         // The thumb might have been dragged between two values
         if (m_mouseDown)
@@ -304,7 +304,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::mouseMoved(sf::Vector2f pos)
+    void Slider::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -365,7 +365,7 @@ namespace tgui
         else // Normal mouse move
         {
             // Set some variables so that when the mouse goes down we know whether it is on the track or not
-            if (sf::FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
+            if (FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
             {
                 m_mouseDownOnThumb = true;
                 m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
@@ -378,7 +378,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::mouseWheelScrolled(float delta, sf::Vector2f)
+    void Slider::mouseWheelScrolled(float delta, Vector2f)
     {
         if (static_cast<int>(m_value - delta) < m_minimum)
             setValue(m_minimum);
@@ -512,7 +512,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Slider::getInnerSize() const
+    Vector2f Slider::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
@@ -522,7 +522,7 @@ namespace tgui
 
     void Slider::updateThumbPosition()
     {
-        const sf::Vector2f innerSize = getInnerSize();
+        const Vector2f innerSize = getInnerSize();
 
         if (m_verticalScroll)
         {
@@ -592,7 +592,7 @@ namespace tgui
         }
         else // There are no textures
         {
-            const sf::Vector2f thumbInnerSize = {m_thumb.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+            const Vector2f thumbInnerSize = {m_thumb.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                                  m_thumb.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
             if (m_mouseHover && m_thumbColorHoverCached.isSet())

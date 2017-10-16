@@ -65,16 +65,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f CheckBox::getFullSize() const
+    Vector2f CheckBox::getFullSize() const
     {
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
          && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
         {
-            sf::Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
+            Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
             if (getText().isEmpty())
-                return getSize() + sf::Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.getRight()), std::max(0.f, sizeDiff.y - m_bordersCached.getTop())};
+                return getSize() + Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.getRight()), std::max(0.f, sizeDiff.y - m_bordersCached.getTop())};
             else
-                return getSize() + sf::Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()))};
+                return getSize() + Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()))};
         }
         else
         {
@@ -87,7 +87,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f CheckBox::getWidgetOffset() const
+    Vector2f CheckBox::getWidgetOffset() const
     {
         float yOffset = 0;
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
@@ -124,7 +124,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CheckBox::leftMouseReleased(sf::Vector2f pos)
+    void CheckBox::leftMouseReleased(Vector2f pos)
     {
         const bool mouseDown = m_mouseDown;
 
@@ -244,10 +244,10 @@ namespace tgui
             if (m_checked)
             {
                 const float pi = 3.14159265358979f;
-                const sf::Vector2f size = getInnerSize();
-                const sf::Vector2f leftPoint = {0, size.y * 5.f/12.f};
-                const sf::Vector2f middlePoint = {size.x / 2, size.y};
-                const sf::Vector2f rightPoint = {size.x, 0};
+                const Vector2f size = getInnerSize();
+                const Vector2f leftPoint = {0, size.y * 5.f/12.f};
+                const Vector2f middlePoint = {size.x / 2, size.y};
+                const Vector2f rightPoint = {size.x, 0};
 
                 sf::RectangleShape left{{std::min(size.x, size.y) / 6, static_cast<float>(std::sqrt(std::pow(middlePoint.x - leftPoint.x, 2) + std::pow(middlePoint.y - leftPoint.y, 2)))}};
                 left.setPosition(leftPoint);
@@ -259,7 +259,7 @@ namespace tgui
                 right.setOrigin({left.getSize().x / 2, 0});
                 right.setRotation(-90 + (std::atan2(rightPoint.y - middlePoint.y, rightPoint.x - middlePoint.x) / pi * 180));
 
-                const sf::Color checkColor = getCurrentCheckColor();
+                const Color& checkColor = getCurrentCheckColor();
                 left.setFillColor(checkColor);
                 right.setFillColor(checkColor);
 

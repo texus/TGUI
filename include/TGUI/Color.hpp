@@ -28,7 +28,9 @@
 
 #include <TGUI/Config.hpp>
 #include <SFML/Graphics/Color.hpp>
+#include <cstdint>
 #include <string>
+#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +43,6 @@ namespace tgui
     /// - Implicit converter for parameters. A function taking a Color as parameter can be given an sf::Color, RGB values or
     ///   even a serialized string as argument.
     /// - Storing no color at all. Some colors may be optionally set and can thus remain unspecified.
-    ///
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Color
     {
@@ -49,11 +50,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the color with its alpha channel multiplied with the alpha parameter
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static sf::Color calcColorOpacity(const sf::Color& color, float alpha)
+        static Color calcColorOpacity(const Color& color, float alpha)
         {
-            return {color.r, color.g, color.b, static_cast<sf::Uint8>(color.a * alpha)};
+            return {color.getRed(), color.getGreen(), color.getBlue(), static_cast<std::uint8_t>(color.getAlpha() * alpha)};
         }
 
 
@@ -62,8 +62,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object without a color
         ///
-        /// The isSet function will return false when the object was created using this constructor.
-        ///
+        /// The isSet() function will return false when the object was created using this constructor.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Color() :
             m_isSet{false}
@@ -75,7 +74,6 @@ namespace tgui
         /// @brief Creates the object from an sf::Color
         ///
         /// @param color  Color to set
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Color(const sf::Color& color) :
             m_isSet{true},
@@ -91,9 +89,8 @@ namespace tgui
         /// @param green Green component
         /// @param blue  Blue component
         /// @param alpha Alpha component
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Color(sf::Uint8 red, sf::Uint8 green, sf::Uint8 blue, sf::Uint8 alpha = 255) :
+        Color(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha = 255) :
             m_isSet{true},
             m_color{red, green, blue, alpha}
         {
@@ -106,7 +103,6 @@ namespace tgui
         /// @param string  String to be deserialized as color
         ///
         /// The Deserializer class is used to convert the string into a color.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Color(const std::string& string);
 
@@ -117,7 +113,6 @@ namespace tgui
         /// @param string  String to be deserialized as color
         ///
         /// The Deserializer class is used to convert the string into a color.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Color(const char* string);
 
@@ -126,7 +121,6 @@ namespace tgui
         /// @brief Checks if a color was set
         ///
         /// @return True if a color was passed to the constructor, false when the default constructor was used
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isSet() const;
 
@@ -135,7 +129,6 @@ namespace tgui
         /// @brief Converts this object into an sf::Color object
         ///
         /// @return The color stored in this object, or the default color if no color was set
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         operator sf::Color() const;
 
@@ -144,36 +137,32 @@ namespace tgui
         /// @brief Returns the red component of the color
         ///
         /// @return Red component of the stored color or the one from the default color is no color was set
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Uint8 getRed() const;
+        std::uint8_t getRed() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the green component of the color
         ///
         /// @return Green component of the stored color or the one from the default color is no color was set
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Uint8 getGreen() const;
+        std::uint8_t getGreen() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the blue component of the color
         ///
         /// @return Blue component of the stored color or the one from the default color is no color was set
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Uint8 getBlue() const;
+        std::uint8_t getBlue() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the alpha component of the color
         ///
         /// @return Alpha component of the stored color or the one from the default color is no color was set
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::Uint8 getAlpha() const;
+        std::uint8_t getAlpha() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,6 +187,22 @@ namespace tgui
         /// @brief Compares the color with another one
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool operator!=(const sf::Color& right) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public:
+
+        static const Color Black;       ///< Black predefined color
+        static const Color White;       ///< White predefined color
+        static const Color Red;         ///< Red predefined color
+        static const Color Green;       ///< Green predefined color
+        static const Color Blue;        ///< Blue predefined color
+        static const Color Yellow;      ///< Yellow predefined color
+        static const Color Magenta;     ///< Magenta predefined color
+        static const Color Cyan;        ///< Cyan predefined color
+        static const Color Transparent; ///< Transparent (black) predefined color
+
+        static const std::map<std::string, Color> colorMap;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

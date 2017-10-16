@@ -34,11 +34,11 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_NUMBER(SpinButtonRenderer, SpaceBetweenArrows, 0)
 
-    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BackgroundColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, ArrowColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, ArrowColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, ArrowColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(SpinButtonRenderer, TextureArrowUp)
     TGUI_RENDERER_PROPERTY_TEXTURE(SpinButtonRenderer, TextureArrowUpHover)

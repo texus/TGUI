@@ -46,7 +46,7 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
     m_scrollablePanel->add(eventHandler, "EventHandler");
 
     m_scrollablePanel->setSize(m_formWindow->getSize());
-    setSize(sf::Vector2i{m_formWindow->getSize()});
+    setSize(sf::Vector2i{sf::Vector2f{m_formWindow->getSize()}});
 
     tgui::Theme selectionSquareTheme{"resources/SelectionSquare.txt"};
     for (auto& square : m_selectionSquares)

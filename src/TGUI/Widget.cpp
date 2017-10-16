@@ -33,33 +33,33 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace
-{
-    void addAnimation(std::vector<std::shared_ptr<tgui::priv::Animation>>& existingAnimations, std::shared_ptr<tgui::priv::Animation> newAnimation)
-    {
-        const auto type = newAnimation->getType();
-
-        // If another animation is already running with the same type then instantly finish it
-        unsigned int i = 0;
-        while (i < existingAnimations.size())
-        {
-            if (existingAnimations[i]->getType() == type)
-            {
-                existingAnimations[i]->finish();
-                existingAnimations.erase(existingAnimations.begin() + i);
-            }
-            else
-                ++i;
-        }
-
-        existingAnimations.push_back(newAnimation);
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 namespace tgui
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    namespace
+    {
+        void addAnimation(std::vector<std::shared_ptr<priv::Animation>>& existingAnimations, std::shared_ptr<priv::Animation> newAnimation)
+        {
+            const auto type = newAnimation->getType();
+
+            // If another animation is already running with the same type then instantly finish it
+            unsigned int i = 0;
+            while (i < existingAnimations.size())
+            {
+                if (existingAnimations[i]->getType() == type)
+                {
+                    existingAnimations[i]->finish();
+                    existingAnimations.erase(existingAnimations.begin() + i);
+                }
+                else
+                    ++i;
+            }
+
+            existingAnimations.push_back(newAnimation);
+        }
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Widget::Widget()
@@ -393,14 +393,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Widget::getFullSize() const
+    Vector2f Widget::getFullSize() const
     {
         return getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Widget::getAbsolutePosition() const
+    Vector2f Widget::getAbsolutePosition() const
     {
         if (m_parent)
             return m_parent->getAbsolutePosition() + m_parent->getChildWidgetsOffset() + getPosition();
@@ -410,9 +410,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Widget::getWidgetOffset() const
+    Vector2f Widget::getWidgetOffset() const
     {
-        return sf::Vector2f{0, 0};
+        return Vector2f{0, 0};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -439,14 +439,14 @@ namespace tgui
             case ShowAnimationType::Scale:
             {
                 addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), getPosition() + (getSize() / 2.f), getPosition(), duration));
-                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), sf::Vector2f{0, 0}, getSize(), duration));
+                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), Vector2f{0, 0}, getSize(), duration));
                 setPosition(getPosition() + (getSize() / 2.f));
                 setSize(0, 0);
                 break;
             }
             case ShowAnimationType::SlideFromLeft:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{-getFullSize().x, getPosition().y}, getPosition(), duration));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{-getFullSize().x, getPosition().y}, getPosition(), duration));
                 setPosition({-getFullSize().x, getPosition().y});
                 break;
             }
@@ -454,7 +454,7 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getParent()->getSize().x + getWidgetOffset().x, getPosition().y}, getPosition(), duration));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getParent()->getSize().x + getWidgetOffset().x, getPosition().y}, getPosition(), duration));
                     setPosition({getParent()->getSize().x + getWidgetOffset().x, getPosition().y});
                 }
                 else
@@ -466,7 +466,7 @@ namespace tgui
             }
             case ShowAnimationType::SlideFromTop:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, -getFullSize().y}, getPosition(), duration));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, -getFullSize().y}, getPosition(), duration));
                 setPosition({getPosition().x, -getFullSize().y});
                 break;
             }
@@ -474,7 +474,7 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), sf::Vector2f{getPosition().x, getParent()->getSize().y + getWidgetOffset().y}, getPosition(), duration));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), Vector2f{getPosition().x, getParent()->getSize().y + getWidgetOffset().y}, getPosition(), duration));
                     setPosition({getPosition().x, getParent()->getSize().y + getWidgetOffset().y});
                 }
                 else
@@ -515,13 +515,13 @@ namespace tgui
             case ShowAnimationType::Scale:
             {
                 addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, position + (size / 2.f), duration, [=](){ hide(); setPosition(position); setSize(size); }));
-                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), size, sf::Vector2f{0, 0}, duration, [=](){ hide(); setPosition(position); setSize(size); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), size, Vector2f{0, 0}, duration, [=](){ hide(); setPosition(position); setSize(size); }));
                 break;
             }
             case ShowAnimationType::SlideToRight:
             {
                 if (getParent())
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
                 else
                 {
                     TGUI_PRINT_WARNING("hideWithEffect(SlideToRight) does not work before widget has a parent.");
@@ -531,13 +531,13 @@ namespace tgui
             }
             case ShowAnimationType::SlideToLeft:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{-getFullSize().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{-getFullSize().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
                 break;
             }
             case ShowAnimationType::SlideToBottom:
             {
                 if (getParent())
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration, [=](){ hide(); setPosition(position); }));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration, [=](){ hide(); setPosition(position); }));
                 else
                 {
                     TGUI_PRINT_WARNING("hideWithEffect(SlideToBottom) does not work before widget has a parent.");
@@ -547,7 +547,7 @@ namespace tgui
             }
             case ShowAnimationType::SlideToTop:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, sf::Vector2f{position.x, -getFullSize().y}, duration, [=](){ hide(); setPosition(position); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, -getFullSize().y}, duration, [=](){ hide(); setPosition(position); }));
                 break;
             }
         }
@@ -687,31 +687,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::leftMousePressed(sf::Vector2f)
+    void Widget::leftMousePressed(Vector2f)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::leftMouseReleased(sf::Vector2f)
+    void Widget::leftMouseReleased(Vector2f)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::rightMousePressed(sf::Vector2f)
+    void Widget::rightMousePressed(Vector2f)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::rightMouseReleased(sf::Vector2f)
+    void Widget::rightMouseReleased(Vector2f)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::mouseMoved(sf::Vector2f)
+    void Widget::mouseMoved(Vector2f)
     {
         if (!m_mouseHover)
             mouseEnteredWidget();
@@ -725,13 +725,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::textEntered(sf::Uint32)
+    void Widget::textEntered(std::uint32_t)
     {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::mouseWheelScrolled(float, sf::Vector2f)
+    void Widget::mouseWheelScrolled(float, Vector2f)
     {
     }
 
@@ -770,7 +770,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Widget::askToolTip(sf::Vector2f mousePos)
+    Widget::Ptr Widget::askToolTip(Vector2f mousePos)
     {
         if (m_toolTip && mouseOnWidget(mousePos))
             return getToolTip();
@@ -863,9 +863,9 @@ namespace tgui
             node->propertyValuePairs["Visible"] = make_unique<DataIO::ValueNode>("false");
         if (!isEnabled())
             node->propertyValuePairs["Enabled"] = make_unique<DataIO::ValueNode>("false");
-        if (getPosition() != sf::Vector2f{})
+        if (getPosition() != Vector2f{})
             node->propertyValuePairs["Position"] = make_unique<DataIO::ValueNode>(m_position.toString());
-        if (getSize() != sf::Vector2f{})
+        if (getSize() != Vector2f{})
             node->propertyValuePairs["Size"] = make_unique<DataIO::ValueNode>(m_size.toString());
 
         if (getToolTip() != nullptr)
@@ -978,7 +978,7 @@ namespace tgui
                     const auto& constructor = WidgetFactory::getConstructFunction(toolTipWidgetNode->name);
                     if (constructor)
                     {
-                        tgui::Widget::Ptr toolTip = constructor();
+                        Widget::Ptr toolTip = constructor();
                         toolTip->load(toolTipWidgetNode, renderers);
                         setToolTip(toolTip);
                     }
@@ -1023,8 +1023,8 @@ namespace tgui
 
     void Widget::drawRectangleShape(sf::RenderTarget& target,
                                     const sf::RenderStates& states,
-                                    sf::Vector2f size,
-                                    sf::Color color) const
+                                    Vector2f size,
+                                    Color color) const
     {
         sf::RectangleShape shape{size};
 
@@ -1041,10 +1041,10 @@ namespace tgui
     void Widget::drawBorders(sf::RenderTarget& target,
                              const sf::RenderStates& states,
                              const Borders& borders,
-                             sf::Vector2f size,
-                             sf::Color borderColor) const
+                             Vector2f size,
+                             Color borderColor) const
     {
-        const sf::Color color = Color::calcColorOpacity(borderColor, m_opacityCached);
+        const Color color = Color::calcColorOpacity(borderColor, m_opacityCached);
 
         // If size is too small then draw entire size as border
         if ((size.x <= borders.getLeft() + borders.getRight()) || (size.y <= borders.getTop() + borders.getBottom()))

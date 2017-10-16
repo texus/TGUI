@@ -205,7 +205,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Texture::getImageSize() const
+    Vector2f Texture::getImageSize() const
     {
         if (m_data)
             return sf::Vector2f{m_data->texture.getSize()};

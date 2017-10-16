@@ -28,6 +28,7 @@
 
 #include <TGUI/Config.hpp>
 #include <SFML/Graphics/Font.hpp>
+#include <cstdint>
 #include <string>
 #include <cstddef>
 #include <memory>
@@ -161,7 +162,7 @@ namespace tgui
         /// \return The glyph corresponding to \a codePoint and \a characterSize
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const sf::Glyph& getGlyph(sf::Uint32 codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) const;
+        const sf::Glyph& getGlyph(std::uint32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,7 +179,7 @@ namespace tgui
         /// @return Kerning value for \a first and \a second, in pixels
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getKerning(sf::Uint32 first, sf::Uint32 second, unsigned int characterSize) const;
+        float getKerning(std::uint32_t first, std::uint32_t second, unsigned int characterSize) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

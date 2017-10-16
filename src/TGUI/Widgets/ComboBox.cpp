@@ -473,14 +473,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ComboBox::mouseOnWidget(sf::Vector2f pos) const
+    bool ComboBox::mouseOnWidget(Vector2f pos) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::leftMousePressed(sf::Vector2f)
+    void ComboBox::leftMousePressed(Vector2f)
     {
         m_mouseDown = true;
 
@@ -500,7 +500,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::mouseWheelScrolled(float delta, sf::Vector2f)
+    void ComboBox::mouseWheelScrolled(float delta, Vector2f)
     {
         // Only act to scrolling when the list is not being shown
         if (!m_listBox->isVisible())
@@ -721,7 +721,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f ComboBox::getInnerSize() const
+    Vector2f ComboBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};

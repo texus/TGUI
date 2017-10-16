@@ -33,15 +33,15 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_OUTLINE(ListBoxRenderer, Borders)
     TGUI_RENDERER_PROPERTY_OUTLINE(ListBoxRenderer, Padding)
 
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, BackgroundColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, BackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, BackgroundColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, SelectedBackgroundColor, Color(0, 110, 255))
     TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, SelectedBackgroundColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, TextColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, TextColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, TextColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, SelectedTextColor, sf::Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, SelectedTextColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, SelectedTextColorHover, {})
-    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, BorderColor, sf::Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ListBoxRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ListBoxRenderer, TextureBackground)
 

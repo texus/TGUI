@@ -428,7 +428,7 @@ namespace tgui
         Widget::Ptr m_visibleToolTip = nullptr;
         sf::Time m_tooltipTime;
         bool m_tooltipPossible = false;
-        sf::Vector2f m_lastMousePos;
+        Vector2f m_lastMousePos;
 
         sf::View m_view;
 

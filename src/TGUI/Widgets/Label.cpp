@@ -233,7 +233,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::leftMouseReleased(sf::Vector2f pos)
+    void Label::leftMouseReleased(Vector2f pos)
     {
         const bool mouseDown = m_mouseDown;
 
@@ -469,7 +469,7 @@ namespace tgui
             if ((getSize().x <= outline.getLeft() + outline.getRight()) || (getSize().y <= outline.getTop() + outline.getBottom()))
                 return;
 
-            sf::Vector2f pos{outline.getLeft(), outline.getTop()};
+            Vector2f pos{outline.getLeft(), outline.getTop()};
 
             if (m_verticalAlignment != VerticalAlignment::Top)
             {
@@ -522,7 +522,7 @@ namespace tgui
     {
         states.transform.translate(std::round(getPosition().x), std::round(getPosition().y));
 
-        sf::Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+        Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                   getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
         // Draw the borders
@@ -533,7 +533,7 @@ namespace tgui
         }
 
         // Draw the background
-        if (m_backgroundColorCached.isSet() && (m_backgroundColorCached != sf::Color::Transparent))
+        if (m_backgroundColorCached.isSet() && (m_backgroundColorCached != Color::Transparent))
             drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         // Apply clipping when needed
@@ -543,7 +543,7 @@ namespace tgui
             innerSize.x -= m_paddingCached.getLeft() + m_paddingCached.getRight();
             innerSize.y -= m_paddingCached.getTop() + m_paddingCached.getBottom();
 
-            clipping = make_unique<Clipping>(target, states, sf::Vector2f{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize);
+            clipping = make_unique<Clipping>(target, states, Vector2f{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize);
         }
 
         // Draw the text

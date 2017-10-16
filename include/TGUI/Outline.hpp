@@ -26,8 +26,8 @@
 #ifndef TGUI_OUTLINE_HPP
 #define TGUI_OUTLINE_HPP
 
+#include <TGUI/Vector2f.hpp>
 #include <TGUI/AbsoluteOrRelativeValue.hpp>
-#include <SFML/System/Vector2.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -187,7 +187,7 @@ namespace tgui
         /// @param newParentSize  New size from which to take the relative value
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateParentSize(sf::Vector2f newParentSize)
+        void updateParentSize(Vector2f newParentSize)
         {
             m_left.updateParentSize(newParentSize.x);
             m_top.updateParentSize(newParentSize.y);

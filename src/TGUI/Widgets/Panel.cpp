@@ -98,7 +98,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Panel::getChildWidgetsOffset() const
+    Vector2f Panel::getChildWidgetsOffset() const
     {
         return {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
                 m_paddingCached.getTop() + m_bordersCached.getTop()};
@@ -106,14 +106,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Panel::mouseOnWidget(sf::Vector2f pos) const
+    bool Panel::mouseOnWidget(Vector2f pos) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::leftMousePressed(sf::Vector2f pos)
+    void Panel::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
 
@@ -124,7 +124,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Panel::leftMouseReleased(sf::Vector2f pos)
+    void Panel::leftMouseReleased(Vector2f pos)
     {
         onMouseRelease.emit(this, pos - getPosition());
 
@@ -138,7 +138,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Panel::getInnerSize() const
+    Vector2f Panel::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_paddingCached.getTop() - m_paddingCached.getBottom()};
@@ -193,12 +193,12 @@ namespace tgui
         }
 
         // Draw the background
-        const sf::Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                                         getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
         drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         states.transform.translate(m_paddingCached.getLeft(), m_paddingCached.getTop());
-        const sf::Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+        const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                           innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
         // Draw the child widgets

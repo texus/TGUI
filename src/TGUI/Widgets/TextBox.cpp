@@ -293,14 +293,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextBox::mouseOnWidget(sf::Vector2f pos) const
+    bool TextBox::mouseOnWidget(Vector2f pos) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::leftMousePressed(sf::Vector2f pos)
+    void TextBox::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -386,7 +386,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::leftMouseReleased(sf::Vector2f pos)
+    void TextBox::leftMouseReleased(Vector2f pos)
     {
         // If there is a scrollbar then pass it the event
         if (m_verticalScroll.isShown())
@@ -402,7 +402,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseMoved(sf::Vector2f pos)
+    void TextBox::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
 
@@ -872,7 +872,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::textEntered(sf::Uint32 key)
+    void TextBox::textEntered(std::uint32_t key)
     {
         if (m_readOnly)
             return;
@@ -935,7 +935,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseWheelScrolled(float delta, sf::Vector2f pos)
+    void TextBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (m_verticalScroll.isShown())
         {
@@ -975,7 +975,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2<std::size_t> TextBox::findCaretPosition(sf::Vector2f position) const
+    sf::Vector2<std::size_t> TextBox::findCaretPosition(Vector2f position) const
     {
         position.x -= m_bordersCached.getLeft() + m_paddingCached.getLeft();
         position.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
@@ -1007,13 +1007,13 @@ namespace tgui
 
         // Find between which character the mouse is standing
         float width = 0;
-        sf::Uint32 prevChar = 0;
+        std::uint32_t prevChar = 0;
         for (std::size_t i = 0; i < m_lines[lineNumber].getSize(); ++i)
         {
             float charWidth;
-            const sf::Uint32 curChar = m_lines[lineNumber][i];
+            const std::uint32_t curChar = m_lines[lineNumber][i];
             //if (curChar == '\n')
-            //    return sf::Vector2<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextBox strips newlines but this code is kept for when this function is generalized
+            //    return sf::Vector2f<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextBox strips newlines but this code is kept for when this function is generalized
             //else
             if (curChar == '\t')
                 charWidth = static_cast<float>(m_fontCached.getGlyph(' ', getTextSize(), false).advance) * 4;
@@ -1276,7 +1276,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f TextBox::getInnerSize() const
+    Vector2f TextBox::getInnerSize() const
     {
         return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
                 getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};

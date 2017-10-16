@@ -645,7 +645,7 @@ namespace tgui
                 const auto& constructor = WidgetFactory::getConstructFunction(toLower(widgetType));
                 if (constructor)
                 {
-                    tgui::Widget::Ptr widget = constructor();
+                    Widget::Ptr widget = constructor();
                     widget->load(node, availableRenderers);
                     add(widget, objectName);
                 }
@@ -760,7 +760,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::leftMousePressed(sf::Vector2f pos)
+    void Container::leftMousePressed(Vector2f pos)
     {
         sf::Event event;
         event.type = sf::Event::MouseButtonPressed;
@@ -774,7 +774,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::leftMouseReleased(sf::Vector2f pos)
+    void Container::leftMouseReleased(Vector2f pos)
     {
         sf::Event event;
         event.type = sf::Event::MouseButtonReleased;
@@ -790,7 +790,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::mouseMoved(sf::Vector2f pos)
+    void Container::mouseMoved(Vector2f pos)
     {
         Widget::mouseMoved(pos);
 
@@ -815,7 +815,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::textEntered(sf::Uint32 key)
+    void Container::textEntered(std::uint32_t key)
     {
         sf::Event event;
         event.type = sf::Event::TextEntered;
@@ -827,7 +827,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::mouseWheelScrolled(float delta, sf::Vector2f pos)
+    void Container::mouseWheelScrolled(float delta, Vector2f pos)
     {
         sf::Event event;
         event.type = sf::Event::MouseWheelScrolled;
@@ -872,7 +872,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Container::askToolTip(sf::Vector2f mousePos)
+    Widget::Ptr Container::askToolTip(Vector2f mousePos)
     {
         if (mouseOnWidget(mousePos))
         {
@@ -943,7 +943,7 @@ namespace tgui
                 if (nameSeparator != std::string::npos)
                     className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
 
-                tgui::Widget::Ptr childWidget = constructor();
+                Widget::Ptr childWidget = constructor();
                 childWidget->load(childNode, renderers);
                 add(childWidget, className);
             }
@@ -976,7 +976,7 @@ namespace tgui
         // Check if a mouse button has moved
         if ((event.type == sf::Event::MouseMoved) || ((event.type == sf::Event::TouchMoved) && (event.touch.finger == 0)))
         {
-            sf::Vector2f mousePos;
+            Vector2f mousePos;
             if (event.type == sf::Event::MouseMoved)
                 mousePos = {static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)};
             else
@@ -1012,7 +1012,7 @@ namespace tgui
         // Check if a mouse button was pressed or a touch event occurred
         else if ((event.type == sf::Event::MouseButtonPressed) || (event.type == sf::Event::TouchBegan))
         {
-            sf::Vector2f mousePos;
+            Vector2f mousePos;
             if (event.type == sf::Event::MouseButtonPressed)
                 mousePos = {static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)};
             else
@@ -1059,7 +1059,7 @@ namespace tgui
         else if (((event.type == sf::Event::MouseButtonReleased) && (event.mouseButton.button == sf::Mouse::Left))
               || ((event.type == sf::Event::TouchEnded) && (event.touch.finger == 0)))
         {
-            sf::Vector2f mousePos;
+            Vector2f mousePos;
             if (event.type == sf::Event::MouseButtonReleased)
                 mousePos = {static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)};
             else
@@ -1283,7 +1283,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Container::mouseOnWhichWidget(sf::Vector2f mousePos)
+    Widget::Ptr Container::mouseOnWhichWidget(Vector2f mousePos)
     {
         Widget::Ptr widget = nullptr;
         for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
@@ -1336,7 +1336,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool GuiContainer::mouseOnWidget(sf::Vector2f) const
+    bool GuiContainer::mouseOnWidget(Vector2f) const
     {
         return true;
     }

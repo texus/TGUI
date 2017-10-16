@@ -436,9 +436,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Grid::mouseOnWidget(sf::Vector2f pos) const
+    bool Grid::mouseOnWidget(Vector2f pos) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,7 +477,7 @@ namespace tgui
                 }
             };
 
-            auto getWidgetsInGridString = [&](const tgui::Widget::Ptr& w) -> std::string {
+            auto getWidgetsInGridString = [&](const Widget::Ptr& w) -> std::string {
                 auto it = widgetsMap.find(w);
                 if (it != widgetsMap.end())
                 {
@@ -611,10 +611,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::Vector2f Grid::getMinimumSize() const
+    Vector2f Grid::getMinimumSize() const
     {
         // Calculate the required space to have all widgets in the grid.
-        sf::Vector2f minSize;
+        Vector2f minSize;
 
         // Loop through all rows to find the minimum height required by the grid
         for (float rowHeight : m_rowHeight)
@@ -631,20 +631,20 @@ namespace tgui
 
     void Grid::updatePositionsOfAllWidgets()
     {
-        sf::Vector2f extraOffset;
+        Vector2f extraOffset;
         if (!m_autoSize && m_gridWidgets.size() > 1)
         {
-            const sf::Vector2f minimumSize = getMinimumSize();
+            const Vector2f minimumSize = getMinimumSize();
             if (getSize().x > minimumSize.x)
                 extraOffset.x = (getSize().x - minimumSize.x) / (m_gridWidgets.size() - 1);
             if (getSize().y > minimumSize.y)
                 extraOffset.y = (getSize().y - minimumSize.y) / (m_gridWidgets.size() - 1);
         }
 
-        sf::Vector2f position;
+        Vector2f position;
         for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
         {
-            const sf::Vector2f previousPosition = position;
+            const Vector2f previousPosition = position;
 
             for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
             {
@@ -654,7 +654,7 @@ namespace tgui
                     continue;
                 }
 
-                sf::Vector2f cellPosition = position + (extraOffset / 2.f);
+                Vector2f cellPosition = position + (extraOffset / 2.f);
                 switch (m_objAlignment[row][col])
                 {
                 case Alignment::UpperLeft:

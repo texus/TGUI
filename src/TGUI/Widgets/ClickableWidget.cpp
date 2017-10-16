@@ -57,14 +57,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool ClickableWidget::mouseOnWidget(sf::Vector2f pos) const
+    bool ClickableWidget::mouseOnWidget(Vector2f pos) const
     {
-        return sf::FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ClickableWidget::leftMousePressed(sf::Vector2f pos)
+    void ClickableWidget::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true; /// TODO: Is there any widget for which this can't be in Widget base class?
         onMousePress.emit(this, pos - getPosition());
@@ -72,7 +72,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ClickableWidget::leftMouseReleased(sf::Vector2f pos)
+    void ClickableWidget::leftMouseReleased(Vector2f pos)
     {
         onMouseRelease.emit(this, pos - getPosition());
 

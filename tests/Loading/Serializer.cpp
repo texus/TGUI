@@ -54,15 +54,15 @@ TEST_CASE("[Serializer]")
         REQUIRE(tgui::Serializer::serialize(sf::Color{1, 35, 69, 103}) == "#01234567");
         REQUIRE(tgui::Serializer::serialize(sf::Color{137, 171, 205, 239}) == "#89ABCDEF");
 
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Black) == "Black");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::White) == "White");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Red) == "Red");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Green) == "Green");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "Blue");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Magenta) == "Magenta");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Yellow) == "Yellow");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Cyan) == "Cyan");
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Transparent) == "Transparent");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Black) == "black");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::White) == "white");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Red) == "red");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Green) == "green");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "blue");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Magenta) == "magenta");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Yellow) == "yellow");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Cyan) == "cyan");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Transparent) == "transparent");
     }
 
     SECTION("serialize outline")
@@ -128,7 +128,7 @@ TEST_CASE("[Serializer]")
         rendererData->propertyValuePairs["TextStyleProperty"] = {sf::Text::StrikeThrough};
         rendererData->propertyValuePairs["Nested"] = {childRendererData};
 
-        std::string result = "SomeColor = Red;\n"
+        std::string result = "SomeColor = red;\n"
                              "TextStyleProperty = StrikeThrough;\n"
                              "\n"
                              "Nested {\n"
@@ -140,7 +140,7 @@ TEST_CASE("[Serializer]")
 
     SECTION("custom serialize function")
     {
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "Blue");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "blue");
         auto oldFunc = tgui::Serializer::getFunction(tgui::ObjectConverter::Type::Color);
 
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, [](tgui::ObjectConverter&&){ return "STR"; });
@@ -148,6 +148,6 @@ TEST_CASE("[Serializer]")
         REQUIRE(tgui::Serializer::serialize(tgui::Outline{10, 2, 50, 300}) == "(10, 2, 50, 300)");
         
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, oldFunc);
-        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "Blue");
+        REQUIRE(tgui::Serializer::serialize(sf::Color::Blue) == "blue");
     }
 }
