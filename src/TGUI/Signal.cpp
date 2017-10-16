@@ -241,7 +241,7 @@ namespace tgui
     unsigned int SignalVector2f::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
     #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(Vector2f).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::Vector2f).name()) == 0))
+        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(Vector2f).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::Vector2f).name()) == 0)))
     #else
         if ((unboundParameters.size() == 1) && ((*unboundParameters.begin() == typeid(Vector2f)) || (*unboundParameters.begin() == typeid(sf::Vector2f))))
     #endif
