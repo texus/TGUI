@@ -37,7 +37,7 @@ TEST_CASE("[Grid]")
 
     SECTION("Adding widgets")
     {
-        auto widget1 = tgui::ClickableWidget::create();
+        auto widget1 = tgui::ClickableWidget::create({100, 50});
         grid->addWidget(widget1, 3, 2);
 
         REQUIRE(grid->getWidgets().size() == 1);
@@ -50,7 +50,7 @@ TEST_CASE("[Grid]")
         REQUIRE(grid->getWidgetBorders(0, 0) == tgui::Borders{0});
         REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::Center);
 
-        auto widget2 = tgui::ClickableWidget::create();
+        auto widget2 = tgui::ClickableWidget::create({20, 10});
         grid->add(widget2); // Widget is added before calling addWidget here
         grid->addWidget(widget2, 0, 0, {1, 2, 3, 4}, tgui::Grid::Alignment::UpperLeft);
 
@@ -78,7 +78,7 @@ TEST_CASE("[Grid]")
 
     SECTION("Borders")
     {
-        auto widget = tgui::ClickableWidget::create();
+        auto widget = tgui::ClickableWidget::create({40, 30});
         grid->addWidget(widget, 3, 2, {1, 2, 3, 4});
 
         REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(1, 2, 3, 4));

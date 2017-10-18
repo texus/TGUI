@@ -83,6 +83,7 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &right)
         {
+            m_autoSize = right.m_autoSize; // Has to be set before Container::operator= is called which will call removeAllWidgets which could set size to (0,0)
             Container::operator=(right);
 
             for (std::size_t row = 0; row < right.m_gridWidgets.size(); ++row)
@@ -150,6 +151,8 @@ namespace tgui
     void Grid::setSize(const Layout2d& size)
     {
         Container::setSize(size);
+
+        m_autoSize = false;
 
         updatePositionsOfAllWidgets();
     }
@@ -742,7 +745,22 @@ namespace tgui
             }
         }
 
-        // Reposition all widgets
+        if (m_autoSize)
+        {
+            sf::Vector2f size;
+            for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
+            {
+                float rowWidth = 0;
+                for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
+                    rowWidth += m_columnWidth[col];
+
+                size.x = std::max(size.x, rowWidth);
+                size.y += m_rowHeight[row];
+            }
+
+            Container::setSize(size);
+        }
+
         updatePositionsOfAllWidgets();
     }
 
