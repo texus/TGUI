@@ -26,6 +26,8 @@
 #include <TGUI/Clipping.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/HorizontalLayout.hpp>
 
 TEST_CASE("[Clipping]")
 {
@@ -88,5 +90,34 @@ TEST_CASE("[Clipping]")
 
             TEST_DRAW("Clipping_EditBox_OutsideViewport.png")
         }
+    }
+
+    SECTION("Nesting")
+    {
+        auto panel = tgui::Panel::create({75, 25});
+        panel->setPosition({10, 5});
+        panel->getRenderer()->setBackgroundColor(sf::Color::Yellow);
+        TEST_DRAW_INIT(100, 40, panel)
+
+        auto group = tgui::Group::create();
+        panel->add(group);
+
+        auto layout = tgui::HorizontalLayout::create({150, 25});
+        layout->setPosition({-30, -15});
+        group->add(layout);
+
+        auto label = tgui::Label::create("Hello");
+        label->setTextSize(20);
+        layout->add(label);
+
+        label = tgui::Label::copy(label);
+        label->setText("World");
+        layout->add(label);
+
+        layout = tgui::HorizontalLayout::copy(layout);
+        layout->setPosition({-30, 15});
+        group->add(layout);
+
+        TEST_DRAW("Clipping_NestedLayers.png")
     }
 }
