@@ -40,7 +40,7 @@ namespace tgui
         sf::Vector2f bottomRight = sf::Vector2f(states.transform.transformPoint(topLeft + size));
         topLeft = sf::Vector2f(states.transform.transformPoint(topLeft));
 
-        const sf::Vector2f viewTopLeft = topLeft;
+        sf::Vector2f viewTopLeft = topLeft;
         size = bottomRight - topLeft;
 
         topLeft.x -= m_originalView.getCenter().x - (m_originalView.getSize().x / 2.f);
@@ -56,32 +56,39 @@ namespace tgui
         topLeft.x += m_originalView.getViewport().left;
         topLeft.y += m_originalView.getViewport().top;
 
-        if (topLeft.x < m_originalView.getViewport().left)
+        if (topLeft.x < m_oldView.getViewport().left)
         {
-            size.x -= m_originalView.getViewport().left - topLeft.x;
-            topLeft.x = m_originalView.getViewport().left;
+            size.x -= m_oldView.getViewport().left - topLeft.x;
+            viewTopLeft.x += (m_oldView.getViewport().left - topLeft.x) * (m_originalView.getSize().x / m_originalView.getViewport().width);
+            topLeft.x = m_oldView.getViewport().left;
         }
-        if (topLeft.y < m_originalView.getViewport().top)
+        if (topLeft.y < m_oldView.getViewport().top)
         {
-            size.y -= m_originalView.getViewport().top - topLeft.y;
-            topLeft.y = m_originalView.getViewport().top;
+            size.y -= m_oldView.getViewport().top - topLeft.y;
+            viewTopLeft.y += (m_oldView.getViewport().top - topLeft.y) * (m_originalView.getSize().y / m_originalView.getViewport().height);
+            topLeft.y = m_oldView.getViewport().top;
         }
-        if (size.x > m_originalView.getViewport().left + m_originalView.getViewport().width - topLeft.x)
-            size.x = m_originalView.getViewport().left + m_originalView.getViewport().width - topLeft.x;
-        if (size.y > m_originalView.getViewport().top + m_originalView.getViewport().height - topLeft.y)
-            size.y = m_originalView.getViewport().top + m_originalView.getViewport().height - topLeft.y;
+
+        if (size.x > m_oldView.getViewport().left + m_oldView.getViewport().width - topLeft.x)
+            size.x = m_oldView.getViewport().left + m_oldView.getViewport().width - topLeft.x;
+        if (size.y > m_oldView.getViewport().top + m_oldView.getViewport().height - topLeft.y)
+            size.y = m_oldView.getViewport().top + m_oldView.getViewport().height - topLeft.y;
 
         if ((size.x >= 0) && (size.y >= 0))
         {
-            sf::View view{{viewTopLeft.x, viewTopLeft.y, size.x * m_originalView.getSize().x / m_originalView.getViewport().width, size.y * m_originalView.getSize().y / m_originalView.getViewport().height}};
+            sf::View view{{viewTopLeft.x,
+                           viewTopLeft.y,
+                           size.x * m_originalView.getSize().x / m_originalView.getViewport().width,
+                           size.y * m_originalView.getSize().y / m_originalView.getViewport().height}};
+
             view.setViewport({topLeft.x, topLeft.y, size.x, size.y});
             target.setView(view);
         }
         else // The clipping area lies outside the viewport
         {
-            sf::View view{{0, 0, 0, 0}};
-            view.setViewport({0, 0, 0, 0});
-            target.setView(view);
+            sf::View emptyView{{0, 0, 0, 0}};
+            emptyView.setViewport({0, 0, 0, 0});
+            target.setView(emptyView);
         }
     }
 
