@@ -259,7 +259,7 @@ namespace tgui
             m_focusedWidget = 0;
 
             // Remove all the old widgets
-            removeAllWidgets();
+            Container::removeAllWidgets();
 
             // Copy all the widgets
             for (std::size_t i = 0; i < right.m_widgets.size(); ++i)

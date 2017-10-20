@@ -50,6 +50,90 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ScrollablePanel::ScrollablePanel(const ScrollablePanel& other) :
+        Panel                    {other},
+        m_contentSize            {other.m_contentSize},
+        m_mostBottomRightPosition{other.m_mostBottomRightPosition},
+        m_verticalScrollbar      {other.m_verticalScrollbar},
+        m_horizontalScrollbar    {other.m_horizontalScrollbar},
+        m_connectedCallbacks     {}
+    {
+        if (m_contentSize == Vector2f{0, 0})
+        {
+            for (auto& widget : m_widgets)
+                connectPositionAndSize(widget);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollablePanel::ScrollablePanel(ScrollablePanel&& other) :
+        Panel                    {std::move(other)},
+        m_contentSize            {std::move(other.m_contentSize)},
+        m_mostBottomRightPosition{std::move(other.m_mostBottomRightPosition)},
+        m_verticalScrollbar      {std::move(other.m_verticalScrollbar)},
+        m_horizontalScrollbar    {std::move(other.m_horizontalScrollbar)},
+        m_connectedCallbacks     {std::move(other.m_connectedCallbacks)}
+    {
+        disconnectAllChildWidgets();
+
+        if (m_contentSize == Vector2f{0, 0})
+        {
+            for (auto& widget : m_widgets)
+                connectPositionAndSize(widget);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollablePanel& ScrollablePanel::operator= (const ScrollablePanel& other)
+    {
+        if (this != &other)
+        {
+            Panel::operator=(other);
+            m_contentSize             = other.m_contentSize;
+            m_mostBottomRightPosition = other.m_mostBottomRightPosition;
+            m_verticalScrollbar       = other.m_verticalScrollbar;
+            m_horizontalScrollbar     = other.m_horizontalScrollbar;
+
+            disconnectAllChildWidgets();
+
+            if (m_contentSize == Vector2f{0, 0})
+            {
+                for (auto& widget : m_widgets)
+                    connectPositionAndSize(widget);
+            }
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollablePanel& ScrollablePanel::operator= (ScrollablePanel&& other)
+    {
+        if (this != &other)
+        {
+            Panel::operator=(std::move(other));
+            m_contentSize             = std::move(other.m_contentSize);
+            m_mostBottomRightPosition = std::move(other.m_mostBottomRightPosition);
+            m_verticalScrollbar       = std::move(other.m_verticalScrollbar);
+            m_horizontalScrollbar     = std::move(other.m_horizontalScrollbar);
+
+            disconnectAllChildWidgets();
+
+            if (m_contentSize == Vector2f{0, 0})
+            {
+                for (auto& widget : m_widgets)
+                    connectPositionAndSize(widget);
+            }
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     ScrollablePanel::Ptr ScrollablePanel::create(Layout2d size, Vector2f contentSize)
     {
         return std::make_shared<ScrollablePanel>(size, contentSize);
@@ -107,15 +191,17 @@ namespace tgui
     {
         Panel::add(widget, widgetName);
 
-        const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
         if (m_contentSize == Vector2f{0, 0})
         {
+            const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
             if (bottomRight.x > m_mostBottomRightPosition.x)
                 m_mostBottomRightPosition.x = bottomRight.x;
             if (bottomRight.y > m_mostBottomRightPosition.y)
                 m_mostBottomRightPosition.y = bottomRight.y;
 
             updateScrollbars();
+
+            connectPositionAndSize(widget);
         }
     }
 
@@ -123,12 +209,19 @@ namespace tgui
 
     bool ScrollablePanel::remove(const Widget::Ptr& widget)
     {
-        const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
+        const auto callbackIt = m_connectedCallbacks.find(widget);
+        if (callbackIt != m_connectedCallbacks.end())
+        {
+            widget->disconnect(callbackIt->second-1);
+            widget->disconnect(callbackIt->second);
+            m_connectedCallbacks.erase(callbackIt);
+        }
 
         const bool ret = Panel::remove(widget);
 
         if (m_contentSize == Vector2f{0, 0})
         {
+            const Vector2f bottomRight = widget->getPosition() + widget->getFullSize();
             if ((bottomRight.x == m_mostBottomRightPosition.x) || (bottomRight.y == m_mostBottomRightPosition.y))
             {
                 recalculateMostBottomRightPosition();
@@ -143,6 +236,8 @@ namespace tgui
 
     void ScrollablePanel::removeAllWidgets()
     {
+        disconnectAllChildWidgets();
+
         Panel::removeAllWidgets();
 
         if (m_contentSize == Vector2f{0, 0})
@@ -158,8 +253,16 @@ namespace tgui
     {
         m_contentSize = size;
 
+        disconnectAllChildWidgets();
+
         if (m_contentSize == Vector2f{0, 0})
+        {
             recalculateMostBottomRightPosition();
+
+            // Automatically recalculate the bottom right position when the position or size of a widget changes
+            for (auto& widget : m_widgets)
+                connectPositionAndSize(widget);
+        }
 
         updateScrollbars();
     }
@@ -415,6 +518,26 @@ namespace tgui
             if (bottomRight.y > m_mostBottomRightPosition.y)
                 m_mostBottomRightPosition.y = bottomRight.y;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollablePanel::connectPositionAndSize(Widget::Ptr widget)
+    {
+        m_connectedCallbacks[widget] = widget->connect({"PositionChanged", "SizeChanged"}, [this](){ recalculateMostBottomRightPosition(); updateScrollbars(); });
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollablePanel::disconnectAllChildWidgets()
+    {
+        for (const auto& pair : m_connectedCallbacks)
+        {
+            pair.first->disconnect(pair.second-1);
+            pair.first->disconnect(pair.second);
+        }
+
+        m_connectedCallbacks.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -83,8 +83,9 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &right)
         {
-            m_autoSize = right.m_autoSize; // Has to be set before Container::operator= is called which will call removeAllWidgets which could set size to (0,0)
             Container::operator=(right);
+            m_autoSize = right.m_autoSize;
+            m_connectedCallbacks.clear();
 
             for (std::size_t row = 0; row < right.m_gridWidgets.size(); ++row)
             {
@@ -181,7 +182,10 @@ namespace tgui
     {
         const auto callbackIt = m_connectedCallbacks.find(widget);
         if (callbackIt != m_connectedCallbacks.end())
+        {
+            widget->disconnect(callbackIt->second);
             m_connectedCallbacks.erase(callbackIt);
+        }
 
         // Find the widget in the grid
         for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
