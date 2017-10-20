@@ -35,36 +35,58 @@
 
 namespace tgui
 {
-    Clipboard TGUI_Clipboard;
-
-    bool TGUI_TabKeyUsageEnabled = true;
-
-    std::string TGUI_ResourcePath = "";
+    namespace
+    {
+        bool tabKeyUsageEnabled = true;
+        unsigned int doubleClickTime = 500;
+        std::string resourcePath = "";
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void enableTabKeyUsage()
     {
-        TGUI_TabKeyUsageEnabled = true;
+        tabKeyUsageEnabled = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void disableTabKeyUsage()
     {
-        TGUI_TabKeyUsageEnabled = false;
+        tabKeyUsageEnabled = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool isTabKeyUsageEnabled()
+    {
+        return tabKeyUsageEnabled;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void setDoubleClickTime(unsigned int milliseconds)
+    {
+        doubleClickTime = milliseconds;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int getDoubleClickTime()
+    {
+        return doubleClickTime;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void setResourcePath(const std::string& path)
     {
-        TGUI_ResourcePath = path;
+        resourcePath = path;
 
-        if (!TGUI_ResourcePath.empty())
+        if (!resourcePath.empty())
         {
-            if (TGUI_ResourcePath[TGUI_ResourcePath.length()-1] != '/')
-                TGUI_ResourcePath.push_back('/');
+            if (resourcePath[resourcePath.length()-1] != '/')
+                resourcePath.push_back('/');
         }
     }
 
@@ -72,7 +94,7 @@ namespace tgui
 
     const std::string& getResourcePath()
     {
-        return TGUI_ResourcePath;
+        return resourcePath;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

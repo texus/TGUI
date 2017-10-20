@@ -41,8 +41,6 @@
 
 namespace tgui
 {
-    extern TGUI_API bool TGUI_TabKeyUsageEnabled;
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     namespace
@@ -1160,7 +1158,7 @@ namespace tgui
     bool Container::focusNextWidgetInContainer()
     {
         // Don't do anything when the tab key usage is disabled
-        if (!TGUI_TabKeyUsageEnabled)
+        if (!isTabKeyUsageEnabled())
             return false;
 
         // If the focused widget is a container then try to focus the next widget inside it
@@ -1207,7 +1205,7 @@ namespace tgui
     bool Container::tabKeyPressed()
     {
         // Don't do anything when the tab key usage is disabled
-        if (!TGUI_TabKeyUsageEnabled)
+        if (!isTabKeyUsageEnabled())
             return false;
 
         // Check if a container is focused

@@ -32,6 +32,10 @@
 
 #include <cassert>
 
+#ifdef SFML_SYSTEM_WINDOWS
+    #include <Windows.h>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -48,9 +52,7 @@ namespace tgui
     {
         m_container->m_focused = true;
 
-        auto defaultFont = std::make_shared<sf::Font>();
-        if (defaultFont->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
-            setFont(defaultFont);
+        init();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,9 +68,7 @@ namespace tgui
 
         setView(window.getDefaultView());
 
-        auto defaultFont = std::make_shared<sf::Font>();
-        if (defaultFont->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
-            setFont(defaultFont);
+        init();
     }
 #endif
 
@@ -86,9 +86,7 @@ namespace tgui
 
         setView(target.getDefaultView());
 
-        auto defaultFont = std::make_shared<sf::Font>();
-        if (defaultFont->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
-            setFont(defaultFont);
+        init();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -450,6 +448,21 @@ namespace tgui
                 m_tooltipPossible = false;
             }
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::init()
+    {
+        auto defaultFont = std::make_shared<sf::Font>();
+        if (defaultFont->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
+            setFont(defaultFont);
+
+    #ifdef SFML_SYSTEM_WINDOWS
+        unsigned int doubleClickTime = GetDoubleClickTime();
+        if (doubleClickTime > 0)
+            setDoubleClickTime(doubleClickTime);
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

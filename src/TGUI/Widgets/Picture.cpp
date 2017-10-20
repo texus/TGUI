@@ -224,8 +224,7 @@ namespace tgui
     {
         Widget::update(elapsedTime);
 
-        // When double-clicking, the second click has to come within 500 milliseconds
-        if (m_animationTimeElapsed >= sf::milliseconds(500))
+        if (m_animationTimeElapsed >= sf::milliseconds(getDoubleClickTime()))
         {
             m_animationTimeElapsed = {};
             m_possibleDoubleClick = false;
