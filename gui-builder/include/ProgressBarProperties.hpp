@@ -50,28 +50,28 @@ struct ProgressBarProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    std::map<std::string, std::pair<std::string, std::string>> initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pairs = WidgetProperties::initProperties(widget);
+        auto pair = WidgetProperties::initProperties(widget);
         auto progressBar = std::dynamic_pointer_cast<tgui::ProgressBar>(widget);
-        pairs["Minimum"] = {"UInt", tgui::to_string(progressBar->getMinimum())};
-        pairs["Maximum"] = {"UInt", tgui::to_string(progressBar->getMaximum())};
-        pairs["Value"] = {"UInt", tgui::to_string(progressBar->getValue())};
-        pairs["Text"] = {"String", progressBar->getText()};
-        pairs["TextSize"] = {"UInt", tgui::to_string(progressBar->getTextSize())};
-        pairs["FillDirection"] = {"Enum{LeftToRight,RightToLeft,TopToBottom,BottomToTop}", serializeFillDirection(progressBar->getFillDirection())};
+        pair.first["Minimum"] = {"UInt", tgui::to_string(progressBar->getMinimum())};
+        pair.first["Maximum"] = {"UInt", tgui::to_string(progressBar->getMaximum())};
+        pair.first["Value"] = {"UInt", tgui::to_string(progressBar->getValue())};
+        pair.first["Text"] = {"String", progressBar->getText()};
+        pair.first["TextSize"] = {"UInt", tgui::to_string(progressBar->getTextSize())};
+        pair.first["FillDirection"] = {"Enum{LeftToRight,RightToLeft,TopToBottom,BottomToTop}", serializeFillDirection(progressBar->getFillDirection())};
 
         const auto renderer = progressBar->getRenderer();
-        pairs["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
-        pairs["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
-        pairs["TextColorFilled"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorFilled())};
-        pairs["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
-        pairs["FillColor"] = {"Color", tgui::Serializer::serialize(renderer->getFillColor())};
-        pairs["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
-        pairs["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
-        pairs["TextureFill"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureFill())};
-        pairs["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
-        return pairs;
+        pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
+        pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
+        pair.second["TextColorFilled"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorFilled())};
+        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        pair.second["FillColor"] = {"Color", tgui::Serializer::serialize(renderer->getFillColor())};
+        pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
+        pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
+        pair.second["TextureFill"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureFill())};
+        pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
+        return pair;
     }
 
 private:

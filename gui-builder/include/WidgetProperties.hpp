@@ -31,6 +31,9 @@
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 
+using PropertyValueMap = std::map<std::string, std::pair<std::string, std::string>>;
+using PropertyValueMapPair = std::pair<PropertyValueMap, PropertyValueMap>;
+
 struct WidgetProperties
 {
     virtual ~WidgetProperties() = default;
@@ -65,9 +68,9 @@ struct WidgetProperties
             widget->getRenderer()->setProperty(property, value);
     }
 
-    virtual std::map<std::string, std::pair<std::string, std::string>> initProperties(tgui::Widget::Ptr widget) const
+    virtual PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const
     {
-        std::map<std::string, std::pair<std::string, std::string>> pairs;
+        PropertyValueMap pairs;
         pairs["Left"] = {"Float", tgui::to_string(widget->getPosition().x)};
         pairs["Top"] = {"Float", tgui::to_string(widget->getPosition().y)};
         pairs["Width"] = {"Float", tgui::to_string(widget->getSize().x)};
@@ -75,10 +78,11 @@ struct WidgetProperties
         pairs["Visible"] = {"Bool", tgui::Serializer::serialize(widget->isVisible())};
         pairs["Enabled"] = {"Bool", tgui::Serializer::serialize(widget->isEnabled())};
 
+        PropertyValueMap rendererPairs;
         const auto renderer = widget->getRenderer();
-        pairs["Opacity"] = {"Byte", tgui::to_string(renderer->getOpacity())};
-        pairs["Font"] = {"Font", renderer->getFont().getId()};
-        return pairs;
+        rendererPairs["Opacity"] = {"Byte", tgui::to_string(renderer->getOpacity())};
+        rendererPairs["Font"] = {"Font", renderer->getFont().getId()};
+        return {pairs, rendererPairs};
     }
 
 protected:

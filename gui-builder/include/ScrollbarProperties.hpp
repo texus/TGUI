@@ -48,34 +48,34 @@ struct ScrollbarProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    std::map<std::string, std::pair<std::string, std::string>> initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pairs = WidgetProperties::initProperties(widget);
+        auto pair = WidgetProperties::initProperties(widget);
         auto scrollbar = std::dynamic_pointer_cast<tgui::Scrollbar>(widget);
-        pairs["Maximum"] = {"UInt", tgui::to_string(scrollbar->getMaximum())};
-        pairs["Value"] = {"UInt", tgui::to_string(scrollbar->getValue())};
-        pairs["LowValue"] = {"UInt", tgui::to_string(scrollbar->getLowValue())};
-        pairs["ScrollAmount"] = {"UInt", tgui::to_string(scrollbar->getScrollAmount())};
-        pairs["AutoHide"] = {"Bool", tgui::Serializer::serialize(scrollbar->getAutoHide())};
+        pair.first["Maximum"] = {"UInt", tgui::to_string(scrollbar->getMaximum())};
+        pair.first["Value"] = {"UInt", tgui::to_string(scrollbar->getValue())};
+        pair.first["LowValue"] = {"UInt", tgui::to_string(scrollbar->getLowValue())};
+        pair.first["ScrollAmount"] = {"UInt", tgui::to_string(scrollbar->getScrollAmount())};
+        pair.first["AutoHide"] = {"Bool", tgui::Serializer::serialize(scrollbar->getAutoHide())};
 
         const auto renderer = scrollbar->getRenderer();
-        pairs["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};
-        pairs["TrackColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColorHover())};
-        pairs["ThumbColor"] = {"Color", tgui::Serializer::serialize(renderer->getThumbColor())};
-        pairs["ThumbColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getThumbColorHover())};
-        pairs["ArrowBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowBackgroundColor())};
-        pairs["ArrowBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getArrowBackgroundColorHover())};
-        pairs["ArrowColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColor())};
-        pairs["ArrowColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColorHover())};
-        pairs["TextureTrack"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTrack())};
-        pairs["TextureTrackHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTrackHover())};
-        pairs["TextureThumb"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureThumb())};
-        pairs["TextureThumbHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureThumbHover())};
-        pairs["TextureArrowUp"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowUp())};
-        pairs["TextureArrowUpHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowUpHover())};
-        pairs["TextureArrowDown"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowDown())};
-        pairs["TextureArrowDownHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowDownHover())};
-        return pairs;
+        pair.second["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};
+        pair.second["TrackColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColorHover())};
+        pair.second["ThumbColor"] = {"Color", tgui::Serializer::serialize(renderer->getThumbColor())};
+        pair.second["ThumbColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getThumbColorHover())};
+        pair.second["ArrowBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowBackgroundColor())};
+        pair.second["ArrowBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getArrowBackgroundColorHover())};
+        pair.second["ArrowColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColor())};
+        pair.second["ArrowColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColorHover())};
+        pair.second["TextureTrack"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTrack())};
+        pair.second["TextureTrackHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTrackHover())};
+        pair.second["TextureThumb"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureThumb())};
+        pair.second["TextureThumbHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureThumbHover())};
+        pair.second["TextureArrowUp"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowUp())};
+        pair.second["TextureArrowUpHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowUpHover())};
+        pair.second["TextureArrowDown"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowDown())};
+        pair.second["TextureArrowDownHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowDownHover())};
+        return pair;
     }
 };
 

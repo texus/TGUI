@@ -44,27 +44,27 @@ struct SpinButtonProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    std::map<std::string, std::pair<std::string, std::string>> initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pairs = WidgetProperties::initProperties(widget);
+        auto pair = WidgetProperties::initProperties(widget);
         auto spinButton = std::dynamic_pointer_cast<tgui::SpinButton>(widget);
-        pairs["Minimum"] = {"Int", tgui::to_string(spinButton->getMinimum())};
-        pairs["Maximum"] = {"Int", tgui::to_string(spinButton->getMaximum())};
-        pairs["Value"] = {"Int", tgui::to_string(spinButton->getValue())};
+        pair.first["Minimum"] = {"Int", tgui::to_string(spinButton->getMinimum())};
+        pair.first["Maximum"] = {"Int", tgui::to_string(spinButton->getMaximum())};
+        pair.first["Value"] = {"Int", tgui::to_string(spinButton->getValue())};
 
         const auto renderer = spinButton->getRenderer();
-        pairs["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
-        pairs["SpaceBetweenArrows"] = {"Float", tgui::Serializer::serialize(renderer->getSpaceBetweenArrows())};
-        pairs["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
-        pairs["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
-        pairs["ArrowColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColor())};
-        pairs["ArrowColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColorHover())};
-        pairs["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
-        pairs["TextureArrowUp"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowUp())};
-        pairs["TextureArrowUpHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowUpHover())};
-        pairs["TextureArrowDown"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowDown())};
-        pairs["TextureArrowDownHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowDownHover())};
-        return pairs;
+        pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
+        pair.second["SpaceBetweenArrows"] = {"Float", tgui::Serializer::serialize(renderer->getSpaceBetweenArrows())};
+        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
+        pair.second["ArrowColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColor())};
+        pair.second["ArrowColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColorHover())};
+        pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
+        pair.second["TextureArrowUp"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowUp())};
+        pair.second["TextureArrowUpHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowUpHover())};
+        pair.second["TextureArrowDown"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowDown())};
+        pair.second["TextureArrowDownHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowDownHover())};
+        return pair;
     }
 };
 

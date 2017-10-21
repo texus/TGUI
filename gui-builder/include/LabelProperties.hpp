@@ -52,26 +52,26 @@ struct LabelProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    std::map<std::string, std::pair<std::string, std::string>> initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pairs = WidgetProperties::initProperties(widget);
+        auto pair = WidgetProperties::initProperties(widget);
         auto label = std::dynamic_pointer_cast<tgui::Label>(widget);
-        pairs["Text"] = {"String", label->getText()};
-        pairs["TextSize"] = {"UInt", tgui::to_string(label->getTextSize())};
-        pairs["HorizontalAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(label->getHorizontalAlignment())};
-        pairs["VerticalAlignment"] = {"Enum{Top,Center,Bottom}", serializeVerticalAlignment(label->getVerticalAlignment())};
-        pairs["AutoSize"] = {"Bool", tgui::Serializer::serialize(label->getAutoSize())};
-        pairs["MaximumTextWidth"] = {"Float", tgui::to_string(label->getMaximumTextWidth())};
-        pairs["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(label->isIgnoringMouseEvents())};
+        pair.first["Text"] = {"String", label->getText()};
+        pair.first["TextSize"] = {"UInt", tgui::to_string(label->getTextSize())};
+        pair.first["HorizontalAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(label->getHorizontalAlignment())};
+        pair.first["VerticalAlignment"] = {"Enum{Top,Center,Bottom}", serializeVerticalAlignment(label->getVerticalAlignment())};
+        pair.first["AutoSize"] = {"Bool", tgui::Serializer::serialize(label->getAutoSize())};
+        pair.first["MaximumTextWidth"] = {"Float", tgui::to_string(label->getMaximumTextWidth())};
+        pair.first["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(label->isIgnoringMouseEvents())};
 
         const auto renderer = label->getRenderer();
-        pairs["Borders"] = {"Outline", renderer->getBorders().toString()};
-        pairs["Padding"] = {"Outline", renderer->getPadding().toString()};
-        pairs["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
-        pairs["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
-        pairs["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
-        pairs["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
-        return pairs;
+        pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
+        pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
+        pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
+        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
+        pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
+        return pair;
     }
 
 private:

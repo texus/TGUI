@@ -58,33 +58,33 @@ struct ListBoxProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    std::map<std::string, std::pair<std::string, std::string>> initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pairs = WidgetProperties::initProperties(widget);
+        auto pair = WidgetProperties::initProperties(widget);
         auto listBox = std::dynamic_pointer_cast<tgui::ListBox>(widget);
-        pairs["Items"] = {"List<String>", serializeList(listBox->getItems())};
-        pairs["SelectedItemIndex"] = {"Int", tgui::to_string(listBox->getSelectedItemIndex())};
-        pairs["ItemHeight"] = {"UInt", tgui::to_string(listBox->getItemHeight())};
-        pairs["TextSize"] = {"UInt", tgui::to_string(listBox->getTextSize())};
-        pairs["MaximumItems"] = {"UInt", tgui::to_string(listBox->getMaximumItems())};
-        pairs["AutoScroll"] = {"Bool", tgui::Serializer::serialize(listBox->getAutoScroll())};
+        pair.first["Items"] = {"List<String>", serializeList(listBox->getItems())};
+        pair.first["SelectedItemIndex"] = {"Int", tgui::to_string(listBox->getSelectedItemIndex())};
+        pair.first["ItemHeight"] = {"UInt", tgui::to_string(listBox->getItemHeight())};
+        pair.first["TextSize"] = {"UInt", tgui::to_string(listBox->getTextSize())};
+        pair.first["MaximumItems"] = {"UInt", tgui::to_string(listBox->getMaximumItems())};
+        pair.first["AutoScroll"] = {"Bool", tgui::Serializer::serialize(listBox->getAutoScroll())};
 
         const auto renderer = listBox->getRenderer();
-        pairs["Borders"] = {"Outline", renderer->getBorders().toString()};
-        pairs["Padding"] = {"Outline", renderer->getPadding().toString()};
-        pairs["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
-        pairs["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
-        pairs["SelectedBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBackgroundColor())};
-        pairs["SelectedBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBackgroundColorHover())};
-        pairs["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
-        pairs["TextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorHover())};
-        pairs["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColor())};
-        pairs["SelectedTextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColorHover())};
-        pairs["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
-        pairs["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
-        pairs["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
-        pairs["SelectedTextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getSelectedTextStyle())};
-        return pairs;
+        pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
+        pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
+        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
+        pair.second["SelectedBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBackgroundColor())};
+        pair.second["SelectedBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBackgroundColorHover())};
+        pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
+        pair.second["TextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorHover())};
+        pair.second["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColor())};
+        pair.second["SelectedTextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColorHover())};
+        pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
+        pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
+        pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
+        pair.second["SelectedTextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getSelectedTextStyle())};
+        return pair;
     }
 };
 

@@ -67,7 +67,7 @@ private:
     Form* m_selectedForm = nullptr;
 
     std::map<std::string, std::unique_ptr<WidgetProperties>> m_widgetProperties;
-    std::map<std::string, std::pair<std::string, std::string>> m_propertyValuePairs;
+    PropertyValueMapPair m_propertyValuePairs;
 
     sf::String m_previousValue;
 };

@@ -42,37 +42,37 @@ struct ButtonProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    std::map<std::string, std::pair<std::string, std::string>> initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pairs = WidgetProperties::initProperties(widget);
+        auto pair = WidgetProperties::initProperties(widget);
         auto button = std::dynamic_pointer_cast<tgui::Button>(widget);
-        pairs["Text"] = {"String", button->getText()};
-        pairs["TextSize"] = {"UInt", tgui::to_string(button->getTextSize())};
+        pair.first["Text"] = {"String", button->getText()};
+        pair.first["TextSize"] = {"UInt", tgui::to_string(button->getTextSize())};
 
         const auto renderer = button->getRenderer();
-        pairs["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
-        pairs["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
-        pairs["TextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorHover())};
-        pairs["TextColorDown"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorDown())};
-        pairs["TextColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorDisabled())};
-        pairs["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
-        pairs["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
-        pairs["BackgroundColorDown"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorDown())};
-        pairs["BackgroundColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorDisabled())};
-        pairs["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
-        pairs["BorderColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorHover())};
-        pairs["BorderColorDown"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDown())};
-        pairs["BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDisabled())};
-        pairs["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};
-        pairs["TextureHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureHover())};
-        pairs["TextureDown"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureDown())};
-        pairs["TextureDisabled"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureDisabled())};
-        pairs["TextureFocused"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureFocused())};
-        pairs["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
-        pairs["TextStyleHover"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleHover())};
-        pairs["TextStyleDown"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleDown())};
-        pairs["TextStyleDisabled"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleDisabled())};
-        return pairs;
+        pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
+        pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
+        pair.second["TextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorHover())};
+        pair.second["TextColorDown"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorDown())};
+        pair.second["TextColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorDisabled())};
+        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
+        pair.second["BackgroundColorDown"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorDown())};
+        pair.second["BackgroundColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorDisabled())};
+        pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
+        pair.second["BorderColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorHover())};
+        pair.second["BorderColorDown"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDown())};
+        pair.second["BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDisabled())};
+        pair.second["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};
+        pair.second["TextureHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureHover())};
+        pair.second["TextureDown"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureDown())};
+        pair.second["TextureDisabled"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureDisabled())};
+        pair.second["TextureFocused"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureFocused())};
+        pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
+        pair.second["TextStyleHover"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleHover())};
+        pair.second["TextStyleDown"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleDown())};
+        pair.second["TextStyleDisabled"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleDisabled())};
+        return pair;
     }
 };
 

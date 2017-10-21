@@ -119,7 +119,12 @@ void GuiBuilder::reloadProperties()
 {
     const auto selectedWidget = m_selectedForm->getSelectedWidget();
     m_propertyValuePairs = m_widgetProperties.at(selectedWidget->getWidgetType())->initProperties(selectedWidget);
-    for (const auto& property : m_propertyValuePairs)
+    for (const auto& property : m_propertyValuePairs.first)
+    {
+        auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property.first);
+        valueEditBox->setText(property.second.second);
+    }
+    for (const auto& property : m_propertyValuePairs.second)
     {
         auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property.first);
         valueEditBox->setText(property.second.second);
@@ -372,7 +377,7 @@ void GuiBuilder::initProperties()
         buttonToFront->setTextSize(smallestTextsize);
         buttonToBack->setTextSize(smallestTextsize);
 
-        topPosition += 30;
+        topPosition += 35;
 
         auto valueEditBox = addPropertyValueEditBoxes(topPosition, {"Name", {"String", m_selectedForm->getSelectedWidgetName()}});
         valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{
@@ -384,8 +389,23 @@ void GuiBuilder::initProperties()
             }
         });
 
+        topPosition += 10;
         m_propertyValuePairs = m_widgetProperties.at(selectedWidget->getWidgetType())->initProperties(selectedWidget);
-        for (const auto& property : m_propertyValuePairs)
+        for (const auto& property : m_propertyValuePairs.first)
+        {
+            valueEditBox = addPropertyValueEditBoxes(topPosition, property);
+            valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{
+                if (m_previousValue != valueEditBox->getText())
+                {
+                    m_selectedForm->setChanged(true);
+                    updateWidgetProperty(property.first, valueEditBox->getText());
+                    m_previousValue = valueEditBox->getText();
+                }
+            });
+        }
+
+        topPosition += 10;
+        for (const auto& property : m_propertyValuePairs.second)
         {
             valueEditBox = addPropertyValueEditBoxes(topPosition, property);
             valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{

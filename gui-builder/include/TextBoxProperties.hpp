@@ -50,28 +50,28 @@ struct TextBoxProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    std::map<std::string, std::pair<std::string, std::string>> initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pairs = WidgetProperties::initProperties(widget);
+        auto pair = WidgetProperties::initProperties(widget);
         auto textBox = std::dynamic_pointer_cast<tgui::TextBox>(widget);
-        pairs["Text"] = {"String", textBox->getText()};
-        pairs["TextSize"] = {"UInt", tgui::to_string(textBox->getTextSize())};
-        pairs["MaximumCharacters"] = {"UInt", tgui::to_string(textBox->getMaximumCharacters())};
-        pairs["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textBox->isReadOnly())};
-        pairs["VerticalScrollbarPresent"] = {"Bool", tgui::Serializer::serialize(textBox->isVerticalScrollbarPresent())};
+        pair.first["Text"] = {"String", textBox->getText()};
+        pair.first["TextSize"] = {"UInt", tgui::to_string(textBox->getTextSize())};
+        pair.first["MaximumCharacters"] = {"UInt", tgui::to_string(textBox->getMaximumCharacters())};
+        pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textBox->isReadOnly())};
+        pair.first["VerticalScrollbarPresent"] = {"Bool", tgui::Serializer::serialize(textBox->isVerticalScrollbarPresent())};
 
         const auto renderer = textBox->getRenderer();
-        pairs["Borders"] = {"Outline", renderer->getBorders().toString()};
-        pairs["Padding"] = {"Outline", renderer->getPadding().toString()};
-        pairs["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
-        pairs["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
-        pairs["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColor())};
-        pairs["SelectedTextBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextBackgroundColor())};
-        pairs["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
-        pairs["CaretColor"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColor())};
-        pairs["CaretWidth"] = {"Float", tgui::to_string(renderer->getCaretWidth())};
-        pairs["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
-        return pairs;
+        pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
+        pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
+        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
+        pair.second["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColor())};
+        pair.second["SelectedTextBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextBackgroundColor())};
+        pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
+        pair.second["CaretColor"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColor())};
+        pair.second["CaretWidth"] = {"Float", tgui::to_string(renderer->getCaretWidth())};
+        pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
+        return pair;
     }
 
 private:

@@ -40,16 +40,16 @@ struct PictureProperties : WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    std::map<std::string, std::pair<std::string, std::string>> initProperties(tgui::Widget::Ptr widget) const override
+    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        auto pairs = WidgetProperties::initProperties(widget);
+        auto pair = WidgetProperties::initProperties(widget);
         auto picture = std::dynamic_pointer_cast<tgui::Picture>(widget);
-        pairs["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(picture->isIgnoringMouseEvents())};
+        pair.first["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(picture->isIgnoringMouseEvents())};
 
         const auto renderer = picture->getRenderer();
-        pairs["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};
-        pairs["IgnoreTransparentParts"] = {"Bool", tgui::Serializer::serialize(renderer->getIgnoreTransparentParts())};
-        return pairs;
+        pair.second["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};
+        pair.second["IgnoreTransparentParts"] = {"Bool", tgui::Serializer::serialize(renderer->getIgnoreTransparentParts())};
+        return pair;
     }
 };
 
