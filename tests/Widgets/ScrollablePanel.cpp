@@ -222,6 +222,8 @@ TEST_CASE("[ScrollablePanel]")
     SECTION("Saving and loading from file")
     {
         panel = tgui::ScrollablePanel::create({400, 300});
+        panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
+        panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
 
         auto widget = tgui::ClickableWidget::create();
         widget->setPosition({20, 10});
@@ -271,6 +273,34 @@ TEST_CASE("[ScrollablePanel]")
         picture->setPosition({250, 300});
         panel->add(picture);
 
-        TEST_DRAW("ScrollablePanel.png")
+        SECTION("Content size larger than panel (scrollbars needed)")
+        {
+            TEST_DRAW("ScrollablePanel.png")
+
+            panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
+            TEST_DRAW("ScrollablePanel_NoHorizontalScrollbar.png")
+
+            panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
+            TEST_DRAW("ScrollablePanel_NoScrollbars.png")
+
+            panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+            TEST_DRAW("ScrollablePanel_NoVerticalScrollbar.png")
+        }
+
+        SECTION("Content size smaller than panel (no scrollbars needed)")
+        {
+            panel->setContentSize({90, 80});
+
+            TEST_DRAW("ScrollablePanel_SmallContentSize.png")
+
+            panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
+            TEST_DRAW("ScrollablePanel_SmallContentSize_VerticalScrollbar.png")
+
+            panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
+            TEST_DRAW("ScrollablePanel_SmallContentSize_BothScrollbars.png")
+
+            panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+            TEST_DRAW("ScrollablePanel_SmallContentSize_HorizontalScrollbar.png")
+        }
     }
 }

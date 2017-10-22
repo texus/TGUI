@@ -51,12 +51,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollablePanel::ScrollablePanel(const ScrollablePanel& other) :
-        Panel                    {other},
-        m_contentSize            {other.m_contentSize},
-        m_mostBottomRightPosition{other.m_mostBottomRightPosition},
-        m_verticalScrollbar      {other.m_verticalScrollbar},
-        m_horizontalScrollbar    {other.m_horizontalScrollbar},
-        m_connectedCallbacks     {}
+        Panel                      {other},
+        m_contentSize              {other.m_contentSize},
+        m_mostBottomRightPosition  {other.m_mostBottomRightPosition},
+        m_verticalScrollbar        {other.m_verticalScrollbar},
+        m_horizontalScrollbar      {other.m_horizontalScrollbar},
+        m_verticalScrollbarPolicy  {other.m_verticalScrollbarPolicy},
+        m_horizontalScrollbarPolicy{other.m_horizontalScrollbarPolicy},
+        m_connectedCallbacks       {}
     {
         if (m_contentSize == Vector2f{0, 0})
         {
@@ -68,12 +70,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollablePanel::ScrollablePanel(ScrollablePanel&& other) :
-        Panel                    {std::move(other)},
-        m_contentSize            {std::move(other.m_contentSize)},
-        m_mostBottomRightPosition{std::move(other.m_mostBottomRightPosition)},
-        m_verticalScrollbar      {std::move(other.m_verticalScrollbar)},
-        m_horizontalScrollbar    {std::move(other.m_horizontalScrollbar)},
-        m_connectedCallbacks     {std::move(other.m_connectedCallbacks)}
+        Panel                      {std::move(other)},
+        m_contentSize              {std::move(other.m_contentSize)},
+        m_mostBottomRightPosition  {std::move(other.m_mostBottomRightPosition)},
+        m_verticalScrollbar        {std::move(other.m_verticalScrollbar)},
+        m_horizontalScrollbar      {std::move(other.m_horizontalScrollbar)},
+        m_verticalScrollbarPolicy  {std::move(other.m_verticalScrollbarPolicy)},
+        m_horizontalScrollbarPolicy{std::move(other.m_horizontalScrollbarPolicy)},
+        m_connectedCallbacks       {std::move(other.m_connectedCallbacks)}
     {
         disconnectAllChildWidgets();
 
@@ -91,10 +95,12 @@ namespace tgui
         if (this != &other)
         {
             Panel::operator=(other);
-            m_contentSize             = other.m_contentSize;
-            m_mostBottomRightPosition = other.m_mostBottomRightPosition;
-            m_verticalScrollbar       = other.m_verticalScrollbar;
-            m_horizontalScrollbar     = other.m_horizontalScrollbar;
+            m_contentSize               = other.m_contentSize;
+            m_mostBottomRightPosition   = other.m_mostBottomRightPosition;
+            m_verticalScrollbar         = other.m_verticalScrollbar;
+            m_horizontalScrollbar       = other.m_horizontalScrollbar;
+            m_verticalScrollbarPolicy   = other.m_verticalScrollbarPolicy;
+            m_horizontalScrollbarPolicy = other.m_horizontalScrollbarPolicy;
 
             disconnectAllChildWidgets();
 
@@ -115,10 +121,12 @@ namespace tgui
         if (this != &other)
         {
             Panel::operator=(std::move(other));
-            m_contentSize             = std::move(other.m_contentSize);
-            m_mostBottomRightPosition = std::move(other.m_mostBottomRightPosition);
-            m_verticalScrollbar       = std::move(other.m_verticalScrollbar);
-            m_horizontalScrollbar     = std::move(other.m_horizontalScrollbar);
+            m_contentSize               = std::move(other.m_contentSize);
+            m_mostBottomRightPosition   = std::move(other.m_mostBottomRightPosition);
+            m_verticalScrollbar         = std::move(other.m_verticalScrollbar);
+            m_horizontalScrollbar       = std::move(other.m_horizontalScrollbar);
+            m_verticalScrollbarPolicy   = std::move(other.m_verticalScrollbarPolicy);
+            m_horizontalScrollbarPolicy = std::move(other.m_horizontalScrollbarPolicy);
 
             disconnectAllChildWidgets();
 
@@ -304,6 +312,68 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ScrollablePanel::setVerticalScrollbarPolicy(ScrollbarPolicy policy)
+    {
+        m_verticalScrollbarPolicy = policy;
+
+        if (policy == ScrollbarPolicy::Always)
+        {
+            m_verticalScrollbar.show();
+            m_verticalScrollbar.setAutoHide(false);
+        }
+        else if (policy == ScrollbarPolicy::Never)
+        {
+            m_verticalScrollbar.hide();
+        }
+        else // ScrollbarPolicy::Automatic
+        {
+            m_verticalScrollbar.show();
+            m_verticalScrollbar.setAutoHide(true);
+        }
+
+        updateScrollbars();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollablePanel::ScrollbarPolicy ScrollablePanel::getVerticalScrollbarPolicy() const
+    {
+        return m_verticalScrollbarPolicy;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollablePanel::setHorizontalScrollbarPolicy(ScrollbarPolicy policy)
+    {
+        m_horizontalScrollbarPolicy = policy;
+
+        if (policy == ScrollbarPolicy::Always)
+        {
+            m_horizontalScrollbar.show();
+            m_horizontalScrollbar.setAutoHide(false);
+        }
+        else if (policy == ScrollbarPolicy::Never)
+        {
+            m_horizontalScrollbar.hide();
+        }
+        else // ScrollbarPolicy::Automatic
+        {
+            m_horizontalScrollbar.show();
+            m_horizontalScrollbar.setAutoHide(true);
+        }
+
+        updateScrollbars();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ScrollablePanel::ScrollbarPolicy ScrollablePanel::getHorizontalScrollbarPolicy() const
+    {
+        return m_horizontalScrollbarPolicy;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ScrollablePanel::leftMousePressed(Vector2f pos)
     {
         m_mouseDown = true;
@@ -411,17 +481,23 @@ namespace tgui
 
         // Draw the background
         const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                        getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+                                    getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
         drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         states.transform.translate(m_paddingCached.getLeft(), m_paddingCached.getTop());
         Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                                    innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+                                innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
-        if (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue())
+        if (m_verticalScrollbar.isVisible() && (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue()))
             contentSize.x -= m_verticalScrollbar.getSize().x;
-        if (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue())
+        if (m_horizontalScrollbar.isVisible() && (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue()))
             contentSize.y -= m_horizontalScrollbar.getSize().y;
+
+        // If the content size is manually specified and smaller than the panel itself, then use it for clipping
+        if ((m_contentSize.x > 0) && (contentSize.x > m_contentSize.x))
+            contentSize.x = m_contentSize.x;
+        if ((m_contentSize.y > 0) && (contentSize.y > m_contentSize.y))
+            contentSize.y = m_contentSize.y;
 
         // Draw the child widgets
         {
@@ -433,8 +509,11 @@ namespace tgui
             drawWidgetContainer(&target, states);
         }
 
-        m_verticalScrollbar.draw(target, oldStates);
-        m_horizontalScrollbar.draw(target, oldStates);
+        if (m_verticalScrollbar.isVisible())
+            m_verticalScrollbar.draw(target, oldStates);
+
+        if (m_horizontalScrollbar.isVisible())
+            m_horizontalScrollbar.draw(target, oldStates);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -455,6 +534,22 @@ namespace tgui
     std::unique_ptr<DataIO::Node> ScrollablePanel::save(SavingRenderersMap& renderers) const
     {
         auto node = Panel::save(renderers);
+
+        if (m_verticalScrollbarPolicy != ScrollbarPolicy::Automatic)
+        {
+            if (m_verticalScrollbarPolicy == ScrollbarPolicy::Always)
+                node->propertyValuePairs["VerticalScrollbarPolicy"] = make_unique<DataIO::ValueNode>("Always");
+            else if (m_verticalScrollbarPolicy == ScrollbarPolicy::Never)
+                node->propertyValuePairs["VerticalScrollbarPolicy"] = make_unique<DataIO::ValueNode>("Never");
+        }
+        if (m_horizontalScrollbarPolicy != ScrollbarPolicy::Automatic)
+        {
+            if (m_horizontalScrollbarPolicy == ScrollbarPolicy::Always)
+                node->propertyValuePairs["HorizontalScrollbarPolicy"] = make_unique<DataIO::ValueNode>("Always");
+            else if (m_horizontalScrollbarPolicy == ScrollbarPolicy::Never)
+                node->propertyValuePairs["HorizontalScrollbarPolicy"] = make_unique<DataIO::ValueNode>("Never");
+        }
+
         node->propertyValuePairs["ContentSize"] = make_unique<DataIO::ValueNode>("(" + to_string(m_contentSize.x) + ", " + to_string(m_contentSize.y) + ")");
         return node;
     }
@@ -467,6 +562,32 @@ namespace tgui
 
         if (node->propertyValuePairs["contentsize"])
             setContentSize(Vector2f{node->propertyValuePairs["contentsize"]->value});
+
+        if (node->propertyValuePairs["verticalscrollbarpolicy"])
+        {
+            std::string policy = toLower(trim(node->propertyValuePairs["verticalscrollbarpolicy"]->value));
+            if (policy == "automatic")
+                setVerticalScrollbarPolicy(ScrollbarPolicy::Automatic);
+            else if (policy == "always")
+                setVerticalScrollbarPolicy(ScrollbarPolicy::Always);
+            else if (policy == "never")
+                setVerticalScrollbarPolicy(ScrollbarPolicy::Never);
+            else
+                throw Exception{"Failed to parse VerticalScrollbarPolicy property, found unknown value."};
+        }
+
+        if (node->propertyValuePairs["horizontalscrollbarpolicy"])
+        {
+            std::string policy = toLower(trim(node->propertyValuePairs["horizontalscrollbarpolicy"]->value));
+            if (policy == "automatic")
+                setHorizontalScrollbarPolicy(ScrollbarPolicy::Automatic);
+            else if (policy == "always")
+                setHorizontalScrollbarPolicy(ScrollbarPolicy::Always);
+            else if (policy == "never")
+                setHorizontalScrollbarPolicy(ScrollbarPolicy::Never);
+            else
+                throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value."};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -481,13 +602,13 @@ namespace tgui
         m_horizontalScrollbar.setMaximum(static_cast<unsigned int>(contentSize.x));
         m_verticalScrollbar.setMaximum(static_cast<unsigned int>(contentSize.y));
 
-        const bool horizontalScrollbarVisible = m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue();
+        const bool horizontalScrollbarVisible = m_horizontalScrollbar.isVisible() && (!m_horizontalScrollbar.getAutoHide() || (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue()));
         if (horizontalScrollbarVisible)
         {
             m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, getInnerSize().y - m_horizontalScrollbar.getSize().y);
             m_verticalScrollbar.setLowValue(static_cast<unsigned int>(m_verticalScrollbar.getLowValue() - m_horizontalScrollbar.getSize().y));
 
-            const bool verticalScrollbarVisible = m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue();
+            const bool verticalScrollbarVisible = m_verticalScrollbar.isVisible() && (!m_verticalScrollbar.getAutoHide() || (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue()));
             if (verticalScrollbarVisible)
                 m_horizontalScrollbar.setSize(getInnerSize().x - m_verticalScrollbar.getSize().x, m_horizontalScrollbar.getSize().y);
             else
@@ -497,13 +618,13 @@ namespace tgui
         {
             m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, getInnerSize().y);
 
-            const bool verticalScrollbarVisible = m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue();
+            const bool verticalScrollbarVisible = m_verticalScrollbar.isVisible() && (!m_verticalScrollbar.getAutoHide() || (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue()));
             if (verticalScrollbarVisible)
             {
                 m_horizontalScrollbar.setSize(getInnerSize().x - m_verticalScrollbar.getSize().x, m_horizontalScrollbar.getSize().y);
                 m_horizontalScrollbar.setLowValue(static_cast<unsigned int>(m_horizontalScrollbar.getLowValue() - m_verticalScrollbar.getSize().x));
 
-                if (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue())
+                if (m_horizontalScrollbar.isVisible() && (!m_horizontalScrollbar.getAutoHide() || (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue())))
                     m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, getInnerSize().y - m_horizontalScrollbar.getSize().y);
             }
             else
