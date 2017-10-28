@@ -60,7 +60,7 @@ struct RadioButtonProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::to_string(radioButton->getTextSize())};
         pair.first["TextClickable"] = {"Bool", tgui::Serializer::serialize(radioButton->isTextClickable())};
 
-        const auto renderer = radioButton->getRenderer();
+        const auto renderer = radioButton->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["TextDistanceRatio"] = {"Float", tgui::Serializer::serialize(renderer->getTextDistanceRatio())};
         pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};

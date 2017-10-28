@@ -49,7 +49,7 @@ struct ButtonProperties : WidgetProperties
         pair.first["Text"] = {"String", button->getText()};
         pair.first["TextSize"] = {"UInt", tgui::to_string(button->getTextSize())};
 
-        const auto renderer = button->getRenderer();
+        const auto renderer = button->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
         pair.second["TextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorHover())};

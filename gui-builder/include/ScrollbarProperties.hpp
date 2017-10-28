@@ -58,7 +58,7 @@ struct ScrollbarProperties : WidgetProperties
         pair.first["ScrollAmount"] = {"UInt", tgui::to_string(scrollbar->getScrollAmount())};
         pair.first["AutoHide"] = {"Bool", tgui::Serializer::serialize(scrollbar->getAutoHide())};
 
-        const auto renderer = scrollbar->getRenderer();
+        const auto renderer = scrollbar->getSharedRenderer();
         pair.second["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};
         pair.second["TrackColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColorHover())};
         pair.second["ThumbColor"] = {"Color", tgui::Serializer::serialize(renderer->getThumbColor())};

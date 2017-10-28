@@ -15,5 +15,6 @@ target_link_libraries(gui-builder ${PROJECT_NAME} ${TGUI_EXT_LIBS})
 target_include_directories(gui-builder PRIVATE include)
 
 # Copy the executable to the gui-builder folder
-add_custom_command(TARGET gui-builder POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gui-builder> ${PROJECT_SOURCE_DIR}/gui-builder/)
-
+add_custom_command(TARGET gui-builder POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gui-builder> ${PROJECT_SOURCE_DIR}/gui-builder/
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/themes ${PROJECT_SOURCE_DIR}/gui-builder/themes)

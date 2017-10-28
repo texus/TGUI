@@ -69,7 +69,7 @@ struct ListBoxProperties : WidgetProperties
         pair.first["MaximumItems"] = {"UInt", tgui::to_string(listBox->getMaximumItems())};
         pair.first["AutoScroll"] = {"Bool", tgui::Serializer::serialize(listBox->getAutoScroll())};
 
-        const auto renderer = listBox->getRenderer();
+        const auto renderer = listBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

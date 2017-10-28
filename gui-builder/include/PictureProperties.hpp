@@ -46,7 +46,7 @@ struct PictureProperties : WidgetProperties
         auto picture = std::dynamic_pointer_cast<tgui::Picture>(widget);
         pair.first["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(picture->isIgnoringMouseEvents())};
 
-        const auto renderer = picture->getRenderer();
+        const auto renderer = picture->getSharedRenderer();
         pair.second["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};
         pair.second["IgnoreTransparentParts"] = {"Bool", tgui::Serializer::serialize(renderer->getIgnoreTransparentParts())};
         return pair;

@@ -60,7 +60,7 @@ struct TextBoxProperties : WidgetProperties
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textBox->isReadOnly())};
         pair.first["VerticalScrollbarPresent"] = {"Bool", tgui::Serializer::serialize(textBox->isVerticalScrollbarPresent())};
 
-        const auto renderer = textBox->getRenderer();
+        const auto renderer = textBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

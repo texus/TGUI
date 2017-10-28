@@ -61,7 +61,7 @@ struct ProgressBarProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::to_string(progressBar->getTextSize())};
         pair.first["FillDirection"] = {"Enum{LeftToRight,RightToLeft,TopToBottom,BottomToTop}", serializeFillDirection(progressBar->getFillDirection())};
 
-        const auto renderer = progressBar->getRenderer();
+        const auto renderer = progressBar->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
         pair.second["TextColorFilled"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorFilled())};

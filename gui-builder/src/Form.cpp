@@ -26,6 +26,8 @@
 #include "Form.hpp"
 #include "GuiBuilder.hpp"
 
+#include <cassert>
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow) :
@@ -65,11 +67,11 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
 std::string Form::addWidget(tgui::Widget::Ptr widget)
 {
     const std::string id = tgui::to_string(widget.get());
-    m_widgets[id] = widget;
+    m_widgets[id] = std::make_shared<WidgetInfo>(widget);
 
     const std::string name = "Widget" + tgui::to_string(++m_idCounter);
     m_widgetsContainer->add(widget, name);
-    selectWidget(widget);
+    selectWidget(m_widgets[id]);
 
     setChanged(true);
     return name;
@@ -82,14 +84,30 @@ void Form::removeWidget(const std::string& id)
     const auto widget = m_widgets[id];
     m_widgets.erase(id);
 
-    m_widgetsContainer->remove(widget);
+    assert(widget != nullptr);
+    m_widgetsContainer->remove(widget->ptr);
 
     setChanged(true);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::Widget::Ptr Form::getSelectedWidget() const
+std::vector<std::shared_ptr<WidgetInfo>> Form::getWidgets() const
+{
+    std::vector<std::shared_ptr<WidgetInfo>> widgets;
+
+    for (auto& pair : m_widgets)
+    {
+        if (pair.second != nullptr)
+            widgets.push_back(pair.second);
+    }
+
+    return widgets;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::shared_ptr<WidgetInfo> Form::getSelectedWidget() const
 {
     return m_selectedWidget;
 }
@@ -98,6 +116,8 @@ tgui::Widget::Ptr Form::getSelectedWidget() const
 
 void Form::setSelectedWidgetName(const std::string& name)
 {
+    assert(m_selectedWidget != nullptr);
+
     bool widgetFound = false;
     auto widgets = m_widgetsContainer->getWidgets();
     for (auto& widget : widgets)
@@ -110,11 +130,11 @@ void Form::setSelectedWidgetName(const std::string& name)
         }
         else
         {
-            if (widget == m_selectedWidget)
+            if (widget == m_selectedWidget->ptr)
             {
                 // Remove the selected widget and add it again with a different name
-                m_widgetsContainer->remove(m_selectedWidget);
-                m_widgetsContainer->add(m_selectedWidget, name);
+                m_widgetsContainer->remove(m_selectedWidget->ptr);
+                m_widgetsContainer->add(m_selectedWidget->ptr, name);
                 widgetFound = true;
             }
         }
@@ -125,14 +145,17 @@ void Form::setSelectedWidgetName(const std::string& name)
 
 std::string Form::getSelectedWidgetName() const
 {
-    return m_widgetsContainer->getWidgetName(m_selectedWidget);
+    assert(m_selectedWidget != nullptr);
+    return m_widgetsContainer->getWidgetName(m_selectedWidget->ptr);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Form::updateSelectionSquarePositions()
 {
-    const auto& widget = m_selectedWidget;
+    assert(m_selectedWidget != nullptr);
+
+    const auto& widget = m_selectedWidget->ptr;
     const auto position = widget->getPosition();
     m_selectionSquares[0]->setPosition({position.x,                               position.y});
     m_selectionSquares[1]->setPosition({position.x + (widget->getSize().x / 2.f), position.y});
@@ -246,9 +269,10 @@ bool Form::load()
     {
         m_widgetsContainer->loadWidgetsFromFile(getFilename());
     }
-    catch (const tgui::Exception&)
+    catch (const tgui::Exception& e)
     {
         // Failed to open file
+        std::cout << "Failed to load '" << getFilename().toAnsiString() << "', reason: " << e.what() << std::endl;
         return false;
     }
 
@@ -257,7 +281,8 @@ bool Form::load()
     for (std::size_t i = 0; i < widgets.size(); ++i)
     {
         const std::string id = tgui::to_string(widgets[i].get());
-        m_widgets[id] = widgets[i];
+        m_widgets[id] = std::make_shared<WidgetInfo>(widgets[i]);
+        m_widgets[id]->theme = "Custom";
 
         // Keep track of the highest id found in widgets with default names, to avoid creating new widgets with confusing names
         if ((widgetNames[i].getSize() >= 7) && (widgetNames[i].substring(0, 6) == "Widget"))
@@ -291,28 +316,34 @@ void Form::onSelectionSquarePress(tgui::Button::Ptr square, sf::Vector2f pos)
 
 void Form::onFormMousePress(sf::Vector2f pos)
 {
-    const auto& widgets = m_widgetsContainer->getWidgets();
-    for (auto it = widgets.rbegin(); it != widgets.rend(); ++it)
+    // Loop through widgets in reverse order to find the top one in case of overlapping widgets
+    for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
     {
-        if (sf::FloatRect{(*it)->getPosition().x, (*it)->getPosition().y, (*it)->getSize().x, (*it)->getSize().y}.contains(pos))
+        if (!it->second)
+            continue;
+
+        const auto& widget = it->second->ptr;
+        if (widget && sf::FloatRect{widget->getPosition().x, widget->getPosition().y, widget->getSize().x, widget->getSize().y}.contains(pos))
         {
-            selectWidget(*it);
+            selectWidget(it->second);
 
             m_draggingWidget = true;
             m_draggingPos = pos;
-
             return;
         }
     }
 
-    selectWidget(nullptr);
+    selectWidget({});
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Form::onDrag(sf::Vector2i mousePos)
 {
+    assert(m_selectedWidget != nullptr);
+
     const sf::Vector2f pos = sf::Vector2f{mousePos} - m_formWindow->getPosition() - m_formWindow->getChildWidgetsOffset() + m_scrollablePanel->getContentOffset();
+    auto selectedWidget = m_selectedWidget->ptr;
     const float step = 10;
 
     bool updated = false;
@@ -321,28 +352,28 @@ void Form::onDrag(sf::Vector2i mousePos)
     {
         while (pos.x - m_draggingPos.x >= step)
         {
-            m_selectedWidget->setPosition({m_selectedWidget->getPosition().x + step, m_selectedWidget->getPosition().y});
+            selectedWidget->setPosition({selectedWidget->getPosition().x + step, selectedWidget->getPosition().y});
             m_draggingPos.x += step;
             updated = true;
         }
 
         while (m_draggingPos.x - pos.x >= step)
         {
-            m_selectedWidget->setPosition({m_selectedWidget->getPosition().x - step, m_selectedWidget->getPosition().y});
+            selectedWidget->setPosition({selectedWidget->getPosition().x - step, selectedWidget->getPosition().y});
             m_draggingPos.x -= step;
             updated = true;
         }
 
         while (pos.y - m_draggingPos.y >= step)
         {
-            m_selectedWidget->setPosition({m_selectedWidget->getPosition().x, m_selectedWidget->getPosition().y + step});
+            selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y + step});
             m_draggingPos.y += step;
             updated = true;
         }
 
         while (m_draggingPos.y - pos.y >= step)
         {
-            m_selectedWidget->setPosition({m_selectedWidget->getPosition().x, m_selectedWidget->getPosition().y - step});
+            selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y - step});
             m_draggingPos.y -= step;
             updated = true;
         }
@@ -354,16 +385,16 @@ void Form::onDrag(sf::Vector2i mousePos)
         {
             while (pos.y - m_draggingPos.y >= step)
             {
-                m_selectedWidget->setPosition({m_selectedWidget->getPosition().x, m_selectedWidget->getPosition().y + step});
-                m_selectedWidget->setSize({m_selectedWidget->getSize().x, m_selectedWidget->getSize().y - step});
+                selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y + step});
+                selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y - step});
                 m_draggingPos.y += step;
                 updated = true;
             }
 
             while (m_draggingPos.y - pos.y >= step)
             {
-                m_selectedWidget->setPosition({m_selectedWidget->getPosition().x, m_selectedWidget->getPosition().y - step});
-                m_selectedWidget->setSize({m_selectedWidget->getSize().x, m_selectedWidget->getSize().y + step});
+                selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y - step});
+                selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y + step});
                 m_draggingPos.y -= step;
                 updated = true;
             }
@@ -372,14 +403,14 @@ void Form::onDrag(sf::Vector2i mousePos)
         {
             while (pos.x - m_draggingPos.x >= step)
             {
-                m_selectedWidget->setSize({m_selectedWidget->getSize().x + step, m_selectedWidget->getSize().y});
+                selectedWidget->setSize({selectedWidget->getSize().x + step, selectedWidget->getSize().y});
                 m_draggingPos.x += step;
                 updated = true;
             }
 
             while (m_draggingPos.x - pos.x >= step)
             {
-                m_selectedWidget->setSize({m_selectedWidget->getSize().x - step, m_selectedWidget->getSize().y});
+                selectedWidget->setSize({selectedWidget->getSize().x - step, selectedWidget->getSize().y});
                 m_draggingPos.x -= step;
                 updated = true;
             }
@@ -388,14 +419,14 @@ void Form::onDrag(sf::Vector2i mousePos)
         {
             while (pos.y - m_draggingPos.y >= step)
             {
-                m_selectedWidget->setSize({m_selectedWidget->getSize().x, m_selectedWidget->getSize().y + step});
+                selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y + step});
                 m_draggingPos.y += step;
                 updated = true;
             }
 
             while (m_draggingPos.y - pos.y >= step)
             {
-                m_selectedWidget->setSize({m_selectedWidget->getSize().x, m_selectedWidget->getSize().y - step});
+                selectedWidget->setSize({selectedWidget->getSize().x, selectedWidget->getSize().y - step});
                 m_draggingPos.y -= step;
                 updated = true;
             }
@@ -404,23 +435,23 @@ void Form::onDrag(sf::Vector2i mousePos)
         {
             while (pos.x - m_draggingPos.x >= step)
             {
-                m_selectedWidget->setPosition({m_selectedWidget->getPosition().x + step, m_selectedWidget->getPosition().y});
-                m_selectedWidget->setSize({m_selectedWidget->getSize().x - step, m_selectedWidget->getSize().y});
+                selectedWidget->setPosition({selectedWidget->getPosition().x + step, selectedWidget->getPosition().y});
+                selectedWidget->setSize({selectedWidget->getSize().x - step, selectedWidget->getSize().y});
                 m_draggingPos.x += step;
                 updated = true;
             }
 
             while (m_draggingPos.x - pos.x >= step)
             {
-                m_selectedWidget->setPosition({m_selectedWidget->getPosition().x - step, m_selectedWidget->getPosition().y});
-                m_selectedWidget->setSize({m_selectedWidget->getSize().x + step, m_selectedWidget->getSize().y});
+                selectedWidget->setPosition({selectedWidget->getPosition().x - step, selectedWidget->getPosition().y});
+                selectedWidget->setSize({selectedWidget->getSize().x + step, selectedWidget->getSize().y});
                 m_draggingPos.x -= step;
                 updated = true;
             }
         }
         else // Corner
         {
-            const float ratio = m_selectedWidget->getSize().y / m_selectedWidget->getSize().x;
+            const float ratio = selectedWidget->getSize().y / selectedWidget->getSize().x;
 
             sf::Vector2f change;
             if (ratio <= 1)
@@ -432,8 +463,8 @@ void Form::onDrag(sf::Vector2i mousePos)
             {
                 while ((pos.x - m_draggingPos.x >= change.x) && (pos.y - m_draggingPos.y >= change.y))
                 {
-                    m_selectedWidget->setPosition({m_selectedWidget->getPosition().x + change.x, m_selectedWidget->getPosition().y + change.y});
-                    m_selectedWidget->setSize({m_selectedWidget->getSize().x - change.x, m_selectedWidget->getSize().y - change.y});
+                    selectedWidget->setPosition({selectedWidget->getPosition().x + change.x, selectedWidget->getPosition().y + change.y});
+                    selectedWidget->setSize({selectedWidget->getSize().x - change.x, selectedWidget->getSize().y - change.y});
                     m_draggingPos.x += change.x;
                     m_draggingPos.y += change.y;
                     updated = true;
@@ -441,8 +472,8 @@ void Form::onDrag(sf::Vector2i mousePos)
 
                 while ((m_draggingPos.x - pos.x >= change.x) && (m_draggingPos.y - pos.y >= change.y))
                 {
-                    m_selectedWidget->setPosition({m_selectedWidget->getPosition().x - change.x, m_selectedWidget->getPosition().y - change.y});
-                    m_selectedWidget->setSize({m_selectedWidget->getSize().x + change.x, m_selectedWidget->getSize().y + change.y});
+                    selectedWidget->setPosition({selectedWidget->getPosition().x - change.x, selectedWidget->getPosition().y - change.y});
+                    selectedWidget->setSize({selectedWidget->getSize().x + change.x, selectedWidget->getSize().y + change.y});
                     m_draggingPos.x -= change.x;
                     m_draggingPos.y -= change.y;
                     updated = true;
@@ -452,8 +483,8 @@ void Form::onDrag(sf::Vector2i mousePos)
             {
                 while ((m_draggingPos.x - pos.x >= change.x) && (pos.y - m_draggingPos.y >= change.y))
                 {
-                    m_selectedWidget->setPosition({m_selectedWidget->getPosition().x, m_selectedWidget->getPosition().y + change.y});
-                    m_selectedWidget->setSize({m_selectedWidget->getSize().x - change.x, m_selectedWidget->getSize().y - change.y});
+                    selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y + change.y});
+                    selectedWidget->setSize({selectedWidget->getSize().x - change.x, selectedWidget->getSize().y - change.y});
                     m_draggingPos.x -= change.x;
                     m_draggingPos.y += change.y;
                     updated = true;
@@ -461,8 +492,8 @@ void Form::onDrag(sf::Vector2i mousePos)
 
                 while ((pos.x - m_draggingPos.x >= change.x) && (m_draggingPos.y - pos.y >= change.y))
                 {
-                    m_selectedWidget->setPosition({m_selectedWidget->getPosition().x, m_selectedWidget->getPosition().y - change.y});
-                    m_selectedWidget->setSize({m_selectedWidget->getSize().x + change.x, m_selectedWidget->getSize().y + change.y});
+                    selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y - change.y});
+                    selectedWidget->setSize({selectedWidget->getSize().x + change.x, selectedWidget->getSize().y + change.y});
                     m_draggingPos.x += change.x;
                     m_draggingPos.y -= change.y;
                     updated = true;
@@ -472,7 +503,7 @@ void Form::onDrag(sf::Vector2i mousePos)
             {
                 while ((m_draggingPos.x - pos.x >= change.x) && (m_draggingPos.y - pos.y >= change.y))
                 {
-                    m_selectedWidget->setSize({m_selectedWidget->getSize().x - change.x, m_selectedWidget->getSize().y - change.y});
+                    selectedWidget->setSize({selectedWidget->getSize().x - change.x, selectedWidget->getSize().y - change.y});
                     m_draggingPos.x -= change.x;
                     m_draggingPos.y -= change.y;
                     updated = true;
@@ -480,7 +511,7 @@ void Form::onDrag(sf::Vector2i mousePos)
 
                 while ((pos.x - m_draggingPos.x >= change.x) && (pos.y - m_draggingPos.y >= change.y))
                 {
-                    m_selectedWidget->setSize({m_selectedWidget->getSize().x + change.x, m_selectedWidget->getSize().y + change.y});
+                    selectedWidget->setSize({selectedWidget->getSize().x + change.x, selectedWidget->getSize().y + change.y});
                     m_draggingPos.x += change.x;
                     m_draggingPos.y += change.y;
                     updated = true;
@@ -490,8 +521,8 @@ void Form::onDrag(sf::Vector2i mousePos)
             {
                 while ((pos.x - m_draggingPos.x >= change.x) && (m_draggingPos.y - pos.y >= change.y))
                 {
-                    m_selectedWidget->setPosition({m_selectedWidget->getPosition().x + change.x, m_selectedWidget->getPosition().y});
-                    m_selectedWidget->setSize({m_selectedWidget->getSize().x - change.x, m_selectedWidget->getSize().y - change.y});
+                    selectedWidget->setPosition({selectedWidget->getPosition().x + change.x, selectedWidget->getPosition().y});
+                    selectedWidget->setSize({selectedWidget->getSize().x - change.x, selectedWidget->getSize().y - change.y});
                     m_draggingPos.x += change.x;
                     m_draggingPos.y -= change.y;
                     updated = true;
@@ -499,8 +530,8 @@ void Form::onDrag(sf::Vector2i mousePos)
 
                 while ((m_draggingPos.x - pos.x >= change.x) && (pos.y - m_draggingPos.y >= change.y))
                 {
-                    m_selectedWidget->setPosition({m_selectedWidget->getPosition().x - change.x, m_selectedWidget->getPosition().y});
-                    m_selectedWidget->setSize({m_selectedWidget->getSize().x + change.x, m_selectedWidget->getSize().y + change.y});
+                    selectedWidget->setPosition({selectedWidget->getPosition().x - change.x, selectedWidget->getPosition().y});
+                    selectedWidget->setSize({selectedWidget->getSize().x + change.x, selectedWidget->getSize().y + change.y});
                     m_draggingPos.x -= change.x;
                     m_draggingPos.y += change.y;
                     updated = true;
@@ -519,7 +550,7 @@ void Form::onDrag(sf::Vector2i mousePos)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::selectWidget(tgui::Widget::Ptr widget)
+void Form::selectWidget(std::shared_ptr<WidgetInfo> widget)
 {
     if (m_selectedWidget != widget)
     {
@@ -538,5 +569,5 @@ void Form::selectWidget(tgui::Widget::Ptr widget)
         }
     }
 
-    m_guiBuilder->widgetSelected(widget);
+    m_guiBuilder->widgetSelected(widget ? widget->ptr : nullptr);
 }

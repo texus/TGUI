@@ -52,7 +52,7 @@ struct SliderProperties : WidgetProperties
         pair.first["Maximum"] = {"Int", tgui::to_string(slider->getMaximum())};
         pair.first["Value"] = {"Int", tgui::to_string(slider->getValue())};
 
-        const auto renderer = slider->getRenderer();
+        const auto renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};
         pair.second["TrackColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColorHover())};

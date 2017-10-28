@@ -53,6 +53,7 @@ private:
     void changeWidgetName(const std::string& name);
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
+    void loadForm();
 
 private:
 
@@ -60,7 +61,7 @@ private:
     tgui::Gui m_gui;
 
     tgui::ChildWindow::Ptr m_propertiesWindow;
-    tgui::Group::Ptr m_propertiesContainer;
+    tgui::ScrollablePanel::Ptr m_propertiesContainer;
     tgui::ComboBox::Ptr m_selectedWidgetComboBox;
 
     std::vector<std::unique_ptr<Form>> m_forms;
@@ -68,6 +69,9 @@ private:
 
     std::map<std::string, std::unique_ptr<WidgetProperties>> m_widgetProperties;
     PropertyValueMapPair m_propertyValuePairs;
+
+    std::map<std::string, tgui::Theme> m_themes;
+    std::string m_defaultTheme;
 
     sf::String m_previousValue;
 };

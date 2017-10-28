@@ -26,6 +26,7 @@
 #ifndef TGUI_GUI_BUILDER_FORM_HPP
 #define TGUI_GUI_BUILDER_FORM_HPP
 
+#include "WidgetInfo.hpp"
 #include <TGUI/TGUI.hpp>
 #include <array>
 
@@ -37,8 +38,10 @@ public:
     Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow);
     std::string addWidget(tgui::Widget::Ptr widget);
     void removeWidget(const std::string& id);
-    tgui::Widget::Ptr getSelectedWidget() const;
+    std::vector<std::shared_ptr<WidgetInfo>> getWidgets() const;
+    std::shared_ptr<WidgetInfo> getSelectedWidget() const;
     void setSelectedWidgetName(const std::string& name);
+    void setSelectedWidgetRenderer(const std::string& renderer);
     std::string getSelectedWidgetName() const;
     void updateSelectionSquarePositions();
     void selectWidgetById(const std::string& id);
@@ -58,16 +61,17 @@ private:
     void onSelectionSquarePress(tgui::Button::Ptr square, sf::Vector2f pos);
     void onFormMousePress(sf::Vector2f pos);
     void onDrag(sf::Vector2i mousePos);
-    void selectWidget(tgui::Widget::Ptr widget);
+    void selectWidget(std::shared_ptr<WidgetInfo> widget);
 
 private:
+
     GuiBuilder* m_guiBuilder;
     tgui::ChildWindow::Ptr m_formWindow;
     tgui::ScrollablePanel::Ptr m_scrollablePanel;
     tgui::Group::Ptr m_widgetsContainer;
-    tgui::Widget::Ptr m_selectedWidget;
+    std::shared_ptr<WidgetInfo> m_selectedWidget = nullptr;
     std::array<tgui::Button::Ptr, 8> m_selectionSquares;
-    std::map<std::string, tgui::Widget::Ptr> m_widgets;
+    std::map<std::string, std::shared_ptr<WidgetInfo>> m_widgets;
     unsigned int m_idCounter = 0;
     bool m_changed = false;
     bool m_draggingWidget = false;

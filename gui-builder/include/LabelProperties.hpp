@@ -64,7 +64,7 @@ struct LabelProperties : WidgetProperties
         pair.first["MaximumTextWidth"] = {"Float", tgui::to_string(label->getMaximumTextWidth())};
         pair.first["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(label->isIgnoringMouseEvents())};
 
-        const auto renderer = label->getRenderer();
+        const auto renderer = label->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};

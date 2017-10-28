@@ -66,7 +66,7 @@ struct ComboBoxProperties : WidgetProperties
         pair.first["MaximumItems"] = {"UInt", tgui::to_string(comboBox->getMaximumItems())};
         pair.first["ExpandDirection"] = {"Enum{Down, Up}", serializeExpandDirection(comboBox->getExpandDirection())};
 
-        const auto renderer = comboBox->getRenderer();
+        const auto renderer = comboBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

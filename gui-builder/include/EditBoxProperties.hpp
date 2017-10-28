@@ -70,7 +70,7 @@ struct EditBoxProperties : WidgetProperties
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(editBox->isReadOnly())};
         pair.first["InputValidator"] = {"String", editBox->getInputValidator()};
 
-        const auto renderer = editBox->getRenderer();
+        const auto renderer = editBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["CaretWidth"] = {"Float", tgui::to_string(renderer->getCaretWidth())};

@@ -52,7 +52,7 @@ struct SpinButtonProperties : WidgetProperties
         pair.first["Maximum"] = {"Int", tgui::to_string(spinButton->getMaximum())};
         pair.first["Value"] = {"Int", tgui::to_string(spinButton->getValue())};
 
-        const auto renderer = spinButton->getRenderer();
+        const auto renderer = spinButton->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["SpaceBetweenArrows"] = {"Float", tgui::Serializer::serialize(renderer->getSpaceBetweenArrows())};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

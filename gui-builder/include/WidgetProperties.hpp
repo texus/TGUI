@@ -79,7 +79,7 @@ struct WidgetProperties
         pairs["Enabled"] = {"Bool", tgui::Serializer::serialize(widget->isEnabled())};
 
         PropertyValueMap rendererPairs;
-        const auto renderer = widget->getRenderer();
+        const auto renderer = widget->getSharedRenderer();
         rendererPairs["Opacity"] = {"Byte", tgui::to_string(renderer->getOpacity())};
         rendererPairs["Font"] = {"Font", renderer->getFont().getId()};
         return {pairs, rendererPairs};

@@ -1,4 +1,5 @@
 /build*
+/gui-builder/themes
 /gui-builder/gui-builder
 /gui-builder/gui-builder.exe
 /gui-builder/form.txt
