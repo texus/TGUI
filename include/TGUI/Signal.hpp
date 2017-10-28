@@ -155,7 +155,9 @@ namespace tgui
 
             internal_signal::parameters[0] = static_cast<const void*>(&widget);
 
-            for (auto& handler : m_handlers)
+            // Copy the handlers before calling them in case the widget (and this signal) gets destroyed during the handler
+            auto handlers = m_handlers;
+            for (auto& handler : handlers)
                 handler.second();
 
             return true;
