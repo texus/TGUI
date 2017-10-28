@@ -450,8 +450,20 @@ void GuiBuilder::loadToolbox()
             createNewWidget(widget.second());
 
             auto selectedWidget = m_selectedForm->getSelectedWidget();
-            selectedWidget->theme = m_defaultTheme;
-            selectedWidget->ptr->setRenderer(m_themes[m_defaultTheme].getRendererNoThrow(selectedWidget->ptr->getWidgetType()));
+
+            auto renderer = m_themes[m_defaultTheme].getRendererNoThrow(selectedWidget->ptr->getWidgetType());
+
+            // Although the white theme has an empty Picture renderer, the gui builder should not use it and display a placeholder image instead
+            if ((widget.first == "Picture") && (m_defaultTheme == "White"))
+                renderer = nullptr;
+
+            if (renderer)
+            {
+                selectedWidget->theme = m_defaultTheme;
+                selectedWidget->ptr->setRenderer(renderer);
+            }
+            else
+                selectedWidget->theme = "Custom";
         });
 
         topPosition += verticalLayout->getSize().y;
