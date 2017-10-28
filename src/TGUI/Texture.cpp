@@ -271,7 +271,10 @@ namespace tgui
 
     bool Texture::operator==(const Texture& right) const
     {
-        return (m_data == right.m_data) && (m_middleRect == right.m_middleRect) && (m_id == right.m_id);
+        if (m_id.isEmpty() && right.m_id.isEmpty())
+            return (m_data == right.m_data) && (m_middleRect == right.m_middleRect);
+        else
+            return (m_middleRect == right.m_middleRect) && (m_id == right.m_id);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
