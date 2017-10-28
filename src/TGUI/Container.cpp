@@ -183,7 +183,9 @@ namespace tgui
                 {
                     std::stringstream ss{value};
                     auto rendererRootNode = DataIO::parse(ss);
-                    if (!rendererRootNode->children.empty())
+
+                    // If there are braces around the renderer string, then the child node is the one we need
+                    if (rendererRootNode->propertyValuePairs.empty() && (rendererRootNode->children.size() == 1))
                         rendererRootNode = std::move(rendererRootNode->children[0]);
 
                     recursiveTryRemoveAbsolutePath(rendererRootNode, workingDirectory);
