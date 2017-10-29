@@ -1340,44 +1340,44 @@ namespace tgui
         if (!isTabKeyUsageEnabled())
             return false;
 
-        // Check if a container is focused
         if (m_focusedWidget)
         {
+            // Check if a container is focused
             if (m_widgets[m_focusedWidget-1]->m_containerWidget)
             {
                 // Focus the previous widget in container
                 if (std::static_pointer_cast<Container>(m_widgets[m_focusedWidget-1])->focusPrevWidgetInContainer())
                     return true;
             }
-        }
 
-        // Loop all widgets before the focused one
-        for (std::size_t i = m_focusedWidget - 1; i > 0; ++i)
-        {
-            // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i-1]->m_allowFocus)
+            // Loop all widgets before the focused one
+            for (std::size_t i = m_focusedWidget - 1; i > 0; --i)
             {
-                // Make sure that the widget is visible and enabled
-                if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
+                // If you are not allowed to focus the widget, then skip it
+                if (m_widgets[i-1]->m_allowFocus)
                 {
-                    if (m_focusedWidget > 0)
+                    // Make sure that the widget is visible and enabled
+                    if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
                     {
-                        // Unfocus the current widget
-                        m_widgets[m_focusedWidget-1]->m_focused = false;
-                        m_widgets[m_focusedWidget-1]->widgetUnfocused();
-                    }
+                        if (m_focusedWidget > 0)
+                        {
+                            // Unfocus the current widget
+                            m_widgets[m_focusedWidget-1]->m_focused = false;
+                            m_widgets[m_focusedWidget-1]->widgetUnfocused();
+                        }
 
-                    // Focus on the new widget
-                    m_focusedWidget = i;
-                    m_widgets[i-1]->m_focused = true;
-                    m_widgets[i-1]->widgetFocused();
-                    return true;
+                        // Focus on the new widget
+                        m_focusedWidget = i;
+                        m_widgets[i-1]->m_focused = true;
+                        m_widgets[i-1]->widgetFocused();
+                        return true;
+                    }
                 }
             }
         }
 
         // None of the widgets before the focused one could be focused, so loop the ones behind it
-        for (std::size_t i = m_widgets.size(); i > m_focusedWidget; ++i)
+        for (std::size_t i = m_widgets.size(); i > m_focusedWidget; --i)
         {
             // If you are not allowed to focus the widget, then skip it
             if (m_widgets[i-1]->m_allowFocus)
@@ -1402,7 +1402,7 @@ namespace tgui
         }
 
         // If the currently focused container widget is the only widget to focus, then focus its previous child widget
-        if ((m_focusedWidget) && (m_widgets[m_focusedWidget-1]->m_containerWidget))
+        if (m_focusedWidget && (m_widgets[m_focusedWidget-1]->m_containerWidget))
         {
             std::static_pointer_cast<Container>(m_widgets[m_focusedWidget-1])->shiftTabKeyPressed();
             return true;
