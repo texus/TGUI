@@ -30,6 +30,7 @@
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
+#include <iostream>
 
 using PropertyValueMap = std::map<std::string, std::pair<std::string, std::string>>;
 using PropertyValueMapPair = std::pair<PropertyValueMap, PropertyValueMap>;

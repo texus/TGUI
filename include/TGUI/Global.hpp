@@ -29,10 +29,13 @@
 
 #include <TGUI/Config.hpp>
 #include <TGUI/Exception.hpp>
-#include <iostream>
 #include <cstdint>
 #include <string>
 #include <memory>
+
+#ifdef TGUI_DEBUG
+    #include <iostream>
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
