@@ -28,6 +28,10 @@
 
 #include <cmath>
 
+#ifdef TGUI_USE_CPP17
+    #include <optional>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -536,14 +540,23 @@ namespace tgui
             drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         // Apply clipping when needed
+    #ifdef TGUI_USE_CPP17
+        std::optional<Clipping> clipping;
+    #else
         std::unique_ptr<Clipping> clipping;
+    #endif
         if (!m_autoSize)
         {
             innerSize.x -= m_paddingCached.getLeft() + m_paddingCached.getRight();
             innerSize.y -= m_paddingCached.getTop() + m_paddingCached.getBottom();
 
+        #ifdef TGUI_USE_CPP17
+            clipping.emplace(target, states, Vector2f{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize);
+        #else
             clipping = make_unique<Clipping>(target, states, Vector2f{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize);
+        #endif
         }
+
 
         // Draw the text
         for (const auto& line : m_lines)

@@ -26,6 +26,10 @@
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Clipping.hpp>
 
+#ifdef TGUI_USE_CPP17
+    #include <optional>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -713,10 +717,16 @@ namespace tgui
             }
 
             // Apply clipping if required for the text in this tab
-            std::unique_ptr<Clipping> clipping;
             const float usableWidth = m_tabWidth[i] - (2 * m_distanceToSideCached);
+        #ifdef TGUI_USE_CPP17
+            std::optional<Clipping> clipping;
+            if (m_tabTexts[i].getSize().x > usableWidth)
+                clipping.emplace(target, textStates, Vector2f{m_distanceToSideCached, 0}, Vector2f{usableWidth, usableHeight});
+        #else
+            std::unique_ptr<Clipping> clipping;
             if (m_tabTexts[i].getSize().x > usableWidth)
                 clipping = make_unique<Clipping>(target, textStates, Vector2f{m_distanceToSideCached, 0}, Vector2f{usableWidth, usableHeight});
+        #endif
 
             // Draw the text
             textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabTexts[i].getSize().x) / 2.f), ((usableHeight - m_tabTexts[i].getSize().y) / 2.f)});

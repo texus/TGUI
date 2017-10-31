@@ -29,6 +29,10 @@
 
 #include <cassert>
 
+#ifdef TGUI_USE_CPP17
+    #include <optional>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -383,9 +387,15 @@ namespace tgui
         if (isSet())
         {
             // Apply clipping when needed
+        #ifdef TGUI_USE_CPP17
+            std::optional<Clipping> clipping;
+            if (m_visibleRect != FloatRect{})
+                clipping.emplace(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
+        #else
             std::unique_ptr<Clipping> clipping;
             if (m_visibleRect != FloatRect{0, 0, 0, 0})
                 clipping = make_unique<Clipping>(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
+        #endif
 
             states.texture = &m_texture.getData()->texture;
             target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
