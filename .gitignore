@@ -6,5 +6,6 @@
 /_site
 /examples/Android/libs
 /examples/Android/obj
+CombinedSources*.cpp
 .DS_Store
 *~

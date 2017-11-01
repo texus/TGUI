@@ -55,7 +55,34 @@ set(TEST_SOURCES
     Widgets/VerticalLayout.cpp
 )
 
+if (TGUI_OPTIMIZE_SINGLE_BUILD)
+    list(LENGTH TEST_SOURCES fileCount)
+    include(ProcessorCount)
+    ProcessorCount(threads)
+
+    if (${threads} LESS ${fileCount})
+        math(EXPR threads "(${threads} / 2) + 1")
+        math(EXPR fileCountMinusOne "${fileCount} - 1")
+        math(EXPR threadsMinusOne "${threads} - 1")
+
+        set(NEW_TEST_SOURCES "")
+        foreach(i RANGE 0 ${threadsMinusOne})
+            set(OutputFile "${CMAKE_CURRENT_SOURCE_DIR}/CombinedSources${i}.cpp")
+            file(WRITE "${OutputFile}" "")
+            foreach(j RANGE ${i} ${fileCountMinusOne} ${threads})
+                list(GET TEST_SOURCES ${j} inputFile)
+                file(READ ${inputFile} CONTENTS)
+                file(APPEND "${OutputFile}" "${CONTENTS}")
+                list(APPEND NEW_TEST_SOURCES "${OutputFile}")
+            endforeach()
+        endforeach()
+
+        set(TEST_SOURCES ${NEW_TEST_SOURCES})
+    endif()
+endif()
+
 add_executable(tests ${TEST_SOURCES})
+target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(tests ${PROJECT_NAME} ${TGUI_EXT_LIBS})
 
 # For gcc >= 4.0 on Windows, apply the SFML_USE_STATIC_STD_LIBS option if it is enabled

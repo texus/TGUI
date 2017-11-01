@@ -22,7 +22,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "../Tests.hpp"
+#include "Tests.hpp"
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>

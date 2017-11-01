@@ -1,6 +1,6 @@
 ChildWindow.PropertiesWindow {
-    Position = ("&.w - w", 0);
-    Size = (24%, "&.h - 20");
+    Position = ("&.w - w", 20);
+    Size = (24%, "&.h - 20 - 20");
     Title = "Properties";
     TitleAlignment = Center;
     TitleButtons = None;
@@ -42,7 +42,8 @@ ChildWindow.PropertiesWindow {
 }
 
 ChildWindow.ToolboxWindow {
-    Size = (12.5%, "&.h - 20");
+    Position = (0, 20);
+    Size = (12.5%, "&.h - 20 - 20");
     Title = "Toolbox";
     TitleAlignment = Center;
     TitleButtons = None;
@@ -63,7 +64,7 @@ ChildWindow.ToolboxWindow {
 }
 
 ChildWindow.Form {
-    Position = ("((&.w - ToolboxWindow.w - PropertiesWindow.w - w) / 2) + ToolboxWindow.w", "(&.h - h) / 2 - 20");
+    Position = ("((&.w - ToolboxWindow.w - PropertiesWindow.w - w) / 2) + ToolboxWindow.w", "(&.h - h) / 2");
     Size = (800, 600);
     TitleAlignment = Center;
     TitleButtons = Close;
@@ -95,5 +96,29 @@ ChildWindow.Form {
                 backgroundcolor = #E6E6E6;
             }
         }
+    }
+}
+
+MenuBar.MenuBar {
+    MinimumSubMenuWidth = 125;
+    Size = (&.size, 20);
+    TextSize = 13;
+
+    Renderer {
+        backgroundcolor = #BBB;
+        distancetoside = 4;
+        selectedbackgroundcolor = #006EFF;
+        selectedtextcolor = white;
+        textcolor = black;
+    }
+
+    Menu {
+        Items = ["New", "Load", "Save", "Quit"];
+        Name = "File";
+    }
+
+    Menu {
+        Items = ["Edit"];
+        Name = "Themes";
     }
 }

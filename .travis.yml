@@ -34,7 +34,6 @@ matrix:
         - libxcb-image0-dev
         - libxcb-randr0-dev
     cache:
-      ccache: true
       directories:
       - $HOME/SFML-2.4.0_LINUX
 

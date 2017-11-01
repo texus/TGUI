@@ -81,6 +81,32 @@ set(TGUI_SRC
     Widgets/VerticalLayout.cpp
 )
 
+if (TGUI_OPTIMIZE_SINGLE_BUILD)
+    list(LENGTH TGUI_SRC fileCount)
+    include(ProcessorCount)
+    ProcessorCount(threads)
+
+    if (${threads} LESS ${fileCount})
+        math(EXPR threads "(${threads} / 2) + 1")
+        math(EXPR fileCountMinusOne "${fileCount} - 1")
+        math(EXPR threadsMinusOne "${threads} - 1")
+
+        set(NEW_TGUI_SRC "")
+        foreach(i RANGE 0 ${threadsMinusOne})
+            set(OutputFile "${CMAKE_CURRENT_SOURCE_DIR}/CombinedSources${i}.cpp")
+            file(WRITE "${OutputFile}" "")
+            foreach(j RANGE ${i} ${fileCountMinusOne} ${threads})
+                list(GET TGUI_SRC ${j} inputFile)
+                file(READ ${inputFile} CONTENTS)
+                file(APPEND "${OutputFile}" "${CONTENTS}")
+                list(APPEND NEW_TGUI_SRC "${OutputFile}")
+            endforeach()
+        endforeach()
+
+        set(TGUI_SRC ${NEW_TGUI_SRC})
+    endif()
+endif()
+
 # Determine library suffixes depending on static/shared configuration
 if(TGUI_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED ${TGUI_SRC})
