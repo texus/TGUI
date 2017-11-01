@@ -22,7 +22,9 @@ matrix:
       - $HOME/SFML_LINUX
 
   - os: linux
-    env: COMPILER=g++-6
+    env:
+      - COMPILER=g++-6
+      - NUMBER_OF_PROCESSORS=2
     addons:
       apt:
         sources:
