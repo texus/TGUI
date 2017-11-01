@@ -83,8 +83,12 @@ set(TGUI_SRC
 
 if (TGUI_OPTIMIZE_SINGLE_BUILD)
     list(LENGTH TGUI_SRC fileCount)
-    include(ProcessorCount)
-    ProcessorCount(threads)
+    if (TGUI_OPTIMIZE_SINGLE_BUILD_THREADS)
+        set(threads ${TGUI_OPTIMIZE_SINGLE_BUILD_THREADS})
+    else()
+        include(ProcessorCount)
+        ProcessorCount(threads)
+    endif()
 
     if (${threads} LESS ${fileCount})
         math(EXPR threads "(${threads} / 2) + 1")
