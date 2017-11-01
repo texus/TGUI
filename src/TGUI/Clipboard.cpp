@@ -30,6 +30,10 @@
     #include <SFML/Window/Clipboard.hpp>
 #else
     #ifdef SFML_SYSTEM_WINDOWS
+        #define NOMB
+        #define NOMINMAX
+        #define VC_EXTRALEAN
+        #define WIN32_LEAN_AND_MEAN
         #include <windows.h>
     #endif
 #endif

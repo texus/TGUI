@@ -108,7 +108,7 @@ if (TGUI_OPTIMIZE_SINGLE_BUILD)
         endforeach()
 
         if (SFML_COMPILER_MSVC)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+            add_compile_options("/bigobj")
         endif()
 
         set(TGUI_SRC ${NEW_TGUI_SRC})

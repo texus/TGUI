@@ -26,6 +26,15 @@
 #ifndef TGUI_TESTS_HPP
 #define TGUI_TESTS_HPP
 
+#include <SFML/Config.hpp>
+
+#ifdef SFML_SYSTEM_WINDOWS
+    #define NOMB
+    #define NOMINMAX
+    #define VC_EXTRALEAN
+    #define WIN32_LEAN_AND_MEAN
+#endif
+
 #include "catch.hpp"
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <TGUI/Gui.hpp>
