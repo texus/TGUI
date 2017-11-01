@@ -395,7 +395,7 @@ namespace tgui
     }
 
 #else
-    template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type* = nullptr>
+    template <typename Func, typename... Args, typename std::enable_if<std::is_convertible<Func, std::function<void(const Args&...)>>::value>::type*>
     unsigned int SignalWidgetBase::connect(std::string signalName, Func&& handler, const Args&... args)
     {
     #ifdef TGUI_NO_CPP14
@@ -407,7 +407,7 @@ namespace tgui
         return id;
     }
 
-    template <typename Func, typename... BoundArgs, typename std::enable_if<std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
+    template <typename Func, typename... BoundArgs, typename std::enable_if<std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type*>
     unsigned int SignalWidgetBase::connect(std::string signalName, Func&& handler, BoundArgs&&... args)
     {
     #ifdef TGUI_NO_CPP14
@@ -429,7 +429,7 @@ namespace tgui
     }
 
     template <typename Func, typename... BoundArgs, typename std::enable_if<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value
-                                                                         && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type* = nullptr>
+                                                                         && !std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const std::string&)>>::value>::type*>
     unsigned int SignalWidgetBase::connect(std::string signalName, Func&& handler, BoundArgs&&... args)
     {
         Signal& signal = getSignal(toLower(signalName));
