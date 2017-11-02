@@ -97,12 +97,12 @@ namespace detail
 				deleter(pointer);
 		}
 
-		virtual PtrOwner* clone() const
+		virtual PtrOwner* clone() const override
 		{
 			return new PtrOwner(pointer, cloner, deleter, true);
 		}
 
-		virtual T* getPointer() const
+		virtual T* getPointer() const override
 		{
 			return pointer;
 		}
@@ -130,12 +130,12 @@ namespace detail
 		{
 		}
 
-		virtual CompactOwner* clone() const
+		virtual CompactOwner* clone() const override
 		{
 			return new CompactOwner(CopyTag(), object);
 		}
 
-		virtual T* getPointer() const
+		virtual T* getPointer() const override
 		{
 			return const_cast<T*>(&object);
 		}
@@ -166,12 +166,12 @@ namespace detail
 			delete base;
 		}
 
-		virtual PtrIndirection<T, U>* clone() const
+		virtual PtrIndirection<T, U>* clone() const override
 		{
 			return new PtrIndirection<T, U>(base, CopyTag());
 		}
 
-		virtual T* getPointer() const
+		virtual T* getPointer() const override
 		{
 			return base->getPointer();
 		}

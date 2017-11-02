@@ -140,7 +140,7 @@ namespace tgui
             {
             }
 
-            Base* clone() const
+            Base* clone() const override
             {
                 return new Derived<T>(value);
             }
