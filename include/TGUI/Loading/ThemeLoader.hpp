@@ -97,7 +97,7 @@ namespace tgui
         /// @exception Exception when file did not contain requested class name
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual std::string load(const std::string& filename, const std::string& className, PropertyValuePairs& properties);
+        std::string load(const std::string& filename, const std::string& className, PropertyValuePairs& properties) override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
