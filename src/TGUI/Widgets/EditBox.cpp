@@ -1471,26 +1471,28 @@ namespace tgui
                 drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
         }
 
-        // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-        const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
-
-        if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
         {
-            m_textBeforeSelection.draw(target, states);
+            // Set the clipping for all draw calls that happen until this clipping object goes out of scope
+            const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
-            if (m_textSelection.getString() != "")
+            if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
             {
-                states.transform.translate(m_selectedTextBackground.getPosition());
-                drawRectangleShape(target, states, m_selectedTextBackground.getSize(), m_selectedTextBackgroundColorCached);
-                states.transform.translate(-m_selectedTextBackground.getPosition());
+                m_textBeforeSelection.draw(target, states);
 
-                m_textSelection.draw(target, states);
-                m_textAfterSelection.draw(target, states);
+                if (m_textSelection.getString() != "")
+                {
+                    states.transform.translate(m_selectedTextBackground.getPosition());
+                    drawRectangleShape(target, states, m_selectedTextBackground.getSize(), m_selectedTextBackgroundColorCached);
+                    states.transform.translate(-m_selectedTextBackground.getPosition());
+
+                    m_textSelection.draw(target, states);
+                    m_textAfterSelection.draw(target, states);
+                }
             }
-        }
-        else if (m_defaultText.getString() != "")
-        {
-            m_defaultText.draw(target, states);
+            else if (m_defaultText.getString() != "")
+            {
+                m_defaultText.draw(target, states);
+            }
         }
 
         // Draw the caret
