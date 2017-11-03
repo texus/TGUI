@@ -9,6 +9,7 @@ TGUI 0.7.6  (TBD)
 - ComboBox::setItemsToDisplay did not show full list when 0 was passed
 - Non-string layouts are now also copied when copying a widget
 - OpenGL is no longer used for clipping
+- Fixed crash that could occur when performing a division by 0 in the layouts
 
 
 TGUI 0.7.5  (11 September 2017)

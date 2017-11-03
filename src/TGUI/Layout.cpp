@@ -156,10 +156,16 @@ namespace tgui
             value = operands[0]->value * operands[1]->value;
             break;
         case Operation::Divides:
-            value = operands[0]->value / operands[1]->value;
+            if (operands[1]->value != 0)
+                value = operands[0]->value / operands[1]->value;
+            else
+                value = 0;
             break;
         case Operation::Modulus:
-            value = std::fmod(operands[0]->value, operands[1]->value);
+            if (operands[1]->value != 0)
+                value = std::fmod(operands[0]->value, operands[1]->value);
+            else
+                value = 0;
             break;
         case Operation::And:
             value = operands[0]->value && operands[1]->value;
@@ -502,7 +508,13 @@ namespace tgui
                 if ((multiplyPos == std::string::npos) || (multiplyPos < dividePos))
                 {
                     if ((modulusPos == std::string::npos) || (modulusPos < dividePos))
-                        return parseLayoutString(expression.substr(0, dividePos)) / parseLayoutString(expression.substr(dividePos + 1));
+                    {
+                        const float divisor = parseLayoutString(expression.substr(dividePos + 1));
+                        if (divisor != 0)
+                            return parseLayoutString(expression.substr(0, dividePos)) / divisor;
+                        else
+                            return 0;
+                    }
                 }
             }
             if (modulusPos != std::string::npos)
@@ -510,7 +522,13 @@ namespace tgui
                 if ((multiplyPos == std::string::npos) || (multiplyPos < modulusPos))
                 {
                     if ((dividePos == std::string::npos) || (dividePos < modulusPos))
-                        return std::fmod(parseLayoutString(expression.substr(0, modulusPos)),  parseLayoutString(expression.substr(modulusPos + 1)));
+                    {
+                        const float divisor = parseLayoutString(expression.substr(modulusPos + 1));
+                        if (divisor != 0)
+                            return std::fmod(parseLayoutString(expression.substr(0, modulusPos)), divisor);
+                        else
+                            return 0;
+                    }
                 }
             }
         }
