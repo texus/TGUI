@@ -476,7 +476,10 @@ namespace tgui
                 m_value = m_leftOperand->getValue() * m_rightOperand->getValue();
                 break;
             case Operation::Divides:
-                m_value = m_leftOperand->getValue() / m_rightOperand->getValue();
+                if (m_rightOperand->getValue() != 0)
+                    m_value = m_leftOperand->getValue() / m_rightOperand->getValue();
+                else
+                    m_value = 0;
                 break;
             case Operation::BindingLeft:
                 m_value = m_boundWidget->getPosition().x;
