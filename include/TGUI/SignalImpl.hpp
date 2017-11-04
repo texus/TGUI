@@ -248,14 +248,14 @@ namespace tgui
             #ifdef TGUI_NO_CPP14
                 return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
                     auto f = func;
-            #else
-                return [=, f=func](const std::shared_ptr<Widget>& widget, const std::string& signalName) {  // f=func is needed to decay free functions
-            #endif
-                #ifdef TGUI_USE_CPP17
-                    std::invoke(f,
-                #else
                     invokeFunc(f,
-                #endif
+            #elif defined TGUI_USE_CPP17
+                return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
+                    std::invoke(func,
+            #else
+                return [=, f=func](const std::shared_ptr<Widget>& widget, const std::string& signalName) { // f=func is needed to decay free functions
+                    invokeFunc(f,
+            #endif
                                args...,
                                widget,
                                signalName,
@@ -290,14 +290,14 @@ namespace tgui
             #ifdef TGUI_NO_CPP14
                 return [=]() {
                     auto f = func;
+                    invokeFunc(f,
+            #elif defined TGUI_USE_CPP17
+                return [=]() {
+                    std::invoke(func,
             #else
                 return [=, f=func]() {  // f=func is needed to decay free functions
-            #endif
-                #ifdef TGUI_USE_CPP17
-                    std::invoke(f,
-                #else
                     invokeFunc(f,
-                #endif
+            #endif
                                args...,
                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
                 };

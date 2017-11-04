@@ -212,6 +212,30 @@ namespace tgui
         sf::Color m_color;
     };
 
+#ifdef TGUI_USE_CPP17
+    inline const Color Color::Black      {  0,   0,   0};      ///< Black predefined color
+    inline const Color Color::White      {255, 255, 255};      ///< White predefined color
+    inline const Color Color::Red        {255,   0,   0};      ///< Red predefined color
+    inline const Color Color::Green      {  0, 255,   0};      ///< Green predefined color
+    inline const Color Color::Blue       {  0,   0, 255};      ///< Blue predefined color
+    inline const Color Color::Yellow     {255, 255,   0};      ///< Yellow predefined color
+    inline const Color Color::Magenta    {255,   0, 255};      ///< Magenta predefined color
+    inline const Color Color::Cyan       {  0, 255, 255};      ///< Cyan predefined color
+    inline const Color Color::Transparent{  0,   0,   0,   0}; ///< Transparent (black) predefined color
+
+    inline const std::map<std::string, Color> Color::colorMap{
+        {"black", Color::Black},
+        {"white", Color::White},
+        {"red", Color::Red},
+        {"yellow", Color::Yellow},
+        {"green", Color::Green},
+        {"cyan", Color::Cyan},
+        {"blue", Color::Blue},
+        {"magenta", Color::Magenta},
+        {"transparent", Color::Transparent}
+    };
+#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

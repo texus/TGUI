@@ -104,12 +104,21 @@ elseif(SFML_COMPILER_GCC OR SFML_COMPILER_CLANG)
     tgui_add_cxx_flag(-Wno-long-long)
     tgui_add_cxx_flag(-pedantic)
 
-    if (SFML_COMPILER_GCC AND SFML_OS_WINDOWS)
-        # gnu++14 instead of c++14 because TDM-GCC 5.1 did not declare _fullpath without enabling GNU extensions (other tested MinGW versions did not require it)
-        tgui_add_cxx_flag(-std=gnu++14)
+    tgui_remove_cxx_flag(-std=c++14)
+    tgui_remove_cxx_flag(-std=gnu++14)
+    tgui_remove_cxx_flag(-std=c++17)
+
+    if (TGUI_USE_CPP17)
+        tgui_add_cxx_flag(-std=c++17)
+        message(WARNING "The library is being build with c++17 features. Keep in mind that you MUST define TGUI_USE_CPP17 in the project using the library as well.")
     else()
-        # The -std=c++14 flag was added in GCC 4.9 and Clang 3.5
-        tgui_add_cxx_flag(-std=c++14)
+        if (SFML_COMPILER_GCC AND SFML_OS_WINDOWS)
+            # gnu++14 instead of c++14 because TDM-GCC 5.1 did not declare _fullpath without enabling GNU extensions (other tested MinGW versions did not require it)
+            tgui_add_cxx_flag(-std=gnu++14)
+        else()
+            # The -std=c++14 flag was added in GCC 4.9 and Clang 3.5
+            tgui_add_cxx_flag(-std=c++14)
+        endif()
     endif()
 
     # On mac, clang needs another parameter

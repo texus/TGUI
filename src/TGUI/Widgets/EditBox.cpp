@@ -36,10 +36,12 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::string EditBox::Validator::All   = ".*";
-    std::string EditBox::Validator::Int   = "[+-]?[0-9]*";
-    std::string EditBox::Validator::UInt  = "[0-9]*";
-    std::string EditBox::Validator::Float = "[+-]?[0-9]*\\.?[0-9]*";
+#ifndef TGUI_USE_CPP17
+    const std::string EditBox::Validator::All   = ".*";
+    const std::string EditBox::Validator::Int   = "[+-]?[0-9]*";
+    const std::string EditBox::Validator::UInt  = "[0-9]*";
+    const std::string EditBox::Validator::Float = "[+-]?[0-9]*\\.?[0-9]*";
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

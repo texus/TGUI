@@ -59,7 +59,7 @@ namespace tgui
             m_type = Type::Font;
         }
 
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         return std::get<Font>(m_value);
     #else
         return m_value.as<Font>();
@@ -79,7 +79,7 @@ namespace tgui
             m_type = Type::Color;
         }
 
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         return std::get<Color>(m_value);
     #else
         return m_value.as<Color>();
@@ -99,7 +99,7 @@ namespace tgui
             m_type = Type::Bool;
         }
 
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         return std::get<bool>(m_value);
     #else
         return m_value.as<bool>();
@@ -119,7 +119,7 @@ namespace tgui
             m_type = Type::Number;
         }
 
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         return std::get<float>(m_value);
     #else
         return m_value.as<float>();
@@ -139,7 +139,7 @@ namespace tgui
             m_type = Type::Outline;
         }
 
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         return std::get<Outline>(m_value);
     #else
         return m_value.as<Outline>();
@@ -159,7 +159,7 @@ namespace tgui
             m_type = Type::Texture;
         }
 
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         return std::get<Texture>(m_value);
     #else
         return m_value.as<Texture>();
@@ -179,7 +179,7 @@ namespace tgui
             m_type = Type::TextStyle;
         }
 
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         return std::get<TextStyle>(m_value);
     #else
         return m_value.as<TextStyle>();
@@ -199,7 +199,7 @@ namespace tgui
             m_type = Type::RendererData;
         }
 
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         return std::get<std::shared_ptr<RendererData>>(m_value);
     #else
         return m_value.as<std::shared_ptr<RendererData>>();
@@ -229,7 +229,7 @@ namespace tgui
             return true;
         case Type::String:
             return m_string == right.m_string;
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         case Type::Bool:
             return std::get<bool>(m_value) == std::get<bool>(right.m_value);
         case Type::Font:

@@ -71,10 +71,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct Validator
         {
-            static TGUI_API std::string All;   ///< Accept any input
-            static TGUI_API std::string Int;   ///< Accept negative and positive integers
-            static TGUI_API std::string UInt;  ///< Accept only positive integers
-            static TGUI_API std::string Float; ///< Accept decimal numbers
+        #ifdef TGUI_USE_CPP17
+            static inline const std::string All   = ".*";                    ///< Accept any input
+            static inline const std::string Int   = "[+-]?[0-9]*";           ///< Accept negative and positive integers
+            static inline const std::string UInt  = "[0-9]*";                ///< Accept only positive integers
+            static inline const std::string Float = "[+-]?[0-9]*\\.?[0-9]*"; ///< Accept decimal numbers
+        #else
+            static TGUI_API const std::string All;   ///< Accept any input
+            static TGUI_API const std::string Int;   ///< Accept negative and positive integers
+            static TGUI_API const std::string UInt;  ///< Accept only positive integers
+            static TGUI_API const std::string Float; ///< Accept decimal numbers
+        #endif
         };
 
 

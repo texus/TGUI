@@ -33,7 +33,7 @@
 #include <TGUI/Color.hpp>
 #include <TGUI/Font.hpp>
 
-#ifdef TGUI_USE_VARIANT
+#ifdef TGUI_USE_CPP17
     #include <variant>
 #else
     #include <TGUI/Any.hpp>
@@ -368,7 +368,7 @@ namespace tgui
     private:
         Type m_type = Type::None;
 
-    #ifdef TGUI_USE_VARIANT
+    #ifdef TGUI_USE_CPP17
         std::variant<sf::String, Font, Color, Outline, bool, float, Texture, TextStyle, std::shared_ptr<RendererData>> m_value;
     #else
         Any  m_value;
