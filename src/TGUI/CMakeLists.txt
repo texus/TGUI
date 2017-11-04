@@ -97,7 +97,7 @@ if (TGUI_OPTIMIZE_SINGLE_BUILD)
 
         set(NEW_TGUI_SRC "")
         foreach(i RANGE 0 ${threadsMinusOne})
-            set(OutputFile "${CMAKE_CURRENT_SOURCE_DIR}/CombinedSources${i}.cpp")
+            set(OutputFile "${CMAKE_CURRENT_SOURCE_DIR}/CombinedSources-${i}.cpp")
             file(WRITE "${OutputFile}" "")
             foreach(j RANGE ${i} ${fileCountMinusOne} ${threads})
                 list(GET TGUI_SRC ${j} inputFile)

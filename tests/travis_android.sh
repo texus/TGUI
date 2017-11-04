@@ -25,7 +25,7 @@ fi
 
 mkdir build-android
 cd build-android
-cmake -DANDROID_ABI=x86 -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android.toolchain.cmake ..
+cmake -DANDROID_ABI=x86 -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android.toolchain.cmake -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE ..
 make -j2
 make install
 cd ../examples/android

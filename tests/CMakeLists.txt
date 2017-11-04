@@ -55,7 +55,7 @@ set(TEST_SOURCES
     Widgets/VerticalLayout.cpp
 )
 
-if (TGUI_OPTIMIZE_SINGLE_BUILD)
+if (TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_OPTIMIZE_TESTS_SINGLE_BUILD)
     list(LENGTH TEST_SOURCES fileCount)
     if (TGUI_OPTIMIZE_SINGLE_BUILD_THREADS)
         set(threads ${TGUI_OPTIMIZE_SINGLE_BUILD_THREADS})
@@ -71,7 +71,7 @@ if (TGUI_OPTIMIZE_SINGLE_BUILD)
 
         set(NEW_TEST_SOURCES "")
         foreach(i RANGE 0 ${threadsMinusOne})
-            set(OutputFile "${CMAKE_CURRENT_SOURCE_DIR}/CombinedSourcesTests${i}.cpp")
+            set(OutputFile "${CMAKE_CURRENT_SOURCE_DIR}/CombinedSources-Tests-${i}.cpp")
             file(WRITE "${OutputFile}" "")
             foreach(j RANGE ${i} ${fileCountMinusOne} ${threads})
                 list(GET TEST_SOURCES ${j} inputFile)

@@ -83,7 +83,6 @@ endif()
 tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
 tgui_set_option(TGUI_BUILD_GUI_BUILDER FALSE BOOL "TRUE to compile the GUI Builder")
 tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
-tgui_set_option(TGUI_OPTIMIZE_SINGLE_BUILD TRUE BOOL "Significantly decreases build time by concatenating source files (unity build), at the cost of slower incremental builds")
 
 # Set compile flags for gcc and clang
 if (SFML_OS_ANDROID)
