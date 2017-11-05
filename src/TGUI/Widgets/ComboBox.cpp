@@ -635,18 +635,23 @@ namespace tgui
             auto items = getItems();
             auto& ids = getItemIds();
 
+            bool itemIdsUsed = false;
             std::string itemList = "[" + Serializer::serialize(items[0]);
             std::string itemIdList = "[" + Serializer::serialize(ids[0]);
             for (std::size_t i = 1; i < items.size(); ++i)
             {
                 itemList += ", " + Serializer::serialize(items[i]);
                 itemIdList += ", " + Serializer::serialize(ids[i]);
+
+                if (!ids[i].isEmpty())
+                    itemIdsUsed = true;
             }
             itemList += "]";
             itemIdList += "]";
 
             node->propertyValuePairs["Items"] = make_unique<DataIO::ValueNode>(itemList);
-            node->propertyValuePairs["ItemIds"] = make_unique<DataIO::ValueNode>(itemIdList);
+            if (itemIdsUsed)
+                node->propertyValuePairs["ItemIds"] = make_unique<DataIO::ValueNode>(itemIdList);
         }
 
         node->propertyValuePairs["ItemsToDisplay"] = make_unique<DataIO::ValueNode>(to_string(getItemsToDisplay()));
@@ -687,7 +692,7 @@ namespace tgui
             else // There are no item ids
             {
                 for (const auto& item : node->propertyValuePairs["items"]->valueList)
-                    addItem(item);
+                    addItem(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
             }
         }
         else // If there are no items, there should be no item ids
