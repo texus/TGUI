@@ -195,6 +195,24 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getSelectedItemId() == "");        
         REQUIRE(comboBox->getSelectedItemIndex() == -1);
     }
+
+    SECTION("Contains")
+    {
+        REQUIRE(!comboBox->contains("Item 1"));
+        REQUIRE(!comboBox->containsId("1"));
+
+        comboBox->addItem("Item 1", "1");
+        REQUIRE(comboBox->contains("Item 1"));
+        REQUIRE(comboBox->containsId("1"));
+
+        comboBox->addItem("Item 2");
+        REQUIRE(comboBox->contains("Item 2"));
+        REQUIRE(!comboBox->containsId("2"));
+
+        comboBox->removeItem("Item 1");
+        REQUIRE(!comboBox->contains("Item 1"));
+        REQUIRE(!comboBox->containsId("1"));
+    }
     
     SECTION("ItemsToDisplay")
     {

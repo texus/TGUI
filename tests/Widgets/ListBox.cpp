@@ -227,7 +227,25 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getSelectedItemId() == "");        
         REQUIRE(listBox->getSelectedItemIndex() == -1);
     }
-    
+
+    SECTION("Contains")
+    {
+        REQUIRE(!listBox->contains("Item 1"));
+        REQUIRE(!listBox->containsId("1"));
+
+        listBox->addItem("Item 1", "1");
+        REQUIRE(listBox->contains("Item 1"));
+        REQUIRE(listBox->containsId("1"));
+
+        listBox->addItem("Item 2");
+        REQUIRE(listBox->contains("Item 2"));
+        REQUIRE(!listBox->containsId("2"));
+
+        listBox->removeItem("Item 1");
+        REQUIRE(!listBox->contains("Item 1"));
+        REQUIRE(!listBox->containsId("1"));
+    }
+
     SECTION("ItemHeight")
     {
         listBox->setItemHeight(20);

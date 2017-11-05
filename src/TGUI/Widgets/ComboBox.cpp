@@ -466,6 +466,22 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ComboBox::contains(const sf::String& item) const
+    {
+        const auto& items = getItems();
+        return std::find(items.begin(), items.end(), item) != items.end();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ComboBox::containsId(const sf::String& id) const
+    {
+        const auto& ids = getItemIds();
+        return std::find(ids.begin(), ids.end(), id) != ids.end();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::setParent(Container* parent)
     {
         hideListBox();
@@ -632,8 +648,8 @@ namespace tgui
 
         if (getItemCount() > 0)
         {
-            auto items = getItems();
-            auto& ids = getItemIds();
+            const auto& items = getItems();
+            const auto& ids = getItemIds();
 
             bool itemIdsUsed = false;
             std::string itemList = "[" + Serializer::serialize(items[0]);

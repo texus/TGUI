@@ -466,6 +466,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ListBox::contains(const sf::String& item) const
+    {
+        return std::find_if(m_items.begin(), m_items.end(), [item](const Text& text){ return text.getString() == item; }) != m_items.end();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListBox::containsId(const sf::String& id) const
+    {
+        return std::find(m_itemIds.begin(), m_itemIds.end(), id) != m_itemIds.end();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListBox::mouseOnWidget(Vector2f pos) const
     {
         return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
