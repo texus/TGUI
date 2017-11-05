@@ -35,9 +35,11 @@ TEST_CASE("[Theme]")
         SECTION("Renderers are shared")
         {
             tgui::Theme theme;
+            REQUIRE(theme.getPrimary() == "");
             REQUIRE_NOTHROW(theme.getRenderer("Button"));
 
             REQUIRE_NOTHROW(theme.load("resources/Black.txt"));
+            REQUIRE(theme.getPrimary() == "resources/Black.txt");
             REQUIRE_NOTHROW(theme.getRenderer("EditBox"));
         }
 
