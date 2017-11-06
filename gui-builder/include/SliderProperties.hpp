@@ -48,9 +48,10 @@ struct SliderProperties : WidgetProperties
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto slider = std::dynamic_pointer_cast<tgui::Slider>(widget);
-        pair.first["Minimum"] = {"Int", tgui::to_string(slider->getMinimum())};
-        pair.first["Maximum"] = {"Int", tgui::to_string(slider->getMaximum())};
-        pair.first["Value"] = {"Int", tgui::to_string(slider->getValue())};
+        pair.first["Minimum"] = {"Float", tgui::to_string(slider->getMinimum())};
+        pair.first["Maximum"] = {"Float", tgui::to_string(slider->getMaximum())};
+        pair.first["Value"] = {"Float", tgui::to_string(slider->getValue())};
+        pair.first["Frequency"] = {"Float", tgui::to_string(slider->getFrequency())};
 
         const auto renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

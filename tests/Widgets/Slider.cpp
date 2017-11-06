@@ -36,9 +36,9 @@ TEST_CASE("[Slider]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(slider->connect("ValueChanged", [](){}));
-        REQUIRE_NOTHROW(slider->connect("ValueChanged", [](int){}));
+        REQUIRE_NOTHROW(slider->connect("ValueChanged", [](float){}));
         REQUIRE_NOTHROW(slider->connect("ValueChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(slider->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, int){}));
+        REQUIRE_NOTHROW(slider->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, float){}));
     }
 
     SECTION("WidgetType")
@@ -110,6 +110,24 @@ TEST_CASE("[Slider]")
         
         slider->setValue(23);
         REQUIRE(slider->getValue() == 20);
+    }
+
+    SECTION("Frequency")
+    {
+        slider->setFrequency(5);
+        REQUIRE(slider->getFrequency() == 5);
+
+        slider->setMinimum(20.5f);
+        slider->setMaximum(50.5f);
+        slider->setFrequency(3.0f);
+        slider->setValue(26.5f);
+        REQUIRE(slider->getValue() == 26.5f);
+
+        slider->setValue(25.5f);
+        REQUIRE(((slider->getValue() > 26.4f) && (slider->getValue() < 26.6f)));
+
+        slider->setValue(24.5f);
+        REQUIRE(((slider->getValue() > 23.4f) && (slider->getValue() < 23.6f)));
     }
 
     SECTION("Events / Signals")

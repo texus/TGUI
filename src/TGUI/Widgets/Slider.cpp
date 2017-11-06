@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/Slider.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,7 +46,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Slider::Ptr Slider::create(int minimum, int maximum)
+    Slider::Ptr Slider::create(float minimum, float maximum)
     {
         auto slider = std::make_shared<Slider>();
 
@@ -191,7 +192,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setMinimum(int minimum)
+    void Slider::setMinimum(float minimum)
     {
         // Set the new minimum
         m_minimum = minimum;
@@ -209,14 +210,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int Slider::getMinimum() const
+    float Slider::getMinimum() const
     {
         return m_minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setMaximum(int maximum)
+    void Slider::setMaximum(float maximum)
     {
         // Set the new maximum
         m_maximum = maximum;
@@ -234,15 +235,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int Slider::getMaximum() const
+    float Slider::getMaximum() const
     {
         return m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setValue(int value)
+    void Slider::setValue(float value)
     {
+        // Round to nearest allowed value
+        if (m_frequency != 0)
+           value = m_minimum + (std::round((value - m_minimum) / m_frequency) * m_frequency);
+
         // When the value is below the minimum or above the maximum then adjust it
         if (value < m_minimum)
             value = m_minimum;
@@ -261,9 +266,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int Slider::getValue() const
+    float Slider::getValue() const
     {
         return m_value;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Slider::setFrequency(float frequency)
+    {
+        m_frequency = frequency;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Slider::getFrequency() const
+    {
+        return m_frequency;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,11 +344,7 @@ namespace tgui
                     m_mouseDownOnThumbPos.y = m_thumb.height / 2.0f;
                 }
 
-                // Set the new value
-                if (pos.y - m_mouseDownOnThumbPos.y + (m_thumb.height / 2.0f) > 0)
-                    setValue(m_maximum - static_cast<int>((((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)) + 0.5f));
-                else
-                    setValue(m_maximum);
+                setValue(m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)));
 
                 // Set the thumb position for smooth scrolling
                 const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
@@ -348,11 +363,7 @@ namespace tgui
                     m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
                 }
 
-                // Set the new value
-                if (pos.x - m_mouseDownOnThumbPos.x + (m_thumb.width / 2.0f) > 0)
-                    setValue(static_cast<int>((((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
-                else
-                    setValue(m_minimum);
+                setValue((((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum);
 
                 // Set the thumb position for smooth scrolling
                 const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
@@ -380,10 +391,22 @@ namespace tgui
 
     void Slider::mouseWheelScrolled(float delta, Vector2f)
     {
-        if (static_cast<int>(m_value - delta) < m_minimum)
-            setValue(m_minimum);
+        if (m_frequency == 0)
+        {
+            setValue(m_value + delta);
+        }
         else
-            setValue(static_cast<int>(m_value - delta));
+        {
+            if (abs(delta) <= 1)
+            {
+                if (delta > 0)
+                    setValue(m_value + m_frequency);
+                else if (delta < 0)
+                    setValue(m_value - m_frequency);
+            }
+            else
+                setValue(m_value + std::round(delta) * m_frequency);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
