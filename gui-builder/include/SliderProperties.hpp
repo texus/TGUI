@@ -35,11 +35,11 @@ struct SliderProperties : WidgetProperties
     {
         auto slider = std::dynamic_pointer_cast<tgui::Slider>(widget);
         if (property == "Minimum")
-            slider->setMinimum(tgui::stoi(value));
+            slider->setMinimum(tgui::stof(value));
         else if (property == "Maximum")
-            slider->setMaximum(tgui::stoi(value));
+            slider->setMaximum(tgui::stof(value));
         else if (property == "Value")
-            slider->setValue(tgui::stoi(value));
+            slider->setValue(tgui::stof(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

@@ -526,11 +526,11 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["minimum"])
-            setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+            setMinimum(tgui::stof(node->propertyValuePairs["minimum"]->value));
         if (node->propertyValuePairs["maximum"])
-            setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+            setMaximum(tgui::stof(node->propertyValuePairs["maximum"]->value));
         if (node->propertyValuePairs["value"])
-            setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+            setValue(tgui::stof(node->propertyValuePairs["value"]->value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
