@@ -457,15 +457,19 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Find out what the index of the focused widget is. Returns 0 when no widget is focused and index+1 otherwise.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::size_t getFocusedWidgetIndex() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
         std::vector<Widget::Ptr> m_widgets;
         std::vector<sf::String>  m_widgetNames;
 
         Widget::Ptr m_widgetBelowMouse;
-
-        // The id of the focused widget
-        std::size_t m_focusedWidget = 0;
+        Widget::Ptr m_focusedWidget;
 
         // Did we enter handleEvent directly or because we got a MouseReleased event?
         bool m_handingMouseReleased = false;
