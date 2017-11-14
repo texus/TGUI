@@ -54,6 +54,7 @@ private:
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
     void loadForm();
+    void menuBarItemClicked(const std::string& item);
 
 private:
 
@@ -63,6 +64,7 @@ private:
     tgui::ChildWindow::Ptr m_propertiesWindow;
     tgui::ScrollablePanel::Ptr m_propertiesContainer;
     tgui::ComboBox::Ptr m_selectedWidgetComboBox;
+    tgui::MenuBar::Ptr m_menuBar;
 
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;

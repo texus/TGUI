@@ -1,0 +1,81 @@
+Renderer.ButtonRenderer {
+    backgroundcolor = #F5F5F5;
+    backgroundcolordown = #EBEBEB;
+    backgroundcolorhover = white;
+    bordercolor = #3C3C3C;
+    bordercolordown = black;
+    bordercolorhover = black;
+    borders = (2, 2, 2, 2);
+    textcolor = #3C3C3C;
+    textcolordown = black;
+    textcolorhover = black;
+    texture = None;
+    texturedisabled = None;
+    texturedown = None;
+    texturefocused = None;
+    texturehover = None;
+}
+
+ListBox.ThemesList {
+    ItemHeight = 20;
+    Position = (10, 10);
+    Size = (300, 200);
+    TextSize = 12;
+
+    Renderer {
+        backgroundcolor = #F5F5F5;
+        backgroundcolorhover = white;
+        bordercolor = black;
+        borders = (2, 2, 2, 2);
+        padding = (0, 0, 0, 0);
+        selectedbackgroundcolor = #006EFF;
+        selectedbackgroundcolorhover = #1E96FF;
+        selectedtextcolor = white;
+        textcolor = #3C3C3C;
+        textcolorhover = black;
+        texturebackground = None;
+    }
+}
+
+EditBox.NewThemeEditBox {
+    Position = (10, 220);
+    Size = (300, 22);
+    TextSize = 12;
+
+    Renderer {
+        backgroundcolor = #F5F5F5;
+        backgroundcolorhover = white;
+        bordercolor = #3C3C3C;
+        bordercolorhover = black;
+        borders = (2, 2, 2, 2);
+        caretcolor = black;
+        caretwidth = 1;
+        defaulttextcolor = #A0A0A0;
+        padding = (4, 2, 4, 2);
+        selectedtextbackgroundcolor = #006EFF;
+        selectedtextcolor = white;
+        textcolor = #3C3C3C;
+        texture = None;
+        texturedisabled = None;
+        texturefocused = None;
+        texturehover = None;
+    }
+}
+
+Button.ButtonAdd {
+    Enabled = false;
+    Position = (120, 250);
+    Size = (90, 22);
+    Text = "Add";
+    TextSize = 12;
+    renderer = &ButtonRenderer;
+}
+
+Button.ButtonDelete {
+    Enabled = false;
+    Position = (220, 250);
+    Size = (90, 22);
+    Text = "Delete";
+    TextSize = 12;
+    renderer = &ButtonRenderer;
+}

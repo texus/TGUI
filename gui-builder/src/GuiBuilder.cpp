@@ -190,9 +190,9 @@ GuiBuilder::GuiBuilder() :
     m_window{{1280, 680}, "TGUI - GUI Builder"},
     m_gui         {m_window},
     m_themes      {{"White", *tgui::Theme::getDefault()},
-                   {"Black", {"themes/Black.txt"}},
-                   {"BabyBlue", {"themes/BabyBlue.txt"}},
-                   {"TransparentGrey", {"themes/TransparentGrey.txt"}}},
+                   {"themes/Black.txt", {"themes/Black.txt"}},
+                   {"themes/BabyBlue.txt", {"themes/BabyBlue.txt"}},
+                   {"themes/TransparentGrey.txt", {"themes/TransparentGrey.txt"}}},
     m_defaultTheme{"White"}
 {
     m_window.setFramerateLimit(60);
@@ -310,7 +310,7 @@ void GuiBuilder::closeForm(Form* form)
     }
 
     auto panel = tgui::Panel::create({"100%", "100%"});
-    panel->getRenderer()->setBackgroundColor({0, 0, 0, 150});
+    panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
     m_gui.add(panel);
 
     auto messageBox = tgui::MessageBox::create("Saving form", "The form was changed, do you want to save the changes?", {"Yes", "No"});
@@ -373,10 +373,10 @@ void GuiBuilder::loadStartScreen()
     m_selectedWidgetComboBox = nullptr;
 
     m_gui.removeAllWidgets();
-    m_gui.loadWidgetsFromFile("start_screen.txt");
+    m_gui.loadWidgetsFromFile("resources/StartScreen.txt");
 
     auto filenameEditBox = m_gui.get<tgui::Panel>("MainPanel")->get<tgui::EditBox>("FilenameEditBox");
-    m_gui.get<tgui::Panel>("MainPanel")->get("NewButton")->connect("pressed", [=]{ loadEditingScreen(filenameEditBox->getText()); });
+    m_gui.get<tgui::Panel>("MainPanel")->get("NewButton")->connect("pressed", [=]{ loadEditingScreen(filenameEditBox->getText()); m_selectedForm->setChanged(true); });
 
     m_gui.get<tgui::Panel>("MainPanel")->get("LoadButton")->connect("pressed", [=]{ loadEditingScreen(filenameEditBox->getText()); loadForm(); });
 }
@@ -386,7 +386,7 @@ void GuiBuilder::loadStartScreen()
 void GuiBuilder::loadEditingScreen(const std::string& filename)
 {
     m_gui.removeAllWidgets();
-    m_gui.loadWidgetsFromFile("editing_screen.txt");
+    m_gui.loadWidgetsFromFile("resources/EditingScreen.txt");
 
     m_forms.push_back(std::make_unique<Form>(this, filename, m_gui.get<tgui::ChildWindow>("Form")));
     m_selectedForm = m_forms[0].get();
@@ -398,6 +398,10 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
     m_selectedWidgetComboBox->addItem(filename, "form");
     m_selectedWidgetComboBox->setSelectedItemById("form");
     m_selectedWidgetComboBox->connect("ItemSelected", [this](std::string, std::string id){ m_selectedForm->selectWidgetById(id); });
+
+    m_menuBar = m_gui.get<tgui::MenuBar>("MenuBar");
+    m_menuBar->connect("MouseEntered", [](tgui::Widget::Ptr menuBar, std::string){ menuBar->moveToFront(); });
+    m_menuBar->connect("MenuItemClicked", [this](std::string item){ menuBarItemClicked(item); });
 
     loadToolbox();
     initProperties();
@@ -575,6 +579,11 @@ void GuiBuilder::initProperties()
             rendererComboBox->addItem(theme.first);
 
         rendererComboBox->addItem("Custom");
+
+        // Set the theme to Custom if the theme used by the widget would have been deleted
+        if (!rendererComboBox->contains(selectedWidget->theme))
+            selectedWidget->theme = "Custom";
+
         rendererComboBox->setSelectedItem(selectedWidget->theme);
         m_propertiesContainer->add(rendererComboBox, "RendererSelectorComboBox");
 
@@ -744,6 +753,98 @@ void GuiBuilder::loadForm()
     }
 
     initSelectedWidgetComboBoxAfterLoad();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarItemClicked(const std::string& menuItem)
+{
+    if (menuItem == "New / Load")
+    {
+        while (!m_forms.empty())
+            closeForm(m_forms[0].get());
+    }
+    else if (menuItem == "Save")
+    {
+        m_selectedForm->save();
+    }
+    else if (menuItem == "Quit")
+    {
+        while (!m_forms.empty())
+            closeForm(m_forms[0].get());
+
+        m_window.close();
+    }
+    else if (menuItem == "Edit")
+    {
+        auto panel = tgui::Panel::create({"100%", "100%"});
+        panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
+        m_gui.add(panel, "TransparentBlackBackground");
+
+        auto editThemesWindow = tgui::ChildWindow::create("Edit themes");
+        editThemesWindow->setSize({320, 280});
+        editThemesWindow->setPosition("(&.w - w) / 2", "(&.h - h) / 2");
+        editThemesWindow->loadWidgetsFromFile("resources/EditThemesWindow.txt");
+        m_gui.add(editThemesWindow);
+
+        auto buttonAdd = editThemesWindow->get<tgui::Button>("ButtonAdd");
+        auto buttonDelete = editThemesWindow->get<tgui::Button>("ButtonDelete");
+        auto newThemeEditBox = editThemesWindow->get<tgui::EditBox>("NewThemeEditBox");
+        auto themesList = editThemesWindow->get<tgui::ListBox>("ThemesList");
+
+        themesList->removeAllItems();
+        for (auto& theme : m_themes)
+        {
+            if (!theme.second.getPrimary().empty())
+                themesList->addItem(theme.second.getPrimary());
+        }
+
+        themesList->connect("ItemSelected", [=](std::string item){
+            if (item.empty())
+                buttonDelete->disable();
+            else
+                buttonDelete->enable();
+        });
+
+        newThemeEditBox->connect("TextChanged", [=](std::string text){
+            if (text.empty())
+                buttonAdd->disable();
+            else
+                buttonAdd->enable();
+        });
+
+        buttonAdd->connect("Pressed", [=]{
+            try
+            {
+                const std::string filename = newThemeEditBox->getText();
+                if (!themesList->contains(filename))
+                {
+                    tgui::Theme theme{filename};
+                    themesList->addItem(filename);
+                    m_themes[filename] = theme;
+                }
+            }
+            catch (const tgui::Exception& e)
+            {
+                std::cout << "Exception caught when adding theme: " << e.what() << std::endl;
+            }
+
+            initProperties();
+        });
+
+        buttonDelete->connect("Pressed", [=]{
+            auto item = themesList->getSelectedItem();
+            m_themes.erase(item);
+            themesList->removeItem(item);
+            buttonDelete->disable();
+            initProperties();
+        });
+
+        editThemesWindow->connect("Closed", [=]{
+            m_gui.remove(editThemesWindow);
+            m_gui.remove(panel);
+        });
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
