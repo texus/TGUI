@@ -91,9 +91,9 @@ protected:
     static bool parseBoolean(std::string str, bool defaultValue)
     {
         str = tgui::toLower(tgui::trim(str));
-        if (str == "true" || str == "yes" || str == "on" || str == "1")
+        if (str == "true" || str == "yes" || str == "on" || str == "y" || str == "t" || str == "1")
             return true;
-        else if (str == "false" || str == "no" || str == "off" || str == "0")
+        else if (str == "false" || str == "no" || str == "off" || str == "n" || str == "f" || str == "0")
             return false;
         else
             return defaultValue;
