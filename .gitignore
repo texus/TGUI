@@ -3,6 +3,7 @@
 /gui-builder/gui-builder
 /gui-builder/gui-builder.exe
 /gui-builder/form.txt
+/gui-builder/GuiBuilderState.txt
 /_site
 /examples/Android/libs
 /examples/Android/obj

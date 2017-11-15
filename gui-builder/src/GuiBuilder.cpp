@@ -37,6 +37,7 @@
 #include "TextBoxProperties.hpp"
 #include "GuiBuilder.hpp"
 
+#include <fstream>
 #include <cassert>
 #include <memory>
 #include <string>
@@ -189,10 +190,7 @@ namespace
 GuiBuilder::GuiBuilder() :
     m_window{{1280, 680}, "TGUI - GUI Builder"},
     m_gui         {m_window},
-    m_themes      {{"White", *tgui::Theme::getDefault()},
-                   {"themes/Black.txt", {"themes/Black.txt"}},
-                   {"themes/BabyBlue.txt", {"themes/BabyBlue.txt"}},
-                   {"themes/TransparentGrey.txt", {"themes/TransparentGrey.txt"}}},
+    m_themes      {{"White", *tgui::Theme::getDefault()}},
     m_defaultTheme{"White"}
 {
     m_window.setFramerateLimit(60);
@@ -211,7 +209,61 @@ GuiBuilder::GuiBuilder() :
     m_widgetProperties["SpinButton"] = std::make_unique<SpinButtonProperties>();
     m_widgetProperties["TextBox"] = std::make_unique<TextBoxProperties>();
 
+    std::ifstream stateInputFile{"GuiBuilderState.txt"};
+    if (stateInputFile.is_open())
+    {
+        std::stringstream stream;
+        stream << stateInputFile.rdbuf();
+
+        const auto node = tgui::DataIO::parse(stream);
+        m_lastOpenedFile = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, node->propertyValuePairs["lastopenedfile"]->value).getString();
+        for (const auto& theme : node->propertyValuePairs["themes"]->valueList)
+        {
+            const auto deserializedTheme = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, theme).getString();
+            m_themes[deserializedTheme] = {deserializedTheme};
+        }
+    }
+    else
+    {
+        m_lastOpenedFile = "form.txt";
+        m_themes["themes/Black.txt"] = {"themes/Black.txt"};
+        m_themes["themes/BabyBlue.txt"] = {"themes/BabyBlue.txt"};
+        m_themes["themes/TransparentGrey.txt"] = {"themes/TransparentGrey.txt"};
+    }
+
     loadStartScreen();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+GuiBuilder::~GuiBuilder()
+{
+    auto node = std::make_unique<tgui::DataIO::Node>();
+    node->propertyValuePairs["LastOpenedFile"] = std::make_unique<tgui::DataIO::ValueNode>(tgui::Serializer::serialize(m_lastOpenedFile));
+
+    if (m_themes.size() > 1)
+    {
+        auto themeIt = m_themes.begin();
+        if (themeIt->first == "White")
+            themeIt++;
+
+        std::string themeList = "[" + tgui::Serializer::serialize(themeIt->first);
+        for (; themeIt != m_themes.end(); ++themeIt)
+        {
+            if (themeIt->first != "White")
+                themeList += ", " + tgui::Serializer::serialize(themeIt->first);
+        }
+
+        themeList += "]";
+        node->propertyValuePairs["Themes"] = std::make_unique<tgui::DataIO::ValueNode>(themeList);
+    }
+
+    std::stringstream stream;
+    tgui::DataIO::emit(node, stream);
+
+    std::ofstream stateOutputFile{"GuiBuilderState.txt"};
+    if (stateOutputFile.is_open())
+        stateOutputFile << stream.rdbuf();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -376,6 +428,8 @@ void GuiBuilder::loadStartScreen()
     m_gui.loadWidgetsFromFile("resources/StartScreen.txt");
 
     auto filenameEditBox = m_gui.get<tgui::Panel>("MainPanel")->get<tgui::EditBox>("FilenameEditBox");
+    filenameEditBox->setText(m_lastOpenedFile);
+
     m_gui.get<tgui::Panel>("MainPanel")->get("NewButton")->connect("pressed", [=]{ loadEditingScreen(filenameEditBox->getText()); m_selectedForm->setChanged(true); });
 
     m_gui.get<tgui::Panel>("MainPanel")->get("LoadButton")->connect("pressed", [=]{ loadEditingScreen(filenameEditBox->getText()); loadForm(); });
@@ -385,6 +439,8 @@ void GuiBuilder::loadStartScreen()
 
 void GuiBuilder::loadEditingScreen(const std::string& filename)
 {
+    m_lastOpenedFile = filename;
+
     m_gui.removeAllWidgets();
     m_gui.loadWidgetsFromFile("resources/EditingScreen.txt");
 

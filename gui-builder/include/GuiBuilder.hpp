@@ -35,6 +35,7 @@ class GuiBuilder
 public:
 
     GuiBuilder();
+    ~GuiBuilder();
     void mainLoop();
 
     void reloadProperties();
@@ -57,6 +58,8 @@ private:
     void menuBarItemClicked(const std::string& item);
 
 private:
+
+    std::string m_lastOpenedFile;
 
     sf::RenderWindow m_window;
     tgui::Gui m_gui;

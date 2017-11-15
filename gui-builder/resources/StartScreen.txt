@@ -26,7 +26,6 @@ Panel.MainPanel {
     EditBox.FilenameEditBox {
         Position = (50, 60);
         Size = (300, 30);
-        Text = "form.txt";
         TextSize = 15;
     
         Renderer {
