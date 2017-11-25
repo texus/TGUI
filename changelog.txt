@@ -1,7 +1,7 @@
-TGUI 0.7.6  (TBD)
------------------
+TGUI 0.7.6  (25 November 2017)
+------------------------------
 
-- Fixed compilation with TDM-GCC 5.1
+- Fixed _fullpath function not found in some MinGW versions
 - Knob did not display correctly when using textures
 - Fixed crash in layouts in specific case with GCC 7
 - ChildWindow::setTitleButtons did not accept combinations of buttons
