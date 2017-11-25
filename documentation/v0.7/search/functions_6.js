@@ -98,7 +98,7 @@ var searchData=
   ['gettimetodisplay',['getTimeToDisplay',['../classtgui_1_1ToolTip.html#af59afa93bc84dd752d8752f9972260ef',1,'tgui::ToolTip']]],
   ['gettitle',['getTitle',['../classtgui_1_1ChildWindow.html#a10d6fef5c239dc8bd926f6fb6f8bb543',1,'tgui::ChildWindow']]],
   ['gettitlealignment',['getTitleAlignment',['../classtgui_1_1ChildWindow.html#a6944919ffe4a50648903a586808990d6',1,'tgui::ChildWindow']]],
-  ['gettitlebuttons',['getTitleButtons',['../classtgui_1_1ChildWindow.html#a8d62632116dedeafce3ebbc7e34b5ea2',1,'tgui::ChildWindow']]],
+  ['gettitlebuttons',['getTitleButtons',['../classtgui_1_1ChildWindow.html#ad232902740d29c00219ac095e996bcaf',1,'tgui::ChildWindow']]],
   ['gettooltip',['getToolTip',['../classtgui_1_1Widget.html#a0e6e54fbaba931d0bb8eb0404e2e1c22',1,'tgui::Widget']]],
   ['gettype',['getType',['../classtgui_1_1ObjectConverter.html#ab9b801c4ea38deb6149fa761a949fc3d',1,'tgui::ObjectConverter']]],
   ['getvalue',['getValue',['../classtgui_1_1Layout.html#a471571775e87d3edf557e69d42621b58',1,'tgui::Layout::getValue()'],['../classtgui_1_1Layout2d.html#ae850cbc6bf98c37d206018c73ca90702',1,'tgui::Layout2d::getValue()'],['../classtgui_1_1Knob.html#a87d43023edbd5df4d1f84477cb9df9b4',1,'tgui::Knob::getValue()'],['../classtgui_1_1ProgressBar.html#a1941a77b1c68e68b89dddd175b01e9ea',1,'tgui::ProgressBar::getValue()'],['../classtgui_1_1Scrollbar.html#aaad12f6a53e402ef39e5167a6e21fcdd',1,'tgui::Scrollbar::getValue()'],['../classtgui_1_1Slider.html#a64d7f00a76f36553b36e2a8978636c13',1,'tgui::Slider::getValue()'],['../classtgui_1_1SpinButton.html#ad8e05a0513ed95184e6d6799af988204',1,'tgui::SpinButton::getValue()']]],

@@ -7,6 +7,18 @@ changelog:
   minors:
   - version: 7
     patches:
+    - version: 6
+      date: 25 November 2017
+      changes: |
+        Fixed _fullpath function not found in some MinGW versions
+        Knob did not display correctly when using textures
+        Fixed crash in layouts in specific case with GCC 7
+        ChildWindow::setTitleButtons did not accept combinations of buttons
+        Theme files missed MinimizeButton and MaximizeButton in ChildWindow section
+        ComboBox::setItemsToDisplay did not show full list when 0 was passed
+        Non-string layouts are now also copied when copying a widget
+        OpenGL is no longer used for clipping
+        Fixed crash that could occur when performing a division by 0 in the layouts
     - version: 5
       date: 11 September 2017
       changes: |

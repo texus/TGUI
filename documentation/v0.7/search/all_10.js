@@ -143,7 +143,7 @@ var searchData=
   ['settitlebarcolor',['setTitleBarColor',['../classtgui_1_1ChildWindowRenderer.html#aaf307ccfbfc386471391bdbe84443550',1,'tgui::ChildWindowRenderer']]],
   ['settitlebarheight',['setTitleBarHeight',['../classtgui_1_1ChildWindowRenderer.html#a866283bc7912ecdb71aa9f1db0b6e2a0',1,'tgui::ChildWindowRenderer']]],
   ['settitlebartexture',['setTitleBarTexture',['../classtgui_1_1ChildWindowRenderer.html#a89d097c79a87c73d885c303e93000ac2',1,'tgui::ChildWindowRenderer']]],
-  ['settitlebuttons',['setTitleButtons',['../classtgui_1_1ChildWindow.html#a1c26a8fdd66d2042c1d09c35737fb023',1,'tgui::ChildWindow']]],
+  ['settitlebuttons',['setTitleButtons',['../classtgui_1_1ChildWindow.html#a528e85a884d94c5ae64156c34911d306',1,'tgui::ChildWindow']]],
   ['settitlebuttonstext',['setTitleButtonsText',['../classtgui_1_1ChildWindow.html#a8637828b410176c2c866e1fb2f7e5cad',1,'tgui::ChildWindow']]],
   ['settitlecolor',['setTitleColor',['../classtgui_1_1ChildWindowRenderer.html#a9a82eca2677df34cde74d5afa6249f66',1,'tgui::ChildWindowRenderer']]],
   ['settooltip',['setToolTip',['../classtgui_1_1Widget.html#ae4f30ef364bf7594ec209688a9b43ec5',1,'tgui::Widget']]],

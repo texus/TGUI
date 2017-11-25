@@ -17,19 +17,19 @@ Minimum supported compilers: GCC 4.9, Clang 3.6, VS2015 Update 2
 </p>
 
 
-### TGUI 0.7.5
+### TGUI 0.7.6
 Latest stable version
 
 Minimum supported compilers: GCC 4.7, VS2013, equivalent Clang version
 <p>
-  {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.7.5.zip" style="Green" %}<br><br>
-  {% include button.ext text="Visual C++12 (2013) - 32bit" link="https://github.com/texus/TGUI/releases/download/0.7.5/TGUI-0.7.5-vc12-32bit-for-SFML-2.4.2.zip" style="Green" %}
-  {% include button.ext text="Visual C++12 (2013) - 64bit" link="https://github.com/texus/TGUI/releases/download/0.7.5/TGUI-0.7.5-vc12-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
-  {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://github.com/texus/TGUI/releases/download/0.7.5/TGUI-0.7.5-vc14-32bit-for-SFML-2.4.2.zip" style="Green" %}
-  {% include button.ext text="Visual C++14 (2015) - 64bit" link="https://github.com/texus/TGUI/releases/download/0.7.5/TGUI-0.7.5-vc14-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
-  {% include button.ext text="MinGW 6.1.0 (DW2) - 32-bit" link="https://github.com/texus/TGUI/releases/download/0.7.5/TGUI-0.7.5-mingw-6.1.0-32bit-for-SFML-2.4.2.zip" style="Green" %}
-  {% include button.ext text="MinGW 6.1.0 (SEH) - 64-bit" link="https://github.com/texus/TGUI/releases/download/0.7.5/TGUI-0.7.5-mingw-6.1.0-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
-  {% include button.ext text="MinGW 4.9.2 TDM (SJLJ) - 32-bit" link="https://github.com/texus/TGUI/releases/download/0.7.5/TGUI-0.7.5-mingw-4.9.2-tdm-32bit-for-SFML-2.4.2.zip" style="Green" %}
+  {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.7.6.zip" style="Green" %}<br><br>
+  {% include button.ext text="Visual C++12 (2013) - 32bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-vc12-32bit-for-SFML-2.4.2.zip" style="Green" %}
+  {% include button.ext text="Visual C++12 (2013) - 64bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-vc12-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
+  {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-vc14-32bit-for-SFML-2.4.2.zip" style="Green" %}
+  {% include button.ext text="Visual C++14 (2015) - 64bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-vc14-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
+  {% include button.ext text="MinGW 6.1.0 (DW2) - 32-bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-mingw-6.1.0-32bit-for-SFML-2.4.2.zip" style="Green" %}
+  {% include button.ext text="MinGW 6.1.0 (SEH) - 64-bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-mingw-6.1.0-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
+  {% include button.ext text="MinGW 4.9.2 TDM (SJLJ) - 32-bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-mingw-4.9.2-tdm-32bit-for-SFML-2.4.2.zip" style="Green" %}
 </p>
 
 
