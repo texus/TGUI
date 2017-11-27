@@ -179,6 +179,19 @@ TEST_CASE("[Texture]")
         REQUIRE(!texture.isSmooth());
     }
 
+    SECTION("Shader")
+    {
+        tgui::Texture texture{"resources/image.png"};
+        REQUIRE(!texture.getShader());
+
+        sf::Shader shader;
+        texture.setShader(&shader);
+        REQUIRE(texture.getShader() == &shader);
+
+        texture.setShader(nullptr);
+        REQUIRE(!texture.getShader());
+    }
+
     SECTION("ImageLoader")
     {
         unsigned int count = 0;

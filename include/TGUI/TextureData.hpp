@@ -33,6 +33,7 @@
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Shader.hpp>
 
 #include <memory>
 #include <string>
@@ -49,6 +50,7 @@ namespace tgui
         std::unique_ptr<sf::Image> image;
         sf::Texture texture;
         sf::IntRect rect;
+        sf::Shader* shader = nullptr;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -220,7 +220,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        Vector2f     m_size;
+        Vector2f    m_size;
         Texture     m_texture;
         std::vector<sf::Vertex> m_vertices;
 

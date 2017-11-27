@@ -397,6 +397,7 @@ namespace tgui
                 clipping = make_unique<Clipping>(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
         #endif
 
+            states.shader = m_texture.getData()->shader;
             states.texture = &m_texture.getData()->texture;
             target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
         }
