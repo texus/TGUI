@@ -48,6 +48,8 @@ private:
     void loadEditingScreen(const std::string& filename);
     void loadToolbox();
     void createNewWidget(tgui::Widget::Ptr widget);
+    void recursiveCopyWidget(tgui::Container::Ptr oldContainer, tgui::Container::Ptr newContainer);
+    void copyWidget(std::shared_ptr<WidgetInfo> widgetInfo);
     void updateWidgetProperty(const std::string& property, const std::string& value);
     void initProperties();
     tgui::EditBox::Ptr addPropertyValueEditBoxes(float& topPosition, const std::pair<std::string, std::pair<std::string, std::string>>& propertyValuePair);

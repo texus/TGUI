@@ -27,6 +27,7 @@
 #include "GuiBuilder.hpp"
 
 #include <cassert>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,14 +65,34 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::string Form::addWidget(tgui::Widget::Ptr widget)
+std::string Form::addWidget(tgui::Widget::Ptr widget, tgui::Container* parent)
 {
     const std::string id = tgui::to_string(widget.get());
     m_widgets[id] = std::make_shared<WidgetInfo>(widget);
 
     const std::string name = "Widget" + tgui::to_string(++m_idCounter);
-    m_widgetsContainer->add(widget, name);
+    m_widgets[id]->name = name;
+
+    if (parent)
+        parent->add(widget, name);
+    else
+        m_widgetsContainer->add(widget, name);
+
     selectWidget(m_widgets[id]);
+
+    setChanged(true);
+    return name;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::string Form::addExistingWidget(tgui::Widget::Ptr widget)
+{
+    const std::string id = tgui::to_string(widget.get());
+    m_widgets[id] = std::make_shared<WidgetInfo>(widget);
+
+    const std::string name = "Widget" + tgui::to_string(++m_idCounter);
+    m_widgets[id]->name = name;
 
     setChanged(true);
     return name;
@@ -82,12 +103,19 @@ std::string Form::addWidget(tgui::Widget::Ptr widget)
 void Form::removeWidget(const std::string& id)
 {
     const auto widget = m_widgets[id];
-    m_widgets.erase(id);
-
     assert(widget != nullptr);
-    m_widgetsContainer->remove(widget->ptr);
+    widget->ptr->getParent()->remove(widget->ptr);
 
+    m_widgets.erase(id);
     setChanged(true);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::shared_ptr<WidgetInfo> Form::getWidget(const std::string& id) const
+{
+    assert(m_widgets.find(id) != m_widgets.end());
+    return m_widgets.at(id);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,20 +161,15 @@ void Form::setSelectedWidgetName(const std::string& name)
             if (widget == m_selectedWidget->ptr)
             {
                 // Remove the selected widget and add it again with a different name
-                m_widgetsContainer->remove(m_selectedWidget->ptr);
-                m_widgetsContainer->add(m_selectedWidget->ptr, name);
+                tgui::Container* parent = widget->getParent();
+                parent->remove(m_selectedWidget->ptr);
+                parent->add(m_selectedWidget->ptr, name);
+
+                m_selectedWidget->name = name;
                 widgetFound = true;
             }
         }
     }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-std::string Form::getSelectedWidgetName() const
-{
-    assert(m_selectedWidget != nullptr);
-    return m_widgetsContainer->getWidgetName(m_selectedWidget->ptr);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,7 +179,15 @@ void Form::updateSelectionSquarePositions()
     assert(m_selectedWidget != nullptr);
 
     const auto& widget = m_selectedWidget->ptr;
-    const auto position = widget->getPosition();
+
+    auto position = widget->getPosition();
+    tgui::Container* parentWidget = widget->getParent();
+    while (parentWidget != m_widgetsContainer.get())
+    {
+        position += parentWidget->getPosition() + parentWidget->getChildWidgetsOffset();
+        parentWidget = parentWidget->getParent();
+    }
+
     m_selectionSquares[0]->setPosition({position.x,                               position.y});
     m_selectionSquares[1]->setPosition({position.x + (widget->getSize().x / 2.f), position.y});
     m_selectionSquares[2]->setPosition({position.x + widget->getSize().x,         position.y});
@@ -168,7 +199,8 @@ void Form::updateSelectionSquarePositions()
 
     // The positions given to the squares where those of its center
     for (auto& square : m_selectionSquares)
-        square->setPosition(square->getPosition() - (square->getSize() / 2.f));
+        square->setPosition({std::round(square->getPosition().x - (square->getSize().y / 2.f)),
+                             std::round(square->getPosition().y - (square->getSize().x / 2.f))});
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,21 +208,6 @@ void Form::updateSelectionSquarePositions()
 void Form::selectWidgetById(const std::string& id)
 {
     selectWidget(m_widgets[id]);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-std::vector<std::pair<tgui::Widget::Ptr, std::string>> Form::getWidgetsAndNames() const
-{
-    std::vector<std::pair<tgui::Widget::Ptr, std::string>> pairs;
-
-    const auto& widgets = m_widgetsContainer->getWidgets();
-    const auto& names = m_widgetsContainer->getWidgetNames();
-
-    for (std::size_t i = 0; i < widgets.size(); ++i)
-        pairs.push_back(std::make_pair(widgets[i], names[i]));
-
-    return pairs;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -276,22 +293,7 @@ bool Form::load()
         return false;
     }
 
-    const auto& widgets = m_widgetsContainer->getWidgets();
-    const auto& widgetNames = m_widgetsContainer->getWidgetNames();
-    for (std::size_t i = 0; i < widgets.size(); ++i)
-    {
-        const std::string id = tgui::to_string(widgets[i].get());
-        m_widgets[id] = std::make_shared<WidgetInfo>(widgets[i]);
-        m_widgets[id]->theme = "Custom";
-
-        // Keep track of the highest id found in widgets with default names, to avoid creating new widgets with confusing names
-        if ((widgetNames[i].getSize() >= 7) && (widgetNames[i].substring(0, 6) == "Widget"))
-        {
-            const std::string potentialNumber = widgetNames[i].substring(6);
-            if (std::all_of(potentialNumber.begin(), potentialNumber.end(), ::isdigit))
-                m_idCounter = std::max<unsigned int>(m_idCounter, tgui::stoi(potentialNumber));
-        }
-    }
+    importLoadedWidgets(m_widgetsContainer);
 
     return true;
 }
@@ -306,6 +308,32 @@ void Form::save()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void Form::importLoadedWidgets(tgui::Container::Ptr parent)
+{
+    const auto& widgets = parent->getWidgets();
+    const auto& widgetNames = parent->getWidgetNames();
+    for (std::size_t i = 0; i < widgets.size(); ++i)
+    {
+        const std::string id = tgui::to_string(widgets[i].get());
+        m_widgets[id] = std::make_shared<WidgetInfo>(widgets[i]);
+        m_widgets[id]->name = widgetNames[i];
+        m_widgets[id]->theme = "Custom";
+
+        // Keep track of the highest id found in widgets with default names, to avoid creating new widgets with confusing names
+        if ((widgetNames[i].getSize() >= 7) && (widgetNames[i].substring(0, 6) == "Widget"))
+        {
+            const std::string potentialNumber = widgetNames[i].substring(6);
+            if (std::all_of(potentialNumber.begin(), potentialNumber.end(), ::isdigit))
+                m_idCounter = std::max<unsigned int>(m_idCounter, tgui::stoi(potentialNumber));
+        }
+
+        if (widgets[i]->isContainer())
+            importLoadedWidgets(std::static_pointer_cast<tgui::Container>(widgets[i]));
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void Form::onSelectionSquarePress(tgui::Button::Ptr square, sf::Vector2f pos)
 {
     m_draggingSelectionSquare = square;
@@ -314,26 +342,43 @@ void Form::onSelectionSquarePress(tgui::Button::Ptr square, sf::Vector2f pos)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Form::onFormMousePress(sf::Vector2f pos)
+tgui::Widget::Ptr Form::getWidgetBelowMouse(tgui::Container::Ptr parent, sf::Vector2f pos)
 {
     // Loop through widgets in reverse order to find the top one in case of overlapping widgets
-    for (auto it = m_widgets.rbegin(); it != m_widgets.rend(); ++it)
+    const auto& widgets = parent->getWidgets();
+    for (auto it = widgets.rbegin(); it != widgets.rend(); ++it)
     {
-        if (!it->second)
-            continue;
-
-        const auto& widget = it->second->ptr;
+        tgui::Widget::Ptr widget = *it;
         if (widget && sf::FloatRect{widget->getPosition().x, widget->getPosition().y, widget->getSize().x, widget->getSize().y}.contains(pos))
         {
-            selectWidget(it->second);
+            if (widget->isContainer())
+            {
+                tgui::Container::Ptr container = std::static_pointer_cast<tgui::Container>(widget);
+                tgui::Widget::Ptr child = getWidgetBelowMouse(container, pos - container->getPosition() - container->getChildWidgetsOffset());
+                if (child)
+                    return child;
+            }
 
-            m_draggingWidget = true;
-            m_draggingPos = pos;
-            return;
+            return widget;
         }
     }
 
-    selectWidget({});
+    return nullptr;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Form::onFormMousePress(sf::Vector2f pos)
+{
+    auto widget = getWidgetBelowMouse(m_widgetsContainer, pos);
+    if (widget)
+    {
+        selectWidget(m_widgets[tgui::to_string(widget.get())]);
+        m_draggingWidget = true;
+        m_draggingPos = pos;
+    }
+    else
+        selectWidget(nullptr);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

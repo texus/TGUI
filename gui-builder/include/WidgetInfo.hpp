@@ -35,6 +35,7 @@ struct WidgetInfo
     WidgetInfo(tgui::Widget::Ptr widget) : ptr{widget} {}
 
     tgui::Widget::Ptr ptr = nullptr;
+    std::string name = "";
     std::string theme = "White";
 };
 

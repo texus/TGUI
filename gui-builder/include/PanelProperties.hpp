@@ -23,17 +23,25 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include <TGUI/Renderers/PanelRenderer.hpp>
-#include <TGUI/RendererDefines.hpp>
+#ifndef TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP
+#define TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#include "WidgetProperties.hpp"
+#include <TGUI/Widgets/Panel.hpp>
 
-namespace tgui
+struct PanelProperties : WidgetProperties
 {
-    TGUI_RENDERER_PROPERTY_OUTLINE(PanelRenderer, Borders)
+    PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
+    {
+        auto pair = WidgetProperties::initProperties(widget);
+        auto panel = std::dynamic_pointer_cast<tgui::Panel>(widget);
 
-    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BorderColor, Color::Black)
-    TGUI_RENDERER_PROPERTY_COLOR(PanelRenderer, BackgroundColor, Color::White)
-}
+        const auto renderer = panel->getSharedRenderer();
+        pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
+        pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
+        pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
+        return pair;
+    }
+};
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#endif // TGUI_GUI_BUILDER_PANEL_PROPERTIES_HPP

@@ -397,7 +397,7 @@ namespace tgui
         }
         else
         {
-            if (abs(delta) <= 1)
+            if (std::abs(delta) <= 1)
             {
                 if (delta > 0)
                     setValue(m_value + m_frequency);

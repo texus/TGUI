@@ -326,7 +326,7 @@ namespace tgui
 
         for (std::size_t i = 0; i < m_widgetNames.size(); ++i)
         {
-            if (m_widgets[i]->m_containerWidget)
+            if (m_widgets[i]->isContainer())
             {
                 Widget::Ptr widget = std::static_pointer_cast<Container>(m_widgets[i])->get(widgetName);
                 if (widget != nullptr)
@@ -975,7 +975,7 @@ namespace tgui
                 if (widget->m_mouseDown)
                 {
                     // Some widgets should always receive mouse move events while dragging them, even if the mouse is no longer on top of them.
-                    if ((widget->m_draggableWidget) || (widget->m_containerWidget))
+                    if (widget->m_draggableWidget || widget->isContainer())
                     {
                         widget->mouseMoved(mousePos);
                         return true;
@@ -1011,8 +1011,7 @@ namespace tgui
                 // Focus the widget
                 focusWidget(widget);
 
-                // Check if the widget is a container
-                if (widget->m_containerWidget)
+                if (widget->isContainer())
                 {
                     // If another widget was focused then unfocus it now
                     if (m_focusedWidget && (widget != m_focusedWidget))
@@ -1154,7 +1153,7 @@ namespace tgui
             return false;
 
         // If the focused widget is a container then try to focus the previous widget inside it
-        if (m_focusedWidget && m_focusedWidget->m_containerWidget && std::static_pointer_cast<Container>(m_focusedWidget)->focusPrevWidgetInContainer())
+        if (m_focusedWidget && m_focusedWidget->isContainer() && std::static_pointer_cast<Container>(m_focusedWidget)->focusPrevWidgetInContainer())
             return true;
 
         for (std::size_t i = getFocusedWidgetIndex() - 1; i > 0; ++i)
@@ -1166,7 +1165,7 @@ namespace tgui
                 if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
                 {
                     // Container widgets can only be focused it they contain focusable widgets
-                    if ((!m_widgets[i-1]->m_containerWidget) || (std::static_pointer_cast<Container>(m_widgets[i-1])->focusPrevWidgetInContainer()))
+                    if ((!m_widgets[i-1]->isContainer()) || (std::static_pointer_cast<Container>(m_widgets[i-1])->focusPrevWidgetInContainer()))
                     {
                         if (m_focusedWidget)
                         {
@@ -1200,7 +1199,7 @@ namespace tgui
             return false;
 
         // If the focused widget is a container then try to focus the next widget inside it
-        if (m_focusedWidget && m_focusedWidget->m_containerWidget && std::static_pointer_cast<Container>(m_focusedWidget)->focusNextWidgetInContainer())
+        if (m_focusedWidget && m_focusedWidget->isContainer() && std::static_pointer_cast<Container>(m_focusedWidget)->focusNextWidgetInContainer())
             return true;
 
         // Loop through all widgets
@@ -1213,7 +1212,7 @@ namespace tgui
                 if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
                 {
                     // Container widgets can only be focused it they contain focusable widgets
-                    if ((!m_widgets[i]->m_containerWidget) || (std::static_pointer_cast<Container>(m_widgets[i])->focusNextWidgetInContainer()))
+                    if ((!m_widgets[i]->isContainer()) || (std::static_pointer_cast<Container>(m_widgets[i])->focusNextWidgetInContainer()))
                     {
                         if (m_focusedWidget)
                         {
@@ -1249,7 +1248,7 @@ namespace tgui
         // Check if a container is focused
         if (m_focusedWidget)
         {
-            if (m_focusedWidget->m_containerWidget)
+            if (m_focusedWidget->isContainer())
             {
                 // Focus the next widget in container
                 if (std::static_pointer_cast<Container>(m_focusedWidget)->focusNextWidgetInContainer())
@@ -1310,7 +1309,7 @@ namespace tgui
         }
 
         // If the currently focused container widget is the only widget to focus, then focus its next child widget
-        if (m_focusedWidget && (m_focusedWidget->m_containerWidget))
+        if (m_focusedWidget && (m_focusedWidget->isContainer()))
         {
             std::static_pointer_cast<Container>(m_focusedWidget)->tabKeyPressed();
             return true;
@@ -1332,7 +1331,7 @@ namespace tgui
         if (m_focusedWidget)
         {
             // Check if a container is focused
-            if (m_focusedWidget->m_containerWidget)
+            if (m_focusedWidget->isContainer())
             {
                 // Focus the previous widget in container
                 if (std::static_pointer_cast<Container>(m_focusedWidget)->focusPrevWidgetInContainer())
@@ -1391,7 +1390,7 @@ namespace tgui
         }
 
         // If the currently focused container widget is the only widget to focus, then focus its previous child widget
-        if (m_focusedWidget && (m_focusedWidget->m_containerWidget))
+        if (m_focusedWidget && (m_focusedWidget->isContainer()))
         {
             std::static_pointer_cast<Container>(m_focusedWidget)->shiftTabKeyPressed();
             return true;

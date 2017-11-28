@@ -37,56 +37,56 @@ namespace tgui
 {
     namespace
     {
-        bool tabKeyUsageEnabled = true;
-        unsigned int doubleClickTime = 500;
-        std::string resourcePath = "";
+        bool globalTabKeyUsageEnabled = true;
+        unsigned int globalDoubleClickTime = 500;
+        std::string globalResourcePath = "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void enableTabKeyUsage()
     {
-        tabKeyUsageEnabled = true;
+        globalTabKeyUsageEnabled = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void disableTabKeyUsage()
     {
-        tabKeyUsageEnabled = false;
+        globalTabKeyUsageEnabled = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool isTabKeyUsageEnabled()
     {
-        return tabKeyUsageEnabled;
+        return globalTabKeyUsageEnabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void setDoubleClickTime(unsigned int milliseconds)
     {
-        doubleClickTime = milliseconds;
+        globalDoubleClickTime = milliseconds;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int getDoubleClickTime()
     {
-        return doubleClickTime;
+        return globalDoubleClickTime;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void setResourcePath(const std::string& path)
     {
-        resourcePath = path;
+        globalResourcePath = path;
 
-        if (!resourcePath.empty())
+        if (!globalResourcePath.empty())
         {
-            if (resourcePath[resourcePath.length()-1] != '/')
-                resourcePath.push_back('/');
+            if (globalResourcePath[globalResourcePath.length()-1] != '/')
+                globalResourcePath.push_back('/');
         }
     }
 
@@ -94,7 +94,7 @@ namespace tgui
 
     const std::string& getResourcePath()
     {
-        return resourcePath;
+        return globalResourcePath;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

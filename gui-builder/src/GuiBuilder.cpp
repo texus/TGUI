@@ -28,6 +28,7 @@
 #include "EditBoxProperties.hpp"
 #include "LabelProperties.hpp"
 #include "ListBoxProperties.hpp"
+#include "PanelProperties.hpp"
 #include "PictureProperties.hpp"
 #include "ProgressBarProperties.hpp"
 #include "RadioButtonProperties.hpp"
@@ -188,7 +189,7 @@ namespace
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 GuiBuilder::GuiBuilder() :
-    m_window{{1280, 680}, "TGUI - GUI Builder"},
+    m_window{{1300, 680}, "TGUI - GUI Builder"},
     m_gui         {m_window},
     m_themes      {{"White", *tgui::Theme::getDefault()}},
     m_defaultTheme{"White"}
@@ -201,6 +202,7 @@ GuiBuilder::GuiBuilder() :
     m_widgetProperties["EditBox"] = std::make_unique<EditBoxProperties>();
     m_widgetProperties["Label"] = std::make_unique<LabelProperties>();
     m_widgetProperties["ListBox"] = std::make_unique<ListBoxProperties>();
+    m_widgetProperties["Panel"] = std::make_unique<PanelProperties>();
     m_widgetProperties["Picture"] = std::make_unique<PictureProperties>();
     m_widgetProperties["ProgressBar"] = std::make_unique<ProgressBarProperties>();
     m_widgetProperties["RadioButton"] = std::make_unique<RadioButtonProperties>();
@@ -477,6 +479,7 @@ void GuiBuilder::loadToolbox()
         {"EditBox", []{ return tgui::EditBox::create(); }},
         {"Label", []{ return tgui::Label::create("Label"); }},
         {"ListBox", []{ return tgui::ListBox::create(); }},
+        {"Panel", []{ return tgui::Panel::create({100, 50}); }},
         {"Picture", []{ return tgui::Picture::create("resources/DefaultPicture.png"); }},
         {"ProgressBar", []{ return tgui::ProgressBar::create(); }},
         {"RadioButton", []{ return tgui::RadioButton::create(); }},
@@ -534,10 +537,55 @@ void GuiBuilder::loadToolbox()
 
 void GuiBuilder::createNewWidget(tgui::Widget::Ptr widget)
 {
+    tgui::Container* parent = nullptr;
+    tgui::Widget::Ptr selectedWidget = m_selectedForm->getSelectedWidget() ? m_selectedForm->getSelectedWidget()->ptr : nullptr;
+    if (selectedWidget && selectedWidget->isContainer())
+        parent = static_cast<tgui::Container*>(selectedWidget.get());
+    else if (selectedWidget)
+        parent = selectedWidget->getParent();
+
     const std::string id = tgui::to_string(widget.get());
-    const std::string name = m_selectedForm->addWidget(widget);
+    const std::string name = m_selectedForm->addWidget(widget, parent);
     m_selectedWidgetComboBox->addItem(name, id);
     m_selectedWidgetComboBox->setSelectedItemById(id);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::recursiveCopyWidget(tgui::Container::Ptr oldContainer, tgui::Container::Ptr newContainer)
+{
+    const auto& oldWidgets = oldContainer->getWidgets();
+    const auto& newWidgets = newContainer->getWidgets();
+    assert(oldWidgets.size() == newWidgets.size());
+
+    for (std::size_t i = 0; i < newWidgets.size(); ++i)
+    {
+        const std::string name = m_selectedForm->addExistingWidget(newWidgets[i]);
+        m_selectedWidgetComboBox->addItem(name, tgui::to_string(newWidgets[i].get()));
+
+        m_selectedForm->getWidget(tgui::to_string(newWidgets[i].get()))->theme = m_selectedForm->getWidget(tgui::to_string(oldWidgets[i].get()))->theme;
+
+        if (newWidgets[i]->isContainer())
+            recursiveCopyWidget(std::static_pointer_cast<tgui::Container>(oldWidgets[i]), std::static_pointer_cast<tgui::Container>(newWidgets[i]));
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::copyWidget(std::shared_ptr<WidgetInfo> widgetInfo)
+{
+    tgui::Widget::Ptr widget = widgetInfo->ptr->clone();
+
+    const std::string id = tgui::to_string(widget.get());
+    const std::string name = m_selectedForm->addWidget(widget, widgetInfo->ptr->getParent());
+    m_selectedWidgetComboBox->addItem(name, id);
+
+    if (widget->isContainer())
+        recursiveCopyWidget(std::static_pointer_cast<tgui::Container>(widgetInfo->ptr), std::static_pointer_cast<tgui::Container>(widget));
+
+    m_selectedWidgetComboBox->setSelectedItemById(id);
+    m_selectedForm->getSelectedWidget()->theme = widgetInfo->theme;
+    initProperties();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -573,7 +621,7 @@ void GuiBuilder::initProperties()
         auto buttonCopy = tgui::Button::create("Copy");
         buttonCopy->setSize({((bindWidth(m_propertiesContainer) - m_propertiesContainer->getScrollbarWidth()) / 4.f) - 5, 25});
         buttonCopy->setPosition({0, topPosition});
-        buttonCopy->connect("Pressed", [this]{ createNewWidget(m_selectedForm->getSelectedWidget()->ptr->clone()); });
+        buttonCopy->connect("Pressed", [this]{ copyWidget(m_selectedForm->getSelectedWidget()); });
         m_propertiesContainer->add(buttonCopy);
 
         auto buttonRemove = tgui::Button::create("Remove");
@@ -601,7 +649,7 @@ void GuiBuilder::initProperties()
         buttonToBack->setTextSize(smallestTextsize);
 
         topPosition += 35;
-        auto valueEditBox = addPropertyValueEditBoxes(topPosition, {"Name", {"String", m_selectedForm->getSelectedWidgetName()}});
+        auto valueEditBox = addPropertyValueEditBoxes(topPosition, {"Name", {"String", selectedWidget->name}});
         valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{
             if (m_previousValue != valueEditBox->getText())
             {
@@ -753,11 +801,11 @@ void GuiBuilder::changeWidgetName(const std::string& name)
 
 void GuiBuilder::initSelectedWidgetComboBoxAfterLoad()
 {
-    const auto& widgets = m_selectedForm->getWidgetsAndNames();
-    for (const auto& pair : widgets)
+    const auto& widgets = m_selectedForm->getWidgets();
+    for (const auto& widget : widgets)
     {
-        const std::string id = tgui::to_string(pair.first.get());
-        m_selectedWidgetComboBox->addItem(pair.second, id);
+        const std::string id = tgui::to_string(widget->ptr.get());
+        m_selectedWidgetComboBox->addItem(widget->name, id);
     }
 }
 

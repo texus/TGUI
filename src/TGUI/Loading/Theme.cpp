@@ -136,7 +136,7 @@ namespace tgui
                                                          {"paddingbetweenbuttons", 1.f},
                                                          {"textcolor", Color::Black}})},
                     {"panel", RendererData::create({{"bordercolor", Color::Black},
-                                                    {"backgroundcolor", Color::Transparent}})},
+                                                    {"backgroundcolor", Color::White}})},
                     {"picture", RendererData::create()},
                     {"progressbar", RendererData::create({{"borders", Borders{2}},
                                                           {"bordercolor", Color::Black},

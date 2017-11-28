@@ -36,16 +36,16 @@ class Form
 {
 public:
     Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindow::Ptr formWindow);
-    std::string addWidget(tgui::Widget::Ptr widget);
+    std::string addWidget(tgui::Widget::Ptr widget, tgui::Container* parent = nullptr);
+    std::string addExistingWidget(tgui::Widget::Ptr widget);
     void removeWidget(const std::string& id);
+    std::shared_ptr<WidgetInfo> getWidget(const std::string& id) const;
     std::vector<std::shared_ptr<WidgetInfo>> getWidgets() const;
     std::shared_ptr<WidgetInfo> getSelectedWidget() const;
     void setSelectedWidgetName(const std::string& name);
     void setSelectedWidgetRenderer(const std::string& renderer);
-    std::string getSelectedWidgetName() const;
     void updateSelectionSquarePositions();
     void selectWidgetById(const std::string& id);
-    std::vector<std::pair<tgui::Widget::Ptr, std::string>> getWidgetsAndNames() const;
     void mouseMoved(sf::Vector2i pos);
     void mouseReleased();
     void setFilename(const sf::String& filename);
@@ -58,7 +58,9 @@ public:
     void save();
 
 private:
+    void importLoadedWidgets(tgui::Container::Ptr parent);
     void onSelectionSquarePress(tgui::Button::Ptr square, sf::Vector2f pos);
+    tgui::Widget::Ptr getWidgetBelowMouse(tgui::Container::Ptr parent, sf::Vector2f pos);
     void onFormMousePress(sf::Vector2f pos);
     void onDrag(sf::Vector2i mousePos);
     void selectWidget(std::shared_ptr<WidgetInfo> widget);
