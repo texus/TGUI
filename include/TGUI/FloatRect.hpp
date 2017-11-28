@@ -33,7 +33,7 @@
 
 namespace tgui
 {
-    class TGUI_API FloatRect : public sf::FloatRect
+    class FloatRect : public sf::FloatRect
     {
     public:
 
