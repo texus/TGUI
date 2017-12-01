@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Loading/WidgetFactory.hpp>
+#include <TGUI/Widgets/BitmapButton.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Canvas.hpp>
 #include <TGUI/Widgets/ChatBox.hpp>
@@ -60,6 +61,7 @@ namespace tgui
 {
     std::map<std::string, std::function<Widget::Ptr()>> WidgetFactory::m_constructFunctions =
     {
+        {"bitmapbutton", std::make_shared<BitmapButton>},
         {"button", std::make_shared<Button>},
         {"canvas", std::make_shared<Canvas>},
         {"chatbox", std::make_shared<ChatBox>},

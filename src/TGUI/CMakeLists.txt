@@ -47,6 +47,7 @@ set(TGUI_SRC
     Renderers/TabsRenderer.cpp
     Renderers/TextBoxRenderer.cpp
     Renderers/WidgetRenderer.cpp
+    Widgets/BitmapButton.cpp
     Widgets/BoxLayout.cpp
     Widgets/BoxLayoutRatios.cpp
     Widgets/Button.cpp
