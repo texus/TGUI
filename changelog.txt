@@ -1,3 +1,9 @@
+TGUI 0.7.7  (TBD)
+-----------------
+
+- Fixed EditBox InputValidator in textEntered when text was selected
+
+
 TGUI 0.7.6  (25 November 2017)
 ------------------------------
 

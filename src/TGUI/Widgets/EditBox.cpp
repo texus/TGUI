@@ -813,7 +813,15 @@ namespace tgui
         if (m_regexString != ".*")
         {
             sf::String text = m_text;
-            text.insert(m_selEnd, key);
+
+            if (m_selChars == 0)
+                text.insert(m_selEnd, key);
+            else
+            {
+                const std::size_t pos = std::min(m_selStart, m_selEnd);
+                text.erase(pos, m_selChars);
+                text.insert(pos, key);
+            }
 
             // The character has to match the regex
             if (!std::regex_match(text.toAnsiString(), m_regex))
