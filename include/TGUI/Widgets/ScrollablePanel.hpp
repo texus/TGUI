@@ -44,6 +44,7 @@ namespace tgui
         typedef std::shared_ptr<ScrollablePanel> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const ScrollablePanel> ConstPtr; ///< Shared constant widget pointer
 
+        /// @brief Defines when the scrollbar shows up
         enum class ScrollbarPolicy
         {
             Automatic,  ///< Show the scrollbar only when needed (default)

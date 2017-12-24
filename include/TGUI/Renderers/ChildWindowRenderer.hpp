@@ -194,8 +194,8 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes whether characters are rendered on top of the title buttons
-        /// @param showText  Should text be shown on the title buttons?
+        /// @brief Returns whether characters are rendered on top of the title buttons
+        /// @return Should text be shown on the title buttons?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getShowTextOnTitleButtons() const;
 

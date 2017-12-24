@@ -218,7 +218,6 @@ namespace tgui
         /// @brief Returns a pointer to an earlier created widget
         ///
         /// @param widgetName The name that was given to the widget when it was added to the container
-        /// @param recursive  Should the function also search for widgets inside containers that are inside this container?
         ///
         /// @return Pointer to the earlier created widget
         ///
@@ -235,7 +234,6 @@ namespace tgui
         /// @brief Returns a pointer to an earlier created widget
         ///
         /// @param widgetName The name that was given to the widget when it was added to the container
-        /// @param recursive  Should the function also search for widgets inside containers that are inside this container?
         ///
         /// @return Pointer to the earlier created widget.
         ///         The pointer will already be casted to the desired type
