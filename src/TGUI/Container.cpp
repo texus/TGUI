@@ -687,7 +687,7 @@ namespace tgui
             const std::string idStr = to_string(id);
             node->children.push_back(saveRenderer(renderer.first, "Renderer." + idStr, workingDirectory));
             for (const auto& child : renderer.second)
-                renderersMap[child] = {nullptr, idStr};
+                renderersMap[child] = std::make_pair(nullptr, idStr); // Did not compile with VS2015 Update 2 when using braces
         }
 
         for (const auto& child : getWidgets())
