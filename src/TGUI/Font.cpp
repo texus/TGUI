@@ -77,6 +77,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Font::~Font()
+    {
+        // If this is the last instance that shares the global font then also destroy the global font
+        if ((*this == getInternalGlobalFont()) && (m_font.use_count() == 2))
+            setGlobalFont(nullptr);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     const std::string& Font::getId() const
     {
         return m_id;

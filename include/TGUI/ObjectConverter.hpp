@@ -121,7 +121,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(Font font) :
             m_type {Type::Font},
-            m_value{font}
+            m_value{std::move(font)}
         {
         }
 

@@ -42,7 +42,7 @@ namespace tgui
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setTextSize(getGlobalTextSize());
-        setItemHeight(Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 1.25f);
+        setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 1.25f));
         setSize({Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 10,
                  (m_itemHeight * 7) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }

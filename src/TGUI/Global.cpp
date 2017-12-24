@@ -63,16 +63,23 @@ namespace tgui
 
     void setGlobalFont(Font font)
     {
-        globalFont = font;
+        globalFont = std::move(font);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Font getGlobalFont()
+    const Font& getGlobalFont()
     {
         if (!globalFont)
-            globalFont = Font(defaultFontBytes, sizeof(defaultFontBytes));
+            setGlobalFont({defaultFontBytes, sizeof(defaultFontBytes)});
 
+        return globalFont;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const Font& getInternalGlobalFont()
+    {
         return globalFont;
     }
 
