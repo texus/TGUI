@@ -596,6 +596,9 @@ namespace tgui
 
     void ScrollablePanel::updateScrollbars()
     {
+        const Vector2f scrollbarSpace = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
+                                         getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+
         const Vector2f visibleSize = getInnerSize();
         m_horizontalScrollbar.setLowValue(static_cast<unsigned int>(visibleSize.x));
         m_verticalScrollbar.setLowValue(static_cast<unsigned int>(visibleSize.y));
@@ -607,34 +610,34 @@ namespace tgui
         const bool horizontalScrollbarVisible = m_horizontalScrollbar.isVisible() && (!m_horizontalScrollbar.getAutoHide() || (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue()));
         if (horizontalScrollbarVisible)
         {
-            m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, getInnerSize().y - m_horizontalScrollbar.getSize().y);
+            m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, scrollbarSpace.y - m_horizontalScrollbar.getSize().y);
             m_verticalScrollbar.setLowValue(static_cast<unsigned int>(m_verticalScrollbar.getLowValue() - m_horizontalScrollbar.getSize().y));
 
             const bool verticalScrollbarVisible = m_verticalScrollbar.isVisible() && (!m_verticalScrollbar.getAutoHide() || (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue()));
             if (verticalScrollbarVisible)
-                m_horizontalScrollbar.setSize(getInnerSize().x - m_verticalScrollbar.getSize().x, m_horizontalScrollbar.getSize().y);
+                m_horizontalScrollbar.setSize(scrollbarSpace.x - m_verticalScrollbar.getSize().x, m_horizontalScrollbar.getSize().y);
             else
-                m_horizontalScrollbar.setSize(getInnerSize().x, m_horizontalScrollbar.getSize().y);
+                m_horizontalScrollbar.setSize(scrollbarSpace.x, m_horizontalScrollbar.getSize().y);
         }
         else
         {
-            m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, getInnerSize().y);
+            m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, scrollbarSpace.y);
 
             const bool verticalScrollbarVisible = m_verticalScrollbar.isVisible() && (!m_verticalScrollbar.getAutoHide() || (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue()));
             if (verticalScrollbarVisible)
             {
-                m_horizontalScrollbar.setSize(getInnerSize().x - m_verticalScrollbar.getSize().x, m_horizontalScrollbar.getSize().y);
+                m_horizontalScrollbar.setSize(scrollbarSpace.x - m_verticalScrollbar.getSize().x, m_horizontalScrollbar.getSize().y);
                 m_horizontalScrollbar.setLowValue(static_cast<unsigned int>(m_horizontalScrollbar.getLowValue() - m_verticalScrollbar.getSize().x));
 
                 if (m_horizontalScrollbar.isVisible() && (!m_horizontalScrollbar.getAutoHide() || (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue())))
-                    m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, getInnerSize().y - m_horizontalScrollbar.getSize().y);
+                    m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, scrollbarSpace.y - m_horizontalScrollbar.getSize().y);
             }
             else
-                m_horizontalScrollbar.setSize(getInnerSize().x, m_horizontalScrollbar.getSize().y);
+                m_horizontalScrollbar.setSize(scrollbarSpace.x, m_horizontalScrollbar.getSize().y);
         }
 
-        m_verticalScrollbar.setPosition(getChildWidgetsOffset().x + getInnerSize().x - m_verticalScrollbar.getSize().x, getChildWidgetsOffset().y);
-        m_horizontalScrollbar.setPosition(getChildWidgetsOffset().x, getChildWidgetsOffset().y + getInnerSize().y - m_horizontalScrollbar.getSize().y);
+        m_verticalScrollbar.setPosition(m_bordersCached.getLeft() + scrollbarSpace.x - m_verticalScrollbar.getSize().x, m_bordersCached.getTop());
+        m_horizontalScrollbar.setPosition(m_bordersCached.getLeft(), m_bordersCached.getTop() + scrollbarSpace.y - m_horizontalScrollbar.getSize().y);
 
         const float verticalSpeed = 40.f * (static_cast<float>(m_verticalScrollbar.getMaximum() - m_verticalScrollbar.getLowValue()) / m_verticalScrollbar.getLowValue());
         m_verticalScrollbar.setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(verticalSpeed))));

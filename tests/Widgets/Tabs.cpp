@@ -163,6 +163,7 @@ TEST_CASE("[Tabs]")
         tabs->enable();
         tabs->setPosition({10, 5});
         tabs->setSize({100, 30});
+        tabs->setTextSize(16);
         tabs->add("1");
         tabs->add("2");
         tabs->add("3");

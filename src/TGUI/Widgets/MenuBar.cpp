@@ -36,11 +36,14 @@ namespace tgui
     MenuBar::MenuBar()
     {
         m_type = "MenuBar";
+        m_distanceToSideCached = Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f;
 
         m_renderer = aurora::makeCopied<MenuBarRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setSize({0, 20});
+        setTextSize(getGlobalTextSize());
+        setMinimumSubMenuWidth((Text::getLineHeight(m_fontCached, m_textSize) * 4) + (2 * m_distanceToSideCached));
+        setSize({"100%", Text::getLineHeight(m_fontCached, m_textSize) * 1.25f});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,8 +98,6 @@ namespace tgui
         Widget::setSize(size);
 
         m_spriteBackground.setSize(getSize());
-
-        setTextSize(Text::findBestTextSize(m_fontCached, getSize().y * 0.8f));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,16 +296,6 @@ namespace tgui
             m_menus[m_visibleMenu].text.setColor(m_textColorCached);
             m_visibleMenu = -1;
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MenuBar::setParent(Container* parent)
-    {
-        Widget::setParent(parent);
-
-        if ((m_parent != nullptr) && (getSize().x == 0))
-            setSize("100%", m_size.y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

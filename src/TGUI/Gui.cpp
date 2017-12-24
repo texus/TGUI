@@ -23,7 +23,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Gui.hpp>
-#include <TGUI/DefaultFont.hpp>
 #include <TGUI/Clipboard.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Clipping.hpp>
@@ -458,10 +457,6 @@ namespace tgui
 
     void Gui::init()
     {
-        auto defaultFont = std::make_shared<sf::Font>();
-        if (defaultFont->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes)))
-            setFont(defaultFont);
-
     #ifdef SFML_SYSTEM_WINDOWS
         unsigned int doubleClickTime = GetDoubleClickTime();
         if (doubleClickTime > 0)

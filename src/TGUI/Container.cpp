@@ -307,7 +307,7 @@ namespace tgui
         m_widgets.push_back(widgetPtr);
         m_widgetNames.push_back(widgetName);
 
-        if (m_fontCached)
+        if (m_fontCached != getGlobalFont())
             widgetPtr->setInheritedFont(m_fontCached);
 
         if (m_opacityCached < 1)
@@ -895,7 +895,10 @@ namespace tgui
         else if (property == "font")
         {
             for (const auto& widget : m_widgets)
-                widget->setInheritedFont(m_fontCached);
+            {
+                if (m_fontCached != getGlobalFont())
+                    widget->setInheritedFont(m_fontCached);
+            }
         }
     }
 

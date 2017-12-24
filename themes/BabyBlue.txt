@@ -22,13 +22,14 @@ CheckBox {
 }
 
 ChildWindow {
-    TextureTitlebar       = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31);
-    TitleColor            = rgb(100, 100, 100);
-    BackgroundColor       = rgb(230, 230, 230);
-    BorderColor           = White;
-    Borders               = (2, 0, 2, 2);
-    DistanceToSide        = 3;
-    PaddingBetweenButtons = 1;
+    TextureTitlebar        = "BabyBlue.png" Part(317, 2, 62, 31) Middle(10, 0, 42, 31);
+    TitleColor             = rgb(100, 100, 100);
+    BackgroundColor        = rgb(230, 230, 230);
+    BorderColor            = White;
+    Borders                = (2, 0, 2, 2);
+    DistanceToSide         = 3;
+    PaddingBetweenButtons  = 1;
+    ShowTextOnTitleButtons = false;
 
     CloseButton = {
         Texture      = "BabyBlue.png" Part(96, 2, 25, 25);

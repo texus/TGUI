@@ -49,12 +49,8 @@ TEST_CASE("[ChatBox]")
 
     SECTION("Adding lines")
     {
-        std::shared_ptr<sf::Font> font1 = tgui::Font{"resources/DejaVuSans.ttf"}.getFont();
-        std::shared_ptr<sf::Font> font2 = tgui::Font{"resources/DejaVuSans.ttf"}.getFont();
-
         chatBox->setTextColor(sf::Color::Black);
         chatBox->setTextSize(24);
-        chatBox->getRenderer()->setFont(font1);
 
         REQUIRE(chatBox->getLineAmount() == 0);
         chatBox->addLine("Line 1");
@@ -62,32 +58,22 @@ TEST_CASE("[ChatBox]")
         chatBox->addLine("Line 2", 16);
         chatBox->addLine("Line 3", sf::Color::Green);
         chatBox->addLine("Line 4", sf::Color::Yellow, 18);
-        chatBox->addLine("Line 5", sf::Color::Blue, 20, font2);
-        REQUIRE(chatBox->getLineAmount() == 5);
+        REQUIRE(chatBox->getLineAmount() == 4);
 
         REQUIRE(chatBox->getLine(0) == "Line 1");
         REQUIRE(chatBox->getLine(1) == "Line 2");
         REQUIRE(chatBox->getLine(2) == "Line 3");
         REQUIRE(chatBox->getLine(3) == "Line 4");
-        REQUIRE(chatBox->getLine(4) == "Line 5");
 
         REQUIRE(chatBox->getLineColor(0) == sf::Color::Black);
         REQUIRE(chatBox->getLineColor(1) == sf::Color::Black);
         REQUIRE(chatBox->getLineColor(2) == sf::Color::Green);
         REQUIRE(chatBox->getLineColor(3) == sf::Color::Yellow);
-        REQUIRE(chatBox->getLineColor(4) == sf::Color::Blue);
 
         REQUIRE(chatBox->getLineTextSize(0) == 24);
         REQUIRE(chatBox->getLineTextSize(1) == 16);
         REQUIRE(chatBox->getLineTextSize(2) == 24);
         REQUIRE(chatBox->getLineTextSize(3) == 18);
-        REQUIRE(chatBox->getLineTextSize(4) == 20);
-
-        REQUIRE(chatBox->getLineFont(0) == font1);
-        REQUIRE(chatBox->getLineFont(1) == font1);
-        REQUIRE(chatBox->getLineFont(2) == font1);
-        REQUIRE(chatBox->getLineFont(3) == font1);
-        REQUIRE(chatBox->getLineFont(4) == font2);
     }
 
     SECTION("Removing lines")
@@ -172,18 +158,13 @@ TEST_CASE("[ChatBox]")
 
     SECTION("Get unexisting line")
     {
-        std::shared_ptr<sf::Font> font1 = tgui::Font{"resources/DejaVuSans.ttf"}.getFont();
-        std::shared_ptr<sf::Font> font2 = tgui::Font{"resources/DejaVuSans.ttf"}.getFont();
-
         chatBox->setTextColor(sf::Color::Yellow);
         chatBox->setTextSize(26);
-        chatBox->getRenderer()->setFont(font1);
 
-        chatBox->addLine("Text", sf::Color::Blue, 20, font2);
+        chatBox->addLine("Text", sf::Color::Blue, 20);
         REQUIRE(chatBox->getLine(1) == "");
         REQUIRE(chatBox->getLineTextSize(2) == 26);
         REQUIRE(chatBox->getLineColor(3) == sf::Color::Yellow);
-        REQUIRE(chatBox->getLineFont(4) == font1);
     }
 
     SECTION("Lines start from top or bottom")

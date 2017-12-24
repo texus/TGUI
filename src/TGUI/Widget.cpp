@@ -845,8 +845,10 @@ namespace tgui
         {
             if (getSharedRenderer()->getFont())
                 m_fontCached = getSharedRenderer()->getFont();
-            else
+            else if (m_inheritedFont)
                 m_fontCached = m_inheritedFont;
+            else
+                m_fontCached = getGlobalFont();
         }
         else
             throw Exception{"Could not set property '" + property + "', widget of type '" + getWidgetType() + "' does not has this property."};

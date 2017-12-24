@@ -784,7 +784,7 @@ namespace tgui
         float m_inheritedOpacity = 1;
 
         // Cached renderer properties
-        Font  m_fontCached;
+        Font  m_fontCached = getGlobalFont();
         float m_opacityCached = 1;
 
         std::function<void(const std::string& property)> m_rendererChangedCallback = [this](const std::string& property){ rendererChangedCallback(property); };

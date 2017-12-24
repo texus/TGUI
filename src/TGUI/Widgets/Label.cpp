@@ -44,6 +44,8 @@ namespace tgui
 
         m_renderer = aurora::makeCopied<LabelRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+
+        setTextSize(getGlobalTextSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -407,18 +409,21 @@ namespace tgui
 
     void Label::rearrangeText()
     {
+        m_lines.clear();
+
         if (m_fontCached == nullptr)
             return;
 
+        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSize, m_textStyleCached);
+
         // Find the maximum width of one line
-        float maxWidth = 0;
+        float maxWidth;
         if (m_autoSize)
-            maxWidth = m_maximumTextWidth;
+            maxWidth = std::max(0.f, m_maximumTextWidth - 2*textOffset);
         else
         {
-            if (getSize().x > m_bordersCached.getLeft() + m_bordersCached.getRight() + m_paddingCached.getLeft() + m_paddingCached.getRight())
-                maxWidth = getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight();
-            else // There is no room for text
+            maxWidth = getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight() - 2*textOffset;
+            if (maxWidth <= 0)
                 return;
         }
 
@@ -426,7 +431,6 @@ namespace tgui
         const sf::String string = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSize, m_textStyleCached & sf::Text::Bold);
 
         // Split the string in multiple lines
-        m_lines.clear();
         float width = 0;
         std::size_t searchPosStart = 0;
         std::size_t newLinePos = 0;
@@ -460,8 +464,10 @@ namespace tgui
         // Update the size of the label
         if (m_autoSize)
         {
-            Widget::setSize({std::max(width, maxWidth) + outline.getLeft() + outline.getRight(),
-                            (std::max<std::size_t>(m_lines.size(), 1) * m_fontCached.getLineSpacing(m_textSize)) + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize, m_textStyleCached) + outline.getTop() + outline.getBottom()});
+            Widget::setSize({std::max(width, maxWidth) + outline.getLeft() + outline.getRight() + 2*textOffset,
+                            (std::max<std::size_t>(m_lines.size(), 1) * m_fontCached.getLineSpacing(m_textSize))
+                             + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize, m_textStyleCached)
+                             + Text::getExtraVerticalPadding(m_textSize) + outline.getTop() + outline.getBottom()});
 
             m_bordersCached.updateParentSize(getSize());
             m_paddingCached.updateParentSize(getSize());
@@ -472,7 +478,7 @@ namespace tgui
             if ((getSize().x <= outline.getLeft() + outline.getRight()) || (getSize().y <= outline.getTop() + outline.getBottom()))
                 return;
 
-            Vector2f pos{outline.getLeft(), outline.getTop()};
+            Vector2f pos{m_paddingCached.getLeft() + textOffset, m_paddingCached.getTop()};
 
             if (m_verticalAlignment != VerticalAlignment::Top)
             {
@@ -496,12 +502,10 @@ namespace tgui
             }
             else // Center or Right alignment
             {
-                const float totalWidth = getSize().x - outline.getLeft() - outline.getRight();
+                const float totalWidth = getSize().x - outline.getLeft() - outline.getRight() - 2*textOffset;
 
                 for (auto& line : m_lines)
                 {
-                    line.setPosition(0, 0);
-
                     std::size_t lastChar = line.getString().getSize();
                     while (lastChar > 0 && isWhitespace(line.getString()[lastChar-1]))
                         lastChar--;
@@ -510,7 +514,7 @@ namespace tgui
 
                     if (m_horizontalAlignment == HorizontalAlignment::Center)
                         line.setPosition(pos.x + ((totalWidth - textWidth) / 2.f), pos.y);
-                    else if (m_horizontalAlignment == HorizontalAlignment::Right)
+                    else // if (m_horizontalAlignment == HorizontalAlignment::Right)
                         line.setPosition(pos.x + totalWidth - textWidth, pos.y);
 
                     pos.y += m_fontCached.getLineSpacing(m_textSize);
@@ -526,7 +530,7 @@ namespace tgui
         states.transform.translate(std::round(getPosition().x), std::round(getPosition().y));
 
         Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                  getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+                              getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
@@ -556,7 +560,6 @@ namespace tgui
             clipping = make_unique<Clipping>(target, states, Vector2f{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize);
         #endif
         }
-
 
         // Draw the text
         for (const auto& line : m_lines)

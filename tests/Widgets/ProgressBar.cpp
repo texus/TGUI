@@ -313,6 +313,7 @@ TEST_CASE("[ProgressBar]")
         progressBar->setMinimum(1000);
         progressBar->setMaximum(2000);
         progressBar->setValue(1600);
+        progressBar->setTextSize(16);
 
         tgui::ProgressBarRenderer renderer = tgui::RendererData::create();
         renderer.setBackgroundColor(sf::Color::Green);

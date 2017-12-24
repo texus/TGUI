@@ -39,10 +39,12 @@ namespace tgui
         m_renderer = aurora::makeCopied<MessageBoxRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
+        setTitleButtons(ChildWindow::TitleButton::None);
+        setTextSize(getGlobalTextSize());
+
         add(m_label, "#TGUI_INTERNAL$MessageBoxText#");
         m_label->setTextSize(m_textSize);
 
-        setTitleButtons(ChildWindow::TitleButton::None);
         setSize({400, 150});
     }
 
@@ -245,8 +247,8 @@ namespace tgui
         // Calculate the button size
         if (m_fontCached)
         {
-            buttonWidth = 5.0f * m_fontCached.getLineSpacing(m_textSize);
-            buttonHeight = m_fontCached.getLineSpacing(m_textSize) / 0.85f;
+            buttonWidth = 4.0f * Text::getLineHeight(m_fontCached, m_textSize);
+            buttonHeight = Text::getLineHeight(m_fontCached, m_textSize) * 1.25f;
 
             for (const auto& button : m_buttons)
             {

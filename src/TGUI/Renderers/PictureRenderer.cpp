@@ -32,23 +32,7 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_TEXTURE(PictureRenderer, Texture)
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void PictureRenderer::setIgnoreTransparentParts(bool ignoreTransparentParts)
-    {
-        setProperty("ignoretransparentparts", ignoreTransparentParts);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool PictureRenderer::getIgnoreTransparentParts() const
-    {
-        auto it = m_data->propertyValuePairs.find("ignoretransparentparts");
-        if (it != m_data->propertyValuePairs.end())
-            return it->second.getBool();
-        else
-            return {};
-    }
+    TGUI_RENDERER_PROPERTY_BOOL(PictureRenderer, IgnoreTransparentParts, false)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

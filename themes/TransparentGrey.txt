@@ -35,6 +35,7 @@ ChildWindow {
     Borders = (1, 1, 1, 1);
     DistanceToSide = 3;
     PaddingBetweenButtons = 1;
+    ShowTextOnTitleButtons = true;
     CloseButton = &Button;
     MaximizeButton = &Button;
     MinimizeButton = &Button;
@@ -85,7 +86,6 @@ MenuBar {
     SelectedBackgroundColor = rgba(0, 110, 200, 130);
     TextColor = rgb(255, 255, 255, 215);
     SelectedTextColor = rgba(255, 255, 255, 245);
-    DistanceToSide = 3;
 }
 
 MessageBox {

@@ -372,7 +372,7 @@ namespace tgui
         sf::String m_string;
         std::vector<Text> m_lines;
 
-        unsigned int m_textSize = 18;
+        unsigned int m_textSize = 0;
         HorizontalAlignment m_horizontalAlignment = HorizontalAlignment::Left;
         VerticalAlignment m_verticalAlignment = VerticalAlignment::Top;
 

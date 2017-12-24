@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Clipping.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -76,10 +77,10 @@ namespace tgui
 
         if ((size.x >= 0) && (size.y >= 0))
         {
-            sf::View view{{viewTopLeft.x,
-                           viewTopLeft.y,
-                           size.x * m_originalView.getSize().x / m_originalView.getViewport().width,
-                           size.y * m_originalView.getSize().y / m_originalView.getViewport().height}};
+            sf::View view{{std::round(viewTopLeft.x),
+                           std::round(viewTopLeft.y),
+                           std::round(size.x * m_originalView.getSize().x / m_originalView.getViewport().width),
+                           std::round(size.y * m_originalView.getSize().y / m_originalView.getViewport().height)}};
 
             view.setViewport({topLeft.x, topLeft.y, size.x, size.y});
             target.setView(view);

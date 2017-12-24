@@ -41,8 +41,10 @@ namespace tgui
         m_renderer = aurora::makeCopied<ListBoxRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setSize({150, 154});
-        setItemHeight(m_itemHeight);
+        setTextSize(getGlobalTextSize());
+        setItemHeight(Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 1.25f);
+        setSize({Text::getLineHeight(m_fontCached, m_textSize, m_textStyleCached) * 10,
+                 (m_itemHeight * 7) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +101,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_items.size(); ++i)
             m_items[i].setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].getSize().y) / 2.0f)});
 
-        m_scroll.setPosition(getSize().x - m_bordersCached.getRight() - m_paddingCached.getRight() - m_scroll.getSize().x, m_bordersCached.getTop() + m_paddingCached.getTop());
+        m_scroll.setPosition(getSize().x - m_bordersCached.getRight() - m_scroll.getSize().x, m_bordersCached.getTop());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,8 +115,8 @@ namespace tgui
 
         m_spriteBackground.setSize(getInnerSize());
 
-        m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom())});
-        m_scroll.setLowValue(static_cast<unsigned int>(m_scroll.getSize().y));
+        m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y)});
+        m_scroll.setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
 
         setPosition(m_position);
     }
@@ -1019,6 +1021,7 @@ namespace tgui
             }
 
             // Draw the items
+            states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSize, m_textStyleCached), 0});
             for (std::size_t i = firstItem; i < lastItem; ++i)
                 m_items[i].draw(target, states);
         }

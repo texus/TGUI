@@ -35,8 +35,6 @@ namespace tgui
     BitmapButton::BitmapButton()
     {
         m_type = "BitmapButton";
-
-        setTextSize(20);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,16 +71,20 @@ namespace tgui
         m_text.setString(text);
         m_text.setCharacterSize(m_textSize);
 
+        if (m_autoSize)
+            updateSize();
+
         if ((getInnerSize().x < 0) || (getInnerSize().y < 0))
             return;
     }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BitmapButton::setImage(const Texture& image)
     {
         m_glyphTexture = image;
         m_glyphSprite.setTexture(m_glyphTexture);
-        recalculateGlyphSize();
+        updateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +99,7 @@ namespace tgui
     void BitmapButton::setImageScaling(float relativeHeight)
     {
         m_relativeGlyphHeight = relativeHeight;
-        recalculateGlyphSize();
+        updateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,13 +184,55 @@ namespace tgui
         }
         else // There is some text next to the glyph
         {
-            const float distanceBetweenImageAndText = m_text.getSize().y / 3;
-            const float width = m_glyphSprite.getSize().x + distanceBetweenImageAndText + m_text.getSize().x;
+            const float distanceBetweenTextAndImage = m_text.getSize().y / 5.f;
+            const float width = m_glyphSprite.getSize().x + distanceBetweenTextAndImage + m_text.getSize().x;
             states.transform.translate({(getInnerSize().x - width) / 2.f, (getInnerSize().y - m_glyphSprite.getSize().y) / 2.f});
             m_glyphSprite.draw(target, states);
-            states.transform.translate({m_glyphSprite.getSize().x + distanceBetweenImageAndText, (m_glyphSprite.getSize().y - m_text.getSize().y) / 2.f});
+            states.transform.translate({m_glyphSprite.getSize().x + distanceBetweenTextAndImage, (m_glyphSprite.getSize().y - m_text.getSize().y) / 2.f});
             m_text.draw(target, states);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BitmapButton::updateSize()
+    {
+        if (!m_glyphSprite.isSet())
+        {
+            Button::updateSize();
+            return;
+        }
+
+        if (m_autoSize)
+        {
+            Widget::setSize({getSize().x, m_text.getSize().y * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+
+            recalculateGlyphSize();
+
+            if (m_text.getString().isEmpty())
+            {
+                Widget::setSize({m_glyphSprite.getSize().x + (getInnerSize().y - m_glyphSprite.getSize().y) + m_bordersCached.getLeft() + m_bordersCached.getRight(),
+                                 getSize().y});
+            }
+            else
+            {
+                const float spaceAroundImageAndText = m_text.getSize().y;
+                const float distanceBetweenTextAndImage = m_text.getSize().y / 5.f;
+                Widget::setSize({m_glyphSprite.getSize().x + distanceBetweenTextAndImage + m_text.getSize().x
+                                + spaceAroundImageAndText + m_bordersCached.getLeft() + m_bordersCached.getRight(), getSize().y});
+            }
+        }
+        else
+            recalculateGlyphSize();
+
+        m_bordersCached.updateParentSize(getSize());
+
+        // Reset the texture sizes
+        m_sprite.setSize(getInnerSize());
+        m_spriteHover.setSize(getInnerSize());
+        m_spriteDown.setSize(getInnerSize());
+        m_spriteDisabled.setSize(getInnerSize());
+        m_spriteFocused.setSize(getInnerSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

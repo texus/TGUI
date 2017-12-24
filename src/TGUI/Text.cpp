@@ -122,18 +122,16 @@ namespace tgui
             // We can't keep using a pointer to the old font (it might be destroyed), but sf::Text has no function to pass an empty font
             if (m_text.getFont())
             {
-                sf::Text text;
-                text.setString(getString());
-                text.setCharacterSize(getCharacterSize());
-                text.setStyle(getStyle());
+                m_text = sf::Text();
+                m_text.setString(getString());
+                m_text.setCharacterSize(getCharacterSize());
+                m_text.setStyle(getStyle());
 
             #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
-                text.setFillColor(Color::calcColorOpacity(getColor(), getOpacity()));
+                m_text.setFillColor(Color::calcColorOpacity(getColor(), getOpacity()));
             #else
-                text.setColor(Color::calcColorOpacity(getColor(), getOpacity()));
+                m_text.setColor(Color::calcColorOpacity(getColor(), getOpacity()));
             #endif
-
-                m_text = std::move(text);
             }
         }
 
@@ -223,7 +221,44 @@ namespace tgui
         }
 
         const float extraVerticalSpace = Text::calculateExtraVerticalSpace(m_font, m_text.getCharacterSize(), m_text.getStyle());
-        m_size = {std::max(maxWidth, width), lines * font->getLineSpacing(m_text.getCharacterSize()) + extraVerticalSpace};
+        const float height = lines * font->getLineSpacing(m_text.getCharacterSize()) + extraVerticalSpace;
+        m_size = {std::max(maxWidth, width), height};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Text::getExtraHorizontalPadding(const Text& text)
+    {
+        return getExtraHorizontalPadding(text.getFont(), text.getCharacterSize(), text.getStyle());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Text::getExtraHorizontalPadding(Font font, unsigned int characterSize, TextStyle textStyle)
+    {
+        return getLineHeight(font, characterSize, textStyle) / 10.f;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Text::getExtraVerticalPadding(unsigned int characterSize)
+    {
+        return std::max(1.f, std::round(characterSize / 8.f));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Text::getLineHeight(const Text& text)
+    {
+        return getLineHeight(text.getFont(), text.getCharacterSize(), text.getStyle());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Text::getLineHeight(Font font, unsigned int characterSize, TextStyle textStyle)
+    {
+        const float extraVerticalSpace = Text::calculateExtraVerticalSpace(font, characterSize, textStyle);
+        return font.getLineSpacing(characterSize) + extraVerticalSpace;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

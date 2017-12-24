@@ -98,6 +98,25 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define TGUI_RENDERER_PROPERTY_GET_BOOL(CLASS, NAME, DEFAULT) \
+    bool CLASS::get##NAME() const \
+    { \
+        const auto it = m_data->propertyValuePairs.find(toLower(#NAME)); \
+        if (it != m_data->propertyValuePairs.end()) \
+            return it->second.getBool(); \
+        else \
+            return DEFAULT; \
+    }
+
+#define TGUI_RENDERER_PROPERTY_BOOL(CLASS, NAME, DEFAULT) \
+    TGUI_RENDERER_PROPERTY_GET_BOOL(CLASS, NAME, DEFAULT) \
+    void CLASS::set##NAME(bool flag) \
+    { \
+        setProperty(toLower(#NAME), ObjectConverter{flag}); \
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define TGUI_RENDERER_PROPERTY_TEXTURE(CLASS, NAME) \
     Texture& CLASS::get##NAME() const \
     { \

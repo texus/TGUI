@@ -379,7 +379,7 @@ namespace tgui
         Color     m_backgroundColorCheckedCached;
         Color     m_backgroundColorCheckedHoverCached;
         Color     m_backgroundColorCheckedDisabledCached;
-        float     m_textDistanceRatioCached = 0;
+        float     m_textDistanceRatioCached = 0.2f;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -40,9 +40,10 @@ TEST_CASE("[Container]")
     widget2->add(widget4, "w4");
     widget2->add(widget5, "w5");
 
-    SECTION("default font in gui")
+    SECTION("default font")
     {
-        REQUIRE(std::make_shared<tgui::Gui>()->getFont() != nullptr);
+        REQUIRE(tgui::getGlobalFont() != nullptr);
+        REQUIRE(std::make_shared<tgui::Gui>()->getFont() == nullptr);
         REQUIRE(tgui::Panel::create()->getRenderer()->getFont() == nullptr);
     }
 

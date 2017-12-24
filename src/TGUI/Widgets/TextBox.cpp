@@ -40,11 +40,19 @@ namespace tgui
     {
         m_type = "TextBox";
         m_draggableWidget = true;
+        m_textBeforeSelection.setFont(m_fontCached);
+        m_textSelection1.setFont(m_fontCached);
+        m_textSelection2.setFont(m_fontCached);
+        m_textAfterSelection1.setFont(m_fontCached);
+        m_textAfterSelection2.setFont(m_fontCached);
 
         m_renderer = aurora::makeCopied<TextBoxRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setSize({360, 189});
+        setTextSize(getGlobalTextSize());
+        setSize({Text::getLineHeight(m_fontCached, m_textSize) * 18,
+                 10 * m_fontCached.getLineSpacing(m_textSize) + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize) + Text::getExtraVerticalPadding(m_textSize)
+                 + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +119,7 @@ namespace tgui
         if (isVerticalScrollbarPresent())
         {
             m_verticalScroll.setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
-            m_verticalScroll.setSize({m_verticalScroll.getSize().x, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()});
+            m_verticalScroll.setSize({m_verticalScroll.getSize().x, getInnerSize().y});
         }
 
         // The size of the text box has changed, update the text
@@ -1006,7 +1014,7 @@ namespace tgui
             return sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
 
         // Find between which character the mouse is standing
-        float width = 0;
+        float width = Text::getExtraHorizontalPadding(m_fontCached, m_textSize);
         std::uint32_t prevChar = 0;
         for (std::size_t i = 0; i < m_lines[lineNumber].getSize(); ++i)
         {
@@ -1091,7 +1099,8 @@ namespace tgui
             return;
 
         // Find the maximum width of one line
-        float maxLineWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSize);
+        float maxLineWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - 2 * textOffset;
         if (m_verticalScroll.isShown())
             maxLineWidth -= m_verticalScroll.getSize().x;
 
@@ -1181,7 +1190,9 @@ namespace tgui
         // Tell the scrollbar how many pixels the text contains
         const bool scrollbarShown = m_verticalScroll.isShown();
 
-        m_verticalScroll.setMaximum(static_cast<unsigned int>(m_lines.size() * m_lineHeight + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)));
+        m_verticalScroll.setMaximum(static_cast<unsigned int>(m_lines.size() * m_lineHeight
+                                                              + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)
+                                                              + Text::getExtraVerticalPadding(m_textSize)));
 
         // We may have to recalculate what we just calculated if the scrollbar just appeared or disappeared
         if (scrollbarShown != m_verticalScroll.isShown())
@@ -1268,7 +1279,10 @@ namespace tgui
             if (m_selEnd.y <= m_topLine)
                 m_verticalScroll.setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
             else if (m_selEnd.y + 1 >= m_topLine + m_visibleLines)
-                m_verticalScroll.setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight) + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize) - m_verticalScroll.getLowValue()));
+                m_verticalScroll.setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight)
+                                                                    + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)
+                                                                    + Text::getExtraVerticalPadding(m_textSize)
+                                                                    - m_verticalScroll.getLowValue()));
         }
 
         recalculatePositions();
@@ -1309,6 +1323,7 @@ namespace tgui
         if (!m_fontCached)
             return;
 
+        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSize);
         sf::Text tempText{"", *m_fontCached.getFont(), getTextSize()};
 
         // Position the caret
@@ -1319,12 +1334,12 @@ namespace tgui
             if ((m_selEnd.x > 0) && (m_selEnd.x < m_lines[m_selEnd.y].getSize()))
                 kerning = m_fontCached.getKerning(m_lines[m_selEnd.y][m_selEnd.x-1], m_lines[m_selEnd.y][m_selEnd.x], m_textSize);
 
-            m_caretPosition = {tempText.findCharacterPos(tempText.getString().getSize()).x + kerning, static_cast<float>(m_selEnd.y * m_lineHeight)};
+            m_caretPosition = {textOffset + tempText.findCharacterPos(tempText.getString().getSize()).x + kerning, static_cast<float>(m_selEnd.y * m_lineHeight)};
         }
 
         // Calculate the position of the text objects
         m_selectionRects.clear();
-        m_textBeforeSelection.setPosition({0, 0});
+        m_textBeforeSelection.setPosition({textOffset, 0});
         if (m_selStart != m_selEnd)
         {
             auto selectionStart = m_selStart;
@@ -1343,24 +1358,24 @@ namespace tgui
 
             if (selectionStart.x > 0)
             {
-                m_textSelection1.setPosition({m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x + kerningSelectionStart,
+                m_textSelection1.setPosition({textOffset + m_textBeforeSelection.findCharacterPos(m_textBeforeSelection.getString().getSize()).x + kerningSelectionStart,
                                               m_textBeforeSelection.getPosition().y + (selectionStart.y * m_lineHeight)});
             }
             else
-                m_textSelection1.setPosition({0, m_textBeforeSelection.getPosition().y + (selectionStart.y * m_lineHeight)});
+                m_textSelection1.setPosition({textOffset, m_textBeforeSelection.getPosition().y + (selectionStart.y * m_lineHeight)});
 
-            m_textSelection2.setPosition({0, static_cast<float>((selectionStart.y + 1) * m_lineHeight)});
+            m_textSelection2.setPosition({textOffset, static_cast<float>((selectionStart.y + 1) * m_lineHeight)});
 
             if (!m_textSelection2.getString().isEmpty() || (selectionEnd.x == 0))
             {
-                m_textAfterSelection1.setPosition({m_textSelection2.findCharacterPos(m_textSelection2.getString().getSize()).x + kerningSelectionEnd,
+                m_textAfterSelection1.setPosition({textOffset + m_textSelection2.findCharacterPos(m_textSelection2.getString().getSize()).x + kerningSelectionEnd,
                                                    m_textSelection2.getPosition().y + ((selectionEnd.y - selectionStart.y - 1) * m_lineHeight)});
             }
             else
                 m_textAfterSelection1.setPosition({m_textSelection1.getPosition().x + m_textSelection1.findCharacterPos(m_textSelection1.getString().getSize()).x + kerningSelectionEnd,
                                                    m_textSelection1.getPosition().y});
 
-            m_textAfterSelection2.setPosition({0, static_cast<float>((selectionEnd.y + 1) * m_lineHeight)});
+            m_textAfterSelection2.setPosition({textOffset, static_cast<float>((selectionEnd.y + 1) * m_lineHeight)});
 
             // Recalculate the selection rectangles
             {
@@ -1375,28 +1390,30 @@ namespace tgui
                         m_selectionRects.back().width += kerningSelectionEnd;
                 }
 
-                // The selection should still be visible even when no character is selected on that line
-                if (m_selectionRects.back().width == 0)
-                    m_selectionRects.back().width = 2;
-
                 for (std::size_t i = selectionStart.y + 1; i < selectionEnd.y; ++i)
                 {
-                    m_selectionRects.push_back({m_textSelection2.getPosition().x, static_cast<float>(i * m_lineHeight), 0, static_cast<float>(m_lineHeight)});
+                    m_selectionRects.back().width += textOffset;
+                    m_selectionRects.push_back({m_textSelection2.getPosition().x - textOffset, static_cast<float>(i * m_lineHeight), textOffset, static_cast<float>(m_lineHeight)});
 
                     if (!m_lines[i].isEmpty())
                     {
                         tempText.setString(m_lines[i]);
-                        m_selectionRects.back().width = tempText.findCharacterPos(tempText.getString().getSize()).x;
+                        m_selectionRects.back().width += tempText.findCharacterPos(tempText.getString().getSize()).x;
                     }
-                    else
-                        m_selectionRects.back().width = 2;
                 }
 
-                if (m_textSelection2.getString() != "")
+                if (selectionStart.y != selectionEnd.y)
                 {
-                    tempText.setString(m_lines[selectionEnd.y].substring(0, selectionEnd.x));
-                    m_selectionRects.push_back({m_textSelection2.getPosition().x, static_cast<float>(selectionEnd.y * m_lineHeight),
-                                                tempText.findCharacterPos(tempText.getString().getSize()).x + kerningSelectionEnd, static_cast<float>(m_lineHeight)});
+                    m_selectionRects.back().width += textOffset;
+
+                    if (m_textSelection2.getString() != "")
+                    {
+                        tempText.setString(m_lines[selectionEnd.y].substring(0, selectionEnd.x));
+                        m_selectionRects.push_back({m_textSelection2.getPosition().x - textOffset, static_cast<float>(selectionEnd.y * m_lineHeight),
+                                                    textOffset + tempText.findCharacterPos(tempText.getString().getSize()).x + kerningSelectionEnd, static_cast<float>(m_lineHeight)});
+                    }
+                    else
+                        m_selectionRects.push_back({0, static_cast<float>(selectionEnd.y * m_lineHeight), textOffset, static_cast<float>(m_lineHeight)});
                 }
             }
         }
@@ -1413,7 +1430,7 @@ namespace tgui
         // Store which area is visible
         if (m_verticalScroll.isShown())
         {
-            m_verticalScroll.setPosition({getSize().x - m_bordersCached.getRight() - m_paddingCached.getRight() - m_verticalScroll.getSize().x, m_bordersCached.getTop() + m_paddingCached.getTop()});
+            m_verticalScroll.setPosition({getSize().x - m_bordersCached.getRight() - m_verticalScroll.getSize().x, m_bordersCached.getTop()});
 
             m_topLine = m_verticalScroll.getValue() / m_lineHeight;
 
@@ -1593,7 +1610,7 @@ namespace tgui
             for (const auto& selectionRect : m_selectionRects)
             {
                 states.transform.translate({selectionRect.left, selectionRect.top});
-                drawRectangleShape(target, states, {selectionRect.width, selectionRect.height}, m_selectedTextBackgroundColorCached);
+                drawRectangleShape(target, states, {selectionRect.width, selectionRect.height + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)}, m_selectedTextBackgroundColorCached);
                 states.transform.translate({-selectionRect.left, -selectionRect.top});
             }
 
@@ -1610,8 +1627,9 @@ namespace tgui
             // Only draw the caret when needed
             if (m_focused && m_caretVisible && (m_caretWidthCached > 0))
             {
+                const float caretHeight = m_lineHeight + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize);
                 states.transform.translate({std::ceil(m_caretPosition.x - (m_caretWidthCached / 2.f)), m_caretPosition.y});
-                drawRectangleShape(target, states, {m_caretWidthCached, static_cast<float>(m_lineHeight)}, m_caretColorCached);
+                drawRectangleShape(target, states, {m_caretWidthCached, caretHeight}, m_caretColorCached);
             }
         }
 

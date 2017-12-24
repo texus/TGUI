@@ -133,7 +133,7 @@ TEST_CASE("[EditBox]")
         REQUIRE(!editBox->isTextWidthLimited());
         editBox->limitTextWidth(true);
         REQUIRE(editBox->isTextWidthLimited());
-        REQUIRE(editBox->getText() == "too long");
+        REQUIRE(editBox->getText() == "too long ");
 
         editBox->setText("some other text");
         REQUIRE(editBox->getText() == "some ot");

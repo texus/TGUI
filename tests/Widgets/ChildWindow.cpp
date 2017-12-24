@@ -385,11 +385,12 @@ TEST_CASE("[ChildWindow]")
 
     SECTION("Draw")
     {
-        TEST_DRAW_INIT(200, 170, childWindow)
+        TEST_DRAW_INIT(200, 185, childWindow)
 
         childWindow->setSize({180, 140});
         childWindow->setPosition({10, 5});
         childWindow->setTitle("Window");
+        childWindow->setTitleTextSize(18);
         childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::Maximize | tgui::ChildWindow::TitleButton::Minimize);
 
         tgui::ChildWindowRenderer renderer = tgui::RendererData::create();
@@ -399,7 +400,8 @@ TEST_CASE("[ChildWindow]")
         renderer.setBorderColor(sf::Color::Red);
         renderer.setDistanceToSide(10);
         renderer.setPaddingBetweenButtons(5);
-        renderer.setTitleBarHeight(15);
+        renderer.setShowTextOnTitleButtons(false);
+        renderer.setTitleBarHeight(30);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setOpacity(0.7f);
         childWindow->setRenderer(renderer.getData());
@@ -420,12 +422,14 @@ TEST_CASE("[ChildWindow]")
         SECTION("Colored")
         {
             TEST_DRAW("ChildWindow.png")
+
+            renderer.setShowTextOnTitleButtons(true);
+            TEST_DRAW("ChildWindow_TitleButtonText.png")
         }
 
         SECTION("Textured")
         {
             renderer.setTextureTitleBar("resources/Texture1.png");
-
             TEST_DRAW("ChildWindow_Textured.png")
         }
     }

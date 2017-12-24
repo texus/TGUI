@@ -35,11 +35,16 @@ namespace tgui
     ProgressBar::ProgressBar()
     {
         m_type = "ProgressBar";
+        m_textBack.setFont(m_fontCached);
+        m_textFront.setFont(m_fontCached);
 
         m_renderer = aurora::makeCopied<ProgressBarRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setSize(160, 20);
+        setTextSize(getGlobalTextSize());
+        setSize({Text::getLineHeight(m_textBack) * 15,
+                 Text::getLineHeight(m_textBack) * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

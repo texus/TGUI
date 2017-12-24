@@ -34,10 +34,6 @@ namespace tgui
 {
     namespace
     {
-        const std::string closeButtonText = "x";
-        const std::string maximizeButtonText = "+";
-        const std::string minimizeButtonText = "-";
-
         float clamp(float value, float lower, float upper)
         {
             if (value < lower)
@@ -55,12 +51,15 @@ namespace tgui
     ChildWindow::ChildWindow(const sf::String& title, unsigned int titleButtons)
     {
         m_type = "ChildWindow";
+        m_titleText.setFont(m_fontCached);
 
         m_renderer = aurora::makeCopied<ChildWindowRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setTitleButtons(titleButtons);
         setTitle(title);
+        setTitleTextSize(getGlobalTextSize());
+        m_titleBarHeightCached = m_titleText.getSize().y * 1.25f;
+        setTitleButtons(titleButtons);
         setSize({400, 300});
     }
 
@@ -254,6 +253,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::setTitleTextSize(unsigned int size)
+    {
+        m_titleTextSize = size;
+
+        if (m_titleTextSize)
+            m_titleText.setCharacterSize(m_titleTextSize);
+        else
+            m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, m_titleBarHeightCached * 0.8f));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ChildWindow::getTitleTextSize() const
+    {
+        return m_titleTextSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::setTitleAlignment(TitleAlignment alignment)
     {
         m_titleAlignment = alignment;
@@ -284,6 +302,9 @@ namespace tgui
                                                 if (!onClose.emit(this))
                                                     destroy();
                                             });
+
+            if (m_showTextOnTitleButtonsCached)
+                m_closeButton->setText(L"✕");
         }
         else
             m_closeButton = nullptr;
@@ -294,6 +315,9 @@ namespace tgui
             m_maximizeButton->setRenderer(getSharedRenderer()->getMaximizeButton());
             m_maximizeButton->setInheritedOpacity(m_opacityCached);
             m_maximizeButton->connect("pressed", [this](){ onMaximize.emit(this); });
+
+            if (m_showTextOnTitleButtonsCached)
+                m_maximizeButton->setText(L"☐");
         }
         else
             m_maximizeButton = nullptr;
@@ -304,6 +328,9 @@ namespace tgui
             m_minimizeButton->setRenderer(getSharedRenderer()->getMinimizeButton());
             m_minimizeButton->setInheritedOpacity(m_opacityCached);
             m_minimizeButton->connect("pressed", [this](){ onMinimize.emit(this); });
+
+            if (m_showTextOnTitleButtonsCached)
+                m_minimizeButton->setText(L"⁃");
         }
         else
             m_minimizeButton = nullptr;
@@ -623,11 +650,14 @@ namespace tgui
                 }
                 else
                     button->setSize({m_titleBarHeightCached * 0.8f, m_titleBarHeightCached * 0.8f});
+
+                const Borders& buttonBorders = button->getSharedRenderer()->getBorders();
+                button->setTextSize(Text::findBestTextSize(m_titleText.getFont(), (button->getSize().y - buttonBorders.getTop() - buttonBorders.getBottom()) * 0.8f));
             }
         }
 
-        // Set the size of the text in the title bar
-        m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, m_titleBarHeightCached * 0.8f));
+        if (m_titleTextSize == 0)
+            m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, m_titleBarHeightCached * 0.8f));
 
         // Reposition the images and text
         setPosition(m_position);
@@ -685,6 +715,11 @@ namespace tgui
         {
             m_paddingBetweenButtonsCached = getSharedRenderer()->getPaddingBetweenButtons();
             setPosition(m_position);
+        }
+        else if (property == "showtextontitlebuttons")
+        {
+            m_showTextOnTitleButtonsCached = getSharedRenderer()->getShowTextOnTitleButtons();
+            setTitleButtons(m_titleButtons);
         }
         else if (property == "closebutton")
         {
@@ -752,7 +787,8 @@ namespace tgui
             }
 
             m_titleText.setFont(m_fontCached);
-            m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, getSharedRenderer()->getTitleBarHeight() * 0.8f));
+            if (m_titleTextSize == 0)
+                m_titleText.setCharacterSize(Text::findBestTextSize(m_fontCached, getSharedRenderer()->getTitleBarHeight() * 0.8f));
 
             setPosition(m_position);
         }

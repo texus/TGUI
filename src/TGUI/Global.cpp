@@ -25,6 +25,7 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Clipboard.hpp>
+#include <TGUI/DefaultFont.hpp>
 #include <functional>
 #include <sstream>
 #include <locale>
@@ -37,9 +38,42 @@ namespace tgui
 {
     namespace
     {
+        unsigned int globalTextSize = 13;
         bool globalTabKeyUsageEnabled = true;
         unsigned int globalDoubleClickTime = 500;
         std::string globalResourcePath = "";
+        Font globalFont = nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void setGlobalTextSize(unsigned int textSize)
+    {
+        globalTextSize = textSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int getGlobalTextSize()
+    {
+        return globalTextSize;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void setGlobalFont(Font font)
+    {
+        globalFont = font;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Font getGlobalFont()
+    {
+        if (!globalFont)
+            globalFont = Font(defaultFontBytes, sizeof(defaultFontBytes));
+
+        return globalFont;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

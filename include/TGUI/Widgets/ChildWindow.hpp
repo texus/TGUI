@@ -211,6 +211,21 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the character size of the title
+        /// @param size  The new title text size.
+        ///              If the size is set to 0 then the character size is determined by the height of the title bar.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTitleTextSize(unsigned int size);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the character size of the title
+        /// @return The current title text size
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int getTitleTextSize() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the title alignment
         ///
         /// @param alignment  How should the title be aligned in the title bar?
@@ -445,11 +460,12 @@ namespace tgui
     protected:
 
         Text           m_titleText;
-        Vector2f   m_draggingPosition;
-        Vector2f   m_maximumSize    = {std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()};
-        Vector2f   m_minimumSize    = {0, 0};
+        Vector2f       m_draggingPosition;
+        Vector2f       m_maximumSize    = {std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()};
+        Vector2f       m_minimumSize    = {0, 0};
         TitleAlignment m_titleAlignment = TitleAlignment::Center;
         unsigned int   m_titleButtons   = TitleButton::Close;
+        unsigned int   m_titleTextSize  = 0;
 
         Button::Ptr m_closeButton;
         Button::Ptr m_minimizeButton;
@@ -472,6 +488,7 @@ namespace tgui
         float   m_titleBarHeightCached = 20;
         float   m_distanceToSideCached = 0;
         float   m_paddingBetweenButtonsCached = 0;
+        bool    m_showTextOnTitleButtonsCached = false;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

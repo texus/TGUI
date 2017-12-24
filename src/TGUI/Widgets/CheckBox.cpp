@@ -39,6 +39,9 @@ namespace tgui
         m_type = "CheckBox";
 
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
+
+        setSize({Text::getLineHeight(m_text) + m_bordersCached.getLeft() + m_bordersCached.getRight(),
+                 Text::getLineHeight(m_text) + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,30 +247,24 @@ namespace tgui
             if (m_checked)
             {
                 const float pi = 3.14159265358979f;
-                const Vector2f size = getInnerSize();
-                const Vector2f leftPoint = {0, size.y * 5.f/12.f};
-                const Vector2f middlePoint = {size.x / 2, size.y};
-                const Vector2f rightPoint = {size.x, 0};
-
-                sf::RectangleShape left{{std::min(size.x, size.y) / 6, static_cast<float>(std::sqrt(std::pow(middlePoint.x - leftPoint.x, 2) + std::pow(middlePoint.y - leftPoint.y, 2)))}};
-                left.setPosition(leftPoint);
-                left.setOrigin({left.getSize().x / 2, 0});
-                left.setRotation(-90 + (std::atan2(middlePoint.y - leftPoint.y, middlePoint.x - leftPoint.x) / pi * 180));
-
-                sf::RectangleShape right{{std::min(size.x, size.y) / 5, static_cast<float>(std::sqrt(std::pow(rightPoint.x - middlePoint.x, 2) + std::pow(rightPoint.y - middlePoint.y, 2)))}};
-                right.setPosition(middlePoint);
-                right.setOrigin({left.getSize().x / 2, 0});
-                right.setRotation(-90 + (std::atan2(rightPoint.y - middlePoint.y, rightPoint.x - middlePoint.x) / pi * 180));
-
                 const Color& checkColor = getCurrentCheckColor();
-                left.setFillColor(checkColor);
-                right.setFillColor(checkColor);
+                const Vector2f size = getInnerSize();
+                const float lineThickness = std::min(size.x, size.y) / 5;
+                const Vector2f leftPoint = {0.14f * size.x, 0.4f * size.y};
+                const Vector2f middlePoint = {0.44f * size.x, 0.7f * size.y};
+                const Vector2f rightPoint = {0.86f * size.x, 0.28f * size.y};
+                const float x = (lineThickness / 2.f) * std::cos(pi / 4.f);
+                const float y = (lineThickness / 2.f) * std::sin(pi / 4.f);
+                const std::vector<sf::Vertex> vertices = {
+                    {{leftPoint.x - x, leftPoint.y + y}, checkColor},
+                    {{leftPoint.x + x, leftPoint.y - y}, checkColor},
+                    {{middlePoint.x, middlePoint.y + 2*y}, checkColor},
+                    {{middlePoint.x, middlePoint.y - 2*y}, checkColor},
+                    {{rightPoint.x + x, rightPoint.y + y}, checkColor},
+                    {{rightPoint.x - x, rightPoint.y - y}, checkColor}
+                };
 
-                // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-                const Clipping clipping{target, states, {}, size};
-
-                target.draw(left, states);
-                target.draw(right, states);
+                target.draw(vertices.data(), vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
             }
         }
         states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getTop()});

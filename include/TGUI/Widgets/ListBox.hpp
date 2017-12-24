@@ -605,9 +605,9 @@ namespace tgui
         int m_hoveringItem = -1;
 
         // The size must be stored
-        unsigned int m_itemHeight = 22;
+        unsigned int m_itemHeight = 0;
         unsigned int m_requestedTextSize = 0;
-        unsigned int m_textSize = 18;
+        unsigned int m_textSize = 0;
 
         // This will store the maximum number of items in the list box (zero by default, meaning that there is no limit)
         std::size_t m_maxItems = 0;

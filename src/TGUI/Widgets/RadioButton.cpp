@@ -34,11 +34,14 @@ namespace tgui
     RadioButton::RadioButton()
     {
         m_type = "RadioButton";
+        m_text.setFont(m_fontCached);
 
         m_renderer = aurora::makeCopied<RadioButtonRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setSize({24, 24});
+        setTextSize(getGlobalTextSize());
+        setSize({Text::getLineHeight(m_text) + m_bordersCached.getLeft() + m_bordersCached.getRight(),
+                 Text::getLineHeight(m_text) + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -691,7 +694,7 @@ namespace tgui
             // Draw the check if the radio button is checked
             if (m_checked)
             {
-                sf::CircleShape checkShape{innerRadius * .6f};
+                sf::CircleShape checkShape{innerRadius * 0.4f};
                 checkShape.setFillColor(Color::calcColorOpacity(getCurrentCheckColor(), m_opacityCached));
                 checkShape.setPosition({innerRadius - checkShape.getRadius(), innerRadius - checkShape.getRadius()});
                 target.draw(checkShape, states);

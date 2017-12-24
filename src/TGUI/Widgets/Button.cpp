@@ -34,11 +34,12 @@ namespace tgui
     Button::Button()
     {
         m_type = "Button";
+        m_text.setFont(m_fontCached);
 
         m_renderer = aurora::makeCopied<ButtonRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setSize(120, 30);
+        setTextSize(getGlobalTextSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,18 +98,8 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        m_bordersCached.updateParentSize(getSize());
-
-        // Reset the texture sizes
-        m_sprite.setSize(getInnerSize());
-        m_spriteHover.setSize(getInnerSize());
-        m_spriteDown.setSize(getInnerSize());
-        m_spriteDisabled.setSize(getInnerSize());
-        m_spriteFocused.setSize(getInnerSize());
-
-        // Recalculate the text size when auto sizing
-        if (m_textSize == 0)
-            setText(getText());
+        m_autoSize = false;
+        updateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +127,10 @@ namespace tgui
 
         // Set the text size when the text has a fixed size
         if (m_textSize != 0)
+        {
             m_text.setCharacterSize(m_textSize);
+            updateSize();
+        }
 
         if ((getInnerSize().x < 0) || (getInnerSize().y < 0))
             return;
@@ -279,7 +273,7 @@ namespace tgui
         if (property == "borders")
         {
             m_bordersCached = getSharedRenderer()->getBorders();
-            setSize(m_size);
+            updateSize();
         }
         else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordown") || (property == "textcolordisabled")
               || (property == "textstyle") || (property == "textstylehover") || (property == "textstyledown") || (property == "textstyledisabled"))
@@ -445,6 +439,31 @@ namespace tgui
             m_text.setColor(getSharedRenderer()->getTextColorHover());
         else
             m_text.setColor(getSharedRenderer()->getTextColor());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Button::updateSize()
+    {
+        if (m_autoSize)
+        {
+            const float spaceAroundText = m_text.getSize().y;
+            Widget::setSize({m_text.getSize().x + spaceAroundText + m_bordersCached.getLeft() + m_bordersCached.getRight(),
+                             m_text.getSize().y * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        }
+
+        m_bordersCached.updateParentSize(getSize());
+
+        // Reset the texture sizes
+        m_sprite.setSize(getInnerSize());
+        m_spriteHover.setSize(getInnerSize());
+        m_spriteDown.setSize(getInnerSize());
+        m_spriteDisabled.setSize(getInnerSize());
+        m_spriteFocused.setSize(getInnerSize());
+
+        // Recalculate the text size when auto sizing
+        if (m_textSize == 0)
+            setText(getText());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

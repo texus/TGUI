@@ -305,6 +305,73 @@ namespace tgui
         };
 
 
+    #ifdef TGUI_USE_CPP17
+        // Error case (function signature did not match anything)
+        template <typename Enable, typename Func, typename... BoundArgs>
+        struct func_traits;
+
+        // Free function
+        template <typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(*)(Args...), BoundArgs...> : binder<TypeSet<std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(*)(Args...) noexcept, BoundArgs...> : binder<TypeSet<std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+
+        // Non-const member function
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...), BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) noexcept, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile noexcept, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) &, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) & noexcept, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile &, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile & noexcept, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) &&, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) && noexcept, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile &&, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile && noexcept, BoundArgs...> : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+
+        // Const member function
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) const, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) const noexcept, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile const, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile const noexcept, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) const &, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) const & noexcept, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile const &, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile const & noexcept, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) const &&, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) const && noexcept, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile const &&, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+        template <typename Class, typename... Args, typename... BoundArgs>
+        struct func_traits<void, void(Class::*)(Args...) volatile const && noexcept, BoundArgs...> : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>> {};
+
+        // std::function or lambda
+        template <typename Func, typename... BoundArgs>
+        struct func_traits<void_t<decltype(&Func::operator())>, Func, BoundArgs...> : public func_traits<void, decltype(&Func::operator()), Func*, BoundArgs...> {};
+    #else
         // Error case (function signature did not match anything)
         template <typename Enable, typename Func, typename... BoundArgs>
         struct func_traits;
@@ -319,35 +386,24 @@ namespace tgui
         // Non-const member function
         template <typename Class, typename... Args, typename... BoundArgs>
         struct func_traits<void, void(Class::*)(Args...), BoundArgs...>
-        #ifdef TGUI_USE_CPP17
-            : binder<TypeSet<Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>>
-        #else
             : binder<TypeSet<Class*, typename std::decay<Args>::type...>, TypeSet<BoundArgs...>>
-        #endif
         {
         };
 
         // Const member function
         template <typename Class, typename... Args, typename... BoundArgs>
         struct func_traits<void, void(Class::*)(Args...) const, BoundArgs...>
-        #ifdef TGUI_USE_CPP17
-            : binder<TypeSet<const Class*, std::decay_t<Args>...>, TypeSet<BoundArgs...>>
-        #else
             : binder<TypeSet<const Class*, typename std::decay<Args>::type...>, TypeSet<BoundArgs...>>
-        #endif
         {
         };
 
         // Free function
         template <typename... Args, typename... BoundArgs>
         struct func_traits<void, void(*)(Args...), BoundArgs...>
-        #ifdef TGUI_USE_CPP17
-            : binder<TypeSet<std::decay_t<Args>...>, TypeSet<BoundArgs...>>
-        #else
             : binder<TypeSet<typename std::decay<Args>::type...>, TypeSet<BoundArgs...>>
-        #endif
         {
         };
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

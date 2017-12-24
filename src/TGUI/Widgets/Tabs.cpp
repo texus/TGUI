@@ -39,11 +39,13 @@ namespace tgui
     Tabs::Tabs()
     {
         m_type = "Tabs";
+        m_distanceToSideCached = Text::getLineHeight(m_fontCached, getGlobalTextSize()) * 0.4f;
 
         m_renderer = aurora::makeCopied<TabsRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setTabHeight(30);
+        setTextSize(getGlobalTextSize());
+        setTabHeight(Text::getLineHeight(m_fontCached, m_textSize) * 1.25f + m_bordersCached.getTop() + m_bordersCached.getBottom());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

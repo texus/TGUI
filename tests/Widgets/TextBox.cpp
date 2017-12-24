@@ -178,7 +178,7 @@ TEST_CASE("[TextBox]")
 
     SECTION("Events / Signals")
     {
-        textBox->setSize(150, 100);
+        textBox->setSize(165, 100);
         textBox->setTextSize(24);
 
         SECTION("Widget")
@@ -188,7 +188,7 @@ TEST_CASE("[TextBox]")
 
         SECTION("KeyPressed")
         {
-            textBox->setText("ABCDEFGHIJKLMONPQRSTUVWXYZ");
+            textBox->setText("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
             SECTION("Selecting text")
             {
@@ -216,10 +216,10 @@ TEST_CASE("[TextBox]")
                 for (unsigned int i = 0; i < 2; ++i)
                     textBox->keyPressed({sf::Keyboard::Key::Up, false, false, true, false});
 
-                REQUIRE(textBox->getSelectedText() == "GHIJKLMON");
+                REQUIRE(textBox->getSelectedText() == "GHIJKLMNO");
 
                 textBox->keyPressed({sf::Keyboard::Key::PageUp, false, false, true, false});
-                REQUIRE(textBox->getSelectedText() == "ABCDEFGHIJKLMON");
+                REQUIRE(textBox->getSelectedText() == "ABCDEFGHIJKLMNO");
 
                 textBox->keyPressed({sf::Keyboard::Key::PageDown, false, false, true, false});
                 REQUIRE(textBox->getSelectedText() == "PQRSTUVWXYZ");
@@ -234,7 +234,7 @@ TEST_CASE("[TextBox]")
                 textBox->keyPressed({sf::Keyboard::Key::Left, false, false, false, false});
 
                 textBox->keyPressed({sf::Keyboard::Key::Home, false, false, true, false});
-                REQUIRE(textBox->getSelectedText() == "STUVWX");
+                REQUIRE(textBox->getSelectedText() == "TUVWX");
 
                 textBox->keyPressed({sf::Keyboard::Key::End, false, false, true, false});
                 REQUIRE(textBox->getSelectedText() == "YZ");
@@ -247,7 +247,7 @@ TEST_CASE("[TextBox]")
 
                 // CTRL+A selects the whole text
                 textBox->keyPressed({sf::Keyboard::Key::A, false, true, false, false});
-                REQUIRE(textBox->getSelectedText() == "ABCDEFGHIJKLMONPQRSTUVWXYZ");
+                REQUIRE(textBox->getSelectedText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
             }
 
             SECTION("Editing text")
@@ -257,41 +257,41 @@ TEST_CASE("[TextBox]")
 
                 textBox->keyPressed({sf::Keyboard::Key::BackSpace, false, false, false, false});
                 textBox->keyPressed({sf::Keyboard::Key::BackSpace, false, false, false, false});
-                REQUIRE(textBox->getText() == "ABCDEFGHIJKLMONPQRSTWXYZ");
+                REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTWXYZ");
 
                 textBox->keyPressed({sf::Keyboard::Key::Delete, false, false, false, false});
-                REQUIRE(textBox->getText() == "ABCDEFGHIJKLMONPQRSTXYZ");
+                REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTXYZ");
 
                 textBox->keyPressed({sf::Keyboard::Key::Up, false, false, false, false});
                 for (unsigned int i = 0; i < 3; ++i)
                     textBox->keyPressed({sf::Keyboard::Key::Right, false, false, true, false});
 
-                REQUIRE(textBox->getSelectedText() == "MON");
+                REQUIRE(textBox->getSelectedText() == "LMN");
                 textBox->keyPressed({sf::Keyboard::Key::BackSpace, false, false, false, false});
-                REQUIRE(textBox->getText() == "ABCDEFGHIJKLPQRSTXYZ");
+                REQUIRE(textBox->getText() == "ABCDEFGHIJKOPQRSTXYZ");
                 REQUIRE(textBox->getSelectedText() == "");
 
                 textBox->keyPressed({sf::Keyboard::Key::Up, false, false, false, false});
                 for (unsigned int i = 0; i < 3; ++i)
                     textBox->keyPressed({sf::Keyboard::Key::Right, false, false, true, false});
 
-                REQUIRE(textBox->getSelectedText() == "CDE");
+                REQUIRE(textBox->getSelectedText() == "BCD");
                 textBox->keyPressed({sf::Keyboard::Key::Delete, false, false, false, false});
-                REQUIRE(textBox->getText() == "ABFGHIJKLPQRSTXYZ");
+                REQUIRE(textBox->getText() == "AEFGHIJKOPQRSTXYZ");
                 REQUIRE(textBox->getSelectedText() == "");
 
                 textBox->keyPressed({sf::Keyboard::Key::Return, false, false, false, false});
                 textBox->keyPressed({sf::Keyboard::Key::Return, false, false, false, false});
-                REQUIRE(textBox->getText() == "AB\n\nFGHIJKLPQRSTXYZ");
+                REQUIRE(textBox->getText() == "A\n\nEFGHIJKOPQRSTXYZ");
 
                 textBox->keyPressed({sf::Keyboard::Key::Left, false, false, false, false});
                 textBox->keyPressed({sf::Keyboard::Key::BackSpace, false, false, false, false});
-                REQUIRE(textBox->getText() == "AB\nFGHIJKLPQRSTXYZ");
+                REQUIRE(textBox->getText() == "A\nEFGHIJKOPQRSTXYZ");
 
                 textBox->keyPressed({sf::Keyboard::Key::Right, false, false, false, false});
                 textBox->keyPressed({sf::Keyboard::Key::Down, false, false, false, false});
                 textBox->keyPressed({sf::Keyboard::Key::BackSpace, false, false, false, false});
-                REQUIRE(textBox->getText() == "AB\nFGHIJKLPQSTXYZ");
+                REQUIRE(textBox->getText() == "A\nEFGHIJKOPRSTXYZ");
 
                 textBox->keyPressed({sf::Keyboard::Key::Right, false, false, false, false});
                 for (unsigned int i = 0; i < 2; ++i)
@@ -300,16 +300,16 @@ TEST_CASE("[TextBox]")
                     textBox->keyPressed({sf::Keyboard::Key::Left, false, false, false, false});
 
                 textBox->keyPressed({sf::Keyboard::Key::BackSpace, false, false, false, false});
-                REQUIRE(textBox->getText() == "AB\nFGHIJKLPQ\n\nTXYZ");
+                REQUIRE(textBox->getText() == "A\nEFGHIJKOP\n\nSTXYZ");
 
                 // The caret should not move when adding a newline at the start of a line that only exists due to word-wrap
                 textBox->setText(""); // Make sure the scrollbar is gone
-                textBox->setText("ABCDEFGHIJKLMONPQRSTUVWXYZ");
+                textBox->setText("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
                 for (unsigned int i = 0; i < 17; ++i)
                     textBox->keyPressed({sf::Keyboard::Key::Left, false, false, false, false});
                 textBox->keyPressed({sf::Keyboard::Key::Return, false, false, false, false});
                 textBox->keyPressed({sf::Keyboard::Key::Delete, false, false, false, false});
-                REQUIRE(textBox->getText() == "ABCDEFGHIJ\nLMONPQRSTUVWXYZ");
+                REQUIRE(textBox->getText() == "ABCDEFGHIJ\nLMNOPQRSTUVWXYZ");
             }
 
             SECTION("Copy and Paste")
@@ -322,14 +322,14 @@ TEST_CASE("[TextBox]")
 
                 textBox->keyPressed({sf::Keyboard::Key::Left, false, false, false, false}); // Deselect text
                 textBox->keyPressed({sf::Keyboard::Key::V, false, true, false, false});
-                REQUIRE(textBox->getText() == "ABCDEFGHIJKLMONPQRSTUVWXYZXYZ");
+                REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZXYZ");
                 REQUIRE(tgui::Clipboard::get() == "XYZ");
 
                 for (unsigned int i = 0; i < 4; ++i)
                     textBox->keyPressed({sf::Keyboard::Key::Left, false, false, true, false});
 
                 textBox->keyPressed({sf::Keyboard::Key::X, false, true, false, false});
-                REQUIRE(textBox->getText() == "ABCDEFGHIJKLMONPQRSTUVXYZ");
+                REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVXYZ");
                 REQUIRE(tgui::Clipboard::get() == "WXYZ");
             }
         }
@@ -349,18 +349,19 @@ TEST_CASE("[TextBox]")
             textBox->textEntered('E');
             REQUIRE(textBox->getText() == "ABCDE");
 
-            textBox->setText("ABCDEFGHIJKLMONPQRSTUVWXYZ");
+            textBox->setText("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
             textBox->setVerticalScrollbarPresent(false);
 
-            textBox->textEntered('I');
-            REQUIRE(textBox->getText() == "ABCDEFGHIJKLMONPQRSTUVWXYZI");
+            textBox->textEntered('A');
+            textBox->textEntered('B');
+            REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZAB");
 
-            textBox->textEntered('X');
-            REQUIRE(textBox->getText() == "ABCDEFGHIJKLMONPQRSTUVWXYZI");
+            textBox->textEntered('C');
+            REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZAB");
 
             textBox->setVerticalScrollbarPresent(true);
-            textBox->textEntered('X');
-            REQUIRE(textBox->getText() == "ABCDEFGHIJKLMONPQRSTUVWXYZIX");
+            textBox->textEntered('C');
+            REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZABC");
         }
     }
 
