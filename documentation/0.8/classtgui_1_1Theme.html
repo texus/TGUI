@@ -144,6 +144,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a79f5471665b18815ce93852c327637c4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Theme.html#a79f5471665b18815ce93852c327637c4">removeRenderer</a> (const std::string &amp;id)</td></tr>
 <tr class="memdesc:a79f5471665b18815ce93852c327637c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manually removes a renderer to the theme.  <a href="#a79f5471665b18815ce93852c327637c4">More...</a><br /></td></tr>
 <tr class="separator:a79f5471665b18815ce93852c327637c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab40e8431f9ebb322ed2b8b2ba5152272"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Theme.html#ab40e8431f9ebb322ed2b8b2ba5152272">getPrimary</a> () const</td></tr>
+<tr class="memdesc:ab40e8431f9ebb322ed2b8b2ba5152272"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the primary theme loader parameter.  <a href="#ab40e8431f9ebb322ed2b8b2ba5152272">More...</a><br /></td></tr>
+<tr class="separator:ab40e8431f9ebb322ed2b8b2ba5152272"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -288,6 +291,26 @@ static std::shared_ptr&lt; <a class="el" href="classtgui_1_1BaseThemeLoader.html
 <p>Returns a pointer to the theme class that widgets use by default. </p>
 <dl class="section return"><dt>Returns</dt><dd>Default theme</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>When setDefault was not called or was given a nullptr as parameter, getDefault will return the default theme. If you set textures in this theme then you MUST call setDefault(nullptr) before the end of the program to prevent a potential crash due to undefined order of destruction. </dd></dl>
+
+</div>
+</div>
+<a id="ab40e8431f9ebb322ed2b8b2ba5152272"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab40e8431f9ebb322ed2b8b2ba5152272">&#9670;&nbsp;</a></span>getPrimary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string&amp; tgui::Theme::getPrimary </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the primary theme loader parameter. </p>
+<dl class="section return"><dt>Returns</dt><dd>Primary parameter for the theme loader (filename of the theme file in <a class="el" href="classtgui_1_1DefaultThemeLoader.html" title="Default implementation for theme loading. ">DefaultThemeLoader</a>) </dd></dl>
 
 </div>
 </div>
@@ -510,7 +533,7 @@ static std::shared_ptr&lt; <a class="el" href="classtgui_1_1BaseThemeLoader.html
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Sep 24 2017 01:35:05 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Dec 24 2017 16:05:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

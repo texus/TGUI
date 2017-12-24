@@ -136,6 +136,11 @@ Inheritance diagram for tgui::ScrollablePanel:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:a3c6c22cc52e267565ee4b113e39f7e54"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> { <a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54a086247a9b57fde6eefee2a0c4752242d">ScrollbarPolicy::Automatic</a>, 
+<a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54a68eec46437c384d8dad18d5464ebc35c">ScrollbarPolicy::Always</a>, 
+<a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54a6e7b34fa59e1bd229b207892956dc41c">ScrollbarPolicy::Never</a>
+ }</td></tr>
+<tr class="separator:a3c6c22cc52e267565ee4b113e39f7e54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a025463003b07579476bc75c335e5decb"><td class="memItemLeft" align="right" valign="top"><a id="a025463003b07579476bc75c335e5decb"></a>
 typedef std::shared_ptr&lt; <a class="el" href="classtgui_1_1ScrollablePanel.html">ScrollablePanel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a025463003b07579476bc75c335e5decb">Ptr</a></td></tr>
 <tr class="memdesc:a025463003b07579476bc75c335e5decb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shared widget pointer. <br /></td></tr>
@@ -183,9 +188,25 @@ typedef std::shared_ptr&lt; const <a class="el" href="classtgui_1_1Widget.html">
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a11740704ff2d20b2f9056217cc01c78b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a11740704ff2d20b2f9056217cc01c78b">ScrollablePanel</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;size={&quot;100%&quot;, &quot;100%&quot;}, sf::Vector2f contentSize={0, 0})</td></tr>
-<tr class="memdesc:a11740704ff2d20b2f9056217cc01c78b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a11740704ff2d20b2f9056217cc01c78b">More...</a><br /></td></tr>
-<tr class="separator:a11740704ff2d20b2f9056217cc01c78b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a424a1a50e226b7e41ba36f216af1c4ef"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a424a1a50e226b7e41ba36f216af1c4ef">ScrollablePanel</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;size={&quot;100%&quot;, &quot;100%&quot;}, <a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a> contentSize={0, 0})</td></tr>
+<tr class="memdesc:a424a1a50e226b7e41ba36f216af1c4ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a424a1a50e226b7e41ba36f216af1c4ef">More...</a><br /></td></tr>
+<tr class="separator:a424a1a50e226b7e41ba36f216af1c4ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3e4981841fec38ead784329d9da1bdd"><td class="memItemLeft" align="right" valign="top"><a id="aa3e4981841fec38ead784329d9da1bdd"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#aa3e4981841fec38ead784329d9da1bdd">ScrollablePanel</a> (const <a class="el" href="classtgui_1_1ScrollablePanel.html">ScrollablePanel</a> &amp;<a class="el" href="classtgui_1_1ScrollablePanel.html#ad0b408c2b253d85cb2066e3cb6c6fbce">copy</a>)</td></tr>
+<tr class="memdesc:aa3e4981841fec38ead784329d9da1bdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor. <br /></td></tr>
+<tr class="separator:aa3e4981841fec38ead784329d9da1bdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa80f29fdd24b4e2b2d8b56d1f8ea7592"><td class="memItemLeft" align="right" valign="top"><a id="aa80f29fdd24b4e2b2d8b56d1f8ea7592"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#aa80f29fdd24b4e2b2d8b56d1f8ea7592">ScrollablePanel</a> (<a class="el" href="classtgui_1_1ScrollablePanel.html">ScrollablePanel</a> &amp;&amp;<a class="el" href="classtgui_1_1ScrollablePanel.html#ad0b408c2b253d85cb2066e3cb6c6fbce">copy</a>)</td></tr>
+<tr class="memdesc:aa80f29fdd24b4e2b2d8b56d1f8ea7592"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor. <br /></td></tr>
+<tr class="separator:aa80f29fdd24b4e2b2d8b56d1f8ea7592"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84a76247ea0b8c7305c0f56f6b77809f"><td class="memItemLeft" align="right" valign="top"><a id="a84a76247ea0b8c7305c0f56f6b77809f"></a>
+<a class="el" href="classtgui_1_1ScrollablePanel.html">ScrollablePanel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a84a76247ea0b8c7305c0f56f6b77809f">operator=</a> (const <a class="el" href="classtgui_1_1ScrollablePanel.html">ScrollablePanel</a> &amp;other)</td></tr>
+<tr class="memdesc:a84a76247ea0b8c7305c0f56f6b77809f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator. <br /></td></tr>
+<tr class="separator:a84a76247ea0b8c7305c0f56f6b77809f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb36d7809d762aa20338744a08afb1aa"><td class="memItemLeft" align="right" valign="top"><a id="abb36d7809d762aa20338744a08afb1aa"></a>
+<a class="el" href="classtgui_1_1ScrollablePanel.html">ScrollablePanel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#abb36d7809d762aa20338744a08afb1aa">operator=</a> (<a class="el" href="classtgui_1_1ScrollablePanel.html">ScrollablePanel</a> &amp;&amp;other)</td></tr>
+<tr class="memdesc:abb36d7809d762aa20338744a08afb1aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of move assignment operator. <br /></td></tr>
+<tr class="separator:abb36d7809d762aa20338744a08afb1aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04bde599f902fb8d51175aed3c2d395b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1ScrollablePanelRenderer.html">ScrollablePanelRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a04bde599f902fb8d51175aed3c2d395b">getSharedRenderer</a> ()</td></tr>
 <tr class="memdesc:a04bde599f902fb8d51175aed3c2d395b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the renderer, which gives access to functions that determine how the widget is displayed.  <a href="#a04bde599f902fb8d51175aed3c2d395b">More...</a><br /></td></tr>
 <tr class="separator:a04bde599f902fb8d51175aed3c2d395b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -195,9 +216,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab9cc55a920cffd73d159c00a15173203"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#ab9cc55a920cffd73d159c00a15173203">setSize</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;size) override</td></tr>
 <tr class="memdesc:ab9cc55a920cffd73d159c00a15173203"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the panel.  <a href="#ab9cc55a920cffd73d159c00a15173203">More...</a><br /></td></tr>
 <tr class="separator:ab9cc55a920cffd73d159c00a15173203"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8fac0f672d7159fed6bfcd6e9728c7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#ab8fac0f672d7159fed6bfcd6e9728c7c">add</a> (const <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">tgui::Widget::Ptr</a> &amp;widget, const sf::String &amp;widgetName=&quot;&quot;) override</td></tr>
-<tr class="memdesc:ab8fac0f672d7159fed6bfcd6e9728c7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a widget at the end of the layout.  <a href="#ab8fac0f672d7159fed6bfcd6e9728c7c">More...</a><br /></td></tr>
-<tr class="separator:ab8fac0f672d7159fed6bfcd6e9728c7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26894acd2225040bd00751229120ae6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a26894acd2225040bd00751229120ae6a">add</a> (const <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> &amp;widget, const sf::String &amp;widgetName=&quot;&quot;) override</td></tr>
+<tr class="memdesc:a26894acd2225040bd00751229120ae6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a widget at the end of the layout.  <a href="#a26894acd2225040bd00751229120ae6a">More...</a><br /></td></tr>
+<tr class="separator:a26894acd2225040bd00751229120ae6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f64c8050eb70d78e086b0c1cac1c4a6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a9f64c8050eb70d78e086b0c1cac1c4a6">remove</a> (const <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> &amp;widget) override</td></tr>
 <tr class="memdesc:a9f64c8050eb70d78e086b0c1cac1c4a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a single widget that was added to the container.  <a href="#a9f64c8050eb70d78e086b0c1cac1c4a6">More...</a><br /></td></tr>
 <tr class="separator:a9f64c8050eb70d78e086b0c1cac1c4a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -205,15 +226,33 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a60269435b17a827ca0b1e3ac1c9a6bbf">removeAllWidgets</a> () override</td></tr>
 <tr class="memdesc:a60269435b17a827ca0b1e3ac1c9a6bbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all widgets that were added to the container. <br /></td></tr>
 <tr class="separator:a60269435b17a827ca0b1e3ac1c9a6bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ac229c8552eed7b99ed1e15f7b12af4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a1ac229c8552eed7b99ed1e15f7b12af4">setContentSize</a> (sf::Vector2f size)</td></tr>
-<tr class="memdesc:a1ac229c8552eed7b99ed1e15f7b12af4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Channges the size available for child widgets.  <a href="#a1ac229c8552eed7b99ed1e15f7b12af4">More...</a><br /></td></tr>
-<tr class="separator:a1ac229c8552eed7b99ed1e15f7b12af4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abff8655d81b5d522cd576427bc4a2b5b"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#abff8655d81b5d522cd576427bc4a2b5b">getContentSize</a> () const</td></tr>
-<tr class="memdesc:abff8655d81b5d522cd576427bc4a2b5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size available for child widgets.  <a href="#abff8655d81b5d522cd576427bc4a2b5b">More...</a><br /></td></tr>
-<tr class="separator:abff8655d81b5d522cd576427bc4a2b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0548ff478db676c88d3fed526de6512"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#aa0548ff478db676c88d3fed526de6512">getContentOffset</a> () const</td></tr>
-<tr class="memdesc:aa0548ff478db676c88d3fed526de6512"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the amount of pixels the child widgets have been shifted to be displayed by the scrollable panel.  <a href="#aa0548ff478db676c88d3fed526de6512">More...</a><br /></td></tr>
-<tr class="separator:aa0548ff478db676c88d3fed526de6512"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3414b944c7e9748a1f56d0ecab57a4be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3414b944c7e9748a1f56d0ecab57a4be">setContentSize</a> (<a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a> size)</td></tr>
+<tr class="memdesc:a3414b944c7e9748a1f56d0ecab57a4be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Channges the size available for child widgets.  <a href="#a3414b944c7e9748a1f56d0ecab57a4be">More...</a><br /></td></tr>
+<tr class="separator:a3414b944c7e9748a1f56d0ecab57a4be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a255c4334129a52d1147db77850c37cbf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a255c4334129a52d1147db77850c37cbf">getContentSize</a> () const</td></tr>
+<tr class="memdesc:a255c4334129a52d1147db77850c37cbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size available for child widgets.  <a href="#a255c4334129a52d1147db77850c37cbf">More...</a><br /></td></tr>
+<tr class="separator:a255c4334129a52d1147db77850c37cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cba9bcafaa61f14dbd973c86fdb2c17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a8cba9bcafaa61f14dbd973c86fdb2c17">getContentOffset</a> () const</td></tr>
+<tr class="memdesc:a8cba9bcafaa61f14dbd973c86fdb2c17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the amount of pixels the child widgets have been shifted to be displayed by the scrollable panel.  <a href="#a8cba9bcafaa61f14dbd973c86fdb2c17">More...</a><br /></td></tr>
+<tr class="separator:a8cba9bcafaa61f14dbd973c86fdb2c17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cad1cbfaf2b851dd3ae04e0c076dd90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a4cad1cbfaf2b851dd3ae04e0c076dd90">setScrollbarWidth</a> (float width)</td></tr>
+<tr class="memdesc:a4cad1cbfaf2b851dd3ae04e0c076dd90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the width of the scrollbars.  <a href="#a4cad1cbfaf2b851dd3ae04e0c076dd90">More...</a><br /></td></tr>
+<tr class="separator:a4cad1cbfaf2b851dd3ae04e0c076dd90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6357f7882f7ccf3dee80e136f56df507"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a6357f7882f7ccf3dee80e136f56df507">getScrollbarWidth</a> () const</td></tr>
+<tr class="memdesc:a6357f7882f7ccf3dee80e136f56df507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the width of the scrollbars.  <a href="#a6357f7882f7ccf3dee80e136f56df507">More...</a><br /></td></tr>
+<tr class="separator:a6357f7882f7ccf3dee80e136f56df507"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3754502e612bb43c2df6c599fc5e1000"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3754502e612bb43c2df6c599fc5e1000">setVerticalScrollbarPolicy</a> (<a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> policy)</td></tr>
+<tr class="memdesc:a3754502e612bb43c2df6c599fc5e1000"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes when the vertical scrollbar should be displayed.  <a href="#a3754502e612bb43c2df6c599fc5e1000">More...</a><br /></td></tr>
+<tr class="separator:a3754502e612bb43c2df6c599fc5e1000"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dd6b54f59d83cebcc4a9499b301b6ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a9dd6b54f59d83cebcc4a9499b301b6ea">getVerticalScrollbarPolicy</a> () const</td></tr>
+<tr class="memdesc:a9dd6b54f59d83cebcc4a9499b301b6ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns when the vertical scrollbar should be displayed.  <a href="#a9dd6b54f59d83cebcc4a9499b301b6ea">More...</a><br /></td></tr>
+<tr class="separator:a9dd6b54f59d83cebcc4a9499b301b6ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abadda508ef17a21912262686df142d40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#abadda508ef17a21912262686df142d40">setHorizontalScrollbarPolicy</a> (<a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> policy)</td></tr>
+<tr class="memdesc:abadda508ef17a21912262686df142d40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes when the horizontal scrollbar should be displayed.  <a href="#abadda508ef17a21912262686df142d40">More...</a><br /></td></tr>
+<tr class="separator:abadda508ef17a21912262686df142d40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7f26eade930d0c8f3b3c58a0dbf108a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#ac7f26eade930d0c8f3b3c58a0dbf108a">getHorizontalScrollbarPolicy</a> () const</td></tr>
+<tr class="memdesc:ac7f26eade930d0c8f3b3c58a0dbf108a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns when the horizontal scrollbar should be displayed.  <a href="#ac7f26eade930d0c8f3b3c58a0dbf108a">More...</a><br /></td></tr>
+<tr class="separator:ac7f26eade930d0c8f3b3c58a0dbf108a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a663748e18dbf2ac318e0fab7e29190a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a663748e18dbf2ac318e0fab7e29190a8">draw</a> (sf::RenderTarget &amp;target, sf::RenderStates states) const override</td></tr>
 <tr class="memdesc:a663748e18dbf2ac318e0fab7e29190a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw the widget to a render target.  <a href="#a663748e18dbf2ac318e0fab7e29190a8">More...</a><br /></td></tr>
 <tr class="separator:a663748e18dbf2ac318e0fab7e29190a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -227,12 +266,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a405fc28d7d01b07b965f8f39647850a8 inherit pub_methods_classtgui_1_1Panel"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1PanelRenderer.html">PanelRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Panel.html#a405fc28d7d01b07b965f8f39647850a8">getRenderer</a> ()</td></tr>
 <tr class="memdesc:a405fc28d7d01b07b965f8f39647850a8 inherit pub_methods_classtgui_1_1Panel"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the renderer, which gives access to functions that determine how the widget is displayed.  <a href="classtgui_1_1Panel.html#a405fc28d7d01b07b965f8f39647850a8">More...</a><br /></td></tr>
 <tr class="separator:a405fc28d7d01b07b965f8f39647850a8 inherit pub_methods_classtgui_1_1Panel"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c32f57bdf1f5c30550a6a470b2d6099 inherit pub_methods_classtgui_1_1Panel"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Panel.html#a2c32f57bdf1f5c30550a6a470b2d6099">getChildWidgetsOffset</a> () const override</td></tr>
-<tr class="memdesc:a2c32f57bdf1f5c30550a6a470b2d6099 inherit pub_methods_classtgui_1_1Panel"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance between the position of the container and a widget that would be drawn inside this container on relative position (0,0)  <a href="classtgui_1_1Panel.html#a2c32f57bdf1f5c30550a6a470b2d6099">More...</a><br /></td></tr>
-<tr class="separator:a2c32f57bdf1f5c30550a6a470b2d6099 inherit pub_methods_classtgui_1_1Panel"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9bd8d51afe17990cab87bd45eca32a4 inherit pub_methods_classtgui_1_1Panel"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Panel.html#ae9bd8d51afe17990cab87bd45eca32a4">mouseOnWidget</a> (sf::Vector2f pos) const override</td></tr>
-<tr class="memdesc:ae9bd8d51afe17990cab87bd45eca32a4 inherit pub_methods_classtgui_1_1Panel"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget.  <a href="classtgui_1_1Panel.html#ae9bd8d51afe17990cab87bd45eca32a4">More...</a><br /></td></tr>
-<tr class="separator:ae9bd8d51afe17990cab87bd45eca32a4 inherit pub_methods_classtgui_1_1Panel"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a650bd0dade1695ee5aad884c449679f9 inherit pub_methods_classtgui_1_1Panel"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Panel.html#a650bd0dade1695ee5aad884c449679f9">getChildWidgetsOffset</a> () const override</td></tr>
+<tr class="memdesc:a650bd0dade1695ee5aad884c449679f9 inherit pub_methods_classtgui_1_1Panel"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance between the position of the container and a widget that would be drawn inside this container on relative position (0,0)  <a href="classtgui_1_1Panel.html#a650bd0dade1695ee5aad884c449679f9">More...</a><br /></td></tr>
+<tr class="separator:a650bd0dade1695ee5aad884c449679f9 inherit pub_methods_classtgui_1_1Panel"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5eb2de5c8d00aa2d67427d1c5acbc51 inherit pub_methods_classtgui_1_1Panel"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Panel.html#ac5eb2de5c8d00aa2d67427d1c5acbc51">mouseOnWidget</a> (<a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a> pos) const override</td></tr>
+<tr class="memdesc:ac5eb2de5c8d00aa2d67427d1c5acbc51 inherit pub_methods_classtgui_1_1Panel"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget.  <a href="classtgui_1_1Panel.html#ac5eb2de5c8d00aa2d67427d1c5acbc51">More...</a><br /></td></tr>
+<tr class="separator:ac5eb2de5c8d00aa2d67427d1c5acbc51 inherit pub_methods_classtgui_1_1Panel"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtgui_1_1Group"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1Group')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1Group.html">tgui::Group</a></td></tr>
 <tr class="memitem:acc8a0bf2008a89c1e4200e2be25d5d7a inherit pub_methods_classtgui_1_1Group"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Group.html#acc8a0bf2008a89c1e4200e2be25d5d7a">Group</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;size={&quot;100%&quot;, &quot;100%&quot;})</td></tr>
 <tr class="memdesc:acc8a0bf2008a89c1e4200e2be25d5d7a inherit pub_methods_classtgui_1_1Group"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="classtgui_1_1Group.html#acc8a0bf2008a89c1e4200e2be25d5d7a">More...</a><br /></td></tr>
@@ -280,9 +319,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a1df09925591bb67f1ce3a73ec1aa1285 inherit pub_methods_classtgui_1_1Container"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Container.html#a1df09925591bb67f1ce3a73ec1aa1285">setWidgetName</a> (const <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> &amp;widget, const std::string &amp;name)</td></tr>
 <tr class="memdesc:a1df09925591bb67f1ce3a73ec1aa1285 inherit pub_methods_classtgui_1_1Container"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the name of a widget.  <a href="classtgui_1_1Container.html#a1df09925591bb67f1ce3a73ec1aa1285">More...</a><br /></td></tr>
 <tr class="separator:a1df09925591bb67f1ce3a73ec1aa1285 inherit pub_methods_classtgui_1_1Container"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9fba59c33960e4b9ca65a0cdd20badb inherit pub_methods_classtgui_1_1Container"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Container.html#ae9fba59c33960e4b9ca65a0cdd20badb">getWidgetName</a> (const <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> &amp;widget) const</td></tr>
-<tr class="memdesc:ae9fba59c33960e4b9ca65a0cdd20badb inherit pub_methods_classtgui_1_1Container"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name of a widget.  <a href="classtgui_1_1Container.html#ae9fba59c33960e4b9ca65a0cdd20badb">More...</a><br /></td></tr>
-<tr class="separator:ae9fba59c33960e4b9ca65a0cdd20badb inherit pub_methods_classtgui_1_1Container"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3a51a4bd0dc9561a90af5194a9e7d9a inherit pub_methods_classtgui_1_1Container"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Container.html#ac3a51a4bd0dc9561a90af5194a9e7d9a">getWidgetName</a> (const <a class="el" href="classtgui_1_1Widget.html#aeaa9564fad89042e53af59e7a0063b1f">Widget::ConstPtr</a> &amp;widget) const</td></tr>
+<tr class="memdesc:ac3a51a4bd0dc9561a90af5194a9e7d9a inherit pub_methods_classtgui_1_1Container"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name of a widget.  <a href="classtgui_1_1Container.html#ac3a51a4bd0dc9561a90af5194a9e7d9a">More...</a><br /></td></tr>
+<tr class="separator:ac3a51a4bd0dc9561a90af5194a9e7d9a inherit pub_methods_classtgui_1_1Container"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b92ac3fe78aba31e9d542b14fdbc42e inherit pub_methods_classtgui_1_1Container"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Container.html#a5b92ac3fe78aba31e9d542b14fdbc42e">focusWidget</a> (const <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> &amp;widget)</td></tr>
 <tr class="memdesc:a5b92ac3fe78aba31e9d542b14fdbc42e inherit pub_methods_classtgui_1_1Container"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focuses a widget.  <a href="classtgui_1_1Container.html#a5b92ac3fe78aba31e9d542b14fdbc42e">More...</a><br /></td></tr>
 <tr class="separator:a5b92ac3fe78aba31e9d542b14fdbc42e inherit pub_methods_classtgui_1_1Container"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -361,24 +400,24 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a57b85bc10c1447e62d65739a39fca865 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a57b85bc10c1447e62d65739a39fca865">setPosition</a> (<a class="el" href="classtgui_1_1Layout.html">Layout</a> x, <a class="el" href="classtgui_1_1Layout.html">Layout</a> y)</td></tr>
 <tr class="memdesc:a57b85bc10c1447e62d65739a39fca865 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the position of the widget.  <a href="classtgui_1_1Widget.html#a57b85bc10c1447e62d65739a39fca865">More...</a><br /></td></tr>
 <tr class="separator:a57b85bc10c1447e62d65739a39fca865 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a0b48f8503f6179509715cd8cc5f96d inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a4a0b48f8503f6179509715cd8cc5f96d">getPosition</a> () const</td></tr>
-<tr class="memdesc:a4a0b48f8503f6179509715cd8cc5f96d inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the position of the widget.  <a href="classtgui_1_1Widget.html#a4a0b48f8503f6179509715cd8cc5f96d">More...</a><br /></td></tr>
-<tr class="separator:a4a0b48f8503f6179509715cd8cc5f96d inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af845e04a68c8706ec7590e8eb3f489fb inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#af845e04a68c8706ec7590e8eb3f489fb">getPosition</a> () const</td></tr>
+<tr class="memdesc:af845e04a68c8706ec7590e8eb3f489fb inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the position of the widget.  <a href="classtgui_1_1Widget.html#af845e04a68c8706ec7590e8eb3f489fb">More...</a><br /></td></tr>
+<tr class="separator:af845e04a68c8706ec7590e8eb3f489fb inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a087a60617c86fcf6521da7bc9f4723bd inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a087a60617c86fcf6521da7bc9f4723bd">setSize</a> (<a class="el" href="classtgui_1_1Layout.html">Layout</a> width, <a class="el" href="classtgui_1_1Layout.html">Layout</a> height)</td></tr>
 <tr class="memdesc:a087a60617c86fcf6521da7bc9f4723bd inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the widget.  <a href="classtgui_1_1Widget.html#a087a60617c86fcf6521da7bc9f4723bd">More...</a><br /></td></tr>
 <tr class="separator:a087a60617c86fcf6521da7bc9f4723bd inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a390f854b10d7bce546d8cf16801af83a inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a390f854b10d7bce546d8cf16801af83a">getSize</a> () const</td></tr>
-<tr class="memdesc:a390f854b10d7bce546d8cf16801af83a inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the widget.  <a href="classtgui_1_1Widget.html#a390f854b10d7bce546d8cf16801af83a">More...</a><br /></td></tr>
-<tr class="separator:a390f854b10d7bce546d8cf16801af83a inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d4aeeba79b2d283208f37bbfe9c0483 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a1d4aeeba79b2d283208f37bbfe9c0483">getFullSize</a> () const</td></tr>
-<tr class="memdesc:a1d4aeeba79b2d283208f37bbfe9c0483 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="classtgui_1_1Widget.html#a1d4aeeba79b2d283208f37bbfe9c0483">More...</a><br /></td></tr>
-<tr class="separator:a1d4aeeba79b2d283208f37bbfe9c0483 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf1cec930567f4f079651c833b38a292 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#abf1cec930567f4f079651c833b38a292">getAbsolutePosition</a> () const</td></tr>
-<tr class="memdesc:abf1cec930567f4f079651c833b38a292 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the absolute position of the widget instead of the relative position to its parent.  <a href="classtgui_1_1Widget.html#abf1cec930567f4f079651c833b38a292">More...</a><br /></td></tr>
-<tr class="separator:abf1cec930567f4f079651c833b38a292 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1be87b3ca55d0338c42876655decc3ab inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a1be87b3ca55d0338c42876655decc3ab">getWidgetOffset</a> () const</td></tr>
-<tr class="memdesc:a1be87b3ca55d0338c42876655decc3ab inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance between the position where the widget is drawn and where the widget is placed.  <a href="classtgui_1_1Widget.html#a1be87b3ca55d0338c42876655decc3ab">More...</a><br /></td></tr>
-<tr class="separator:a1be87b3ca55d0338c42876655decc3ab inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8b069137ac262db75bbc75c068d8f76 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#aa8b069137ac262db75bbc75c068d8f76">getSize</a> () const</td></tr>
+<tr class="memdesc:aa8b069137ac262db75bbc75c068d8f76 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the widget.  <a href="classtgui_1_1Widget.html#aa8b069137ac262db75bbc75c068d8f76">More...</a><br /></td></tr>
+<tr class="separator:aa8b069137ac262db75bbc75c068d8f76 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac800fddd07b78060f28773258ad330c8 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ac800fddd07b78060f28773258ad330c8">getFullSize</a> () const</td></tr>
+<tr class="memdesc:ac800fddd07b78060f28773258ad330c8 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="classtgui_1_1Widget.html#ac800fddd07b78060f28773258ad330c8">More...</a><br /></td></tr>
+<tr class="separator:ac800fddd07b78060f28773258ad330c8 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4e2898c4146d5eabb09a7814e4e693b inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ae4e2898c4146d5eabb09a7814e4e693b">getAbsolutePosition</a> () const</td></tr>
+<tr class="memdesc:ae4e2898c4146d5eabb09a7814e4e693b inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the absolute position of the widget instead of the relative position to its parent.  <a href="classtgui_1_1Widget.html#ae4e2898c4146d5eabb09a7814e4e693b">More...</a><br /></td></tr>
+<tr class="separator:ae4e2898c4146d5eabb09a7814e4e693b inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae737b8814208dca51e4fd6a1c631af45 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ae737b8814208dca51e4fd6a1c631af45">getWidgetOffset</a> () const</td></tr>
+<tr class="memdesc:ae737b8814208dca51e4fd6a1c631af45 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance between the position where the widget is drawn and where the widget is placed.  <a href="classtgui_1_1Widget.html#ae737b8814208dca51e4fd6a1c631af45">More...</a><br /></td></tr>
+<tr class="separator:ae737b8814208dca51e4fd6a1c631af45 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3881afdad82cf8c2bd12f36238c04fe inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ae3881afdad82cf8c2bd12f36238c04fe">show</a> ()</td></tr>
 <tr class="memdesc:ae3881afdad82cf8c2bd12f36238c04fe inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows the widget.  <a href="classtgui_1_1Widget.html#ae3881afdad82cf8c2bd12f36238c04fe">More...</a><br /></td></tr>
 <tr class="separator:ae3881afdad82cf8c2bd12f36238c04fe inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -439,9 +478,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ae4f30ef364bf7594ec209688a9b43ec5 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ae4f30ef364bf7594ec209688a9b43ec5">setToolTip</a> (<a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> toolTip)</td></tr>
 <tr class="memdesc:ae4f30ef364bf7594ec209688a9b43ec5 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the tool tip that should be displayed when hovering over the widget.  <a href="classtgui_1_1Widget.html#ae4f30ef364bf7594ec209688a9b43ec5">More...</a><br /></td></tr>
 <tr class="separator:ae4f30ef364bf7594ec209688a9b43ec5 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e6e54fbaba931d0bb8eb0404e2e1c22 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a0e6e54fbaba931d0bb8eb0404e2e1c22">getToolTip</a> ()</td></tr>
-<tr class="memdesc:a0e6e54fbaba931d0bb8eb0404e2e1c22 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the tool tip that is displayed when hovering over the widget.  <a href="classtgui_1_1Widget.html#a0e6e54fbaba931d0bb8eb0404e2e1c22">More...</a><br /></td></tr>
-<tr class="separator:a0e6e54fbaba931d0bb8eb0404e2e1c22 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc40f765b8489fa67c24dc06ac09d8e1 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#abc40f765b8489fa67c24dc06ac09d8e1">getToolTip</a> () const</td></tr>
+<tr class="memdesc:abc40f765b8489fa67c24dc06ac09d8e1 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the tool tip that is displayed when hovering over the widget.  <a href="classtgui_1_1Widget.html#abc40f765b8489fa67c24dc06ac09d8e1">More...</a><br /></td></tr>
+<tr class="separator:abc40f765b8489fa67c24dc06ac09d8e1 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68ed654d85df0f69077e3caad6b9a712 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a68ed654d85df0f69077e3caad6b9a712">isContainer</a> () const</td></tr>
+<tr class="memdesc:a68ed654d85df0f69077e3caad6b9a712 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the widget is a container widget or not.  <a href="classtgui_1_1Widget.html#a68ed654d85df0f69077e3caad6b9a712">More...</a><br /></td></tr>
+<tr class="separator:a68ed654d85df0f69077e3caad6b9a712 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtgui_1_1SignalWidgetBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1SignalWidgetBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td></tr>
 <tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const Args &amp;...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </td></tr>
 <tr class="memitem:a71a57f0500ef818b1a0a0d8a35cdea06 inherit pub_methods_classtgui_1_1SignalWidgetBase"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a71a57f0500ef818b1a0a0d8a35cdea06">connect</a> (std::string signalName, Func &amp;&amp;handler, const Args &amp;... args)</td></tr>
@@ -472,9 +514,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:afb8b187952aa90f8ff7d614c8718037a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtgui_1_1ScrollablePanel.html#a025463003b07579476bc75c335e5decb">ScrollablePanel::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#afb8b187952aa90f8ff7d614c8718037a">create</a> (<a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> size={&quot;100%&quot;, &quot;100%&quot;}, sf::Vector2f contentSize={0, 0})</td></tr>
-<tr class="memdesc:afb8b187952aa90f8ff7d614c8718037a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new scrollable panel widget.  <a href="#afb8b187952aa90f8ff7d614c8718037a">More...</a><br /></td></tr>
-<tr class="separator:afb8b187952aa90f8ff7d614c8718037a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac976e9a7c146a1f608a50431302ae05a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtgui_1_1ScrollablePanel.html#a025463003b07579476bc75c335e5decb">ScrollablePanel::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#ac976e9a7c146a1f608a50431302ae05a">create</a> (<a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> size={&quot;100%&quot;, &quot;100%&quot;}, <a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a> contentSize={0, 0})</td></tr>
+<tr class="memdesc:ac976e9a7c146a1f608a50431302ae05a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new scrollable panel widget.  <a href="#ac976e9a7c146a1f608a50431302ae05a">More...</a><br /></td></tr>
+<tr class="separator:ac976e9a7c146a1f608a50431302ae05a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0b408c2b253d85cb2066e3cb6c6fbce"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtgui_1_1ScrollablePanel.html#a025463003b07579476bc75c335e5decb">ScrollablePanel::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#ad0b408c2b253d85cb2066e3cb6c6fbce">copy</a> (<a class="el" href="classtgui_1_1ScrollablePanel.html#a93596c6e42bb7308ea9ada11dffadd71">ScrollablePanel::ConstPtr</a> panel)</td></tr>
 <tr class="memdesc:ad0b408c2b253d85cb2066e3cb6c6fbce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of another scrollbable panel.  <a href="#ad0b408c2b253d85cb2066e3cb6c6fbce">More...</a><br /></td></tr>
 <tr class="separator:ad0b408c2b253d85cb2066e3cb6c6fbce"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -498,14 +540,22 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a725247f3d2b1a6693f3b39cea3536935"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a725247f3d2b1a6693f3b39cea3536935">rendererChanged</a> (const std::string &amp;property) override</td></tr>
 <tr class="memdesc:a725247f3d2b1a6693f3b39cea3536935"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function called when one of the properties of the renderer is changed.  <a href="#a725247f3d2b1a6693f3b39cea3536935">More...</a><br /></td></tr>
 <tr class="separator:a725247f3d2b1a6693f3b39cea3536935"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4408401b6bf9d2c9f85afd62ee67d9ee"><td class="memItemLeft" align="right" valign="top"><a id="a4408401b6bf9d2c9f85afd62ee67d9ee"></a>
+std::unique_ptr&lt; DataIO::Node &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a4408401b6bf9d2c9f85afd62ee67d9ee">save</a> (SavingRenderersMap &amp;renderers) const override</td></tr>
+<tr class="memdesc:a4408401b6bf9d2c9f85afd62ee67d9ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the widget as a tree node in order to save it to a file. <br /></td></tr>
+<tr class="separator:a4408401b6bf9d2c9f85afd62ee67d9ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af05ba89f5c9ba4dae70d7095e81960a3"><td class="memItemLeft" align="right" valign="top"><a id="af05ba89f5c9ba4dae70d7095e81960a3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#af05ba89f5c9ba4dae70d7095e81960a3">load</a> (const std::unique_ptr&lt; DataIO::Node &gt; &amp;node, const LoadingRenderersMap &amp;renderers) override</td></tr>
+<tr class="memdesc:af05ba89f5c9ba4dae70d7095e81960a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the widget from a tree of nodes. <br /></td></tr>
+<tr class="separator:af05ba89f5c9ba4dae70d7095e81960a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7865b9ed1eaadb083bfe0206fefcc4a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a7865b9ed1eaadb083bfe0206fefcc4a9">clone</a> () const override</td></tr>
 <tr class="memdesc:a7865b9ed1eaadb083bfe0206fefcc4a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a copy of the widget if you don't know its exact type.  <a href="#a7865b9ed1eaadb083bfe0206fefcc4a9">More...</a><br /></td></tr>
 <tr class="separator:a7865b9ed1eaadb083bfe0206fefcc4a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classtgui_1_1Panel"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtgui_1_1Panel')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtgui_1_1Panel.html">tgui::Panel</a></td></tr>
-<tr class="memitem:af67c678612dceaad5a6742df0fec0010 inherit pro_methods_classtgui_1_1Panel"><td class="memItemLeft" align="right" valign="top"><a id="af67c678612dceaad5a6742df0fec0010"></a>
-sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Panel.html#af67c678612dceaad5a6742df0fec0010">getInnerSize</a> () const</td></tr>
-<tr class="memdesc:af67c678612dceaad5a6742df0fec0010 inherit pro_methods_classtgui_1_1Panel"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size without borders and padding. <br /></td></tr>
-<tr class="separator:af67c678612dceaad5a6742df0fec0010 inherit pro_methods_classtgui_1_1Panel"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81561a828d1d1520c971aa42a59e0e66 inherit pro_methods_classtgui_1_1Panel"><td class="memItemLeft" align="right" valign="top"><a id="a81561a828d1d1520c971aa42a59e0e66"></a>
+<a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Panel.html#a81561a828d1d1520c971aa42a59e0e66">getInnerSize</a> () const</td></tr>
+<tr class="memdesc:a81561a828d1d1520c971aa42a59e0e66 inherit pro_methods_classtgui_1_1Panel"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size without borders and padding. <br /></td></tr>
+<tr class="separator:a81561a828d1d1520c971aa42a59e0e66 inherit pro_methods_classtgui_1_1Panel"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aade8c4d77d343393594fb3e8de50b2dd inherit pro_methods_classtgui_1_1Panel"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Signal.html">Signal</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Panel.html#aade8c4d77d343393594fb3e8de50b2dd">getSignal</a> (std::string signalName) override</td></tr>
 <tr class="memdesc:aade8c4d77d343393594fb3e8de50b2dd inherit pro_methods_classtgui_1_1Panel"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a signal based on its name.  <a href="classtgui_1_1Panel.html#aade8c4d77d343393594fb3e8de50b2dd">More...</a><br /></td></tr>
 <tr class="separator:aade8c4d77d343393594fb3e8de50b2dd inherit pro_methods_classtgui_1_1Panel"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -562,9 +612,40 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classtgui_1_1Group.html" title="Group widget. ">Group</a> of widgets that has a background color and optional borders. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a11740704ff2d20b2f9056217cc01c78b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11740704ff2d20b2f9056217cc01c78b">&#9670;&nbsp;</a></span>ScrollablePanel()</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a3c6c22cc52e267565ee4b113e39f7e54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c6c22cc52e267565ee4b113e39f7e54">&#9670;&nbsp;</a></span>ScrollbarPolicy</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">tgui::ScrollablePanel::ScrollbarPolicy</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3c6c22cc52e267565ee4b113e39f7e54a086247a9b57fde6eefee2a0c4752242d"></a>Automatic&#160;</td><td class="fielddoc"><p>Show the scrollbar only when needed (default) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a3c6c22cc52e267565ee4b113e39f7e54a68eec46437c384d8dad18d5464ebc35c"></a>Always&#160;</td><td class="fielddoc"><p>Always show the scrollbar, even when the contents fit inside the panel. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a3c6c22cc52e267565ee4b113e39f7e54a6e7b34fa59e1bd229b207892956dc41c"></a>Never&#160;</td><td class="fielddoc"><p>Never show the scrollbar, even if the contents does not fit inside the panel. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a424a1a50e226b7e41ba36f216af1c4ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a424a1a50e226b7e41ba36f216af1c4ef">&#9670;&nbsp;</a></span>ScrollablePanel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -578,7 +659,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">sf::Vector2f&#160;</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td>
           <td class="paramname"><em>contentSize</em> = <code>{0,&#160;0}</code>&#160;</td>
         </tr>
         <tr>
@@ -602,8 +683,8 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ab8fac0f672d7159fed6bfcd6e9728c7c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8fac0f672d7159fed6bfcd6e9728c7c">&#9670;&nbsp;</a></span>add()</h2>
+<a id="a26894acd2225040bd00751229120ae6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26894acd2225040bd00751229120ae6a">&#9670;&nbsp;</a></span>add()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -614,7 +695,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
         <tr>
           <td class="memname">void tgui::ScrollablePanel::add </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">tgui::Widget::Ptr</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> &amp;&#160;</td>
           <td class="paramname"><em>widget</em>, </td>
         </tr>
         <tr>
@@ -715,8 +796,8 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
-<a id="afb8b187952aa90f8ff7d614c8718037a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb8b187952aa90f8ff7d614c8718037a">&#9670;&nbsp;</a></span>create()</h2>
+<a id="ac976e9a7c146a1f608a50431302ae05a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac976e9a7c146a1f608a50431302ae05a">&#9670;&nbsp;</a></span>create()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -733,7 +814,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">sf::Vector2f&#160;</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td>
           <td class="paramname"><em>contentSize</em> = <code>{0,&#160;0}</code>&#160;</td>
         </tr>
         <tr>
@@ -809,14 +890,14 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
-<a id="aa0548ff478db676c88d3fed526de6512"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0548ff478db676c88d3fed526de6512">&#9670;&nbsp;</a></span>getContentOffset()</h2>
+<a id="a8cba9bcafaa61f14dbd973c86fdb2c17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cba9bcafaa61f14dbd973c86fdb2c17">&#9670;&nbsp;</a></span>getContentOffset()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">sf::Vector2f tgui::ScrollablePanel::getContentOffset </td>
+          <td class="memname"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a> tgui::ScrollablePanel::getContentOffset </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -829,14 +910,14 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
-<a id="abff8655d81b5d522cd576427bc4a2b5b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abff8655d81b5d522cd576427bc4a2b5b">&#9670;&nbsp;</a></span>getContentSize()</h2>
+<a id="a255c4334129a52d1147db77850c37cbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a255c4334129a52d1147db77850c37cbf">&#9670;&nbsp;</a></span>getContentSize()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">sf::Vector2f tgui::ScrollablePanel::getContentSize </td>
+          <td class="memname"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a> tgui::ScrollablePanel::getContentSize </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -847,6 +928,26 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <p>Returns the size available for child widgets. </p>
 <dl class="section return"><dt>Returns</dt><dd>Inner size of the container</dd></dl>
 <p>If the content size is larger than the size of the panel then scrollbars will be displayed </p>
+
+</div>
+</div>
+<a id="ac7f26eade930d0c8f3b3c58a0dbf108a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7f26eade930d0c8f3b3c58a0dbf108a">&#9670;&nbsp;</a></span>getHorizontalScrollbarPolicy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> tgui::ScrollablePanel::getHorizontalScrollbarPolicy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns when the horizontal scrollbar should be displayed. </p>
+<dl class="section return"><dt>Returns</dt><dd>The policy for displaying the horizontal scrollbar </dd></dl>
 
 </div>
 </div>
@@ -871,6 +972,26 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
+<a id="a6357f7882f7ccf3dee80e136f56df507"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6357f7882f7ccf3dee80e136f56df507">&#9670;&nbsp;</a></span>getScrollbarWidth()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float tgui::ScrollablePanel::getScrollbarWidth </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the width of the scrollbars. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtgui_1_1Scrollbar.html" title="Scrollbar widget. ">Scrollbar</a> width </dd></dl>
+
+</div>
+</div>
 <a id="a04bde599f902fb8d51175aed3c2d395b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a04bde599f902fb8d51175aed3c2d395b">&#9670;&nbsp;</a></span>getSharedRenderer()</h2>
 
@@ -888,6 +1009,26 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 <p>Returns the renderer, which gives access to functions that determine how the widget is displayed. </p>
 <dl class="section return"><dt>Returns</dt><dd>Temporary pointer to the renderer that may be shared with other widgets using the same renderer </dd></dl>
+
+</div>
+</div>
+<a id="a9dd6b54f59d83cebcc4a9499b301b6ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9dd6b54f59d83cebcc4a9499b301b6ea">&#9670;&nbsp;</a></span>getVerticalScrollbarPolicy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> tgui::ScrollablePanel::getVerticalScrollbarPolicy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns when the vertical scrollbar should be displayed. </p>
+<dl class="section return"><dt>Returns</dt><dd>The policy for displaying the vertical scrollbar </dd></dl>
 
 </div>
 </div>
@@ -964,8 +1105,8 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
-<a id="a1ac229c8552eed7b99ed1e15f7b12af4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ac229c8552eed7b99ed1e15f7b12af4">&#9670;&nbsp;</a></span>setContentSize()</h2>
+<a id="a3414b944c7e9748a1f56d0ecab57a4be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3414b944c7e9748a1f56d0ecab57a4be">&#9670;&nbsp;</a></span>setContentSize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -973,7 +1114,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
         <tr>
           <td class="memname">void tgui::ScrollablePanel::setContentSize </td>
           <td>(</td>
-          <td class="paramtype">sf::Vector2f&#160;</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td>
           <td class="paramname"><em>size</em></td><td>)</td>
           <td></td>
         </tr>
@@ -989,6 +1130,58 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </dl>
 <p>If the content size is larger than the size of the panel then scrollbars will be displayed.</p>
 <p>When the content size is (0,0), which is the default, then the content size is determined by the child widgets. </p>
+
+</div>
+</div>
+<a id="abadda508ef17a21912262686df142d40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abadda508ef17a21912262686df142d40">&#9670;&nbsp;</a></span>setHorizontalScrollbarPolicy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ScrollablePanel::setHorizontalScrollbarPolicy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a>&#160;</td>
+          <td class="paramname"><em>policy</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes when the horizontal scrollbar should be displayed. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">policy</td><td>The policy for displaying the horizontal scrollbar </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4cad1cbfaf2b851dd3ae04e0c076dd90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cad1cbfaf2b851dd3ae04e0c076dd90">&#9670;&nbsp;</a></span>setScrollbarWidth()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ScrollablePanel::setScrollbarWidth </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>width</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the width of the scrollbars. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">width</td><td><a class="el" href="classtgui_1_1Scrollbar.html" title="Scrollbar widget. ">Scrollbar</a> width </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1028,6 +1221,32 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
+<a id="a3754502e612bb43c2df6c599fc5e1000"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3754502e612bb43c2df6c599fc5e1000">&#9670;&nbsp;</a></span>setVerticalScrollbarPolicy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ScrollablePanel::setVerticalScrollbarPolicy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a>&#160;</td>
+          <td class="paramname"><em>policy</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes when the vertical scrollbar should be displayed. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">policy</td><td>The policy for displaying the vertical scrollbar </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/TGUI/Widgets/<a class="el" href="ScrollablePanel_8hpp_source.html">ScrollablePanel.hpp</a></li>
 </ul>
@@ -1035,7 +1254,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Sep 24 2017 01:35:05 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Dec 24 2017 16:05:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

@@ -173,6 +173,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab19389f995d4325a5772e085752a477b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#ab19389f995d4325a5772e085752a477b">getPaddingBetweenButtons</a> () const</td></tr>
 <tr class="memdesc:ab19389f995d4325a5772e085752a477b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance between the title buttons if multiple exist.  <a href="#ab19389f995d4325a5772e085752a477b">More...</a><br /></td></tr>
 <tr class="separator:ab19389f995d4325a5772e085752a477b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9fbd26b79af02248d0f68e90c3982fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#ad9fbd26b79af02248d0f68e90c3982fa">setShowTextOnTitleButtons</a> (bool showText)</td></tr>
+<tr class="memdesc:ad9fbd26b79af02248d0f68e90c3982fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes whether characters are rendered on top of the title buttons.  <a href="#ad9fbd26b79af02248d0f68e90c3982fa">More...</a><br /></td></tr>
+<tr class="separator:ad9fbd26b79af02248d0f68e90c3982fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60dfab1fc05ed1700592769fb15ec32e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#a60dfab1fc05ed1700592769fb15ec32e">getShowTextOnTitleButtons</a> () const</td></tr>
+<tr class="memdesc:a60dfab1fc05ed1700592769fb15ec32e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes whether characters are rendered on top of the title buttons.  <a href="#a60dfab1fc05ed1700592769fb15ec32e">More...</a><br /></td></tr>
+<tr class="separator:a60dfab1fc05ed1700592769fb15ec32e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3db5ef054f9b2e204576a2791d7e065"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#ad3db5ef054f9b2e204576a2791d7e065">setTextureTitleBar</a> (const <a class="el" href="classtgui_1_1Texture.html">Texture</a> &amp;texture)</td></tr>
 <tr class="memdesc:ad3db5ef054f9b2e204576a2791d7e065"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the image of the title bar.  <a href="#ad3db5ef054f9b2e204576a2791d7e065">More...</a><br /></td></tr>
 <tr class="separator:ad3db5ef054f9b2e204576a2791d7e065"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -401,6 +407,31 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 <p>Returns the distance between the title buttons if multiple exist. </p>
 <dl class="section return"><dt>Returns</dt><dd>Distance between the title buttons </dd></dl>
+
+</div>
+</div>
+<a id="a60dfab1fc05ed1700592769fb15ec32e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60dfab1fc05ed1700592769fb15ec32e">&#9670;&nbsp;</a></span>getShowTextOnTitleButtons()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::ChildWindowRenderer::getShowTextOnTitleButtons </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes whether characters are rendered on top of the title buttons. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">showText</td><td>Should text be shown on the title buttons? </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -692,6 +723,32 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
+<a id="ad9fbd26b79af02248d0f68e90c3982fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9fbd26b79af02248d0f68e90c3982fa">&#9670;&nbsp;</a></span>setShowTextOnTitleButtons()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChildWindowRenderer::setShowTextOnTitleButtons </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>showText</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes whether characters are rendered on top of the title buttons. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">showText</td><td>Should text be shown on the title buttons? </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ad3db5ef054f9b2e204576a2791d7e065"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad3db5ef054f9b2e204576a2791d7e065">&#9670;&nbsp;</a></span>setTextureTitleBar()</h2>
 
@@ -805,7 +862,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Sep 24 2017 01:35:04 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Dec 24 2017 16:05:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['uint',['UInt',['../structtgui_1_1EditBox_1_1Validator.html#a86f672270cc726b8d137979172f09c50',1,'tgui::EditBox::Validator']]]
+  ['red',['Red',['../classtgui_1_1Color.html#a4cdc8beaa268d3e6db141eca922fc130',1,'tgui::Color']]]
 ];

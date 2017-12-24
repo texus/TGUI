@@ -185,10 +185,7 @@ virtual <a class="el" href="classtgui_1_1Signal.html">Signal</a> &amp;&#160;</td
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const Args &amp;...)&gt;&gt;::value &gt;::type *  = nullptr&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
+template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const Args &amp;...)&gt;&gt;::value &gt;::type * &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">unsigned int tgui::SignalWidgetBase::connect </td>
@@ -214,11 +211,6 @@ template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::i
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Connects a signal handler that will be called when this signal is emitted. </p>
@@ -240,10 +232,7 @@ template&lt;typename Func , typename... Args, typename std::enable_if&lt; std::i
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Func , typename... BoundArgs, typename std::enable_if&lt; std::is_convertible&lt; Func, std::function&lt; void(const BoundArgs &amp;..., std::shared_ptr&lt; Widget &gt;, const std::string &amp;)&gt;&gt;::value &gt;::type *  = nullptr&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
+template&lt;typename Func , typename... BoundArgs, typename std::enable_if&lt;!std::is_convertible&lt; Func, std::function&lt; void(const BoundArgs &amp;...)&gt;&gt;::value &amp;&amp;!std::is_convertible&lt; Func, std::function&lt; void(const BoundArgs &amp;..., std::shared_ptr&lt; Widget &gt;, const std::string &amp;)&gt;&gt;::value &gt;::type * &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">unsigned int tgui::SignalWidgetBase::connect </td>
@@ -269,11 +258,6 @@ template&lt;typename Func , typename... BoundArgs, typename std::enable_if&lt; s
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Connects a signal handler that will be called when this signal is emitted. </p>
@@ -296,9 +280,6 @@ template&lt;typename Func , typename... BoundArgs, typename std::enable_if&lt; s
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Func , typename... BoundArgs, typename std::enable_if&lt;!std::is_convertible&lt; Func, std::function&lt; void(const BoundArgs &amp;...)&gt;&gt;::value &amp;&amp;!std::is_convertible&lt; Func, std::function&lt; void(const BoundArgs &amp;..., std::shared_ptr&lt; Widget &gt;, const std::string &amp;)&gt;&gt;::value &gt;::type *  = nullptr&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">unsigned int tgui::SignalWidgetBase::connect </td>
@@ -324,11 +305,6 @@ template&lt;typename Func , typename... BoundArgs, typename std::enable_if&lt;!s
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Connects a signal handler that will be called when this signal is emitted. </p>
@@ -351,9 +327,6 @@ template&lt;typename Func , typename... BoundArgs, typename std::enable_if&lt;!s
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Func , typename... BoundArgs&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">unsigned int tgui::SignalWidgetBase::connect </td>
@@ -379,11 +352,6 @@ template&lt;typename Func , typename... BoundArgs&gt; </div>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Connect a signal handler to multiple signals. </p>
@@ -452,14 +420,15 @@ template&lt;typename Func , typename... BoundArgs&gt; </div>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>include/TGUI/<a class="el" href="Signal_8hpp_source.html">Signal.hpp</a></li>
+<li>include/TGUI/<a class="el" href="SignalImpl_8hpp_source.html">SignalImpl.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Sep 24 2017 01:35:05 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Dec 24 2017 16:05:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

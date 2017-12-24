@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['float',['Float',['../structtgui_1_1EditBox_1_1Validator.html#a09bea6c7677de1f673e682ca9eb41c07',1,'tgui::EditBox::Validator']]]
+  ['black',['Black',['../classtgui_1_1Color.html#a95ec8d36a1254de4f7d5f5396fa53934',1,'tgui::Color']]],
+  ['blue',['Blue',['../classtgui_1_1Color.html#ac31e8ff741957dfb5ad90ae6f744c3cb',1,'tgui::Color']]]
 ];

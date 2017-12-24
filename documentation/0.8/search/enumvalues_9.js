@@ -1,12 +1,5 @@
 var searchData=
 [
-  ['scale',['Scale',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa85a7cd587d6142dbfc1a4de05af7b75d',1,'tgui']]],
-  ['slidefrombottom',['SlideFromBottom',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa1798106aa3a86db45ce376cbe5de5875',1,'tgui']]],
-  ['slidefromleft',['SlideFromLeft',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa7eceaa1479b5b4cdea7c6d1cce219f77',1,'tgui']]],
-  ['slidefromright',['SlideFromRight',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daaf744d5bd565fba1a73e8d920271ff752',1,'tgui']]],
-  ['slidefromtop',['SlideFromTop',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daad0c0f4c9fa33f30a64ebc4b5513f0723',1,'tgui']]],
-  ['slidetobottom',['SlideToBottom',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daaafd419511c5120bdc1ac7e54b4e81096',1,'tgui']]],
-  ['slidetoleft',['SlideToLeft',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa2fb2461981483dbe3d8cea762e4f6b4e',1,'tgui']]],
-  ['slidetoright',['SlideToRight',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa32adbe5629238fc4f536d19aa387edde',1,'tgui']]],
-  ['slidetotop',['SlideToTop',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daae646468517e881c8fba1b43c3439e9c4',1,'tgui']]]
+  ['right',['Right',['../classtgui_1_1ChildWindow.html#a247720248700e8ddbbb4af19bbfad5b8a92b09c7c48c520c3c55e497875da437c',1,'tgui::ChildWindow::Right()'],['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393a92b09c7c48c520c3c55e497875da437c',1,'tgui::EditBox::Right()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9a92b09c7c48c520c3c55e497875da437c',1,'tgui::Grid::Right()'],['../classtgui_1_1Label.html#afcabdb6aa458f5883f6831ccc731cb3ba92b09c7c48c520c3c55e497875da437c',1,'tgui::Label::Right()']]],
+  ['righttoleft',['RightToLeft',['../classtgui_1_1ProgressBar.html#ab11de6f12673d6c8c357f0fbf16fb85eab7b0ea3028791689ea070674776855e2',1,'tgui::ProgressBar']]]
 ];

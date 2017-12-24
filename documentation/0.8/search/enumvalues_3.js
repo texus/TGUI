@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fade',['Fade',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa04e0385c10aefee8e4681617d2f3ef40',1,'tgui']]]
+  ['down',['Down',['../classtgui_1_1ComboBox.html#a4fe26aaccdc327630e5f1034bee16fc8a08a38277b0309070706f6652eeae9a53',1,'tgui::ComboBox']]]
 ];

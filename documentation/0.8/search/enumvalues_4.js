@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['horizontal',['Horizontal',['../classtgui_1_1Sprite.html#a3ebf7132d60f5c6f4ca0c3ebd60ea9f8ac1b5fa03ecdb95d4a45dd1c40b02527f',1,'tgui::Sprite']]]
+  ['fade',['Fade',['../namespacetgui.html#ae5f90d6756ae21ba5dd08f84138437daa04e0385c10aefee8e4681617d2f3ef40',1,'tgui']]]
 ];

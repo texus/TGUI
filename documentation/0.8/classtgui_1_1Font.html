@@ -131,6 +131,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3439c66b86cceb823465107a918866c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#a3439c66b86cceb823465107a918866c1">Font</a> (const sf::Font &amp;font)</td></tr>
 <tr class="memdesc:a3439c66b86cceb823465107a918866c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor to set a copy of your font.  <a href="#a3439c66b86cceb823465107a918866c1">More...</a><br /></td></tr>
 <tr class="separator:a3439c66b86cceb823465107a918866c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa54f50f019ef069ba32becd12f76e468"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#aa54f50f019ef069ba32becd12f76e468">Font</a> (const void *data, std::size_t sizeInBytes)</td></tr>
+<tr class="memdesc:aa54f50f019ef069ba32becd12f76e468"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor to create the font from a byte array.  <a href="#aa54f50f019ef069ba32becd12f76e468">More...</a><br /></td></tr>
+<tr class="separator:aa54f50f019ef069ba32becd12f76e468"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcb6366e2f77afc500882fd19239268b"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#adcb6366e2f77afc500882fd19239268b">getId</a> () const</td></tr>
 <tr class="memdesc:adcb6366e2f77afc500882fd19239268b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the id that was used to load the font.  <a href="#adcb6366e2f77afc500882fd19239268b">More...</a><br /></td></tr>
 <tr class="separator:adcb6366e2f77afc500882fd19239268b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -160,19 +163,19 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#af95b123fcadb466b1dd1599973ecdd45">operator!=</a> (const <a class="el" href="classtgui_1_1Font.html">Font</a> &amp;right) const</td></tr>
 <tr class="memdesc:af95b123fcadb466b1dd1599973ecdd45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares the font with another one. <br /></td></tr>
 <tr class="separator:af95b123fcadb466b1dd1599973ecdd45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fa7472f1bce9d2a39a5afa57fd0a512"><td class="memItemLeft" align="right" valign="top">const sf::Glyph &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#a7fa7472f1bce9d2a39a5afa57fd0a512">getGlyph</a> (sf::Uint32 codePoint, unsigned int characterSize, bool bold, float outlineThickness=0) const</td></tr>
-<tr class="memdesc:a7fa7472f1bce9d2a39a5afa57fd0a512"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve a glyph of the font.  <a href="#a7fa7472f1bce9d2a39a5afa57fd0a512">More...</a><br /></td></tr>
-<tr class="separator:a7fa7472f1bce9d2a39a5afa57fd0a512"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09bb99dcc918302ef509f50355a5ef7a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#a09bb99dcc918302ef509f50355a5ef7a">getKerning</a> (sf::Uint32 first, sf::Uint32 second, unsigned int characterSize) const</td></tr>
-<tr class="memdesc:a09bb99dcc918302ef509f50355a5ef7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the kerning offset of two glyphs.  <a href="#a09bb99dcc918302ef509f50355a5ef7a">More...</a><br /></td></tr>
-<tr class="separator:a09bb99dcc918302ef509f50355a5ef7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9962503168fabb85d13814715e666c5d"><td class="memItemLeft" align="right" valign="top">const sf::Glyph &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#a9962503168fabb85d13814715e666c5d">getGlyph</a> (std::uint32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness=0) const</td></tr>
+<tr class="memdesc:a9962503168fabb85d13814715e666c5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve a glyph of the font.  <a href="#a9962503168fabb85d13814715e666c5d">More...</a><br /></td></tr>
+<tr class="separator:a9962503168fabb85d13814715e666c5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48faefa46eddc2ace79883e08487ace1"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#a48faefa46eddc2ace79883e08487ace1">getKerning</a> (std::uint32_t first, std::uint32_t second, unsigned int characterSize) const</td></tr>
+<tr class="memdesc:a48faefa46eddc2ace79883e08487ace1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the kerning offset of two glyphs.  <a href="#a48faefa46eddc2ace79883e08487ace1">More...</a><br /></td></tr>
+<tr class="separator:a48faefa46eddc2ace79883e08487ace1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14ff0d188168302a201d15508c1d6e62"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Font.html#a14ff0d188168302a201d15508c1d6e62">getLineSpacing</a> (unsigned int characterSize) const</td></tr>
 <tr class="memdesc:a14ff0d188168302a201d15508c1d6e62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the line spacing.  <a href="#a14ff0d188168302a201d15508c1d6e62">More...</a><br /></td></tr>
 <tr class="separator:a14ff0d188168302a201d15508c1d6e62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6cdd29dfa4e93117bfac7ef95d4ed66d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6cdd29dfa4e93117bfac7ef95d4ed66d">&#9670;&nbsp;</a></span>Font() <span class="overload">[1/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cdd29dfa4e93117bfac7ef95d4ed66d">&#9670;&nbsp;</a></span>Font() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -198,7 +201,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="aa5c0dc1c5b7a43d03fd485636d6c7eb4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5c0dc1c5b7a43d03fd485636d6c7eb4">&#9670;&nbsp;</a></span>Font() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5c0dc1c5b7a43d03fd485636d6c7eb4">&#9670;&nbsp;</a></span>Font() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -224,7 +227,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="a732779bdeb11e0372c2d450bd3273aca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a732779bdeb11e0372c2d450bd3273aca">&#9670;&nbsp;</a></span>Font() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a732779bdeb11e0372c2d450bd3273aca">&#9670;&nbsp;</a></span>Font() <span class="overload">[3/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -250,7 +253,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="a3439c66b86cceb823465107a918866c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3439c66b86cceb823465107a918866c1">&#9670;&nbsp;</a></span>Font() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3439c66b86cceb823465107a918866c1">&#9670;&nbsp;</a></span>Font() <span class="overload">[4/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -269,6 +272,43 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">font</td><td><a class="el" href="classtgui_1_1Font.html">Font</a> to copy </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa54f50f019ef069ba32becd12f76e468"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa54f50f019ef069ba32becd12f76e468">&#9670;&nbsp;</a></span>Font() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">tgui::Font::Font </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>sizeInBytes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor to create the font from a byte array. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Pointer to the file data in memory </td></tr>
+    <tr><td class="paramname">sizeInBytes</td><td>Size of the data to load, in bytes </td></tr>
   </table>
   </dd>
 </dl>
@@ -296,8 +336,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a7fa7472f1bce9d2a39a5afa57fd0a512"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fa7472f1bce9d2a39a5afa57fd0a512">&#9670;&nbsp;</a></span>getGlyph()</h2>
+<a id="a9962503168fabb85d13814715e666c5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9962503168fabb85d13814715e666c5d">&#9670;&nbsp;</a></span>getGlyph()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -305,7 +345,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">const sf::Glyph&amp; tgui::Font::getGlyph </td>
           <td>(</td>
-          <td class="paramtype">sf::Uint32&#160;</td>
+          <td class="paramtype">std::uint32_t&#160;</td>
           <td class="paramname"><em>codePoint</em>, </td>
         </tr>
         <tr>
@@ -370,8 +410,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a09bb99dcc918302ef509f50355a5ef7a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09bb99dcc918302ef509f50355a5ef7a">&#9670;&nbsp;</a></span>getKerning()</h2>
+<a id="a48faefa46eddc2ace79883e08487ace1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48faefa46eddc2ace79883e08487ace1">&#9670;&nbsp;</a></span>getKerning()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -379,13 +419,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">float tgui::Font::getKerning </td>
           <td>(</td>
-          <td class="paramtype">sf::Uint32&#160;</td>
+          <td class="paramtype">std::uint32_t&#160;</td>
           <td class="paramname"><em>first</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">sf::Uint32&#160;</td>
+          <td class="paramtype">std::uint32_t&#160;</td>
           <td class="paramname"><em>second</em>, </td>
         </tr>
         <tr>
@@ -471,7 +511,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Sep 24 2017 01:35:05 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Dec 24 2017 16:05:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>
