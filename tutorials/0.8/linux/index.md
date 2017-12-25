@@ -5,6 +5,16 @@ breadcrumb: linux
 ---
 
 ### Installing
+
+#### Ubuntu 16.04 or higher
+You can install tgui by adding the [PPA](https://launchpad.net/~texus/+archive/ubuntu/tgui-0.8/) to your system and install the "libtgui-dev" package:
+{% highlight bash %}
+sudo add-apt-repository ppa:texus/tgui-0.8
+sudo apt-get update
+sudo apt-get install libtgui-dev
+{% endhighlight %}
+
+#### Other distros / FreeBSD
 Download the source code from the [download page](/download).
 
 You will need to use CMake in order to build TGUI. How you do this depends on your distro, but it will be similar to “sudo apt-get install cmake” (Ubuntu) or “sudo pacman -S cmake” (ArchLinux).
