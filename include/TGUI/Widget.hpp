@@ -47,6 +47,12 @@
 
 #include <unordered_set>
 
+#ifdef TGUI_USE_CPP17
+    #include <any>
+#else
+    #include <TGUI/Any.hpp>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -419,6 +425,35 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Stores some data into the widget
+        /// @param userData  Data to store
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #ifdef TGUI_USE_CPP17
+        void setUserData(std::any userData)
+    #else
+        void setUserData(tgui::Any userData)
+    #endif
+        {
+            m_userData = std::move(userData);
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns data stored in the widget
+        /// @return Stored data
+        /// @throw std::bad_cast if the template type does not match the type inside the std::any variable passed in setUserData.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename T>
+        T getUserData() const
+        {
+        #ifdef TGUI_USE_CPP17
+            return std::any_cast<T>(m_userData);
+        #else
+            return m_userData.as<T>();
+        #endif
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the font of the widget that is used when no font is set in the renderer
         ///
         /// @param font  New font for the widget
@@ -786,6 +821,12 @@ namespace tgui
         // Cached renderer properties
         Font  m_fontCached = getGlobalFont();
         float m_opacityCached = 1;
+
+    #ifdef TGUI_USE_CPP17
+        std::any m_userData;
+    #else
+        tgui::Any m_userData;
+    #endif
 
         std::function<void(const std::string& property)> m_rendererChangedCallback = [this](const std::string& property){ rendererChangedCallback(property); };
 
