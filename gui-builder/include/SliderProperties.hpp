@@ -51,7 +51,7 @@ struct SliderProperties : WidgetProperties
         pair.first["Minimum"] = {"Float", tgui::to_string(slider->getMinimum())};
         pair.first["Maximum"] = {"Float", tgui::to_string(slider->getMaximum())};
         pair.first["Value"] = {"Float", tgui::to_string(slider->getValue())};
-        pair.first["Frequency"] = {"Float", tgui::to_string(slider->getFrequency())};
+        pair.first["Step"] = {"Float", tgui::to_string(slider->getStep())};
 
         const auto renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

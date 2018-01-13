@@ -245,8 +245,8 @@ namespace tgui
     void Slider::setValue(float value)
     {
         // Round to nearest allowed value
-        if (m_frequency != 0)
-           value = m_minimum + (std::round((value - m_minimum) / m_frequency) * m_frequency);
+        if (m_step != 0)
+           value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
 
         // When the value is below the minimum or above the maximum then adjust it
         if (value < m_minimum)
@@ -273,16 +273,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::setFrequency(float frequency)
+    void Slider::setStep(float step)
     {
-        m_frequency = frequency;
+        m_step = step;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Slider::getFrequency() const
+    float Slider::getStep() const
     {
-        return m_frequency;
+        return m_step;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,7 +391,7 @@ namespace tgui
 
     void Slider::mouseWheelScrolled(float delta, Vector2f)
     {
-        if (m_frequency == 0)
+        if (m_step == 0)
         {
             setValue(m_value + delta);
         }
@@ -400,12 +400,12 @@ namespace tgui
             if (std::abs(delta) <= 1)
             {
                 if (delta > 0)
-                    setValue(m_value + m_frequency);
+                    setValue(m_value + m_step);
                 else if (delta < 0)
-                    setValue(m_value - m_frequency);
+                    setValue(m_value - m_step);
             }
             else
-                setValue(m_value + std::round(delta) * m_frequency);
+                setValue(m_value + std::round(delta) * m_step);
         }
     }
 
@@ -516,6 +516,7 @@ namespace tgui
         node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
         node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
         node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
+        node->propertyValuePairs["Step"] = make_unique<DataIO::ValueNode>(to_string(m_step));
         return node;
     }
 
@@ -531,6 +532,8 @@ namespace tgui
             setMaximum(tgui::stof(node->propertyValuePairs["maximum"]->value));
         if (node->propertyValuePairs["value"])
             setValue(tgui::stof(node->propertyValuePairs["value"]->value));
+        if (node->propertyValuePairs["step"])
+            setStep(tgui::stof(node->propertyValuePairs["step"]->value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

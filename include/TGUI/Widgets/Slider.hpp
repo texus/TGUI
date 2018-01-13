@@ -195,22 +195,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the number of positions the slider advances with each move
-        /// @param frequency  The new frequency
-        /// @pre The frequency must be a positive value or 0.
-        /// The default frequency is 1, which means the slider will only use integer values between minimum and maximum.
+        /// @brief Changes the number of positions the thumb advances with each move
+        /// @param step  The new step size
+        /// @pre The step size must be a positive value or 0.
+        /// The default step size is 1, which means the slider will only use integer values between minimum and maximum.
         /// When set to 0, the slider will be able to use any floating point value between minimum and maximum.
-        /// If minimum is 20, maximum is 50 and frequency is set to 10, possible slider values would be 20, 30, 40 and 50.
+        /// If minimum is 20, maximum is 50 and step size is set to 10, possible slider values would be 20, 30, 40 and 50.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setFrequency(float frequency);
+        void setStep(float step);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the number of positions the slider advances with each move
-        /// @return The current value
-        /// @see setFrequency
+        /// @brief Returns the number of positions the thumb advances with each move
+        /// @return The current step size
+        /// @see setStep
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getFrequency() const;
+        float getStep() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -337,7 +337,7 @@ namespace tgui
         float m_minimum = 0;
         float m_maximum = 10;
         float m_value = 0;
-        float m_frequency = 1;
+        float m_step = 1;
 
         // Is the slider drawn vertically?
         bool m_verticalScroll = false;

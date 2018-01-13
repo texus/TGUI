@@ -274,8 +274,8 @@ namespace tgui
     {
     public:
 
-        using DelegateRange = std::function<void(int, int)>;
-        using DelegateRangeEx = std::function<void(std::shared_ptr<Widget>, const std::string&, int, int)>;
+        using DelegateRange = std::function<void(float, float)>;
+        using DelegateRangeEx = std::function<void(std::shared_ptr<Widget>, const std::string&, float, float)>;
 
         using Signal::connect;
 
@@ -313,7 +313,7 @@ namespace tgui
         /// @internal
         /// @brief Call all connected signal handlers
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const Widget* widget, int value1, int value2);
+        bool emit(const Widget* widget, float value1, float value2);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

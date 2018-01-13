@@ -112,14 +112,14 @@ TEST_CASE("[Slider]")
         REQUIRE(slider->getValue() == 20);
     }
 
-    SECTION("Frequency")
+    SECTION("Step")
     {
-        slider->setFrequency(5);
-        REQUIRE(slider->getFrequency() == 5);
+        slider->setStep(5);
+        REQUIRE(slider->getStep() == 5);
 
         slider->setMinimum(20.5f);
         slider->setMaximum(50.5f);
-        slider->setFrequency(3.0f);
+        slider->setStep(3.0f);
         slider->setValue(26.5f);
         REQUIRE(slider->getValue() == 26.5f);
 
@@ -257,6 +257,7 @@ TEST_CASE("[Slider]")
         slider->setMinimum(10);
         slider->setMaximum(50);
         slider->setValue(20);
+        slider->setStep(5);
 
         testSavingWidget("Slider", slider);
     }

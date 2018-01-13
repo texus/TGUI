@@ -257,7 +257,7 @@ namespace tgui
     unsigned int SignalRange::connect(const DelegateRange& handler)
     {
         const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<int>(internal_signal::parameters[1]), internal_signal::dereference<int>(internal_signal::parameters[2])); };
+        m_handlers[id] = [handler](){ handler(internal_signal::dereference<float>(internal_signal::parameters[1]), internal_signal::dereference<float>(internal_signal::parameters[2])); };
         return id;
     }
 
@@ -268,16 +268,16 @@ namespace tgui
         const auto id = generateUniqueId();
     #ifdef TGUI_NO_CPP14
         std::string name = m_name;
-        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<int>(internal_signal::parameters[1]), internal_signal::dereference<int>(internal_signal::parameters[2])); };
+        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<float>(internal_signal::parameters[1]), internal_signal::dereference<float>(internal_signal::parameters[2])); };
     #else
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<int>(internal_signal::parameters[1]), internal_signal::dereference<int>(internal_signal::parameters[2])); };
+        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<float>(internal_signal::parameters[1]), internal_signal::dereference<float>(internal_signal::parameters[2])); };
     #endif
         return id;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SignalRange::emit(const Widget* widget, int start, int end)
+    bool SignalRange::emit(const Widget* widget, float start, float end)
     {
         if (m_handlers.empty())
             return false;
@@ -292,9 +292,9 @@ namespace tgui
     unsigned int SignalRange::validateTypes(std::initializer_list<std::type_index> unboundParameters)
     {
     #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 2) && (strcmp(unboundParameters.begin()->name(), typeid(int).name()) == 0) && (strcmp((unboundParameters.begin()+1)->name(), typeid(int).name()) == 0))
+        if ((unboundParameters.size() == 2) && (strcmp(unboundParameters.begin()->name(), typeid(float).name()) == 0) && (strcmp((unboundParameters.begin()+1)->name(), typeid(float).name()) == 0))
     #else
-        if ((unboundParameters.size() == 2) && (*unboundParameters.begin() == typeid(int)) && (*(unboundParameters.begin()+1) == typeid(int)))
+        if ((unboundParameters.size() == 2) && (*unboundParameters.begin() == typeid(float)) && (*(unboundParameters.begin()+1) == typeid(float)))
     #endif
             return 1;
         else
