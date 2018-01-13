@@ -48,9 +48,10 @@ struct SpinButtonProperties : WidgetProperties
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto spinButton = std::dynamic_pointer_cast<tgui::SpinButton>(widget);
-        pair.first["Minimum"] = {"Int", tgui::to_string(spinButton->getMinimum())};
-        pair.first["Maximum"] = {"Int", tgui::to_string(spinButton->getMaximum())};
-        pair.first["Value"] = {"Int", tgui::to_string(spinButton->getValue())};
+        pair.first["Minimum"] = {"Float", tgui::to_string(spinButton->getMinimum())};
+        pair.first["Maximum"] = {"Float", tgui::to_string(spinButton->getMaximum())};
+        pair.first["Value"] = {"Float", tgui::to_string(spinButton->getValue())};
+        pair.first["Step"] = {"Float", tgui::to_string(spinButton->getStep())};
 
         const auto renderer = spinButton->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

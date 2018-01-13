@@ -37,9 +37,9 @@ TEST_CASE("[SpinButton]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](){}));
-        REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](int){}));
+        REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](float){}));
         REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, int){}));
+        REQUIRE_NOTHROW(spinButton->connect("ValueChanged", [](tgui::Widget::Ptr, std::string, float){}));
     }
 
     SECTION("WidgetType")
@@ -111,6 +111,24 @@ TEST_CASE("[SpinButton]")
         
         spinButton->setValue(23);
         REQUIRE(spinButton->getValue() == 20);
+    }
+
+    SECTION("Step")
+    {
+        spinButton->setStep(5);
+        REQUIRE(spinButton->getStep() == 5);
+
+        spinButton->setMinimum(20.5f);
+        spinButton->setMaximum(50.5f);
+        spinButton->setStep(3.0f);
+        spinButton->setValue(26.5f);
+        REQUIRE(spinButton->getValue() == 26.5f);
+
+        spinButton->setValue(25.5f);
+        REQUIRE(((spinButton->getValue() > 26.4f) && (spinButton->getValue() < 26.6f)));
+
+        spinButton->setValue(24.5f);
+        REQUIRE(((spinButton->getValue() > 23.4f) && (spinButton->getValue() < 23.6f)));
     }
 
     SECTION("Events / Signals")
@@ -263,6 +281,7 @@ TEST_CASE("[SpinButton]")
         spinButton->setMinimum(10);
         spinButton->setMaximum(50);
         spinButton->setValue(20);
+        spinButton->setStep(5);
 
         testSavingWidget("SpinButton", spinButton);
     }

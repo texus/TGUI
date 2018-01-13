@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -125,7 +126,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMinimum(int minimum)
+    void SpinButton::setMinimum(float minimum)
     {
         // Set the new minimum
         m_minimum = minimum;
@@ -141,14 +142,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int SpinButton::getMinimum() const
+    float SpinButton::getMinimum() const
     {
         return m_minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setMaximum(int maximum)
+    void SpinButton::setMaximum(float maximum)
     {
         m_maximum = maximum;
 
@@ -163,15 +164,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int SpinButton::getMaximum() const
+    float SpinButton::getMaximum() const
     {
         return m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SpinButton::setValue(int value)
+    void SpinButton::setValue(float value)
     {
+        // Round to nearest allowed value
+        if (m_step != 0)
+           value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
+
         // When the value is below the minimum or above the maximum then adjust it
         if (value < m_minimum)
             value = m_minimum;
@@ -187,9 +192,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int SpinButton::getValue() const
+    float SpinButton::getValue() const
     {
         return m_value;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SpinButton::setStep(float step)
+    {
+        m_step = step;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float SpinButton::getStep() const
+    {
+        return m_step;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,7 +250,7 @@ namespace tgui
                 {
                     // Increment the value
                     if (m_value < m_maximum)
-                        setValue(m_value + 1);
+                        setValue(m_value + m_step);
                     else
                         return;
                 }
@@ -246,7 +265,7 @@ namespace tgui
                 {
                     // Decrement the value
                     if (m_value > m_minimum)
-                        setValue(m_value - 1);
+                        setValue(m_value - m_step);
                     else
                         return;
                 }
@@ -371,6 +390,7 @@ namespace tgui
         node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
         node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
         node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
+        node->propertyValuePairs["Step"] = make_unique<DataIO::ValueNode>(to_string(m_step));
         return node;
     }
 
@@ -386,6 +406,8 @@ namespace tgui
             setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
         if (node->propertyValuePairs["value"])
             setValue(tgui::stoi(node->propertyValuePairs["value"]->value));
+        if (node->propertyValuePairs["step"])
+            setStep(tgui::stoi(node->propertyValuePairs["step"]->value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

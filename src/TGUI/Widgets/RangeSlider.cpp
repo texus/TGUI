@@ -24,6 +24,7 @@
 
 
 #include <TGUI/Widgets/RangeSlider.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,7 +46,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    RangeSlider::Ptr RangeSlider::create(int minimum, int maximum)
+    RangeSlider::Ptr RangeSlider::create(float minimum, float maximum)
     {
         auto slider = std::make_shared<RangeSlider>();
 
@@ -194,7 +195,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::setMinimum(int minimum)
+    void RangeSlider::setMinimum(float minimum)
     {
         const auto oldMinimum = m_minimum;
 
@@ -216,14 +217,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int RangeSlider::getMinimum() const
+    float RangeSlider::getMinimum() const
     {
         return m_minimum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::setMaximum(int maximum)
+    void RangeSlider::setMaximum(float maximum)
     {
         const auto oldMaximum = m_maximum;
 
@@ -245,15 +246,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int RangeSlider::getMaximum() const
+    float RangeSlider::getMaximum() const
     {
         return m_maximum;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::setSelectionStart(int value)
+    void RangeSlider::setSelectionStart(float value)
     {
+        // Round to nearest allowed value
+        if (m_step != 0)
+           value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
+
         // When the value is below the minimum or above the maximum then adjust it
         if (value < m_minimum)
             value = m_minimum;
@@ -276,15 +281,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int RangeSlider::getSelectionStart() const
+    float RangeSlider::getSelectionStart() const
     {
         return m_selectionStart;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RangeSlider::setSelectionEnd(int value)
+    void RangeSlider::setSelectionEnd(float value)
     {
+        // Round to nearest allowed value
+        if (m_step != 0)
+           value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
+
         // When the value is below the minimum or above the maximum then adjust it
         if (value < m_minimum)
             value = m_minimum;
@@ -307,9 +316,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int RangeSlider::getSelectionEnd() const
+    float RangeSlider::getSelectionEnd() const
     {
         return m_selectionEnd;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void RangeSlider::setStep(float step)
+    {
+        m_step = step;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float RangeSlider::getStep() const
+    {
+        return m_step;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -367,11 +390,7 @@ namespace tgui
             {
                 if (m_mouseDownOnThumb == 1)
                 {
-                    // Set the new value
-                    if (pos.y - m_mouseDownOnThumbPos.y + (m_thumbs.first.height / 2.0f) > 0)
-                        setSelectionStart(m_maximum - static_cast<int>((((pos.y + (m_thumbs.first.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)) + 0.5f));
-                    else
-                        setSelectionStart(m_maximum);
+                    setSelectionStart(m_maximum - (((pos.y + (m_thumbs.first.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)));
 
                     // Set the thumb position for smooth scrolling
                     const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
@@ -382,11 +401,7 @@ namespace tgui
                 }
                 else // if (m_mouseDownOnThumb == 2)
                 {
-                    // Set the new value
-                    if (pos.y - m_mouseDownOnThumbPos.y + (m_thumbs.second.height / 2.0f) > 0)
-                        setSelectionEnd(m_maximum - static_cast<int>((((pos.y + (m_thumbs.second.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)) + 0.5f));
-                    else
-                        setSelectionEnd(m_maximum);
+                    setSelectionEnd(m_maximum - (((pos.y + (m_thumbs.second.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)));
 
                     // Set the thumb position for smooth scrolling
                     const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
@@ -400,11 +415,7 @@ namespace tgui
             {
                 if (m_mouseDownOnThumb == 1)
                 {
-                    // Set the new value
-                    if (pos.x - m_mouseDownOnThumbPos.x + (m_thumbs.first.width / 2.0f) > 0)
-                        setSelectionStart(static_cast<int>((((pos.x + (m_thumbs.first.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
-                    else
-                        setSelectionStart(m_minimum);
+                    setSelectionStart((((pos.x + (m_thumbs.first.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum);
 
                     // Set the thumb position for smooth scrolling
                     const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
@@ -415,8 +426,7 @@ namespace tgui
                 }
                 else // if (m_mouseDownOnThumb == 2)
                 {
-                    // Set the new value
-                    setSelectionEnd(static_cast<int>((((pos.x + (m_thumbs.second.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum + 0.5f));
+                    setSelectionEnd((((pos.x + (m_thumbs.second.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum);
 
                     // Set the thumb position for smooth scrolling
                     const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
@@ -564,6 +574,7 @@ namespace tgui
         node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
         node->propertyValuePairs["SelectionStart"] = make_unique<DataIO::ValueNode>(to_string(m_selectionStart));
         node->propertyValuePairs["SelectionEnd"] = make_unique<DataIO::ValueNode>(to_string(m_selectionEnd));
+        node->propertyValuePairs["Step"] = make_unique<DataIO::ValueNode>(to_string(m_step));
 
         return node;
     }
@@ -575,13 +586,15 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs["minimum"])
-            setMinimum(tgui::stoi(node->propertyValuePairs["minimum"]->value));
+            setMinimum(tgui::stof(node->propertyValuePairs["minimum"]->value));
         if (node->propertyValuePairs["maximum"])
-            setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
+            setMaximum(tgui::stof(node->propertyValuePairs["maximum"]->value));
         if (node->propertyValuePairs["selectionstart"])
-            setSelectionStart(tgui::stoi(node->propertyValuePairs["selectionstart"]->value));
+            setSelectionStart(tgui::stof(node->propertyValuePairs["selectionstart"]->value));
         if (node->propertyValuePairs["selectionend"])
-            setSelectionEnd(tgui::stoi(node->propertyValuePairs["selectionend"]->value));
+            setSelectionEnd(tgui::stof(node->propertyValuePairs["selectionend"]->value));
+        if (node->propertyValuePairs["step"])
+            setStep(tgui::stof(node->propertyValuePairs["step"]->value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

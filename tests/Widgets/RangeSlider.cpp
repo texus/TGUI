@@ -37,9 +37,9 @@ TEST_CASE("[RangeSlider]")
     SECTION("Signals")
     {
         REQUIRE_NOTHROW(slider->connect("RangeChanged", [](){}));
-        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](int, int){}));
+        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](float, float){}));
         REQUIRE_NOTHROW(slider->connect("RangeChanged", [](tgui::Widget::Ptr, std::string){}));
-        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](tgui::Widget::Ptr, std::string, int, int){}));
+        REQUIRE_NOTHROW(slider->connect("RangeChanged", [](tgui::Widget::Ptr, std::string, float, float){}));
     }
 
     SECTION("WidgetType")
@@ -143,6 +143,24 @@ TEST_CASE("[RangeSlider]")
         slider->setSelectionEnd(9);
         REQUIRE(slider->getSelectionEnd() == 10);
         REQUIRE(slider->getSelectionStart() == 10);
+    }
+
+    SECTION("Step")
+    {
+        slider->setStep(5);
+        REQUIRE(slider->getStep() == 5);
+
+        slider->setMinimum(20.5f);
+        slider->setMaximum(50.5f);
+        slider->setStep(3.0f);
+        slider->setSelectionEnd(29.5f);
+        REQUIRE(slider->getSelectionEnd() == 29.5f);
+
+        slider->setSelectionEnd(25.5f);
+        REQUIRE(((slider->getSelectionEnd() > 26.4f) && (slider->getSelectionStart() < 26.6f)));
+
+        slider->setSelectionStart(24.5f);
+        REQUIRE(((slider->getSelectionStart() > 23.4f) && (slider->getSelectionStart() < 23.6f)));
     }
 
     SECTION("Events / Signals")
@@ -289,6 +307,7 @@ TEST_CASE("[RangeSlider]")
         slider->setMaximum(50);
         slider->setSelectionStart(20);
         slider->setSelectionEnd(35);
+        slider->setStep(5);
 
         testSavingWidget("RangeSlider", slider, false);
     }
