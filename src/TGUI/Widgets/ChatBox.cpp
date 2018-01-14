@@ -115,26 +115,12 @@ namespace tgui
 
     void ChatBox::addLine(const sf::String& text)
     {
-        addLine(text, m_textColor, m_textSize);
+        addLine(text, m_textColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChatBox::addLine(const sf::String& text, Color color)
-    {
-        addLine(text, color, m_textSize);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::addLine(const sf::String& text, unsigned int textSize)
-    {
-        addLine(text, m_textColor, textSize);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void ChatBox::addLine(const sf::String& text, Color color, unsigned int textSize)
     {
         // Remove the oldest line if you exceed the maximum
         if ((m_maxLines > 0) && (m_maxLines == m_lines.size()))
@@ -149,7 +135,7 @@ namespace tgui
         line.string = text;
         line.text.setColor(color);
         line.text.setOpacity(m_opacityCached);
-        line.text.setCharacterSize(textSize);
+        line.text.setCharacterSize(m_textSize);
         line.text.setString(text);
         line.text.setFont(m_fontCached);
 
@@ -185,18 +171,6 @@ namespace tgui
         }
         else // Index too high
             return m_textColor;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    unsigned int ChatBox::getLineTextSize(std::size_t lineIndex) const
-    {
-        if (lineIndex < m_lines.size())
-        {
-            return m_lines[lineIndex].text.getCharacterSize();
-        }
-        else // Index too high
-            return m_textSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,6 +235,11 @@ namespace tgui
     {
         m_textSize = size;
         m_scroll.setScrollAmount(size);
+
+        for (auto& line : m_lines)
+            line.text.setCharacterSize(size);
+
+        recalculateAllLines();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -471,6 +450,8 @@ namespace tgui
 
             for (auto& line : m_lines)
                 line.text.setFont(m_fontCached);
+
+            recalculateAllLines();
         }
         else
             Widget::rendererChanged(property);
@@ -500,15 +481,12 @@ namespace tgui
 
         for (std::size_t i = 0; i < m_lines.size(); ++i)
         {
-            const unsigned int lineTextSize = getLineTextSize(i);
-            const Color lineTextColor = getLineColor(i);
-
             auto lineNode = make_unique<DataIO::Node>();
             lineNode->name = "Line";
 
             lineNode->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(getLine(i)));
-            if (lineTextSize != m_textSize)
-                lineNode->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(lineTextSize));
+
+            const Color lineTextColor = getLineColor(i);
             if (lineTextColor != m_textColor)
                 lineNode->propertyValuePairs["Color"] = make_unique<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
 
@@ -535,16 +513,12 @@ namespace tgui
         {
             if (toLower(childNode->name) == "line")
             {
-                unsigned int lineTextSize = getTextSize();
                 Color lineTextColor = getTextColor();
-
-                if (childNode->propertyValuePairs["textsize"])
-                    lineTextSize = tgui::stoi(childNode->propertyValuePairs["textsize"]->value);
                 if (childNode->propertyValuePairs["color"])
                     lineTextColor = Deserializer::deserialize(ObjectConverter::Type::Color, childNode->propertyValuePairs["color"]->value).getColor();
 
                 if (childNode->propertyValuePairs["text"])
-                    addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString(), lineTextColor, lineTextSize);
+                    addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString(), lineTextColor);
             }
         }
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),

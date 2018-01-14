@@ -118,10 +118,9 @@ namespace tgui
         /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
         ///
-        /// The default text color and character size will be used.
+        /// The default text color will be used.
         ///
         /// @param text  Text that will be added to the chat box
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addLine(const sf::String& text);
 
@@ -132,42 +131,10 @@ namespace tgui
         /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
         ///
-        /// The default text color will be used.
-        ///
-        /// @param text      Text that will be added to the chat box
-        /// @param textSize  Size of the text
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addLine(const sf::String& text, unsigned int textSize);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a new line of text to the chat box
-        ///
-        /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
-        /// even if it is too long and gets split over multiple lines.
-        ///
-        /// The default character size will be used.
-        ///
-        /// @param text   Text that will be added to the chat box
-        /// @param color  Color of the text
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addLine(const sf::String& text, Color color);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a new line of text to the chat box
-        ///
-        /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
-        /// even if it is too long and gets split over multiple lines.
-        ///
         /// @param text      Text that will be added to the chat box
         /// @param color     Color of the text
-        /// @param textSize  Size of the text
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addLine(const sf::String& text, Color color, unsigned int textSize);
+        void addLine(const sf::String& text, Color color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,17 +159,6 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Color getLineColor(std::size_t lineIndex) const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the text size of the requested line
-        ///
-        /// @param lineIndex  The index of the line of which you request the text size. The first line has index 0
-        ///
-        /// @return The text size of the requested line. The default text size (set with setTextSize) when the index is too high
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getLineTextSize(std::size_t lineIndex) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,38 +214,29 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the default character size of the text
-        ///
-        /// @param size  The new default text size
-        ///              The minimum text size is 8
-        ///
+        /// @brief Changes the character size of the text
+        /// @param size  The new text size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int size);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the default character size of the text
-        ///
-        /// @return The currently used default text size
-        ///
+        /// @brief Returns the character size of the text
+        /// @return The currently used text size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the default color of the text
-        ///
         /// @param color  The new default text color
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextColor(Color color);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the default color of the text
-        ///
         /// @return The currently used default text color
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const Color& getTextColor() const;
 

@@ -50,30 +50,18 @@ TEST_CASE("[ChatBox]")
     SECTION("Adding lines")
     {
         chatBox->setTextColor(sf::Color::Black);
-        chatBox->setTextSize(24);
 
         REQUIRE(chatBox->getLineAmount() == 0);
         chatBox->addLine("Line 1");
         REQUIRE(chatBox->getLineAmount() == 1);
-        chatBox->addLine("Line 2", 16);
-        chatBox->addLine("Line 3", sf::Color::Green);
-        chatBox->addLine("Line 4", sf::Color::Yellow, 18);
-        REQUIRE(chatBox->getLineAmount() == 4);
+        chatBox->addLine("Line 2", sf::Color::Green);
+        REQUIRE(chatBox->getLineAmount() == 2);
 
         REQUIRE(chatBox->getLine(0) == "Line 1");
         REQUIRE(chatBox->getLine(1) == "Line 2");
-        REQUIRE(chatBox->getLine(2) == "Line 3");
-        REQUIRE(chatBox->getLine(3) == "Line 4");
 
         REQUIRE(chatBox->getLineColor(0) == sf::Color::Black);
-        REQUIRE(chatBox->getLineColor(1) == sf::Color::Black);
-        REQUIRE(chatBox->getLineColor(2) == sf::Color::Green);
-        REQUIRE(chatBox->getLineColor(3) == sf::Color::Yellow);
-
-        REQUIRE(chatBox->getLineTextSize(0) == 24);
-        REQUIRE(chatBox->getLineTextSize(1) == 16);
-        REQUIRE(chatBox->getLineTextSize(2) == 24);
-        REQUIRE(chatBox->getLineTextSize(3) == 18);
+        REQUIRE(chatBox->getLineColor(1) == sf::Color::Green);
     }
 
     SECTION("Removing lines")
@@ -138,13 +126,10 @@ TEST_CASE("[ChatBox]")
         }
     }
 
-    SECTION("Default text size")
+    SECTION("Text size")
     {
         chatBox->setTextSize(30);
         REQUIRE(chatBox->getTextSize() == 30);
-
-        chatBox->addLine("Text");
-        REQUIRE(chatBox->getLineTextSize(0) == 30);
     }
 
     SECTION("Default text color")
@@ -159,12 +144,10 @@ TEST_CASE("[ChatBox]")
     SECTION("Get unexisting line")
     {
         chatBox->setTextColor(sf::Color::Yellow);
-        chatBox->setTextSize(26);
 
-        chatBox->addLine("Text", sf::Color::Blue, 20);
+        chatBox->addLine("Text", sf::Color::Blue);
         REQUIRE(chatBox->getLine(1) == "");
-        REQUIRE(chatBox->getLineTextSize(2) == 26);
-        REQUIRE(chatBox->getLineColor(3) == sf::Color::Yellow);
+        REQUIRE(chatBox->getLineColor(1) == sf::Color::Yellow);
     }
 
     SECTION("Lines start from top or bottom")
@@ -264,9 +247,9 @@ TEST_CASE("[ChatBox]")
         chatBox->setLinesStartFromTop(true);
         chatBox->setNewLinesBelowOthers(false);
         chatBox->addLine("L2");
-        chatBox->addLine("L4", 32);
-        chatBox->addLine("L3", sf::Color::Magenta);
-        chatBox->addLine("L1", sf::Color::Cyan, 36);
+        chatBox->addLine("L4", sf::Color::Magenta);
+        chatBox->addLine("L3");
+        chatBox->addLine("L1", sf::Color::Cyan);
 
         testSavingWidget("ChatBox", chatBox);
 
