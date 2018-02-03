@@ -22,7 +22,7 @@ The gui is easy to use, with only a few lines you can e.g. have a fully function
     <p>TGUI will work on all platforms that SFML supports. This means that you can use it on <b>Windows</b>, <b>Linux</b>, <b>Mac OS X</b>, <b>FreeBSD</b> and experimentally on <b>Raspberry Pi</b>, <b>Android</b> and <b>iOS</b>.</p>
   </div>
   <div class="HomePageSmallerColumn">
-    <img src="/resources/CrossPlatform.png" alt="Cross Platform" width="340" height="185" />
+    <img src="/resources/CrossPlatform.jpg" alt="Cross Platform" width="340" height="185" />
   </div>
 </div>
 
