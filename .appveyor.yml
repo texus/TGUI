@@ -37,7 +37,7 @@ cache:
 
 install:
 - IF "%SFML_VERSION%" == "master" (
-    git clone --depth 1 https://github.com/SFML/SFML &&
+    git clone https://github.com/SFML/SFML --branch 2.4.2 --depth 1 &&
     cd SFML &&
     IF EXIST "%SFML_ROOT%\lib" (
       IF EXIST "%SFML_ROOT%\revision_cache" (
