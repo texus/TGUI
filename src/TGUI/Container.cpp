@@ -758,8 +758,8 @@ namespace tgui
                 // Check if there is a focused widget
                 if (m_focusedWidget)
                 {
-                #ifdef SFML_SYSTEM_ANDROID
-                    // Map delete to backspace on android
+                #if defined(SFML_SYSTEM_ANDROID) && SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
+                    // SFML versions prior to 2.5 sent Delete instead of BackSpace
                     if (event.key.code == sf::Keyboard::Delete)
                         event.key.code = sf::Keyboard::BackSpace;
                 #endif
