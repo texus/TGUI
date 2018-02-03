@@ -1,7 +1,13 @@
 /build*
 /form-builder/tgui-form-builder
-/_site
-/examples/Android/libs
-/examples/Android/obj
+/_site/
+/examples/android/libs/
+/examples/android/obj/
+/examples/android/bin/
+/examples/android/*.apk
+/examples/android/build.xml
+/examples/android/local.properties
+/examples/android/proguard-project.txt
+/examples/android/project.properties
 .DS_Store
 *~
