@@ -33,7 +33,6 @@ namespace tgui
     {
     public:
         static auto& getFilename(tgui::Theme::Ptr theme) { return theme->m_filename; }
-        static auto& getResourcePath(tgui::Theme::Ptr theme) { return theme->m_resourcePath; }
         static auto& getWidgets(tgui::Theme::Ptr theme) { return theme->m_widgets; }
         static auto& getWidgetTypes(tgui::Theme::Ptr theme) { return theme->m_widgetTypes; }
         static auto& getWidgetProperties(tgui::Theme::Ptr theme) { return theme->m_widgetProperties; }
@@ -48,12 +47,10 @@ TEST_CASE("[Theme]") {
         theme = std::make_shared<tgui::Theme>();
         REQUIRE(theme != nullptr);
         REQUIRE(tgui::ThemeTest::getFilename(theme) == "");
-        REQUIRE(tgui::ThemeTest::getResourcePath(theme) == "");
 
         theme = std::make_shared<tgui::Theme>("resources/Black.conf");
         REQUIRE(theme != nullptr);
         REQUIRE(tgui::ThemeTest::getFilename(theme) == "resources/Black.conf");
-        REQUIRE(tgui::ThemeTest::getResourcePath(theme) == "resources/");
         REQUIRE(tgui::ThemeTest::getWidgets(theme).empty());
         REQUIRE(tgui::ThemeTest::getWidgetTypes(theme).empty());
         REQUIRE(tgui::ThemeTest::getWidgetProperties(theme).empty());
@@ -131,7 +128,8 @@ TEST_CASE("[Theme]") {
 
         SECTION("wrong widget type") {
             auto theme = std::make_shared<tgui::Theme>("resources/Black.txt");
-            REQUIRE_THROWS_AS(tgui::EditBox::Ptr widget = theme->load("Button"), tgui::Exception);
+            tgui::EditBox::Ptr editBox;
+            REQUIRE_THROWS_AS(editBox = theme->load("Button"), tgui::Exception);
         }
     }
 

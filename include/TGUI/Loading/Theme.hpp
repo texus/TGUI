@@ -299,7 +299,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
         std::string m_filename;
-        std::string m_resourcePath;
         bool m_resourcePathLock = false;
         std::map<Widget*, std::string> m_widgets; // Map widget to class name
         std::map<std::string, std::string> m_widgetTypes; // Map class name to type

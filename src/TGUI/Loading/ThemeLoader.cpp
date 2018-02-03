@@ -96,6 +96,11 @@ namespace tgui
             if (root->propertyValuePairs.size() != 0)
                 throw Exception{"Unexpected result while loading theme file '" + filename + "'. Root property-value pair found."};
 
+            std::string resourcePath;
+            std::string::size_type slashPos = filename.find_last_of("/\\");
+            if (slashPos != std::string::npos)
+                resourcePath = filename.substr(0, slashPos + 1);
+
             for (auto& child : root->children)
             {
                 if (child->children.size() != 0)
@@ -116,6 +121,23 @@ namespace tgui
 
                 for (auto& pair : child->propertyValuePairs)
                 {
+                    // Change image filenames to be relative to the theme file
+                    if (!resourcePath.empty())
+                    {
+                        if ((pair.first.size() >= 5) && (toLower(pair.first.substr(pair.first.size()-5)) == "image"))
+                        {
+                            if ((pair.second->value.size() <= 1) || (pair.second->value[0] != '"'))
+                                continue;
+
+                        #ifdef SFML_SYSTEM_WINDOWS
+                            if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
+                        #else
+                            if (pair.second->value[1] != '/')
+                        #endif
+                                pair.second->value = '"' + resourcePath + pair.second->value.substr(1);
+                        }
+                    }
+
                     m_propertiesCache[filename][parsedClassName][toLower(pair.first)] = pair.second->value;
                     m_widgetTypeCache[filename][parsedClassName] = widgetType;
                 }
