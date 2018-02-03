@@ -65,7 +65,7 @@ ComboBox {
 
 EditBox {
     NormalImage : "Black.png" Part(0, 114, 60, 40) Middle(15, 0, 30, 40);
-    HoverImage  : "Black.png" Part(0, 114, 60, 40) Middle(15, 0, 30, 40);
+    HoverImage  : "Black.png" Part(60, 114, 60, 40) Middle(15, 0, 30, 40);
 
     TextColor                   : rgb(190, 190, 190);
     SelectedTextColor           : rgb(255, 255, 255);
