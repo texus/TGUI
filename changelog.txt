@@ -2,6 +2,9 @@ TGUI 0.7.7  (TBD)
 -----------------
 
 - Fixed EditBox InputValidator in textEntered when text was selected
+- Hover image of EditBox wasn't being used in Black theme
+- Loading widgets from theme was partially broken on android
+- ChatBox::setScrollbar didn't correctly position the scrollbar
 
 
 TGUI 0.7.6  (25 November 2017)

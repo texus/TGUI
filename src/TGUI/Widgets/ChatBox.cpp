@@ -348,7 +348,7 @@ namespace tgui
             m_scroll->setLowValue(static_cast<unsigned int>(getSize().y - padding.top - padding.bottom));
         }
 
-        recalculateAllLines();
+        updateRendering();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
