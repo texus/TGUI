@@ -320,6 +320,9 @@ namespace tgui
             m_maximizeButton->show();
         else
             m_maximizeButton->hide();
+
+        // Reposition the title buttons
+        setPosition(getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,7 @@ TGUI 0.7.7  (TBD)
 - Hover image of EditBox wasn't being used in Black theme
 - Loading widgets from theme was partially broken on android
 - ChatBox::setScrollbar didn't correctly position the scrollbar
+- ChildWindow::setTitleButtons didn't set the button positions
 
 
 TGUI 0.7.6  (25 November 2017)
