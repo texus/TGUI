@@ -361,7 +361,19 @@ namespace tgui
 
     void ComboBox::setListBox(ListBox::Ptr listBox)
     {
+        listBox->setFont(m_listBox->getFont());
+        listBox->setScrollbar(m_listBox->getScrollbar());
+
+        const std::vector<sf::String>& items = m_listBox->getItems();
+        const std::vector<sf::String>& ids = m_listBox->getItemIds();
+        assert(items.size() == ids.size());
+
+        listBox->removeAllItems();
+        for (unsigned int i = 0; i < items.size(); ++i)
+            listBox->addItem(items[i], ids[i]);
+
         m_listBox = listBox;
+        initListBox();
 
         Padding listBoxPadding = m_listBox->getRenderer()->getScaledPadding();
         Padding padding = getRenderer()->getScaledPadding();

@@ -6,6 +6,7 @@ TGUI 0.7.7  (TBD)
 - Loading widgets from theme was partially broken on android
 - ChatBox::setScrollbar didn't correctly position the scrollbar
 - ChildWindow::setTitleButtons didn't set the button positions
+- ComboBox::setListBox removed all items from combo box
 
 
 TGUI 0.7.6  (25 November 2017)
