@@ -385,7 +385,16 @@ namespace tgui
         for (auto& childNode : node->children)
         {
             if (toLower(childNode->name) == "listbox")
-                comboBox->setListBox(std::static_pointer_cast<ListBox>(WidgetLoader::getLoadFunction("listbox")(childNode)));
+            {
+                auto listBox = std::static_pointer_cast<ListBox>(WidgetLoader::getLoadFunction("listbox")(childNode));
+                const std::vector<sf::String>& items = listBox->getItems();
+                const std::vector<sf::String>& ids = listBox->getItemIds();
+                for (unsigned int i = 0; i < items.size(); ++i)
+                    comboBox->addItem(items[i], ids[i]);
+
+                comboBox->setScrollbar(listBox->getScrollbar());
+                comboBox->setListBox(listBox);
+            }
         }
         REMOVE_CHILD("listbox");
 
