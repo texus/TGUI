@@ -130,6 +130,18 @@ TEST_CASE("[Slider]")
         REQUIRE(((slider->getValue() > 23.4f) && (slider->getValue() < 23.6f)));
     }
 
+    SECTION("InvertedDirection")
+    {
+        REQUIRE(!slider->getInvertedDirection());
+
+        slider->setInvertedDirection(true);
+        REQUIRE(slider->getInvertedDirection());
+        REQUIRE(slider->getValue() == 15);
+
+        slider->setInvertedDirection(false);
+        REQUIRE(!slider->getInvertedDirection());
+    }
+
     SECTION("Events / Signals")
     {
         SECTION("Widget")
@@ -258,6 +270,7 @@ TEST_CASE("[Slider]")
         slider->setMaximum(50);
         slider->setValue(20);
         slider->setStep(5);
+        slider->setInvertedDirection(true);
 
         testSavingWidget("Slider", slider);
     }

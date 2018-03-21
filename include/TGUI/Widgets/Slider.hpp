@@ -214,6 +214,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the side of the slider that is the minimum and maximum should be inverted
+        /// @param invertedDirection  Should the direction be inverted?
+        ///
+        /// The minimum is normally located on the left (for horizontal slider) or bottom (for vertical slider) side.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setInvertedDirection(bool invertedDirection);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the side of the slider that is the minimum and maximum is inverted
+        /// @return Is the direction be inverted?
+        ///
+        /// The minimum is normally located on the left (for horizontal slider) or bottom (for vertical slider) side.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getInvertedDirection() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
@@ -240,11 +258,6 @@ namespace tgui
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void mouseWheelScrolled(float delta, Vector2f pos) override;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void widgetFocused() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -339,11 +352,9 @@ namespace tgui
         float m_value = 0;
         float m_step = 1;
 
-        // Is the slider drawn vertically?
-        bool m_verticalScroll = false;
-
-        // Does the image lie vertically?
-        bool m_verticalImage = false;
+        bool m_invertedDirection = false; // Are min and max swapped?
+        bool m_verticalScroll = false; // Is the slider drawn vertically?
+        bool m_verticalImage = false; // Does the image lie vertically?
 
         Sprite m_spriteTrack;
         Sprite m_spriteTrackHover;

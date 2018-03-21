@@ -276,6 +276,9 @@ namespace tgui
     void Slider::setStep(float step)
     {
         m_step = step;
+
+        // Reset the value in case it does not match the step
+        setValue(m_value);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -283,6 +286,21 @@ namespace tgui
     float Slider::getStep() const
     {
         return m_step;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Slider::setInvertedDirection(bool invertedDirection)
+    {
+        m_invertedDirection = invertedDirection;
+        updateThumbPosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider::getInvertedDirection() const
+    {
+        return m_invertedDirection;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,14 +362,22 @@ namespace tgui
                     m_mouseDownOnThumbPos.y = m_thumb.height / 2.0f;
                 }
 
-                setValue(m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)));
+                float value = m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum));
+                if (m_invertedDirection)
+                    value = m_maximum - (value - m_minimum);
+
+                setValue(value);
 
                 // Set the thumb position for smooth scrolling
                 const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
                 if ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))
                     m_thumb.top = thumbTop;
                 else
+                {
                     m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
+                    if (m_invertedDirection)
+                        m_thumb.top = getSize().y - m_thumb.top - m_thumb.height;
+                }
             }
             else // the slider lies horizontal
             {
@@ -363,14 +389,22 @@ namespace tgui
                     m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
                 }
 
-                setValue((((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum);
+                float value = (((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum;
+                if (m_invertedDirection)
+                    value = m_maximum - (value - m_minimum);
+
+                setValue(value);
 
                 // Set the thumb position for smooth scrolling
                 const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
                 if ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))
                     m_thumb.left = thumbLeft;
                 else
+                {
                     m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
+                    if (m_invertedDirection)
+                        m_thumb.left = getSize().x - m_thumb.left - m_thumb.width;
+                }
             }
         }
         else // Normal mouse move
@@ -407,14 +441,6 @@ namespace tgui
             else
                 setValue(m_value + std::round(delta) * m_step);
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Slider::widgetFocused()
-    {
-        // A slider can't be focused (yet)
-        unfocus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -517,6 +543,7 @@ namespace tgui
         node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
         node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
         node->propertyValuePairs["Step"] = make_unique<DataIO::ValueNode>(to_string(m_step));
+        node->propertyValuePairs["InvertedDirection"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_invertedDirection));
         return node;
     }
 
@@ -534,6 +561,8 @@ namespace tgui
             setValue(tgui::stof(node->propertyValuePairs["value"]->value));
         if (node->propertyValuePairs["step"])
             setStep(tgui::stof(node->propertyValuePairs["step"]->value));
+        if (node->propertyValuePairs["inverteddirection"])
+            setInvertedDirection(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["inverteddirection"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -548,17 +577,21 @@ namespace tgui
 
     void Slider::updateThumbPosition()
     {
-        const Vector2f innerSize = getInnerSize();
-
         if (m_verticalScroll)
         {
-            m_thumb.left = m_bordersCached.getLeft() + (innerSize.x - m_thumb.width) / 2.0f;
-            m_thumb.top = (innerSize.y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
+            m_thumb.left = m_bordersCached.getLeft() + (getInnerSize().x - m_thumb.width) / 2.0f;
+            m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
+
+            if (m_invertedDirection)
+                m_thumb.top = getSize().y - m_thumb.top - m_thumb.height;
         }
         else
         {
-            m_thumb.left = (innerSize.x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
-            m_thumb.top = m_bordersCached.getTop() + (innerSize.y - m_thumb.height) / 2.0f;
+            m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
+            m_thumb.top = m_bordersCached.getTop() + (getInnerSize().y - m_thumb.height) / 2.0f;
+
+            if (m_invertedDirection)
+                m_thumb.left = getSize().x - m_thumb.left - m_thumb.width;
         }
     }
 
@@ -619,7 +652,7 @@ namespace tgui
         else // There are no textures
         {
             const Vector2f thumbInnerSize = {m_thumb.width - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                                 m_thumb.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+                                             m_thumb.height - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
             if (m_mouseHover && m_thumbColorHoverCached.isSet())
                 drawRectangleShape(target, states, thumbInnerSize, m_thumbColorHoverCached);
