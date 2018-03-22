@@ -78,19 +78,22 @@ struct RadioButtonProperties : WidgetProperties
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["BorderColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorHover())};
         pair.second["BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDisabled())};
+        pair.second["BorderColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorFocused())};
         pair.second["BorderColorChecked"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorChecked())};
         pair.second["BorderColorCheckedHover"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorCheckedHover())};
         pair.second["BorderColorCheckedDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorCheckedDisabled())};
+        pair.second["BorderColorCheckedFocused"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorCheckedFocused())};
         pair.second["CheckColor"] = {"Color", tgui::Serializer::serialize(renderer->getCheckColor())};
         pair.second["CheckColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getCheckColorHover())};
         pair.second["CheckColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getCheckColorDisabled())};
         pair.second["TextureUnchecked"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureUnchecked())};
         pair.second["TextureUncheckedHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureUncheckedHover())};
         pair.second["TextureUncheckedDisabled"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureUncheckedDisabled())};
+        pair.second["TextureUncheckedFocused"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureUncheckedFocused())};
         pair.second["TextureChecked"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureChecked())};
         pair.second["TextureCheckedHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureCheckedHover())};
         pair.second["TextureCheckedDisabled"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureCheckedDisabled())};
-        pair.second["TextureFocused"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureFocused())};
+        pair.second["TextureCheckedFocused"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureCheckedFocused())};
         return pair;
     }
 };

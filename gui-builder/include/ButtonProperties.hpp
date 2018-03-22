@@ -55,14 +55,17 @@ struct ButtonProperties : WidgetProperties
         pair.second["TextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorHover())};
         pair.second["TextColorDown"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorDown())};
         pair.second["TextColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorDisabled())};
+        pair.second["TextColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorFocused())};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
         pair.second["BackgroundColorDown"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorDown())};
         pair.second["BackgroundColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorDisabled())};
+        pair.second["BackgroundColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorFocused())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["BorderColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorHover())};
         pair.second["BorderColorDown"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDown())};
         pair.second["BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDisabled())};
+        pair.second["BorderColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorFocused())};
         pair.second["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};
         pair.second["TextureHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureHover())};
         pair.second["TextureDown"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureDown())};
@@ -72,6 +75,7 @@ struct ButtonProperties : WidgetProperties
         pair.second["TextStyleHover"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleHover())};
         pair.second["TextStyleDown"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleDown())};
         pair.second["TextStyleDisabled"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleDisabled())};
+        pair.second["TextStyleFocused"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyleFocused())};
         return pair;
     }
 };
