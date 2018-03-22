@@ -62,6 +62,13 @@ namespace tgui
         m_titleBarHeightCached = m_titleText.getSize().y * 1.25f;
         setTitleButtons(titleButtons);
         setSize({400, 300});
+
+        m_maximizeButton->connect("pressed", [this](){ onMaximize.emit(this); });
+        m_minimizeButton->connect("pressed", [this](){ onMinimize.emit(this); });
+        m_closeButton->connect("pressed", [this](){
+                if (!onClose.emit(this))
+                    destroy();
+            });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,9 +143,9 @@ namespace tgui
 
         // Calculate the distance from the right side that the buttons will need
         float buttonOffsetX = 0;
-        for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+        for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
-            if (button)
+            if (button->isVisible())
                 buttonOffsetX += (buttonOffsetX > 0 ? m_paddingBetweenButtonsCached : 0) + button->getSize().x;
         }
 
@@ -161,9 +168,9 @@ namespace tgui
         }
 
         buttonOffsetX = m_distanceToSideCached;
-        for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+        for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
-            if (button)
+            if (button->isVisible())
             {
                 button->setPosition((getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight()) - buttonOffsetX - button->getSize().x,
                                     (m_titleBarHeightCached - button->getSize().y) / 2.f);
@@ -296,45 +303,45 @@ namespace tgui
 
         if (m_titleButtons & TitleButton::Close)
         {
-            m_closeButton = Button::create();
+            m_closeButton->show();
             m_closeButton->setRenderer(getSharedRenderer()->getCloseButton());
             m_closeButton->setInheritedOpacity(m_opacityCached);
-            m_closeButton->connect("pressed", [this](){
-                                                if (!onClose.emit(this))
-                                                    destroy();
-                                            });
 
             if (m_showTextOnTitleButtonsCached)
                 m_closeButton->setText(L"✕");
+            else
+                m_closeButton->setText("");
         }
         else
-            m_closeButton = nullptr;
+            m_closeButton->hide();
 
         if (m_titleButtons & TitleButton::Maximize)
         {
-            m_maximizeButton = Button::create();
+            m_maximizeButton->show();
             m_maximizeButton->setRenderer(getSharedRenderer()->getMaximizeButton());
             m_maximizeButton->setInheritedOpacity(m_opacityCached);
-            m_maximizeButton->connect("pressed", [this](){ onMaximize.emit(this); });
 
             if (m_showTextOnTitleButtonsCached)
                 m_maximizeButton->setText(L"☐");
+            else
+                m_maximizeButton->setText("");
         }
         else
-            m_maximizeButton = nullptr;
+            m_maximizeButton->hide();
 
         if (m_titleButtons & TitleButton::Minimize)
         {
-            m_minimizeButton = Button::create();
+            m_minimizeButton->show();
             m_minimizeButton->setRenderer(getSharedRenderer()->getMinimizeButton());
             m_minimizeButton->setInheritedOpacity(m_opacityCached);
-            m_minimizeButton->connect("pressed", [this](){ onMinimize.emit(this); });
 
             if (m_showTextOnTitleButtonsCached)
                 m_minimizeButton->setText(L"⁃");
+            else
+                m_minimizeButton->setText("");
         }
         else
-            m_minimizeButton = nullptr;
+            m_minimizeButton->hide();
 
         updateTitleBarHeight();
     }
@@ -439,9 +446,9 @@ namespace tgui
         if (FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
         {
             // Send the mouse press event to the title buttons
-            for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
-                if (button && button->mouseOnWidget(pos))
+                if (button->isVisible() && button->mouseOnWidget(pos))
                 {
                     button->leftMousePressed(pos);
                     return;
@@ -494,9 +501,9 @@ namespace tgui
         if (FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
         {
             // Send the mouse release event to the title buttons
-            for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
-                if (button && button->mouseOnWidget(pos))
+                if (button->isVisible() && button->mouseOnWidget(pos))
                 {
                     button->leftMouseReleased(pos);
                     break;
@@ -536,9 +543,9 @@ namespace tgui
         {
             float minimumWidth = 0;
 
-            for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
-                if (button)
+                if (button->isVisible())
                     minimumWidth += (minimumWidth > 0 ? m_paddingBetweenButtonsCached : 0) + button->getSize().x;
             }
 
@@ -567,9 +574,9 @@ namespace tgui
         else if (FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
         {
             // Send the hover event to the button inside the title bar
-            for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
-                if (button)
+                if (button->isVisible())
                 {
                     if (button->mouseOnWidget(pos))
                         button->mouseMoved(pos);
@@ -586,9 +593,9 @@ namespace tgui
         else // The mouse is not on top of the title bar
         {
             // When the mouse is not on the title bar, the mouse can't be on the buttons inside it
-            for (auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
-                if (button)
+                if (button->isVisible())
                     button->mouseNoLongerOnWidget();
             }
 
@@ -613,9 +620,9 @@ namespace tgui
     {
         Container::mouseNoLongerOnWidget();
 
-        for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+        for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
-            if (button)
+            if (button->isVisible())
                 button->mouseNoLongerOnWidget();
         }
     }
@@ -626,9 +633,9 @@ namespace tgui
     {
         Container::mouseNoLongerDown();
 
-        for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+        for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
-            if (button)
+            if (button->isVisible())
                 button->mouseNoLongerDown();
         }
     }
@@ -640,9 +647,9 @@ namespace tgui
         m_spriteTitleBar.setSize({getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached});
 
         // Set the size of the buttons in the title bar
-        for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
+        for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
-            if (button)
+            if (button->isVisible())
             {
                 if (m_spriteTitleBar.isSet() && (button->getSharedRenderer()->getTexture().getData() != nullptr))
                 {
@@ -724,7 +731,7 @@ namespace tgui
         }
         else if (property == "closebutton")
         {
-            if (m_closeButton)
+            if (m_closeButton->isVisible())
             {
                 m_closeButton->setRenderer(getSharedRenderer()->getCloseButton());
                 m_closeButton->setInheritedOpacity(m_opacityCached);
@@ -734,7 +741,7 @@ namespace tgui
         }
         else if (property == "maximizebutton")
         {
-            if (m_maximizeButton)
+            if (m_maximizeButton->isVisible())
             {
                 m_maximizeButton->setRenderer(getSharedRenderer()->getMaximizeButton());
                 m_maximizeButton->setInheritedOpacity(m_opacityCached);
@@ -744,7 +751,7 @@ namespace tgui
         }
         else if (property == "minimizebutton")
         {
-            if (m_minimizeButton)
+            if (m_minimizeButton->isVisible())
             {
                 m_minimizeButton->setRenderer(getSharedRenderer()->getMinimizeButton());
                 m_minimizeButton->setInheritedOpacity(m_opacityCached);
@@ -768,9 +775,9 @@ namespace tgui
         {
             Container::rendererChanged(property);
 
-            for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
+            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
-                if (button)
+                if (button->isVisible())
                     button->setInheritedOpacity(m_opacityCached);
             }
 
@@ -781,9 +788,9 @@ namespace tgui
         {
             Container::rendererChanged(property);
 
-            for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
+            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
-                if (button)
+                if (button->isVisible())
                     button->setInheritedFont(m_fontCached);
             }
 
@@ -912,9 +919,9 @@ namespace tgui
         // Draw the text in the title bar (after setting the clipping area)
         {
             float buttonOffsetX = 0;
-            for (const auto& button : {m_closeButton, m_maximizeButton, m_minimizeButton})
+            for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
-                if (button)
+                if (button->isVisible())
                     buttonOffsetX += (buttonOffsetX > 0 ? m_paddingBetweenButtonsCached : 0) + button->getSize().x;
             }
 
@@ -930,9 +937,9 @@ namespace tgui
         }
 
         // Draw the buttons
-        for (auto& button : {m_closeButton, m_minimizeButton, m_maximizeButton})
+        for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
-            if (button)
+            if (button->isVisible())
                 button->draw(target, states);
         }
 

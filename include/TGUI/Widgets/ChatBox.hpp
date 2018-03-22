@@ -27,6 +27,7 @@
 #define TGUI_CHAT_BOX_HPP
 
 
+#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ChatBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
@@ -421,7 +422,7 @@ namespace tgui
         bool m_linesStartFromTop = false;
         bool m_newLinesBelowOthers = true;
 
-        ScrollbarChildWidget m_scroll;
+        CopiedSharedPtr<ScrollbarChildWidget> m_scroll;
 
         std::deque<Line> m_lines;
 

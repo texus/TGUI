@@ -27,6 +27,7 @@
 #define TGUI_CHILD_WINDOW_HPP
 
 
+#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Renderers/ChildWindowRenderer.hpp>
@@ -467,9 +468,9 @@ namespace tgui
         unsigned int   m_titleButtons   = TitleButton::Close;
         unsigned int   m_titleTextSize  = 0;
 
-        Button::Ptr m_closeButton;
-        Button::Ptr m_minimizeButton;
-        Button::Ptr m_maximizeButton;
+        CopiedSharedPtr<Button> m_closeButton;
+        CopiedSharedPtr<Button> m_minimizeButton;
+        CopiedSharedPtr<Button> m_maximizeButton;
 
         bool m_mouseDownOnTitleBar = false;
         bool m_keepInParent = false;

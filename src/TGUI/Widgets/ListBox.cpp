@@ -101,7 +101,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_items.size(); ++i)
             m_items[i].setPosition({0, (i * m_itemHeight) + ((m_itemHeight - m_items[i].getSize().y) / 2.0f)});
 
-        m_scroll.setPosition(getSize().x - m_bordersCached.getRight() - m_scroll.getSize().x, m_bordersCached.getTop());
+        m_scroll->setPosition(getSize().x - m_bordersCached.getRight() - m_scroll->getSize().x, m_bordersCached.getTop());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,8 +115,8 @@ namespace tgui
 
         m_spriteBackground.setSize(getInnerSize());
 
-        m_scroll.setSize({m_scroll.getSize().x, std::max(0.f, getInnerSize().y)});
-        m_scroll.setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+        m_scroll->setSize({m_scroll->getSize().x, std::max(0.f, getInnerSize().y)});
+        m_scroll->setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
 
         setPosition(m_position);
     }
@@ -128,11 +128,11 @@ namespace tgui
         // Check if the item limit is reached (if there is one)
         if ((m_maxItems == 0) || (m_items.size() < m_maxItems))
         {
-            m_scroll.setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
+            m_scroll->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
 
             // Scroll down when auto-scrolling is enabled
-            if (m_autoScroll && (m_scroll.getLowValue() < m_scroll.getMaximum()))
-                m_scroll.setValue(m_scroll.getMaximum() - m_scroll.getLowValue());
+            if (m_autoScroll && (m_scroll->getLowValue() < m_scroll->getMaximum()))
+                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
 
             // Create the new item
             Text newItem;
@@ -196,10 +196,10 @@ namespace tgui
         updateSelectedItem(static_cast<int>(index));
 
         // Move the scrollbar
-        if (m_selectedItem * getItemHeight() < m_scroll.getValue())
-            m_scroll.setValue(m_selectedItem * getItemHeight());
-        else if ((m_selectedItem + 1) * getItemHeight() > m_scroll.getValue() + m_scroll.getLowValue())
-            m_scroll.setValue((m_selectedItem + 1) * getItemHeight() - m_scroll.getLowValue());
+        if (m_selectedItem * getItemHeight() < m_scroll->getValue())
+            m_scroll->setValue(m_selectedItem * getItemHeight());
+        else if ((m_selectedItem + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getLowValue())
+            m_scroll->setValue((m_selectedItem + 1) * getItemHeight() - m_scroll->getLowValue());
 
         return true;
     }
@@ -260,7 +260,7 @@ namespace tgui
         m_items.erase(m_items.begin() + index);
         m_itemIds.erase(m_itemIds.begin() + index);
 
-        m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+        m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         setPosition(m_position);
 
         return true;
@@ -278,7 +278,7 @@ namespace tgui
         updateSelectedItem(-1);
         updateHoveringItem(-1);
 
-        m_scroll.setMaximum(0);
+        m_scroll->setMaximum(0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -390,8 +390,8 @@ namespace tgui
                 item.setCharacterSize(m_textSize);
         }
 
-        m_scroll.setScrollAmount(m_itemHeight);
-        m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+        m_scroll->setScrollAmount(m_itemHeight);
+        m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         setPosition(m_position);
     }
 
@@ -440,7 +440,7 @@ namespace tgui
             m_items.erase(m_items.begin() + m_maxItems, m_items.end());
             m_itemIds.erase(m_itemIds.begin() + m_maxItems, m_itemIds.end());
 
-            m_scroll.setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+            m_scroll->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
             setPosition(m_position);
         }
     }
@@ -495,9 +495,9 @@ namespace tgui
 
         m_mouseDown = true;
 
-        if (m_scroll.mouseOnWidget(pos))
+        if (m_scroll->mouseOnWidget(pos))
         {
-            m_scroll.leftMousePressed(pos);
+            m_scroll->leftMousePressed(pos);
         }
         else
         {
@@ -506,7 +506,7 @@ namespace tgui
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
-                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
+                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll->getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll->getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
                     updateHoveringItem(hoveringItem);
                 else
@@ -529,7 +529,7 @@ namespace tgui
 
     void ListBox::leftMouseReleased(Vector2f pos)
     {
-        if (m_mouseDown && !m_scroll.isMouseDown())
+        if (m_mouseDown && !m_scroll->isMouseDown())
         {
             if (m_selectedItem >= 0)
                 onMouseRelease.emit(this, m_items[m_selectedItem].getString(), m_itemIds[m_selectedItem]);
@@ -549,7 +549,7 @@ namespace tgui
             }
         }
 
-        m_scroll.leftMouseReleased(pos - getPosition());
+        m_scroll->leftMouseReleased(pos - getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -564,13 +564,13 @@ namespace tgui
         updateHoveringItem(-1);
 
         // Check if the mouse event should go to the scrollbar
-        if ((m_scroll.isMouseDown() && m_scroll.isMouseDownOnThumb()) || m_scroll.mouseOnWidget(pos))
+        if ((m_scroll->isMouseDown() && m_scroll->isMouseDownOnThumb()) || m_scroll->mouseOnWidget(pos))
         {
-            m_scroll.mouseMoved(pos);
+            m_scroll->mouseMoved(pos);
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
-            m_scroll.mouseNoLongerOnWidget();
+            m_scroll->mouseNoLongerOnWidget();
 
             // Find out on which item the mouse is hovering
             if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
@@ -578,14 +578,14 @@ namespace tgui
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
-                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll.getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll.getValue() / m_itemHeight) + 1);
+                int hoveringItem = static_cast<int>(((pos.y - (m_itemHeight - (m_scroll->getValue() % m_itemHeight))) / m_itemHeight) + (m_scroll->getValue() / m_itemHeight) + 1);
                 if (hoveringItem < static_cast<int>(m_items.size()))
                     updateHoveringItem(hoveringItem);
                 else
                     updateHoveringItem(-1);
 
                 // If the mouse is held down then select the item below the mouse
-                if (m_mouseDown && !m_scroll.isMouseDown())
+                if (m_mouseDown && !m_scroll->isMouseDown())
                 {
                     if (m_selectedItem != m_hoveringItem)
                     {
@@ -602,9 +602,9 @@ namespace tgui
 
     void ListBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
-        if (m_scroll.isShown())
+        if (m_scroll->isShown())
         {
-            m_scroll.mouseWheelScrolled(delta, pos - getPosition());
+            m_scroll->mouseWheelScrolled(delta, pos - getPosition());
 
             // Update on which item the mouse is hovering
             mouseMoved(pos);
@@ -616,7 +616,7 @@ namespace tgui
     void ListBox::mouseNoLongerOnWidget()
     {
         Widget::mouseNoLongerOnWidget();
-        m_scroll.mouseNoLongerOnWidget();
+        m_scroll->mouseNoLongerOnWidget();
 
         updateHoveringItem(-1);
 
@@ -628,7 +628,7 @@ namespace tgui
     void ListBox::mouseNoLongerDown()
     {
         Widget::mouseNoLongerDown();
-        m_scroll.mouseNoLongerDown();
+        m_scroll->mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -709,7 +709,7 @@ namespace tgui
         }
         else if (property == "scrollbar")
         {
-            m_scroll.setRenderer(getSharedRenderer()->getScrollbar());
+            m_scroll->setRenderer(getSharedRenderer()->getScrollbar());
         }
         else if (property == "bordercolor")
         {
@@ -735,7 +735,7 @@ namespace tgui
         {
             Widget::rendererChanged(property);
 
-            m_scroll.setInheritedOpacity(m_opacityCached);
+            m_scroll->setInheritedOpacity(m_opacityCached);
             m_spriteBackground.setOpacity(m_opacityCached);
             for (auto& item : m_items)
                 item.setOpacity(m_opacityCached);
@@ -979,24 +979,24 @@ namespace tgui
         {
             // Set the clipping for all draw calls that happen until this clipping object goes out of scope
             float maxItemWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
-            if (m_scroll.isShown())
-                maxItemWidth -= m_scroll.getSize().x;
+            if (m_scroll->isShown())
+                maxItemWidth -= m_scroll->getSize().x;
             const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {maxItemWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
             // Find out which items are visible
             std::size_t firstItem = 0;
             std::size_t lastItem = m_items.size();
-            if (m_scroll.getLowValue() < m_scroll.getMaximum())
+            if (m_scroll->getLowValue() < m_scroll->getMaximum())
             {
-                firstItem = m_scroll.getValue() / m_itemHeight;
-                lastItem = (m_scroll.getValue() + m_scroll.getLowValue()) / m_itemHeight;
+                firstItem = m_scroll->getValue() / m_itemHeight;
+                lastItem = (m_scroll->getValue() + m_scroll->getLowValue()) / m_itemHeight;
 
                 // Show another item when the scrollbar is standing between two items
-                if ((m_scroll.getValue() + m_scroll.getLowValue()) % m_itemHeight != 0)
+                if ((m_scroll->getValue() + m_scroll->getLowValue()) % m_itemHeight != 0)
                     ++lastItem;
             }
 
-            states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop() - m_scroll.getValue()});
+            states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop() - m_scroll->getValue()});
 
             // Draw the background of the selected item
             if (m_selectedItem >= 0)
@@ -1027,7 +1027,7 @@ namespace tgui
         }
 
         // Draw the scrollbar
-        m_scroll.draw(target, statesForScrollbar);
+        m_scroll->draw(target, statesForScrollbar);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

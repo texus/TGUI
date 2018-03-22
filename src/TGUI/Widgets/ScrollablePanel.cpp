@@ -45,7 +45,7 @@ namespace tgui
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         // Rotate the horizontal scrollbar
-        m_horizontalScrollbar.setSize(m_horizontalScrollbar.getSize().y, m_horizontalScrollbar.getSize().x);
+        m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
 
         setContentSize(contentSize);
     }
@@ -293,15 +293,15 @@ namespace tgui
 
     Vector2f ScrollablePanel::getContentOffset() const
     {
-        return {static_cast<float>(m_horizontalScrollbar.getValue()), static_cast<float>(m_verticalScrollbar.getValue())};
+        return {static_cast<float>(m_horizontalScrollbar->getValue()), static_cast<float>(m_verticalScrollbar->getValue())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ScrollablePanel::setScrollbarWidth(float width)
     {
-        m_verticalScrollbar.setSize({width, m_verticalScrollbar.getSize().y});
-        m_horizontalScrollbar.setSize({m_horizontalScrollbar.getSize().x, width});
+        m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
+        m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
         updateScrollbars();
     }
 
@@ -309,7 +309,7 @@ namespace tgui
 
     float ScrollablePanel::getScrollbarWidth() const
     {
-        return m_verticalScrollbar.getSize().x;
+        return m_verticalScrollbar->getSize().x;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,17 +320,17 @@ namespace tgui
 
         if (policy == ScrollbarPolicy::Always)
         {
-            m_verticalScrollbar.show();
-            m_verticalScrollbar.setAutoHide(false);
+            m_verticalScrollbar->show();
+            m_verticalScrollbar->setAutoHide(false);
         }
         else if (policy == ScrollbarPolicy::Never)
         {
-            m_verticalScrollbar.hide();
+            m_verticalScrollbar->hide();
         }
         else // ScrollbarPolicy::Automatic
         {
-            m_verticalScrollbar.show();
-            m_verticalScrollbar.setAutoHide(true);
+            m_verticalScrollbar->show();
+            m_verticalScrollbar->setAutoHide(true);
         }
 
         updateScrollbars();
@@ -351,17 +351,17 @@ namespace tgui
 
         if (policy == ScrollbarPolicy::Always)
         {
-            m_horizontalScrollbar.show();
-            m_horizontalScrollbar.setAutoHide(false);
+            m_horizontalScrollbar->show();
+            m_horizontalScrollbar->setAutoHide(false);
         }
         else if (policy == ScrollbarPolicy::Never)
         {
-            m_horizontalScrollbar.hide();
+            m_horizontalScrollbar->hide();
         }
         else // ScrollbarPolicy::Automatic
         {
-            m_horizontalScrollbar.show();
-            m_horizontalScrollbar.setAutoHide(true);
+            m_horizontalScrollbar->show();
+            m_horizontalScrollbar->setAutoHide(true);
         }
 
         updateScrollbars();
@@ -380,14 +380,14 @@ namespace tgui
     {
         m_mouseDown = true;
 
-        if (m_verticalScrollbar.mouseOnWidget(pos - getPosition()))
-            m_verticalScrollbar.leftMousePressed(pos - getPosition());
-        else if (m_horizontalScrollbar.mouseOnWidget(pos - getPosition()))
-            m_horizontalScrollbar.leftMousePressed(pos - getPosition());
+        if (m_verticalScrollbar->mouseOnWidget(pos - getPosition()))
+            m_verticalScrollbar->leftMousePressed(pos - getPosition());
+        else if (m_horizontalScrollbar->mouseOnWidget(pos - getPosition()))
+            m_horizontalScrollbar->leftMousePressed(pos - getPosition());
         else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
         {
-            Panel::leftMousePressed({pos.x + static_cast<float>(m_horizontalScrollbar.getValue()),
-                                     pos.y + static_cast<float>(m_verticalScrollbar.getValue())});
+            Panel::leftMousePressed({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
+                                     pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
         }
     }
 
@@ -395,14 +395,14 @@ namespace tgui
 
     void ScrollablePanel::leftMouseReleased(Vector2f pos)
     {
-        if (m_verticalScrollbar.mouseOnWidget(pos - getPosition()))
-            m_verticalScrollbar.leftMouseReleased(pos - getPosition());
-        else if (m_horizontalScrollbar.mouseOnWidget(pos - getPosition()))
-            m_horizontalScrollbar.leftMouseReleased(pos - getPosition());
+        if (m_verticalScrollbar->mouseOnWidget(pos - getPosition()))
+            m_verticalScrollbar->leftMouseReleased(pos - getPosition());
+        else if (m_horizontalScrollbar->mouseOnWidget(pos - getPosition()))
+            m_horizontalScrollbar->leftMouseReleased(pos - getPosition());
         else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
         {
-            Panel::leftMouseReleased({pos.x + static_cast<float>(m_horizontalScrollbar.getValue()),
-                                      pos.y + static_cast<float>(m_verticalScrollbar.getValue())});
+            Panel::leftMouseReleased({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
+                                      pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
         }
     }
 
@@ -411,24 +411,24 @@ namespace tgui
     void ScrollablePanel::mouseMoved(Vector2f pos)
     {
         // Check if the mouse event should go to the scrollbar
-        if ((m_verticalScrollbar.isMouseDown() && m_verticalScrollbar.isMouseDownOnThumb()) || m_verticalScrollbar.mouseOnWidget(pos - getPosition()))
+        if ((m_verticalScrollbar->isMouseDown() && m_verticalScrollbar->isMouseDownOnThumb()) || m_verticalScrollbar->mouseOnWidget(pos - getPosition()))
         {
-            m_verticalScrollbar.mouseMoved(pos - getPosition());
+            m_verticalScrollbar->mouseMoved(pos - getPosition());
         }
-        else if ((m_horizontalScrollbar.isMouseDown() && m_horizontalScrollbar.isMouseDownOnThumb()) || m_horizontalScrollbar.mouseOnWidget(pos - getPosition()))
+        else if ((m_horizontalScrollbar->isMouseDown() && m_horizontalScrollbar->isMouseDownOnThumb()) || m_horizontalScrollbar->mouseOnWidget(pos - getPosition()))
         {
-            m_horizontalScrollbar.mouseMoved(pos - getPosition());
+            m_horizontalScrollbar->mouseMoved(pos - getPosition());
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
             if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
             {
-                Panel::mouseMoved({pos.x + static_cast<float>(m_horizontalScrollbar.getValue()),
-                                   pos.y + static_cast<float>(m_verticalScrollbar.getValue())});
+                Panel::mouseMoved({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
+                                   pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
             }
 
-            m_verticalScrollbar.mouseNoLongerOnWidget();
-            m_horizontalScrollbar.mouseNoLongerOnWidget();
+            m_verticalScrollbar->mouseNoLongerOnWidget();
+            m_horizontalScrollbar->mouseNoLongerOnWidget();
         }
     }
 
@@ -436,14 +436,14 @@ namespace tgui
 
     void ScrollablePanel::mouseWheelScrolled(float delta, Vector2f pos)
     {
-        if (m_horizontalScrollbar.isShown() && m_horizontalScrollbar.mouseOnWidget(pos - getPosition()))
+        if (m_horizontalScrollbar->isShown() && m_horizontalScrollbar->mouseOnWidget(pos - getPosition()))
         {
-            m_horizontalScrollbar.mouseWheelScrolled(delta, pos - getPosition());
+            m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             mouseMoved(pos);
         }
-        else if (m_verticalScrollbar.isShown())
+        else if (m_verticalScrollbar->isShown())
         {
-            m_verticalScrollbar.mouseWheelScrolled(delta, pos - getPosition());
+            m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             mouseMoved(pos);
         }
     }
@@ -453,8 +453,8 @@ namespace tgui
     void ScrollablePanel::mouseNoLongerOnWidget()
     {
         Panel::mouseNoLongerOnWidget();
-        m_verticalScrollbar.mouseNoLongerOnWidget();
-        m_horizontalScrollbar.mouseNoLongerOnWidget();
+        m_verticalScrollbar->mouseNoLongerOnWidget();
+        m_horizontalScrollbar->mouseNoLongerOnWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,8 +462,8 @@ namespace tgui
     void ScrollablePanel::mouseNoLongerDown()
     {
         Panel::mouseNoLongerDown();
-        m_verticalScrollbar.mouseNoLongerDown();
-        m_horizontalScrollbar.mouseNoLongerDown();
+        m_verticalScrollbar->mouseNoLongerDown();
+        m_horizontalScrollbar->mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -490,10 +490,10 @@ namespace tgui
         Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                 innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
-        if (m_verticalScrollbar.isVisible() && (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue()))
-            contentSize.x -= m_verticalScrollbar.getSize().x;
-        if (m_horizontalScrollbar.isVisible() && (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue()))
-            contentSize.y -= m_horizontalScrollbar.getSize().y;
+        if (m_verticalScrollbar->isVisible() && (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getLowValue()))
+            contentSize.x -= m_verticalScrollbar->getSize().x;
+        if (m_horizontalScrollbar->isVisible() && (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getLowValue()))
+            contentSize.y -= m_horizontalScrollbar->getSize().y;
 
         // If the content size is manually specified and smaller than the panel itself, then use it for clipping
         if ((m_contentSize.x > 0) && (contentSize.x > m_contentSize.x))
@@ -505,17 +505,17 @@ namespace tgui
         {
             const Clipping clipping{target, states, {}, contentSize};
 
-            states.transform.translate(-static_cast<float>(m_horizontalScrollbar.getValue()),
-                                       -static_cast<float>(m_verticalScrollbar.getValue()));
+            states.transform.translate(-static_cast<float>(m_horizontalScrollbar->getValue()),
+                                       -static_cast<float>(m_verticalScrollbar->getValue()));
 
             drawWidgetContainer(&target, states);
         }
 
-        if (m_verticalScrollbar.isVisible())
-            m_verticalScrollbar.draw(target, oldStates);
+        if (m_verticalScrollbar->isVisible())
+            m_verticalScrollbar->draw(target, oldStates);
 
-        if (m_horizontalScrollbar.isVisible())
-            m_horizontalScrollbar.draw(target, oldStates);
+        if (m_horizontalScrollbar->isVisible())
+            m_horizontalScrollbar->draw(target, oldStates);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -524,8 +524,8 @@ namespace tgui
     {
         if (property == "scrollbar")
         {
-            m_verticalScrollbar.setRenderer(getSharedRenderer()->getScrollbar());
-            m_horizontalScrollbar.setRenderer(getSharedRenderer()->getScrollbar());
+            m_verticalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
+            m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
         }
         else
             Panel::rendererChanged(property);
@@ -600,50 +600,50 @@ namespace tgui
                                          getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
         const Vector2f visibleSize = getInnerSize();
-        m_horizontalScrollbar.setLowValue(static_cast<unsigned int>(visibleSize.x));
-        m_verticalScrollbar.setLowValue(static_cast<unsigned int>(visibleSize.y));
+        m_horizontalScrollbar->setLowValue(static_cast<unsigned int>(visibleSize.x));
+        m_verticalScrollbar->setLowValue(static_cast<unsigned int>(visibleSize.y));
 
         const Vector2f contentSize = getContentSize();
-        m_horizontalScrollbar.setMaximum(static_cast<unsigned int>(contentSize.x));
-        m_verticalScrollbar.setMaximum(static_cast<unsigned int>(contentSize.y));
+        m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(contentSize.x));
+        m_verticalScrollbar->setMaximum(static_cast<unsigned int>(contentSize.y));
 
-        const bool horizontalScrollbarVisible = m_horizontalScrollbar.isVisible() && (!m_horizontalScrollbar.getAutoHide() || (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue()));
+        const bool horizontalScrollbarVisible = m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getLowValue()));
         if (horizontalScrollbarVisible)
         {
-            m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, scrollbarSpace.y - m_horizontalScrollbar.getSize().y);
-            m_verticalScrollbar.setLowValue(static_cast<unsigned int>(m_verticalScrollbar.getLowValue() - m_horizontalScrollbar.getSize().y));
+            m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
+            m_verticalScrollbar->setLowValue(static_cast<unsigned int>(m_verticalScrollbar->getLowValue() - m_horizontalScrollbar->getSize().y));
 
-            const bool verticalScrollbarVisible = m_verticalScrollbar.isVisible() && (!m_verticalScrollbar.getAutoHide() || (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue()));
+            const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getLowValue()));
             if (verticalScrollbarVisible)
-                m_horizontalScrollbar.setSize(scrollbarSpace.x - m_verticalScrollbar.getSize().x, m_horizontalScrollbar.getSize().y);
+                m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
             else
-                m_horizontalScrollbar.setSize(scrollbarSpace.x, m_horizontalScrollbar.getSize().y);
+                m_horizontalScrollbar->setSize(scrollbarSpace.x, m_horizontalScrollbar->getSize().y);
         }
         else
         {
-            m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, scrollbarSpace.y);
+            m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y);
 
-            const bool verticalScrollbarVisible = m_verticalScrollbar.isVisible() && (!m_verticalScrollbar.getAutoHide() || (m_verticalScrollbar.getMaximum() > m_verticalScrollbar.getLowValue()));
+            const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getLowValue()));
             if (verticalScrollbarVisible)
             {
-                m_horizontalScrollbar.setSize(scrollbarSpace.x - m_verticalScrollbar.getSize().x, m_horizontalScrollbar.getSize().y);
-                m_horizontalScrollbar.setLowValue(static_cast<unsigned int>(m_horizontalScrollbar.getLowValue() - m_verticalScrollbar.getSize().x));
+                m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
+                m_horizontalScrollbar->setLowValue(static_cast<unsigned int>(m_horizontalScrollbar->getLowValue() - m_verticalScrollbar->getSize().x));
 
-                if (m_horizontalScrollbar.isVisible() && (!m_horizontalScrollbar.getAutoHide() || (m_horizontalScrollbar.getMaximum() > m_horizontalScrollbar.getLowValue())))
-                    m_verticalScrollbar.setSize(m_verticalScrollbar.getSize().x, scrollbarSpace.y - m_horizontalScrollbar.getSize().y);
+                if (m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getLowValue())))
+                    m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
             }
             else
-                m_horizontalScrollbar.setSize(scrollbarSpace.x, m_horizontalScrollbar.getSize().y);
+                m_horizontalScrollbar->setSize(scrollbarSpace.x, m_horizontalScrollbar->getSize().y);
         }
 
-        m_verticalScrollbar.setPosition(m_bordersCached.getLeft() + scrollbarSpace.x - m_verticalScrollbar.getSize().x, m_bordersCached.getTop());
-        m_horizontalScrollbar.setPosition(m_bordersCached.getLeft(), m_bordersCached.getTop() + scrollbarSpace.y - m_horizontalScrollbar.getSize().y);
+        m_verticalScrollbar->setPosition(m_bordersCached.getLeft() + scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_bordersCached.getTop());
+        m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), m_bordersCached.getTop() + scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
 
-        const float verticalSpeed = 40.f * (static_cast<float>(m_verticalScrollbar.getMaximum() - m_verticalScrollbar.getLowValue()) / m_verticalScrollbar.getLowValue());
-        m_verticalScrollbar.setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(verticalSpeed))));
+        const float verticalSpeed = 40.f * (static_cast<float>(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getLowValue()) / m_verticalScrollbar->getLowValue());
+        m_verticalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(verticalSpeed))));
 
-        const float horizontalSpeed = 40.f * (static_cast<float>(m_horizontalScrollbar.getMaximum() - m_horizontalScrollbar.getLowValue()) / m_horizontalScrollbar.getLowValue());
-        m_horizontalScrollbar.setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(horizontalSpeed))));
+        const float horizontalSpeed = 40.f * (static_cast<float>(m_horizontalScrollbar->getMaximum() - m_horizontalScrollbar->getLowValue()) / m_horizontalScrollbar->getLowValue());
+        m_horizontalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(horizontalSpeed))));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

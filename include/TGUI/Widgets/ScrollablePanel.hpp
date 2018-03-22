@@ -26,6 +26,7 @@
 #ifndef TGUI_SCROLLABLE_PANEL_HPP
 #define TGUI_SCROLLABLE_PANEL_HPP
 
+#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ScrollablePanelRenderer.hpp>
@@ -338,8 +339,8 @@ namespace tgui
 
         Vector2f         m_contentSize;
         Vector2f         m_mostBottomRightPosition;
-        ScrollbarChildWidget m_verticalScrollbar;
-        ScrollbarChildWidget m_horizontalScrollbar;
+        CopiedSharedPtr<ScrollbarChildWidget> m_verticalScrollbar;
+        CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScrollbar;
 
         ScrollbarPolicy  m_verticalScrollbarPolicy = ScrollbarPolicy::Automatic;
         ScrollbarPolicy  m_horizontalScrollbarPolicy = ScrollbarPolicy::Automatic;

@@ -27,6 +27,7 @@
 #define TGUI_TEXT_BOX_HPP
 
 
+#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/TextBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
@@ -490,7 +491,7 @@ namespace tgui
         std::vector<FloatRect> m_selectionRects;
 
         // The scrollbar
-        ScrollbarChildWidget m_verticalScroll;
+        CopiedSharedPtr<ScrollbarChildWidget> m_verticalScroll;
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick = false;

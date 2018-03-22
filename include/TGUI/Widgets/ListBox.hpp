@@ -27,6 +27,7 @@
 #define TGUI_LIST_BOX_HPP
 
 
+#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ListBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
@@ -613,7 +614,7 @@ namespace tgui
         std::size_t m_maxItems = 0;
 
         // When there are too many items a scrollbar will be shown
-        ScrollbarChildWidget m_scroll;
+        CopiedSharedPtr<ScrollbarChildWidget> m_scroll;
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
