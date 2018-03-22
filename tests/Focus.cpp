@@ -33,6 +33,7 @@
 #include <TGUI/Widgets/Group.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Label.hpp>
+#include <stack>
 #include <set>
 
 static tgui::Container::Ptr rootContainer;
