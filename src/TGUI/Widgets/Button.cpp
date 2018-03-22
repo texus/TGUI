@@ -231,17 +231,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Button::widgetFocused()
-    {
-        // We can't be focused when we don't have a focus image
-        if (m_spriteFocused.getTexture().getData())
-            Widget::widgetFocused();
-        else
-            unfocus();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Button::mouseEnteredWidget()
     {
         Widget::mouseEnteredWidget();
@@ -275,8 +264,8 @@ namespace tgui
             m_bordersCached = getSharedRenderer()->getBorders();
             updateSize();
         }
-        else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordown") || (property == "textcolordisabled")
-              || (property == "textstyle") || (property == "textstylehover") || (property == "textstyledown") || (property == "textstyledisabled"))
+        else if ((property == "textcolor") || (property == "textcolorhover") || (property == "textcolordown") || (property == "textcolordisabled") || (property == "textcolorfocused")
+              || (property == "textstyle") || (property == "textstylehover") || (property == "textstyledown") || (property == "textstyledisabled") || (property == "textstylefocused"))
         {
             updateTextColorAndStyle();
         }
@@ -299,7 +288,6 @@ namespace tgui
         else if (property == "texturefocused")
         {
             m_spriteFocused.setTexture(getSharedRenderer()->getTextureFocused());
-            m_allowFocus = m_spriteFocused.isSet();
         }
         else if (property == "bordercolor")
         {
@@ -317,6 +305,10 @@ namespace tgui
         {
             m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
         }
+        else if (property == "bordercolorfocused")
+        {
+            m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
+        }
         else if (property == "backgroundcolor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
@@ -332,6 +324,10 @@ namespace tgui
         else if (property == "backgroundcolordisabled")
         {
             m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
+        }
+        else if (property == "backgroundcolorfocused")
+        {
+            m_backgroundColorFocusedCached = getSharedRenderer()->getBackgroundColorFocused();
         }
         else if (property == "opacity")
         {
@@ -400,6 +396,8 @@ namespace tgui
             return m_backgroundColorDownCached;
         else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
             return m_backgroundColorHoverCached;
+        else if (m_focused && m_backgroundColorFocusedCached.isSet())
+            return m_backgroundColorFocusedCached;
         else
             return m_backgroundColorCached;
     }
@@ -414,6 +412,8 @@ namespace tgui
             return m_borderColorDownCached;
         else if (m_mouseHover && m_borderColorHoverCached.isSet())
             return m_borderColorHoverCached;
+        else if (m_focused && m_borderColorFocusedCached.isSet())
+            return m_borderColorFocusedCached;
         else
             return m_borderColorCached;
     }
@@ -428,6 +428,8 @@ namespace tgui
             m_text.setStyle(getSharedRenderer()->getTextStyleDown());
         else if (m_mouseHover && getSharedRenderer()->getTextStyleHover().isSet())
             m_text.setStyle(getSharedRenderer()->getTextStyleHover());
+        else if (m_focused && getSharedRenderer()->getTextStyleFocused().isSet())
+            m_text.setStyle(getSharedRenderer()->getTextStyleFocused());
         else
             m_text.setStyle(getSharedRenderer()->getTextStyle());
 
@@ -437,6 +439,8 @@ namespace tgui
             m_text.setColor(getSharedRenderer()->getTextColorDown());
         else if (m_mouseHover && getSharedRenderer()->getTextColorHover().isSet())
             m_text.setColor(getSharedRenderer()->getTextColorHover());
+        else if (m_focused && getSharedRenderer()->getTextColorFocused().isSet())
+            m_text.setColor(getSharedRenderer()->getTextColorFocused());
         else
             m_text.setColor(getSharedRenderer()->getTextColor());
     }
@@ -484,21 +488,14 @@ namespace tgui
         {
             if (!m_enabled && m_spriteDisabled.isSet())
                 m_spriteDisabled.draw(target, states);
-            else if (m_mouseHover)
-            {
-                if (m_mouseDown && m_spriteDown.isSet())
-                    m_spriteDown.draw(target, states);
-                else if (m_spriteHover.isSet())
-                    m_spriteHover.draw(target, states);
-                else
-                    m_sprite.draw(target, states);
-            }
+            else if (m_mouseHover && m_mouseDown && m_spriteDown.isSet())
+                m_spriteDown.draw(target, states);
+            else if (m_mouseHover && m_spriteHover.isSet())
+                m_spriteHover.draw(target, states);
+            else if (m_focused && m_spriteFocused.isSet())
+                m_spriteFocused.draw(target, states);
             else
                 m_sprite.draw(target, states);
-
-            // When the edit box is focused then draw an extra image
-            if (m_focused && m_spriteFocused.isSet())
-                m_spriteFocused.draw(target, states);
         }
         else // There is no background texture
         {

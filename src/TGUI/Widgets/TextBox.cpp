@@ -301,6 +301,35 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::focus()
+    {
+        Widget::focus();
+
+    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+        sf::Keyboard::setVirtualKeyboardVisible(true);
+    #endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::unfocus()
+    {
+        // If there is a selection then undo it now
+        if (m_selStart != m_selEnd)
+        {
+            m_selStart = m_selEnd;
+            updateSelectionTexts();
+        }
+
+    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+        sf::Keyboard::setVirtualKeyboardVisible(false);
+    #endif
+
+        Widget::unfocus();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool TextBox::mouseOnWidget(Vector2f pos) const
     {
         return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
@@ -950,35 +979,6 @@ namespace tgui
             m_verticalScroll.mouseWheelScrolled(delta, pos - getPosition());
             recalculateVisibleLines();
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::widgetFocused()
-    {
-    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
-        sf::Keyboard::setVirtualKeyboardVisible(true);
-    #endif
-
-        Widget::widgetFocused();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::widgetUnfocused()
-    {
-        // If there is a selection then undo it now
-        if (m_selStart != m_selEnd)
-        {
-            m_selStart = m_selEnd;
-            updateSelectionTexts();
-        }
-
-    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
-        sf::Keyboard::setVirtualKeyboardVisible(false);
-    #endif
-
-        Widget::widgetUnfocused();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

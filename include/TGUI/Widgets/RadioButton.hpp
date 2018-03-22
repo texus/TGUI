@@ -221,11 +221,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void keyPressed(const sf::Event::KeyEvent& event) override;
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void widgetFocused() override;
-
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
@@ -358,7 +353,8 @@ namespace tgui
         Sprite m_spriteCheckedHover;
         Sprite m_spriteUncheckedDisabled;
         Sprite m_spriteCheckedDisabled;
-        Sprite m_spriteFocused;
+        Sprite m_spriteUncheckedFocused;
+        Sprite m_spriteCheckedFocused;
 
         // Cached renderer properties
         Borders   m_bordersCached;
@@ -370,9 +366,11 @@ namespace tgui
         Color     m_borderColorCached;
         Color     m_borderColorHoverCached;
         Color     m_borderColorDisabledCached;
+        Color     m_borderColorFocusedCached;
         Color     m_borderColorCheckedCached;
         Color     m_borderColorCheckedHoverCached;
         Color     m_borderColorCheckedDisabledCached;
+        Color     m_borderColorCheckedFocusedCached;
         Color     m_backgroundColorCached;
         Color     m_backgroundColorHoverCached;
         Color     m_backgroundColorDisabledCached;

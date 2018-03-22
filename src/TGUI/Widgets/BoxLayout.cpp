@@ -90,8 +90,6 @@ namespace tgui
         {
             Group::add(widget, widgetName);
 
-            unfocusWidgets();
-
             m_widgets.pop_back();
             m_widgetNames.pop_back();
 

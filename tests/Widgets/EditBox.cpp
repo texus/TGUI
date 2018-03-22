@@ -418,7 +418,6 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", "rgb(50, 60, 70)"));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretColor", "rgb(60, 70, 80)"));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretColorHover", "rgb(110, 120, 130)"));
-                REQUIRE_NOTHROW(renderer->setProperty("CaretColorDisabled", "rgb(130, 140, 150)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", "rgb(140, 150, 160)"));
@@ -441,7 +440,6 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretColor", sf::Color{60, 70, 80}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretColorHover", sf::Color{110, 120, 130}));
-                REQUIRE_NOTHROW(renderer->setProperty("CaretColorDisabled", sf::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorHover", sf::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColorDisabled", sf::Color{140, 150, 160}));
@@ -464,7 +462,6 @@ TEST_CASE("[EditBox]")
                 renderer->setDefaultTextColor({50, 60, 70});
                 renderer->setCaretColor({60, 70, 80});
                 renderer->setCaretColorHover({110, 120, 130});
-                renderer->setCaretColorDisabled({130, 140, 150});
                 renderer->setBackgroundColor({70, 80, 90});
                 renderer->setBackgroundColorHover({80, 90, 100});
                 renderer->setBackgroundColorDisabled({140, 150, 160});
@@ -485,7 +482,6 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getProperty("DefaultTextColor").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("CaretColor").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("CaretColorHover").getColor() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getProperty("CaretColorDisabled").getColor() == sf::Color(130, 140, 150));
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BackgroundColorHover").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("BackgroundColorDisabled").getColor() == sf::Color(140, 150, 160));
@@ -505,7 +501,6 @@ TEST_CASE("[EditBox]")
             REQUIRE(renderer->getDefaultTextColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getCaretColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getCaretColorHover() == sf::Color(110, 120, 130));
-            REQUIRE(renderer->getCaretColorDisabled() == sf::Color(130, 140, 150));
             REQUIRE(renderer->getBackgroundColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getBackgroundColorHover() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getBackgroundColorDisabled() == sf::Color(140, 150, 160));
@@ -610,7 +605,6 @@ TEST_CASE("[EditBox]")
 
         auto setDisabledRenderer = [&](bool textured){
                                         renderer.setTextColorDisabled({0, 0, 80});
-                                        renderer.setCaretColorDisabled({0, 80, 80});
                                         renderer.setBackgroundColorDisabled({80, 80, 0});
                                         renderer.setBorderColorDisabled({80, 0, 0});
                                         if (textured)

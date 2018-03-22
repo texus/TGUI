@@ -187,7 +187,8 @@ namespace tgui
             m_spriteUncheckedDisabled.setSize(m_spriteUnchecked.getSize());
             m_spriteCheckedDisabled.setSize(m_spriteChecked.getSize());
 
-            m_spriteFocused.setSize(m_spriteUnchecked.getSize());
+            m_spriteUncheckedFocused.setSize(m_spriteUnchecked.getSize());
+            m_spriteCheckedFocused.setSize(m_spriteChecked.getSize());
         }
     }
 
@@ -211,6 +212,8 @@ namespace tgui
                     checkedSprite = &m_spriteCheckedDisabled;
                 else if (m_mouseHover && m_spriteCheckedHover.isSet())
                     checkedSprite = &m_spriteCheckedHover;
+                else if (m_focused && m_spriteCheckedFocused.isSet())
+                    checkedSprite = &m_spriteCheckedFocused;
                 else
                     checkedSprite = &m_spriteChecked;
 
@@ -232,13 +235,11 @@ namespace tgui
                     m_spriteUncheckedDisabled.draw(target, states);
                 else if (m_mouseHover && m_spriteUncheckedHover.isSet())
                     m_spriteUncheckedHover.draw(target, states);
+                else if (m_focused && m_spriteUncheckedFocused.isSet())
+                    m_spriteUncheckedFocused.draw(target, states);
                 else
                     m_spriteUnchecked.draw(target, states);
             }
-
-            // When the radio button is focused then draw an extra image
-            if (m_focused && m_spriteFocused.isSet())
-                m_spriteFocused.draw(target, states);
         }
         else // There are no images
         {

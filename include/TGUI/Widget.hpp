@@ -365,15 +365,13 @@ namespace tgui
         ///
         /// The previously focused widget will be unfocused.
         ///
-        /// @warning This function only has an effect when the widget was already added to its parent (e.g. the Gui).
+        /// @warning This function only works properly when the widget was already added to its parent (e.g. the Gui).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void focus();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Unfocus the widget
-        ///
-        /// @warning This function only has an effect when the widget was already added to its parent (e.g. the Gui).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void unfocus();
 
@@ -502,6 +500,13 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the widget can gain focus
+        /// @return Can the widget be focused?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool canGainFocus() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the widget is a container widget or not
         /// @return Does the widget inherit from the Container class, giving it the ability to have child widgets?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -569,16 +574,6 @@ namespace tgui
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual void mouseWheelScrolled(float delta, Vector2f pos);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void widgetFocused();
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void widgetUnfocused();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -754,10 +749,10 @@ namespace tgui
 
         SignalVector2f  onPositionChange = {"PositionChanged"};  ///< The position of the widget changed. Optional parameter: new position
         SignalVector2f  onSizeChange     = {"SizeChanged"};      ///< The size of the widget changed. Optional parameter: new size
-        Signal         onFocus          = {"Focused"};          ///< The widget was focused
-        Signal         onUnfocus        = {"Unfocused"};        ///< The widget was unfocused
-        Signal         onMouseEnter     = {"MouseEntered"};     ///< The mouse entered the widget
-        Signal         onMouseLeave     = {"MouseLeft"};        ///< The mouse left the widget
+        Signal          onFocus          = {"Focused"};          ///< The widget was focused
+        Signal          onUnfocus        = {"Unfocused"};        ///< The widget was unfocused
+        Signal          onMouseEnter     = {"MouseEntered"};     ///< The mouse entered the widget
+        Signal          onMouseLeave     = {"MouseLeft"};        ///< The mouse left the widget
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -790,11 +785,8 @@ namespace tgui
         bool m_mouseHover = false;
         bool m_mouseDown = false;
 
-        // Are you focused on the widget?
+        // Is the widget focused?
         bool m_focused = false;
-
-        // Can the widget be focused?
-        bool m_allowFocus = false;
 
         // Keep track of the elapsed time.
         sf::Time m_animationTimeElapsed;
@@ -833,7 +825,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        friend class Container; // Container changes widget properties of its child widgets
+        friend class Container; // Container accesses m_mouseDown, m_draggableWidget, save and load
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

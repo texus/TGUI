@@ -262,17 +262,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::widgetFocused()
-    {
-        // We can't be focused when we don't have a focus image
-        if (m_spriteFocused.isSet())
-            Widget::widgetFocused();
-        else
-            unfocus();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void RadioButton::mouseEnteredWidget()
     {
         Widget::mouseEnteredWidget();
@@ -358,10 +347,13 @@ namespace tgui
         {
             m_spriteCheckedDisabled.setTexture(getSharedRenderer()->getTextureCheckedDisabled());
         }
-        else if (property == "texturefocused")
+        else if (property == "textureuncheckedfocused")
         {
-            m_spriteFocused.setTexture(getSharedRenderer()->getTextureFocused());
-            m_allowFocus = m_spriteFocused.isSet();
+            m_spriteUncheckedFocused.setTexture(getSharedRenderer()->getTextureUncheckedFocused());
+        }
+        else if (property == "texturecheckedfocused")
+        {
+            m_spriteCheckedFocused.setTexture(getSharedRenderer()->getTextureCheckedFocused());
         }
         else if (property == "checkcolor")
         {
@@ -387,6 +379,10 @@ namespace tgui
         {
             m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
         }
+        else if (property == "bordercolorfocused")
+        {
+            m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
+        }
         else if (property == "bordercolorchecked")
         {
             m_borderColorCheckedCached = getSharedRenderer()->getBorderColorChecked();
@@ -398,6 +394,10 @@ namespace tgui
         else if (property == "bordercolorcheckeddisabled")
         {
             m_borderColorCheckedDisabledCached = getSharedRenderer()->getBorderColorCheckedDisabled();
+        }
+        else if (property == "bordercolorcheckedfocused")
+        {
+            m_borderColorCheckedFocusedCached = getSharedRenderer()->getBorderColorCheckedFocused();
         }
         else if (property == "backgroundcolor")
         {
@@ -437,7 +437,8 @@ namespace tgui
             m_spriteCheckedHover.setOpacity(m_opacityCached);
             m_spriteUncheckedDisabled.setOpacity(m_opacityCached);
             m_spriteCheckedDisabled.setOpacity(m_opacityCached);
-            m_spriteFocused.setOpacity(m_opacityCached);
+            m_spriteUncheckedFocused.setOpacity(m_opacityCached);
+            m_spriteCheckedFocused.setOpacity(m_opacityCached);
 
             m_text.setOpacity(m_opacityCached);
         }
@@ -564,15 +565,23 @@ namespace tgui
                     return m_borderColorCheckedHoverCached;
                 else if (m_borderColorCheckedCached.isSet())
                     return m_borderColorCheckedCached;
+                else if (m_focused && m_borderColorCheckedFocusedCached.isSet())
+                    return m_borderColorCheckedFocusedCached;
                 else if (m_borderColorHoverCached.isSet())
                     return m_borderColorHoverCached;
+                else if (m_focused && m_borderColorFocusedCached.isSet())
+                    return m_borderColorFocusedCached;
                 else
                     return m_borderColorCached;
             }
             else
             {
-                if (m_borderColorCheckedCached.isSet())
+                if (m_focused && m_borderColorCheckedFocusedCached.isSet())
+                    return m_borderColorCheckedFocusedCached;
+                else if (m_borderColorCheckedCached.isSet())
                     return m_borderColorCheckedCached;
+                else if (m_focused && m_borderColorFocusedCached.isSet())
+                    return m_borderColorFocusedCached;
                 else
                     return m_borderColorCached;
             }
@@ -583,6 +592,8 @@ namespace tgui
                 return m_borderColorDisabledCached;
             else if (m_mouseHover && m_borderColorHoverCached.isSet())
                 return m_borderColorHoverCached;
+            else if (m_focused && m_borderColorFocusedCached.isSet())
+                return m_borderColorFocusedCached;
             else
                 return m_borderColorCached;
         }
@@ -598,7 +609,8 @@ namespace tgui
         m_spriteCheckedHover.setSize(getInnerSize());
         m_spriteUncheckedDisabled.setSize(getInnerSize());
         m_spriteCheckedDisabled.setSize(getInnerSize());
-        m_spriteFocused.setSize(getInnerSize());
+        m_spriteUncheckedFocused.setSize(getInnerSize());
+        m_spriteCheckedFocused.setSize(getInnerSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -668,6 +680,8 @@ namespace tgui
                     m_spriteCheckedDisabled.draw(target, states);
                 else if (m_mouseHover && m_spriteCheckedHover.isSet())
                     m_spriteCheckedHover.draw(target, states);
+                else if (m_focused && m_spriteCheckedFocused.isSet())
+                    m_spriteCheckedFocused.draw(target, states);
                 else
                     m_spriteChecked.draw(target, states);
             }
@@ -677,13 +691,11 @@ namespace tgui
                     m_spriteUncheckedDisabled.draw(target, states);
                 else if (m_mouseHover && m_spriteUncheckedHover.isSet())
                     m_spriteUncheckedHover.draw(target, states);
+                else if (m_focused && m_spriteUncheckedFocused.isSet())
+                    m_spriteUncheckedFocused.draw(target, states);
                 else
                     m_spriteUnchecked.draw(target, states);
             }
-
-            // When the radio button is focused then draw an extra image
-            if (m_focused && m_spriteFocused.isSet())
-                m_spriteFocused.draw(target, states);
         }
         else // There are no images
         {

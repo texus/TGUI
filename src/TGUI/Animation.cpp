@@ -48,14 +48,21 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback)
+        Animation::Animation(Type type, Widget::Ptr widget, sf::Time duration, std::function<void()> finishedCallback) :
+            m_type            {type},
+            m_widget          {widget},
+            m_totalDuration   {duration},
+            m_finishedCallback{finishedCallback}
         {
-            m_type = Type::Move;
-            m_widget = widget;
-            m_startPos = start;
-            m_endPos = end;
-            m_totalDuration = duration;
-            m_finishedCallback = finishedCallback;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback) :
+            Animation {Type::Move, widget, duration, finishedCallback},
+            m_startPos{start},
+            m_endPos  {end}
+        {
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,14 +90,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback)
+        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Vector2f end, sf::Time duration, std::function<void()> finishedCallback) :
+            Animation  {Type::Resize, widget, duration, finishedCallback},
+            m_startSize{start},
+            m_endSize  {end}
         {
-            m_type = Type::Resize;
-            m_widget = widget;
-            m_startSize = start;
-            m_endSize = end;
-            m_totalDuration = duration;
-            m_finishedCallback = finishedCallback;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,14 +122,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback)
+        FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, sf::Time duration, std::function<void()> finishedCallback) :
+            Animation     {Type::Fade, widget, duration, finishedCallback},
+            m_startOpacity{std::max(0.f, std::min(1.f, start))},
+            m_endOpacity  {std::max(0.f, std::min(1.f, end))}
         {
-            m_type = Type::Fade;
-            m_widget = widget;
-            m_startOpacity = std::max(0.f, std::min(1.f, start));
-            m_endOpacity = std::max(0.f, std::min(1.f, end));
-            m_totalDuration = duration;
-            m_finishedCallback = finishedCallback;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

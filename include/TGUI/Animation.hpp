@@ -65,13 +65,21 @@ namespace tgui
                 Fade = 4
             };
 
+            // Move constructor has to be explicitly declared since this class has a destructor
+            Animation() = default;
+            Animation(const Animation&) = default;
+            Animation(Animation&&) = default;
+            Animation& operator=(const Animation&) = default;
+            Animation& operator=(Animation&&) = default;
             virtual ~Animation() = default;
 
             Type getType() const;
 
             virtual bool update(sf::Time elapsedTime) = 0;
-
             virtual void finish();
+
+        protected:
+            Animation(Type type, Widget::Ptr widget, sf::Time duration, std::function<void()> finishedCallback);
 
         protected:
             Type m_type = Type::None;

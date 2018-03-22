@@ -51,6 +51,7 @@ namespace tgui
     ChildWindow::ChildWindow(const sf::String& title, unsigned int titleButtons)
     {
         m_type = "ChildWindow";
+        m_isolatedFocus = true;
         m_titleText.setFont(m_fontCached);
 
         m_renderer = aurora::makeCopied<ChildWindowRenderer>();

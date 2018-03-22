@@ -95,7 +95,6 @@ namespace tgui
         m_enabled                      {other.m_enabled},
         m_visible                      {other.m_visible},
         m_parent                       {nullptr},
-        m_allowFocus                   {other.m_allowFocus},
         m_draggableWidget              {other.m_draggableWidget},
         m_containerWidget              {other.m_containerWidget},
         m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
@@ -134,7 +133,6 @@ namespace tgui
         m_mouseHover                   {std::move(other.m_mouseHover)},
         m_mouseDown                    {std::move(other.m_mouseDown)},
         m_focused                      {std::move(other.m_focused)},
-        m_allowFocus                   {std::move(other.m_allowFocus)},
         m_animationTimeElapsed         {std::move(other.m_animationTimeElapsed)},
         m_draggableWidget              {std::move(other.m_draggableWidget)},
         m_containerWidget              {std::move(other.m_containerWidget)},
@@ -184,7 +182,6 @@ namespace tgui
             m_mouseHover           = false;
             m_mouseDown            = false;
             m_focused              = false;
-            m_allowFocus           = other.m_allowFocus;
             m_animationTimeElapsed = {};
             m_draggableWidget      = other.m_draggableWidget;
             m_containerWidget      = other.m_containerWidget;
@@ -235,7 +232,6 @@ namespace tgui
             m_mouseDown            = std::move(other.m_mouseDown);
             m_focused              = std::move(other.m_focused);
             m_animationTimeElapsed = std::move(other.m_animationTimeElapsed);
-            m_allowFocus           = std::move(other.m_allowFocus);
             m_draggableWidget      = std::move(other.m_draggableWidget);
             m_containerWidget      = std::move(other.m_containerWidget);
             m_toolTip              = std::move(other.m_toolTip);
@@ -578,16 +574,25 @@ namespace tgui
 
     void Widget::focus()
     {
-        if (m_parent)
-            m_parent->focusWidget(shared_from_this());
+        if (!m_focused && canGainFocus())
+        {
+            m_focused = true;
+            onFocus.emit(this);
+
+            if (m_parent)
+                m_parent->childWidgetFocused(shared_from_this());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::unfocus()
     {
-        if (m_focused && m_parent)
-            m_parent->unfocusWidgets();
+        if (m_focused)
+        {
+            m_focused = false;
+            onUnfocus.emit(this);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -655,6 +660,13 @@ namespace tgui
     Widget::Ptr Widget::getToolTip() const
     {
         return m_toolTip;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Widget::canGainFocus() const
+    {
+        return m_enabled && m_visible;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -740,24 +752,6 @@ namespace tgui
 
     void Widget::mouseWheelScrolled(float, Vector2f)
     {
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::widgetFocused()
-    {
-        onFocus.emit(this);
-
-        // Make sure the parent is also focused
-        if (m_parent)
-            m_parent->focus();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::widgetUnfocused()
-    {
-        onUnfocus.emit(this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

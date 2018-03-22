@@ -31,12 +31,6 @@
 #include <cassert>
 #include <fstream>
 
-#ifdef SFML_SYSTEM_WINDOWS
-    #include <direct.h> // _getcwd
-#else
-    #include <unistd.h> // getcwd
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -45,102 +39,6 @@ namespace tgui
 
     namespace
     {
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        std::string getWorkingDirectory()
-        {
-            const std::string resourcePath = getResourcePath();
-
-            std::string workingDirectory;
-        #ifdef SFML_SYSTEM_WINDOWS
-            if ((resourcePath[0] == '/') || (resourcePath[0] == '\\') || ((resourcePath.size() > 1) && (resourcePath[1] == ':')))
-        #else
-            if (resourcePath[0] == '/')
-        #endif
-            {
-                // The resource path is already an absolute path, we don't even need to find out the current working directory
-                workingDirectory = resourcePath;
-            }
-            else
-            {
-                // Get the current working directory (used for turning absolute into relative paths in saveWidget)
-            #ifdef SFML_SYSTEM_WINDOWS
-                char* buffer = _getcwd(nullptr, 0);
-            #else
-                char* buffer = getcwd(nullptr, 0);
-            #endif
-                if (buffer)
-                {
-                    workingDirectory = buffer;
-                    free(buffer);
-
-                    if (!workingDirectory.empty() && (workingDirectory[workingDirectory.size() - 1] != '/') && (workingDirectory[workingDirectory.size() - 1] != '\\'))
-                        workingDirectory.push_back('/');
-
-                    workingDirectory += resourcePath;
-                }
-            }
-
-            return workingDirectory;
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        sf::String tryRemoveAbsolutePath(const sf::String& value, const std::string& workingDirectory)
-        {
-            if (!value.isEmpty() && (value != "null") && (value != "nullptr"))
-            {
-                if (value[0] != '"')
-                {
-                #ifdef SFML_SYSTEM_WINDOWS
-                    if ((value[0] == '/') || (value[0] == '\\') || ((value.getSize() > 1) && (value[1] == ':')))
-                #else
-                    if (value[0] == '/')
-                #endif
-                    {
-                        if ((value.getSize() > workingDirectory.size()) && (value.substring(0, workingDirectory.size()) == workingDirectory))
-                        {
-                            if ((value[workingDirectory.size()] != '/') && (value[workingDirectory.size()] != '\\'))
-                                return value.substring(workingDirectory.size());
-                            else
-                                return value.substring(workingDirectory.size() + 1);
-                        }
-                    }
-                }
-                else // The filename is between quotes
-                {
-                    if (value.getSize() <= 1)
-                        return value;
-
-                #ifdef SFML_SYSTEM_WINDOWS
-                    if ((value[1] == '/') || (value[1] == '\\') || ((value.getSize() > 2) && (value[2] == ':')))
-                #else
-                    if (value[1] == '/')
-                #endif
-                    {
-                        if ((value.getSize() + 1 > workingDirectory.size()) && (value.substring(1, workingDirectory.size()) == workingDirectory))
-                            return '"' + value.substring(workingDirectory.size() + 1);
-                    }
-                }
-            }
-
-            return value;
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        void recursiveTryRemoveAbsolutePath(std::unique_ptr<DataIO::Node>& node, const std::string& workingDirectory)
-        {
-            for (auto& pair : node->propertyValuePairs)
-            {
-                if (((pair.first.size() >= 7) && (toLower(pair.first.substr(0, 7)) == "texture")) || (pair.first == "font"))
-                    pair.second->value = tryRemoveAbsolutePath(pair.second->value, workingDirectory);
-            }
-
-            for (auto& child : node->children)
-                recursiveTryRemoveAbsolutePath(child, workingDirectory);
-        }
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         void getAllRenderers(std::map<RendererData*, std::vector<const Widget*>>& renderers, const Container* container)
@@ -160,7 +58,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        std::unique_ptr<DataIO::Node> saveRenderer(RendererData* renderer, const std::string& name, const std::string& workingDirectory)
+        std::unique_ptr<DataIO::Node> saveRenderer(RendererData* renderer, const std::string& name)
         {
             auto node = make_unique<DataIO::Node>();
             node->name = name;
@@ -170,31 +68,20 @@ namespace tgui
                 if (pair.first == "font" && ObjectConverter{pair.second}.getString() == "null")
                     continue;
 
-                sf::String value = ObjectConverter{pair.second}.getString();
-
-                // Turn absolute paths (which were likely caused by loading from a theme) into relative paths if the first part of the path matches the current working directory
-                if (!workingDirectory.empty())
-                {
-                    if ((pair.second.getType() == ObjectConverter::Type::Font) || (pair.second.getType() == ObjectConverter::Type::Texture))
-                        value = tryRemoveAbsolutePath(value, workingDirectory);
-                }
-
                 if (pair.second.getType() == ObjectConverter::Type::RendererData)
                 {
-                    std::stringstream ss{value};
+                    std::stringstream ss{ObjectConverter{pair.second}.getString()};
                     auto rendererRootNode = DataIO::parse(ss);
 
                     // If there are braces around the renderer string, then the child node is the one we need
                     if (rendererRootNode->propertyValuePairs.empty() && (rendererRootNode->children.size() == 1))
                         rendererRootNode = std::move(rendererRootNode->children[0]);
 
-                    recursiveTryRemoveAbsolutePath(rendererRootNode, workingDirectory);
-
                     rendererRootNode->name = pair.first;
                     node->children.push_back(std::move(rendererRootNode));
                 }
                 else
-                    node->propertyValuePairs[pair.first] = make_unique<DataIO::ValueNode>(value);
+                    node->propertyValuePairs[pair.first] = make_unique<DataIO::ValueNode>(ObjectConverter{pair.second}.getString());
             }
 
             return node;
@@ -208,7 +95,6 @@ namespace tgui
     Container::Container()
     {
         m_containerWidget = true;
-        m_allowFocus = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -354,7 +240,10 @@ namespace tgui
                 }
 
                 if (widget == m_focusedWidget)
-                    unfocusWidgets();
+                {
+                    m_focusedWidget = nullptr;
+                    widget->unfocus();
+                }
 
                 // Remove the widget
                 widget->setParent(nullptr);
@@ -408,169 +297,6 @@ namespace tgui
         }
 
         return "";
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::focusWidget(const Widget::Ptr& widget)
-    {
-        // Loop all the widgets
-        for (std::size_t i = 0; i < m_widgets.size(); ++i)
-        {
-            // Search for the widget that has to be focused
-            if (m_widgets[i] == widget)
-            {
-                // Only continue when the widget wasn't already focused
-                if (widget != m_focusedWidget)
-                {
-                    // Unfocus the currently focused widget
-                    if (m_focusedWidget)
-                    {
-                        m_focusedWidget->m_focused = false;
-                        m_focusedWidget->widgetUnfocused();
-                        m_focusedWidget = nullptr;
-                    }
-
-                    // Focus the new widget
-                    if (widget->isEnabled())
-                    {
-                        m_focusedWidget = widget;
-                        widget->m_focused = true;
-                        widget->widgetFocused();
-                    }
-                }
-
-                break;
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::focusNextWidget()
-    {
-        const std::size_t focusedWidgetIndex = getFocusedWidgetIndex();
-
-        // Loop all widgets behind the focused one
-        for (std::size_t i = focusedWidgetIndex; i < m_widgets.size(); ++i)
-        {
-            // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i]->m_allowFocus)
-            {
-                // Make sure that the widget is visible and enabled
-                if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
-                {
-                    if (m_focusedWidget)
-                    {
-                        // unfocus the current widget
-                        m_focusedWidget->m_focused = false;
-                        m_focusedWidget->widgetUnfocused();
-                    }
-
-                    // Focus on the new widget
-                    m_focusedWidget = m_widgets[i];
-                    m_widgets[i]->m_focused = true;
-                    m_widgets[i]->widgetFocused();
-                    return;
-                }
-            }
-        }
-
-        // None of the widgets behind the focused one could be focused, so loop the ones before it
-        if (m_focusedWidget)
-        {
-            for (std::size_t i = 0; i < focusedWidgetIndex - 1; ++i)
-            {
-                // If you are not allowed to focus the widget, then skip it
-                if (m_widgets[i]->m_allowFocus)
-                {
-                    // Make sure that the widget is visible and enabled
-                    if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
-                    {
-                        // unfocus the current widget
-                        m_focusedWidget->m_focused = false;
-                        m_focusedWidget->widgetUnfocused();
-
-                        // Focus on the new widget
-                        m_focusedWidget = m_widgets[i];
-                        m_widgets[i]->m_focused = true;
-                        m_widgets[i]->widgetFocused();
-
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::focusPreviousWidget()
-    {
-        const std::size_t focusedWidgetIndex = getFocusedWidgetIndex();
-
-        // Loop the widgets before the focused one
-        if (m_focusedWidget)
-        {
-            for (std::size_t i = focusedWidgetIndex - 1; i > 0; --i)
-            {
-                // If you are not allowed to focus the widget, then skip it
-                if (m_widgets[i-1]->m_allowFocus)
-                {
-                    // Make sure that the widget is visible and enabled
-                    if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
-                    {
-                        // unfocus the current widget
-                        m_focusedWidget->m_focused = false;
-                        m_focusedWidget->widgetUnfocused();
-
-                        // Focus on the new widget
-                        m_focusedWidget = m_widgets[i-1];
-                        m_widgets[i-1]->m_focused = true;
-                        m_widgets[i-1]->widgetFocused();
-
-                        return;
-                    }
-                }
-            }
-        }
-
-        // None of the widgets before the focused one could be focused, so loop all widgets behind the focused one
-        for (std::size_t i = m_widgets.size(); i > focusedWidgetIndex; --i)
-        {
-            // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i-1]->m_allowFocus)
-            {
-                // Make sure that the widget is visible and enabled
-                if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
-                {
-                    if (m_focusedWidget)
-                    {
-                        // unfocus the current widget
-                        m_focusedWidget->m_focused = false;
-                        m_focusedWidget->widgetUnfocused();
-                    }
-
-                    // Focus on the new widget
-                    m_focusedWidget = m_widgets[i-1];
-                    m_widgets[i-1]->m_focused = true;
-                    m_widgets[i-1]->widgetFocused();
-                    return;
-                }
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::unfocusWidgets()
-    {
-        if (m_focusedWidget)
-        {
-            m_focusedWidget->m_focused = false;
-            m_focusedWidget->widgetUnfocused();
-            m_focusedWidget = nullptr;
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -664,8 +390,6 @@ namespace tgui
 
     void Container::saveWidgetsToStream(std::stringstream& stream) const
     {
-        const std::string workingDirectory = getWorkingDirectory();
-
         auto node = make_unique<DataIO::Node>();
 
         std::map<RendererData*, std::vector<const Widget*>> renderers;
@@ -678,14 +402,14 @@ namespace tgui
             // The renderer can remain inside the widget if it is not shared, so provide the node to be included inside the widget
             if (renderer.second.size() == 1)
             {
-                renderersMap[renderer.second[0]] = {saveRenderer(renderer.first, "Renderer", workingDirectory), ""};
+                renderersMap[renderer.second[0]] = {saveRenderer(renderer.first, "Renderer"), ""};
                 continue;
             }
 
             // When the widget is shared, only provide the id instead of the node itself
             ++id;
             const std::string idStr = to_string(id);
-            node->children.push_back(saveRenderer(renderer.first, "Renderer." + idStr, workingDirectory));
+            node->children.push_back(saveRenderer(renderer.first, "Renderer." + idStr));
             for (const auto& child : renderer.second)
                 renderersMap[child] = std::make_pair(nullptr, idStr); // Did not compile with VS2015 Update 2 when using braces
         }
@@ -703,19 +427,17 @@ namespace tgui
         // Loop through all widgets
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            // Check if the widget is found
-            if (m_widgets[i] == widget)
-            {
-                // Copy the widget
-                m_widgets.push_back(m_widgets[i]);
-                m_widgetNames.push_back(m_widgetNames[i]);
+            if (m_widgets[i] != widget)
+                continue;
 
-                // Remove the old widget
-                m_widgets.erase(m_widgets.begin() + i);
-                m_widgetNames.erase(m_widgetNames.begin() + i);
+            // Copy the widget
+            m_widgets.push_back(m_widgets[i]);
+            m_widgetNames.push_back(m_widgetNames[i]);
 
-                break;
-            }
+            // Remove the old widget
+            m_widgets.erase(m_widgets.begin() + i);
+            m_widgetNames.erase(m_widgetNames.begin() + i);
+            break;
         }
     }
 
@@ -726,22 +448,130 @@ namespace tgui
         // Loop through all widgets
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            // Check if the widget is found
-            if (m_widgets[i] == widget)
-            {
-                // Copy the widget
-                const Widget::Ptr obj = m_widgets[i];
-                const std::string name = m_widgetNames[i];
-                m_widgets.insert(m_widgets.begin(), obj);
-                m_widgetNames.insert(m_widgetNames.begin(), name);
+            if (m_widgets[i] != widget)
+                continue;
 
-                // Remove the old widget
-                m_widgets.erase(m_widgets.begin() + i + 1);
-                m_widgetNames.erase(m_widgetNames.begin() + i + 1);
+            // Copy the widget
+            const Widget::Ptr obj = m_widgets[i];
+            const std::string name = m_widgetNames[i];
+            m_widgets.insert(m_widgets.begin(), obj);
+            m_widgetNames.insert(m_widgetNames.begin(), name);
 
-                break;
-            }
+            // Remove the old widget
+            m_widgets.erase(m_widgets.begin() + i + 1);
+            m_widgetNames.erase(m_widgetNames.begin() + i + 1);
+            break;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Container::focusNextWidget()
+    {
+        // If the focused widget is a container then try to focus the next widget inside it
+        if (m_focusedWidget && m_focusedWidget->isContainer())
+        {
+            auto focusedContainer = std::static_pointer_cast<Container>(m_focusedWidget);
+            if (focusedContainer->focusNextWidget())
+                return true;
+        }
+
+        // Loop all widgets behind the focused one
+        const std::size_t focusedWidgetIndex = getFocusedWidgetIndex();
+        for (std::size_t i = focusedWidgetIndex; i < m_widgets.size(); ++i)
+        {
+            if (tryFocusWidget(m_widgets[i], false))
+                return true;
+        }
+
+        // If we are not an isolated focus group then the focus will be given to the group behind us
+        if (!m_isolatedFocus)
+            return false;
+
+        // None of the widgets behind the focused one could be focused, so loop the ones before it
+        if (!m_focusedWidget)
+            return false;
+
+        // Also include the focused widget since it may be a container that didn't have its first widget focused
+        for (std::size_t i = 0; i < focusedWidgetIndex; ++i)
+        {
+            if (tryFocusWidget(m_widgets[i], false))
+                return true;
+        }
+
+        // No other widget could be focused
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Container::focusPreviousWidget()
+    {
+        // If the focused widget is a container then try to focus the previous widget inside it
+        if (m_focusedWidget && m_focusedWidget->isContainer())
+        {
+            auto focusedContainer = std::static_pointer_cast<Container>(m_focusedWidget);
+            if (focusedContainer->focusPreviousWidget())
+                return true;
+        }
+
+        // Loop all widgets before the focused one
+        const std::size_t focusedWidgetIndex = getFocusedWidgetIndex();
+        if (focusedWidgetIndex > 0)
+        {
+            for (std::size_t i = focusedWidgetIndex - 1; i > 0; --i)
+            {
+                if (tryFocusWidget(m_widgets[i-1], true))
+                    return true;
+            }
+
+            // If we are not an isolated focus group then the focus will be given to the group before us
+            if (!m_isolatedFocus)
+                return false;
+        }
+
+        // None of the widgets before the focused one could be focused, so loop the ones after it.
+        for (std::size_t i = m_widgets.size(); i > focusedWidgetIndex; --i)
+        {
+            if (tryFocusWidget(m_widgets[i-1], true))
+                return true;
+        }
+
+        // Also include the focused widget since it may be a container that didn't have its last widget focused.
+        if (focusedWidgetIndex > 0)
+        {
+            if (tryFocusWidget(m_widgets[focusedWidgetIndex-1], true))
+                return true;
+        }
+
+        // No other widget could be focused
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::unfocus()
+    {
+        if (m_focused && m_focusedWidget)
+            m_focusedWidget->unfocus();
+
+        Widget::unfocus();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::childWidgetFocused(const Widget::Ptr& child)
+    {
+        if (m_focusedWidget != child)
+        {
+            if (m_focusedWidget)
+                m_focusedWidget->unfocus();
+
+            m_focusedWidget = child;
+        }
+
+        if (!isFocused())
+            focus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -847,13 +677,6 @@ namespace tgui
 
         for (auto& widget : m_widgets)
             widget->mouseNoLongerDown();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::widgetUnfocused()
-    {
-        unfocusWidgets();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1009,21 +832,16 @@ namespace tgui
 
             // Check if the mouse is on top of a widget
             Widget::Ptr widget = mouseOnWhichWidget(mousePos);
-            if (widget != nullptr)
+            if (widget)
             {
-                // Focus the widget
-                focusWidget(widget);
+                // Unfocus the previously focused widget
+                if (m_focusedWidget && (m_focusedWidget != widget))
+                    m_focusedWidget->unfocus();
 
-                if (widget->isContainer())
-                {
-                    // If another widget was focused then unfocus it now
-                    if (m_focusedWidget && (widget != m_focusedWidget))
-                    {
-                        m_focusedWidget->m_focused = false;
-                        m_focusedWidget->widgetUnfocused();
-                        m_focusedWidget = nullptr;
-                    }
-                }
+                // Focus the widget unless it is a container, in which case it will get focused when the event is handled by the bottom widget
+                m_focusedWidget = widget;
+                if (!widget->isContainer())
+                    widget->focus();
 
                 if (((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))
                  || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
@@ -1037,8 +855,14 @@ namespace tgui
                     return true;
                 }
             }
-            else // The mouse did not went down on a widget, so unfocus the focused widget
-                unfocusWidgets();
+            else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
+            {
+                if (m_focusedWidget)
+                    m_focusedWidget->unfocus();
+
+                m_focusedWidget = nullptr;
+                focus();
+            }
 
             return false;
         }
@@ -1080,7 +904,7 @@ namespace tgui
             if (event.key.code != sf::Keyboard::Unknown)
             {
                 // Check if there is a focused widget
-                if (m_focusedWidget)
+                if (m_focusedWidget && m_focusedWidget->isFocused())
                 {
                 #ifdef SFML_SYSTEM_ANDROID
                     // Map delete to backspace on android
@@ -1097,21 +921,6 @@ namespace tgui
             return false;
         }
 
-        // Check if a key was released
-        else if (event.type == sf::Event::KeyReleased)
-        {
-            // Change the focus to another widget when the tab key was pressed
-            if (event.key.code == sf::Keyboard::Tab)
-            {
-                if (event.key.shift)
-                    return shiftTabKeyPressed();
-                else
-                    return tabKeyPressed();
-            }
-            else
-                return false;
-        }
-
         // Also check if text was entered (not a special key)
         else if (event.type == sf::Event::TextEntered)
         {
@@ -1119,7 +928,7 @@ namespace tgui
             if ((event.text.unicode >= 32) && (event.text.unicode != 127))
             {
                 // Tell the widget that the key was pressed
-                if (m_focusedWidget)
+                if (m_focusedWidget && m_focusedWidget->isFocused())
                 {
                     m_focusedWidget->textEntered(event.text.unicode);
                     return true;
@@ -1145,261 +954,6 @@ namespace tgui
         }
         else // Event is ignored
             return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Container::focusPrevWidgetInContainer()
-    {
-        // Don't do anything when the tab key usage is disabled
-        if (!isTabKeyUsageEnabled())
-            return false;
-
-        // If the focused widget is a container then try to focus the previous widget inside it
-        if (m_focusedWidget && m_focusedWidget->isContainer() && std::static_pointer_cast<Container>(m_focusedWidget)->focusPrevWidgetInContainer())
-            return true;
-
-        for (std::size_t i = getFocusedWidgetIndex() - 1; i > 0; ++i)
-        {
-            // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i-1]->m_allowFocus)
-            {
-                // Make sure that the widget is visible and enabled
-                if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
-                {
-                    // Container widgets can only be focused it they contain focusable widgets
-                    if ((!m_widgets[i-1]->isContainer()) || (std::static_pointer_cast<Container>(m_widgets[i-1])->focusPrevWidgetInContainer()))
-                    {
-                        if (m_focusedWidget)
-                        {
-                            // Unfocus the current widget
-                            m_focusedWidget->m_focused = false;
-                            m_focusedWidget->widgetUnfocused();
-                        }
-
-                        // Focus on the new widget
-                        m_focusedWidget = m_widgets[i-1];
-                        m_widgets[i-1]->m_focused = true;
-                        m_widgets[i-1]->widgetFocused();
-
-                        return true;
-                    }
-                }
-            }
-        }
-
-        // We have the lowest id
-        unfocusWidgets();
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Container::focusNextWidgetInContainer()
-    {
-        // Don't do anything when the tab key usage is disabled
-        if (!isTabKeyUsageEnabled())
-            return false;
-
-        // If the focused widget is a container then try to focus the next widget inside it
-        if (m_focusedWidget && m_focusedWidget->isContainer() && std::static_pointer_cast<Container>(m_focusedWidget)->focusNextWidgetInContainer())
-            return true;
-
-        // Loop through all widgets
-        for (std::size_t i = getFocusedWidgetIndex(); i < m_widgets.size(); ++i)
-        {
-            // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i]->m_allowFocus)
-            {
-                // Make sure that the widget is visible and enabled
-                if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
-                {
-                    // Container widgets can only be focused it they contain focusable widgets
-                    if ((!m_widgets[i]->isContainer()) || (std::static_pointer_cast<Container>(m_widgets[i])->focusNextWidgetInContainer()))
-                    {
-                        if (m_focusedWidget)
-                        {
-                            // Unfocus the current widget
-                            m_focusedWidget->m_focused = false;
-                            m_focusedWidget->widgetUnfocused();
-                        }
-
-                        // Focus on the new widget
-                        m_focusedWidget = m_widgets[i];
-                        m_widgets[i]->m_focused = true;
-                        m_widgets[i]->widgetFocused();
-
-                        return true;
-                    }
-                }
-            }
-        }
-
-        // We have the highest id
-        unfocusWidgets();
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Container::tabKeyPressed()
-    {
-        // Don't do anything when the tab key usage is disabled
-        if (!isTabKeyUsageEnabled())
-            return false;
-
-        // Check if a container is focused
-        if (m_focusedWidget)
-        {
-            if (m_focusedWidget->isContainer())
-            {
-                // Focus the next widget in container
-                if (std::static_pointer_cast<Container>(m_focusedWidget)->focusNextWidgetInContainer())
-                    return true;
-            }
-        }
-
-        const std::size_t focusedWidgetIndex = getFocusedWidgetIndex();
-
-        // Loop all widgets behind the focused one
-        for (std::size_t i = focusedWidgetIndex; i < m_widgets.size(); ++i)
-        {
-            // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i]->m_allowFocus)
-            {
-                // Make sure that the widget is visible and enabled
-                if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
-                {
-                    if (m_focusedWidget)
-                    {
-                        // unfocus the current widget
-                        m_focusedWidget->m_focused = false;
-                        m_focusedWidget->widgetUnfocused();
-                    }
-
-                    // Focus on the new widget
-                    m_focusedWidget = m_widgets[i];
-                    m_widgets[i]->m_focused = true;
-                    m_widgets[i]->widgetFocused();
-                    return true;
-                }
-            }
-        }
-
-        // None of the widgets behind the focused one could be focused, so loop the ones before it
-        if (m_focusedWidget)
-        {
-            for (std::size_t i = 0; i < focusedWidgetIndex-1; ++i)
-            {
-                // If you are not allowed to focus the widget, then skip it
-                if (m_widgets[i]->m_allowFocus)
-                {
-                    // Make sure that the widget is visible and enabled
-                    if ((m_widgets[i]->isVisible()) && (m_widgets[i]->isEnabled()))
-                    {
-                        // unfocus the current widget
-                        m_focusedWidget->m_focused = false;
-                        m_focusedWidget->widgetUnfocused();
-
-                        // Focus on the new widget
-                        m_focusedWidget = m_widgets[i];
-                        m_widgets[i]->m_focused = true;
-                        m_widgets[i]->widgetFocused();
-                        return true;
-                    }
-                }
-            }
-        }
-
-        // If the currently focused container widget is the only widget to focus, then focus its next child widget
-        if (m_focusedWidget && (m_focusedWidget->isContainer()))
-        {
-            std::static_pointer_cast<Container>(m_focusedWidget)->tabKeyPressed();
-            return true;
-        }
-
-        return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Container::shiftTabKeyPressed()
-    {
-        // Don't do anything when the tab key usage is disabled
-        if (!isTabKeyUsageEnabled())
-            return false;
-
-        const std::size_t focusedWidgetIndex = getFocusedWidgetIndex();
-
-        if (m_focusedWidget)
-        {
-            // Check if a container is focused
-            if (m_focusedWidget->isContainer())
-            {
-                // Focus the previous widget in container
-                if (std::static_pointer_cast<Container>(m_focusedWidget)->focusPrevWidgetInContainer())
-                    return true;
-            }
-
-            // Loop all widgets before the focused one
-            for (std::size_t i = focusedWidgetIndex - 1; i > 0; --i)
-            {
-                // If you are not allowed to focus the widget, then skip it
-                if (m_widgets[i-1]->m_allowFocus)
-                {
-                    // Make sure that the widget is visible and enabled
-                    if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
-                    {
-                        if (m_focusedWidget)
-                        {
-                            // Unfocus the current widget
-                            m_focusedWidget->m_focused = false;
-                            m_focusedWidget->widgetUnfocused();
-                        }
-
-                        // Focus on the new widget
-                        m_focusedWidget = m_widgets[i-1];
-                        m_widgets[i-1]->m_focused = true;
-                        m_widgets[i-1]->widgetFocused();
-                        return true;
-                    }
-                }
-            }
-        }
-
-        // None of the widgets before the focused one could be focused, so loop the ones behind it
-        for (std::size_t i = m_widgets.size(); i > focusedWidgetIndex; --i)
-        {
-            // If you are not allowed to focus the widget, then skip it
-            if (m_widgets[i-1]->m_allowFocus)
-            {
-                // Make sure that the widget is visible and enabled
-                if ((m_widgets[i-1]->isVisible()) && (m_widgets[i-1]->isEnabled()))
-                {
-                    if (m_focusedWidget)
-                    {
-                        // Unfocus the current widget
-                        m_focusedWidget->m_focused = false;
-                        m_focusedWidget->widgetUnfocused();
-                    }
-
-                    // Focus on the new widget
-                    m_focusedWidget = m_widgets[i-1];
-                    m_widgets[i-1]->m_focused = true;
-                    m_widgets[i-1]->widgetFocused();
-                    return true;
-                }
-            }
-        }
-
-        // If the currently focused container widget is the only widget to focus, then focus its previous child widget
-        if (m_focusedWidget && (m_focusedWidget->isContainer()))
-        {
-            std::static_pointer_cast<Container>(m_focusedWidget)->shiftTabKeyPressed();
-            return true;
-        }
-
-        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1455,17 +1009,66 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Container::tryFocusWidget(const tgui::Widget::Ptr &widget, bool reverseWidgetOrder)
+    {
+        // If you are not allowed to focus the widget, then skip it
+        if (!widget->canGainFocus() || !widget->isVisible() || !widget->isEnabled())
+            return false;
+
+        if (widget->isContainer())
+        {
+            auto container = std::static_pointer_cast<Container>(widget);
+
+            // Also skip isolated containers (e.g. ChildWindow)
+            if (container->m_isolatedFocus)
+                return false;
+
+            // Try to focus the first focusable widget in the container
+            auto oldUnfocusedWidget = container->m_focusedWidget;
+            container->m_focusedWidget = nullptr;
+            bool childWidgetFocused = reverseWidgetOrder ? container->focusPreviousWidget() : container->focusNextWidget();
+
+            if (oldUnfocusedWidget && (oldUnfocusedWidget != container->m_focusedWidget))
+                oldUnfocusedWidget->unfocus();
+
+            if (!childWidgetFocused)
+                return false;
+        }
+
+        if (m_focusedWidget == widget)
+            return true;
+
+        if (m_focusedWidget)
+            m_focusedWidget->unfocus();
+
+        m_focusedWidget = widget;
+        m_focusedWidget->focus();
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     GuiContainer::GuiContainer()
     {
         m_type = "GuiContainer";
+        m_focused = true;
+        m_isolatedFocus = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void GuiContainer::setSize(const Layout2d&)
     {
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void GuiContainer::unfocus()
+    {
+        Container::unfocus();
+        m_focused = true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

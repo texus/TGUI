@@ -28,7 +28,6 @@
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Global.hpp>
 
-#include <stdlib.h> // _fullpath/realpath
 #include <cassert>
 #include <sstream>
 #include <fstream>
@@ -59,8 +58,8 @@ namespace tgui
 
     namespace
     {
-        // Turns texture and font filenames into absolute paths
-        void injectAbsolutePath(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const std::string& path)
+        // Turns texture and font filenames into paths relative to the theme file
+        void injectThemePath(std::set<const DataIO::Node*>& handledSections, const std::unique_ptr<DataIO::Node>& node, const std::string& path)
         {
             for (const auto& pair : node->propertyValuePairs)
             {
@@ -99,7 +98,7 @@ namespace tgui
                 if (handledSections.find(child.get()) == handledSections.end())
                 {
                     handledSections.insert(child.get());
-                    injectAbsolutePath(handledSections, child, path);
+                    injectThemePath(handledSections, child, path);
                 }
             }
         }
@@ -181,33 +180,11 @@ namespace tgui
             if (root->propertyValuePairs.size() != 0)
                 throw Exception{"Unexpected result while loading theme file '" + filename + "'. Root property-value pair found."};
 
-            // Turn texture and font filenames into absolute paths
+            // Turn texture and font filenames into paths relative to the theme file
             if (!resourcePath.empty())
             {
-            #ifdef SFML_SYSTEM_WINDOWS
-                if ((resourcePath[0] != '/') && (resourcePath[0] != '\\') && ((resourcePath.size() <= 1) || (resourcePath[1] != ':')))
-                    resourcePath = getResourcePath() + resourcePath;
-
-                char* buffer = _fullpath(nullptr, resourcePath.c_str(), 512);
-            #else
-                if (resourcePath[0] != '/')
-                    resourcePath = getResourcePath() + resourcePath;
-
-                char* buffer = realpath(resourcePath.c_str(), nullptr);
-            #endif
-
-                std::string absoluteResourcePath;
-                if (buffer != nullptr)
-                {
-                    absoluteResourcePath = buffer;
-                    free(buffer);
-
-                    if (!absoluteResourcePath.empty() && (absoluteResourcePath[absoluteResourcePath.length()-1] != '/'))
-                        absoluteResourcePath.push_back('/');
-                }
-
                 std::set<const DataIO::Node*> handledSections;
-                injectAbsolutePath(handledSections, root, absoluteResourcePath);
+                injectThemePath(handledSections, root, resourcePath);
             }
 
             // Get a list of section names and map them to their nodes (needed for resolving references)

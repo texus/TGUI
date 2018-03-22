@@ -36,25 +36,29 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorDown, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorDisabled, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, TextColorFocused, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorDown, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorDisabled, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BackgroundColorFocused, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColorDown, {})
     TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColorDisabled, {})
+    TGUI_RENDERER_PROPERTY_COLOR(ButtonRenderer, BorderColorFocused, {})
 
     TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, Texture)
     TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureHover)
     TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureDown)
     TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureDisabled)
-    TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureFocused) /// TODO
+    TGUI_RENDERER_PROPERTY_TEXTURE(ButtonRenderer, TextureFocused)
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyle, sf::Text::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleHover, {})
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleDown, {})
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleDisabled, {})
+    TGUI_RENDERER_PROPERTY_TEXT_STYLE(ButtonRenderer, TextStyleFocused, {})
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

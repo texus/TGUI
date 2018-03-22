@@ -55,7 +55,6 @@ namespace tgui
         m_defaultText.setFont(m_fontCached);
 
         m_draggableWidget = true;
-        m_allowFocus = true;
 
         m_renderer = aurora::makeCopied<EditBoxRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
@@ -140,9 +139,7 @@ namespace tgui
     void EditBox::enable()
     {
         Widget::enable();
-
-        m_textBeforeSelection.setColor(getSharedRenderer()->getTextColor());
-        m_textAfterSelection.setColor(getSharedRenderer()->getTextColor());
+        updateTextColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,12 +147,7 @@ namespace tgui
     void EditBox::disable()
     {
         Widget::disable();
-
-        if (getSharedRenderer()->getTextColorDisabled().isSet())
-        {
-            m_textBeforeSelection.setColor(getSharedRenderer()->getTextColorDisabled());
-            m_textAfterSelection.setColor(getSharedRenderer()->getTextColorDisabled());
-        }
+        updateTextColor();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -458,6 +450,35 @@ namespace tgui
     const std::string& EditBox::getInputValidator() const
     {
         return m_regexString;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::focus()
+    {
+        Widget::focus();
+
+        m_caretVisible = true;
+        m_animationTimeElapsed = {};
+
+    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+        sf::Keyboard::setVirtualKeyboardVisible(true);
+    #endif
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::unfocus()
+    {
+        // If there is a selection then undo it now
+        if (m_selChars)
+            setCaretPosition(m_selEnd);
+
+    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+        sf::Keyboard::setVirtualKeyboardVisible(false);
+    #endif
+
+        Widget::unfocus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -922,35 +943,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::widgetFocused()
-    {
-    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
-        sf::Keyboard::setVirtualKeyboardVisible(true);
-    #endif
-
-        Widget::widgetFocused();
-
-        m_caretVisible = true;
-        m_animationTimeElapsed = {};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::widgetUnfocused()
-    {
-        // If there is a selection then undo it now
-        if (m_selChars)
-            setCaretPosition(m_selEnd);
-
-    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
-        sf::Keyboard::setVirtualKeyboardVisible(false);
-    #endif
-
-        Widget::widgetUnfocused();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Signal& EditBox::getSignal(std::string signalName)
     {
         if (signalName == toLower(onTextChange.getName()))
@@ -984,18 +976,9 @@ namespace tgui
             m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - getSharedRenderer()->getCaretWidth()) / 2.0f), m_caret.getPosition().y});
             m_caret.setSize({getSharedRenderer()->getCaretWidth(), getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
         }
-        else if ((property == "textcolor") || (property == "textcolordisabled"))
+        else if ((property == "textcolor") || (property == "textcolordisabled") || (property == "textcolorfocused"))
         {
-            if (m_enabled || !getSharedRenderer()->getTextColorDisabled().isSet())
-            {
-                m_textBeforeSelection.setColor(getSharedRenderer()->getTextColor());
-                m_textAfterSelection.setColor(getSharedRenderer()->getTextColor());
-            }
-            else
-            {
-                m_textBeforeSelection.setColor(getSharedRenderer()->getTextColorDisabled());
-                m_textAfterSelection.setColor(getSharedRenderer()->getTextColorDisabled());
-            }
+            updateTextColor();
         }
         else if (property == "selectedtextcolor")
         {
@@ -1020,7 +1003,6 @@ namespace tgui
         else if (property == "texturefocused")
         {
             m_spriteFocused.setTexture(getSharedRenderer()->getTextureFocused());
-            m_allowFocus = m_spriteFocused.isSet();
         }
         else if (property == "textstyle")
         {
@@ -1046,6 +1028,10 @@ namespace tgui
         {
             m_borderColorDisabledCached = getSharedRenderer()->getBorderColorDisabled();
         }
+        else if (property == "bordercolorfocused")
+        {
+            m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
+        }
         else if (property == "backgroundcolor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
@@ -1058,6 +1044,10 @@ namespace tgui
         {
             m_backgroundColorDisabledCached = getSharedRenderer()->getBackgroundColorDisabled();
         }
+        else if (property == "backgroundcolorfocused")
+        {
+            m_backgroundColorFocusedCached = getSharedRenderer()->getBackgroundColorFocused();
+        }
         else if (property == "caretcolor")
         {
             m_caretColorCached = getSharedRenderer()->getCaretColor();
@@ -1066,9 +1056,9 @@ namespace tgui
         {
             m_caretColorHoverCached = getSharedRenderer()->getCaretColorHover();
         }
-        else if (property == "caretcolordisabled")
+        else if (property == "caretcolorfocused")
         {
-            m_caretColorDisabledCached = getSharedRenderer()->getCaretColorDisabled();
+            m_caretColorFocusedCached = getSharedRenderer()->getCaretColorFocused();
         }
         else if (property == "selectedtextbackgroundcolor")
         {
@@ -1431,6 +1421,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void EditBox::updateTextColor()
+    {
+        if (!m_enabled && getSharedRenderer()->getTextColorDisabled().isSet())
+        {
+            m_textBeforeSelection.setColor(getSharedRenderer()->getTextColorDisabled());
+            m_textAfterSelection.setColor(getSharedRenderer()->getTextColorDisabled());
+        }
+        else if (m_focused && getSharedRenderer()->getTextColorFocused().isSet())
+        {
+            m_textBeforeSelection.setColor(getSharedRenderer()->getTextColorFocused());
+            m_textAfterSelection.setColor(getSharedRenderer()->getTextColorFocused());
+        }
+        else
+        {
+            m_textBeforeSelection.setColor(getSharedRenderer()->getTextColor());
+            m_textAfterSelection.setColor(getSharedRenderer()->getTextColor());
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::update(sf::Time elapsedTime)
     {
         Widget::update(elapsedTime);
@@ -1462,6 +1473,8 @@ namespace tgui
                 drawBorders(target, states, m_bordersCached, getSize(), m_borderColorDisabledCached);
             else if (m_mouseHover && m_borderColorHoverCached.isSet())
                 drawBorders(target, states, m_bordersCached, getSize(), m_borderColorHoverCached);
+            else if (m_focused && m_borderColorFocusedCached.isSet())
+                drawBorders(target, states, m_bordersCached, getSize(), m_borderColorFocusedCached);
             else
                 drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
 
@@ -1471,19 +1484,14 @@ namespace tgui
         // Draw the background
         if (m_sprite.isSet())
         {
-            if (m_spriteDisabled.isSet())
+            if (!m_enabled && m_spriteDisabled.isSet())
                 m_spriteDisabled.draw(target, states);
+            else if (m_mouseHover && m_spriteHover.isSet())
+                m_spriteHover.draw(target, states);
+            else if (m_focused && m_spriteFocused.isSet())
+                m_spriteFocused.draw(target, states);
             else
-            {
-                if (m_mouseHover && m_spriteHover.isSet())
-                    m_spriteHover.draw(target, states);
-                else
-                    m_sprite.draw(target, states);
-
-                // When the edit box is focused then draw an extra image
-                if (m_focused && m_spriteFocused.isSet())
-                    m_spriteFocused.draw(target, states);
-            }
+                m_sprite.draw(target, states);
         }
         else // There is no background texture
         {
@@ -1491,6 +1499,8 @@ namespace tgui
                 drawRectangleShape(target, states, getInnerSize(), m_backgroundColorDisabledCached);
             else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
                 drawRectangleShape(target, states, getInnerSize(), m_backgroundColorHoverCached);
+            else if (m_focused && m_backgroundColorFocusedCached.isSet())
+                drawRectangleShape(target, states, getInnerSize(), m_backgroundColorFocusedCached);
             else
                 drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
         }
@@ -1521,12 +1531,12 @@ namespace tgui
 
         // Draw the caret
         states.transform.translate(m_caret.getPosition());
-        if (m_focused && m_caretVisible)
+        if (m_enabled && m_focused && m_caretVisible)
         {
-            if (!m_enabled && m_caretColorDisabledCached.isSet())
-                drawRectangleShape(target, states, m_caret.getSize(), m_caretColorDisabledCached);
-            else if (m_mouseHover && m_caretColorHoverCached.isSet())
+            if (m_mouseHover && m_caretColorHoverCached.isSet())
                 drawRectangleShape(target, states, m_caret.getSize(), m_caretColorHoverCached);
+            else if (m_focused && m_caretColorFocusedCached.isSet())
+                drawRectangleShape(target, states, m_caret.getSize(), m_caretColorFocusedCached);
             else
                 drawRectangleShape(target, states, m_caret.getSize(), m_caretColorCached);
         }

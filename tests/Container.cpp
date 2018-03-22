@@ -221,7 +221,7 @@ TEST_CASE("[Container]")
         container->add(editBox2);
         container->add(editBox3);
 
-        container->focusWidget(editBox2);
+        editBox2->focus();
         REQUIRE(!editBox1->isFocused());
         REQUIRE(editBox2->isFocused());
         REQUIRE(!editBox3->isFocused());
@@ -246,7 +246,7 @@ TEST_CASE("[Container]")
         REQUIRE(editBox2->isFocused());
         REQUIRE(!editBox3->isFocused());
 
-        container->unfocusWidgets();
+        container->unfocusAllWidgets();
         REQUIRE(!editBox1->isFocused());
         REQUIRE(!editBox2->isFocused());
         REQUIRE(!editBox3->isFocused());

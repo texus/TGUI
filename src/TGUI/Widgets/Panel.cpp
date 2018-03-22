@@ -35,6 +35,7 @@ namespace tgui
     Panel::Panel(const Layout2d& size)
     {
         m_type = "Panel";
+        m_isolatedFocus = true;
 
         m_renderer = aurora::makeCopied<PanelRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));

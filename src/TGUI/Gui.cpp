@@ -53,8 +53,6 @@ namespace tgui
         m_accessToWindow(false)
     #endif
     {
-        m_container->m_focused = true;
-
         init();
     }
 
@@ -65,8 +63,6 @@ namespace tgui
         m_target        (&window),
         m_accessToWindow(true)
     {
-        m_container->m_focused = true;
-
         Clipboard::setWindowHandle(window.getSystemHandle());
 
         setView(window.getDefaultView());
@@ -85,8 +81,6 @@ namespace tgui
         m_accessToWindow(false)
     #endif
     {
-        m_container->m_focused = true;
-
         setView(target.getDefaultView());
 
         init();
@@ -224,22 +218,56 @@ namespace tgui
             m_lastMousePos = mouseCoords;
         }
 
+        // Handle tab key presses
+        else if (event.type == sf::Event::KeyPressed)
+        {
+            if (isTabKeyUsageEnabled() && (event.key.code == sf::Keyboard::Tab))
+            {
+                if (event.key.shift)
+                    focusPreviousWidget();
+                else
+                    focusNextWidget();
+
+                return true;
+            }
+        }
+
         // Keep track of whether the window is focused or not
         else if (event.type == sf::Event::LostFocus)
         {
-            m_container->m_focused = false;
+            m_windowFocused = false;
         }
         else if (event.type == sf::Event::GainedFocus)
         {
-            m_container->m_focused = true;
+            m_windowFocused = true;
         #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5
             if (m_accessToWindow)
                 Clipboard::setWindowHandle(static_cast<sf::RenderWindow*>(m_target)->getSystemHandle());
         #endif
         }
 
-        // Let the event manager handle the event
         return m_container->handleEvent(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::enableTabKeyUsage()
+    {
+        m_TabKeyUsageEnabled = true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Gui::disableTabKeyUsage()
+    {
+        m_TabKeyUsageEnabled = false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Gui::isTabKeyUsageEnabled() const
+    {
+        return m_TabKeyUsageEnabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +277,7 @@ namespace tgui
         assert(m_target != nullptr);
 
         // Update the time
-        if (m_container->m_focused)
+        if (m_windowFocused)
             updateTime(m_clock.restart());
         else
             m_clock.restart();
@@ -344,13 +372,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::focusWidget(const Widget::Ptr& widget)
-    {
-        m_container->focusWidget(widget);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Gui::focusNextWidget()
     {
         m_container->focusNextWidget();
@@ -365,9 +386,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Gui::unfocusWidgets()
+    void Gui::unfocusAllWidgets()
     {
-        m_container->unfocusWidgets();
+        m_container->unfocus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
