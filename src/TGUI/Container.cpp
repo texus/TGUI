@@ -1027,12 +1027,12 @@ namespace tgui
             // Try to focus the first focusable widget in the container
             auto oldUnfocusedWidget = container->m_focusedWidget;
             container->m_focusedWidget = nullptr;
-            bool childWidgetFocused = reverseWidgetOrder ? container->focusPreviousWidget() : container->focusNextWidget();
+            bool childFocused = reverseWidgetOrder ? container->focusPreviousWidget() : container->focusNextWidget();
 
             if (oldUnfocusedWidget && (oldUnfocusedWidget != container->m_focusedWidget))
                 oldUnfocusedWidget->unfocus();
 
-            if (!childWidgetFocused)
+            if (!childFocused)
                 return false;
         }
 
