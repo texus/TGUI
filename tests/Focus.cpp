@@ -443,4 +443,6 @@ TEST_CASE("[Focussing widgets]")
         gui.handleEvent(event);
         REQUIRE(widgetFocused(radioButton1));
     }
+
+    rootContainer = nullptr;
 }

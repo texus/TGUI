@@ -115,9 +115,7 @@ build_script:
       cd .. &&
       IF "%BUILD_TESTS%"=="TRUE" (
         cd %BUILD_FOLDER%\tests\%BUILD_TYPE% &&
-        echo Before tests &&
-        tests.exe &&
-        echo After tests
+        tests.exe
       )
     ) ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
       cd .. &&
@@ -170,8 +168,7 @@ build_script:
       echo d | xcopy /s tgui TGUI-0.8-dev > nul &&
       7z a -tzip TGUI-0.8-dev-vc14-64bit-for-SFML-%SFML_VERSION%.zip TGUI-0.8-dev > nul &&
       appveyor PushArtifact TGUI-0.8-dev-vc14-64bit-for-SFML-%SFML_VERSION%.zip
-    ) &&
-    echo Build complete
+    )
 
 
 #---------------------------------#
