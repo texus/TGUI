@@ -264,11 +264,16 @@ set( LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
 include_directories( ${SFML_INCLUDE_DIR} )
 
-# Targets to link are specified manually in case SFMLConfig.cmake is used, SFML_DEPENDENCIES is added in case FindSFML.cmake is used
-if (SFML_OS_WINDOWS AND SFML_COMPILER_MSVC)  # Also look for the main component when using Visual Studio
-    set(TGUI_EXT_LIBS sfml-main sfml-graphics sfml-window sfml-system ${SFML_DEPENDENCIES})
+if (DEFINED SFML_LIBRARIES)
+    # SFML found via FindSFML.cmake
+    set(TGUI_EXT_LIBS ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 else()
-    set(TGUI_EXT_LIBS sfml-graphics sfml-window sfml-system ${SFML_DEPENDENCIES})
+    # SFML found via SFMLConfig.cmake
+    if (SFML_OS_WINDOWS AND SFML_COMPILER_MSVC)  # Also look for the main component when using Visual Studio
+        set(TGUI_EXT_LIBS sfml-main sfml-graphics sfml-window sfml-system)
+    else()
+        set(TGUI_EXT_LIBS sfml-graphics sfml-window sfml-system)
+    endif()
 endif()
 
 if(SFML_OS_ANDROID)
