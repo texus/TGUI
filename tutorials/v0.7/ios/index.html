@@ -13,12 +13,9 @@ redirect_from: "/tutorials/v07/ios/index.html"
 
 <div>
   <h3 id="cmake">CMake</h3>
-  <p>Start by filling in the location of the source code (the TGUI folder that you downloaded) and a build directory (usually a new directory that you create inside the TGUI folder). But don't click the Configure button yet.</p>
-  <p class="SmallBottomMargin">In order to build for iOS instead of for OS X, you must create a new entry named IOS and set it to TRUE. You do this by clicking the "Add Entry" button.</p>
-  <a class="img" href="/resources/CMakeSetIOS.png"><img alt="Add IOS entry" src="/resources/CMakeSetIOS.png" width="796" height="410" /></a>
-
-  <p class="SmallBottomMargin">After that, you can press Configure. You will be asked to select a generator. You should select "Xcode" here.</p>
-  <a class="img" href="/resources/CMakeSelectCompilerXCodeIOS.jpg"><img alt="CMake Select Generator" src="/resources/CMakeSelectCompilerXCodeIOS.jpg" width="796" height="573" /></a>
+  <p>Fill in the location of the source code (the TGUI folder that you downloaded) and a build directory (usually a new directory that you create inside the TGUI folder) and then click the configure button. Choose the "Specify toolchain file for cross-compiling" option and specify the iOS.toolchain.cmake file that is shipped with TGUI inside the cmake/toolchains folder.</p>
+  <a class="img" href="/resources/iOS-0.7/CMakeSpecifyGenerator.jpg"><img alt="CMake specify generator" src="/resources/iOS-0.7/CMakeSpecifyGenerator.jpg" width="671" height="514" /></a>
+  <a class="img" href="/resources/iOS-0.7/CMakeSpecifyToolchainFile.jpg"><img alt="CMake specify toolchain file" src="/resources/iOS-0.7/CMakeSpecifyToolchainFile.jpg" width="671" height="514" /></a>
 
   <p>There are no more screenshots for the next part, so read everything extra careful.</p>
   <p>In order to make CMake find SFML and its dependencies, you may have to set the SFML_ROOT entry to the location of your SFML folder, which contains the extlibs/libs-ios folder and provides a lib folder which directly contains the static sfml libraries (so no Debug/Release subfolder).</p>

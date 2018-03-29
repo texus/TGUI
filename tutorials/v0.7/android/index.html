@@ -8,11 +8,15 @@ redirect_from: "/tutorials/v07/android/index.html"
 <div>
   <p>Please note that support for android is still in an early stage. Building for android has so far only been tested on linux, altough it should be very similar on other systems.</p>
   <p>Using TGUI was only successfully tested with android-ndk 12b and with ANDROID_STL=c++_shared set in cmake (which is the default value).</p>
+  <!-- <p>At least SFML 2.5 and android-ndk 13b are needed in order to use TGUI on android.</p> -->
+
+  <p style="color:red;">Android support is currently broken in latest SFML and TGUI versions, use <a href="https://www.sfml-dev.org/download/sfml/2.4.2/">SFML 2.4.2</a> and <a href="https://github.com/texus/TGUI/releases/tag/0.7.6">TGUI 0.7.6</a> for now.</p>
 </div>
 
 <div>
   <h3 id="requirements">Requirements</h3>
   <p>You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly. Especially make sure that the ANDROID_NDK variable is set so that the installed SFML files in it can be found automatically.</p>
+  <!-- <p>You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly.</p> -->
 
   <p>You will need to use CMake in order to build TGUI. You can download the latest version <a href="https://www.cmake.org/download/">here</a>.</p>
 
@@ -22,11 +26,13 @@ redirect_from: "/tutorials/v07/android/index.html"
 <div>
   <h3 id="building_the_library">Building the library</h3>
   <p class="SmallBottomMargin">From inside the TGUI folder that you download execute the following. The ANDROID_ABI should be set to the ABI that you want to use, this will most likely be "armeabi-v7a", but you can also set it to "armeabi", "x86" or "mips". On windows you might also have to pass your <a href="https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html">generator</a> to the cmake command with the -G parameter. On linux and mac "Unix Makefiles" will be used by default.</p>
+  <!-- <p class="SmallBottomMargin">From inside the TGUI folder that you downloaded, execute the following. The CMAKE_ANDROID_ARCH_ABI variable should be set to the ABI that you want to use, this will most likely be "armeabi-v7a" for actual hardware. The targeted SDK version can be specified with CMAKE_SYSTEM_VERSION. On windows you might also have to pass your <a href="https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html">generator</a> to the cmake command with the -G parameter. On linux and mac "Unix Makefiles" will be used by default.</p> -->
 {% highlight bash %}
 mkdir build-android-arm
 cd build-android-arm
 cmake -DANDROID_ABI=armeabi-v7a -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android.toolchain.cmake ..
 {% endhighlight %}
+<!-- cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=/path/to/ndk -DCMAKE_ANDROID_STL_TYPE=c++_shared -DCMAKE_ANDROID_ARCH_ABI=x86 -DCMAKE_SYSTEM_VERSION=21 .. -->
 
   <p>Make sure that it finds the android sfml libraries. If you see a message like "Found SFML 2.4.2 in /usr/local/include" then it is finding the ones for your own system instead. Remove the libraries from /usr/local/lib and the includes from /usr/local/include, delete the cmake cache and rebuild. After that it should find the ones in the android ndk.</p>
 
