@@ -25,14 +25,6 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     if(IOS)
         set(SFML_OS_IOS 1)
-
-        # set the target framework and platforms
-        set(CMAKE_OSX_SYSROOT "iphoneos")
-        set(CMAKE_OSX_ARCHITECTURES "armv6;armv7;i386")
-        set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")
-
-        # help the compiler detection script below
-        set(CMAKE_COMPILER_IS_GNUCXX 1)
     else()
         set(SFML_OS_MACOSX 1)
 
@@ -84,5 +76,5 @@ if(SFML_OS_WINDOWS OR SFML_OS_IOS)
 elseif(SFML_OS_LINUX OR SFML_OS_FREEBSD OR SFML_OS_MACOSX)
     set(INSTALL_MISC_DIR share/tgui-${MAJOR_VERSION}.${MINOR_VERSION})
 elseif(SFML_OS_ANDROID)
-    set(INSTALL_MISC_DIR ${ANDROID_NDK}/sources/tgui)
+    set(INSTALL_MISC_DIR ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
 endif()
