@@ -16,4 +16,4 @@ LOCAL_WHOLE_STATIC_LIBRARIES := sfml-main
 
 include $(BUILD_SHARED_LIBRARY)
 
-$(call import-module,tgui)
+$(call import-module, third_party/tgui)

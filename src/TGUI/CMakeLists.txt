@@ -190,10 +190,17 @@ if(SFML_OS_MACOSX AND TGUI_SHARED_LIBS)
         set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME TGUI)
     endif()
 
-    # Adapt install directory to allow distributing dylibs/frameworks in user’s frameworks/application bundle
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-                          BUILD_WITH_INSTALL_RPATH 1
-                          INSTALL_NAME_DIR "@rpath")
+    # Adapt install directory to allow distributing dylibs/frameworks in user’s frameworks/application bundle but only if cmake rpath options aren't set
+    if (NOT CMAKE_SKIP_RPATH AND NOT CMAKE_SKIP_INSTALL_RPATH AND NOT CMAKE_INSTALL_RPATH AND NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH AND NOT CMAKE_INSTALL_NAME_DIR)
+        set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_NAME_DIR "@rpath")
+        if (NOT CMAKE_SKIP_BUILD_RPATH)
+            if (CMAKE_VERSION VERSION_LESS 3.9)
+                set_target_properties(${PROJECT_NAME} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+            else()
+                set_target_properties(${PROJECT_NAME} PROPERTIES BUILD_WITH_INSTALL_NAME_DIR TRUE)
+            endif()
+        endif()
+    endif()
 endif()
 
 # Install library

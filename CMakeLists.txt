@@ -1,4 +1,9 @@
-cmake_minimum_required(VERSION 3.0.2)
+# CMake's built-in Android support requires 3.7
+if(CMAKE_SYSTEM_NAME MATCHES "Android")
+    cmake_minimum_required(VERSION 3.7)
+else()
+    cmake_minimum_required(VERSION 2.8)
+endif()
 
 # Define a macro that helps defining an option
 macro(tgui_set_option var default type docstring)
@@ -16,6 +21,14 @@ macro(tgui_add_cxx_flag flag)
     endif()
 endmacro()
 
+# Use new RPATH behaviors on macOS
+if(NOT CMAKE_VERSION VERSION_LESS 3.0)
+    cmake_policy(SET CMP0042 NEW)
+endif()
+if (NOT CMAKE_VERSION VERSION_LESS 3.9)
+    cmake_policy(SET CMP0068 NEW)
+endif()
+
 macro(tgui_remove_cxx_flag flagToRemove)
     string(REPLACE " " ";" TGUI_CXX_FLAGS_LIST ${CMAKE_CXX_FLAGS})
     set(TGUI_TEMP_CXX_FLAGS "")
@@ -29,27 +42,11 @@ endmacro()
 
 # Set a default build type and module path if none was provided
 tgui_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
-tgui_set_option(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" STRING "The path to the cmake modules. This path must contain the FindSFML.cmake file.")
 
-# Android specific stuff which has to be set before CMake detects/configures the toolchain.
-# If not building on android they will be unset later.
-
-    # Define the minimum API level to be used
-    tgui_set_option(ANDROID_API_MIN 9 STRING "Choose the Android API level to be used (minimum 9)")
-
-    # Mirror the setting for the toolchain file
-    set(ANDROID_NATIVE_API_LEVEL ${ANDROID_API_MIN})
-
-    # Define the path to the Android NDK
-    tgui_set_option(ANDROID_NDK "$ENV{ANDROID_NDK}" PATH "Path to the Android NDK")
-
-    # Define the STL implementation to be used
-    tgui_set_option(ANDROID_STL c++_shared STRING "Choose the STL implementation to be used (experimental)")
-
-    # Default the ABI to ARM v7a for hardware floating point
-    if(NOT ANDROID_ABI)
-        set(ANDROID_ABI armeabi-v7a)
-    endif()
+# Set CMAKE_MODULE_PATH to find SFML < 2.5 without manually having to specify a module path
+if ((NOT DEFINED SFML_DIR OR "${SFML_DIR}" STREQUAL "" OR "${SFML_DIR}" STREQUAL "SFML_DIR-NOTFOUND") AND NOT DEFINED CMAKE_MODULE_PATH)
+    set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+endif()
 
 # Project name
 project(tgui)
@@ -184,12 +181,9 @@ endif()
 # Android options
 if(SFML_OS_ANDROID)
 
-    if (${ANDROID_API_MIN} LESS 9)
-        message(FATAL_ERROR "Android API level must be equal or greater than 9. Please adjust the CMake variable 'ANDROID_API_MIN'.")
-    endif()
-
-    if(NOT ANDROID_NDK)
-        message(FATAL_ERROR "The Android NDK couldn't be found. Please adjust the CMake variable 'ANDROID_NDK' to point to the NDK directory.")
+    # Make sure there's the android library available
+    if (CMAKE_ANDROID_API LESS 19)
+        message(FATAL_ERROR "Android API level (${CMAKE_ANDROID_API}) must be equal or greater than 19.")
     endif()
 
     # CMake doesn't support defining the STL to be used with Nsight Tegra, so warn the user
@@ -198,45 +192,20 @@ if(SFML_OS_ANDROID)
     endif()
 
     # Install everything in $NDK/sources/ because this path is appended by the NDK (convenient)
-    set(CMAKE_INSTALL_PREFIX ${ANDROID_NDK}/sources/tgui)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
 
     # We install libs in a subdirectory named after the ABI (e.g. lib/armeabi/libtgui.so)
-    set(LIB_SUFFIX "/${ANDROID_ABI}")
+    set(LIB_SUFFIX "/${CMAKE_ANDROID_ARCH_ABI}")
 
     # Pass shared STL configuration (if any)
-    if (ANDROID_STL MATCHES "_shared")
-        add_definitions("-DSTL_LIBRARY=${ANDROID_STL}")
+    if (CMAKE_ANDROID_STL_TYPE MATCHES "_shared")
+        add_definitions("-DSTL_LIBRARY=${CMAKE_ANDROID_STL_TYPE}")
+        if (NOT CMAKE_ANDROID_STL_TYPE MATCHES "c\\+\\+_shared")
+            message("Android: Using ${CMAKE_ANDROID_STL_TYPE} as STL. Set CMAKE_ANDROID_STL_TYPE to c++_shared, if there are any issues.")
+        endif()
+    else()
+        message(WARNING "Android: You're using a static STL (${CMAKE_ANDROID_STL_TYPE}). Set CMAKE_ANDROID_STL_TYPE to c++_shared, if there are any issues.")
     endif()
-
-    # Macro to find packages on the host OS
-    # This is the same as in the toolchain file, which is here for Nsight Tegra VS since it won't use the Android toolchain file
-    if(CMAKE_VS_PLATFORM_NAME STREQUAL "Tegra-Android")
-        macro(find_host_package)
-            set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-            set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER)
-            set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
-            if(CMAKE_HOST_WIN32)
-                set(WIN32 1)
-                set(UNIX)
-            elseif(CMAKE_HOST_APPLE)
-                set(APPLE 1)
-                set(UNIX)
-            endif()
-            find_package(${ARGN})
-            set(WIN32)
-            set(APPLE)
-            set(UNIX 1)
-            set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
-            set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-            set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-        endmacro()
-    endif()
-else()
-    unset(ANDROID_ABI CACHE)
-    unset(ANDROID_API_MIN CACHE)
-    unset(ANDROID_STL CACHE)
-    unset(ANDROID_NATIVE_API_LEVEL CACHE)
-    unset(ANDROID_NDK CACHE)
 endif()
 
 # Link SFML in the same way as TGUI, unless SFML_STATIC_LIBRARIES is manually specified
@@ -274,26 +243,27 @@ if(NOT TGUI_SHARED_LIBS)
             set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${SFML_ROOT}/extlibs/headers")
             set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-osx/lib/")
         elseif(SFML_OS_ANDROID)
-            set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${ANDROID_NDK}/sources/sfml/extlibs/lib/armeabi/")
+            set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/extlibs/lib/${CMAKE_ANDROID_ARCH_ABI}/")
         elseif(SFML_OS_IOS)
             set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${SFML_ROOT}/extlibs/libs-ios/")
         endif()
     endif()
 endif()
 
-# Find sfml (also look for the main component when using Visual Studio)
-if (SFML_OS_WINDOWS AND SFML_COMPILER_MSVC)
+# Find sfml
+if (SFML_OS_WINDOWS AND SFML_COMPILER_MSVC) # Also look for the main component when using Visual Studio
     find_package(SFML 2 COMPONENTS main graphics window system)
-elseif (SFML_OS_ANDROID)
+elseif (SFML_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
     find_host_package(SFML 2 COMPONENTS graphics window system)
 else()
     find_package(SFML 2 COMPONENTS graphics window system)
 endif()
 
-# FindSFML couldn't find SFML.
-if( NOT SFML_FOUND )
-    set( SFML_ROOT "" CACHE PATH "SFML root directory" )
-    message( FATAL_ERROR "CMake couldn't find SFML. Set the SFML_ROOT entry to SFML's root directory (containing \"include\" and \"lib\" directories)." )
+# FindSFML couldn't find SFML
+if (NOT SFML_FOUND)
+    set(SFML_DIR "" CACHE PATH "Path to SFMLConfig.cmake")
+    set(SFML_ROOT "" CACHE PATH "SFML root directory")
+    message(FATAL_ERROR "CMake couldn't find SFML.\nEither set SFML_DIR to the directory containing SFMLConfig.cmake or set the SFML_ROOT entry to SFML's root directory (containing \"include\" and \"lib\" directories).")
 endif()
 
 # Set the path for the libraries
@@ -303,7 +273,18 @@ set( LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
 include_directories( ${SFML_INCLUDE_DIR} )
 
-set(TGUI_EXT_LIBS ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+if (DEFINED SFML_LIBRARIES)
+    # SFML found via FindSFML.cmake
+    set(TGUI_EXT_LIBS ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+else()
+    # SFML found via SFMLConfig.cmake
+    if (SFML_OS_WINDOWS AND SFML_COMPILER_MSVC)  # Also look for the main component when using Visual Studio
+        set(TGUI_EXT_LIBS sfml-main sfml-graphics sfml-window sfml-system)
+    else()
+        set(TGUI_EXT_LIBS sfml-graphics sfml-window sfml-system)
+    endif()
+endif()
+
 if(SFML_OS_ANDROID)
     # We need to link to an extra library on android (to use the asset manager)
     set(TGUI_EXT_LIBS ${TGUI_EXT_LIBS} "-landroid")
