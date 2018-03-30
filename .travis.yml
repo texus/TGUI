@@ -37,20 +37,6 @@ matrix:
       directories:
       - $HOME/SFML-2.4.0_LINUX
 
-  - language: android
-    env:
-    - ANDROID_NDK=$HOME/android-ndk-r12b
-    android:
-      components:
-      - android-23
-    addons:
-      apt:
-        packages:
-        - ant
-    cache:
-      directories:
-      - $ANDROID_NDK/sources/sfml
-
   - os: osx
     cache:
       directories:
