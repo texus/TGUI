@@ -35,12 +35,7 @@ struct RadioButtonProperties : WidgetProperties
     {
         auto radioButton = std::dynamic_pointer_cast<tgui::RadioButton>(widget);
         if (property == "Checked")
-        {
-            if (parseBoolean(value, false))
-                radioButton->check();
-            else
-                radioButton->uncheck();
-        }
+            radioButton->setChecked(parseBoolean(value, false));
         else if (property == "Text")
             radioButton->setText(value);
         else if (property == "TextSize")

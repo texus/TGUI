@@ -287,7 +287,7 @@ TEST_CASE("[Button]")
     {
         TEST_DRAW_INIT(120, 35, button)
 
-        button->enable();
+        button->setEnabled(true);
         button->setPosition(10, 5);
         button->setSize(100, 25);
         button->setText("Click me!");
@@ -395,7 +395,7 @@ TEST_CASE("[Button]")
 
             SECTION("DisabledState")
             {
-                button->disable();
+                button->setEnabled(false);
 
                 TEST_DRAW("Button_Disabled_NormalSet.png")
 
@@ -469,7 +469,7 @@ TEST_CASE("[Button]")
 
             SECTION("DisabledState")
             {
-                button->disable();
+                button->setEnabled(false);
 
                 TEST_DRAW("Button_Disabled_TextureNormalSet.png")
 

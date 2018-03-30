@@ -136,17 +136,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::enable()
+    void EditBox::setEnabled(bool enabled)
     {
-        Widget::enable();
-        updateTextColor();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::disable()
-    {
-        Widget::disable();
+        Widget::setEnabled(enabled);
         updateTextColor();
     }
 
@@ -454,31 +446,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::focus()
+    void EditBox::setFocused(bool focused)
     {
-        Widget::focus();
-
-        m_caretVisible = true;
-        m_animationTimeElapsed = {};
+        if (focused)
+        {
+            m_caretVisible = true;
+            m_animationTimeElapsed = {};
+        }
+        else // Unfocusing
+        {
+            // If there is a selection then undo it now
+            if (m_selChars)
+                setCaretPosition(m_selEnd);
+        }
 
     #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
-        sf::Keyboard::setVirtualKeyboardVisible(true);
-    #endif
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void EditBox::unfocus()
-    {
-        // If there is a selection then undo it now
-        if (m_selChars)
-            setCaretPosition(m_selEnd);
-
-    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
-        sf::Keyboard::setVirtualKeyboardVisible(false);
+        sf::Keyboard::setVirtualKeyboardVisible(focused);
     #endif
 
-        Widget::unfocus();
+        Widget::setFocused(focused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

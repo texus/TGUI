@@ -57,7 +57,7 @@ Form::Form(GuiBuilder* guiBuilder, const std::string& filename, tgui::ChildWindo
         square = tgui::Button::create();
         square->setRenderer(selectionSquareTheme.getRenderer("Square"));
         square->setSize(square->getRenderer()->getTexture().getImageSize());
-        square->hide();
+        square->setVisible(false);
         square->connect("MousePressed", [=](sf::Vector2f pos){ onSelectionSquarePress(square, pos); });
         m_scrollablePanel->add(square);
     }
@@ -605,12 +605,12 @@ void Form::selectWidget(std::shared_ptr<WidgetInfo> widget)
         {
             updateSelectionSquarePositions();
             for (auto& square : m_selectionSquares)
-                square->show();
+                square->setVisible(true);
         }
         else // No widget selected
         {
             for (auto& square : m_selectionSquares)
-                square->hide();
+                square->setVisible(false);
         }
     }
 

@@ -160,7 +160,7 @@ TEST_CASE("[Tabs]")
     {
         TEST_DRAW_INIT(120, 40, tabs)
 
-        tabs->enable();
+        tabs->setEnabled(true);
         tabs->setPosition({10, 5});
         tabs->setSize({100, 30});
         tabs->setTextSize(16);

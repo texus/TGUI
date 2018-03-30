@@ -320,16 +320,16 @@ namespace tgui
 
         if (policy == ScrollbarPolicy::Always)
         {
-            m_verticalScrollbar->show();
+            m_verticalScrollbar->setVisible(true);
             m_verticalScrollbar->setAutoHide(false);
         }
         else if (policy == ScrollbarPolicy::Never)
         {
-            m_verticalScrollbar->hide();
+            m_verticalScrollbar->setVisible(false);
         }
         else // ScrollbarPolicy::Automatic
         {
-            m_verticalScrollbar->show();
+            m_verticalScrollbar->setVisible(true);
             m_verticalScrollbar->setAutoHide(true);
         }
 
@@ -351,16 +351,16 @@ namespace tgui
 
         if (policy == ScrollbarPolicy::Always)
         {
-            m_horizontalScrollbar->show();
+            m_horizontalScrollbar->setVisible(true);
             m_horizontalScrollbar->setAutoHide(false);
         }
         else if (policy == ScrollbarPolicy::Never)
         {
-            m_horizontalScrollbar->hide();
+            m_horizontalScrollbar->setVisible(false);
         }
         else // ScrollbarPolicy::Automatic
         {
-            m_horizontalScrollbar->show();
+            m_horizontalScrollbar->setVisible(true);
             m_horizontalScrollbar->setAutoHide(true);
         }
 

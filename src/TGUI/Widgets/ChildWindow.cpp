@@ -303,7 +303,7 @@ namespace tgui
 
         if (m_titleButtons & TitleButton::Close)
         {
-            m_closeButton->show();
+            m_closeButton->setVisible(true);
             m_closeButton->setRenderer(getSharedRenderer()->getCloseButton());
             m_closeButton->setInheritedOpacity(m_opacityCached);
 
@@ -313,11 +313,11 @@ namespace tgui
                 m_closeButton->setText("");
         }
         else
-            m_closeButton->hide();
+            m_closeButton->setVisible(false);
 
         if (m_titleButtons & TitleButton::Maximize)
         {
-            m_maximizeButton->show();
+            m_maximizeButton->setVisible(true);
             m_maximizeButton->setRenderer(getSharedRenderer()->getMaximizeButton());
             m_maximizeButton->setInheritedOpacity(m_opacityCached);
 
@@ -327,11 +327,11 @@ namespace tgui
                 m_maximizeButton->setText("");
         }
         else
-            m_maximizeButton->hide();
+            m_maximizeButton->setVisible(false);
 
         if (m_titleButtons & TitleButton::Minimize)
         {
-            m_minimizeButton->show();
+            m_minimizeButton->setVisible(true);
             m_minimizeButton->setRenderer(getSharedRenderer()->getMinimizeButton());
             m_minimizeButton->setInheritedOpacity(m_opacityCached);
 
@@ -341,7 +341,7 @@ namespace tgui
                 m_minimizeButton->setText("");
         }
         else
-            m_minimizeButton->hide();
+            m_minimizeButton->setVisible(false);
 
         updateTitleBarHeight();
     }

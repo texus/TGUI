@@ -279,7 +279,7 @@ TEST_CASE("[Slider]")
     {
         TEST_DRAW_INIT(120, 60, slider)
 
-        slider->enable();
+        slider->setEnabled(true);
         slider->setPosition({10, 15});
         slider->setSize({100, 30});
         slider->setMinimum(1000);

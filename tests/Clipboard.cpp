@@ -25,7 +25,10 @@
 #include "Tests.hpp"
 #include <TGUI/Clipboard.hpp>
 
-TEST_CASE("[Clipboard]") {
+TEST_CASE("[Clipboard]")
+{
     tgui::Clipboard::set("Some text");
     REQUIRE(tgui::Clipboard::get() == "Some text");
+    tgui::Clipboard::set("");
+    REQUIRE(tgui::Clipboard::get() == "");
 }

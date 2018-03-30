@@ -773,7 +773,7 @@ namespace tgui
     {
         if (!m_listBox->isVisible() && getParent())
         {
-            m_listBox->show();
+            m_listBox->setVisible(true);
 
             // Find the GuiContainer that contains the combo box
             Container* container = getParent();
@@ -786,7 +786,7 @@ namespace tgui
                 m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop()});
 
             container->add(m_listBox, "#TGUI_INTERNAL$ComboBoxListBox#");
-            m_listBox->focus();
+            m_listBox->setFocused(true);
         }
     }
 
@@ -797,7 +797,7 @@ namespace tgui
         // If the list was open then close it now
         if (m_listBox->isVisible())
         {
-            m_listBox->hide();
+            m_listBox->setVisible(false);
             m_listBox->mouseNoLongerOnWidget();
 
             // Find the GuiContainer in order to remove the ListBox from it
@@ -814,7 +814,7 @@ namespace tgui
 
     void ComboBox::initListBox()
     {
-        m_listBox->hide();
+        m_listBox->setVisible(false);
 
         m_listBox->connect("ItemSelected", [this](){
                                                 m_text.setString(m_listBox->getSelectedItem());

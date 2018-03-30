@@ -75,7 +75,7 @@ TEST_CASE("[RadioButtonGroup]")
         radioButton = tgui::RadioButton::copy(radioButton);
         radioButton->setPosition({20, 60});
         radioButton->setText("Number two");
-        radioButton->check();
+        radioButton->setChecked(true);
         group->add(radioButton);
 
         SECTION("Only save contents")
@@ -117,7 +117,7 @@ TEST_CASE("[RadioButtonGroup]")
         radioButton = tgui::RadioButton::copy(radioButton);
         radioButton->setPosition({20, 60});
         radioButton->setText("Number two");
-        radioButton->check();
+        radioButton->setChecked(true);
         group->add(radioButton);
 
         TEST_DRAW("RadioButtonGroup.png")

@@ -243,7 +243,7 @@ TEST_CASE("[Knob]")
     {
         TEST_DRAW_INIT(70, 60, knob)
 
-        knob->enable();
+        knob->setEnabled(true);
         knob->setPosition({10, 5});
         knob->setSize({50, 50});
         knob->setMinimum(1000);

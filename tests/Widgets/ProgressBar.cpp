@@ -308,7 +308,7 @@ TEST_CASE("[ProgressBar]")
 
     SECTION("Draw")
     {
-        progressBar->enable();
+        progressBar->setEnabled(true);
         progressBar->setPosition(10, 5);
         progressBar->setMinimum(1000);
         progressBar->setMaximum(2000);

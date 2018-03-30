@@ -34,18 +34,18 @@ TEST_CASE("[Widget]")
     SECTION("Visibile")
     {
         REQUIRE(widget->isVisible());
-        widget->hide();
+        widget->setVisible(false);
         REQUIRE(!widget->isVisible());
-        widget->show();
+        widget->setVisible(true);
         REQUIRE(widget->isVisible());
     }
 
     SECTION("Enabled")
     {
         REQUIRE(widget->isEnabled());
-        widget->disable();
+        widget->setEnabled(false);
         REQUIRE(!widget->isEnabled());
-        widget->enable();
+        widget->setEnabled(true);
         REQUIRE(widget->isEnabled());
     }
 
@@ -285,8 +285,8 @@ TEST_CASE("[Widget]")
         auto parent = tgui::Panel::create();
         parent->add(widget, "Widget Name.With:Special{Chars}");
 
-        widget->hide();
-        widget->disable();
+        widget->setVisible(false);
+        widget->setEnabled(false);
         widget->setPosition(50, "15%");
         widget->setSize("30%", "70");
 
@@ -307,13 +307,13 @@ TEST_CASE("[Widget]")
             tgui::EditBox::Ptr editBox = tgui::EditBox::create();
             panel->add(editBox);
 
-            editBox->focus();
+            editBox->setFocused(true);
             REQUIRE(editBox->isFocused());
 
-            editBox->disable();
+            editBox->setEnabled(false);
             REQUIRE(!editBox->isFocused());
 
-            editBox->focus();
+            editBox->setFocused(true);
             REQUIRE(!editBox->isFocused());
         }
     }

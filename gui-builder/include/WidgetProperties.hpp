@@ -50,21 +50,9 @@ struct WidgetProperties
         else if (property == "Height")
             widget->setSize(widget->getSizeLayout().x, value);
         else if (property == "Visible")
-        {
-            bool visible = parseBoolean(value, true);
-            if (visible)
-                widget->show();
-            else
-                widget->hide();
-        }
+            widget->setVisible(parseBoolean(value, true));
         else if (property == "Enabled")
-        {
-            bool enabled = parseBoolean(value, true);
-            if (enabled)
-                widget->enable();
-            else
-                widget->disable();
-        }
+            widget->setEnabled(parseBoolean(value, true));
         else // Renderer property
             widget->getRenderer()->setProperty(property, value);
     }

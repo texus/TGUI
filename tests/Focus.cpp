@@ -175,7 +175,7 @@ TEST_CASE("[Focussing widgets]")
     auto radioButton2 = tgui::RadioButton::create();
     radioButton2->setPosition({10, 40});
     radioButton2->setText("Option 2");
-    radioButton2->check();
+    radioButton2->setChecked(true);
     radioButtonGroup->add(radioButton2);
 
     auto editBox = tgui::EditBox::create();
@@ -219,7 +219,7 @@ TEST_CASE("[Focussing widgets]")
     auto invisibleButton = tgui::Button::create("Hidden");
     invisibleButton->setPosition({120, 70});
     invisibleButton->setSize({60, 20});
-    invisibleButton->hide();
+    invisibleButton->setVisible(false);
     outerPanel->add(invisibleButton);
 
     auto buttonLogin = tgui::Button::create("Log in");
@@ -230,7 +230,7 @@ TEST_CASE("[Focussing widgets]")
     auto buttonRegister = tgui::Button::create("Register");
     buttonRegister->setPosition({105, 100});
     buttonRegister->setSize({85, 20});
-    buttonRegister->disable();
+    buttonRegister->setEnabled(false);
     outerPanel->add(buttonRegister);
 
     auto childWindow = tgui::ChildWindow::create("Window 1");
@@ -252,32 +252,32 @@ TEST_CASE("[Focussing widgets]")
     {
         REQUIRE(noWidgetsFocused(rootContainer));
 
-        button->focus();
+        button->setFocused(true);
         REQUIRE(widgetFocused(button));
 
-        outerPanel->focus();
+        outerPanel->setFocused(true);
         REQUIRE(widgetFocused(outerPanel));
 
-        radioButton2->focus();
+        radioButton2->setFocused(true);
         REQUIRE(widgetFocused(radioButton2));
 
-        editBoxPassword->focus();
+        editBoxPassword->setFocused(true);
         REQUIRE(widgetFocused(editBoxPassword));
 
         // Invisible widget can't be focused
-        invisibleButton->focus();
+        invisibleButton->setFocused(true);
         REQUIRE(widgetFocused(editBoxPassword));
 
         // Disabled widget can't be focused
-        buttonRegister->focus();
+        buttonRegister->setFocused(true);
         REQUIRE(widgetFocused(editBoxPassword));
 
         // Some widgets, like Label, can't be focused
-        label->focus();
+        label->setFocused(true);
         REQUIRE(widgetFocused(editBoxPassword));
 
         // Unfocusing container unfocuses all child widgets
-        rootContainer->unfocus();
+        rootContainer->setFocused(false);
         REQUIRE(noWidgetsFocused(rootContainer));
     }
 
@@ -298,7 +298,7 @@ TEST_CASE("[Focussing widgets]")
         rootContainer->focusNextWidget();
         REQUIRE(widgetFocused(button));
 
-        radioButton2->focus();
+        radioButton2->setFocused(true);
         REQUIRE(widgetFocused(radioButton2));
 
         rootContainer->focusNextWidget();
@@ -310,7 +310,7 @@ TEST_CASE("[Focussing widgets]")
         rootContainer->focusNextWidget();
         REQUIRE(widgetFocused(radioButton2));
 
-        editBoxUsername->focus();
+        editBoxUsername->setFocused(true);
         REQUIRE(widgetFocused(editBoxUsername));
 
         rootContainer->focusNextWidget();
@@ -322,17 +322,17 @@ TEST_CASE("[Focussing widgets]")
         rootContainer->focusNextWidget();
         REQUIRE(widgetFocused(editBoxUsername));
 
-        childButton->focus();
+        childButton->setFocused(true);
         rootContainer->focusNextWidget();
         REQUIRE(widgetFocused(childButton));
 
-        outerPanel->focus();
+        outerPanel->setFocused(true);
         REQUIRE(widgetFocused(outerPanel));
 
         rootContainer->focusNextWidget();
         REQUIRE(widgetFocused(editBoxPassword)); // editBoxUsername was focused last time the panel was focused
 
-        emptyChildWindow->focus();
+        emptyChildWindow->setFocused(true);
         REQUIRE(widgetFocused(emptyChildWindow));
 
         rootContainer->focusNextWidget();
@@ -356,7 +356,7 @@ TEST_CASE("[Focussing widgets]")
         rootContainer->focusPreviousWidget();
         REQUIRE(widgetFocused(checkBox2));
 
-        radioButton2->focus();
+        radioButton2->setFocused(true);
         REQUIRE(widgetFocused(radioButton2));
 
         rootContainer->focusPreviousWidget();
@@ -368,7 +368,7 @@ TEST_CASE("[Focussing widgets]")
         rootContainer->focusPreviousWidget();
         REQUIRE(widgetFocused(radioButton2));
 
-        editBoxPassword->focus();
+        editBoxPassword->setFocused(true);
         REQUIRE(widgetFocused(editBoxPassword));
 
         rootContainer->focusPreviousWidget();
@@ -380,17 +380,17 @@ TEST_CASE("[Focussing widgets]")
         rootContainer->focusPreviousWidget();
         REQUIRE(widgetFocused(editBoxPassword));
 
-        childButton->focus();
+        childButton->setFocused(true);
         rootContainer->focusPreviousWidget();
         REQUIRE(widgetFocused(childButton));
 
-        outerPanel->focus();
+        outerPanel->setFocused(true);
         REQUIRE(widgetFocused(outerPanel));
 
         rootContainer->focusPreviousWidget();
         REQUIRE(widgetFocused(editBoxUsername)); // editBoxPassword was focused last time the panel was focused
 
-        emptyChildWindow->focus();
+        emptyChildWindow->setFocused(true);
         REQUIRE(widgetFocused(emptyChildWindow));
 
         rootContainer->focusPreviousWidget();

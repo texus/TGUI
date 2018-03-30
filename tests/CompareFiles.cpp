@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include <fstream>
+#include <cstring>
 
 bool compareFiles(const std::string& leftFileName, const std::string& rightFileName)
 {

@@ -473,8 +473,8 @@ TEST_CASE("[TextBox]")
     {
         TEST_DRAW_INIT(270, 160, textBox)
 
-        textBox->enable();
-        textBox->focus();
+        textBox->setEnabled(true);
+        textBox->setFocused(true);
         textBox->setPosition(10, 5);
         textBox->setSize(250, 150);
         textBox->setText("Something");

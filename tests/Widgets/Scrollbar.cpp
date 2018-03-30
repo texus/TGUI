@@ -278,7 +278,7 @@ TEST_CASE("[Scrollbar]")
     {
         TEST_DRAW_INIT(120, 60, scrollbar)
 
-        scrollbar->enable();
+        scrollbar->setEnabled(true);
         scrollbar->setPosition({10, 15});
         scrollbar->setSize({100, 30});
         scrollbar->setLowValue(120);

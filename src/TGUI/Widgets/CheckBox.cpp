@@ -109,20 +109,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void CheckBox::check()
+    void CheckBox::setChecked(bool checked)
     {
-        if (!m_checked)
+        if (checked && !m_checked)
         {
-            m_checked = true;
-
             updateTextColor();
             if (m_textStyleCheckedCached.isSet())
                 m_text.setStyle(m_textStyleCheckedCached);
             else
                 m_text.setStyle(m_textStyleCached);
 
+            m_checked = true;
             onCheck.emit(this, true);
         }
+        else
+            RadioButton::setChecked(checked);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,12 +136,7 @@ namespace tgui
 
         // Check or uncheck when we clicked on the checkbox (not just mouse release)
         if (mouseDown)
-        {
-            if (m_checked)
-                uncheck();
-            else
-                check();
-        }
+            setChecked(!m_checked);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,12 +145,7 @@ namespace tgui
     {
         // Check or uncheck the checkbox if the space key or the return key was pressed
         if ((event.code == sf::Keyboard::Space) || (event.code == sf::Keyboard::Return))
-        {
-            if (m_checked)
-                uncheck();
-            else
-                check();
-        }
+            setChecked(!m_checked);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

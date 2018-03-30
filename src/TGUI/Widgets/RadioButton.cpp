@@ -126,40 +126,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RadioButton::check()
+    void RadioButton::setChecked(bool checked)
     {
-        if (!m_checked)
+        if (m_checked == checked)
+            return;
+
+        if (checked)
         {
             // Tell our parent that all the radio buttons should be unchecked
             if (m_parent)
                 m_parent->uncheckRadioButtons();
 
-            // Check this radio button
             m_checked = true;
-
-            updateTextColor();
-            if (m_textStyleCheckedCached.isSet())
-                m_text.setStyle(m_textStyleCheckedCached);
-            else
-                m_text.setStyle(m_textStyleCached);
-
             onCheck.emit(this, true);
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void RadioButton::uncheck()
-    {
-        if (m_checked)
+        else
         {
             m_checked = false;
-
-            updateTextColor();
-            m_text.setStyle(m_textStyleCached);
-
             onUncheck.emit(this, false);
         }
+
+        updateTextColor();
+        if (m_checked && m_textStyleCheckedCached.isSet())
+            m_text.setStyle(m_textStyleCheckedCached);
+        else
+            m_text.setStyle(m_textStyleCached);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +240,7 @@ namespace tgui
 
         // Check the radio button if we clicked on the radio button (not just mouse release)
         if (mouseDown)
-            check();
+            setChecked(true);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,7 +248,7 @@ namespace tgui
     void RadioButton::keyPressed(const sf::Event::KeyEvent& event)
     {
         if ((event.code == sf::Keyboard::Space) || (event.code == sf::Keyboard::Return))
-            check();
+            setChecked(true);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -483,10 +474,7 @@ namespace tgui
         if (node->propertyValuePairs["textclickable"])
             setTextClickable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["textclickable"]->value).getBool());
         if (node->propertyValuePairs["checked"])
-        {
-            if (Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["checked"]->value).getBool())
-                check();
-        }
+            setChecked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["checked"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

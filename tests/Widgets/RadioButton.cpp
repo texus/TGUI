@@ -64,9 +64,9 @@ TEST_CASE("[RadioButton]")
     SECTION("Checked")
     {
         REQUIRE(!radioButton->isChecked());
-        radioButton->check();
+        radioButton->setChecked(true);
         REQUIRE(radioButton->isChecked());
-        radioButton->uncheck();
+        radioButton->setChecked(false);
         REQUIRE(!radioButton->isChecked());
 
         // Checking a radio button will uncheck all radio buttons with the same parent
@@ -82,15 +82,15 @@ TEST_CASE("[RadioButton]")
         REQUIRE(!radioButton1->isChecked());
         REQUIRE(!radioButton2->isChecked());
         REQUIRE(!radioButton3->isChecked());
-        radioButton1->check();
+        radioButton1->setChecked(true);
         REQUIRE(radioButton1->isChecked());
         REQUIRE(!radioButton2->isChecked());
         REQUIRE(!radioButton3->isChecked());
-        radioButton2->check();
+        radioButton2->setChecked(true);
         REQUIRE(!radioButton1->isChecked());
         REQUIRE(radioButton2->isChecked());
         REQUIRE(!radioButton3->isChecked());
-        radioButton3->check();
+        radioButton3->setChecked(true);
         REQUIRE(!radioButton1->isChecked());
         REQUIRE(radioButton2->isChecked());
         REQUIRE(radioButton3->isChecked());
@@ -178,7 +178,7 @@ TEST_CASE("[RadioButton]")
             REQUIRE(uncheckCount == 0);
 
             // Programmably unchecking is however possible
-            radioButton->uncheck();
+            radioButton->setChecked(false);
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 1);
 
@@ -194,7 +194,7 @@ TEST_CASE("[RadioButton]")
                 radioButton->keyPressed(keyEvent);
                 REQUIRE(checkCount == 2);
 
-                radioButton->uncheck();
+                radioButton->setChecked(false);
 
                 keyEvent.code = sf::Keyboard::Return;
                 radioButton->keyPressed(keyEvent);
@@ -407,7 +407,7 @@ TEST_CASE("[RadioButton]")
 
     SECTION("Saving and loading from file")
     {
-        radioButton->check();
+        radioButton->setChecked(true);
         radioButton->setText("SomeText");
         radioButton->setTextSize(25);
         radioButton->setTextClickable(false);
@@ -419,7 +419,7 @@ TEST_CASE("[RadioButton]")
     {
         TEST_DRAW_INIT(150, 35, radioButton)
 
-        radioButton->enable();
+        radioButton->setEnabled(true);
         radioButton->setPosition(10, 5);
         radioButton->setSize(25, 25);
         radioButton->setText("Check me!");
@@ -492,7 +492,7 @@ TEST_CASE("[RadioButton]")
 
             SECTION("CheckedNormalState")
             {
-                radioButton->check();
+                radioButton->setChecked(true);
 
                 TEST_DRAW("RadioButton_CheckedNormal_NormalSet.png")
 
@@ -518,7 +518,7 @@ TEST_CASE("[RadioButton]")
 
             SECTION("CheckedHoverState")
             {
-                radioButton->check();
+                radioButton->setChecked(true);
                 radioButton->mouseMoved(mousePos);
 
                 TEST_DRAW("RadioButton_CheckedHover_NormalSet.png")
@@ -532,7 +532,7 @@ TEST_CASE("[RadioButton]")
 
             SECTION("DisabledState")
             {
-                radioButton->disable();
+                radioButton->setEnabled(false);
 
                 TEST_DRAW("RadioButton_Disabled_NormalSet.png")
 
@@ -545,8 +545,8 @@ TEST_CASE("[RadioButton]")
 
             SECTION("CheckedDisabledState")
             {
-                radioButton->check();
-                radioButton->disable();
+                radioButton->setChecked(true);
+                radioButton->setEnabled(false);
 
                 TEST_DRAW("RadioButton_CheckedDisabled_NormalSet.png")
 
@@ -576,7 +576,7 @@ TEST_CASE("[RadioButton]")
 
             SECTION("CheckedNormalState")
             {
-                radioButton->check();
+                radioButton->setChecked(true);
 
                 TEST_DRAW("RadioButton_CheckedNormal_TextureNormalSet.png")
 
@@ -602,7 +602,7 @@ TEST_CASE("[RadioButton]")
 
             SECTION("CheckedHoverState")
             {
-                radioButton->check();
+                radioButton->setChecked(true);
                 radioButton->mouseMoved(mousePos);
 
                 TEST_DRAW("RadioButton_CheckedHover_TextureNormalSet.png")
@@ -616,7 +616,7 @@ TEST_CASE("[RadioButton]")
 
             SECTION("DisabledState")
             {
-                radioButton->disable();
+                radioButton->setEnabled(false);
 
                 TEST_DRAW("RadioButton_Disabled_TextureNormalSet.png")
 
@@ -629,8 +629,8 @@ TEST_CASE("[RadioButton]")
 
             SECTION("CheckedDisabledState")
             {
-                radioButton->check();
-                radioButton->disable();
+                radioButton->setChecked(true);
+                radioButton->setEnabled(false);
 
                 TEST_DRAW("RadioButton_CheckedDisabled_TextureNormalSet.png")
 

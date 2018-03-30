@@ -575,7 +575,7 @@ TEST_CASE("[EditBox]")
     {
         TEST_DRAW_INIT(120, 35, editBox)
 
-        editBox->enable();
+        editBox->setEnabled(true);
         editBox->setPosition(10, 5);
         editBox->setSize(100, 25);
         editBox->setText("Something");
@@ -614,7 +614,7 @@ TEST_CASE("[EditBox]")
         const auto mousePos = editBox->getPosition() + (editBox->getSize() / 2.f);
 
         editBox->selectText(2, 3);
-        editBox->focus();
+        editBox->setFocused(true);
 
         SECTION("Colored")
         {
@@ -644,7 +644,7 @@ TEST_CASE("[EditBox]")
 
             SECTION("DisabledState")
             {
-                editBox->disable();
+                editBox->setEnabled(false);
 
                 TEST_DRAW("EditBox_Disabled_NormalSet.png")
 
@@ -686,7 +686,7 @@ TEST_CASE("[EditBox]")
 
             SECTION("DisabledState")
             {
-                editBox->disable();
+                editBox->setEnabled(false);
 
                 TEST_DRAW("EditBox_Disabled_TextureNormalSet.png")
 

@@ -413,16 +413,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::show()
-    {
-        m_visible = true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Widget::showWithEffect(ShowAnimationType type, sf::Time duration)
     {
-        show();
+        setVisible(true);
 
         switch (type)
         {
@@ -485,16 +478,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::hide()
-    {
-        m_visible = false;
-
-        // If the widget is focused then it must be unfocused
-        unfocus();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Widget::hideWithEffect(ShowAnimationType type, sf::Time duration)
     {
         const auto position = getPosition();
@@ -505,19 +488,19 @@ namespace tgui
             case ShowAnimationType::Fade:
             {
                 float opacity = getInheritedOpacity();
-                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), getInheritedOpacity(), 0.f, duration, [=](){ hide(); setInheritedOpacity(opacity); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::FadeAnimation>(shared_from_this(), getInheritedOpacity(), 0.f, duration, [=](){ setVisible(false); setInheritedOpacity(opacity); }));
                 break;
             }
             case ShowAnimationType::Scale:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, position + (size / 2.f), duration, [=](){ hide(); setPosition(position); setSize(size); }));
-                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), size, Vector2f{0, 0}, duration, [=](){ hide(); setPosition(position); setSize(size); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, position + (size / 2.f), duration, [=](){ setVisible(false); setPosition(position); setSize(size); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::ResizeAnimation>(shared_from_this(), size, Vector2f{0, 0}, duration, [=](){ setVisible(false); setPosition(position); setSize(size); }));
                 break;
             }
             case ShowAnimationType::SlideToRight:
             {
                 if (getParent())
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{getParent()->getSize().x + getWidgetOffset().x, position.y}, duration, [=](){ setVisible(false); setPosition(position); }));
                 else
                 {
                     TGUI_PRINT_WARNING("hideWithEffect(SlideToRight) does not work before widget has a parent.");
@@ -527,13 +510,13 @@ namespace tgui
             }
             case ShowAnimationType::SlideToLeft:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{-getFullSize().x, position.y}, duration, [=](){ hide(); setPosition(position); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{-getFullSize().x, position.y}, duration, [=](){ setVisible(false); setPosition(position); }));
                 break;
             }
             case ShowAnimationType::SlideToBottom:
             {
                 if (getParent())
-                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration, [=](){ hide(); setPosition(position); }));
+                    addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, getParent()->getSize().y + getWidgetOffset().y}, duration, [=](){ setVisible(false); setPosition(position); }));
                 else
                 {
                     TGUI_PRINT_WARNING("hideWithEffect(SlideToBottom) does not work before widget has a parent.");
@@ -543,7 +526,7 @@ namespace tgui
             }
             case ShowAnimationType::SlideToTop:
             {
-                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, -getFullSize().y}, duration, [=](){ hide(); setPosition(position); }));
+                addAnimation(m_showAnimations, std::make_shared<priv::MoveAnimation>(shared_from_this(), position, Vector2f{position.x, -getFullSize().y}, duration, [=](){ setVisible(false); setPosition(position); }));
                 break;
             }
         }
@@ -551,44 +534,48 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::enable()
+    void Widget::setVisible(bool visible)
     {
-        m_enabled = true;
+        m_visible = visible;
+
+        // If the widget is hiden while still focused then it must be unfocused
+        if (!visible)
+            setFocused(false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::disable()
+    void Widget::setEnabled(bool enabled)
     {
-        m_enabled = false;
+        m_enabled = enabled;
 
-        // Change the mouse button state.
-        m_mouseHover = false;
-        m_mouseDown = false;
-
-        // If the widget is focused then it must be unfocused
-        unfocus();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::focus()
-    {
-        if (!m_focused && canGainFocus())
+        if (!enabled)
         {
-            m_focused = true;
-            onFocus.emit(this);
-
-            if (m_parent)
-                m_parent->childWidgetFocused(shared_from_this());
+            m_mouseHover = false;
+            m_mouseDown = false;
+            setFocused(false);
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::unfocus()
+    void Widget::setFocused(bool focused)
     {
-        if (m_focused)
+        if (m_focused == focused)
+            return;
+
+        if (focused)
+        {
+            if (canGainFocus())
+            {
+                m_focused = true;
+                onFocus.emit(this);
+
+                if (m_parent)
+                    m_parent->childWidgetFocused(shared_from_this());
+            }
+        }
+        else // Unfocusing widget
         {
             m_focused = false;
             onUnfocus.emit(this);
@@ -926,21 +913,9 @@ namespace tgui
             };
 
         if (node->propertyValuePairs["visible"])
-        {
-            const bool visible = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["visible"]->value).getBool();
-            if (visible)
-                show();
-            else
-                hide();
-        }
+            setVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["visible"]->value).getBool());
         if (node->propertyValuePairs["enabled"])
-        {
-            const bool enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["enabled"]->value).getBool();
-            if (enabled)
-                enable();
-            else
-                disable();
-        }
+            setEnabled(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["enabled"]->value).getBool());
         if (node->propertyValuePairs["position"])
             setPosition(parseLayout(node->propertyValuePairs["position"]->value));
         if (node->propertyValuePairs["size"])

@@ -905,16 +905,16 @@ void GuiBuilder::menuBarItemClicked(const std::string& menuItem)
 
         themesList->connect("ItemSelected", [=](std::string item){
             if (item.empty())
-                buttonDelete->disable();
+                buttonDelete->setEnabled(false);
             else
-                buttonDelete->enable();
+                buttonDelete->setEnabled(true);
         });
 
         newThemeEditBox->connect("TextChanged", [=](std::string text){
             if (text.empty())
-                buttonAdd->disable();
+                buttonAdd->setEnabled(false);
             else
-                buttonAdd->enable();
+                buttonAdd->setEnabled(true);
         });
 
         buttonAdd->connect("Pressed", [=]{
@@ -940,7 +940,7 @@ void GuiBuilder::menuBarItemClicked(const std::string& menuItem)
             auto item = themesList->getSelectedItem();
             m_themes.erase(item);
             themesList->removeItem(item);
-            buttonDelete->disable();
+            buttonDelete->setEnabled(false);
             initProperties();
         });
 

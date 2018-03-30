@@ -290,7 +290,7 @@ TEST_CASE("[SpinButton]")
     {
         TEST_DRAW_INIT(64, 35, spinButton)
 
-        spinButton->enable();
+        spinButton->setEnabled(true);
         spinButton->setPosition(10, 5);
         spinButton->setSize(50, 25);
         spinButton->setMinimum(7);

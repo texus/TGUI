@@ -163,9 +163,9 @@ TEST_CASE("[CheckBox]")
     SECTION("Checked")
     {
         REQUIRE(!checkBox->isChecked());
-        checkBox->check();
+        checkBox->setChecked(true);
         REQUIRE(checkBox->isChecked());
-        checkBox->uncheck();
+        checkBox->setChecked(false);
         REQUIRE(!checkBox->isChecked());
     }
 
@@ -186,11 +186,11 @@ TEST_CASE("[CheckBox]")
             checkBox->connect("Checked", genericCallback, std::ref(checkCount));
             checkBox->connect("Unchecked", genericCallback, std::ref(uncheckCount));
 
-            checkBox->check();
+            checkBox->setChecked(true);
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 0);
 
-            checkBox->uncheck();
+            checkBox->setChecked(false);
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 1);
 
@@ -230,7 +230,7 @@ TEST_CASE("[CheckBox]")
 
     SECTION("Saving and loading from file")
     {
-        checkBox->check();
+        checkBox->setChecked(true);
         checkBox->setText("SomeText");
         checkBox->setTextSize(25);
         checkBox->setTextClickable(false);
@@ -242,7 +242,7 @@ TEST_CASE("[CheckBox]")
     {
         TEST_DRAW_INIT(150, 35, checkBox)
 
-        checkBox->enable();
+        checkBox->setEnabled(true);
         checkBox->setPosition(10, 5);
         checkBox->setSize(25, 25);
         checkBox->setText("Check me!");
@@ -314,7 +314,7 @@ TEST_CASE("[CheckBox]")
 
             SECTION("CheckedNormalState")
             {
-                checkBox->check();
+                checkBox->setChecked(true);
 
                 TEST_DRAW("CheckBox_CheckedNormal_NormalSet.png")
 
@@ -340,7 +340,7 @@ TEST_CASE("[CheckBox]")
 
             SECTION("CheckedHoverState")
             {
-                checkBox->check();
+                checkBox->setChecked(true);
                 checkBox->mouseMoved(mousePos);
 
                 TEST_DRAW("CheckBox_CheckedHover_NormalSet.png")
@@ -354,7 +354,7 @@ TEST_CASE("[CheckBox]")
 
             SECTION("DisabledState")
             {
-                checkBox->disable();
+                checkBox->setEnabled(false);
 
                 TEST_DRAW("CheckBox_Disabled_NormalSet.png")
 
@@ -367,8 +367,8 @@ TEST_CASE("[CheckBox]")
 
             SECTION("CheckedDisabledState")
             {
-                checkBox->check();
-                checkBox->disable();
+                checkBox->setChecked(true);
+                checkBox->setEnabled(false);
 
                 TEST_DRAW("CheckBox_CheckedDisabled_NormalSet.png")
 
@@ -398,7 +398,7 @@ TEST_CASE("[CheckBox]")
 
             SECTION("CheckedNormalState")
             {
-                checkBox->check();
+                checkBox->setChecked(true);
 
                 TEST_DRAW("CheckBox_CheckedNormal_TextureNormalSet.png")
 
@@ -424,7 +424,7 @@ TEST_CASE("[CheckBox]")
 
             SECTION("CheckedHoverState")
             {
-                checkBox->check();
+                checkBox->setChecked(true);
                 checkBox->mouseMoved(mousePos);
 
                 TEST_DRAW("CheckBox_CheckedHover_TextureNormalSet.png")
@@ -438,7 +438,7 @@ TEST_CASE("[CheckBox]")
 
             SECTION("DisabledState")
             {
-                checkBox->disable();
+                checkBox->setEnabled(false);
 
                 TEST_DRAW("CheckBox_Disabled_TextureNormalSet.png")
 
@@ -451,8 +451,8 @@ TEST_CASE("[CheckBox]")
 
             SECTION("CheckedDisabledState")
             {
-                checkBox->check();
-                checkBox->disable();
+                checkBox->setChecked(true);
+                checkBox->setEnabled(false);
 
                 TEST_DRAW("CheckBox_CheckedDisabled_TextureNormalSet.png")
 

@@ -195,7 +195,7 @@ int main()
         button->setPosition(75, 70);
         button->setText("OK");
         button->setSize(100, 30);
-        button->connect("pressed", [=](){ child->hide(); });
+        button->connect("pressed", [=](){ child->setVisible(false); });
         child->add(button);
 
         auto checkbox = tgui::CheckBox::create();

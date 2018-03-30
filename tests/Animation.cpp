@@ -44,7 +44,7 @@ TEST_CASE("[Animation]") {
 
     SECTION("Show/Hide with effects") {
         SECTION("Widget becomes visible when effect starts") {
-            widget->hide();
+            widget->setVisible(false);
             REQUIRE(!widget->isVisible());
             widget->showWithEffect(tgui::ShowAnimationType::Scale, sf::milliseconds(250));
             REQUIRE(widget->isVisible());

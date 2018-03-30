@@ -322,7 +322,7 @@ TEST_CASE("[MenuBar]")
     {
         TEST_DRAW_INIT(150, 70, menuBar)
 
-        menuBar->enable();
+        menuBar->setEnabled(true);
         menuBar->setPosition(10, 5);
         menuBar->setSize(130, 20);
         menuBar->setTextSize(16);

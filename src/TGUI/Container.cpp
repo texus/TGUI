@@ -242,7 +242,7 @@ namespace tgui
                 if (widget == m_focusedWidget)
                 {
                     m_focusedWidget = nullptr;
-                    widget->unfocus();
+                    widget->setFocused(false);
                 }
 
                 // Remove the widget
@@ -307,7 +307,7 @@ namespace tgui
         for (auto& widget : m_widgets)
         {
             if (widget->getWidgetType() == "RadioButton")
-                std::static_pointer_cast<RadioButton>(widget)->uncheck();
+                std::static_pointer_cast<RadioButton>(widget)->setChecked(false);
         }
     }
 
@@ -550,12 +550,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::unfocus()
+    void Container::setFocused(bool focused)
     {
-        if (m_focused && m_focusedWidget)
-            m_focusedWidget->unfocus();
+        if (!focused && m_focused && m_focusedWidget)
+            m_focusedWidget->setFocused(false);
 
-        Widget::unfocus();
+        Widget::setFocused(focused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -565,13 +565,13 @@ namespace tgui
         if (m_focusedWidget != child)
         {
             if (m_focusedWidget)
-                m_focusedWidget->unfocus();
+                m_focusedWidget->setFocused(false);
 
             m_focusedWidget = child;
         }
 
         if (!isFocused())
-            focus();
+            setFocused(true);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -836,12 +836,12 @@ namespace tgui
             {
                 // Unfocus the previously focused widget
                 if (m_focusedWidget && (m_focusedWidget != widget))
-                    m_focusedWidget->unfocus();
+                    m_focusedWidget->setFocused(false);
 
                 // Focus the widget unless it is a container, in which case it will get focused when the event is handled by the bottom widget
                 m_focusedWidget = widget;
                 if (!widget->isContainer())
-                    widget->focus();
+                    widget->setFocused(true);
 
                 if (((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))
                  || ((event.type == sf::Event::TouchBegan) && (event.touch.finger == 0)))
@@ -858,10 +858,10 @@ namespace tgui
             else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
             {
                 if (m_focusedWidget)
-                    m_focusedWidget->unfocus();
+                    m_focusedWidget->setFocused(false);
 
                 m_focusedWidget = nullptr;
-                focus();
+                setFocused(true);
             }
 
             return false;
@@ -1030,7 +1030,7 @@ namespace tgui
             bool childFocused = reverseWidgetOrder ? container->focusPreviousWidget() : container->focusNextWidget();
 
             if (oldUnfocusedWidget && (oldUnfocusedWidget != container->m_focusedWidget))
-                oldUnfocusedWidget->unfocus();
+                oldUnfocusedWidget->setFocused(false);
 
             if (!childFocused)
                 return false;
@@ -1040,10 +1040,10 @@ namespace tgui
             return true;
 
         if (m_focusedWidget)
-            m_focusedWidget->unfocus();
+            m_focusedWidget->setFocused(false);
 
         m_focusedWidget = widget;
-        m_focusedWidget->focus();
+        m_focusedWidget->setFocused(true);
         return true;
     }
 
@@ -1065,9 +1065,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void GuiContainer::unfocus()
+    void GuiContainer::setFocused(bool focused)
     {
-        Container::unfocus();
+        Container::setFocused(focused);
         m_focused = true;
     }
 

@@ -224,12 +224,12 @@ namespace tgui
     {
         if (present)
         {
-            m_verticalScroll->show();
+            m_verticalScroll->setVisible(true);
             setSize(m_size);
         }
         else
         {
-            m_verticalScroll->hide();
+            m_verticalScroll->setVisible(false);
             rearrangeText(false);
         }
     }
@@ -301,31 +301,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::focus()
+    void TextBox::setFocused(bool focused)
     {
-        Widget::focus();
-
-    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
-        sf::Keyboard::setVirtualKeyboardVisible(true);
-    #endif
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void TextBox::unfocus()
-    {
-        // If there is a selection then undo it now
-        if (m_selStart != m_selEnd)
+        if (focused)
         {
-            m_selStart = m_selEnd;
-            updateSelectionTexts();
+            m_caretVisible = true;
+            m_animationTimeElapsed = {};
+        }
+        else // Unfocusing
+        {
+            // If there is a selection then undo it now
+            if (m_selStart != m_selEnd)
+            {
+                m_selStart = m_selEnd;
+                updateSelectionTexts();
+            }
         }
 
     #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
-        sf::Keyboard::setVirtualKeyboardVisible(false);
+        sf::Keyboard::setVirtualKeyboardVisible(focused);
     #endif
 
-        Widget::unfocus();
+        Widget::setFocused(focused);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
