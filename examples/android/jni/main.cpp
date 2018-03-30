@@ -33,13 +33,13 @@ void setBackground(tgui::Gui& gui, sf::View view)
 
     if (view.getSize().x > view.getSize().y)
     {
-        gui.get("Landscape")->show();
-        gui.get("Portrait")->hide();
+        gui.get("Landscape")->setVisible(true);
+        gui.get("Portrait")->setVisible(false);
     }
     else
     {
-        gui.get("Landscape")->hide();
-        gui.get("Portrait")->show();
+        gui.get("Landscape")->setVisible(false);
+        gui.get("Portrait")->setVisible(true);
     }
 }
 
