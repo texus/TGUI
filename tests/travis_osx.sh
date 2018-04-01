@@ -21,3 +21,10 @@ fi
 cd build
 cmake -DTGUI_BUILD_FRAMEWORK=TRUE -DSFML_INCLUDE_DIR=$SFML_ROOT/lib/SFML.framework -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE ..
 make -j2
+cd ..
+
+# Test the TGUIConfig.cmake file
+cd tests/cmake
+cmake -DCMAKE_MODULE_PATH=$TRAVIS_BUILD_DIR/SFML-${SFML_VERSION}/cmake/Modules/ -DSFML_ROOT=$SFML_ROOT -DTGUI_DIR=$TRAVIS_BUILD_DIR/$BUILD_FOLDER .
+./TguiTest
+cd ../..
