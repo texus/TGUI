@@ -32,10 +32,3 @@ make -j2
 cd tests/
 ./tests
 cd ../..
-
-# Test the TGUIConfig.cmake file
-cd tests/cmake
-cmake -DCMAKE_MODULE_PATH=$SFML_ROOT/share/SFML/cmake/Modules/ -DSFML_ROOT=$SFML_ROOT -DTGUI_DIR=$TRAVIS_BUILD_DIR/$BUILD_FOLDER .
-make
-test -e TguiTest
-cd ../..
