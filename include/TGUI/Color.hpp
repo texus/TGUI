@@ -213,6 +213,7 @@ namespace tgui
     };
 
 #ifdef TGUI_USE_CPP17
+    // Can't be inlined in the Color class itself because Color would still be an incomplete type
     inline const Color Color::Black      {  0,   0,   0};      ///< Black predefined color
     inline const Color Color::White      {255, 255, 255};      ///< White predefined color
     inline const Color Color::Red        {255,   0,   0};      ///< Red predefined color
