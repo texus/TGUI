@@ -8,11 +8,14 @@ macro(tgui_add_example target)
     # Make a GUI application on windows (without having the command line window)
     if(TGUI_OS_WINDOWS)
         set(GUI_TYPE WIN32)
-        target_link_libraries(${target} PRIVATE sfml-main)
     endif()
 
     add_executable(${target} ${GUI_TYPE} ${THIS_SOURCES})
     target_link_libraries(${target} PRIVATE tgui)
+
+    if(TGUI_OS_WINDOWS)
+        target_link_libraries(${target} PRIVATE sfml-main)
+    endif()
 
     tgui_set_global_compile_flags(${target})
     tgui_set_stdlib(${target})
