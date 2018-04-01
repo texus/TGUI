@@ -20,6 +20,9 @@ add_executable(gui-builder ${GUI_TYPE} ${GUI_BUILDER_SOURCES})
 target_link_libraries(gui-builder PRIVATE tgui)
 target_include_directories(gui-builder PRIVATE include)
 
+tgui_set_global_compile_flags(gui-builder)
+tgui_set_stdlib(gui-builder)
+
 # Copy the executable to the gui-builder folder
 add_custom_command(TARGET gui-builder POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gui-builder> ${PROJECT_SOURCE_DIR}/gui-builder/
