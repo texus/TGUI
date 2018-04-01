@@ -50,7 +50,7 @@ tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentatio
 # Define the install directory for miscellaneous files
 if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
     set(DEFAULT_INSTALL_MISC_DIR .)
-elseif(TGUI_OS_LINUX OR TGUI_OS_FREEBSD)
+elseif(TGUI_OS_LINUX OR TGUI_OS_BSD)
     set(DEFAULT_INSTALL_MISC_DIR share/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
 elseif(TGUI_OS_MACOSX)
     set(DEFAULT_INSTALL_MISC_DIR /usr/local/share/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})

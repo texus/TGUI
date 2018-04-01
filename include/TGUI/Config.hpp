@@ -45,7 +45,7 @@
             #define TGUI_API __declspec(dllimport)
         #endif
 
-    #else // Linux, FreeBSD, Mac OS X
+    #else // Linux, macOS, FreeBSD, OpenBSD
 
         // GCC 4 has special keywords for showing/hidding symbols
         #if __GNUC__ >= 4
