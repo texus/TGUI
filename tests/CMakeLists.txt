@@ -83,25 +83,19 @@ if (TGUI_OPTIMIZE_SINGLE_BUILD OR TGUI_OPTIMIZE_TESTS_SINGLE_BUILD)
             endforeach()
         endforeach()
 
-        if (SFML_COMPILER_MSVC)
-            add_compile_options("/bigobj")
-        endif()
-
         set(TEST_SOURCES ${NEW_TEST_SOURCES})
     endif()
 endif()
 
 add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(tests ${PROJECT_NAME} ${TGUI_EXT_LIBS})
+target_link_libraries(tests PRIVATE tgui)
 
-# For gcc >= 4.0 on Windows, apply the SFML_USE_STATIC_STD_LIBS option if it is enabled
-if(SFML_OS_WINDOWS AND SFML_COMPILER_GCC AND NOT SFML_GCC_VERSION VERSION_LESS "4")
-    if(SFML_USE_STATIC_STD_LIBS AND NOT SFML_COMPILER_GCC_TDM)
-        set_target_properties(tests PROPERTIES LINK_FLAGS "-static-libgcc -static-libstdc++")
-    elseif(NOT SFML_USE_STATIC_STD_LIBS AND SFML_COMPILER_GCC_TDM)
-        set_target_properties(tests PROPERTIES LINK_FLAGS "-shared-libgcc -shared-libstdc++")
-    endif()
+tgui_set_global_compile_flags(tests)
+tgui_set_stdlib(tests)
+
+if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
+    target_compile_options(tests PRIVATE /bigobj)
 endif()
 
 # Copy the resources folder to the build directory to execute the tests without installing them
@@ -115,13 +109,13 @@ add_custom_command(TARGET tests
 
 # Add the install rule for the executable
 install(TARGETS tests
-        RUNTIME DESTINATION ${INSTALL_MISC_DIR}/tests/ COMPONENT tests
-        BUNDLE DESTINATION ${INSTALL_MISC_DIR}/tests/ COMPONENT tests)
+        RUNTIME DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/tests/ COMPONENT tests
+        BUNDLE DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/tests/ COMPONENT tests)
 
 # Install the tests
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/tests/resources"
-        DESTINATION "${INSTALL_MISC_DIR}/tests"
+        DESTINATION "${TGUI_MISC_INSTALL_PREFIX}/tests"
         COMPONENT tests)
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/themes/"
-        DESTINATION "${INSTALL_MISC_DIR}/tests/resources"
+        DESTINATION "${TGUI_MISC_INSTALL_PREFIX}/tests/resources"
         COMPONENT tests)

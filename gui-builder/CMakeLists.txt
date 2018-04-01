@@ -10,8 +10,14 @@ set(GUI_BUILDER_SOURCES
     include/WidgetProperties.hpp
 )
 
-add_executable(gui-builder ${GUI_BUILDER_SOURCES})
-target_link_libraries(gui-builder ${PROJECT_NAME} ${TGUI_EXT_LIBS})
+# Make a GUI application on windows (without having the command line window)
+if(TGUI_OS_WINDOWS)
+    set(GUI_TYPE WIN32)
+    target_link_libraries(gui-builder PRIVATE sfml-main)
+endif()
+
+add_executable(gui-builder ${GUI_TYPE} ${GUI_BUILDER_SOURCES})
+target_link_libraries(gui-builder PRIVATE tgui)
 target_include_directories(gui-builder PRIVATE include)
 
 # Copy the executable to the gui-builder folder

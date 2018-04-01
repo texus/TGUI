@@ -39,7 +39,7 @@
     #ifdef SFML_SYSTEM_WINDOWS
 
         // Windows compilers need specific (and different) keywords for export and import
-        #ifdef tgui_EXPORTS
+        #ifdef TGUI_EXPORTS
             #define TGUI_API __declspec(dllexport)
         #else
             #define TGUI_API __declspec(dllimport)

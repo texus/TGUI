@@ -1,6 +1,7 @@
 set -e
 
 export SFML_ROOT=$HOME/SFML_LINUX
+export BUILD_FOLDER=build_gcc-$CXX
 
 git clone --depth 1 https://github.com/SFML/SFML
 cd SFML
@@ -24,8 +25,14 @@ else
 fi
 cd ..
 
-mkdir build_gcc-$CXX
-cd build_gcc-$CXX
+mkdir $BUILD_FOLDER
+cd $BUILD_FOLDER
 cmake -DCMAKE_BUILD_TYPE=Release -DTGUI_BUILD_EXAMPLES=TRUE -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ..
 make -j2
 cd ..
+
+# Test the TGUIConfig.cmake file
+cd tests/cmake
+cmake -DSFML_DIR=$SFML_ROOT -DTGUI_DIR=$TRAVIS_BUILD_DIR/$BUILD_FOLDER .
+./TguiTest
+cd ../..
