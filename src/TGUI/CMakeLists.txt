@@ -175,12 +175,6 @@ if(TGUI_OS_ANDROID)
     target_link_libraries(tgui PRIVATE android)
 endif()
 
-# Generate .gcno files when requested
-if(TGUI_BUILD_TESTS AND TGUI_USE_GCOV)
-    target_compile_options(tgui PRIVATE -fprofile-arcs)
-    target_compile_options(tgui PRIVATE -ftest-coverage)
-endif()
-
 # Enable automatic reference counting on iOS
 if(TGUI_OS_IOS)
     set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)
