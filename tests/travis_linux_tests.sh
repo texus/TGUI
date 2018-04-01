@@ -2,6 +2,7 @@ set -eo pipefail
 
 export SFML_VERSION=2.4.0
 export SFML_ROOT=$HOME/SFML-${SFML_VERSION}_LINUX
+export BUILD_FOLDER=build_$CXX
 export DISPLAY=:99.0
 sh -e /etc/init.d/xvfb start
 
@@ -24,8 +25,8 @@ else
   echo "$(tput setaf 2)Using cached SFML directory$(tput sgr 0)"
 fi
 
-mkdir build_$CXX
-cd build_$CXX
+mkdir $BUILD_FOLDER
+cd $BUILD_FOLDER
 CXXFLAGS="-fprofile-arcs -ftest-coverage -DTGUI_SKIP_DRAW_TESTS" cmake -DCMAKE_BUILD_TYPE=Debug -DTGUI_BUILD_TESTS=TRUE -DTGUI_OPTIMIZE_TESTS_SINGLE_BUILD=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD_THREADS=2 ..
 make -j2
 cd tests/
@@ -36,5 +37,5 @@ cd ../..
 cd tests/cmake
 cmake -DCMAKE_MODULE_PATH=$SFML_ROOT/share/SFML/cmake/Modules/ -DSFML_ROOT=$SFML_ROOT -DTGUI_DIR=$TRAVIS_BUILD_DIR/$BUILD_FOLDER .
 make
-./TguiTest
+test -e TguiTest
 cd ../..
