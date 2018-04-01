@@ -34,5 +34,6 @@ cd ..
 # Test the TGUIConfig.cmake file
 cd tests/cmake
 cmake -DSFML_DIR=$SFML_ROOT -DTGUI_DIR=$TRAVIS_BUILD_DIR/$BUILD_FOLDER .
+make
 ./TguiTest
 cd ../..
