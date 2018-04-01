@@ -9,9 +9,9 @@ For more information, take a look at the [website](https://tgui.eu).
 Status
 ------
 
-| Linux | macOS | Android | Windows | Test coverage |
-|-------|-------|---------|---------|---------------|
-| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8-dev/2)](https://travis-ci.org/texus/TGUI) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8-dev/4)](https://travis-ci.org/texus/TGUI) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8-dev/3)](https://travis-ci.org/texus/TGUI) | [![Build status](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/0.8-dev?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/0.8-dev) | [![codecov](https://codecov.io/gh/texus/TGUI/branch/0.8-dev/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.8-dev) |
+| Linux | macOS | Windows | Test coverage |
+|-------|-------|---------|---------------|
+| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8-dev/2)](https://travis-ci.org/texus/TGUI) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8-dev/3)](https://travis-ci.org/texus/TGUI) | [![Build status](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/0.8-dev?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/0.8-dev) | [![codecov](https://codecov.io/gh/texus/TGUI/branch/0.8-dev/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.8-dev) |
 
 
 Download
