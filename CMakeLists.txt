@@ -122,15 +122,6 @@ if(TGUI_OS_ANDROID)
 
     # We install libs in a subdirectory named after the ABI (e.g. lib/armeabi/libtgui.so)
     set(LIB_SUFFIX "/${CMAKE_ANDROID_ARCH_ABI}")
-
-    # Pass shared STL configuration (if any)
-    if(CMAKE_ANDROID_STL_TYPE MATCHES "_shared")
-        if(NOT CMAKE_ANDROID_STL_TYPE MATCHES "c\\+\\+_shared")
-            message("Android: Using ${CMAKE_ANDROID_STL_TYPE} as STL. Set CMAKE_ANDROID_STL_TYPE to c++_shared, if there are any issues.")
-        endif()
-    else()
-        message(WARNING "Android: You're using a static STL (${CMAKE_ANDROID_STL_TYPE}). Set CMAKE_ANDROID_STL_TYPE to c++_shared, if there are any issues.")
-    endif()
 endif()
 
 # Link SFML in the same way as TGUI, unless SFML_STATIC_LIBRARIES is manually specified
@@ -178,6 +169,8 @@ endif()
 # Find sfml
 if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC) # Also look for the main component when using Visual Studio
     find_package(SFML 2 COMPONENTS main graphics window system)
+elseif(TGUI_OS_ANDROID)  # Search for SFML in the android NDK (if no other directory is specified)
+    find_package(SFML 2 COMPONENTS graphics window system PATHS "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/cmake/SFML")
 elseif(TGUI_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
     find_host_package(SFML 2 COMPONENTS graphics window system)
 else()

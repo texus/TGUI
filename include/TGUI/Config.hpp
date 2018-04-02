@@ -70,16 +70,6 @@
 #define TGUI_VERSION_MINOR 8
 #define TGUI_VERSION_PATCH 0
 
-// Disable c++14 code when using -std=c++11, which is needed for android when using NDK 12b.
-// This technically results in undefined behavior because the std::function ambiguity was only fixed in c++14 (http://cplusplus.github.io/LWG/lwg-defects.html#2132).
-// TGUI relies on a fix for LWG 2132 to be implemented, even when compiling with -std=c++11 (which is the case in supported gcc and clang compilers).
-// The TGUI_NO_CPP14 macro thus does not provide support for all compilers with c++11 support, it just allows some compilers to work even with -std=c++11.
-#ifndef _MSC_VER
-    #if __cplusplus <= 201103L
-        #define TGUI_NO_CPP14
-    #endif
-#endif
-
 // The signal system detects whether it can provide unbound parameters by checking the arguments of the function at runtime.
 // This comparion is made by checking the typeid of the parameters with the typeid of the value which the widget can transmit.
 // Although typeid returns a unique value and the operator== is guarenteed to only be true for the same type, it may not always work correctly.

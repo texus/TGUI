@@ -56,4 +56,4 @@ ifdef prebuilt
 endif
 
 
-$(call import-module,sfml)
+$(call import-module, third_party/sfml)

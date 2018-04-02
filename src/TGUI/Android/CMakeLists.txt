@@ -14,8 +14,11 @@ if(TGUI_COMPILER_GCC OR TGUI_COMPILER_CLANG)
     target_compile_options(tgui-activity PRIVATE -fvisibility=hidden)
 endif()
 
+if (CMAKE_ANDROID_STL_TYPE MATCHES "_shared")
+    target_compile_definitions(tgui-activity PRIVATE STL_LIBRARY=${CMAKE_ANDROID_STL_TYPE})
+endif()
+
 tgui_set_global_compile_flags(tgui-activity)
-target_compile_definitions(tgui-activity PRIVATE STL_LIBRARY=${CMAKE_ANDROID_STL_TYPE})
 target_compile_options(tgui-activity PRIVATE -fpermissive)
 target_link_libraries(tgui-activity PRIVATE android log)
 
