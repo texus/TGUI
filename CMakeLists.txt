@@ -193,16 +193,6 @@ if(SFML_OS_ANDROID)
 
     # We install libs in a subdirectory named after the ABI (e.g. lib/armeabi/libtgui.so)
     set(LIB_SUFFIX "/${CMAKE_ANDROID_ARCH_ABI}")
-
-    # Pass shared STL configuration (if any)
-    if (CMAKE_ANDROID_STL_TYPE MATCHES "_shared")
-        add_definitions("-DSTL_LIBRARY=${CMAKE_ANDROID_STL_TYPE}")
-        if (NOT CMAKE_ANDROID_STL_TYPE MATCHES "c\\+\\+_shared")
-            message("Android: Using ${CMAKE_ANDROID_STL_TYPE} as STL. Set CMAKE_ANDROID_STL_TYPE to c++_shared, if there are any issues.")
-        endif()
-    else()
-        message(WARNING "Android: You're using a static STL (${CMAKE_ANDROID_STL_TYPE}). Set CMAKE_ANDROID_STL_TYPE to c++_shared, if there are any issues.")
-    endif()
 endif()
 
 # Link to the static sfml libraries when building tgui statically
@@ -244,7 +234,9 @@ endif()
 # Find sfml
 if (SFML_OS_WINDOWS AND SFML_COMPILER_MSVC)  # Also look for the main component when using Visual Studio
     find_package(SFML 2 COMPONENTS main graphics window system)
-elseif (SFML_OS_IOS)  # Use the function from the toolchain on iOS
+elseif(SFML_OS_ANDROID)  # Search for SFML in the android NDK (if no other directory is specified)
+    find_package(SFML 2 COMPONENTS graphics window system PATHS "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/cmake/SFML")
+elseif(SFML_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
     find_host_package(SFML 2 COMPONENTS graphics window system)
 else()
     find_package(SFML 2 COMPONENTS graphics window system)
@@ -262,17 +254,17 @@ set( LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib" )
 
 # Add the sfml and tgui include directories
 include_directories( "${PROJECT_SOURCE_DIR}/include" )
-include_directories( ${SFML_INCLUDE_DIR} )
 
 if (DEFINED SFML_LIBRARIES)
     # SFML found via FindSFML.cmake
     set(TGUI_EXT_LIBS ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+    include_directories( ${SFML_INCLUDE_DIR} )
 else()
     # SFML found via SFMLConfig.cmake
     if (SFML_OS_WINDOWS AND SFML_COMPILER_MSVC)  # Also look for the main component when using Visual Studio
-        set(TGUI_EXT_LIBS sfml-main sfml-graphics sfml-window sfml-system)
+        set(TGUI_EXT_LIBS sfml-main sfml-graphics)
     else()
-        set(TGUI_EXT_LIBS sfml-graphics sfml-window sfml-system)
+        set(TGUI_EXT_LIBS sfml-graphics)
     endif()
 endif()
 

@@ -49,7 +49,6 @@
 //
 ////////////////////////////////////////////////////////////
 
-#include <SFML/Config.hpp>
 #include <android/native_activity.h>
 #include <android/log.h>
 #include <dlfcn.h>
@@ -202,8 +201,7 @@ void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_
 #endif
 
     // Load our libraries
-    loadLibrary("c++_shared", lJNIEnv, ObjectActivityInfo);
-#if defined(SFML_DEBUG)
+#if !defined(NDEBUG)
     loadLibrary("tgui-d", lJNIEnv, ObjectActivityInfo);
 #else
     loadLibrary("tgui", lJNIEnv, ObjectActivityInfo);

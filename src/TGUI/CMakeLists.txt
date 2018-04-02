@@ -67,16 +67,14 @@ if(TGUI_SHARED_LIBS)
         set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
     endif()
 
-    # The library should be linked to sfml, unless you are on linux
-    if (NOT SFML_OS_LINUX)
-        target_link_libraries( ${PROJECT_NAME} ${TGUI_EXT_LIBS} )
+    # The library should be linked to sfml
+    target_link_libraries( ${PROJECT_NAME} ${TGUI_EXT_LIBS} )
 
-        # on Windows/gcc get rid of "lib" prefix for shared libraries,
-        # and transform the ".dll.a" suffix into ".a" for import libraries
-        if (SFML_OS_WINDOWS AND SFML_COMPILER_GCC)
-            set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
-            set_target_properties(${PROJECT_NAME} PROPERTIES IMPORT_SUFFIX ".a")
-        endif()
+    # on Windows/gcc get rid of "lib" prefix for shared libraries,
+    # and transform the ".dll.a" suffix into ".a" for import libraries
+    if (SFML_OS_WINDOWS AND SFML_COMPILER_GCC)
+        set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
+        set_target_properties(${PROJECT_NAME} PROPERTIES IMPORT_SUFFIX ".a")
     endif()
 
 else()
