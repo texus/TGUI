@@ -14,11 +14,11 @@ Note: when the tutorial mentions c++11, use c++14 instead.
 
 [Mac OS X (Xcode)](../v0.7/xcode/)
 
-[Linux / FreeBSD](../0.8/linux/)
+[Linux / FreeBSD](linux)
 
 [Raspberry Pi](../v0.7/raspberry/) - experimental
 
-[Android](../v0.7/android/) - experimental
+[Android](android) - experimental
 
 [iOS](../v0.7/ios/) - experimental
 
