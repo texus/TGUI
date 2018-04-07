@@ -104,6 +104,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Enables or disables the widget
+        /// @param enabled  Is the widget enabled?
+        ///
+        /// The disabled widget will no longer receive events and thus no longer send callbacks.
+        /// All widgets are enabled by default.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setEnabled(bool enabled) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the tabs are auto-sized or not
         ///
         /// @param autoSize  Should the size of the tabs depend on their content?
@@ -261,6 +271,38 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int getSelectedIndex() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether a tab is visible
+        /// @param index   The index of the tab to show or hide
+        /// @param visible Is the tab shown?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTabVisible(std::size_t index, bool visible);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the tab is shown or hidden
+        /// @param index  The index of the tab
+        /// @return Whether the tab is visible
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getTabVisible(std::size_t index) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether a tab is enabled
+        /// @param index   The index of the tab to enable or disable
+        /// @param visible Is the tab enabled?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTabEnabled(std::size_t index, bool enabled);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the tab is enabled or disabled
+        /// @param index  The index of the tab
+        /// @return Whether the tab is enabled
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getTabEnabled(std::size_t index) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -463,21 +505,31 @@ namespace tgui
         int                m_selectedTab = -1;
         int                m_hoveringTab = -1;
         bool               m_autoSize = true;
-        std::vector<float> m_tabWidth;
-        std::vector<Text>  m_tabTexts;
+
+        struct Tab
+        {
+            bool  visible;
+            bool  enabled;
+            float width;
+            Text  text;
+        };
+        std::vector<Tab> m_tabs;
 
         Sprite m_spriteTab;
         Sprite m_spriteSelectedTab;
+        Sprite m_spriteDisabledTab;
 
         // Cached renderer properties
         Borders   m_bordersCached;
         Color     m_borderColorCached;
         Color     m_backgroundColorCached;
         Color     m_backgroundColorHoverCached;
+        Color     m_backgroundColorDisabledCached;
         Color     m_selectedBackgroundColorCached;
         Color     m_selectedBackgroundColorHoverCached;
         Color     m_textColorCached;
         Color     m_textColorHoverCached;
+        Color     m_textColorDisabledCached;
         Color     m_selectedTextColorCached;
         Color     m_selectedTextColorHoverCached;
         float     m_distanceToSideCached = 0;

@@ -61,6 +61,44 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getFullSize() == tabs->getSize());
     }
 
+    SECTION("TabVisible")
+    {
+        REQUIRE(!tabs->getTabVisible(0)); // Tab that doesn't exist can't be visible
+
+        tabs->add("0");
+        tabs->add("1");
+
+        REQUIRE(tabs->getTabVisible(0));
+        REQUIRE(tabs->getTabVisible(1));
+        REQUIRE(!tabs->getTabVisible(2)); // Tab that doesn't exist can't be visible
+
+        tabs->setTabVisible(0, false);
+        tabs->setTabVisible(2, true);  // Showing tab that doesn't exist has no effect
+
+        REQUIRE(!tabs->getTabVisible(0));
+        REQUIRE(tabs->getTabVisible(1));
+        REQUIRE(!tabs->getTabVisible(2)); // Tab that doesn't exist can't be visible
+    }
+
+    SECTION("TabEnabled")
+    {
+        REQUIRE(!tabs->getTabEnabled(0)); // Tab that doesn't exist can't be enabled
+
+        tabs->add("0");
+        tabs->add("1");
+
+        REQUIRE(tabs->getTabEnabled(0));
+        REQUIRE(tabs->getTabEnabled(1));
+        REQUIRE(!tabs->getTabEnabled(2)); // Tab that doesn't exist can't be enabled
+
+        tabs->setTabEnabled(0, false);
+        tabs->setTabEnabled(2, true);  // Enabling tab that doesn't exist has no effect
+
+        REQUIRE(!tabs->getTabEnabled(0));
+        REQUIRE(tabs->getTabEnabled(1));
+        REQUIRE(!tabs->getTabEnabled(2)); // Tab that doesn't exist can't be enabled
+    }
+
     /// TODO: Test the functions in the Tab class
 
     testWidgetRenderer(tabs->getRenderer());
@@ -147,11 +185,14 @@ TEST_CASE("[Tabs]")
     {
         tabs->add("1");
         tabs->add("2");
+        tabs->add("invisible");
         tabs->add("3");
         tabs->select("2");
         tabs->setTextSize(20);
         tabs->setTabHeight(26);
         tabs->setMaximumTabWidth(100);
+        tabs->setTabVisible(2, false);
+        tabs->setTabEnabled(3, false);
 
         testSavingWidget("Tabs", tabs);
     }

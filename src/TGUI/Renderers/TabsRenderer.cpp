@@ -34,16 +34,19 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BackgroundColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BackgroundColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, SelectedBackgroundColor, Color(0, 110, 255))
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, SelectedBackgroundColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, TextColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, TextColorHover, {})
+    TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, TextColorDisabled, {})
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, SelectedTextColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, SelectedTextColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureTab)
     TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureSelectedTab)
+    TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureDisabledTab)
 
     TGUI_RENDERER_PROPERTY_NUMBER(TabsRenderer, DistanceToSide, 0)
 }
