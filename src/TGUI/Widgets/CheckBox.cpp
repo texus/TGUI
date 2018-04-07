@@ -113,13 +113,14 @@ namespace tgui
     {
         if (checked && !m_checked)
         {
+            m_checked = true;
+
             updateTextColor();
             if (m_textStyleCheckedCached.isSet())
                 m_text.setStyle(m_textStyleCheckedCached);
             else
                 m_text.setStyle(m_textStyleCached);
 
-            m_checked = true;
             onCheck.emit(this, true);
         }
         else
