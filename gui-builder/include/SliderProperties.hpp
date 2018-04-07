@@ -40,6 +40,10 @@ struct SliderProperties : WidgetProperties
             slider->setMaximum(tgui::stof(value));
         else if (property == "Value")
             slider->setValue(tgui::stof(value));
+        else if (property == "Step")
+            slider->setStep(tgui::stof(value));
+        else if (property == "InvertedDirection")
+            slider->setInvertedDirection(parseBoolean(value, false));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -52,6 +56,7 @@ struct SliderProperties : WidgetProperties
         pair.first["Maximum"] = {"Float", tgui::to_string(slider->getMaximum())};
         pair.first["Value"] = {"Float", tgui::to_string(slider->getValue())};
         pair.first["Step"] = {"Float", tgui::to_string(slider->getStep())};
+        pair.first["InvertedDirection"] = {"Bool", tgui::to_string(slider->getInvertedDirection())};
 
         const auto renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
