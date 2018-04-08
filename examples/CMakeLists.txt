@@ -5,12 +5,15 @@ macro(tgui_add_example target)
     # parse the arguments
     cmake_parse_arguments(THIS "" "" "SOURCES" ${ARGN})
 
-    # Make a GUI application on windows (without having the command line window)
     if(TGUI_OS_WINDOWS)
-        set(GUI_TYPE WIN32)
+        set(GUI_APP WIN32)
+    elseif(TGUI_OS_IOS)
+        set(GUI_APP MACOSX_BUNDLE)
+    else()
+        set(GUI_APP "")
     endif()
 
-    add_executable(${target} ${GUI_TYPE} ${THIS_SOURCES})
+    add_executable(${target} ${GUI_APP} ${THIS_SOURCES})
     target_link_libraries(${target} PRIVATE tgui)
 
     # Link to sfml-main (only when SFMLConfig.cmake is used, this is done through the tgui target if FindSFML.cmake is used)
@@ -29,8 +32,12 @@ macro(tgui_add_example target)
 endmacro()
 
 # Build the examples
-add_subdirectory(many_different_widgets)
-add_subdirectory(scalable_login_screen)
+if(TGUI_OS_IOS)
+    add_subdirectory(iOS)
+else()
+    add_subdirectory(many_different_widgets)
+    add_subdirectory(scalable_login_screen)
+endif()
 
 # install the examples
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/examples/"

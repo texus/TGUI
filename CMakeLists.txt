@@ -37,7 +37,7 @@ else()
 endif()
 
 # Add option to build the examples
-if(NOT TGUI_OS_IOS AND NOT TGUI_OS_ANDROID)
+if(NOT TGUI_OS_ANDROID)
     tgui_set_option(TGUI_BUILD_EXAMPLES FALSE BOOL "TRUE to build the TGUI examples, FALSE to ignore them")
 else()
     set(TGUI_BUILD_EXAMPLES FALSE)
