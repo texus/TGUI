@@ -163,10 +163,10 @@ TEST_CASE("[ChildWindow]")
     {
         REQUIRE(childWindow->isKeptInParent() == false);
 
-        childWindow->keepInParent(true);
+        childWindow->setKeepInParent(true);
         REQUIRE(childWindow->isKeptInParent() == true);
 
-        childWindow->keepInParent(false);
+        childWindow->setKeepInParent(false);
         REQUIRE(childWindow->isKeptInParent() == false);
     }
 
@@ -373,7 +373,7 @@ TEST_CASE("[ChildWindow]")
             childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
             childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Minimize);
             childWindow->setResizable();
-            childWindow->keepInParent();
+            childWindow->setKeepInParent(true);
 
             auto widget = tgui::ClickableWidget::create();
             widget->setPosition(40, 20);

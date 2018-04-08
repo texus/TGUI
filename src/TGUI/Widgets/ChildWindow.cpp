@@ -123,18 +123,18 @@ namespace tgui
         float x = position.getValue().x;
         float y = position.getValue().y;
 
-        if (m_parent && m_keepInParent && (m_parent->getSize().x > 0) && (m_parent->getSize().y > 0)
-         && ((y < 0) || (y > m_parent->getSize().y - m_titleBarHeightCached) || (x < 0) || (x > m_parent->getSize().x - getSize().x)))
+        if (m_keepInParent && m_parent && (m_parent->getSize().x > 0) && (m_parent->getSize().y > 0)
+         && ((y < 0) || (y > m_parent->getSize().y - getFullSize().y) || (x < 0) || (x > m_parent->getSize().x - getFullSize().x)))
         {
             if (y < 0)
                 y = 0;
-            else if (y > m_parent->getSize().y - m_titleBarHeightCached)
-                y = m_parent->getSize().y - m_titleBarHeightCached;
+            else if (y > m_parent->getSize().y - getFullSize().y)
+                y = m_parent->getSize().y - getFullSize().y;
 
             if (x < 0)
                 x = 0;
-            else if (x > m_parent->getSize().x - getSize().x)
-                x = m_parent->getSize().x - getSize().x;
+            else if (x > m_parent->getSize().x - getFullSize().x)
+                x = m_parent->getSize().x - getFullSize().x;
 
             Container::setPosition({x, y});
         }
@@ -377,7 +377,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ChildWindow::keepInParent(bool enabled)
+    void ChildWindow::setKeepInParent(bool enabled)
     {
         m_keepInParent = enabled;
 
@@ -534,8 +534,23 @@ namespace tgui
         // Check if you are dragging the child window
         if (m_mouseDown && m_mouseDownOnTitleBar)
         {
-            // Move the child window
-            setPosition(getPosition() + (pos - m_draggingPosition));
+            // Move the child window, but don't allow the dragging position to leave the screen
+            sf::Vector2f newPosition;
+            if (getPosition().x + pos.x <= 0)
+                newPosition.x = -m_draggingPosition.x + 1;
+            else if (m_parent && getPosition().x + pos.x >= m_parent->getSize().x)
+                newPosition.x = m_parent->getSize().x - m_draggingPosition.x - 1;
+            else
+                newPosition.x = getPosition().x + (pos.x - m_draggingPosition.x);
+
+            if (getPosition().y + pos.y <= 0)
+                newPosition.y = -m_draggingPosition.y + 1;
+            else if (m_parent && getPosition().y + pos.y >= m_parent->getSize().y)
+                newPosition.y = m_parent->getSize().y - m_draggingPosition.y - 1;
+            else
+                newPosition.y = getPosition().y + (pos.y - m_draggingPosition.y);
+
+            setPosition(newPosition);
         }
 
         // Check if you are resizing the window
@@ -889,7 +904,7 @@ namespace tgui
             setTitle(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["title"]->value).getString());
 
         if (node->propertyValuePairs["keepinparent"])
-            keepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["keepinparent"]->value).getBool());
+            setKeepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["keepinparent"]->value).getBool());
 
         if (node->propertyValuePairs["resizable"])
             setResizable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["resizable"]->value).getBool());
