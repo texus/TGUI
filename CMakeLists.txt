@@ -226,9 +226,6 @@ endif()
 install(FILES license.txt DESTINATION ${TGUI_MISC_INSTALL_PREFIX})
 install(FILES README.md DESTINATION ${TGUI_MISC_INSTALL_PREFIX})
 install(DIRECTORY themes DESTINATION "${TGUI_MISC_INSTALL_PREFIX}")
-if(NOT TGUI_OS_ANDROID)
-    install(FILES cmake/Modules/FindTGUI.cmake DESTINATION "${TGUI_MISC_INSTALL_PREFIX}/cmake/Modules")
-endif()
 
 # Install Android.mk so the NDK knows how to set up TGUI
 if(TGUI_OS_ANDROID)
