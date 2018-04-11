@@ -300,7 +300,9 @@ if(SFML_STATIC_LIBRARIES)
         endif()
 
         # update the list
-        if(FIND_SFML_OS_WINDOWS)
+        if(IOS_PLATFORM)
+            set(SFML_WINDOW_DEPENDENCIES ${SFML_WINDOW_DEPENDENCIES} "-framework OpenGLES -framework Foundation -framework UIKit -framework CoreGraphics -framework QuartzCore -framework CoreMotion -lz -lbz2")
+        elseif(FIND_SFML_OS_WINDOWS)
             set(SFML_WINDOW_DEPENDENCIES ${SFML_WINDOW_DEPENDENCIES} "opengl32" "winmm" "gdi32")
         elseif(FIND_SFML_OS_LINUX)
             set(SFML_WINDOW_DEPENDENCIES ${SFML_WINDOW_DEPENDENCIES} "GL" ${X11_LIBRARY} ${LIBXCB_LIBRARIES} ${X11_XCB_LIBRARY} ${XCB_RANDR_LIBRARY} ${XCB_IMAGE_LIBRARY} ${UDEV_LIBRARIES})
