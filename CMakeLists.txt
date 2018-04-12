@@ -172,7 +172,7 @@ if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC) # Also look for the main component wh
 elseif(TGUI_OS_ANDROID)  # Search for SFML in the android NDK (if no other directory is specified)
     find_package(SFML 2 COMPONENTS graphics window system PATHS "${CMAKE_ANDROID_NDK}/sources/third_party/sfml/lib/cmake/SFML")
 elseif(TGUI_OS_IOS)  # Use the find_host_package macro from the toolchain on iOS
-    find_host_package(SFML 2 COMPONENTS graphics window system)
+    find_host_package(SFML 2 COMPONENTS main graphics window system)
 else()
     find_package(SFML 2 COMPONENTS graphics window system)
 endif()
