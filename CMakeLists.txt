@@ -64,7 +64,7 @@ if(TGUI_USE_CPP17)
     message(WARNING "The library is being build with c++17 features. Keep in mind that you MUST define TGUI_USE_CPP17 in the project using the library as well.")
 endif()
 
-# Define an option for choosing between static and dynamic C runtime (VC++ only)
+# Define an option for choosing between static and dynamic C runtime
 if(TGUI_OS_WINDOWS)
     tgui_set_option(TGUI_USE_STATIC_STD_LIBS FALSE BOOL "TRUE to statically link to the standard libraries, FALSE to use them as DLLs. This option has to match with the one from sfml.")
 

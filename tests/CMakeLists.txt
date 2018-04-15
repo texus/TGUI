@@ -112,10 +112,10 @@ install(TARGETS tests
         RUNTIME DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/tests/ COMPONENT tests
         BUNDLE DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/tests/ COMPONENT tests)
 
-# Install the tests
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/tests/resources"
+# Install the resources next to the test executable
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/tests/resources"
         DESTINATION "${TGUI_MISC_INSTALL_PREFIX}/tests"
         COMPONENT tests)
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/themes/"
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/themes/"
         DESTINATION "${TGUI_MISC_INSTALL_PREFIX}/tests/resources"
         COMPONENT tests)
