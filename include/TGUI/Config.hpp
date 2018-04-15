@@ -35,33 +35,20 @@
 #endif
 
 #ifndef TGUI_STATIC
-
     #ifdef SFML_SYSTEM_WINDOWS
-
         // Windows compilers need specific (and different) keywords for export and import
         #ifdef TGUI_EXPORTS
             #define TGUI_API __declspec(dllexport)
         #else
             #define TGUI_API __declspec(dllimport)
         #endif
-
-    #else // Linux, macOS, FreeBSD, OpenBSD
-
-        // GCC 4 has special keywords for showing/hidding symbols
-        #if __GNUC__ >= 4
-            #define TGUI_API __attribute__ ((__visibility__ ("default")))
-        #else
-            #define TGUI_API
-        #endif
-
+    #else
+        #define TGUI_API __attribute__ ((__visibility__ ("default")))
     #endif
-
 #else
-
     // Static build doesn't need import/export macros
     #define TGUI_API
     #define TGUI_API
-
 #endif
 
 
