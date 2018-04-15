@@ -56,7 +56,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, Texture)
     TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureHover)
     TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureDisabled)
-    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureFocused) /// TODO
+    TGUI_RENDERER_PROPERTY_TEXTURE(EditBoxRenderer, TextureFocused)
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(EditBoxRenderer, TextStyle, sf::Text::Regular)
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(EditBoxRenderer, DefaultTextStyle, sf::Text::Italic)
