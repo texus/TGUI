@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['tab',['Tab',['../structtgui_1_1Tabs_1_1Tab.html',1,'tgui::Tabs']]],
   ['tabs',['Tabs',['../classtgui_1_1Tabs.html',1,'tgui']]],
   ['tabsrenderer',['TabsRenderer',['../classtgui_1_1TabsRenderer.html',1,'tgui']]],
   ['text',['Text',['../classtgui_1_1Text.html',1,'tgui']]],

@@ -6,7 +6,7 @@ breadcrumb: android
 
 Please note that support for android is still in an early stage. Building for android has so far only been tested on linux, altough it should be very similar on other systems.
 
-Using TGUI was only successfully tested with android-ndk 12b and with ANDROID_STL=c++_shared set in cmake (which is the default value).
+Using TGUI was only successfully tested with android-ndk 12b and with ANDROID\_STL=c++\_shared set in cmake (which is the default value).
 <!-- At least SFML 2.5 and android-ndk 13b are needed in order to use TGUI on android. -->
 
 <span style="color:red;">Android support is currently broken in latest SFML and TGUI versions, use [SFML 2.4.2](https://www.sfml-dev.org/download/sfml/2.4.2/) and [TGUI 0.8-dev-2018-03-24](https://github.com/texus/TGUI/tree/287927d0f672cfde3d6d09d49a651bc15fe89170) for now.</span>
@@ -14,7 +14,7 @@ Using TGUI was only successfully tested with android-ndk 12b and with ANDROID_ST
 
 ### Requirements
 
-You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly. Especially make sure that the ANDROID_NDK variable is set so that the installed SFML files in it can be found automatically.
+You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly. Especially make sure that the ANDROID\_NDK variable is set so that the installed SFML files in it can be found automatically.
 <!-- You must have already build SFML for android and verified that you can run your sfml app on your device or emulator. Only then should you proceed with installing TGUI. This also means that the Android SDK and the Android NDK are thus already setup correctly. -->
 
 You will need to use CMake in order to build TGUI. You can download the latest version [here](https://www.cmake.org/download/).
@@ -24,8 +24,8 @@ If you create the .apk file through the command line like described below then y
 
 ### Building the library
 
-From inside the TGUI folder that you download execute the following. The ANDROID_ABI should be set to the ABI that you want to use, this will most likely be "armeabi-v7a", but you can also set it to "armeabi", "x86" or "mips". On windows you might also have to pass your [generator](https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html) to the cmake command with the -G parameter. On linux and mac "Unix Makefiles" will be used by default.
-<!-- From inside the TGUI folder that you downloaded, execute the following. The CMAKE_ANDROID_ARCH_ABI variable should be set to the ABI that you want to use, this will most likely be "armeabi-v7a" for actual hardware. The targeted SDK version can be specified with CMAKE_SYSTEM_VERSION. On windows you might also have to pass your [generator](https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html) to the cmake command with the -G parameter. On linux and mac "Unix Makefiles" will be used by default. -->
+From inside the TGUI folder that you download execute the following. The ANDROID\_ABI should be set to the ABI that you want to use, this will most likely be "armeabi-v7a", but you can also set it to "armeabi", "x86" or "mips". On windows you might also have to pass your [generator](https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html) to the cmake command with the -G parameter. On linux and mac "Unix Makefiles" will be used by default.
+<!-- From inside the TGUI folder that you downloaded, execute the following. The CMAKE\_ANDROID\_ARCH\_ABI variable should be set to the ABI that you want to use, this will most likely be "armeabi-v7a" for actual hardware. The targeted SDK version can be specified with CMAKE_SYSTEM_VERSION. On windows you might also have to pass your [generator](https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html) to the cmake command with the -G parameter. On linux and mac "Unix Makefiles" will be used by default. -->
 {% highlight bash %}
 mkdir build-android-arm
 cd build-android-arm
@@ -48,7 +48,7 @@ If you get tons of linking errors after running make then double check that you 
 
 To test if everything is working, you can build the example code.
 
-If you have build TGUI with a different ABI (e.g. you used x86 instead of armeabi-v7a to run it in a simulator), then make sure to edit APP_ABI in jni/Application.mk inside the android example folder, otherwise you can get the error that TGUI.hpp is not found.
+If you have build TGUI with a different ABI (e.g. you used x86 instead of armeabi-v7a to run it in a simulator), then make sure to edit APP\_ABI in jni/Application.mk inside the android example folder, otherwise you can get the error that TGUI.hpp is not found.
 
 First you have to run ndk-build. You can do this by opening your console inside the TGUI/example/android folder and running the following.
 {% highlight bash %}

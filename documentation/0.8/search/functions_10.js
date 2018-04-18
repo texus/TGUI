@@ -1,8 +1,4 @@
 var searchData=
 [
-  ['uncheck',['uncheck',['../classtgui_1_1RadioButton.html#a179c316332546348628799dc6dad0302',1,'tgui::RadioButton']]],
-  ['uncheckradiobuttons',['uncheckRadioButtons',['../classtgui_1_1Container.html#adb1456b593beb954891a063567254295',1,'tgui::Container::uncheckRadioButtons()'],['../classtgui_1_1Gui.html#acbc84356ca88d3318bc9ef38055f6cc2',1,'tgui::Gui::uncheckRadioButtons()']]],
-  ['unfocus',['unfocus',['../classtgui_1_1Widget.html#afc53e1f70feeeb498c042d7d741528c9',1,'tgui::Widget']]],
-  ['unfocuswidgets',['unfocusWidgets',['../classtgui_1_1Container.html#aa00dad8482119ee2ffbaa8fad4ea6707',1,'tgui::Container::unfocusWidgets()'],['../classtgui_1_1Gui.html#a903b71fdd0164c243b2dd6878a623f63',1,'tgui::Gui::unfocusWidgets()']]],
-  ['unsubscribe',['unsubscribe',['../classtgui_1_1WidgetRenderer.html#af6d8245d07831b0324e104111db099c1',1,'tgui::WidgetRenderer']]]
+  ['vector2f',['Vector2f',['../classtgui_1_1Vector2f.html#a07a564239ddeded5cd159c3103b951ca',1,'tgui::Vector2f::Vector2f()=default'],['../classtgui_1_1Vector2f.html#a25ba8f2cf9e63b19de5ab9dd2cbb65fd',1,'tgui::Vector2f::Vector2f(float xValue, float yValue)'],['../classtgui_1_1Vector2f.html#a22aace68410d5ca31e2fbb79e24f6382',1,'tgui::Vector2f::Vector2f(const sf::Vector2f &amp;vec)'],['../classtgui_1_1Vector2f.html#a163033a5cac44697b4cc822c99a52373',1,'tgui::Vector2f::Vector2f(const char *str)'],['../classtgui_1_1Vector2f.html#a754ae3df6f53b08135c3efe4c180e8fd',1,'tgui::Vector2f::Vector2f(std::string str)']]]
 ];

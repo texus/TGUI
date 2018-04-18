@@ -18,7 +18,7 @@ var searchData=
   ['isset',['isSet',['../classtgui_1_1Color.html#a9f7d80d673382846386697e28d9022d7',1,'tgui::Color::isSet()'],['../classtgui_1_1Sprite.html#a68e68ccb3b0e5f77069821500c0863b4',1,'tgui::Sprite::isSet()'],['../classtgui_1_1TextStyle.html#afae1f84f67794ed79adf8f4d779fd022',1,'tgui::TextStyle::isSet()']]],
   ['isshown',['isShown',['../classtgui_1_1ScrollbarChildWidget.html#ac0f0b870a7909d152eaf73c52acda939',1,'tgui::ScrollbarChildWidget']]],
   ['issmooth',['isSmooth',['../classtgui_1_1Texture.html#aaa04f8a2bbe14b549802eae4a3539eda',1,'tgui::Texture']]],
-  ['istabkeyusageenabled',['isTabKeyUsageEnabled',['../namespacetgui.html#a5bdfb4b4a259b2121cfba9ac01b57c9d',1,'tgui']]],
+  ['istabkeyusageenabled',['isTabKeyUsageEnabled',['../classtgui_1_1Gui.html#a8e86513f30e61ac7f34f4881756def06',1,'tgui::Gui']]],
   ['istextclickable',['isTextClickable',['../classtgui_1_1RadioButton.html#af4aaf746a08775ebfe1a4f15d9103fa1',1,'tgui::RadioButton']]],
   ['istextwidthlimited',['isTextWidthLimited',['../classtgui_1_1EditBox.html#a4626b4336048138f4cc7da05bd5d3186',1,'tgui::EditBox']]],
   ['istransparentpixel',['isTransparentPixel',['../classtgui_1_1Sprite.html#ae8ef9ae00ad0b455b0824d521f6e9501',1,'tgui::Sprite::isTransparentPixel()'],['../classtgui_1_1Texture.html#a672aa2b62abc849ea6540fc6eefe1af5',1,'tgui::Texture::isTransparentPixel()']]],

@@ -20,7 +20,7 @@ Note: when the tutorial mentions c++11, use c++14 instead.
 
 [Android](android) - experimental
 
-[iOS](../v0.7/ios/) - experimental
+[iOS](ios) - experimental
 
 
 ### Introduction tutorials
