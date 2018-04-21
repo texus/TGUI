@@ -67,9 +67,6 @@ if(TGUI_SHARED_LIBS)
         set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
     endif()
 
-    # The library should be linked to sfml
-    target_link_libraries( ${PROJECT_NAME} ${TGUI_EXT_LIBS} )
-
     # on Windows/gcc get rid of "lib" prefix for shared libraries,
     # and transform the ".dll.a" suffix into ".a" for import libraries
     if (SFML_OS_WINDOWS AND SFML_COMPILER_GCC)
@@ -83,6 +80,17 @@ else()
     set_target_properties(${PROJECT_NAME} PROPERTIES RELEASE_POSTFIX -s)
     set_target_properties(${PROJECT_NAME} PROPERTIES MINSIZEREL_POSTFIX -s)
     set_target_properties(${PROJECT_NAME} PROPERTIES RELWITHDEBINFO_POSTFIX -s)
+endif()
+
+# Link to SFML
+if(DEFINED SFML_LIBRARIES)
+    # SFML found via FindSFML.cmake
+    if(TGUI_SHARED_LIBS)
+        target_link_libraries( ${PROJECT_NAME} ${TGUI_EXT_LIBS} )
+    endif()
+else()
+    # SFML found via SFMLConfig.cmake
+    target_link_libraries(${PROJECT_NAME} PUBLIC sfml-graphics)
 endif()
 
 # Enable automatic reference counting on iOS
