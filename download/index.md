@@ -23,21 +23,21 @@ Minimum supported compilers: GCC 4.9, Clang 3.6, VS2015 Update 2
 </p>
 
 
-### TGUI 0.7.6
+### TGUI 0.7.7
 <b>Latest stable version</b>. Patch versions will remain backwards compatible. Only bug fixes are still made, no new features are added anymore.
 
 Minimum supported compilers: GCC 4.7, VS2013, equivalent Clang version
 <p>
-  {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.7.6.zip" style="Green" %}<br><br>
-  {% include button.ext text="Visual C++15 (2017) - 32bit" link="https://www.dropbox.com/s/xn3x4xd62fwsm3r/TGUI-0.7.6-vc15-32bit-for-SFML-2.4.2.zip?dl=1" style="Green" %}
-  {% include button.ext text="Visual C++15 (2017) - 64bit" link="https://www.dropbox.com/s/zohswt5vw0kg4f5/TGUI-0.7.6-vc15-64bit-for-SFML-2.4.2.zip?dl=1" style="Green" %} (use Visual C++14 2015 SFML libs)<br><br>
-  {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-vc14-32bit-for-SFML-2.4.2.zip" style="Green" %}
-  {% include button.ext text="Visual C++14 (2015) - 64bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-vc14-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
-  {% include button.ext text="Visual C++12 (2013) - 32bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-vc12-32bit-for-SFML-2.4.2.zip" style="Green" %}
-  {% include button.ext text="Visual C++12 (2013) - 64bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-vc12-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
-  {% include button.ext text="MinGW 6.1.0 (DW2) - 32-bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-mingw-6.1.0-32bit-for-SFML-2.4.2.zip" style="Green" %}
-  {% include button.ext text="MinGW 6.1.0 (SEH) - 64-bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-mingw-6.1.0-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
-  {% include button.ext text="MinGW 4.9.2 TDM (SJLJ) - 32-bit" link="https://github.com/texus/TGUI/releases/download/0.7.6/TGUI-0.7.6-mingw-4.9.2-tdm-32bit-for-SFML-2.4.2.zip" style="Green" %}
+  {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.7.7.zip" style="Green" %}<br><br>
+  {% include button.ext text="Visual C++15 (2017) - 32bit" link="https://www.dropbox.com/s/8n2kwfiyqpthwi5/TGUI-0.7.7-vc15-32bit-for-SFML-2.4.2.zip?dl=1" style="Green" %}
+  {% include button.ext text="Visual C++15 (2017) - 64bit" link="https://www.dropbox.com/s/m2swva2sw4ytbtp/TGUI-0.7.7-vc15-64bit-for-SFML-2.4.2.zip?dl=1" style="Green" %} (use Visual C++14 2015 SFML libs)<br><br>
+  {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://github.com/texus/TGUI/releases/download/0.7.7/TGUI-0.7.7-vc14-32bit-for-SFML-2.4.2.zip" style="Green" %}
+  {% include button.ext text="Visual C++14 (2015) - 64bit" link="https://github.com/texus/TGUI/releases/download/0.7.7/TGUI-0.7.7-vc14-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
+  {% include button.ext text="Visual C++12 (2013) - 32bit" link="https://github.com/texus/TGUI/releases/download/0.7.7/TGUI-0.7.7-vc12-32bit-for-SFML-2.4.2.zip" style="Green" %}
+  {% include button.ext text="Visual C++12 (2013) - 64bit" link="https://github.com/texus/TGUI/releases/download/0.7.7/TGUI-0.7.7-vc12-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
+  {% include button.ext text="MinGW 6.1.0 (DW2) - 32-bit" link="https://github.com/texus/TGUI/releases/download/0.7.7/TGUI-0.7.7-mingw-6.1.0-32bit-for-SFML-2.4.2.zip" style="Green" %}
+  {% include button.ext text="MinGW 6.1.0 (SEH) - 64-bit" link="https://github.com/texus/TGUI/releases/download/0.7.7/TGUI-0.7.7-mingw-6.1.0-64bit-for-SFML-2.4.2.zip" style="Green" %}<br><br>
+  {% include button.ext text="MinGW 4.9.2 TDM (SJLJ) - 32-bit" link="https://github.com/texus/TGUI/releases/download/0.7.7/TGUI-0.7.7-mingw-4.9.2-tdm-32bit-for-SFML-2.4.2.zip" style="Green" %}
 </p>
 
 

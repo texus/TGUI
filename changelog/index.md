@@ -7,6 +7,16 @@ changelog:
   minors:
   - version: 7
     patches:
+    - version: 7
+      date: 21 April 2018
+      changes: |
+        Fixed EditBox InputValidator in textEntered when text was selected
+        Hover image of EditBox wasn't being used in Black theme
+        Loading widgets from theme was partially broken on android
+        ChatBox::setScrollbar didn't correctly position the scrollbar
+        ChildWindow::setTitleButtons didn't set the button positions
+        ComboBox::setListBox removed all items from combo box
+        Added support for using SFMLConfig.cmake to find SFML
     - version: 6
       date: 25 November 2017
       changes: |

@@ -21,7 +21,7 @@ redirect_from: "/tutorials/v07/visual-studio/index.html"
     <p class="SmallBottomMargin">If SFML cannot be found automatically you will receive an error.</p>
     <a class="img" href="/resources/VS-0.7/CMakeErrorFindingSFML.jpg"><img alt="CMake SFML not found" src="/resources/VS-0.7/CMakeErrorFindingSFML.jpg" width="647" height="401" /></a>
 
-    <p class="SmallBottomMargin">If SFML was not found then you should set the SFML_ROOT variable to the root SFML folder (the directory that contains the include and lib folders). When you compiled sfml yourself then you will have to watch out for three things:</p>
+    <p class="SmallBottomMargin">If SFML was not found then you should set SFML_DIR to the folder containing SFMLConfig.cmake (SFML >= 2.5) or alternatively set the SFML_ROOT variable to the root SFML folder (the directory that contains the include and lib folders). When you use SFML_ROOT when you compiled sfml yourself then you will have to watch out for three things:</p>
     <ul>
       <li>You probably need to place the lib folder there yourself, with the libraries that you have build.</li>
       <li>This folder must contain the libraries directly (not inside a Debug or Release folder).</li>
