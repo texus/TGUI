@@ -1,5 +1,5 @@
-TGUI 0.7.7  (TBD)
------------------
+TGUI 0.7.7  (21 April 2018)
+---------------------------
 
 - Fixed EditBox InputValidator in textEntered when text was selected
 - Hover image of EditBox wasn't being used in Black theme
@@ -7,6 +7,7 @@ TGUI 0.7.7  (TBD)
 - ChatBox::setScrollbar didn't correctly position the scrollbar
 - ChildWindow::setTitleButtons didn't set the button positions
 - ComboBox::setListBox removed all items from combo box
+- Added support for using SFMLConfig.cmake to find SFML
 
 
 TGUI 0.7.6  (25 November 2017)
