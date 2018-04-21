@@ -37,7 +37,7 @@ cache:
 
 install:
 - IF "%SFML_VERSION%" == "master" (
-    git clone https://github.com/SFML/SFML --branch 2.4.2 --depth 1 &&
+    git clone https://github.com/SFML/SFML --depth 1 &&
     cd SFML &&
     IF EXIST "%SFML_ROOT%\lib" (
       IF EXIST "%SFML_ROOT%\revision_cache" (
@@ -88,7 +88,11 @@ build_script:
   - cd C:\projects\tgui
   - mkdir %BUILD_FOLDER%
   - cd %BUILD_FOLDER%
-  - cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DSFML_ROOT=%SFML_ROOT% ..
+  - IF "%SFML_VERSION%" == "master" (
+      cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DSFML_DIR=%SFML_ROOT%\lib\cmake\SFML ..
+    ) ELSE (
+      cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DSFML_ROOT=%SFML_ROOT% ..
+    )
   - msbuild tgui.sln /p:Configuration=%BUILD_TYPE% /m
   - cd ..
   - IF %BUILD_TESTS%==TRUE (
