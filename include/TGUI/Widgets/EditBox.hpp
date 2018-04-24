@@ -410,8 +410,15 @@ namespace tgui
         /// edit2->setInputValidator("[a-zA-Z][a-zA-Z0-9]*");
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#if !defined(__GNUC__) || ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 9)))
         void setInputValidator(const std::string& regex = ".*");
-
+#else
+        template <typename T>
+        void setInputValidator(const T& regex = ".*")
+        {
+            static_assert(!std::is_same<T, T>::value, "EditBox::setInputValidator can't be used on GCC < 4.9");
+        }
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the regex to which the text is matched
