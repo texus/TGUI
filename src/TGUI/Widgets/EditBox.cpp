@@ -395,15 +395,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if !defined(__GNUC__) || ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 9)))
     void EditBox::setInputValidator(const std::string& regex)
     {
+    #if defined(__clang__) || !defined(__GNUC__) || ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 9)))
         m_regexString = regex;
         m_regex = m_regexString;
 
         setText(m_text);
+    #else
+        throw Exception{"EditBox::setInputValidator can't be used on GCC < 4.9"};
+    #endif
     }
-#endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
