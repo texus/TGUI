@@ -521,12 +521,12 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["ClockwiseTurning"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_clockwiseTurning));
-        node->propertyValuePairs["StartRotation"] = make_unique<DataIO::ValueNode>(to_string(m_startRotation));
-        node->propertyValuePairs["EndRotation"] = make_unique<DataIO::ValueNode>(to_string(m_endRotation));
-        node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
-        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
+        node->propertyValuePairs["ClockwiseTurning"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_clockwiseTurning));
+        node->propertyValuePairs["StartRotation"] = std::make_unique<DataIO::ValueNode>(to_string(m_startRotation));
+        node->propertyValuePairs["EndRotation"] = std::make_unique<DataIO::ValueNode>(to_string(m_endRotation));
+        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimum));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
 
         return node;
     }

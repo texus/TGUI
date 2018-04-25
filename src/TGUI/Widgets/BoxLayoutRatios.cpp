@@ -162,7 +162,7 @@ namespace tgui
                 ratioList += ", " + Serializer::serialize(m_ratios[i]);
 
             ratioList += "]";
-            node->propertyValuePairs["Ratios"] = make_unique<DataIO::ValueNode>(ratioList);
+            node->propertyValuePairs["Ratios"] = std::make_unique<DataIO::ValueNode>(ratioList);
         }
 
         return node;

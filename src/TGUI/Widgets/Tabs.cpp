@@ -692,27 +692,27 @@ namespace tgui
             tabVisibleList += "]";
             tabEnabledList += "]";
 
-            node->propertyValuePairs["Tabs"] = make_unique<DataIO::ValueNode>(tabList);
+            node->propertyValuePairs["Tabs"] = std::make_unique<DataIO::ValueNode>(tabList);
             if (!allTabsVisible)
-                node->propertyValuePairs["TabsVisible"] = make_unique<DataIO::ValueNode>(tabVisibleList);
+                node->propertyValuePairs["TabsVisible"] = std::make_unique<DataIO::ValueNode>(tabVisibleList);
             if (!allTabsEnabled)
-                node->propertyValuePairs["TabsEnabled"] = make_unique<DataIO::ValueNode>(tabEnabledList);
+                node->propertyValuePairs["TabsEnabled"] = std::make_unique<DataIO::ValueNode>(tabEnabledList);
         }
 
         if (getSelectedIndex() >= 0)
-            node->propertyValuePairs["Selected"] = make_unique<DataIO::ValueNode>(to_string(getSelectedIndex()));
+            node->propertyValuePairs["Selected"] = std::make_unique<DataIO::ValueNode>(to_string(getSelectedIndex()));
 
         if (m_maximumTabWidth > 0)
-            node->propertyValuePairs["MaximumTabWidth"] = make_unique<DataIO::ValueNode>(to_string(m_maximumTabWidth));
+            node->propertyValuePairs["MaximumTabWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximumTabWidth));
 
         if (m_autoSize)
         {
             node->propertyValuePairs.erase("Size");
-            node->propertyValuePairs["TabHeight"] = make_unique<DataIO::ValueNode>(to_string(getSize().y));
+            node->propertyValuePairs["TabHeight"] = std::make_unique<DataIO::ValueNode>(to_string(getSize().y));
         }
 
-        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
-        node->propertyValuePairs["AutoSize"] = make_unique<DataIO::ValueNode>(to_string(m_autoSize));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_autoSize));
 
         return node;
     }
@@ -859,7 +859,7 @@ namespace tgui
         #else
             std::unique_ptr<Clipping> clipping;
             if (m_tabs[i].text.getSize().x > usableWidth)
-                clipping = make_unique<Clipping>(target, textStates, Vector2f{m_distanceToSideCached, 0}, Vector2f{usableWidth, usableHeight});
+                clipping = std::make_unique<Clipping>(target, textStates, Vector2f{m_distanceToSideCached, 0}, Vector2f{usableWidth, usableHeight});
         #endif
 
             // Draw the text

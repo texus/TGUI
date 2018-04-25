@@ -667,17 +667,17 @@ namespace tgui
             itemList += "]";
             itemIdList += "]";
 
-            node->propertyValuePairs["Items"] = make_unique<DataIO::ValueNode>(itemList);
+            node->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
             if (itemIdsUsed)
-                node->propertyValuePairs["ItemIds"] = make_unique<DataIO::ValueNode>(itemIdList);
+                node->propertyValuePairs["ItemIds"] = std::make_unique<DataIO::ValueNode>(itemIdList);
         }
 
-        node->propertyValuePairs["ItemsToDisplay"] = make_unique<DataIO::ValueNode>(to_string(getItemsToDisplay()));
-        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(getTextSize()));
-        node->propertyValuePairs["MaximumItems"] = make_unique<DataIO::ValueNode>(to_string(getMaximumItems()));
+        node->propertyValuePairs["ItemsToDisplay"] = std::make_unique<DataIO::ValueNode>(to_string(getItemsToDisplay()));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(getTextSize()));
+        node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(to_string(getMaximumItems()));
 
         if (getExpandDirection() != ComboBox::ExpandDirection::Down)
-            node->propertyValuePairs["ExpandDirection"] = make_unique<DataIO::ValueNode>("Up");
+            node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Up");
 
         return node;
     }

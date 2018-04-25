@@ -335,7 +335,7 @@ namespace tgui
     std::unique_ptr<DataIO::Node> MessageBox::save(SavingRenderersMap& renderers) const
     {
         auto node = ChildWindow::save(renderers);
-        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
         // Label and buttons are saved indirectly by saving the child window
         return node;
     }

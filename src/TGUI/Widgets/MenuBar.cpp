@@ -630,10 +630,10 @@ namespace tgui
         const auto& menus = getMenus();
         for (const auto& menu : menus)
         {
-            auto menuNode = make_unique<DataIO::Node>();
+            auto menuNode = std::make_unique<DataIO::Node>();
             menuNode->name = "Menu";
 
-            menuNode->propertyValuePairs["Name"] = make_unique<DataIO::ValueNode>(Serializer::serialize(menu.first));
+            menuNode->propertyValuePairs["Name"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu.first));
 
             const auto& items = menu.second;
             if (!items.empty())
@@ -643,14 +643,14 @@ namespace tgui
                     itemList += ", " + Serializer::serialize(items[i]);
                 itemList += "]";
 
-                menuNode->propertyValuePairs["Items"] = make_unique<DataIO::ValueNode>(itemList);
+                menuNode->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
             }
 
             node->children.push_back(std::move(menuNode));
         }
 
-        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
-        node->propertyValuePairs["MinimumSubMenuWidth"] = make_unique<DataIO::ValueNode>(to_string(m_minimumSubMenuWidth));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["MinimumSubMenuWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimumSubMenuWidth));
 
         return node;
     }

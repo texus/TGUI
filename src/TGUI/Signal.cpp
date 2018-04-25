@@ -86,12 +86,7 @@ namespace tgui
     unsigned int Signal::connect(const DelegateEx& handler)
     {
         const auto id = generateUniqueId();
-    #ifdef TGUI_NO_CPP14
-        std::string name = m_name;
-        m_handlers[id] = [handler, name](){ handler(getWidget(), name); };
-    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name); };
-    #endif
         return id;
     }
 
@@ -128,23 +123,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef TGUI_NO_CPP14
-    #define TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(TypeName, Type) \
-    unsigned int Signal##TypeName::connect(const Delegate##TypeName& handler) \
-    { \
-        const auto id = generateUniqueId(); \
-        m_handlers[id] = [handler](){ handler(internal_signal::dereference<Type>(internal_signal::parameters[1])); }; \
-        return id; \
-    } \
-    \
-    unsigned int Signal##TypeName::connect(const Delegate##TypeName##Ex& handler) \
-    { \
-        const auto id = generateUniqueId(); \
-        std::string name = m_name; \
-        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<Type>(internal_signal::parameters[1])); }; \
-        return id; \
-    }
-#else
     #define TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(TypeName, Type) \
     unsigned int Signal##TypeName::connect(const Delegate##TypeName& handler) \
     { \
@@ -159,7 +137,6 @@ namespace tgui
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<Type>(internal_signal::parameters[1])); }; \
         return id; \
     }
-#endif
 
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(Int, int)
     TGUI_SIGNAL_VALUE_CONNECT_DEFINITION(UInt, unsigned int)
@@ -266,12 +243,7 @@ namespace tgui
     unsigned int SignalRange::connect(const DelegateRangeEx& handler)
     {
         const auto id = generateUniqueId();
-    #ifdef TGUI_NO_CPP14
-        std::string name = m_name;
-        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<float>(internal_signal::parameters[1]), internal_signal::dereference<float>(internal_signal::parameters[2])); };
-    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<float>(internal_signal::parameters[1]), internal_signal::dereference<float>(internal_signal::parameters[2])); };
-    #endif
         return id;
     }
 
@@ -315,12 +287,7 @@ namespace tgui
     unsigned int SignalChildWindow::connect(const DelegateChildWindowEx& handler)
     {
         const auto id = generateUniqueId();
-    #ifdef TGUI_NO_CPP14
-        std::string name = m_name;
-        m_handlers[id] = [handler, name](){ handler(getWidget(), name, std::static_pointer_cast<ChildWindow>(internal_signal::dereference<ChildWindow*>(internal_signal::parameters[1])->shared_from_this())); };
-    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, std::static_pointer_cast<ChildWindow>(internal_signal::dereference<ChildWindow*>(internal_signal::parameters[1])->shared_from_this())); };
-    #endif
         return id;
     }
 
@@ -363,12 +330,7 @@ namespace tgui
     unsigned int SignalItem::connect(const DelegateItemEx& handler)
     {
         const auto id = generateUniqueId();
-    #ifdef TGUI_NO_CPP14
-        std::string name = m_name;
-        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
-    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
-    #endif
         return id;
     }
 
@@ -386,12 +348,7 @@ namespace tgui
     unsigned int SignalItem::connect(const DelegateItemAndIdEx& handler)
     {
         const auto id = generateUniqueId();
-    #ifdef TGUI_NO_CPP14
-        std::string name = m_name;
-        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1]), internal_signal::dereference<sf::String>(internal_signal::parameters[2])); };
-    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1]), internal_signal::dereference<sf::String>(internal_signal::parameters[2])); };
-    #endif
         return id;
     }
 
@@ -434,12 +391,7 @@ namespace tgui
     unsigned int SignalMenuItem::connect(const DelegateMenuItemEx& handler)
     {
         const auto id = generateUniqueId();
-    #ifdef TGUI_NO_CPP14
-        std::string name = m_name;
-        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
-    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
-    #endif
         return id;
     }
 
@@ -457,12 +409,7 @@ namespace tgui
     unsigned int SignalMenuItem::connect(const DelegateMenuItemFullEx& handler)
     {
         const auto id = generateUniqueId();
-    #ifdef TGUI_NO_CPP14
-        std::string name = m_name;
-        m_handlers[id] = [handler, name](){ handler(getWidget(), name, internal_signal::dereference<std::vector<sf::String>>(internal_signal::parameters[2])); };
-    #else
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<std::vector<sf::String>>(internal_signal::parameters[2])); };
-    #endif
         return id;
     }
 

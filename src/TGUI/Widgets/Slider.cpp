@@ -539,11 +539,11 @@ namespace tgui
     std::unique_ptr<DataIO::Node> Slider::save(SavingRenderersMap& renderers) const
     {
         auto node = Widget::save(renderers);
-        node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
-        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
-        node->propertyValuePairs["Step"] = make_unique<DataIO::ValueNode>(to_string(m_step));
-        node->propertyValuePairs["InvertedDirection"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_invertedDirection));
+        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimum));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
+        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(to_string(m_step));
+        node->propertyValuePairs["InvertedDirection"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_invertedDirection));
         return node;
     }
 

@@ -394,7 +394,7 @@ namespace tgui
         #else
             std::unique_ptr<Clipping> clipping;
             if (m_visibleRect != FloatRect{0, 0, 0, 0})
-                clipping = make_unique<Clipping>(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
+                clipping = std::make_unique<Clipping>(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
         #endif
 
             states.shader = m_texture.getData()->shader;

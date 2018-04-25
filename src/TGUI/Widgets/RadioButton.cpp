@@ -451,13 +451,13 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         if (!getText().isEmpty())
-            node->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(getText()));
+            node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getText()));
         if (m_checked)
-            node->propertyValuePairs["Checked"] = make_unique<DataIO::ValueNode>("true");
+            node->propertyValuePairs["Checked"] = std::make_unique<DataIO::ValueNode>("true");
         if (!isTextClickable())
-            node->propertyValuePairs["TextClickable"] = make_unique<DataIO::ValueNode>("false");
+            node->propertyValuePairs["TextClickable"] = std::make_unique<DataIO::ValueNode>("false");
 
-        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
         return node;
     }
 

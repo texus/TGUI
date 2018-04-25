@@ -60,7 +60,7 @@ namespace tgui
 
         std::unique_ptr<DataIO::Node> saveRenderer(RendererData* renderer, const std::string& name)
         {
-            auto node = make_unique<DataIO::Node>();
+            auto node = std::make_unique<DataIO::Node>();
             node->name = name;
             for (const auto& pair : renderer->propertyValuePairs)
             {
@@ -81,7 +81,7 @@ namespace tgui
                     node->children.push_back(std::move(rendererRootNode));
                 }
                 else
-                    node->propertyValuePairs[pair.first] = make_unique<DataIO::ValueNode>(ObjectConverter{pair.second}.getString());
+                    node->propertyValuePairs[pair.first] = std::make_unique<DataIO::ValueNode>(ObjectConverter{pair.second}.getString());
             }
 
             return node;
@@ -390,7 +390,7 @@ namespace tgui
 
     void Container::saveWidgetsToStream(std::stringstream& stream) const
     {
-        auto node = make_unique<DataIO::Node>();
+        auto node = std::make_unique<DataIO::Node>();
 
         std::map<RendererData*, std::vector<const Widget*>> renderers;
         getAllRenderers(renderers, this);

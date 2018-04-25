@@ -111,8 +111,8 @@ namespace tgui
     std::unique_ptr<DataIO::Node> BitmapButton::save(SavingRenderersMap& renderers) const
     {
         auto node = Button::save(renderers);
-        node->propertyValuePairs["Image"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_glyphTexture));
-        node->propertyValuePairs["ImageScaling"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_relativeGlyphHeight));
+        node->propertyValuePairs["Image"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_glyphTexture));
+        node->propertyValuePairs["ImageScaling"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_relativeGlyphHeight));
         return node;
     }
 

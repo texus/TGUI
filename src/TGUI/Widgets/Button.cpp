@@ -351,9 +351,9 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         if (!m_string.isEmpty())
-            node->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
+            node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_string));
         if (m_textSize > 0)
-            node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
+            node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
 
         return node;
     }

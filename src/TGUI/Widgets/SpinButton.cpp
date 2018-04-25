@@ -379,10 +379,10 @@ namespace tgui
     std::unique_ptr<DataIO::Node> SpinButton::save(SavingRenderersMap& renderers) const
     {
         auto node = Widget::save(renderers);
-        node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
-        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
-        node->propertyValuePairs["Step"] = make_unique<DataIO::ValueNode>(to_string(m_step));
+        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimum));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
+        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(to_string(m_step));
         return node;
     }
 

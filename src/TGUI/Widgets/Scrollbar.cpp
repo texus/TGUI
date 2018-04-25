@@ -778,11 +778,11 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["AutoHide"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoHide));
-        node->propertyValuePairs["LowValue"] = make_unique<DataIO::ValueNode>(to_string(m_lowValue));
-        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["Value"] = make_unique<DataIO::ValueNode>(to_string(m_value));
-        node->propertyValuePairs["ScrollAmount"] = make_unique<DataIO::ValueNode>(to_string(m_scrollAmount));
+        node->propertyValuePairs["AutoHide"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoHide));
+        node->propertyValuePairs["LowValue"] = std::make_unique<DataIO::ValueNode>(to_string(m_lowValue));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
+        node->propertyValuePairs["ScrollAmount"] = std::make_unique<DataIO::ValueNode>(to_string(m_scrollAmount));
 
         return node;
     }

@@ -566,11 +566,11 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["Minimum"] = make_unique<DataIO::ValueNode>(to_string(m_minimum));
-        node->propertyValuePairs["Maximum"] = make_unique<DataIO::ValueNode>(to_string(m_maximum));
-        node->propertyValuePairs["SelectionStart"] = make_unique<DataIO::ValueNode>(to_string(m_selectionStart));
-        node->propertyValuePairs["SelectionEnd"] = make_unique<DataIO::ValueNode>(to_string(m_selectionEnd));
-        node->propertyValuePairs["Step"] = make_unique<DataIO::ValueNode>(to_string(m_step));
+        node->propertyValuePairs["Minimum"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimum));
+        node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
+        node->propertyValuePairs["SelectionStart"] = std::make_unique<DataIO::ValueNode>(to_string(m_selectionStart));
+        node->propertyValuePairs["SelectionEnd"] = std::make_unique<DataIO::ValueNode>(to_string(m_selectionEnd));
+        node->propertyValuePairs["Step"] = std::make_unique<DataIO::ValueNode>(to_string(m_step));
 
         return node;
     }

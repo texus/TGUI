@@ -507,13 +507,13 @@ namespace tgui
                 str += ", " + getWidgetsInGridString(children[i]);
 
             str += "]";
-            node->propertyValuePairs["GridWidgets"] = make_unique<DataIO::ValueNode>(str);
+            node->propertyValuePairs["GridWidgets"] = std::make_unique<DataIO::ValueNode>(str);
         }
 
         if (m_autoSize)
             node->propertyValuePairs.erase("Size");
 
-        node->propertyValuePairs["AutoSize"] = make_unique<DataIO::ValueNode>(to_string(m_autoSize));
+        node->propertyValuePairs["AutoSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_autoSize));
         return node;
     }
 

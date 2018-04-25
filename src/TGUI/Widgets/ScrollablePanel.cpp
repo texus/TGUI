@@ -540,19 +540,19 @@ namespace tgui
         if (m_verticalScrollbarPolicy != ScrollbarPolicy::Automatic)
         {
             if (m_verticalScrollbarPolicy == ScrollbarPolicy::Always)
-                node->propertyValuePairs["VerticalScrollbarPolicy"] = make_unique<DataIO::ValueNode>("Always");
+                node->propertyValuePairs["VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
             else if (m_verticalScrollbarPolicy == ScrollbarPolicy::Never)
-                node->propertyValuePairs["VerticalScrollbarPolicy"] = make_unique<DataIO::ValueNode>("Never");
+                node->propertyValuePairs["VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
         if (m_horizontalScrollbarPolicy != ScrollbarPolicy::Automatic)
         {
             if (m_horizontalScrollbarPolicy == ScrollbarPolicy::Always)
-                node->propertyValuePairs["HorizontalScrollbarPolicy"] = make_unique<DataIO::ValueNode>("Always");
+                node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
             else if (m_horizontalScrollbarPolicy == ScrollbarPolicy::Never)
-                node->propertyValuePairs["HorizontalScrollbarPolicy"] = make_unique<DataIO::ValueNode>("Never");
+                node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
 
-        node->propertyValuePairs["ContentSize"] = make_unique<DataIO::ValueNode>("(" + to_string(m_contentSize.x) + ", " + to_string(m_contentSize.y) + ")");
+        node->propertyValuePairs["ContentSize"] = std::make_unique<DataIO::ValueNode>("(" + to_string(m_contentSize.x) + ", " + to_string(m_contentSize.y) + ")");
         return node;
     }
 

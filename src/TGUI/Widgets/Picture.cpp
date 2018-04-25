@@ -210,7 +210,7 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         if (m_ignoringMouseEvents)
-            node->propertyValuePairs["IgnoreMouseEvents"] = make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
+            node->propertyValuePairs["IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
 
         return node;
     }

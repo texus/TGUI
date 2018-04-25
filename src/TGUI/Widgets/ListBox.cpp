@@ -786,17 +786,17 @@ namespace tgui
             itemList += "]";
             itemIdList += "]";
 
-            node->propertyValuePairs["Items"] = make_unique<DataIO::ValueNode>(itemList);
+            node->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
             if (itemIdsUsed)
-                node->propertyValuePairs["ItemIds"] = make_unique<DataIO::ValueNode>(itemIdList);
+                node->propertyValuePairs["ItemIds"] = std::make_unique<DataIO::ValueNode>(itemIdList);
         }
 
         if (!m_autoScroll)
-            node->propertyValuePairs["AutoScroll"] = make_unique<DataIO::ValueNode>("false");
+            node->propertyValuePairs["AutoScroll"] = std::make_unique<DataIO::ValueNode>("false");
 
-        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
-        node->propertyValuePairs["ItemHeight"] = make_unique<DataIO::ValueNode>(to_string(m_itemHeight));
-        node->propertyValuePairs["MaximumItems"] = make_unique<DataIO::ValueNode>(to_string(m_maxItems));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_itemHeight));
+        node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(to_string(m_maxItems));
 
         return node;
     }

@@ -1538,15 +1538,15 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        node->propertyValuePairs["Text"] = make_unique<DataIO::ValueNode>(Serializer::serialize(getText()));
-        node->propertyValuePairs["TextSize"] = make_unique<DataIO::ValueNode>(to_string(m_textSize));
-        node->propertyValuePairs["MaximumCharacters"] = make_unique<DataIO::ValueNode>(to_string(m_maxChars));
+        node->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getText()));
+        node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
+        node->propertyValuePairs["MaximumCharacters"] = std::make_unique<DataIO::ValueNode>(to_string(m_maxChars));
 
         if (m_readOnly)
-            node->propertyValuePairs["ReadOnly"] = make_unique<DataIO::ValueNode>("true");
+            node->propertyValuePairs["ReadOnly"] = std::make_unique<DataIO::ValueNode>("true");
 
         if (!isVerticalScrollbarPresent())
-            node->propertyValuePairs["VerticalScrollbarPresent"] = make_unique<DataIO::ValueNode>("false");
+            node->propertyValuePairs["VerticalScrollbarPresent"] = std::make_unique<DataIO::ValueNode>("false");
 
         return node;
     }
