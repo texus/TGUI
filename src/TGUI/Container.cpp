@@ -665,7 +665,10 @@ namespace tgui
             mouseLeftWidget();
 
             if (m_widgetBelowMouse)
+            {
                 m_widgetBelowMouse->mouseNoLongerOnWidget();
+                m_widgetBelowMouse = nullptr;
+            }
         }
     }
 

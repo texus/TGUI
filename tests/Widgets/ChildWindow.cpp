@@ -392,6 +392,7 @@ TEST_CASE("[ChildWindow]")
         childWindow->setTitle("Window");
         childWindow->setTitleTextSize(18);
         childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::Maximize | tgui::ChildWindow::TitleButton::Minimize);
+        childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Center);
 
         tgui::ChildWindowRenderer renderer = tgui::RendererData::create();
         renderer.setTitleBarColor(sf::Color::Blue);
@@ -423,12 +424,16 @@ TEST_CASE("[ChildWindow]")
         {
             TEST_DRAW("ChildWindow.png")
 
+            childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
+
             renderer.setShowTextOnTitleButtons(true);
             TEST_DRAW("ChildWindow_TitleButtonText.png")
         }
 
         SECTION("Textured")
         {
+            childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Right);
+
             renderer.setTextureTitleBar("resources/Texture1.png");
             TEST_DRAW("ChildWindow_Textured.png")
         }

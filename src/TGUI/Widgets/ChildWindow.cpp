@@ -154,16 +154,17 @@ namespace tgui
 
         if (m_titleAlignment == TitleAlignment::Left)
         {
-            m_titleText.setPosition(m_distanceToSideCached, (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
+            m_titleText.setPosition(m_distanceToSideCached,
+                                    (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
         }
         else if (m_titleAlignment == TitleAlignment::Center)
         {
-            m_titleText.setPosition(m_distanceToSideCached + (((getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight()) - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
+            m_titleText.setPosition(m_distanceToSideCached + ((getSize().x - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
                                     (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
         }
         else // if (m_titleAlignment == TitleAlignment::Right)
         {
-            m_titleText.setPosition((getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight()) - m_distanceToSideCached - buttonOffsetX - m_titleText.getSize().x,
+            m_titleText.setPosition(getSize().x - m_distanceToSideCached - buttonOffsetX - m_titleText.getSize().x,
                                     (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f);
         }
 
@@ -172,8 +173,8 @@ namespace tgui
         {
             if (button->isVisible())
             {
-                button->setPosition((getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight()) - buttonOffsetX - button->getSize().x,
-                                    (m_titleBarHeightCached - button->getSize().y) / 2.f);
+                button->setPosition(m_bordersCached.getLeft() + getSize().x - buttonOffsetX - button->getSize().x,
+                                    m_bordersCached.getTop() + (m_titleBarHeightCached - button->getSize().y) / 2.f);
 
                 buttonOffsetX += button->getSize().x + m_paddingBetweenButtonsCached;
             }
@@ -188,7 +189,7 @@ namespace tgui
 
         m_bordersCached.updateParentSize(getSize());
 
-        m_spriteTitleBar.setSize({getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached});
+        m_spriteTitleBar.setSize({getSize().x, m_titleBarHeightCached});
 
         // Reposition the images and text
         setPosition(m_position);
@@ -412,21 +413,16 @@ namespace tgui
 
     bool ChildWindow::mouseOnWidget(Vector2f pos) const
     {
-        // Check if the mouse is on top of the title bar
-        if (FloatRect{getPosition().x, getPosition().y, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
+        if (FloatRect{getPosition(), getFullSize()}.contains(pos))
         {
-            if (m_widgetBelowMouse)
+            // If the mouse enters the border or title bar then then none of the widgets can still be under the mouse
+            if (m_widgetBelowMouse && !FloatRect{getPosition() + getChildWidgetsOffset(), getSize()}.contains(pos))
                 m_widgetBelowMouse->mouseNoLongerOnWidget();
 
             return true;
         }
 
-        // Check if the mouse is inside the child window
-        return FloatRect{getPosition().x,
-                         getPosition().y,
-                         getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                         getSize().y + m_bordersCached.getTop() + m_bordersCached.getBottom()}
-                        .contains(pos.x, pos.y - m_titleBarHeightCached);
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -442,8 +438,26 @@ namespace tgui
 
         onMousePress.emit(this);
 
-        // Check if the mouse is on top of the title bar
-        if (FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
+        // Check if the mouse is on top of the borders
+        if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, getSize().y + m_titleBarHeightCached}.contains(pos))
+        {
+            if (m_resizable)
+            {
+                // Check on which border the mouse is standing
+                m_resizeDirection = ResizeNone;
+                if (FloatRect{0, 0, m_bordersCached.getLeft(), getFullSize().y}.contains(pos))
+                    m_resizeDirection |= ResizeLeft;
+                if (FloatRect{0, 0, getFullSize().x, m_bordersCached.getTop()}.contains(pos))
+                    m_resizeDirection |= ResizeTop;
+                if (FloatRect{getFullSize().x - m_bordersCached.getRight(), 0, m_bordersCached.getRight(), getFullSize().y}.contains(pos))
+                    m_resizeDirection |= ResizeRight;
+                if (FloatRect{0, getFullSize().y - m_bordersCached.getBottom(), getFullSize().x, m_bordersCached.getBottom()}.contains(pos))
+                    m_resizeDirection |= ResizeBottom;
+            }
+
+            m_draggingPosition = pos;
+        }
+        else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
         {
             // Send the mouse press event to the title buttons
             for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
@@ -461,31 +475,8 @@ namespace tgui
             // Remember where we are dragging the title bar
             m_draggingPosition = pos;
         }
-        else // The mouse is not on top of the title bar
-        {
-            // Check if the mouse is on top of the borders
-            if ((FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), getSize().y + m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached}.contains(pos))
-             && (!FloatRect{m_bordersCached.getLeft(), m_titleBarHeightCached + m_bordersCached.getTop(), getSize().x, getSize().y}.contains(pos)))
-            {
-                // Check if you start resizing the child window
-                if (m_resizable)
-                {
-                    // Check on which border the mouse is standing
-                    if (FloatRect{0, m_titleBarHeightCached + m_bordersCached.getTop() + getSize().y, m_bordersCached.getLeft(), m_bordersCached.getBottom()}.contains(pos))
-                        m_resizeDirection = ResizeLeft | ResizeBottom;
-                    else if (FloatRect{m_bordersCached.getLeft() + getSize().x, m_titleBarHeightCached + m_bordersCached.getTop() + getSize().y, m_bordersCached.getRight(), m_bordersCached.getBottom()}.contains(pos))
-                        m_resizeDirection = ResizeRight | ResizeBottom;
-                    else if (FloatRect{0, m_titleBarHeightCached, m_bordersCached.getLeft(), m_bordersCached.getTop() + getSize().y}.contains(pos))
-                        m_resizeDirection = ResizeLeft;
-                    else if (FloatRect{m_bordersCached.getLeft() + getSize().x, m_titleBarHeightCached, m_bordersCached.getRight(), m_bordersCached.getTop() + getSize().y}.contains(pos))
-                        m_resizeDirection = ResizeRight;
-                    else if (FloatRect{m_bordersCached.getLeft(), m_titleBarHeightCached + m_bordersCached.getTop() + getSize().y, getSize().x, m_bordersCached.getBottom()}.contains(pos))
-                        m_resizeDirection = ResizeBottom;
-                }
-            }
-            else // Propagate the event to the child widgets
-                Container::leftMousePressed(pos + getPosition());
-        }
+        else // Propagate the event to the child widgets
+            Container::leftMousePressed(pos + getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -497,8 +488,14 @@ namespace tgui
         m_mouseDownOnTitleBar = false;
         m_resizeDirection = ResizeNone;
 
-        // Check if the mouse is on top of the title bar
-        if (FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
+        // Check if the mouse is on top of the borders
+        if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, getSize().y + m_titleBarHeightCached}.contains(pos))
+        {
+            // Tell the widgets that the mouse was released
+            for (auto& widget : m_widgets)
+                widget->mouseNoLongerDown();
+        }
+        else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
         {
             // Send the mouse release event to the title buttons
             for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
@@ -510,19 +507,8 @@ namespace tgui
                 }
             }
         }
-        else // The mouse is not on top of the title bar
-        {
-            // Check if the mouse is on top of the borders
-            if ((FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), getSize().y + m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached}.contains(pos))
-             && (!FloatRect{m_bordersCached.getLeft(), m_titleBarHeightCached + m_bordersCached.getTop(), getSize().x, getSize().y}.contains(pos)))
-            {
-                // Tell the widgets that the mouse was released
-                for (auto& widget : m_widgets)
-                    widget->mouseNoLongerDown();
-            }
-            else // Propagate the event to the child widgets
-                Container::leftMouseReleased(pos + getPosition());
-        }
+        else // Propagate the event to the child widgets
+            Container::leftMouseReleased(pos + getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -557,38 +543,44 @@ namespace tgui
         else if (m_mouseDown && m_resizeDirection != ResizeNone)
         {
             float minimumWidth = 0;
-
             for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
                 if (button->isVisible())
                     minimumWidth += (minimumWidth > 0 ? m_paddingBetweenButtonsCached : 0) + button->getSize().x;
             }
-
-            minimumWidth += 2 * m_distanceToSideCached - m_bordersCached.getLeft() - m_bordersCached.getRight();
+            minimumWidth += 2 * m_distanceToSideCached;
 
             if ((m_resizeDirection & ResizeLeft) != 0)
             {
-                const float diff = clamp(pos.x, getSize().x - m_maximumSize.x, getSize().x - std::max(minimumWidth, m_minimumSize.x));
-
-                setPosition(getPosition().x + diff, getPosition().y);
-                setSize(getSize().x - diff, getSize().y);
+                const float diff = clamp(m_draggingPosition.x - pos.x, std::max(minimumWidth, m_minimumSize.x) - getSize().x, m_maximumSize.x - getSize().x);
+                setPosition(getPosition().x - diff, getPosition().y);
+                setSize(getSize().x + diff, getSize().y);
             }
             else if ((m_resizeDirection & ResizeRight) != 0)
             {
-                setSize(clamp(pos.x - m_bordersCached.getLeft(), std::max(minimumWidth, m_minimumSize.x), m_maximumSize.x), getSize().y);
+                const float diff = clamp(pos.x - m_draggingPosition.x, std::max(minimumWidth, m_minimumSize.x) - getSize().x, m_maximumSize.x - getSize().x);
+                setSize(getSize().x + diff, getSize().y);
+                m_draggingPosition.x += diff;
             }
 
-            if ((m_resizeDirection & ResizeBottom) != 0)
+            if ((m_resizeDirection & ResizeTop) != 0)
             {
-                const float newY = std::max(0.f, pos.y - (m_titleBarHeightCached + m_bordersCached.getTop()));
-                setSize(getSize().x, clamp(newY, m_minimumSize.y, m_maximumSize.y));
+                const float diff = clamp(m_draggingPosition.y - pos.y, m_minimumSize.y - getSize().y, m_maximumSize.y - getSize().y);
+                setPosition(getPosition().x, getPosition().y - diff);
+                setSize(getSize().x, getSize().y + diff);
+            }
+            else if ((m_resizeDirection & ResizeBottom) != 0)
+            {
+                const float diff = clamp(pos.y - m_draggingPosition.y, m_minimumSize.y - getSize().y, m_maximumSize.y - getSize().y);
+                setSize(getSize().x, getSize().y + diff);
+                m_draggingPosition.y += diff;
             }
         }
 
         // Check if the mouse is on top of the title bar
-        else if (FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached}.contains(pos))
+        else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
         {
-            // Send the hover event to the button inside the title bar
+            // Send the hover event to the buttons inside the title bar
             for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
                 if (button->isVisible())
@@ -615,8 +607,7 @@ namespace tgui
             }
 
             // Check if the mouse is on top of the borders
-            if ((FloatRect{0, 0, getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), getSize().y + m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached}.contains(pos))
-             && (!FloatRect{m_bordersCached.getLeft(), m_titleBarHeightCached + m_bordersCached.getTop(), getSize().x, getSize().y}.contains(pos)))
+            if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, getSize().y + m_titleBarHeightCached}.contains(pos))
             {
                 if (!m_mouseHover)
                     mouseEnteredWidget();
@@ -624,9 +615,9 @@ namespace tgui
                 // Don't send the event to the widgets
                 return;
             }
-        }
 
-        Container::mouseMoved(pos + getPosition());
+            Container::mouseMoved(pos + getPosition());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -659,7 +650,7 @@ namespace tgui
 
     void ChildWindow::updateTitleBarHeight()
     {
-        m_spriteTitleBar.setSize({getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(), m_titleBarHeightCached});
+        m_spriteTitleBar.setSize({getSize().x, m_titleBarHeightCached});
 
         // Set the size of the buttons in the title bar
         for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
@@ -922,14 +913,18 @@ namespace tgui
     {
         states.transform.translate(getPosition());
 
-        const Vector2f sizeIncludingBorders{getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                                                getSize().y + m_bordersCached.getTop() + m_bordersCached.getBottom()};
+        // Draw the borders
+        if (m_bordersCached != Borders{0})
+        {
+            drawBorders(target, states, m_bordersCached, getFullSize(), m_borderColorCached);
+            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+        }
 
         // Draw the title bar
         if (m_spriteTitleBar.isSet())
             m_spriteTitleBar.draw(target, states);
         else
-            drawRectangleShape(target, states, {sizeIncludingBorders.x, m_titleBarHeightCached}, m_titleBarColorCached);
+            drawRectangleShape(target, states, {getSize().x, m_titleBarHeightCached}, m_titleBarColorCached);
 
         // Draw the text in the title bar (after setting the clipping area)
         {
@@ -944,7 +939,7 @@ namespace tgui
                 buttonOffsetX += m_distanceToSideCached;
 
             const float clippingLeft = m_distanceToSideCached;
-            const float clippingRight = sizeIncludingBorders.x - m_distanceToSideCached - buttonOffsetX;
+            const float clippingRight = getSize().x - m_distanceToSideCached - buttonOffsetX;
 
             const Clipping clipping{target, states, {clippingLeft, 0}, {clippingRight - clippingLeft, m_titleBarHeightCached}};
 
@@ -952,20 +947,14 @@ namespace tgui
         }
 
         // Draw the buttons
+        states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getTop()});
         for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
             if (button->isVisible())
                 button->draw(target, states);
         }
 
-        states.transform.translate({0, m_titleBarHeightCached});
-
-        // Draw the borders
-        if (m_bordersCached != Borders{0})
-        {
-            drawBorders(target, states, m_bordersCached, sizeIncludingBorders, m_borderColorCached);
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
-        }
+        states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop() + m_titleBarHeightCached});
 
         // Draw the background
         if (m_backgroundColorCached != Color::Transparent)
