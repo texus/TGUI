@@ -55,7 +55,7 @@ struct SpinButtonProperties : WidgetProperties
 
         const auto renderer = spinButton->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
-        pair.second["SpaceBetweenArrows"] = {"Float", tgui::Serializer::serialize(renderer->getSpaceBetweenArrows())};
+        pair.second["BorderBetweenArrows"] = {"Float", tgui::Serializer::serialize(renderer->getBorderBetweenArrows())};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
         pair.second["ArrowColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColor())};

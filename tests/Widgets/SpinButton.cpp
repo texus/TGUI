@@ -191,7 +191,7 @@ TEST_CASE("[SpinButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", "rgb(60, 70, 80)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
-                REQUIRE_NOTHROW(renderer->setProperty("SpaceBetweenArrows", "2"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderBetweenArrows", "2"));
             }
 
             SECTION("Set object property")
@@ -202,7 +202,7 @@ TEST_CASE("[SpinButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", sf::Color{60, 70, 80}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
-                REQUIRE_NOTHROW(renderer->setProperty("SpaceBetweenArrows", 2));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderBetweenArrows", 2));
             }
 
             SECTION("Functions")
@@ -213,7 +213,7 @@ TEST_CASE("[SpinButton]")
                 renderer->setArrowColorHover({60, 70, 80});
                 renderer->setBorderColor({70, 80, 90});
                 renderer->setBorders({1, 2, 3, 4});
-                renderer->setSpaceBetweenArrows(2);
+                renderer->setBorderBetweenArrows(2);
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(30, 40, 50));
@@ -222,7 +222,7 @@ TEST_CASE("[SpinButton]")
             REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
-            REQUIRE(renderer->getProperty("SpaceBetweenArrows").getNumber() == 2);
+            REQUIRE(renderer->getProperty("BorderBetweenArrows").getNumber() == 2);
 
             REQUIRE(renderer->getBackgroundColor() == sf::Color(30, 40, 50));
             REQUIRE(renderer->getBackgroundColorHover() == sf::Color(40, 50, 60));
@@ -230,7 +230,7 @@ TEST_CASE("[SpinButton]")
             REQUIRE(renderer->getArrowColorHover() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getBorderColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
-            REQUIRE(renderer->getSpaceBetweenArrows() == 2);
+            REQUIRE(renderer->getBorderBetweenArrows() == 2);
         }
 
         SECTION("textured")
@@ -301,7 +301,7 @@ TEST_CASE("[SpinButton]")
         renderer.setBackgroundColor(sf::Color::Green);
         renderer.setArrowColor(sf::Color::Red);
         renderer.setBorderColor(sf::Color::Blue);
-        renderer.setSpaceBetweenArrows(5);
+        renderer.setBorderBetweenArrows(5);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setOpacity(0.7f);
         spinButton->setRenderer(renderer.getData());

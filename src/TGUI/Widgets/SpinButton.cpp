@@ -320,9 +320,9 @@ namespace tgui
             m_bordersCached = getSharedRenderer()->getBorders();
             setSize(m_size);
         }
-        else if (property == "spacebetweenarrows")
+        else if (property == "borderbetweenarrows")
         {
-            m_spaceBetweenArrowsCached = getSharedRenderer()->getSpaceBetweenArrows();
+            m_borderBetweenArrowsCached = getSharedRenderer()->getBorderBetweenArrows();
             setSize(m_size);
         }
         else if (property == "texturearrowup")
@@ -408,10 +408,10 @@ namespace tgui
     {
         if (m_verticalScroll)
             return {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                    (getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_spaceBetweenArrowsCached) / 2.0f};
+                    (getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom() - m_borderBetweenArrowsCached) / 2.0f};
         else
             return {getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom(),
-                    (getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_spaceBetweenArrowsCached) / 2.0f};
+                    (getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_borderBetweenArrowsCached) / 2.0f};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -478,20 +478,20 @@ namespace tgui
         {
             states.transform.translate({0, arrowSize.y});
 
-            if (m_spaceBetweenArrowsCached > 0)
+            if (m_borderBetweenArrowsCached > 0)
             {
-                drawRectangleShape(target, states, {arrowSize.x, m_spaceBetweenArrowsCached}, m_borderColorCached);
-                states.transform.translate({0, m_spaceBetweenArrowsCached});
+                drawRectangleShape(target, states, {arrowSize.x, m_borderBetweenArrowsCached}, m_borderColorCached);
+                states.transform.translate({0, m_borderBetweenArrowsCached});
             }
         }
         else // Horizontal orientation
         {
             states.transform.translate({arrowSize.y, 0});
 
-            if (m_spaceBetweenArrowsCached > 0)
+            if (m_borderBetweenArrowsCached > 0)
             {
-                drawRectangleShape(target, states, {m_spaceBetweenArrowsCached, arrowSize.x}, m_borderColorCached);
-                states.transform.translate({m_spaceBetweenArrowsCached, 0});
+                drawRectangleShape(target, states, {m_borderBetweenArrowsCached, arrowSize.x}, m_borderColorCached);
+                states.transform.translate({m_borderBetweenArrowsCached, 0});
             }
         }
 

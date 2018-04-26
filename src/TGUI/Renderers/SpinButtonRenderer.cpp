@@ -32,7 +32,7 @@ namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(SpinButtonRenderer, Borders)
 
-    TGUI_RENDERER_PROPERTY_NUMBER(SpinButtonRenderer, SpaceBetweenArrows, 0)
+    TGUI_RENDERER_PROPERTY_NUMBER(SpinButtonRenderer, BorderBetweenArrows, 0)
 
     TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(SpinButtonRenderer, BackgroundColorHover, {})

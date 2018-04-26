@@ -158,7 +158,7 @@ SpinButton {
     TextureArrowUpHover   = "Black.png" Part(183, 154, 20, 20) Middle(0, 0, 20, 19);
     TextureArrowDown      = "Black.png" Part(163, 174, 20, 20) Middle(0, 1, 20, 19);
     TextureArrowDownHover = "Black.png" Part(183, 174, 20, 20) Middle(0, 1, 20, 19);
-    SpaceBetweenArrows    = 0;
+    BorderBetweenArrows    = 0;
 }
 
 Tabs {

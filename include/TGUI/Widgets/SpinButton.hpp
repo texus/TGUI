@@ -295,7 +295,7 @@ namespace tgui
         Color   m_backgroundColorHoverCached;
         Color   m_arrowColorCached;
         Color   m_arrowColorHoverCached;
-        float   m_spaceBetweenArrowsCached = 0;
+        float   m_borderBetweenArrowsCached = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
