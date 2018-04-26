@@ -200,7 +200,7 @@ namespace tgui
     Vector2f ChildWindow::getFullSize() const
     {
         return {getSize().x + m_bordersCached.getLeft() + m_bordersCached.getRight(),
-                getSize().y + m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached};
+                getSize().y + m_bordersCached.getTop() + m_bordersCached.getBottom() + m_titleBarHeightCached + m_borderBelowTitleBarCached};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,7 +397,7 @@ namespace tgui
 
     Vector2f ChildWindow::getChildWidgetsOffset() const
     {
-        return {m_bordersCached.getLeft(), m_bordersCached.getTop() + m_titleBarHeightCached};
+        return {m_bordersCached.getLeft(), m_bordersCached.getTop() + m_titleBarHeightCached + m_borderBelowTitleBarCached};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -438,9 +438,14 @@ namespace tgui
 
         onMousePress.emit(this);
 
-        // Check if the mouse is on top of the borders
-        if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, getSize().y + m_titleBarHeightCached}.contains(pos))
+        if (FloatRect{getChildWidgetsOffset(), getSize()}.contains(pos))
         {
+            // Propagate the event to the child widgets
+            Container::leftMousePressed(pos + getPosition());
+        }
+        else if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, getSize().y + m_titleBarHeightCached + m_borderBelowTitleBarCached}.contains(pos))
+        {
+            // Mouse is on top of the borders
             if (m_resizable)
             {
                 // Check on which border the mouse is standing
@@ -459,6 +464,10 @@ namespace tgui
         }
         else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
         {
+            // The mouse went down on the title bar
+            m_mouseDownOnTitleBar = true;
+            m_draggingPosition = pos;
+
             // Send the mouse press event to the title buttons
             for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
@@ -468,15 +477,7 @@ namespace tgui
                     return;
                 }
             }
-
-            // The mouse went down on the title bar
-            m_mouseDownOnTitleBar = true;
-
-            // Remember where we are dragging the title bar
-            m_draggingPosition = pos;
         }
-        else // Propagate the event to the child widgets
-            Container::leftMousePressed(pos + getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -488,27 +489,31 @@ namespace tgui
         m_mouseDownOnTitleBar = false;
         m_resizeDirection = ResizeNone;
 
-        // Check if the mouse is on top of the borders
-        if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, getSize().y + m_titleBarHeightCached}.contains(pos))
+        if (FloatRect{getChildWidgetsOffset(), getSize()}.contains(pos))
+        {
+            // Propagate the event to the child widgets
+            Container::leftMouseReleased(pos + getPosition());
+        }
+        else
         {
             // Tell the widgets that the mouse was released
             for (auto& widget : m_widgets)
                 widget->mouseNoLongerDown();
-        }
-        else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
-        {
-            // Send the mouse release event to the title buttons
-            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+
+            // Check if the mouse is on top of the title bar
+            if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
             {
-                if (button->isVisible() && button->mouseOnWidget(pos))
+                // Send the mouse release event to the title buttons
+                for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
                 {
-                    button->leftMouseReleased(pos);
-                    break;
+                    if (button->isVisible() && button->mouseOnWidget(pos))
+                    {
+                        button->leftMouseReleased(pos);
+                        break;
+                    }
                 }
             }
         }
-        else // Propagate the event to the child widgets
-            Container::leftMouseReleased(pos + getPosition());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -576,47 +581,42 @@ namespace tgui
                 m_draggingPosition.y += diff;
             }
         }
-
-        // Check if the mouse is on top of the title bar
-        else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
+        else // Not dragging child window
         {
-            // Send the hover event to the buttons inside the title bar
-            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+            if (FloatRect{getChildWidgetsOffset(), getSize()}.contains(pos))
             {
-                if (button->isVisible())
-                {
-                    if (button->mouseOnWidget(pos))
-                        button->mouseMoved(pos);
-                    else
-                        button->mouseNoLongerOnWidget();
-                }
+                // Propagate the event to the child widgets
+                Container::mouseMoved(pos + getPosition());
             }
-
-            if (!m_mouseHover)
-                mouseEnteredWidget();
-
-            return;
-        }
-        else // The mouse is not on top of the title bar
-        {
-            // When the mouse is not on the title bar, the mouse can't be on the buttons inside it
-            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
-            {
-                if (button->isVisible())
-                    button->mouseNoLongerOnWidget();
-            }
-
-            // Check if the mouse is on top of the borders
-            if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, getSize().y + m_titleBarHeightCached}.contains(pos))
+            else
             {
                 if (!m_mouseHover)
                     mouseEnteredWidget();
 
-                // Don't send the event to the widgets
-                return;
+                // Check if the mouse is on top of the title bar
+                if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
+                {
+                    // Send the hover event to the buttons inside the title bar
+                    for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+                    {
+                        if (button->isVisible())
+                        {
+                            if (button->mouseOnWidget(pos))
+                                button->mouseMoved(pos);
+                            else
+                                button->mouseNoLongerOnWidget();
+                        }
+                    }
+                }
+                else // When the mouse is not on the title bar, the mouse can't be on the buttons inside it
+                {
+                    for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+                    {
+                        if (button->isVisible())
+                            button->mouseNoLongerOnWidget();
+                    }
+                }
             }
-
-            Container::mouseMoved(pos + getPosition());
         }
     }
 
@@ -719,6 +719,10 @@ namespace tgui
         {
             m_titleBarHeightCached = getSharedRenderer()->getTitleBarHeight();
             updateTitleBarHeight();
+        }
+        else if (property == "borderbelowtitlebar")
+        {
+            m_borderBelowTitleBarCached = getSharedRenderer()->getBorderBelowTitleBar();
         }
         else if (property == "distancetoside")
         {
@@ -955,6 +959,13 @@ namespace tgui
         }
 
         states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop() + m_titleBarHeightCached});
+
+        // Draw the border below the title bar
+        if (m_borderBelowTitleBarCached > 0)
+        {
+            drawRectangleShape(target, states, {getSize().x, m_borderBelowTitleBarCached}, m_borderColorCached);
+            states.transform.translate({0, m_borderBelowTitleBarCached});
+        }
 
         // Draw the background
         if (m_backgroundColorCached != Color::Transparent)

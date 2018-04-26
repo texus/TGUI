@@ -487,6 +487,7 @@ namespace tgui
         Color   m_titleBarColorCached;
         Color   m_backgroundColorCached;
         float   m_titleBarHeightCached = 20;
+        float   m_borderBelowTitleBarCached = 0;
         float   m_distanceToSideCached = 0;
         float   m_paddingBetweenButtonsCached = 0;
         bool    m_showTextOnTitleButtonsCached = false;

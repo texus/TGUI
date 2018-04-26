@@ -63,23 +63,24 @@ TEST_CASE("[ChildWindow]")
         childWindow->setPosition(40, 30);
         childWindow->setSize(150, 100);
         childWindow->getRenderer()->setTitleBarHeight(15);
+        childWindow->getRenderer()->setBorderBelowTitleBar(1);
         childWindow->getRenderer()->setBorders({1, 2, 3, 4});
 
         REQUIRE(childWindow->getPosition() == sf::Vector2f(40, 30));
         REQUIRE(childWindow->getSize() == sf::Vector2f(150, 100));
-        REQUIRE(childWindow->getFullSize() == sf::Vector2f(154, 121));
+        REQUIRE(childWindow->getFullSize() == sf::Vector2f(154, 122));
         REQUIRE(childWindow->getWidgetOffset() == sf::Vector2f(0, 0));
 
         SECTION("Child widgets")
         {
-            REQUIRE(childWindow->getChildWidgetsOffset() == sf::Vector2f(1, 17));
+            REQUIRE(childWindow->getChildWidgetsOffset() == sf::Vector2f(1, 18));
 
             auto childWidget = tgui::ClickableWidget::create();
             childWidget->setPosition(60, 50);
             childWindow->add(childWidget);
 
             REQUIRE(childWidget->getPosition() == sf::Vector2f(60, 50));
-            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(101, 97));
+            REQUIRE(childWidget->getAbsolutePosition() == sf::Vector2f(101, 98));
         }
     }
 
@@ -245,6 +246,7 @@ TEST_CASE("[ChildWindow]")
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(100, 110, 120)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderBelowTitleBar", "3"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("PaddingBetweenButtons", "1"));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarHeight", "25"));
@@ -260,6 +262,7 @@ TEST_CASE("[ChildWindow]")
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{100, 110, 120}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderBelowTitleBar", 3));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("PaddingBetweenButtons", 1));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarHeight", 25));
@@ -275,6 +278,7 @@ TEST_CASE("[ChildWindow]")
                 renderer->setTitleBarColor({70, 80, 90});
                 renderer->setBorderColor({100, 110, 120});
                 renderer->setBorders({1, 2, 3, 4});
+                renderer->setBorderBelowTitleBar(3);
                 renderer->setDistanceToSide(2);
                 renderer->setPaddingBetweenButtons(1);
                 renderer->setTitleBarHeight(25);
@@ -289,6 +293,7 @@ TEST_CASE("[ChildWindow]")
             REQUIRE(renderer->getProperty("TitleBarColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(100, 110, 120));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
+            REQUIRE(renderer->getProperty("BorderBelowTitleBar").getNumber() == 3);
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
             REQUIRE(renderer->getProperty("PaddingBetweenButtons").getNumber() == 1);
             REQUIRE(renderer->getProperty("TitleBarHeight").getNumber() == 25);
@@ -403,7 +408,8 @@ TEST_CASE("[ChildWindow]")
         renderer.setPaddingBetweenButtons(5);
         renderer.setShowTextOnTitleButtons(false);
         renderer.setTitleBarHeight(30);
-        renderer.setBorders({1, 2, 3, 4});
+        renderer.setBorderBelowTitleBar(1);
+        renderer.setBorders({2, 3, 4, 5});
         renderer.setOpacity(0.7f);
         childWindow->setRenderer(renderer.getData());
 
