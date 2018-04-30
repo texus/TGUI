@@ -227,7 +227,7 @@ foreach(FIND_SFML_COMPONENT ${SFML_FIND_COMPONENTS})
 endforeach()
 
 # in case of static linking, we must also define the list of all the dependencies of SFML libraries
-if(SFML_STATIC_LIBRARIES)
+if(SFML_INCLUDE_DIR AND SFML_STATIC_LIBRARIES)
 
     # detect the OS
     if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
