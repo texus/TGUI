@@ -250,6 +250,7 @@ TEST_CASE("[ChildWindow]")
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
                 REQUIRE_NOTHROW(renderer->setProperty("PaddingBetweenButtons", "1"));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarHeight", "25"));
+                REQUIRE_NOTHROW(renderer->setProperty("MinimumResizableBorderWidth", "4"));
                 REQUIRE_NOTHROW(renderer->setProperty("CloseButton", "{ BackgroundColor = Red; }"));
                 REQUIRE_NOTHROW(renderer->setProperty("MaximizeButton", "{ BackgroundColor = Green; }"));
                 REQUIRE_NOTHROW(renderer->setProperty("MinimizeButton", "{ BackgroundColor = Blue; }"));
@@ -266,6 +267,7 @@ TEST_CASE("[ChildWindow]")
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("PaddingBetweenButtons", 1));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarHeight", 25));
+                REQUIRE_NOTHROW(renderer->setProperty("MinimumResizableBorderWidth", 4));
                 REQUIRE_NOTHROW(renderer->setProperty("CloseButton", closeButtonRenderer.getData()));
                 REQUIRE_NOTHROW(renderer->setProperty("MaximizeButton", maximizeButtonRenderer.getData()));
                 REQUIRE_NOTHROW(renderer->setProperty("MinimizeButton", minimizeButtonRenderer.getData()));
@@ -282,6 +284,7 @@ TEST_CASE("[ChildWindow]")
                 renderer->setDistanceToSide(2);
                 renderer->setPaddingBetweenButtons(1);
                 renderer->setTitleBarHeight(25);
+                renderer->setMinimumResizableBorderWidth(4);
 
                 renderer->setCloseButton(closeButtonRenderer.getData());
                 renderer->setMaximizeButton(maximizeButtonRenderer.getData());
@@ -297,6 +300,7 @@ TEST_CASE("[ChildWindow]")
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
             REQUIRE(renderer->getProperty("PaddingBetweenButtons").getNumber() == 1);
             REQUIRE(renderer->getProperty("TitleBarHeight").getNumber() == 25);
+            REQUIRE(renderer->getProperty("MinimumResizableBorderWidth").getNumber() == 4);
 
             REQUIRE(renderer->getCloseButton()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Red);
             REQUIRE(renderer->getMaximizeButton()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Green);

@@ -201,6 +201,26 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the minimum width of the area where you can drag to resize the child window
+        /// @param minimumBoderWidth  Minimum amount of pixels where the child window can be dragged to resize it
+        ///
+        /// If the border is larger than minimumBoderWidth then this function has no effect. If the borders are smaller,
+        /// several invisible pixels next to the border can also be used to resize the child window.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setMinimumResizableBorderWidth(float minimumBoderWidth);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the minimum width of the area where you can drag to resize the child window
+        /// @return Minimum amount of pixels where the child window can be dragged to resize it
+        ///
+        /// If the border is larger than this value then it has no effect. If the borders are smaller, several invisible
+        /// pixels next to the border can also be used to resize the child window.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        float getMinimumResizableBorderWidth() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether characters are rendered on top of the title buttons
         /// @param showText  Should text be shown on the title buttons?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

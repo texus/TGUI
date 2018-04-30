@@ -413,7 +413,20 @@ namespace tgui
 
     bool ChildWindow::mouseOnWidget(Vector2f pos) const
     {
-        if (FloatRect{getPosition(), getFullSize()}.contains(pos))
+        FloatRect region{getPosition(), getFullSize()};
+
+        // Expand the region if the child window is resizable (to make the borders easier to click on)
+        if (m_resizable)
+        {
+            region.left -= std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getLeft());
+            region.top -= std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getTop());
+            region.width += std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getLeft())
+                            + std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getRight());
+            region.height += std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getTop())
+                             + std::max(0.f, m_MinimumResizableBorderWidthCached - m_bordersCached.getBottom());
+        }
+
+        if (region.contains(pos))
         {
             // If the mouse enters the border or title bar then then none of the widgets can still be under the mouse
             if (m_widgetBelowMouse && !FloatRect{getPosition() + getChildWidgetsOffset(), getSize()}.contains(pos))
@@ -450,13 +463,13 @@ namespace tgui
             {
                 // Check on which border the mouse is standing
                 m_resizeDirection = ResizeNone;
-                if (FloatRect{0, 0, m_bordersCached.getLeft(), getFullSize().y}.contains(pos))
+                if (pos.x < m_bordersCached.getLeft())
                     m_resizeDirection |= ResizeLeft;
-                if (FloatRect{0, 0, getFullSize().x, m_bordersCached.getTop()}.contains(pos))
+                if (pos.y < m_bordersCached.getTop())
                     m_resizeDirection |= ResizeTop;
-                if (FloatRect{getFullSize().x - m_bordersCached.getRight(), 0, m_bordersCached.getRight(), getFullSize().y}.contains(pos))
+                if (pos.x >= getFullSize().x - m_bordersCached.getRight())
                     m_resizeDirection |= ResizeRight;
-                if (FloatRect{0, getFullSize().y - m_bordersCached.getBottom(), getFullSize().x, m_bordersCached.getBottom()}.contains(pos))
+                if (pos.y >= getFullSize().y - m_bordersCached.getBottom())
                     m_resizeDirection |= ResizeBottom;
             }
 
@@ -733,6 +746,10 @@ namespace tgui
         {
             m_paddingBetweenButtonsCached = getSharedRenderer()->getPaddingBetweenButtons();
             setPosition(m_position);
+        }
+        else if (property == "minimumresizableborderwidth")
+        {
+            m_MinimumResizableBorderWidthCached = getSharedRenderer()->getMinimumResizableBorderWidth();
         }
         else if (property == "showtextontitlebuttons")
         {
