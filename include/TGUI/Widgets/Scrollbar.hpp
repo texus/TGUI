@@ -99,12 +99,11 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets a maximum value
-        ///
         /// @param maximum  The new maximum value
         ///
-        /// When the value is bigger than (maximum - low value), the value is set to maximum - low value.
+        /// When the value is bigger than (maximum - viewportSize), the value is set to maximum - viewportSize.
         /// The default maximum value is 10.
-        ///
+        /// @see setViewportSize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMaximum(unsigned int maximum);
 
@@ -122,11 +121,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the current value
-        ///
         /// @param value  The new value
         ///
-        /// The value has to be smaller than maximum - low value.
-        ///
+        /// The value has to be smaller than maximum - viewportSize.
+        /// @see setViewportSize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setValue(unsigned int value);
 
@@ -143,26 +141,25 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the 'low value'
+        /// @brief Changes the viewport size
         ///
-        /// @param lowValue  The new low value.
-        ///                  In e.g. a list box, this value is the amount of items that fit inside the list box
+        /// @param viewport  The new viewport size
+        ///
+        /// If the contents through which the scrollbar can scroll is 600 pixels of which only 200 pixels are visible on the
+        /// screen then the viewport size should be set to 200 and the maximum should be set to 600. The thumb will occupy
+        /// one third of the scrollbar track in this case. The possible scrollbar values are in the range [0, 400] in this case.
         ///
         /// Until the maximum is bigger than this value, no scrollbar will be drawn.
         /// You can however choose to always draw the scrollbar by calling setAutoHide(false).
-        /// The default low value is 6.
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setLowValue(unsigned int lowValue);
+        void setViewportSize(unsigned int viewport);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the low value
-        ///
-        /// @see setLowValue
-        ///
+        /// @brief Returns the viewport size
+        /// @see setViewportSize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int getLowValue() const;
+        unsigned int getViewportSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,11 +182,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the scrollbar should hide automatically or not
-        ///
-        /// When true (default), the scrollbar will not be drawn when the maximum is smaller than the low value.
-        ///
         /// @param autoHide  Should the scrollbar be invisible when you can't scroll?
         ///
+        /// When true (default), the scrollbar will not be drawn when the maximum is smaller than the viewportSize.
+        /// @see setViewportSize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setAutoHide(bool autoHide);
 
@@ -197,9 +193,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the scrollbar is hiding automatically or not
         ///
-        /// When true (default), the scrollbar will not be drawn when the maximum is smaller than the low value.
-        /// So when you can't scroll, the scrollbar won't be drawn.
-        ///
+        /// When true (default), the scrollbar will not be drawn when the maximum is smaller than the viewportSize.
+        /// @see setViewportSize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getAutoHide() const;
 
@@ -327,7 +322,7 @@ namespace tgui
         unsigned int m_value = 0;
 
         // Maximum should be above this value before the scrollbar is needed
-        unsigned int m_lowValue = 6;
+        unsigned int m_viewportSize = 1;
 
         // Is the scrollbar draw vertically?
         bool m_verticalScroll = true;
@@ -396,11 +391,9 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the scrollbar is currently visible
-        ///
-        /// The scrollbar is visible when auto hide is disabled or when the maximum is higher than the low value
-        ///
         /// @return Is the scrollbar visible?
         ///
+        /// The scrollbar is visible when auto hide is disabled or when the maximum is higher than the viewport size
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isShown() const;
 

@@ -30,7 +30,7 @@ TEST_CASE("[Scrollbar]")
     tgui::Scrollbar::Ptr scrollbar = tgui::Scrollbar::create();
     scrollbar->getRenderer()->setFont("resources/DejaVuSans.ttf");
     scrollbar->setMaximum(20);
-    scrollbar->setLowValue(5);
+    scrollbar->setViewportSize(5);
     scrollbar->setValue(10);
 
     SECTION("Signals")
@@ -57,22 +57,22 @@ TEST_CASE("[Scrollbar]")
         REQUIRE(scrollbar->getWidgetOffset() == sf::Vector2f(0, 0));
     }
 
-    SECTION("LowValue")
+    SECTION("ViewportSize")
     {
-        REQUIRE(scrollbar->getLowValue() == 5);
+        REQUIRE(scrollbar->getViewportSize() == 5);
 
-        scrollbar->setLowValue(7);
-        REQUIRE(scrollbar->getLowValue() == 7);
+        scrollbar->setViewportSize(7);
+        REQUIRE(scrollbar->getViewportSize() == 7);
         REQUIRE(scrollbar->getValue() == 10);
         REQUIRE(scrollbar->getMaximum() == 20);
 
-        scrollbar->setLowValue(16);
-        REQUIRE(scrollbar->getLowValue() == 16);
+        scrollbar->setViewportSize(16);
+        REQUIRE(scrollbar->getViewportSize() == 16);
         REQUIRE(scrollbar->getValue() == 4);
         REQUIRE(scrollbar->getMaximum() == 20);
 
-        scrollbar->setLowValue(22);
-        REQUIRE(scrollbar->getLowValue() == 22);
+        scrollbar->setViewportSize(22);
+        REQUIRE(scrollbar->getViewportSize() == 22);
         REQUIRE(scrollbar->getValue() == 0);
         REQUIRE(scrollbar->getMaximum() == 20);
     }
@@ -82,17 +82,17 @@ TEST_CASE("[Scrollbar]")
         REQUIRE(scrollbar->getMaximum() == 20);
 
         scrollbar->setMaximum(17);
-        REQUIRE(scrollbar->getLowValue() == 5);
+        REQUIRE(scrollbar->getViewportSize() == 5);
         REQUIRE(scrollbar->getValue() == 10);
         REQUIRE(scrollbar->getMaximum() == 17);
 
         scrollbar->setMaximum(12);
-        REQUIRE(scrollbar->getLowValue() == 5);
+        REQUIRE(scrollbar->getViewportSize() == 5);
         REQUIRE(scrollbar->getValue() == 7);
         REQUIRE(scrollbar->getMaximum() == 12);
 
         scrollbar->setMaximum(4);
-        REQUIRE(scrollbar->getLowValue() == 5);
+        REQUIRE(scrollbar->getViewportSize() == 5);
         REQUIRE(scrollbar->getValue() == 0);
         REQUIRE(scrollbar->getMaximum() == 4);
     }
@@ -266,7 +266,7 @@ TEST_CASE("[Scrollbar]")
     SECTION("Saving and loading from file")
     {
         scrollbar->setMaximum(50);
-        scrollbar->setLowValue(10);
+        scrollbar->setViewportSize(10);
         scrollbar->setValue(20);
         scrollbar->setScrollAmount(5);
         scrollbar->setAutoHide(false);
@@ -281,7 +281,7 @@ TEST_CASE("[Scrollbar]")
         scrollbar->setEnabled(true);
         scrollbar->setPosition({10, 15});
         scrollbar->setSize({100, 30});
-        scrollbar->setLowValue(120);
+        scrollbar->setViewportSize(120);
         scrollbar->setMaximum(200);
         scrollbar->setValue(30);
 

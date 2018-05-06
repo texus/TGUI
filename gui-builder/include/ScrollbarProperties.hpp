@@ -38,8 +38,8 @@ struct ScrollbarProperties : WidgetProperties
             scrollbar->setMaximum(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "Value")
             scrollbar->setValue(static_cast<unsigned int>(tgui::stoi(value)));
-        else if (property == "LowValue")
-            scrollbar->setLowValue(static_cast<unsigned int>(tgui::stoi(value)));
+        else if (property == "ViewportSize")
+            scrollbar->setViewportSize(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "ScrollAmount")
             scrollbar->setScrollAmount(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "AutoHide")
@@ -54,7 +54,7 @@ struct ScrollbarProperties : WidgetProperties
         auto scrollbar = std::dynamic_pointer_cast<tgui::Scrollbar>(widget);
         pair.first["Maximum"] = {"UInt", tgui::to_string(scrollbar->getMaximum())};
         pair.first["Value"] = {"UInt", tgui::to_string(scrollbar->getValue())};
-        pair.first["LowValue"] = {"UInt", tgui::to_string(scrollbar->getLowValue())};
+        pair.first["ViewportSize"] = {"UInt", tgui::to_string(scrollbar->getViewportSize())};
         pair.first["ScrollAmount"] = {"UInt", tgui::to_string(scrollbar->getScrollAmount())};
         pair.first["AutoHide"] = {"Bool", tgui::Serializer::serialize(scrollbar->getAutoHide())};
 

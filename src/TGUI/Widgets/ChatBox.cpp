@@ -106,7 +106,7 @@ namespace tgui
 
         m_scroll->setPosition(getSize().x - m_bordersCached.getRight() - m_scroll->getSize().x, m_bordersCached.getTop());
         m_scroll->setSize({m_scroll->getSize().x, getInnerSize().y});
-        m_scroll->setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+        m_scroll->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
 
         recalculateAllLines();
     }
@@ -353,7 +353,7 @@ namespace tgui
 
     void ChatBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
-        if (m_scroll->getLowValue() < m_scroll->getMaximum())
+        if (m_scroll->getViewportSize() < m_scroll->getMaximum())
             m_scroll->mouseWheelScrolled(delta, pos - getPosition());
     }
 
@@ -396,10 +396,10 @@ namespace tgui
         // Scroll down to the last item when there is a scrollbar and it is at the bottom
         if (m_newLinesBelowOthers)
         {
-            if (((oldMaximum >= m_scroll->getLowValue()) && (m_scroll->getValue() == oldMaximum - m_scroll->getLowValue()))
-             || ((oldMaximum <= m_scroll->getLowValue()) && (m_scroll->getMaximum() > m_scroll->getLowValue())))
+            if (((oldMaximum >= m_scroll->getViewportSize()) && (m_scroll->getValue() == oldMaximum - m_scroll->getViewportSize()))
+             || ((oldMaximum <= m_scroll->getViewportSize()) && (m_scroll->getMaximum() > m_scroll->getViewportSize())))
             {
-                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
+                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getViewportSize());
             }
         }
     }

@@ -490,9 +490,9 @@ namespace tgui
         Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                                 innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
-        if (m_verticalScrollbar->isVisible() && (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getLowValue()))
+        if (m_verticalScrollbar->isVisible() && (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()))
             contentSize.x -= m_verticalScrollbar->getSize().x;
-        if (m_horizontalScrollbar->isVisible() && (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getLowValue()))
+        if (m_horizontalScrollbar->isVisible() && (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize()))
             contentSize.y -= m_horizontalScrollbar->getSize().y;
 
         // If the content size is manually specified and smaller than the panel itself, then use it for clipping
@@ -600,20 +600,20 @@ namespace tgui
                                          getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
 
         const Vector2f visibleSize = getInnerSize();
-        m_horizontalScrollbar->setLowValue(static_cast<unsigned int>(visibleSize.x));
-        m_verticalScrollbar->setLowValue(static_cast<unsigned int>(visibleSize.y));
+        m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(visibleSize.x));
+        m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(visibleSize.y));
 
         const Vector2f contentSize = getContentSize();
         m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(contentSize.x));
         m_verticalScrollbar->setMaximum(static_cast<unsigned int>(contentSize.y));
 
-        const bool horizontalScrollbarVisible = m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getLowValue()));
+        const bool horizontalScrollbarVisible = m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize()));
         if (horizontalScrollbarVisible)
         {
             m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
-            m_verticalScrollbar->setLowValue(static_cast<unsigned int>(m_verticalScrollbar->getLowValue() - m_horizontalScrollbar->getSize().y));
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(m_verticalScrollbar->getViewportSize() - m_horizontalScrollbar->getSize().y));
 
-            const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getLowValue()));
+            const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()));
             if (verticalScrollbarVisible)
                 m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
             else
@@ -623,13 +623,13 @@ namespace tgui
         {
             m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y);
 
-            const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getLowValue()));
+            const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()));
             if (verticalScrollbarVisible)
             {
                 m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
-                m_horizontalScrollbar->setLowValue(static_cast<unsigned int>(m_horizontalScrollbar->getLowValue() - m_verticalScrollbar->getSize().x));
+                m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
 
-                if (m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getLowValue())))
+                if (m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize())))
                     m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
             }
             else
@@ -639,10 +639,10 @@ namespace tgui
         m_verticalScrollbar->setPosition(m_bordersCached.getLeft() + scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_bordersCached.getTop());
         m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), m_bordersCached.getTop() + scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
 
-        const float verticalSpeed = 40.f * (static_cast<float>(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getLowValue()) / m_verticalScrollbar->getLowValue());
+        const float verticalSpeed = 40.f * (static_cast<float>(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize()) / m_verticalScrollbar->getViewportSize());
         m_verticalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(verticalSpeed))));
 
-        const float horizontalSpeed = 40.f * (static_cast<float>(m_horizontalScrollbar->getMaximum() - m_horizontalScrollbar->getLowValue()) / m_horizontalScrollbar->getLowValue());
+        const float horizontalSpeed = 40.f * (static_cast<float>(m_horizontalScrollbar->getMaximum() - m_horizontalScrollbar->getViewportSize()) / m_horizontalScrollbar->getViewportSize());
         m_horizontalScrollbar->setScrollAmount(static_cast<unsigned int>(std::ceil(std::sqrt(horizontalSpeed))));
     }
 

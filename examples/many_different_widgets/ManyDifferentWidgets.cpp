@@ -163,7 +163,7 @@ int main()
         scrollbar->setPosition(380, 40);
         scrollbar->setSize(18, 540);
         scrollbar->setMaximum(100);
-        scrollbar->setLowValue(70);
+        scrollbar->setViewportSize(70);
         gui.add(scrollbar);
 
         auto comboBox = tgui::ComboBox::create();

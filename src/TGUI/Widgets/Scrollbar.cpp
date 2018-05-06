@@ -124,8 +124,8 @@ namespace tgui
             m_track.height = std::max(0.f, getSize().y - m_arrowUp.height - m_arrowDown.height);
 
             m_thumb.width = getSize().x;
-            if (m_maximum > m_lowValue)
-                m_thumb.height = m_track.height * m_lowValue / m_maximum;
+            if (m_maximum > m_viewportSize)
+                m_thumb.height = m_track.height * m_viewportSize / m_maximum;
             else
                 m_thumb.height = m_track.height;
         }
@@ -149,8 +149,8 @@ namespace tgui
             m_track.height = getSize().y;
 
             m_thumb.height = getSize().y;
-            if (m_maximum > m_lowValue)
-                m_thumb.width = m_track.width * m_lowValue / m_maximum;
+            if (m_maximum > m_viewportSize)
+                m_thumb.width = m_track.width * m_viewportSize / m_maximum;
             else
                 m_thumb.width = m_track.width;
         }
@@ -235,10 +235,10 @@ namespace tgui
             m_maximum = 1;
 
         // When the value is above the maximum then adjust it
-        if (m_maximum < m_lowValue)
+        if (m_maximum < m_viewportSize)
             setValue(0);
-        else if (m_value > m_maximum - m_lowValue)
-            setValue(m_maximum - m_lowValue);
+        else if (m_value > m_maximum - m_viewportSize)
+            setValue(m_maximum - m_viewportSize);
 
         // Recalculate the size and position of the thumb image
         setSize(m_size);
@@ -256,10 +256,10 @@ namespace tgui
     void Scrollbar::setValue(unsigned int value)
     {
         // When the value is above the maximum then adjust it
-        if (m_maximum < m_lowValue)
+        if (m_maximum < m_viewportSize)
             value = 0;
-        else if (value > m_maximum - m_lowValue)
-            value = m_maximum - m_lowValue;
+        else if (value > m_maximum - m_viewportSize)
+            value = m_maximum - m_viewportSize;
 
         if (m_value != value)
         {
@@ -281,16 +281,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::setLowValue(unsigned int lowValue)
+    void Scrollbar::setViewportSize(unsigned int viewportSize)
     {
         // Set the new value
-        m_lowValue = lowValue;
+        m_viewportSize = viewportSize;
 
         // When the value is above the maximum then adjust it
-        if (m_maximum < m_lowValue)
+        if (m_maximum < m_viewportSize)
             setValue(0);
-        else if (m_value > m_maximum - m_lowValue)
-            setValue(m_maximum - m_lowValue);
+        else if (m_value > m_maximum - m_viewportSize)
+            setValue(m_maximum - m_viewportSize);
 
         // Recalculate the size and position of the thumb image
         setSize(m_size);
@@ -298,9 +298,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Scrollbar::getLowValue() const
+    unsigned int Scrollbar::getViewportSize() const
     {
-        return m_lowValue;
+        return m_viewportSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,7 +336,7 @@ namespace tgui
     bool Scrollbar::mouseOnWidget(Vector2f pos) const
     {
         // Don't make any calculations when no scrollbar is needed
-        if (m_autoHide && (m_maximum <= m_lowValue))
+        if (m_autoHide && (m_maximum <= m_viewportSize))
             return false;
 
         return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
@@ -400,7 +400,7 @@ namespace tgui
         if (m_mouseDown && m_mouseDownOnArrow)
         {
             // Only continue when the calculations can be made
-            if (m_maximum > m_lowValue)
+            if (m_maximum > m_viewportSize)
             {
                 bool valueDown = false;
                 bool valueUp = false;
@@ -467,7 +467,7 @@ namespace tgui
                 }
                 else if (valueUp)
                 {
-                    if (m_value + m_scrollAmount < m_maximum - m_lowValue + 1)
+                    if (m_value + m_scrollAmount < m_maximum - m_viewportSize + 1)
                     {
                         if (m_value % m_scrollAmount)
                             setValue(m_value + (m_scrollAmount - (m_value % m_scrollAmount)));
@@ -475,7 +475,7 @@ namespace tgui
                             setValue(m_value + m_scrollAmount);
                     }
                     else
-                        setValue(m_maximum - m_lowValue);
+                        setValue(m_maximum - m_viewportSize);
                 }
             }
         }
@@ -498,7 +498,7 @@ namespace tgui
         if (m_mouseDown && !m_mouseDownOnArrow)
         {
             // Don't continue if the calculations can't be made
-            if (!m_autoHide && (m_maximum <= m_lowValue))
+            if (!m_autoHide && (m_maximum <= m_viewportSize))
                 return;
 
             // Check in which direction the scrollbar lies
@@ -515,10 +515,10 @@ namespace tgui
                                                                                / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum) + 0.5f);
 
                         // If the value isn't too high then change it
-                        if (value <= (m_maximum - m_lowValue))
+                        if (value <= (m_maximum - m_viewportSize))
                             setValue(value);
                         else
-                            setValue(m_maximum - m_lowValue);
+                            setValue(m_maximum - m_viewportSize);
                     }
                     else // The mouse was above the scrollbar
                         setValue(0);
@@ -528,7 +528,7 @@ namespace tgui
                     if ((thumbTop - m_arrowUp.height > 0) && (thumbTop + m_thumb.height + m_arrowDown.height < getSize().y))
                         m_thumb.top = thumbTop;
                     else // Prevent the thumb from going outside the scrollbar
-                        m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_lowValue));
+                        m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_viewportSize));
                 }
                 else // The click occurred on the track
                 {
@@ -544,7 +544,7 @@ namespace tgui
                             // Check if you clicked above the thumb
                             if (value <= m_value)
                             {
-                                const float subtractValue = m_lowValue / 3.0f;
+                                const float subtractValue = m_viewportSize / 3.0f;
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value >= subtractValue)
@@ -554,13 +554,13 @@ namespace tgui
                             }
                             else // The click occurred below the thumb
                             {
-                                const float subtractValue = m_lowValue * 2.0f / 3.0f;
+                                const float subtractValue = m_viewportSize * 2.0f / 3.0f;
 
                                 // Try to place the thumb on 2/3 of the clicked position
-                                if (value <= (m_maximum - m_lowValue + subtractValue))
+                                if (value <= (m_maximum - m_viewportSize + subtractValue))
                                     setValue(static_cast<unsigned int>(value - subtractValue + 0.5f));
                                 else
-                                    setValue(m_maximum - m_lowValue);
+                                    setValue(m_maximum - m_viewportSize);
                             }
                         }
                     }
@@ -582,10 +582,10 @@ namespace tgui
                         const unsigned int value = static_cast<unsigned int>((((pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
                                                                                / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum) + 0.5f);
                         // If the value isn't too high then change it
-                        if (value <= (m_maximum - m_lowValue))
+                        if (value <= (m_maximum - m_viewportSize))
                             setValue(value);
                         else
-                            setValue(m_maximum - m_lowValue);
+                            setValue(m_maximum - m_viewportSize);
                     }
                     else // The mouse was to the left of the thumb
                         setValue(0);
@@ -595,7 +595,7 @@ namespace tgui
                     if ((thumbLeft - m_arrowUp.width > 0) && (thumbLeft + m_thumb.width + m_arrowDown.width < getSize().x))
                         m_thumb.left = thumbLeft;
                     else // Prevent the thumb from going outside the scrollbar
-                        m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_lowValue));
+                        m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_viewportSize));
                 }
                 else // The click occurred on the track
                 {
@@ -611,7 +611,7 @@ namespace tgui
                             // Check if you clicked to the left of the thumb
                             if (value <= m_value)
                             {
-                                const float subtractValue = m_lowValue / 3.0f;
+                                const float subtractValue = m_viewportSize / 3.0f;
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value >= subtractValue)
@@ -621,13 +621,13 @@ namespace tgui
                             }
                             else // The click occurred to the right of the thumb
                             {
-                                const float subtractValue = m_lowValue * 2.0f / 3.0f;
+                                const float subtractValue = m_viewportSize * 2.0f / 3.0f;
 
                                 // Try to place the thumb on 2/3 of the clicked position
-                                if (value <= (m_maximum - m_lowValue + subtractValue))
+                                if (value <= (m_maximum - m_viewportSize + subtractValue))
                                     setValue(static_cast<unsigned int>(value - subtractValue + 0.5f));
                                 else
-                                    setValue(m_maximum - m_lowValue);
+                                    setValue(m_maximum - m_viewportSize);
                             }
                         }
                     }
@@ -779,7 +779,7 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         node->propertyValuePairs["AutoHide"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_autoHide));
-        node->propertyValuePairs["LowValue"] = std::make_unique<DataIO::ValueNode>(to_string(m_lowValue));
+        node->propertyValuePairs["ViewportSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_viewportSize));
         node->propertyValuePairs["Maximum"] = std::make_unique<DataIO::ValueNode>(to_string(m_maximum));
         node->propertyValuePairs["Value"] = std::make_unique<DataIO::ValueNode>(to_string(m_value));
         node->propertyValuePairs["ScrollAmount"] = std::make_unique<DataIO::ValueNode>(to_string(m_scrollAmount));
@@ -793,8 +793,8 @@ namespace tgui
     {
         Widget::load(node, renderers);
 
-        if (node->propertyValuePairs["lowvalue"])
-            setLowValue(tgui::stoi(node->propertyValuePairs["lowvalue"]->value));
+        if (node->propertyValuePairs["viewportsize"])
+            setViewportSize(tgui::stoi(node->propertyValuePairs["viewportsize"]->value));
         if (node->propertyValuePairs["maximum"])
             setMaximum(tgui::stoi(node->propertyValuePairs["maximum"]->value));
         if (node->propertyValuePairs["value"])
@@ -812,11 +812,11 @@ namespace tgui
         if (m_verticalScroll)
         {
             m_thumb.left = 0;
-            m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_lowValue));
+            m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_viewportSize));
         }
         else
         {
-            m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_lowValue));
+            m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_viewportSize));
             m_thumb.top = 0;
         }
     }
@@ -826,7 +826,7 @@ namespace tgui
     void Scrollbar::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         // Don't draw the scrollbar when it is not needed
-        if (m_autoHide && (m_maximum <= m_lowValue))
+        if (m_autoHide && (m_maximum <= m_viewportSize))
             return;
 
         states.transform.translate(getPosition());
@@ -966,7 +966,7 @@ namespace tgui
 
     bool ScrollbarChildWidget::isShown() const
     {
-        return m_visible && (!m_autoHide || (m_maximum > m_lowValue));
+        return m_visible && (!m_autoHide || (m_maximum > m_viewportSize));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -118,7 +118,7 @@ namespace tgui
         // If there is a scrollbar then reinitialize it
         if (isVerticalScrollbarPresent())
         {
-            m_verticalScroll->setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+            m_verticalScroll->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
             m_verticalScroll->setSize({m_verticalScroll->getSize().x, getInnerSize().y});
         }
 
@@ -469,7 +469,7 @@ namespace tgui
                 if (m_selEnd.y <= m_topLine)
                     m_verticalScroll->setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
                 else if (m_selEnd.y + 1 >= m_topLine + m_visibleLines)
-                    m_verticalScroll->setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight) - m_verticalScroll->getLowValue()));
+                    m_verticalScroll->setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight) - m_verticalScroll->getViewportSize()));
 
                 recalculateVisibleLines();
             }
@@ -1279,7 +1279,7 @@ namespace tgui
                 m_verticalScroll->setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight)
                                                                     + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)
                                                                     + Text::getExtraVerticalPadding(m_textSize)
-                                                                    - m_verticalScroll->getLowValue()));
+                                                                    - m_verticalScroll->getViewportSize()));
         }
 
         recalculatePositions();

@@ -116,7 +116,7 @@ namespace tgui
         m_spriteBackground.setSize(getInnerSize());
 
         m_scroll->setSize({m_scroll->getSize().x, std::max(0.f, getInnerSize().y)});
-        m_scroll->setLowValue(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+        m_scroll->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
 
         setPosition(m_position);
     }
@@ -131,8 +131,8 @@ namespace tgui
             m_scroll->setMaximum(static_cast<unsigned int>((m_items.size() + 1) * m_itemHeight));
 
             // Scroll down when auto-scrolling is enabled
-            if (m_autoScroll && (m_scroll->getLowValue() < m_scroll->getMaximum()))
-                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getLowValue());
+            if (m_autoScroll && (m_scroll->getViewportSize() < m_scroll->getMaximum()))
+                m_scroll->setValue(m_scroll->getMaximum() - m_scroll->getViewportSize());
 
             // Create the new item
             Text newItem;
@@ -198,8 +198,8 @@ namespace tgui
         // Move the scrollbar
         if (m_selectedItem * getItemHeight() < m_scroll->getValue())
             m_scroll->setValue(m_selectedItem * getItemHeight());
-        else if ((m_selectedItem + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getLowValue())
-            m_scroll->setValue((m_selectedItem + 1) * getItemHeight() - m_scroll->getLowValue());
+        else if ((m_selectedItem + 1) * getItemHeight() > m_scroll->getValue() + m_scroll->getViewportSize())
+            m_scroll->setValue((m_selectedItem + 1) * getItemHeight() - m_scroll->getViewportSize());
 
         return true;
     }
@@ -986,13 +986,13 @@ namespace tgui
             // Find out which items are visible
             std::size_t firstItem = 0;
             std::size_t lastItem = m_items.size();
-            if (m_scroll->getLowValue() < m_scroll->getMaximum())
+            if (m_scroll->getViewportSize() < m_scroll->getMaximum())
             {
                 firstItem = m_scroll->getValue() / m_itemHeight;
-                lastItem = (m_scroll->getValue() + m_scroll->getLowValue()) / m_itemHeight;
+                lastItem = (m_scroll->getValue() + m_scroll->getViewportSize()) / m_itemHeight;
 
                 // Show another item when the scrollbar is standing between two items
-                if ((m_scroll->getValue() + m_scroll->getLowValue()) % m_itemHeight != 0)
+                if ((m_scroll->getValue() + m_scroll->getViewportSize()) % m_itemHeight != 0)
                     ++lastItem;
             }
 
