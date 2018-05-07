@@ -286,7 +286,7 @@ void GuiBuilder::mainLoop()
             }
             else if (event.type == sf::Event::Resized)
             {
-                m_window.setView(sf::View({0, 0, (float)event.size.width, (float)event.size.height}));
+                m_window.setView(sf::View({0.f, 0.f, static_cast<float>(event.size.width), static_cast<float>(event.size.height)}));
                 m_gui.setView(m_window.getView());
             }
             else if (event.type == sf::Event::MouseButtonReleased)
@@ -402,7 +402,7 @@ void GuiBuilder::closeForm(Form* form)
             }
             else if (event.type == sf::Event::Resized)
             {
-                m_window.setView(sf::View({0, 0, (float)event.size.width, (float)event.size.height}));
+                m_window.setView(sf::View({0.f, 0.f, static_cast<float>(event.size.width), static_cast<float>(event.size.height)}));
                 m_gui.setView(m_window.getView());
             }
 

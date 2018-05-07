@@ -51,7 +51,7 @@ int main()
 
         auto menu = tgui::MenuBar::create();
         menu->setRenderer(theme.getRenderer("MenuBar"));
-        menu->setSize((float)window.getSize().x, 22.f);
+        menu->setSize(static_cast<float>(window.getSize().x), 22.f);
         menu->addMenu("File");
         menu->addMenuItem("Load");
         menu->addMenuItem("Save");

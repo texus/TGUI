@@ -45,7 +45,7 @@ struct ListBoxProperties : WidgetProperties
                 listBox->addItem(item);
         }
         else if (property == "SelectedItemIndex")
-            listBox->setSelectedItemByIndex(tgui::stoi(value));
+            listBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::stoi(value)));
         else if (property == "ItemHeight")
             listBox->setItemHeight(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "TextSize")

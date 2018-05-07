@@ -205,7 +205,7 @@ namespace tgui
         const unsigned int textSize = m_text.getCharacterSize();
         for (std::size_t i = 0; i < string.getSize(); ++i)
         {
-            const float kerning = static_cast<float>(font->getKerning(prevChar, string[i], textSize));
+            const float kerning = font->getKerning(prevChar, string[i], textSize);
             if (string[i] == '\n')
             {
                 maxWidth = std::max(maxWidth, width);

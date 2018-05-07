@@ -546,7 +546,7 @@ namespace tgui
         {
             Vector2f textTranslation = (getInnerSize() - m_textBack.getSize()) / 2.f;
 
-            if (Color(m_textBack.getColor()) == Color(m_textFront.getColor()))
+            if (m_textBack.getColor() == m_textFront.getColor())
             {
                 states.transform.translate(textTranslation);
                 m_textBack.draw(target, states);

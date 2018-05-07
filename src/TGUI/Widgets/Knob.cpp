@@ -408,7 +408,7 @@ namespace tgui
                     if (compareFloats(m_angle, m_startRotation))
                         setValue(m_minimum);
                     else
-                        setValue(static_cast<int>((((360.0 - m_angle) + m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
+                        setValue(static_cast<int>((((360.0f - m_angle) + m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
                 }
             }
             else // counter-clockwise
@@ -417,7 +417,7 @@ namespace tgui
                     setValue(static_cast<int>(((m_angle - m_startRotation) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
                 else
                 {
-                    setValue(static_cast<int>(((m_angle + (360.0 - m_startRotation)) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
+                    setValue(static_cast<int>(((m_angle + (360.0f - m_startRotation)) / allowedAngle * (m_maximum - m_minimum)) + m_minimum));
                 }
             }
         }

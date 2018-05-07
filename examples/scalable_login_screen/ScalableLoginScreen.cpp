@@ -97,7 +97,7 @@ int main()
             // When the window is resized, the view is changed
             else if (event.type == sf::Event::Resized)
             {
-                window.setView(sf::View(sf::FloatRect(0, 0, (float)event.size.width, (float)event.size.height)));
+                window.setView(sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(event.size.width), static_cast<float>(event.size.height))));
                 gui.setView(window.getView());
             }
 

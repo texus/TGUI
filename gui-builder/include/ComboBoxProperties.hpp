@@ -45,7 +45,7 @@ struct ComboBoxProperties : WidgetProperties
                 comboBox->addItem(item);
         }
         else if (property == "SelectedItemIndex")
-            comboBox->setSelectedItemByIndex(tgui::stoi(value));
+            comboBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::stoi(value)));
         else if (property == "TextSize")
             comboBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "MaximumItems")

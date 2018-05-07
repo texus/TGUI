@@ -324,7 +324,7 @@ void Form::importLoadedWidgets(tgui::Container::Ptr parent)
         {
             const std::string potentialNumber = widgetNames[i].substring(6);
             if (std::all_of(potentialNumber.begin(), potentialNumber.end(), ::isdigit))
-                m_idCounter = std::max<unsigned int>(m_idCounter, tgui::stoi(potentialNumber));
+                m_idCounter = std::max(m_idCounter, static_cast<unsigned int>(tgui::stoi(potentialNumber)));
         }
 
         if (widgets[i]->isContainer())

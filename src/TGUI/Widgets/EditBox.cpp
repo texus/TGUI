@@ -1237,7 +1237,7 @@ namespace tgui
             else
                 charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, textSize, bold).advance);
 
-            const float kerning = static_cast<float>(m_fontCached.getKerning(prevChar, curChar, textSize));
+            const float kerning = m_fontCached.getKerning(prevChar, curChar, textSize);
             if (width + charWidth < posX)
                 width += charWidth + kerning;
             else
