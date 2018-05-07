@@ -18,9 +18,8 @@ if (CMAKE_ANDROID_STL_TYPE MATCHES "_shared")
     target_compile_definitions(tgui-activity PRIVATE STL_LIBRARY=${CMAKE_ANDROID_STL_TYPE})
 endif()
 
-tgui_set_global_compile_flags(tgui-activity)
 target_compile_options(tgui-activity PRIVATE -fpermissive)
-target_link_libraries(tgui-activity PRIVATE android log)
+target_link_libraries(tgui-activity PRIVATE android log interface_warnings interface_stdlib)
 
 install(TARGETS tgui-activity
         RUNTIME DESTINATION bin COMPONENT bin

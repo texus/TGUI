@@ -140,9 +140,6 @@ else()
     set_target_properties(tgui PROPERTIES RELWITHDEBINFO_POSTFIX -s)
 endif()
 
-tgui_set_global_compile_flags(tgui)
-tgui_set_stdlib(tgui)
-
 if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
     target_compile_options(tgui PRIVATE /bigobj)
 endif()
@@ -154,6 +151,8 @@ if (TGUI_BUILD_FRAMEWORK)
 else()
     target_include_directories(tgui INTERFACE $<INSTALL_INTERFACE:include>)
 endif()
+
+target_link_libraries(tgui PRIVATE interface_warnings interface_stdlib)
 
 # Link to SFML
 if(DEFINED SFML_LIBRARIES)

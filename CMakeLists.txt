@@ -5,7 +5,7 @@ else()
 endif()
 
 # Use new RPATH behavior on macOS
-if(NOT CMAKE_VERSION VERSION_LESS 3.9)
+if(POLICY CMP0068)
     cmake_policy(SET CMP0068 NEW)
 endif()
 
@@ -122,6 +122,73 @@ if(TGUI_OS_ANDROID)
 
     # We install libs in a subdirectory named after the ABI (e.g. lib/armeabi/libtgui.so)
     set(LIB_SUFFIX "/${CMAKE_ANDROID_ARCH_ABI}")
+endif()
+
+# Set the c++ library used by all targets (not allowed through interface library apparently)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+if(TGUI_USE_CPP17)
+    set(CMAKE_CXX_STANDARD 17)
+else()
+    set(CMAKE_CXX_STANDARD 14)
+endif()
+
+# Create an interface library to pass the warnings to all targets
+add_library(interface_warnings INTERFACE)
+if(TGUI_COMPILER_MSVC)
+    target_compile_options(interface_warnings INTERFACE /W4)
+else()
+    target_compile_options(interface_warnings
+                           INTERFACE
+                           -Wall
+                           -Wextra
+                           -Wshadow
+                           -Wnon-virtual-dtor
+                           -Wold-style-cast
+                           -Wcast-align
+                           -Wunused
+                           -Woverloaded-virtual
+                           -Wpedantic
+                           -Wmisleading-indentation
+                           -Wduplicated-cond
+                           -Wduplicated-branches
+                           -Wlogical-op
+                           -Wnull-dereference
+                           -Wuseless-cast
+                           -Wdouble-promotion
+                           -Wformat=2)
+endif()
+
+# Create an interface library to pass the standard library to all targets
+add_library(interface_stdlib INTERFACE)
+
+if(TGUI_OS_MACOSX)
+    # Use libc++ on macOS
+    if(${CMAKE_GENERATOR} MATCHES "Xcode")
+        set_target_properties(interface_stdlib PROPERTY XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+    else()
+        target_compile_options(interface_stdlib INTERFACE "-stdlib=libc++")
+        target_link_libraries(interface_stdlib INTERFACE "-stdlib=libc++")
+    endif()
+endif()
+
+if(TGUI_OS_WINDOWS)
+    # Apply the TGUI_USE_STATIC_STD_LIBS option on windows
+    if(TGUI_COMPILER_GCC)
+        if(TGUI_USE_STATIC_STD_LIBS AND NOT TGUI_COMPILER_GCC_TDM)
+            target_link_libraries(interface_stdlib INTERFACE "-static-libgcc" "-static-libstdc++")
+        elseif(NOT TGUI_USE_STATIC_STD_LIBS AND TGUI_COMPILER_GCC_TDM)
+            target_link_libraries(interface_stdlib INTERFACE "-shared-libgcc" "-shared-libstdc++")
+        endif()
+    elseif(TGUI_COMPILER_MSVC AND TGUI_USE_STATIC_STD_LIBS)
+        foreach(flag
+                CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+                CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+            if(${flag} MATCHES "/MD")
+                string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
+            endif()
+        endforeach()
+    endif()
 endif()
 
 # Link SFML in the same way as TGUI, unless SFML_STATIC_LIBRARIES is manually specified

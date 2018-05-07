@@ -14,15 +14,12 @@ macro(tgui_add_example target)
     endif()
 
     add_executable(${target} ${GUI_APP} ${THIS_SOURCES})
-    target_link_libraries(${target} PRIVATE tgui)
+    target_link_libraries(${target} PRIVATE tgui interface_warnings interface_stdlib)
 
     # Link to sfml-main (only when SFMLConfig.cmake is used, this is done through the tgui target if FindSFML.cmake is used)
     if((TGUI_OS_WINDOWS OR TGUI_OS_IOS) AND NOT DEFINED SFML_LIBRARIES)
         target_link_libraries(${target} PRIVATE sfml-main)
     endif()
-
-    tgui_set_global_compile_flags(${target})
-    tgui_set_stdlib(${target})
 
     # Add the install rule for the executable
     install(TARGETS ${target}
