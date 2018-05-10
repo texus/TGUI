@@ -8,12 +8,24 @@ endmacro()
 
 # Set the compile options used by all targets
 function(tgui_set_global_compile_flags target)
-    if(TGUI_COMPILER_GCC OR TGUI_COMPILER_CLANG)
-        target_compile_options(${target} PRIVATE -Wall)
-        target_compile_options(${target} PRIVATE -Wextra)
-        target_compile_options(${target} PRIVATE -Wshadow)
-        target_compile_options(${target} PRIVATE -Wno-long-long)
-        target_compile_options(${target} PRIVATE -pedantic)
+    if(TGUI_COMPILER_MSVC)
+        target_compile_options(${target} PRIVATE /W4)
+    else()
+        target_compile_options(${target}
+                               PRIVATE
+                               -Wall
+                               -Wextra
+                               -Wshadow
+                               -Wnon-virtual-dtor
+                               -Wold-style-cast
+                               -Wcast-align
+                               -Wunused
+                               -Woverloaded-virtual
+                               -Wpedantic
+                               -Wlogical-op
+                               -Wuseless-cast
+                               -Wdouble-promotion
+                               -Wformat=2)
 
         set_target_properties(${target} PROPERTIES CXX_STANDARD_REQUIRED ON)
         set_target_properties(${target} PROPERTIES CXX_EXTENSIONS OFF)

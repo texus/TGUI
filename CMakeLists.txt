@@ -5,7 +5,7 @@ else()
 endif()
 
 # Use new RPATH behavior on macOS
-if(NOT CMAKE_VERSION VERSION_LESS 3.9)
+if(POLICY CMP0068)
     cmake_policy(SET CMP0068 NEW)
 endif()
 
