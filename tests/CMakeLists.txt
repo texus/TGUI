@@ -89,7 +89,10 @@ endif()
 
 add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(tests PRIVATE tgui interface_warnings interface_stdlib)
+target_link_libraries(tests PRIVATE tgui)
+
+tgui_set_global_compile_flags(tests)
+tgui_set_stdlib(tests)
 
 if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
     target_compile_options(tests PRIVATE /bigobj)

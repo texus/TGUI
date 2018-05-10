@@ -16,13 +16,16 @@ if(TGUI_OS_WINDOWS)
 endif()
 
 add_executable(gui-builder ${GUI_TYPE} ${GUI_BUILDER_SOURCES})
-target_link_libraries(gui-builder PRIVATE tgui interface_warnings interface_stdlib)
+target_link_libraries(gui-builder PRIVATE tgui)
 target_include_directories(gui-builder PRIVATE include)
 
 # Link to sfml-main (only when SFMLConfig.cmake is used, this is done through the tgui target if FindSFML.cmake is used)
 if(TGUI_OS_WINDOWS AND NOT DEFINED SFML_LIBRARIES)
     target_link_libraries(gui-builder PRIVATE sfml-main)
 endif()
+
+tgui_set_global_compile_flags(gui-builder)
+tgui_set_stdlib(gui-builder)
 
 # Copy the executable to the gui-builder folder
 add_custom_command(TARGET gui-builder POST_BUILD
