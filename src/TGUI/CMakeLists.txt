@@ -181,7 +181,7 @@ if(TGUI_OS_IOS)
 endif()
 
 # Hide public symbols by default (exported ones are explicitly marked)
-if(NOT SFML_OS_WINDOWS)
+if(NOT TGUI_OS_WINDOWS)
     target_compile_options(tgui PRIVATE -fvisibility=hidden)
 endif()
 

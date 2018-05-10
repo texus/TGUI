@@ -101,7 +101,7 @@ namespace tgui
             std::string word = "";
             while (stream.peek() != EOF)
             {
-                char c = stream.peek();
+                char c = static_cast<char>(stream.peek());
                 if (c == '\r')
                 {
                     stream.read(&c, 1);
@@ -174,7 +174,7 @@ namespace tgui
             bool whitespaceFound = false;
             while (stream.peek() != EOF)
             {
-                char c = stream.peek();
+                char c = static_cast<char>(stream.peek());
 
                 if (stream.peek() == '/')
                 {
@@ -234,7 +234,7 @@ namespace tgui
                     if (stream.peek() == EOF)
                         return "";
 
-                    c = stream.peek();
+                    c = static_cast<char>(stream.peek());
                 }
 
                 if ((c == '=') || (c == '{'))
@@ -352,7 +352,7 @@ namespace tgui
                     return "Found EOF while trying to read a value.";
                 else
                 {
-                    chr = stream.peek();
+                    chr = static_cast<char>(stream.peek());
                     if (chr == '=')
                         return "Found '=' while trying to read a value.";
                     else if (chr == '{')
@@ -400,7 +400,7 @@ namespace tgui
                         return "";
                     }
                     else if (stream.peek() != '{')
-                        return "Expected property or nested section name, found '" + std::string(1, stream.peek()) + "' instead.";
+                        return "Expected property or nested section name, found '" + std::string(1, static_cast<char>(stream.peek())) + "' instead.";
                 }
 
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
@@ -417,7 +417,7 @@ namespace tgui
                         return error;
                 }
                 else
-                    return "Expected '{' or '=', found '" + std::string(1, stream.peek()) + "' instead.";
+                    return "Expected '{' or '=', found '" + std::string(1, static_cast<char>(stream.peek())) + "' instead.";
             }
 
             return "Found EOF while reading section.";
@@ -434,7 +434,7 @@ namespace tgui
             {
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
                 if (stream.peek() != '{')
-                    return "Expected section name, found '" + std::string(1, stream.peek()) + "' instead.";
+                    return "Expected section name, found '" + std::string(1, static_cast<char>(stream.peek())) + "' instead.";
             }
 
             REMOVE_WHITESPACE_AND_COMMENTS(true)
@@ -443,7 +443,7 @@ namespace tgui
             else if (stream.peek() == '=')
                 return parseKeyValue(stream, root, word);
             else
-                return "Expected '{' or '=', found '" + std::string(1, stream.peek()) + "' instead.";
+                return "Expected '{' or '=', found '" + std::string(1, static_cast<char>(stream.peek())) + "' instead.";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
