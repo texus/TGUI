@@ -484,7 +484,13 @@ namespace tgui
 
     bool ListBox::mouseOnWidget(Vector2f pos) const
     {
-        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
+        {
+            if (!m_transparentTextureCached || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+                return true;
+        }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -966,7 +972,7 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Draw the background

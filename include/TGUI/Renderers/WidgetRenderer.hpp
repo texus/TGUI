@@ -145,6 +145,27 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether mouse events should be ignored on transparent parts of the texture of the widget in normal state
+        ///
+        /// @brief ignoreTransparentParts  Should mouse events on transparent texture parts be ignored?
+        ///
+        /// When mouse events are ignored, they are passed to a widget behind the widget.
+        /// By default, mouse events are NOT ignored and the widget will receive mouse events even on transparent texture parts.
+        ///
+        /// This property does nothing if the widget doesn't use textures.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTransparentTexture(bool ignoreTransparentParts);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether mouse events should be ignored on transparent parts of the texture of the widget
+        /// @return Whether mouse events on transparent texture parts are ignored
+        /// @see setTransparentTexture
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getTransparentTexture() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes a property of the renderer
         ///
         /// @param property  The property that you would like to change

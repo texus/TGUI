@@ -41,12 +41,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Picture::Picture(const Texture& texture, bool ignoreTransparentParts) :
+    Picture::Picture(const Texture& texture, bool transparentTexture) :
         Picture{}
     {
         getRenderer()->setTexture(texture);
-        if (ignoreTransparentParts)
-            getRenderer()->setIgnoreTransparentParts(ignoreTransparentParts);
+        getRenderer()->setTransparentTexture(transparentTexture);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,10 +132,7 @@ namespace tgui
         // Check if the mouse is on top of the picture
         if (!m_ignoringMouseEvents && (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos)))
         {
-            // We sometimes want clicks to go through transparent parts of the picture
-            if (!m_ignoreTransparentParts && m_sprite.isTransparentPixel(pos))
-                return false;
-            else
+            if (!m_transparentTextureCached || !m_sprite.isTransparentPixel(pos))
                 return true;
         }
 
@@ -189,10 +185,6 @@ namespace tgui
                 setSize(texture.getImageSize());
 
             m_sprite.setTexture(texture);
-        }
-        else if (property == "ignoretransparentparts")
-        {
-            m_ignoreTransparentParts = getSharedRenderer()->getIgnoreTransparentParts();
         }
         else if (property == "opacity")
         {

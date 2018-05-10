@@ -339,7 +339,21 @@ namespace tgui
         if (m_autoHide && (m_maximum <= m_viewportSize))
             return false;
 
-        return FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos);
+        pos -= getPosition();
+        if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        {
+            if (!m_transparentTextureCached)
+                return true;
+
+            if (!m_spriteArrowUp.isTransparentPixel(pos))
+                return true;
+            if (!m_spriteArrowDown.isTransparentPixel(pos - m_arrowDown.getPosition()))
+                return true;
+            if (!m_spriteTrack.isTransparentPixel(pos - m_track.getPosition()))
+                return true;
+        }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -357,7 +371,7 @@ namespace tgui
             if (getSize().y > m_arrowUp.height + m_arrowDown.height)
             {
                 // Check if you clicked on one of the arrows
-                if ((pos.y < m_arrowUp.height) || (pos.y > getSize().y - m_arrowUp.height))
+                if ((pos.y < m_arrowUp.height) || (pos.y >= getSize().y - m_arrowUp.height))
                     m_mouseDownOnArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
@@ -369,7 +383,7 @@ namespace tgui
             if (getSize().x > m_arrowUp.height + m_arrowDown.height)
             {
                 // Check if you clicked on one of the arrows
-                if ((pos.x < m_arrowUp.height) || (pos.x > getSize().x - m_arrowUp.height))
+                if ((pos.x < m_arrowUp.height) || (pos.x >= getSize().x - m_arrowUp.height))
                     m_mouseDownOnArrow = true;
             }
             else // The arrows are not drawn at full size (there is no track)
@@ -418,7 +432,7 @@ namespace tgui
                             valueDown = true;
 
                         // Check if you clicked the down arrow
-                        else if (pos.y > getSize().y - m_arrowUp.height)
+                        else if (pos.y >= getSize().y - m_arrowUp.height)
                             valueUp = true;
                     }
                     else // The arrows are not drawn at full size
@@ -440,7 +454,7 @@ namespace tgui
                             valueDown = true;
 
                         // Check if you clicked the down arrow
-                        else if (pos.x > getSize().x - m_arrowUp.height)
+                        else if (pos.x >= getSize().x - m_arrowUp.height)
                             valueUp = true;
                     }
                     else // The arrows are not drawn at full size
@@ -533,10 +547,10 @@ namespace tgui
                 else // The click occurred on the track
                 {
                     // If the position is positive then calculate the correct value
-                    if (pos.y > m_arrowUp.height)
+                    if (pos.y >= m_arrowUp.height)
                     {
                         // Make sure that you did not click on the down arrow
-                        if (pos.y <= getSize().y - m_arrowUp.height)
+                        if (pos.y < getSize().y - m_arrowUp.height)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
                             const float value = (((pos.y - m_arrowUp.height) / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum);
@@ -600,10 +614,10 @@ namespace tgui
                 else // The click occurred on the track
                 {
                     // If the position is positive then calculate the correct value
-                    if (pos.x > m_arrowUp.width)
+                    if (pos.x >= m_arrowUp.width)
                     {
                         // Make sure that you did not click on the down arrow
-                        if (pos.x <= getSize().x - m_arrowUp.width)
+                        if (pos.x < getSize().x - m_arrowUp.width)
                         {
                             // Calculate the exact position (a number between 0 and maximum)
                             const float value = (((pos.x - m_arrowUp.width) / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum);
@@ -873,7 +887,7 @@ namespace tgui
         }
 
         // Draw the track
-        states.transform.translate({m_track.left, m_track.top});
+        states.transform.translate(m_track.getPosition());
         if (textured)
         {
             if (m_mouseHover && m_spriteTrackHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::Track))
@@ -888,10 +902,10 @@ namespace tgui
             else
                 drawRectangleShape(target, states, {m_track.width, m_track.height}, m_trackColorCached);
         }
-        states.transform.translate({-m_track.left, -m_track.top});
+        states.transform.translate(-m_track.getPosition());
 
         // Draw the thumb
-        states.transform.translate({m_thumb.left, m_thumb.top});
+        states.transform.translate(m_thumb.getPosition());
         if (textured)
         {
             if (m_mouseHover && m_spriteThumbHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::Thumb))
@@ -906,10 +920,10 @@ namespace tgui
             else
                 drawRectangleShape(target, states, {m_thumb.width, m_thumb.height}, m_thumbColorCached);
         }
-        states.transform.translate({-m_thumb.left, -m_thumb.top});
+        states.transform.translate(-m_thumb.getPosition());
 
         // Draw arrow down/right
-        states.transform.translate({m_arrowDown.left, m_arrowDown.top});
+        states.transform.translate(m_arrowDown.getPosition());
         if (textured)
         {
             if (m_mouseHover && m_spriteArrowDownHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown))

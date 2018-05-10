@@ -127,26 +127,22 @@ TEST_CASE("[Picture]")
         SECTION("set serialized property")
         {
             REQUIRE_NOTHROW(renderer->setProperty("Texture", tgui::Serializer::serialize(texture)));
-            REQUIRE_NOTHROW(renderer->setProperty("IgnoreTransparentParts", "true"));
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", "0.8"));
         }
 
         SECTION("set object property")
         {
             REQUIRE_NOTHROW(renderer->setProperty("Texture", texture));
-            REQUIRE_NOTHROW(renderer->setProperty("IgnoreTransparentParts", true));
             REQUIRE_NOTHROW(renderer->setProperty("Opacity", 0.8f));
         }
 
         SECTION("functions")
         {
             renderer->setTexture(texture);
-            renderer->setIgnoreTransparentParts(true);
             renderer->setOpacity(0.8f);
         }
 
         REQUIRE(renderer->getTexture().getData() == texture.getData());
-        REQUIRE(renderer->getProperty("IgnoreTransparentParts").getBool());
         REQUIRE(renderer->getProperty("Opacity").getNumber() == 0.8f);
         REQUIRE(renderer->getOpacity() == 0.8f);
 
@@ -167,7 +163,6 @@ TEST_CASE("[Picture]")
         TEST_DRAW_INIT(60, 40, picture)
 
         picture->getRenderer()->setTexture("resources/image.png");
-        picture->getRenderer()->setIgnoreTransparentParts(true);
 
         picture->setPosition(10, 5);
         picture->setSize(40, 30);

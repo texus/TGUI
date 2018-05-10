@@ -48,7 +48,6 @@ struct PictureProperties : WidgetProperties
 
         const auto renderer = picture->getSharedRenderer();
         pair.second["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};
-        pair.second["IgnoreTransparentParts"] = {"Bool", tgui::Serializer::serialize(renderer->getIgnoreTransparentParts())};
         return pair;
     }
 };

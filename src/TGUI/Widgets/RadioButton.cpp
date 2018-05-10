@@ -224,7 +224,11 @@ namespace tgui
         {
             // Check if the mouse is on top of the image
             if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
-                return true;
+            {
+                if (!m_transparentTextureCached || !m_spriteUnchecked.isSet() || !m_spriteChecked.isSet()
+                 || !m_spriteUnchecked.isTransparentPixel(pos - m_bordersCached.getOffset()))
+                    return true;
+            }
         }
 
         return false;
@@ -659,7 +663,7 @@ namespace tgui
         }
 
         // Draw the box
-        states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getLeft()});
+        states.transform.translate(m_bordersCached.getOffset());
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet())
         {
             if (m_checked)

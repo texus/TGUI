@@ -144,7 +144,7 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Check if there is a background texture

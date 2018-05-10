@@ -347,13 +347,22 @@ namespace tgui
 
         // Check if the mouse is on top of the thumbs
         if (FloatRect(m_thumbs.second.left, m_thumbs.second.top, m_thumbs.second.width, m_thumbs.second.height).contains(pos))
-            return true;
+        {
+            if (!m_transparentTextureCached || !m_spriteThumb.isTransparentPixel(pos - m_thumbs.first.getPosition()))
+                return true;
+        }
         if (FloatRect(m_thumbs.first.left, m_thumbs.first.top, m_thumbs.first.width, m_thumbs.first.height).contains(pos))
-            return true;
+        {
+            if (!m_transparentTextureCached || !m_spriteThumb.isTransparentPixel(pos - m_thumbs.second.getPosition()))
+                return true;
+        }
 
         // Check if the mouse is on top of the track
         if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
-            return true;
+        {
+            if (!m_transparentTextureCached || !m_spriteTrack.isTransparentPixel(pos - m_bordersCached.getOffset()))
+                return true;
+        }
 
         return false;
     }
@@ -639,7 +648,7 @@ namespace tgui
             else
                 drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
 
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Draw the track

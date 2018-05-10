@@ -35,6 +35,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace
+{
+    const float pi = 3.14159265358979f;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace tgui
 {
     void Sprite::setTexture(const Texture& texture)
@@ -141,10 +148,19 @@ namespace tgui
     bool Sprite::isTransparentPixel(Vector2f pos) const
     {
         if (!isSet() || !m_texture.getData()->image || (m_size.x == 0) || (m_size.y == 0))
-            return false;
+            return true;
 
-        pos -= getPosition();
-        assert((pos.x >= 0) && (pos.y >= 0) && (pos.x < getSize().x) && (pos.y < getSize().y));
+        pos = getInverseTransform().transformPoint(pos);
+        if (getRotation() != 0)
+        {
+            Vector2f pos2 = {getTransform().transformRect(FloatRect({}, getSize())).left,
+                             getTransform().transformRect(FloatRect({}, getSize())).top};
+
+            pos += getInverseTransform().transformPoint(pos2 - getPosition());
+        }
+
+        if ((pos.x < 0) || (pos.y < 0) || (pos.x >= getSize().x) || (pos.y >= getSize().y))
+            return true;
 
         // Find out on which pixel the mouse is standing
         sf::Vector2u pixel;
@@ -377,7 +393,7 @@ namespace tgui
         if (getRotation() != 0)
         {
             Vector2f pos = {getTransform().transformRect(FloatRect({}, getSize())).left,
-                           getTransform().transformRect(FloatRect({}, getSize())).top};
+                            getTransform().transformRect(FloatRect({}, getSize())).top};
 
             states.transform.translate(getPosition() - pos);
         }

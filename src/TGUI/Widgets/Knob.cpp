@@ -275,7 +275,7 @@ namespace tgui
             if (m_spriteBackground.isSet() && m_spriteForeground.isSet())
             {
                 // Only return true when the pixel under the mouse isn't transparent
-                if (!m_spriteBackground.isTransparentPixel(pos))
+                if (!m_spriteBackground.isTransparentPixel(pos - m_bordersCached.getOffset()))
                     return true;
             }
             else // There is no texture, the widget has a circle shape

@@ -508,7 +508,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
-        ///
         /// @return Is the mouse on top of the widget?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         virtual bool mouseOnWidget(Vector2f pos) const = 0;
@@ -811,6 +810,7 @@ namespace tgui
         // Cached renderer properties
         Font  m_fontCached = getGlobalFont();
         float m_opacityCached = 1;
+        bool m_transparentTextureCached = false;
 
     #ifdef TGUI_USE_CPP17
         std::any m_userData;

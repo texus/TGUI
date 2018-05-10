@@ -194,6 +194,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Button::mouseOnWidget(Vector2f pos) const
+    {
+        if (ClickableWidget::mouseOnWidget(pos))
+        {
+            if (!m_transparentTextureCached || !m_sprite.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+                return true;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Button::leftMousePressed(Vector2f pos)
     {
         ClickableWidget::leftMousePressed(pos);
@@ -472,7 +485,7 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), getCurrentBorderColor());
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Check if there is a background texture

@@ -30,9 +30,11 @@
 
 namespace tgui
 {
-    TGUI_RENDERER_PROPERTY_GET_NUMBER(WidgetRenderer, Opacity, 1)
+    TGUI_RENDERER_PROPERTY_BOOL(WidgetRenderer, TransparentTexture, false)
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_RENDERER_PROPERTY_GET_NUMBER(WidgetRenderer, Opacity, 1)
 
     void WidgetRenderer::setOpacity(float opacity)
     {

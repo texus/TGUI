@@ -469,6 +469,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool EditBox::mouseOnWidget(Vector2f pos) const
+    {
+        if (ClickableWidget::mouseOnWidget(pos))
+        {
+            if (!m_transparentTextureCached || !m_sprite.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+                return true;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
@@ -1464,7 +1477,7 @@ namespace tgui
             else
                 drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
 
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Draw the background

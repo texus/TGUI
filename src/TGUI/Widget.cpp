@@ -831,6 +831,10 @@ namespace tgui
             else
                 m_fontCached = getGlobalFont();
         }
+        else if (property == "transparenttexture")
+        {
+            m_transparentTextureCached = getSharedRenderer()->getTransparentTexture();
+        }
         else
             throw Exception{"Could not set property '" + property + "', widget of type '" + getWidgetType() + "' does not has this property."};
     }

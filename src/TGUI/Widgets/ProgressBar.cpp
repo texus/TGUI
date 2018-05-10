@@ -276,6 +276,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ProgressBar::mouseOnWidget(Vector2f pos) const
+    {
+        if (ClickableWidget::mouseOnWidget(pos))
+        {
+            if (!m_transparentTextureCached || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+                return true;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Signal& ProgressBar::getSignal(std::string signalName)
     {
         if (signalName == toLower(onValueChange.getName()))
@@ -502,7 +515,7 @@ namespace tgui
         if (m_bordersCached != Borders{0})
         {
             drawBorders(target, states, m_bordersCached, getSize(), m_borderColorCached);
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            states.transform.translate(m_bordersCached.getOffset());
         }
 
         // Draw the background

@@ -55,29 +55,18 @@ namespace tgui
         /// @brief Constructor to create the picture from a texture
         ///
         /// @param texture  The texture to load the picture from
-        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
-        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
-        ///
-        /// @code
-        /// Picture picture1("image.png");
-        ///
-        /// Picture picture2({"image.png", {20, 15, 60, 40}}); // Only load the part of the image from (20,15) to (80,55)
-        ///
-        /// sf::Texture texture;
-        /// texture.loadFromFile("image.png", {20, 15, 60, 40});
-        /// Picture picture3(texture);
-        /// @endcode
-        ///
+        /// @param transparentTexture  Are there transparent parts in the texture where the mouse events should be passed
+        ///                            to the widget behind the picture?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Picture(const Texture& texture, bool fullyClickable = true);
+        Picture(const Texture& texture, bool transparentTexture = false);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new picture widget
         ///
         /// @param texture  The texture to load the picture from
-        /// @param fullyClickable This affects what happens when clicking on a transparent pixel in the image.
-        ///                       Is the click caught by the picture, or does the event pass to the widgets behind it?
+        /// @param transparentTexture  Are there transparent parts in the texture where the mouse events should be passed to
+        ///                            the widget behind the picture?
         ///
         /// @return The new picture
         ///
@@ -90,9 +79,8 @@ namespace tgui
         /// texture.loadFromFile("image.png", {20, 15, 60, 40});
         /// auto picture3 = Picture::create(texture);
         /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static Picture::Ptr create(const Texture& texture = {}, bool fullyClickable = true);
+        static Picture::Ptr create(const Texture& texture = {}, bool transparentTexture = false);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,9 +240,6 @@ namespace tgui
         Sprite  m_sprite;
 
         bool m_ignoringMouseEvents = false;
-
-        // Set to true when clicks on transparent parts of the picture should go to the widgets behind the picture
-        bool m_ignoreTransparentParts = true;
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
