@@ -477,10 +477,6 @@ namespace tgui
         }
         else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
         {
-            // The mouse went down on the title bar
-            m_mouseDownOnTitleBar = true;
-            m_draggingPosition = pos;
-
             // Send the mouse press event to the title buttons
             for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
@@ -490,6 +486,10 @@ namespace tgui
                     return;
                 }
             }
+
+            // The mouse went down on the title bar
+            m_mouseDownOnTitleBar = true;
+            m_draggingPosition = pos;
         }
     }
 
