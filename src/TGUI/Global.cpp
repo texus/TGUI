@@ -41,7 +41,7 @@ namespace tgui
         unsigned int globalTextSize = 13;
         unsigned int globalDoubleClickTime = 500;
         std::string globalResourcePath = "";
-        Font globalFont = nullptr;
+        std::shared_ptr<sf::Font> globalFont = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,24 +60,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void setGlobalFont(Font font)
+    void setGlobalFont(const Font& font)
     {
-        globalFont = std::move(font);
+        globalFont = font.getFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const Font& getGlobalFont()
+    Font getGlobalFont()
     {
         if (!globalFont)
-            setGlobalFont({defaultFontBytes, sizeof(defaultFontBytes)});
+        {
+            globalFont = std::make_shared<sf::Font>();
+            globalFont->loadFromMemory(defaultFontBytes, sizeof(defaultFontBytes));
+        }
 
         return globalFont;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const Font& getInternalGlobalFont()
+    const std::shared_ptr<sf::Font>& getInternalGlobalFont()
     {
         return globalFont;
     }

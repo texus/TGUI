@@ -27,6 +27,7 @@
 #include <TGUI/Loading/Deserializer.hpp>
 
 #include <cassert>
+#include <iostream>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,10 +78,44 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Font& Font::operator=(const Font& other)
+    {
+        if (this != &other)
+        {
+            // If this was the last instance that shares the global font then also destroy the global font
+            if (m_font && (m_font == getInternalGlobalFont()) && (m_font.use_count() == 2))
+                setGlobalFont(nullptr);
+
+            m_font = other.m_font;
+            m_id = other.m_id;
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Font& Font::operator=(Font&& other)
+    {
+        if (this != &other)
+        {
+            // If this was the last instance that shares the global font then also destroy the global font
+            if (m_font && (m_font == getInternalGlobalFont()) && (m_font.use_count() == 2))
+                setGlobalFont(nullptr);
+
+            m_font = std::move(other.m_font);
+            m_id = std::move(other.m_id);
+        }
+
+        return *this;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Font::~Font()
     {
         // If this is the last instance that shares the global font then also destroy the global font
-        if ((*this == getInternalGlobalFont()) && (m_font.use_count() == 2))
+        if (m_font && (m_font == getInternalGlobalFont()) && (m_font.use_count() == 2))
             setGlobalFont(nullptr);
     }
 
