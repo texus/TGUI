@@ -62,6 +62,9 @@ ChildWindow.PropertiesWindow {
     ScrollablePanel.Properties {
         Position = (10, 10 + 24 + 10);
         Size = ("&.w - x - 5", "&.h - y - 10");
+        Renderer {
+            backgroundcolor = #E6E6E6;
+        }
     }
 }
 
@@ -84,6 +87,9 @@ ChildWindow.ToolboxWindow {
 
     ScrollablePanel.Widgets {
         Size = (100%, 100%);
+        Renderer {
+            backgroundcolor = #E6E6E6;
+        }
     }
 }
 
