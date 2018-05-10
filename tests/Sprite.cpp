@@ -107,7 +107,7 @@ TEST_CASE("[Sprite]")
         SECTION("Invalid image")
         {
             tgui::Sprite unloadedSprite;
-            REQUIRE(unloadedSprite.isTransparentPixel({0, 0}) == false);
+            REQUIRE(unloadedSprite.isTransparentPixel({0, 0}) == true);
         }
 
         SECTION("Normal Scaling")
