@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8-dev</span>
+   &#160;<span id="projectnumber">0.8-alpha</span>
    </div>
   </td>
  </tr>
@@ -179,12 +179,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aaad12f6a53e402ef39e5167a6e21fcdd"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#aaad12f6a53e402ef39e5167a6e21fcdd">getValue</a> () const</td></tr>
 <tr class="memdesc:aaad12f6a53e402ef39e5167a6e21fcdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current value.  <a href="#aaad12f6a53e402ef39e5167a6e21fcdd">More...</a><br /></td></tr>
 <tr class="separator:aaad12f6a53e402ef39e5167a6e21fcdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5b746dbf436a2676892c61a33441938"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#ae5b746dbf436a2676892c61a33441938">setLowValue</a> (unsigned int lowValue)</td></tr>
-<tr class="memdesc:ae5b746dbf436a2676892c61a33441938"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the 'low value'.  <a href="#ae5b746dbf436a2676892c61a33441938">More...</a><br /></td></tr>
-<tr class="separator:ae5b746dbf436a2676892c61a33441938"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58f7b7ffe666c25a098daf061d181634"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a58f7b7ffe666c25a098daf061d181634">getLowValue</a> () const</td></tr>
-<tr class="memdesc:a58f7b7ffe666c25a098daf061d181634"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the low value.  <a href="#a58f7b7ffe666c25a098daf061d181634">More...</a><br /></td></tr>
-<tr class="separator:a58f7b7ffe666c25a098daf061d181634"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a525fca528387a3c757015ac741fb32b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a525fca528387a3c757015ac741fb32b3">setViewportSize</a> (unsigned int viewport)</td></tr>
+<tr class="memdesc:a525fca528387a3c757015ac741fb32b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the viewport size.  <a href="#a525fca528387a3c757015ac741fb32b3">More...</a><br /></td></tr>
+<tr class="separator:a525fca528387a3c757015ac741fb32b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a897a0f422222a96933be67743a5d8ee7"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a897a0f422222a96933be67743a5d8ee7">getViewportSize</a> () const</td></tr>
+<tr class="memdesc:a897a0f422222a96933be67743a5d8ee7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the viewport size.  <a href="#a897a0f422222a96933be67743a5d8ee7">More...</a><br /></td></tr>
+<tr class="separator:a897a0f422222a96933be67743a5d8ee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac522dd8f1738d1a4ca27035b868a86f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#ac522dd8f1738d1a4ca27035b868a86f2">setScrollAmount</a> (unsigned int scrollAmount)</td></tr>
 <tr class="memdesc:ac522dd8f1738d1a4ca27035b868a86f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes how much the value changes when scrolling or pressing one of the arrows of the scrollbar.  <a href="#ac522dd8f1738d1a4ca27035b868a86f2">More...</a><br /></td></tr>
 <tr class="separator:ac522dd8f1738d1a4ca27035b868a86f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -602,27 +602,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </div><div class="memdoc">
 
 <p>Returns whether the scrollbar is hiding automatically or not. </p>
-<p>When true (default), the scrollbar will not be drawn when the maximum is smaller than the low value. So when you can't scroll, the scrollbar won't be drawn. </p>
-
-</div>
-</div>
-<a id="a58f7b7ffe666c25a098daf061d181634"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58f7b7ffe666c25a098daf061d181634">&#9670;&nbsp;</a></span>getLowValue()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned int tgui::Scrollbar::getLowValue </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns the low value. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Scrollbar.html#ae5b746dbf436a2676892c61a33441938" title="Changes the &#39;low value&#39;. ">setLowValue</a> </dd></dl>
+<p>When true (default), the scrollbar will not be drawn when the maximum is smaller than the viewportSize. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Scrollbar.html#a525fca528387a3c757015ac741fb32b3" title="Changes the viewport size. ">setViewportSize</a> </dd></dl>
 
 </div>
 </div>
@@ -772,6 +752,26 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="a897a0f422222a96933be67743a5d8ee7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a897a0f422222a96933be67743a5d8ee7">&#9670;&nbsp;</a></span>getViewportSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int tgui::Scrollbar::getViewportSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the viewport size. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Scrollbar.html#a525fca528387a3c757015ac741fb32b3" title="Changes the viewport size. ">setViewportSize</a> </dd></dl>
+
+</div>
+</div>
 <a id="a3b8cfc380d5551a4ce1ce9b1c3282233"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3b8cfc380d5551a4ce1ce9b1c3282233">&#9670;&nbsp;</a></span>mouseOnWidget()</h2>
 
@@ -856,40 +856,13 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </div><div class="memdoc">
 
 <p>Changes whether the scrollbar should hide automatically or not. </p>
-<p>When true (default), the scrollbar will not be drawn when the maximum is smaller than the low value.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">autoHide</td><td>Should the scrollbar be invisible when you can't scroll? </td></tr>
+    <tr><td class="paramname">autoHide</td><td>Should the scrollbar be invisible when you can't scroll?</td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="ae5b746dbf436a2676892c61a33441938"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5b746dbf436a2676892c61a33441938">&#9670;&nbsp;</a></span>setLowValue()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tgui::Scrollbar::setLowValue </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>lowValue</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Changes the 'low value'. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">lowValue</td><td>The new low value. In e.g. a list box, this value is the amount of items that fit inside the list box</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Until the maximum is bigger than this value, no scrollbar will be drawn. You can however choose to always draw the scrollbar by calling setAutoHide(false). The default low value is 6. </p>
+<p>When true (default), the scrollbar will not be drawn when the maximum is smaller than the viewportSize. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Scrollbar.html#a525fca528387a3c757015ac741fb32b3" title="Changes the viewport size. ">setViewportSize</a> </dd></dl>
 
 </div>
 </div>
@@ -916,7 +889,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   </table>
   </dd>
 </dl>
-<p>When the value is bigger than (maximum - low value), the value is set to maximum - low value. The default maximum value is 10. </p>
+<p>When the value is bigger than (maximum - viewportSize), the value is set to maximum - viewportSize. The default maximum value is 10. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Scrollbar.html#a525fca528387a3c757015ac741fb32b3" title="Changes the viewport size. ">setViewportSize</a> </dd></dl>
 
 </div>
 </div>
@@ -1059,7 +1032,35 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   </table>
   </dd>
 </dl>
-<p>The value has to be smaller than maximum - low value. </p>
+<p>The value has to be smaller than maximum - viewportSize. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="classtgui_1_1Scrollbar.html#a525fca528387a3c757015ac741fb32b3" title="Changes the viewport size. ">setViewportSize</a> </dd></dl>
+
+</div>
+</div>
+<a id="a525fca528387a3c757015ac741fb32b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a525fca528387a3c757015ac741fb32b3">&#9670;&nbsp;</a></span>setViewportSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Scrollbar::setViewportSize </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>viewport</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the viewport size. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">viewport</td><td>The new viewport size</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>If the contents through which the scrollbar can scroll is 600 pixels of which only 200 pixels are visible on the screen then the viewport size should be set to 200 and the maximum should be set to 600. The thumb will occupy one third of the scrollbar track in this case. The possible scrollbar values are in the range [0, 400] in this case.</p>
+<p>Until the maximum is bigger than this value, no scrollbar will be drawn. You can however choose to always draw the scrollbar by calling setAutoHide(false). </p>
 
 </div>
 </div>
@@ -1070,7 +1071,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 18 2018 22:26:43 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 11 2018 12:50:27 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

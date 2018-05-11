@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8-dev</span>
+   &#160;<span id="projectnumber">0.8-alpha</span>
    </div>
   </td>
  </tr>
@@ -127,7 +127,7 @@ $(function() {
   <tr><td class="entry"><a class="el" href="classtgui_1_1Picture.html#a4f3022e53031b876ee3bafc2cb917bb5">ConstPtr</a> typedef</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Picture.html#ae0eff99b9f930644d58a153edabb3fe9">copy</a>(Picture::ConstPtr picture)</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1ClickableWidget.html#acf51f403be363152eb0147acbaee9b2a">tgui::ClickableWidget::copy</a>(ClickableWidget::ConstPtr widget)</td><td class="entry"><a class="el" href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Picture.html#af97a95e13742861dbc9c02df470d2cfc">create</a>(const Texture &amp;texture={}, bool fullyClickable=true)</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Picture.html#a34958e0ce0a39f548e64f495090812ac">create</a>(const Texture &amp;texture={}, bool transparentTexture=false)</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1ClickableWidget.html#a0a830333cb6928cc008677741c21cb91">tgui::ClickableWidget::create</a>(Layout2d size={&quot;100%&quot;, &quot;100%&quot;})</td><td class="entry"><a class="el" href="classtgui_1_1ClickableWidget.html">tgui::ClickableWidget</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#a5ae12452f9d10e14abe05b9bc9b23ed5">disconnect</a>(unsigned int id)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html#ae40ed93989b2b60c2bf41277798c7ca8">disconnectAll</a>(std::string signalName)</td><td class="entry"><a class="el" href="classtgui_1_1SignalWidgetBase.html">tgui::SignalWidgetBase</a></td><td class="entry"></td></tr>
@@ -173,7 +173,7 @@ $(function() {
   <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a8583ff10b8fe12e7133fa589b6461ab9">operator=</a>(const Widget &amp;)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a217c21ca886ee65712bfd9312bca5be1">operator=</a>(Widget &amp;&amp;)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Picture.html#a18ff70cd002e0e437a8d8d0199dcea61">Picture</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Picture.html#ad6b5e104fa10a5622ced2a93bf9a4516">Picture</a>(const Texture &amp;texture, bool fullyClickable=true)</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Picture.html#a99510676afb08f24527971a517cc86f1">Picture</a>(const Texture &amp;texture, bool transparentTexture=false)</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Picture.html#a60a2176f42504c8afc34e278b39d781b">Ptr</a> typedef</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Picture.html#a098801aa9e3d3799e4a7a1bba972d6ce">rendererChanged</a>(const std::string &amp;property) override</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">virtual</span></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Picture.html#a94ae7a6fecd7bc17c3cbc2496ec8343f">save</a>(SavingRenderersMap &amp;renderers) const override</td><td class="entry"><a class="el" href="classtgui_1_1Picture.html">tgui::Picture</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">virtual</span></td></tr>
@@ -200,7 +200,7 @@ $(function() {
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 18 2018 22:26:43 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 11 2018 12:50:27 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

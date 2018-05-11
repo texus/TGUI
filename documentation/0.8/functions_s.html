@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8-dev</span>
+   &#160;<span id="projectnumber">0.8-alpha</span>
    </div>
   </td>
  </tr>
@@ -238,6 +238,12 @@ $(function() {
 , <a class="el" href="classtgui_1_1RadioButtonRenderer.html#a8ddd120df700a16393c3d26cb3f5a8d4">tgui::RadioButtonRenderer</a>
 , <a class="el" href="classtgui_1_1SpinButtonRenderer.html#abae6154551ef8304c0ae42b7a4b98a4b">tgui::SpinButtonRenderer</a>
 , <a class="el" href="classtgui_1_1TabsRenderer.html#a243f211e0baa41b683c55d6ecb71d5fa">tgui::TabsRenderer</a>
+</li>
+<li>setBorderBelowTitleBar()
+: <a class="el" href="classtgui_1_1ChildWindowRenderer.html#aebac2c3c5e7ae11789fe24deef0ab93c">tgui::ChildWindowRenderer</a>
+</li>
+<li>setBorderBetweenArrows()
+: <a class="el" href="classtgui_1_1SpinButtonRenderer.html#a3b831ace2270bcb4661809c4491c11ba">tgui::SpinButtonRenderer</a>
 </li>
 <li>setBorderColor()
 : <a class="el" href="classtgui_1_1ButtonRenderer.html#a51d37ce85098fcc63e63b3000fe91c64">tgui::ButtonRenderer</a>
@@ -418,9 +424,6 @@ $(function() {
 <li>setHorizontalScrollbarPolicy()
 : <a class="el" href="classtgui_1_1ScrollablePanel.html#abadda508ef17a21912262686df142d40">tgui::ScrollablePanel</a>
 </li>
-<li>setIgnoreTransparentParts()
-: <a class="el" href="classtgui_1_1PictureRenderer.html#aa9540a209b94e02396171629d5ba8656">tgui::PictureRenderer</a>
-</li>
 <li>setImage()
 : <a class="el" href="classtgui_1_1BitmapButton.html#ab598172b43ad491bb763430188a0fc07">tgui::BitmapButton</a>
 </li>
@@ -466,9 +469,6 @@ $(function() {
 <li>setListBox()
 : <a class="el" href="classtgui_1_1ComboBoxRenderer.html#a0412836378de39ada06a858ceaee714a">tgui::ComboBoxRenderer</a>
 </li>
-<li>setLowValue()
-: <a class="el" href="classtgui_1_1Scrollbar.html#ae5b746dbf436a2676892c61a33441938">tgui::Scrollbar</a>
-</li>
 <li>setMaximizeButton()
 : <a class="el" href="classtgui_1_1ChildWindowRenderer.html#aa0873d6f3ec476badac6af076adf735c">tgui::ChildWindowRenderer</a>
 </li>
@@ -506,6 +506,9 @@ $(function() {
 , <a class="el" href="classtgui_1_1RangeSlider.html#a58a152ddb9a0815da656d8acd5f0333e">tgui::RangeSlider</a>
 , <a class="el" href="classtgui_1_1Slider.html#a8ead3a7b718e7f0085acc35f2d22ecc1">tgui::Slider</a>
 , <a class="el" href="classtgui_1_1SpinButton.html#aa018a353ac4cd65de0d92d8d0c792619">tgui::SpinButton</a>
+</li>
+<li>setMinimumResizableBorderWidth()
+: <a class="el" href="classtgui_1_1ChildWindowRenderer.html#a60603235e3d014e8f172f9c05358ca1e">tgui::ChildWindowRenderer</a>
 </li>
 <li>setMinimumSize()
 : <a class="el" href="classtgui_1_1ChildWindow.html#a76047b773a1fe8998a3380c7699bf882">tgui::ChildWindow</a>
@@ -663,9 +666,6 @@ $(function() {
 </li>
 <li>setSmooth()
 : <a class="el" href="classtgui_1_1Texture.html#a955bff3e4065fa08d44be9965412ff27">tgui::Texture</a>
-</li>
-<li>setSpaceBetweenArrows()
-: <a class="el" href="classtgui_1_1SpinButtonRenderer.html#ac743c5a2cdd948aedf9fa73c6bdccff6">tgui::SpinButtonRenderer</a>
 </li>
 <li>setSpaceBetweenWidgets()
 : <a class="el" href="classtgui_1_1BoxLayoutRenderer.html#a176aa05be7a00cc5059239a474bd276b">tgui::BoxLayoutRenderer</a>
@@ -961,6 +961,9 @@ $(function() {
 : <a class="el" href="classtgui_1_1ScrollbarRenderer.html#a48fb1332c1682bf186665781bc3e2e92">tgui::ScrollbarRenderer</a>
 , <a class="el" href="classtgui_1_1SliderRenderer.html#acc8c6d2f5b6b1b1222186478517468b7">tgui::SliderRenderer</a>
 </li>
+<li>setTransparentTexture()
+: <a class="el" href="classtgui_1_1WidgetRenderer.html#ad7fa7d87be82dbe104c4f043bce32528">tgui::WidgetRenderer</a>
+</li>
 <li>setUserData()
 : <a class="el" href="classtgui_1_1Widget.html#abe6177d362fda7e17d9c7b996f857589">tgui::Widget</a>
 </li>
@@ -983,6 +986,9 @@ $(function() {
 <li>setView()
 : <a class="el" href="classtgui_1_1Gui.html#ac7ed139560029cc70925480927f88080">tgui::Gui</a>
 </li>
+<li>setViewportSize()
+: <a class="el" href="classtgui_1_1Scrollbar.html#a525fca528387a3c757015ac741fb32b3">tgui::Scrollbar</a>
+</li>
 <li>setVisible()
 : <a class="el" href="classtgui_1_1Widget.html#acfb6526cef6006135d3c8a400573b099">tgui::Widget</a>
 </li>
@@ -993,7 +999,7 @@ $(function() {
 : <a class="el" href="classtgui_1_1Grid.html#afa14f568c3bf8fb9d158d66848adec39">tgui::Grid</a>
 </li>
 <li>setWidgetBorders()
-: <a class="el" href="classtgui_1_1Grid.html#ae567093dd02722aec752b65baee6b751">tgui::Grid</a>
+: <a class="el" href="classtgui_1_1Grid.html#acdcec25aea98f5803e5270d282ab3c67">tgui::Grid</a>
 </li>
 <li>setWidgetName()
 : <a class="el" href="classtgui_1_1Container.html#a1df09925591bb67f1ce3a73ec1aa1285">tgui::Container</a>
@@ -1003,7 +1009,7 @@ $(function() {
 : <a class="el" href="classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b">tgui::Widget</a>
 </li>
 <li>Signal()
-: <a class="el" href="classtgui_1_1Signal.html#a2533de4f7124de8b8ae4644dad19717f">tgui::Signal</a>
+: <a class="el" href="classtgui_1_1Signal.html#afa1b84b35c33318e5b6082704a63a864">tgui::Signal</a>
 </li>
 <li>SignalChildWindow()
 : <a class="el" href="classtgui_1_1SignalChildWindow.html#a5fdab32a0a953f66425efbe7e76a65c7">tgui::SignalChildWindow</a>
@@ -1025,7 +1031,7 @@ $(function() {
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 18 2018 22:26:43 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 11 2018 12:50:27 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>
