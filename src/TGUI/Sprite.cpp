@@ -158,7 +158,7 @@ namespace tgui
             pos = getInverseTransform().transformPoint(pos) + getInverseTransform().transformPoint(offset);
 
             // Watch out for rounding errors
-            const float epsilon = 0.00001;
+            const float epsilon = 0.00001f;
             if ((pos.x < 0) && (pos.x > -epsilon))
                 pos.x = 0;
             if ((pos.y < 0) && (pos.y > -epsilon))

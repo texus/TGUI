@@ -75,7 +75,7 @@ namespace tgui
         ///
         /// @return Shared renderer data
         ///
-        /// @throw
+        /// @throw Exception if theme loader fails to load the requested renderer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::shared_ptr<RendererData> getRenderer(const std::string& id);
 
