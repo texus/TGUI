@@ -124,14 +124,18 @@ namespace tgui
             #if defined TGUI_USE_CPP17
                 return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
                     std::invoke(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
+                                args...,
+                                widget,
+                                signalName,
+                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
             #else
-                return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
+                return [=,o=offset](const std::shared_ptr<Widget>& widget, const std::string& signalName) { // MinGW TDM GCC 5.1 won't compile code without "o=offset" hack
                     invokeFunc(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
-            #endif
                                args...,
                                widget,
                                signalName,
-                               internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
+                               internal_signal::dereference<UnboundArgs>(internal_signal::parameters[o + Indices])...);
+            #endif
                 };
             }
         };
@@ -154,12 +158,14 @@ namespace tgui
             #if defined TGUI_USE_CPP17
                 return [=]{
                     std::invoke(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
-            #else
-                return [=]{
-                    invokeFunc(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
-            #endif
                                args...,
                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);
+            #else
+                return [=,o=offset]{ // MinGW TDM GCC 5.1 won't compile code without "o=offset" hack
+                    invokeFunc(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
+                               args...,
+                               internal_signal::dereference<UnboundArgs>(internal_signal::parameters[o + Indices])...);
+            #endif
                 };
             }
         };

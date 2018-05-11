@@ -179,7 +179,7 @@ namespace tgui
         /// @brief Checks whether the unbound parameters match with this signal
         /// @return The index in the parameters list where the parameters will be stored
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters);
+        virtual unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,7 +255,7 @@ namespace tgui
          * @brief Checks whether the unbound parameters match with this signal
          * @return The index in the parameters list where the parameters will be stored
          ************************************************************************************************************************/ \
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) override; \
+        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override; \
     };
 
 
@@ -321,7 +321,7 @@ namespace tgui
         /// @brief Checks whether the unbound parameters match with this signal
         /// @return The index in the parameters list where the parameters will be stored
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) override;
+        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,7 +382,7 @@ namespace tgui
         /// @brief Checks whether the unbound parameters match with this signal
         /// @return The index in the parameters list where the parameters will be stored
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) override;
+        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +473,7 @@ namespace tgui
         /// @brief Checks whether the unbound parameters match with this signal
         /// @return The index in the parameters list where the parameters will be stored
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) override;
+        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -564,7 +564,7 @@ namespace tgui
         /// @brief Checks whether the unbound parameters match with this signal
         /// @return The index in the parameters list where the parameters will be stored
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) override;
+        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
