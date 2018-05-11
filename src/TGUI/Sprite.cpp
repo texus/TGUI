@@ -150,14 +150,26 @@ namespace tgui
         if (!isSet() || !m_texture.getData()->image || (m_size.x == 0) || (m_size.y == 0))
             return true;
 
-        pos = getInverseTransform().transformPoint(pos);
         if (getRotation() != 0)
         {
-            Vector2f pos2 = {getTransform().transformRect(FloatRect({}, getSize())).left,
-                             getTransform().transformRect(FloatRect({}, getSize())).top};
+            Vector2f offset = {getTransform().transformRect(FloatRect({}, getSize())).left,
+                               getTransform().transformRect(FloatRect({}, getSize())).top};
 
-            pos += getInverseTransform().transformPoint(pos2 - getPosition());
+            pos = getInverseTransform().transformPoint(pos) + getInverseTransform().transformPoint(offset);
+
+            // Watch out for rounding errors
+            const float epsilon = 0.00001;
+            if ((pos.x < 0) && (pos.x > -epsilon))
+                pos.x = 0;
+            if ((pos.y < 0) && (pos.y > -epsilon))
+                pos.y = 0;
+            if ((pos.x >= getSize().x) && (pos.x < getSize().x + epsilon))
+                pos.x = getSize().x;
+            if ((pos.y >= getSize().y) && (pos.y < getSize().y + epsilon))
+                pos.y = getSize().y;
         }
+        else // There is no rotation
+            pos -= getPosition();
 
         if ((pos.x < 0) || (pos.y < 0) || (pos.x >= getSize().x) || (pos.y >= getSize().y))
             return true;
