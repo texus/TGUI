@@ -173,7 +173,7 @@ TEST_CASE("[RangeSlider]")
         SECTION("RangeChanged")
         {
             unsigned int rangeChangedCount = 0;
-            slider->connect("RangeChanged", genericCallback, std::ref(rangeChangedCount));
+            slider->connect("RangeChanged", &genericCallback, std::ref(rangeChangedCount));
 
             slider->setSelectionStart(14);
             REQUIRE(rangeChangedCount == 1);

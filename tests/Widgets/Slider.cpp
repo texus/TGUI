@@ -152,7 +152,7 @@ TEST_CASE("[Slider]")
         SECTION("ValueChanged")
         {
             unsigned int valueChangedCount = 0;
-            slider->connect("ValueChanged", genericCallback, std::ref(valueChangedCount));
+            slider->connect("ValueChanged", &genericCallback, std::ref(valueChangedCount));
 
             slider->setValue(14);
             REQUIRE(valueChangedCount == 1);

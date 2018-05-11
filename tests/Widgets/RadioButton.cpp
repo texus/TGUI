@@ -160,8 +160,8 @@ TEST_CASE("[RadioButton]")
 
             unsigned int checkCount = 0;
             unsigned int uncheckCount = 0;
-            radioButton->connect("Checked", genericCallback, std::ref(checkCount));
-            radioButton->connect("Unchecked", genericCallback, std::ref(uncheckCount));
+            radioButton->connect("Checked", &genericCallback, std::ref(checkCount));
+            radioButton->connect("Unchecked", &genericCallback, std::ref(uncheckCount));
 
             radioButton->leftMousePressed({105, 90});
             REQUIRE(checkCount == 0);

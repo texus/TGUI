@@ -183,8 +183,8 @@ TEST_CASE("[CheckBox]")
 
             unsigned int checkCount = 0;
             unsigned int uncheckCount = 0;
-            checkBox->connect("Checked", genericCallback, std::ref(checkCount));
-            checkBox->connect("Unchecked", genericCallback, std::ref(uncheckCount));
+            checkBox->connect("Checked", &genericCallback, std::ref(checkCount));
+            checkBox->connect("Unchecked", &genericCallback, std::ref(uncheckCount));
 
             checkBox->setChecked(true);
             REQUIRE(checkCount == 1);

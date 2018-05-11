@@ -23,7 +23,6 @@ function(tgui_set_global_compile_flags target)
                                -Woverloaded-virtual
                                -Wpedantic
                                -Wlogical-op
-                               -Wuseless-cast
                                -Wdouble-promotion
                                -Wformat=2)
 

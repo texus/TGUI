@@ -83,7 +83,7 @@ TEST_CASE("[Button]")
             button->setSize(150, 100);
 
             unsigned int pressedCount = 0;
-            button->connect("Pressed", genericCallback, std::ref(pressedCount));
+            button->connect("Pressed", &genericCallback, std::ref(pressedCount));
 
             SECTION("mouse click")
             {

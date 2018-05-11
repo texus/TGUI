@@ -342,7 +342,7 @@ TEST_CASE("[EditBox]")
         SECTION("TextChanged signal")
         {
             unsigned int textChangedCount = 0;
-            editBox->connect("TextChanged", genericCallback, std::ref(textChangedCount));
+            editBox->connect("TextChanged", &genericCallback, std::ref(textChangedCount));
 
             editBox->textEntered('a');
             REQUIRE(textChangedCount == 1);

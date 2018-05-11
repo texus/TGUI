@@ -147,7 +147,7 @@ TEST_CASE("[Label]")
         SECTION("Double click")
         {
             unsigned int doubleClickedCount = 0;
-            label->connect("DoubleClicked", genericCallback, std::ref(doubleClickedCount));
+            label->connect("DoubleClicked", &genericCallback, std::ref(doubleClickedCount));
 
             label->setPosition(40, 30);
             label->setSize(150, 100);

@@ -123,10 +123,10 @@ namespace tgui
                 const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
             #if defined TGUI_USE_CPP17
                 return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
-                    std::invoke(func,
+                    std::invoke(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
             #else
-                return [=, f=func](const std::shared_ptr<Widget>& widget, const std::string& signalName) { // f=func is needed to decay free functions
-                    invokeFunc(f,
+                return [=](const std::shared_ptr<Widget>& widget, const std::string& signalName) {
+                    invokeFunc(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
             #endif
                                args...,
                                widget,
@@ -152,11 +152,11 @@ namespace tgui
             {
                 const std::size_t offset = (sizeof...(UnboundArgs) > 0) ? signal.validateTypes({typeid(UnboundArgs)...}) : 0;
             #if defined TGUI_USE_CPP17
-                return [=]() {
-                    std::invoke(func,
+                return [=]{
+                    std::invoke(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
             #else
-                return [=, f=func]() {  // f=func is needed to decay free functions
-                    invokeFunc(f,
+                return [=]{
+                    invokeFunc(func, // An error "variable 'func' has function type" here means you passed a reference instead of a function pointer to 'connect'
             #endif
                                args...,
                                internal_signal::dereference<UnboundArgs>(internal_signal::parameters[offset + Indices])...);

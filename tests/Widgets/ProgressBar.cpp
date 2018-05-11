@@ -163,7 +163,7 @@ TEST_CASE("[ProgressBar]")
         SECTION("ValueChanged")
         {
             unsigned int valueChangedCount = 0;
-            progressBar->connect("ValueChanged", genericCallback, std::ref(valueChangedCount));
+            progressBar->connect("ValueChanged", &genericCallback, std::ref(valueChangedCount));
 
             progressBar->setValue(4);
             REQUIRE(valueChangedCount == 1);
@@ -186,7 +186,7 @@ TEST_CASE("[ProgressBar]")
         SECTION("Full")
         {
             unsigned int fullCount = 0;
-            progressBar->connect("Full", genericCallback, std::ref(fullCount));
+            progressBar->connect("Full", &genericCallback, std::ref(fullCount));
 
             progressBar->setValue(4);
             REQUIRE(fullCount == 0);

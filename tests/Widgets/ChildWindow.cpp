@@ -196,8 +196,8 @@ TEST_CASE("[ChildWindow]")
             unsigned int mouseEnteredCount = 0;
             unsigned int mouseLeftCount = 0;
 
-            childWindow->connect("MouseEntered", genericCallback, std::ref(mouseEnteredCount));
-            childWindow->connect("MouseLeft", genericCallback, std::ref(mouseLeftCount));
+            childWindow->connect("MouseEntered", &genericCallback, std::ref(mouseEnteredCount));
+            childWindow->connect("MouseLeft", &genericCallback, std::ref(mouseLeftCount));
 
             auto parent = tgui::Panel::create({300, 200});
             parent->setPosition({30, 25});

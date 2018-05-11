@@ -97,7 +97,7 @@ TEST_CASE("[Picture]")
             picture->setSize(150, 100);
 
             unsigned int doubleClickedCount = 0;
-            picture->connect("DoubleClicked", mouseCallback, std::ref(doubleClickedCount));
+            picture->connect("DoubleClicked", &mouseCallback, std::ref(doubleClickedCount));
 
             picture->leftMousePressed({115, 80});
             picture->leftMouseReleased({115, 80});

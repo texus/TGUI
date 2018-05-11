@@ -144,7 +144,7 @@ TEST_CASE("[SpinButton]")
             spinButton->setSize(25, 60);
 
             unsigned int valueChangedCount = 0;
-            spinButton->connect("ValueChanged", genericCallback, std::ref(valueChangedCount));
+            spinButton->connect("ValueChanged", &genericCallback, std::ref(valueChangedCount));
 
             spinButton->setValue(10);
             REQUIRE(valueChangedCount == 1);
