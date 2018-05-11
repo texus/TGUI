@@ -270,13 +270,13 @@ namespace tgui
 
     void ListBox::removeAllItems()
     {
-        // Clear the list, remove all items
-        m_items.clear();
-        m_itemIds.clear();
-
         // Unselect any selected item
         updateSelectedItem(-1);
         updateHoveringItem(-1);
+
+        // Clear the list, remove all items
+        m_items.clear();
+        m_itemIds.clear();
 
         m_scroll->setMaximum(0);
     }
