@@ -298,4 +298,223 @@ TEST_CASE("[BitmapButton]")
 
         testSavingWidget("BitmapButton", button, false);
     }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(120, 35, button)
+
+        button->setEnabled(true);
+        button->setPosition(10, 5);
+        button->setSize(100, 26);
+        button->setTextSize(16);
+
+        tgui::ButtonRenderer renderer = tgui::RendererData::create();
+        renderer.setTextColor(sf::Color::Red);
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setTextStyle(sf::Text::Style::Italic);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setOpacity(0.7f);
+        button->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+                                        renderer.setTextColorHover(sf::Color::Magenta);
+                                        renderer.setBackgroundColorHover(sf::Color::Cyan);
+                                        renderer.setBorderColorHover(sf::Color::Yellow);
+                                        renderer.setTextStyleHover(sf::Text::Style::Bold);
+                                        if (textured)
+                                            renderer.setTextureHover("resources/Texture2.png");
+                                     };
+
+        auto setDownRenderer = [&](bool textured){
+                                        renderer.setTextColorDown(sf::Color::Black);
+                                        renderer.setBackgroundColorDown(sf::Color::White);
+                                        renderer.setBorderColorDown({128, 128, 128});
+                                        renderer.setTextStyleDown(sf::Text::Style::Underlined);
+                                        renderer.setTextColorDisabled({128, 128, 0});
+                                        renderer.setBackgroundColorDisabled({0, 128, 128});
+                                        renderer.setBorderColorDisabled({128, 0, 128});
+                                        renderer.setTextStyleDisabled(sf::Text::Style::StrikeThrough);
+                                        if (textured)
+                                            renderer.setTextureDown("resources/Texture3.png");
+                                    };
+
+        auto setDisabledRenderer = [&](bool textured){
+                                        renderer.setTextColorDisabled({128, 128, 0});
+                                        renderer.setBackgroundColorDisabled({0, 128, 128});
+                                        renderer.setBorderColorDisabled({128, 0, 128});
+                                        renderer.setTextStyleDisabled(sf::Text::Style::StrikeThrough);
+                                        if (textured)
+                                            renderer.setTextureDisabled("resources/Texture4.png");
+                                    };
+
+        const auto mousePos = button->getPosition() + (button->getSize() / 2.f);
+
+        SECTION("No image or text")
+        {
+            TEST_DRAW("BitmapButton_NoImageNoText.png")
+        }
+
+        SECTION("No image")
+        {
+            button->setText("Caption");
+            TEST_DRAW("BitmapButton_NoImage.png")
+        }
+
+        button->setImage("resources/image.png");
+        button->setImageScaling(0.8f);
+
+        SECTION("No text")
+        {
+            TEST_DRAW("BitmapButton_NoText.png")
+        }
+
+        button->setText("Caption");
+
+        SECTION("Colored")
+        {
+            SECTION("NormalState")
+            {
+                TEST_DRAW("BitmapButton_Normal_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("BitmapButton_Normal_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("BitmapButton_Normal_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                button->mouseMoved(mousePos);
+
+                TEST_DRAW("BitmapButton_Hover_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("BitmapButton_Hover_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("BitmapButton_Hover_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DownState")
+            {
+                button->mouseMoved(mousePos);
+                button->leftMousePressed(mousePos);
+
+                TEST_DRAW("BitmapButton_Down_NormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(false);
+                    TEST_DRAW("BitmapButton_Down_HoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(false);
+                        TEST_DRAW("BitmapButton_Down_DownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                button->setEnabled(false);
+
+                TEST_DRAW("BitmapButton_Disabled_NormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(false);
+                    TEST_DRAW("BitmapButton_Disabled_DisabledSet.png")
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTexture("resources/Texture1.png");
+
+            SECTION("NormalState")
+            {
+                TEST_DRAW("BitmapButton_Normal_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("BitmapButton_Normal_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("BitmapButton_Normal_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("HoverState")
+            {
+                button->mouseMoved(mousePos);
+
+                TEST_DRAW("BitmapButton_Hover_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("BitmapButton_Hover_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("BitmapButton_Hover_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DownState")
+            {
+                button->mouseMoved(mousePos);
+                button->leftMousePressed(mousePos);
+
+                TEST_DRAW("BitmapButton_Down_TextureNormalSet.png")
+
+                SECTION("HoverSet")
+                {
+                    setHoverRenderer(true);
+                    TEST_DRAW("BitmapButton_Down_TextureHoverSet.png")
+
+                    SECTION("DownSet")
+                    {
+                        setDownRenderer(true);
+                        TEST_DRAW("BitmapButton_Down_TextureDownSet.png")
+                    }
+                }
+            }
+
+            SECTION("DisabledState")
+            {
+                button->setEnabled(false);
+
+                TEST_DRAW("BitmapButton_Disabled_TextureNormalSet.png")
+
+                SECTION("DisabledSet")
+                {
+                    setDisabledRenderer(true);
+                    TEST_DRAW("BitmapButton_Disabled_TextureDisabledSet.png")
+                }
+            }
+        }
+    }
 }
