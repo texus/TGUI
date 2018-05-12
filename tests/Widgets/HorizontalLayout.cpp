@@ -64,7 +64,20 @@ TEST_CASE("[HorizontalLayout]")
             layout->addSpace(0.5f);
 
             auto button3 = tgui::Button::create();
-            layout->add(button3, 2);
+            layout->add(button3, 20);
+
+            REQUIRE(layout->getRatio(0) == 1.f);
+            REQUIRE(layout->getRatio(button1) == 1.f);
+            REQUIRE(layout->getRatio(2) == 0.5f);
+            REQUIRE(layout->getRatio(3) == 20);
+            REQUIRE(layout->getRatio(button3) == 20);
+            REQUIRE(layout->setRatio(button3, 2));
+            REQUIRE(layout->getRatio(button3) == 2);
+
+            REQUIRE(!layout->setRatio(10, 1));
+            REQUIRE(layout->getRatio(10) == 0);
+            REQUIRE(!layout->setRatio(nullptr, 1));
+            REQUIRE(layout->getRatio(nullptr) == 0);
 
             REQUIRE(layout->get(0)->getFullSize() == sf::Vector2f((800 - 20 - 3*30) * (1 / 4.5f), 980));
             REQUIRE(layout->get(1)->getFullSize() == sf::Vector2f((800 - 20 - 3*30) * (1 / 4.5f), 980));
@@ -122,6 +135,9 @@ TEST_CASE("[HorizontalLayout]")
         REQUIRE(layout->getWidgetName(layout->get(1)) == "3");
         REQUIRE(layout->getWidgetName(layout->get(2)) == "5");
         REQUIRE(layout->get(5) == nullptr);
+
+        layout->removeAllWidgets();
+        REQUIRE(layout->get(0) == nullptr);
     }
 
     SECTION("Saving and loading from file")
