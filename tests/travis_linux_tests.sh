@@ -1,6 +1,6 @@
 set -eo pipefail
 
-export SFML_VERSION=2.4.0
+export SFML_VERSION=2.5.0
 export SFML_ROOT=$HOME/SFML-${SFML_VERSION}_LINUX
 export BUILD_FOLDER=build_$CXX
 export DISPLAY=:99.0
@@ -13,11 +13,7 @@ if [[ ! -d "$SFML_ROOT/lib" ]]; then
   tar -xzf SFML.tar.gz
   cd SFML-${SFML_VERSION}
 
-  # Skip building audio, which required several more dependencies to be installed in order to build SFML
-  # The SFML_BUILD_AUDIO cmake option did not exist yet in the SFML version we use here.
-  sed -i "s/add_subdirectory(Audio)/#add_subdirectory(Audio)/g" src/SFML/CMakeLists.txt
-
-  cmake -DCMAKE_INSTALL_PREFIX=$SFML_ROOT .
+  cmake -DCMAKE_INSTALL_PREFIX=$SFML_ROOT -DSFML_BUILD_AUDIO=FALSE -DSFML_BUILD_NETWORK=FALSE .
   make -j2
   make install
   cd ..
