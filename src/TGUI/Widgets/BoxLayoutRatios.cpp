@@ -136,7 +136,7 @@ namespace tgui
                 return getRatio(i);
         }
 
-        return false;
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ namespace tgui
     float BoxLayoutRatios::getRatio(std::size_t index) const
     {
         if (index >= m_ratios.size())
-            return false;
+            return 0;
 
         return m_ratios[index];
     }
