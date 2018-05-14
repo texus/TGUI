@@ -202,12 +202,12 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the minimum width of the area where you can drag to resize the child window
-        /// @param minimumBoderWidth  Minimum amount of pixels where the child window can be dragged to resize it
+        /// @param minimumBorderWidth  Minimum amount of pixels where the child window can be dragged to resize it
         ///
-        /// If the border is larger than minimumBoderWidth then this function has no effect. If the borders are smaller,
+        /// If the border is larger than minimumBorderWidth then this function has no effect. If the borders are smaller,
         /// several invisible pixels next to the border can also be used to resize the child window.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMinimumResizableBorderWidth(float minimumBoderWidth);
+        void setMinimumResizableBorderWidth(float minimumBorderWidth);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

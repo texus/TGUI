@@ -164,7 +164,7 @@ namespace tgui
             else
                 m_sprite.draw(target, states);
 
-            // When the edit box is focused then draw an extra image
+            // When the button is focused then draw an extra image
             if (m_focused && m_spriteFocused.isSet())
                 m_spriteFocused.draw(target, states);
         }
