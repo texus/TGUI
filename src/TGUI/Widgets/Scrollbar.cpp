@@ -41,7 +41,8 @@ namespace tgui
         m_renderer = aurora::makeCopied<ScrollbarRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-        setSize(16, 160);
+        setSize(getDefaultWidth(), 160);
+        m_sizeSet = false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,133 +96,8 @@ namespace tgui
     {
         Widget::setSize(size);
 
-        if (getSize().x <= getSize().y)
-            m_verticalScroll = true;
-        else
-            m_verticalScroll = false;
-
-        bool textured = false;
-        if (m_spriteTrack.isSet() && m_spriteThumb.isSet() && m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
-            textured = true;
-
-        if (m_verticalScroll)
-        {
-            m_arrowUp.width = getSize().x;
-            m_arrowDown.width = getSize().x;
-
-            if (textured)
-            {
-                m_arrowUp.height = getSize().x * m_spriteArrowUp.getTexture().getImageSize().x / m_spriteArrowUp.getTexture().getImageSize().y;
-                m_arrowDown.height = getSize().x * m_spriteArrowDown.getTexture().getImageSize().x / m_spriteArrowDown.getTexture().getImageSize().y;
-            }
-            else
-            {
-                m_arrowUp.height = m_arrowUp.width;
-                m_arrowDown.height = m_arrowUp.width;
-            }
-
-            m_track.width = getSize().x;
-            m_track.height = std::max(0.f, getSize().y - m_arrowUp.height - m_arrowDown.height);
-
-            m_thumb.width = getSize().x;
-            if (m_maximum > m_viewportSize)
-                m_thumb.height = m_track.height * m_viewportSize / m_maximum;
-            else
-                m_thumb.height = m_track.height;
-        }
-        else // The scrollbar lies horizontally
-        {
-            m_arrowUp.height = getSize().y;
-            m_arrowDown.height = getSize().y;
-
-            if (textured)
-            {
-                m_arrowUp.width = getSize().y * m_spriteArrowUp.getTexture().getImageSize().x / m_spriteArrowUp.getTexture().getImageSize().y;
-                m_arrowDown.width = getSize().y * m_spriteArrowDown.getTexture().getImageSize().x / m_spriteArrowDown.getTexture().getImageSize().y;
-            }
-            else
-            {
-                m_arrowUp.width = m_arrowUp.height;
-                m_arrowDown.width = m_arrowUp.height;
-            }
-
-            m_track.width = std::max(0.f, getSize().x - m_arrowUp.height - m_arrowDown.height);
-            m_track.height = getSize().y;
-
-            m_thumb.height = getSize().y;
-            if (m_maximum > m_viewportSize)
-                m_thumb.width = m_track.width * m_viewportSize / m_maximum;
-            else
-                m_thumb.width = m_track.width;
-        }
-
-        if (textured)
-        {
-            m_spriteArrowUp.setSize({m_arrowUp.width, m_arrowUp.height});
-            m_spriteArrowUpHover.setSize({m_arrowUp.width, m_arrowUp.height});
-            m_spriteArrowDown.setSize({m_arrowDown.width, m_arrowDown.height});
-            m_spriteArrowDownHover.setSize({m_arrowDown.width, m_arrowDown.height});
-
-            if (m_verticalScroll == m_verticalImage)
-            {
-                m_spriteTrack.setSize({m_track.width, m_track.height});
-                m_spriteTrackHover.setSize({m_track.width, m_track.height});
-                m_spriteThumb.setSize({m_thumb.width, m_thumb.height});
-                m_spriteThumbHover.setSize({m_thumb.width, m_thumb.height});
-
-                m_spriteTrack.setRotation(0);
-                m_spriteTrackHover.setRotation(0);
-                m_spriteThumb.setRotation(0);
-                m_spriteThumbHover.setRotation(0);
-            }
-            else
-            {
-                m_spriteTrack.setSize({m_track.height, m_track.width});
-                m_spriteTrackHover.setSize({m_track.height, m_track.width});
-                m_spriteThumb.setSize({m_thumb.height, m_thumb.width});
-                m_spriteThumbHover.setSize({m_thumb.height, m_thumb.width});
-
-                m_spriteTrack.setRotation(-90);
-                m_spriteTrackHover.setRotation(-90);
-                m_spriteThumb.setRotation(-90);
-                m_spriteThumbHover.setRotation(-90);
-            }
-
-            // Set the rotation or the arrows now that the size has been set
-            if (m_verticalScroll)
-            {
-                m_spriteArrowUp.setRotation(0);
-                m_spriteArrowUpHover.setRotation(0);
-                m_spriteArrowDown.setRotation(0);
-                m_spriteArrowDownHover.setRotation(0);
-            }
-            else
-            {
-                m_spriteArrowUp.setRotation(-90);
-                m_spriteArrowUpHover.setRotation(-90);
-                m_spriteArrowDown.setRotation(-90);
-                m_spriteArrowDownHover.setRotation(-90);
-            }
-        }
-
-        // Recalculate the position of the track, thumb and arrows
-        if (m_verticalScroll)
-        {
-            m_arrowDown.left = 0;
-            m_arrowDown.top = getSize().y - m_arrowDown.height;
-
-            m_track.left = 0;
-            m_track.top = m_arrowUp.height;
-        }
-        else
-        {
-            m_arrowDown.left = getSize().x - m_arrowDown.width;
-            m_arrowDown.top = 0;
-
-            m_track.left = m_arrowUp.width;
-            m_track.top = 0;
-        }
-        updateThumbPosition();
+        m_sizeSet = true;
+        updateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,7 +117,7 @@ namespace tgui
             setValue(m_maximum - m_viewportSize);
 
         // Recalculate the size and position of the thumb image
-        setSize(m_size);
+        updateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -268,7 +144,7 @@ namespace tgui
             onValueChange.emit(this, m_value);
 
             // Recalculate the size and position of the thumb image
-            setSize(m_size);
+            updateSize();
         }
     }
 
@@ -293,7 +169,7 @@ namespace tgui
             setValue(m_maximum - m_viewportSize);
 
         // Recalculate the size and position of the thumb image
-        setSize(m_size);
+        updateSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -329,6 +205,16 @@ namespace tgui
     bool Scrollbar::getAutoHide() const
     {
         return m_autoHide;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Scrollbar::getDefaultWidth()
+    {
+        if (m_spriteTrack.isSet())
+            return m_spriteTrack.getTexture().getImageSize().x;
+        else
+            return 16;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -689,6 +575,140 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Scrollbar::updateSize()
+    {
+        if (getSize().x <= getSize().y)
+            m_verticalScroll = true;
+        else
+            m_verticalScroll = false;
+
+        bool textured = false;
+        if (m_spriteTrack.isSet() && m_spriteThumb.isSet() && m_spriteArrowUp.isSet() && m_spriteArrowDown.isSet())
+            textured = true;
+
+        if (m_verticalScroll)
+        {
+            m_arrowUp.width = getSize().x;
+            m_arrowDown.width = getSize().x;
+
+            if (textured)
+            {
+                m_arrowUp.height = getSize().x * m_spriteArrowUp.getTexture().getImageSize().x / m_spriteArrowUp.getTexture().getImageSize().y;
+                m_arrowDown.height = getSize().x * m_spriteArrowDown.getTexture().getImageSize().x / m_spriteArrowDown.getTexture().getImageSize().y;
+            }
+            else
+            {
+                m_arrowUp.height = m_arrowUp.width;
+                m_arrowDown.height = m_arrowUp.width;
+            }
+
+            m_track.width = getSize().x;
+            m_track.height = std::max(0.f, getSize().y - m_arrowUp.height - m_arrowDown.height);
+
+            m_thumb.width = getSize().x;
+            if (m_maximum > m_viewportSize)
+                m_thumb.height = m_track.height * m_viewportSize / m_maximum;
+            else
+                m_thumb.height = m_track.height;
+        }
+        else // The scrollbar lies horizontally
+        {
+            m_arrowUp.height = getSize().y;
+            m_arrowDown.height = getSize().y;
+
+            if (textured)
+            {
+                m_arrowUp.width = getSize().y * m_spriteArrowUp.getTexture().getImageSize().x / m_spriteArrowUp.getTexture().getImageSize().y;
+                m_arrowDown.width = getSize().y * m_spriteArrowDown.getTexture().getImageSize().x / m_spriteArrowDown.getTexture().getImageSize().y;
+            }
+            else
+            {
+                m_arrowUp.width = m_arrowUp.height;
+                m_arrowDown.width = m_arrowUp.height;
+            }
+
+            m_track.width = std::max(0.f, getSize().x - m_arrowUp.height - m_arrowDown.height);
+            m_track.height = getSize().y;
+
+            m_thumb.height = getSize().y;
+            if (m_maximum > m_viewportSize)
+                m_thumb.width = m_track.width * m_viewportSize / m_maximum;
+            else
+                m_thumb.width = m_track.width;
+        }
+
+        if (textured)
+        {
+            m_spriteArrowUp.setSize({m_arrowUp.width, m_arrowUp.height});
+            m_spriteArrowUpHover.setSize({m_arrowUp.width, m_arrowUp.height});
+            m_spriteArrowDown.setSize({m_arrowDown.width, m_arrowDown.height});
+            m_spriteArrowDownHover.setSize({m_arrowDown.width, m_arrowDown.height});
+
+            if (m_verticalScroll == m_verticalImage)
+            {
+                m_spriteTrack.setSize({m_track.width, m_track.height});
+                m_spriteTrackHover.setSize({m_track.width, m_track.height});
+                m_spriteThumb.setSize({m_thumb.width, m_thumb.height});
+                m_spriteThumbHover.setSize({m_thumb.width, m_thumb.height});
+
+                m_spriteTrack.setRotation(0);
+                m_spriteTrackHover.setRotation(0);
+                m_spriteThumb.setRotation(0);
+                m_spriteThumbHover.setRotation(0);
+            }
+            else
+            {
+                m_spriteTrack.setSize({m_track.height, m_track.width});
+                m_spriteTrackHover.setSize({m_track.height, m_track.width});
+                m_spriteThumb.setSize({m_thumb.height, m_thumb.width});
+                m_spriteThumbHover.setSize({m_thumb.height, m_thumb.width});
+
+                m_spriteTrack.setRotation(-90);
+                m_spriteTrackHover.setRotation(-90);
+                m_spriteThumb.setRotation(-90);
+                m_spriteThumbHover.setRotation(-90);
+            }
+
+            // Set the rotation or the arrows now that the size has been set
+            if (m_verticalScroll)
+            {
+                m_spriteArrowUp.setRotation(0);
+                m_spriteArrowUpHover.setRotation(0);
+                m_spriteArrowDown.setRotation(0);
+                m_spriteArrowDownHover.setRotation(0);
+            }
+            else
+            {
+                m_spriteArrowUp.setRotation(-90);
+                m_spriteArrowUpHover.setRotation(-90);
+                m_spriteArrowDown.setRotation(-90);
+                m_spriteArrowDownHover.setRotation(-90);
+            }
+        }
+
+        // Recalculate the position of the track, thumb and arrows
+        if (m_verticalScroll)
+        {
+            m_arrowDown.left = 0;
+            m_arrowDown.top = getSize().y - m_arrowDown.height;
+
+            m_track.left = 0;
+            m_track.top = m_arrowUp.height;
+        }
+        else
+        {
+            m_arrowDown.left = getSize().x - m_arrowDown.width;
+            m_arrowDown.top = 0;
+
+            m_track.left = m_arrowUp.width;
+            m_track.top = 0;
+        }
+
+        updateThumbPosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Signal& Scrollbar::getSignal(std::string signalName)
     {
         if (signalName == toLower(onValueChange.getName()))
@@ -704,7 +724,17 @@ namespace tgui
         if (property == "texturetrack")
         {
             m_spriteTrack.setTexture(getSharedRenderer()->getTextureTrack());
-            setSize(m_size);
+            if (m_sizeSet)
+                updateSize();
+            else
+            {
+                if (m_verticalScroll)
+                    setSize({getDefaultWidth(), getSize().y});
+                else
+                    setSize({getSize().x, getDefaultWidth()});
+
+                m_sizeSet = false;
+            }
         }
         else if (property == "texturetrackhover")
         {
@@ -713,7 +743,7 @@ namespace tgui
         else if (property == "texturethumb")
         {
             m_spriteThumb.setTexture(getSharedRenderer()->getTextureThumb());
-            setSize(m_size);
+            updateSize();
         }
         else if (property == "texturethumbhover")
         {
@@ -722,7 +752,7 @@ namespace tgui
         else if (property == "texturearrowup")
         {
             m_spriteArrowUp.setTexture(getSharedRenderer()->getTextureArrowUp());
-            setSize(m_size);
+            updateSize();
         }
         else if (property == "texturearrowuphover")
         {
@@ -731,7 +761,7 @@ namespace tgui
         else if (property == "texturearrowdown")
         {
             m_spriteArrowDown.setTexture(getSharedRenderer()->getTextureArrowDown());
-            setSize(m_size);
+            updateSize();
         }
         else if (property == "texturearrowdownhover")
         {

@@ -432,6 +432,12 @@ namespace tgui
         {
             m_scroll->setRenderer(getSharedRenderer()->getScrollbar());
         }
+        else if (property == "scrollbarwidth")
+        {
+            const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_scroll->getDefaultWidth();
+            m_scroll->setSize({width, m_scroll->getSize().y});
+            setSize(m_size);
+        }
         else if (property == "bordercolor")
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();

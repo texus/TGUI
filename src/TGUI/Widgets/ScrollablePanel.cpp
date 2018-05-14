@@ -527,6 +527,13 @@ namespace tgui
             m_verticalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
             m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
         }
+        else if (property == "scrollbarwidth")
+        {
+            const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
+            m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
+            m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
+            updateScrollbars();
+        }
         else
             Panel::rendererChanged(property);
     }

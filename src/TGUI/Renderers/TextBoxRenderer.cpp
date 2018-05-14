@@ -45,6 +45,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_NUMBER(TextBoxRenderer, CaretWidth, 1)
 
     TGUI_RENDERER_PROPERTY_RENDERER(TextBoxRenderer, Scrollbar, "scrollbar")
+    TGUI_RENDERER_PROPERTY_NUMBER(TextBoxRenderer, ScrollbarWidth, 0)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

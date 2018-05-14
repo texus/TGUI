@@ -1491,6 +1491,12 @@ namespace tgui
         {
             m_verticalScroll->setRenderer(getSharedRenderer()->getScrollbar());
         }
+        else if (property == "scrollbarwidth")
+        {
+            const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_verticalScroll->getDefaultWidth();
+            m_verticalScroll->setSize({width, m_verticalScroll->getSize().y});
+            setSize(m_size);
+        }
         else if (property == "backgroundcolor")
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();

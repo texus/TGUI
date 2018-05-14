@@ -187,6 +187,7 @@ TEST_CASE("[ChatBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", "{ TrackColor = Red; ThumbColor = Blue; }"));
+                REQUIRE_NOTHROW(renderer->setProperty("ScrollbarWidth", "15"));
             }
 
             SECTION("set object property")
@@ -196,6 +197,7 @@ TEST_CASE("[ChatBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRenderer.getData()));
+                REQUIRE_NOTHROW(renderer->setProperty("ScrollbarWidth", 15));
             }
 
             SECTION("functions")
@@ -205,12 +207,14 @@ TEST_CASE("[ChatBox]")
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
                 renderer->setScrollbar(scrollbarRenderer.getData());
+                renderer->setScrollbarWidth(15);
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == sf::Color(10, 20, 30));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
+            REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
             REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
             REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
