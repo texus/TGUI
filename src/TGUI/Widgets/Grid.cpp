@@ -52,7 +52,7 @@ namespace tgui
                 {
                     // If a widget matches then add it to the grid
                     if (gridToCopy.m_widgets[i] == gridToCopy.m_gridWidgets[row][col])
-                        addWidget(m_widgets[i], row, col, gridToCopy.m_objBorders[row][col], gridToCopy.m_objAlignment[row][col]);
+                        addWidget(m_widgets[i], row, col, gridToCopy.m_objPadding[row][col], gridToCopy.m_objAlignment[row][col]);
                 }
             }
         }
@@ -64,7 +64,7 @@ namespace tgui
         Container           {std::move(gridToMove)},
         m_autoSize          {std::move(gridToMove.m_autoSize)},
         m_gridWidgets       {std::move(gridToMove.m_gridWidgets)},
-        m_objBorders        {std::move(gridToMove.m_objBorders)},
+        m_objPadding        {std::move(gridToMove.m_objPadding)},
         m_objAlignment      {std::move(gridToMove.m_objAlignment)},
         m_rowHeight         {std::move(gridToMove.m_rowHeight)},
         m_columnWidth       {std::move(gridToMove.m_columnWidth)},
@@ -97,7 +97,7 @@ namespace tgui
                     {
                         // If a widget matches then add it to the grid
                         if (right.m_widgets[i] == right.m_gridWidgets[row][col])
-                            addWidget(m_widgets[i], row, col, right.m_objBorders[row][col], right.m_objAlignment[row][col]);
+                            addWidget(m_widgets[i], row, col, right.m_objPadding[row][col], right.m_objAlignment[row][col]);
                     }
                 }
             }
@@ -115,7 +115,7 @@ namespace tgui
             Container::operator=(std::move(right));
             m_autoSize           = std::move(right.m_autoSize);
             m_gridWidgets        = std::move(right.m_gridWidgets);
-            m_objBorders         = std::move(right.m_objBorders);
+            m_objPadding         = std::move(right.m_objPadding);
             m_objAlignment       = std::move(right.m_objAlignment);
             m_rowHeight          = std::move(right.m_rowHeight);
             m_columnWidth        = std::move(right.m_columnWidth);
@@ -197,7 +197,7 @@ namespace tgui
                 {
                     // Remove the widget from the grid
                     m_gridWidgets[row].erase(m_gridWidgets[row].begin() + col);
-                    m_objBorders[row].erase(m_objBorders[row].begin() + col);
+                    m_objPadding[row].erase(m_objPadding[row].begin() + col);
                     m_objAlignment[row].erase(m_objAlignment[row].begin() + col);
 
                     // Check if this is the last column
@@ -223,7 +223,7 @@ namespace tgui
                     if (m_gridWidgets[row].empty())
                     {
                         m_gridWidgets.erase(m_gridWidgets.begin() + row);
-                        m_objBorders.erase(m_objBorders.begin() + row);
+                        m_objPadding.erase(m_objPadding.begin() + row);
                         m_objAlignment.erase(m_objAlignment.begin() + row);
                         m_rowHeight.erase(m_rowHeight.begin() + row);
                     }
@@ -244,7 +244,7 @@ namespace tgui
         Container::removeAllWidgets();
 
         m_gridWidgets.clear();
-        m_objBorders.clear();
+        m_objPadding.clear();
         m_objAlignment.clear();
 
         m_rowHeight.clear();
@@ -257,7 +257,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::addWidget(const Widget::Ptr& widget, std::size_t row, std::size_t col, const Borders& borders, Alignment alignment)
+    void Grid::addWidget(const Widget::Ptr& widget, std::size_t row, std::size_t col, const Padding& padding, Alignment alignment)
     {
         // If the widget hasn't already been added then add it now
         if (std::find(getWidgets().begin(), getWidgets().end(), widget) == getWidgets().end())
@@ -267,7 +267,7 @@ namespace tgui
         if (m_gridWidgets.size() < row + 1)
         {
             m_gridWidgets.resize(row + 1);
-            m_objBorders.resize(row + 1);
+            m_objPadding.resize(row + 1);
             m_objAlignment.resize(row + 1);
         }
 
@@ -275,7 +275,7 @@ namespace tgui
         if (m_gridWidgets[row].size() < col + 1)
         {
             m_gridWidgets[row].resize(col + 1, nullptr);
-            m_objBorders[row].resize(col + 1);
+            m_objPadding[row].resize(col + 1);
             m_objAlignment[row].resize(col + 1);
         }
 
@@ -289,7 +289,7 @@ namespace tgui
 
         // Add the widget to the grid
         m_gridWidgets[row][col] = widget;
-        m_objBorders[row][col] = borders;
+        m_objPadding[row][col] = padding;
         m_objAlignment[row][col] = alignment;
 
         // Update the widgets
@@ -329,7 +329,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::setWidgetBorders(const Widget::Ptr& widget, const Borders& borders)
+    void Grid::setWidgetPadding(const Widget::Ptr& widget, const Padding& padding)
     {
         // Find the widget in the grid
         for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
@@ -337,19 +337,19 @@ namespace tgui
             for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
             {
                 if (m_gridWidgets[row][col] == widget)
-                    setWidgetBorders(row, col, borders);
+                    setWidgetPadding(row, col, padding);
             }
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Grid::setWidgetBorders(std::size_t row, std::size_t col, const Borders& borders)
+    void Grid::setWidgetPadding(std::size_t row, std::size_t col, const Padding& padding)
     {
         if (((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size())) && (m_gridWidgets[row][col] != nullptr))
         {
-            // Change borders of the widget
-            m_objBorders[row][col] = borders;
+            // Change padding of the widget
+            m_objPadding[row][col] = padding;
 
             // Update all widgets
             updateWidgets();
@@ -358,7 +358,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Borders Grid::getWidgetBorders(const Widget::Ptr& widget) const
+    Padding Grid::getWidgetPadding(const Widget::Ptr& widget) const
     {
         // Find the widget in the grid
         for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
@@ -366,7 +366,7 @@ namespace tgui
             for (std::size_t col = 0; col < m_gridWidgets[row].size(); ++col)
             {
                 if (m_gridWidgets[row][col] == widget)
-                    return getWidgetBorders(row, col);
+                    return getWidgetPadding(row, col);
             }
         }
 
@@ -375,10 +375,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Borders Grid::getWidgetBorders(std::size_t row, std::size_t col) const
+    Padding Grid::getWidgetPadding(std::size_t row, std::size_t col) const
     {
         if (((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size())) && (m_gridWidgets[row][col] != nullptr))
-            return m_objBorders[row][col];
+            return m_objPadding[row][col];
         else
             return {};
     }
@@ -493,7 +493,7 @@ namespace tgui
                     const auto col = it->second.second;
                     return "\"(" + to_string(row)
                          + ", " + to_string(col)
-                         + ", " + getWidgetBorders(row, col).toString()
+                         + ", " + getWidgetPadding(row, col).toString()
                          + ", " + alignmentToString(getWidgetAlignment(row, col))
                          + ")\"";
                 }
@@ -553,20 +553,20 @@ namespace tgui
 
                 int row;
                 int col;
-                Borders borders;
+                Padding padding;
                 auto alignment = Grid::Alignment::Center;
 
                 std::size_t index = 0;
                 std::size_t pos = str.find(',');
                 if (pos == std::string::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after row."};
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after row."};
 
                 row = tgui::stoi(str.substr(index, pos - index));
                 index = pos + 1;
 
                 pos = str.find(',', index);
                 if (pos == std::string::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after column."};
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after column."};
 
                 col = tgui::stoi(str.substr(index, pos - index));
                 index = pos + 1;
@@ -576,19 +576,19 @@ namespace tgui
 
                 pos = str.find('(', index);
                 if (pos == std::string::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing opening bracket for borders."};
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing opening bracket for padding."};
 
                 index = pos;
                 pos = str.find(')', index);
                 if (pos == std::string::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing closing bracket for borders."};
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing closing bracket for padding."};
 
-                borders = Deserializer::deserialize(ObjectConverter::Type::Outline, str.substr(index, pos+1 - index)).getOutline();
+                padding = Deserializer::deserialize(ObjectConverter::Type::Outline, str.substr(index, pos+1 - index)).getOutline();
                 index = pos + 1;
 
                 pos = str.find(',', index);
                 if (pos == std::string::npos)
-                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (borders), alignment)\"'. Missing comma after borders."};
+                    throw Exception{"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after padding."};
 
                 std::string alignmentStr = toLower(trim(str.substr(pos + 1)));
                 if (alignmentStr == "center")
@@ -612,7 +612,7 @@ namespace tgui
                 else
                     throw Exception{"Failed to parse 'GridWidgets' property. Invalid alignment '" + alignmentStr + "'."};
 
-                addWidget(getWidgets()[i], static_cast<std::size_t>(row), static_cast<std::size_t>(col), borders, alignment);
+                addWidget(getWidgets()[i], static_cast<std::size_t>(row), static_cast<std::size_t>(col), padding, alignment);
             }
         }
     }
@@ -666,48 +666,48 @@ namespace tgui
                 switch (m_objAlignment[row][col])
                 {
                 case Alignment::UpperLeft:
-                    cellPosition.x += m_objBorders[row][col].getLeft();
-                    cellPosition.y += m_objBorders[row][col].getTop();
+                    cellPosition.x += m_objPadding[row][col].getLeft();
+                    cellPosition.y += m_objPadding[row][col].getTop();
                     break;
 
                 case Alignment::Up:
-                    cellPosition.x += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f);
-                    cellPosition.y += m_objBorders[row][col].getTop();
+                    cellPosition.x += m_objPadding[row][col].getLeft() + (((m_columnWidth[col] - m_objPadding[row][col].getLeft() - m_objPadding[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f);
+                    cellPosition.y += m_objPadding[row][col].getTop();
                     break;
 
                 case Alignment::UpperRight:
-                    cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x;
-                    cellPosition.y += m_objBorders[row][col].getTop();
+                    cellPosition.x += m_columnWidth[col] - m_objPadding[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x;
+                    cellPosition.y += m_objPadding[row][col].getTop();
                     break;
 
                 case Alignment::Right:
-                    cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x;
-                    cellPosition.y += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f);
+                    cellPosition.x += m_columnWidth[col] - m_objPadding[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x;
+                    cellPosition.y += m_objPadding[row][col].getTop() + (((m_rowHeight[row] - m_objPadding[row][col].getTop() - m_objPadding[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f);
                     break;
 
                 case Alignment::BottomRight:
-                    cellPosition.x += m_columnWidth[col] - m_objBorders[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x;
-                    cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y;
+                    cellPosition.x += m_columnWidth[col] - m_objPadding[row][col].getRight() - m_gridWidgets[row][col]->getFullSize().x;
+                    cellPosition.y += m_rowHeight[row] - m_objPadding[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y;
                     break;
 
                 case Alignment::Bottom:
-                    cellPosition.x += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f);
-                    cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y;
+                    cellPosition.x += m_objPadding[row][col].getLeft() + (((m_columnWidth[col] - m_objPadding[row][col].getLeft() - m_objPadding[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f);
+                    cellPosition.y += m_rowHeight[row] - m_objPadding[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y;
                     break;
 
                 case Alignment::BottomLeft:
-                    cellPosition.x += m_objBorders[row][col].getLeft();
-                    cellPosition.y += m_rowHeight[row] - m_objBorders[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y;
+                    cellPosition.x += m_objPadding[row][col].getLeft();
+                    cellPosition.y += m_rowHeight[row] - m_objPadding[row][col].getBottom() - m_gridWidgets[row][col]->getFullSize().y;
                     break;
 
                 case Alignment::Left:
-                    cellPosition.x += m_objBorders[row][col].getLeft();
-                    cellPosition.y += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f);
+                    cellPosition.x += m_objPadding[row][col].getLeft();
+                    cellPosition.y += m_objPadding[row][col].getTop() + (((m_rowHeight[row] - m_objPadding[row][col].getTop() - m_objPadding[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f);
                     break;
 
                 case Alignment::Center:
-                    cellPosition.x += m_objBorders[row][col].getLeft() + (((m_columnWidth[col] - m_objBorders[row][col].getLeft() - m_objBorders[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f);
-                    cellPosition.y += m_objBorders[row][col].getTop() + (((m_rowHeight[row] - m_objBorders[row][col].getTop() - m_objBorders[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f);
+                    cellPosition.x += m_objPadding[row][col].getLeft() + (((m_columnWidth[col] - m_objPadding[row][col].getLeft() - m_objPadding[row][col].getRight()) - m_gridWidgets[row][col]->getFullSize().x) / 2.f);
+                    cellPosition.y += m_objPadding[row][col].getTop() + (((m_rowHeight[row] - m_objPadding[row][col].getTop() - m_objPadding[row][col].getBottom()) - m_gridWidgets[row][col]->getFullSize().y) / 2.f);
                     break;
                 }
 
@@ -741,12 +741,12 @@ namespace tgui
                     continue;
 
                 // Remember the biggest column width
-                if (m_columnWidth[col] < m_gridWidgets[row][col]->getFullSize().x + m_objBorders[row][col].getLeft() + m_objBorders[row][col].getRight())
-                    m_columnWidth[col] = m_gridWidgets[row][col]->getFullSize().x + m_objBorders[row][col].getLeft() + m_objBorders[row][col].getRight();
+                if (m_columnWidth[col] < m_gridWidgets[row][col]->getFullSize().x + m_objPadding[row][col].getLeft() + m_objPadding[row][col].getRight())
+                    m_columnWidth[col] = m_gridWidgets[row][col]->getFullSize().x + m_objPadding[row][col].getLeft() + m_objPadding[row][col].getRight();
 
                 // Remember the biggest row height
-                if (m_rowHeight[row] < m_gridWidgets[row][col]->getFullSize().y + m_objBorders[row][col].getTop() + m_objBorders[row][col].getBottom())
-                    m_rowHeight[row] = m_gridWidgets[row][col]->getFullSize().y + m_objBorders[row][col].getTop() + m_objBorders[row][col].getBottom();
+                if (m_rowHeight[row] < m_gridWidgets[row][col]->getFullSize().y + m_objPadding[row][col].getTop() + m_objPadding[row][col].getBottom())
+                    m_rowHeight[row] = m_gridWidgets[row][col]->getFullSize().y + m_objPadding[row][col].getTop() + m_objPadding[row][col].getBottom();
             }
         }
 

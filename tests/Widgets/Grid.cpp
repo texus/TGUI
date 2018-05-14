@@ -42,12 +42,12 @@ TEST_CASE("[Grid]")
 
         REQUIRE(grid->getWidgets().size() == 1);
         REQUIRE(grid->getWidget(3, 2) == widget1);
-        REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(0));
+        REQUIRE(grid->getWidgetPadding(3, 2) ==  tgui::Padding(0));
         REQUIRE(grid->getWidgetAlignment(3, 2) == tgui::Grid::Alignment::Center);
 
         // Accessing empty cell
         REQUIRE(grid->getWidget(0, 0) == nullptr);
-        REQUIRE(grid->getWidgetBorders(0, 0) == tgui::Borders{0});
+        REQUIRE(grid->getWidgetPadding(0, 0) ==  tgui::Padding{0});
         REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::Center);
 
         auto widget2 = tgui::ClickableWidget::create({20, 10});
@@ -56,7 +56,7 @@ TEST_CASE("[Grid]")
 
         REQUIRE(grid->getWidgets().size() == 2); // addWidget did not add a duplicate or widget2
         REQUIRE(grid->getWidget(0, 0) == widget2);
-        REQUIRE(grid->getWidgetBorders(0, 0) == tgui::Borders(1, 2, 3, 4));
+        REQUIRE(grid->getWidgetPadding(0, 0) ==  tgui::Padding(1, 2, 3, 4));
         REQUIRE(grid->getWidgetAlignment(0, 0) == tgui::Grid::Alignment::UpperLeft);
     }
 
@@ -81,15 +81,15 @@ TEST_CASE("[Grid]")
         auto widget = tgui::ClickableWidget::create({40, 30});
         grid->addWidget(widget, 3, 2, {1, 2, 3, 4});
 
-        REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(1, 2, 3, 4));
-        grid->setWidgetBorders(widget, {});
-        REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(0, 0, 0, 0));
-        grid->setWidgetBorders(3, 2, {5, 6, 7, 8});
-        REQUIRE(grid->getWidgetBorders(3, 2) == tgui::Borders(5, 6, 7, 8));
+        REQUIRE(grid->getWidgetPadding(3, 2) ==  tgui::Padding(1, 2, 3, 4));
+        grid->setWidgetPadding(widget, {});
+        REQUIRE(grid->getWidgetPadding(3, 2) ==  tgui::Padding(0, 0, 0, 0));
+        grid->setWidgetPadding(3, 2, {5, 6, 7, 8});
+        REQUIRE(grid->getWidgetPadding(3, 2) ==  tgui::Padding(5, 6, 7, 8));
 
         // You can't change the borders of an empty cell
-        grid->setWidgetBorders(0, 0, {1, 2, 3, 4});
-        REQUIRE(grid->getWidgetBorders(0, 0) == tgui::Borders(0, 0, 0, 0));
+        grid->setWidgetPadding(0, 0, {1, 2, 3, 4});
+        REQUIRE(grid->getWidgetPadding(0, 0) ==  tgui::Padding(0, 0, 0, 0));
     }
 
     SECTION("Alignment")
