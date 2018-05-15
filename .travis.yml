@@ -30,12 +30,10 @@ matrix:
         packages:
         - g++-6
         - libudev-dev
-        - libx11-xcb-dev
-        - libxcb-image0-dev
-        - libxcb-randr0-dev
+        - libxrandr-dev
     cache:
       directories:
-      - $HOME/SFML-2.4.0_LINUX
+      - $HOME/SFML-2.5.0_LINUX
 
   - os: osx
     cache:
