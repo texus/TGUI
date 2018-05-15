@@ -89,11 +89,11 @@ install:
     cd C:\ &&
     appveyor-retry choco install doxygen.portable &&
     IF NOT EXIST %SFML_ROOT% (
-      appveyor DownloadFile http://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc14-32-bit.zip -FileName SFML-Win32.zip &&
+      appveyor DownloadFile http://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc15-32-bit.zip -FileName SFML-Win32.zip &&
       7z x SFML-Win32.zip > nul &&
       mkdir %SFML_ROOT%\Win32 &&
       move SFML-%SFML_VERSION% %SFML_ROOT%\Win32\ > nul &&
-      appveyor DownloadFile http://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc14-64-bit.zip -FileName SFML-Win64.zip &&
+      appveyor DownloadFile http://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc15-64-bit.zip -FileName SFML-Win64.zip &&
       7z x SFML-Win64.zip > nul &&
       mkdir %SFML_ROOT%\Win64 &&
       move SFML-%SFML_VERSION% %SFML_ROOT%\Win64\ > nul
@@ -144,8 +144,8 @@ build_script:
       move gui-builder\Release\gui-builder.exe ..\tgui\gui-builder\ > nul &&
       cd .. &&
       echo d | xcopy /s tgui TGUI-0.8-dev > nul &&
-      7z a -tzip TGUI-0.8-dev-vc14-32bit-for-SFML-%SFML_VERSION%.zip TGUI-0.8-dev > nul &&
-      appveyor PushArtifact TGUI-0.8-dev-vc14-32bit-for-SFML-%SFML_VERSION%.zip &&
+      7z a -tzip TGUI-0.8-dev-vc15-32bit-for-SFML-%SFML_VERSION%.zip TGUI-0.8-dev > nul &&
+      appveyor PushArtifact TGUI-0.8-dev-vc15-32bit-for-SFML-%SFML_VERSION%.zip &&
       rmdir /S /Q TGUI-0.8-dev > nul &&
       rmdir /S /Q tgui\doc\html > nul &&
       rmdir /S /Q tgui\lib > nul &&
@@ -170,8 +170,8 @@ build_script:
       move gui-builder\Release\gui-builder.exe ..\tgui\gui-builder\ > nul &&
       cd .. &&
       echo d | xcopy /s tgui TGUI-0.8-dev > nul &&
-      7z a -tzip TGUI-0.8-dev-vc14-64bit-for-SFML-%SFML_VERSION%.zip TGUI-0.8-dev > nul &&
-      appveyor PushArtifact TGUI-0.8-dev-vc14-64bit-for-SFML-%SFML_VERSION%.zip
+      7z a -tzip TGUI-0.8-dev-vc15-64bit-for-SFML-%SFML_VERSION%.zip TGUI-0.8-dev > nul &&
+      appveyor PushArtifact TGUI-0.8-dev-vc15-64bit-for-SFML-%SFML_VERSION%.zip
     )
 
 
