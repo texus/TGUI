@@ -10,7 +10,8 @@ Note: when the tutorial mentions c++11, use c++14 instead.
 [Windows (Visual Studio)](../v0.7/visual-studio/) - Build from source code  
 [Windows (Visual Studio)](../v0.7/visual-studio-precompiled/) - Precompiled libraries
 
-[Windows (CodeBlocks)](../v0.7/codeblocks/)
+[Windows (CodeBlocks)](codeblocks) - Build from source code  
+[Windows (CodeBlocks)](codeblocks-precompiled) - Precompiled libraries
 
 [Mac OS X (Xcode)](../v0.7/xcode/)
 
