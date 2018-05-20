@@ -112,7 +112,7 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getItemById("2") == "Item 2");
         REQUIRE(listBox->getItemById("3") == "");
     }
-    
+
     SECTION("Removing items")
     {
         listBox->addItem("Item 1", "1");
@@ -143,7 +143,7 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->removeItemById("4"));
         REQUIRE(listBox->getItemCount() == 1);
         REQUIRE(listBox->getItems()[0] == "Item 3");
-        
+
         listBox->addItem("Item 5");
         listBox->addItem("Item 5");
         listBox->addItem("Item 6");
@@ -151,7 +151,7 @@ TEST_CASE("[ListBox]")
         listBox->removeAllItems();
         REQUIRE(listBox->getItemCount() == 0);
     }
-    
+
     SECTION("Changing items")
     {
         listBox->addItem("Item 1", "1");
@@ -168,7 +168,7 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getItems()[0] == "Item 10");
         REQUIRE(listBox->getItems()[1] == "Item 2");
         REQUIRE(listBox->getItems()[2] == "Item 3");
-        
+
         REQUIRE(!listBox->changeItemById("0", "Item 00"));
         REQUIRE(listBox->getItemCount() == 3);
         REQUIRE(listBox->getItems()[0] == "Item 10");
@@ -179,7 +179,7 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getItems()[0] == "Item 10");
         REQUIRE(listBox->getItems()[1] == "Item 2");
         REQUIRE(listBox->getItems()[2] == "Item 30");
-        
+
         REQUIRE(!listBox->changeItemByIndex(3, "Item 00"));
         REQUIRE(listBox->getItemCount() == 3);
         REQUIRE(listBox->getItems()[0] == "Item 10");
@@ -199,33 +199,33 @@ TEST_CASE("[ListBox]")
         listBox->addItem("Item 3", "3");
 
         REQUIRE(listBox->getSelectedItem() == "");
-        REQUIRE(listBox->getSelectedItemId() == "");        
+        REQUIRE(listBox->getSelectedItemId() == "");
         REQUIRE(listBox->getSelectedItemIndex() == -1);
-        
+
         REQUIRE(!listBox->setSelectedItem("Item 0"));
         REQUIRE(listBox->getSelectedItemIndex() == -1);
         REQUIRE(listBox->setSelectedItem("Item 1"));
         REQUIRE(listBox->getSelectedItem() == "Item 1");
-        REQUIRE(listBox->getSelectedItemId() == "1");        
+        REQUIRE(listBox->getSelectedItemId() == "1");
         REQUIRE(listBox->getSelectedItemIndex() == 0);
 
         REQUIRE(!listBox->setSelectedItemById("0"));
         REQUIRE(listBox->getSelectedItemIndex() == -1);
         REQUIRE(listBox->setSelectedItemById("2"));
         REQUIRE(listBox->getSelectedItem() == "Item 2");
-        REQUIRE(listBox->getSelectedItemId() == "2");        
+        REQUIRE(listBox->getSelectedItemId() == "2");
         REQUIRE(listBox->getSelectedItemIndex() == 1);
 
         REQUIRE(!listBox->setSelectedItemByIndex(3));
         REQUIRE(listBox->getSelectedItemIndex() == -1);
         REQUIRE(listBox->setSelectedItemByIndex(2));
         REQUIRE(listBox->getSelectedItem() == "Item 3");
-        REQUIRE(listBox->getSelectedItemId() == "3");        
+        REQUIRE(listBox->getSelectedItemId() == "3");
         REQUIRE(listBox->getSelectedItemIndex() == 2);
 
         listBox->deselectItem();
         REQUIRE(listBox->getSelectedItem() == "");
-        REQUIRE(listBox->getSelectedItemId() == "");        
+        REQUIRE(listBox->getSelectedItemId() == "");
         REQUIRE(listBox->getSelectedItemIndex() == -1);
     }
 
@@ -450,7 +450,7 @@ TEST_CASE("[ListBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", "{ TrackColor = Red; ThumbColor = Blue; }"));
                 REQUIRE_NOTHROW(renderer->setProperty("ScrollbarWidth", "15"));
             }
-            
+
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("BackgroundColor", sf::Color{20, 30, 40}));
@@ -545,7 +545,7 @@ TEST_CASE("[ListBox]")
         listBox->setTextSize(20);
         listBox->setMaximumItems(5);
         listBox->setAutoScroll(false);
-        
+
         testSavingWidget("ListBox", listBox);
     }
 
