@@ -61,6 +61,123 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getFullSize() == tabs->getSize());
     }
 
+    SECTION("Adding items")
+    {
+        REQUIRE(tabs->getTabsCount() == 0);
+        tabs->add("Item 1");
+        REQUIRE(tabs->getTabsCount() == 1);
+        tabs->add("Item 2");
+        tabs->add("Item 4");
+        REQUIRE(tabs->getTabsCount() == 3);
+
+        tabs->insert(2, "Item 3");
+        REQUIRE(tabs->getTabsCount() == 4);
+
+        REQUIRE(tabs->getText(0) == "Item 1");
+        REQUIRE(tabs->getText(1) == "Item 2");
+        REQUIRE(tabs->getText(2) == "Item 3");
+        REQUIRE(tabs->getText(3) == "Item 4");
+    }
+
+    SECTION("Removing items")
+    {
+        tabs->add("Item 1");
+        tabs->add("Item 2");
+        tabs->add("Item 3");
+        REQUIRE(tabs->getTabsCount() == 3);
+
+        REQUIRE(!tabs->remove("Item 0"));
+        REQUIRE(tabs->getTabsCount() == 3);
+        REQUIRE(tabs->remove("Item 2"));
+        REQUIRE(tabs->getTabsCount() == 2);
+
+        tabs->add("Item 4");
+        REQUIRE(tabs->getTabsCount() == 3);
+        REQUIRE(tabs->getText(0) == "Item 1");
+        REQUIRE(tabs->getText(1) == "Item 3");
+        REQUIRE(tabs->getText(2) == "Item 4");
+
+        REQUIRE(!tabs->remove(3));
+        REQUIRE(tabs->getTabsCount() == 3);
+        REQUIRE(tabs->remove(0));
+        REQUIRE(tabs->getTabsCount() == 2);
+        REQUIRE(tabs->getText(0) == "Item 3");
+        REQUIRE(tabs->getText(1) == "Item 4");
+
+        tabs->add("Item 5");
+        tabs->add("Item 5");
+        tabs->add("Item 6");
+        REQUIRE(tabs->getTabsCount() == 5);
+        tabs->removeAll();
+        REQUIRE(tabs->getTabsCount() == 0);
+    }
+
+    SECTION("Changing items")
+    {
+        tabs->add("Item 1");
+        tabs->add("Item 2");
+        tabs->add("Item 3");
+
+        REQUIRE(!tabs->changeText(3, "Item 00"));
+        REQUIRE(tabs->getTabsCount() == 3);
+        REQUIRE(tabs->getText(0) == "Item 1");
+        REQUIRE(tabs->getText(1) == "Item 2");
+        REQUIRE(tabs->getText(2) == "Item 3");
+        REQUIRE(tabs->changeText(1, "Item 20"));
+        REQUIRE(tabs->getTabsCount() == 3);
+        REQUIRE(tabs->getText(0) == "Item 1");
+        REQUIRE(tabs->getText(1) == "Item 20");
+        REQUIRE(tabs->getText(2) == "Item 3");
+    }
+
+    SECTION("Selecting items")
+    {
+        tabs->add("Item 1", false);
+        REQUIRE(tabs->getSelected() == "");
+        REQUIRE(tabs->getSelectedIndex() == -1);
+
+        tabs->add("Item 2", true);
+        REQUIRE(tabs->getSelected() == "Item 2");
+        REQUIRE(tabs->getSelectedIndex() == 1);
+
+        tabs->add("Item 3", false);
+        REQUIRE(tabs->getSelected() == "Item 2");
+        REQUIRE(tabs->getSelectedIndex() == 1);
+
+        tabs->add("Item 4");
+        REQUIRE(tabs->getSelected() == "Item 4");
+        REQUIRE(tabs->getSelectedIndex() == 3);
+
+        REQUIRE(!tabs->select("Item 0"));
+        REQUIRE(tabs->getSelected() == "");
+        REQUIRE(tabs->getSelectedIndex() == -1);
+
+        REQUIRE(tabs->select("Item 1"));
+        REQUIRE(tabs->getSelected() == "Item 1");
+        REQUIRE(tabs->getSelectedIndex() == 0);
+
+        REQUIRE(!tabs->select(4));
+        REQUIRE(tabs->getSelected() == "");
+        REQUIRE(tabs->getSelectedIndex() == -1);
+
+        REQUIRE(tabs->select(2));
+        REQUIRE(tabs->getSelected() == "Item 3");
+        REQUIRE(tabs->getSelectedIndex() == 2);
+
+        tabs->deselect();
+        REQUIRE(tabs->getSelected() == "");
+        REQUIRE(tabs->getSelectedIndex() == -1);
+    }
+
+    SECTION("AutoSize")
+    {
+        REQUIRE(tabs->getAutoSize());
+        tabs->setAutoSize(false);
+        REQUIRE(!tabs->getAutoSize());
+        tabs->setAutoSize(true);
+        REQUIRE(tabs->getAutoSize());
+    }
+
     SECTION("TabVisible")
     {
         REQUIRE(!tabs->getTabVisible(0)); // Tab that doesn't exist can't be visible
@@ -99,7 +216,76 @@ TEST_CASE("[Tabs]")
         REQUIRE(!tabs->getTabEnabled(2)); // Tab that doesn't exist can't be enabled
     }
 
-    /// TODO: Test the functions in the Tab class
+    SECTION("TextSize")
+    {
+        tabs->setTextSize(12);
+        REQUIRE(tabs->getTextSize() == 12);
+    }
+
+    SECTION("TabHeight")
+    {
+        tabs->setTabHeight(20);
+        REQUIRE(tabs->getSize().y == 20);
+    }
+
+    SECTION("MinimumTabWidth")
+    {
+        REQUIRE(tabs->getMinimumTabWidth() == 0);
+        tabs->setMinimumTabWidth(30);
+        REQUIRE(tabs->getMinimumTabWidth() == 30);
+    }
+
+    SECTION("MaximumTabWidth")
+    {
+        REQUIRE(tabs->getMaximumTabWidth() == 0);
+        tabs->setMaximumTabWidth(60);
+        REQUIRE(tabs->getMaximumTabWidth() == 60);
+    }
+
+    SECTION("Events / Signals")
+    {
+        SECTION("Widget")
+        {
+            testWidgetSignals(tabs);
+        }
+
+        SECTION("TabSelected")
+        {
+            tabs->setSize({300, 20});
+
+            unsigned int tabSelectedCount = 0;
+            tabs->connect("TabSelected", &genericCallback, std::ref(tabSelectedCount));
+
+            tabs->add("1");
+            tabs->add("2");
+            REQUIRE(tabSelectedCount == 2);
+
+            tabs->add("3", false);
+            REQUIRE(tabSelectedCount == 2);
+
+            tabs->select("3");
+            REQUIRE(tabSelectedCount == 3);
+
+            tabs->select(0);
+            REQUIRE(tabSelectedCount == 4);
+
+            const sf::Vector2f mousePos1{200, 10};
+            tabs->leftMousePressed(mousePos1);
+            tabs->leftMouseReleased(mousePos1);
+            REQUIRE(tabs->getSelected() == "3");
+            REQUIRE(tabSelectedCount == 5);
+
+            const sf::Vector2f mousePos2{199, 10};
+            tabs->leftMousePressed(mousePos2);
+            tabs->leftMouseReleased(mousePos2);
+            REQUIRE(tabs->getSelected() == "2");
+            REQUIRE(tabSelectedCount == 6);
+
+            tabs->leftMousePressed(mousePos2);
+            tabs->leftMouseReleased(mousePos2);
+            REQUIRE(tabSelectedCount == 6);
+        }
+    }
 
     testWidgetRenderer(tabs->getRenderer());
     SECTION("Renderer")
