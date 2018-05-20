@@ -186,29 +186,25 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Selects the tab with a given text
-        ///
         /// @param text  The text of the tab to select
-        ///
-        /// When the text doen't match any tab then nothing will be changed.
-        /// If there are multiple tabs with the same text then the first one will be selected.
-        ///
+        /// @return Whether a tab was selected, false is returned if tab doesn't exist or is invisible or disabled
         /// @see select(int)
         ///
+        /// If there are multiple tabs with the same text then the first one will be selected.
+        /// When false is returned, the selected tab will still be deselected.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void select(const sf::String& text);
+        bool select(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Selects the tab with a given index
-        ///
         /// @param index  The index of the tab to select
-        ///
-        /// When the index is too high then nothing will happen.
-        ///
+        /// @return Whether a tab was selected, false is returned if the index was too high or if tab is invisible or disabled
         /// @see select(sf::String)
         ///
+        /// When false is returned, the selected tab will still be deselected.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void select(std::size_t index);
+        bool select(std::size_t index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,28 +216,21 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes a tab with a given text
-        ///
         /// @param text  The text on the tab to remove
-        ///
-        /// When multiple tabs have the same text, only the first will be removed.
-        ///
-        /// @see remove(unsigned int)
-        ///
+        /// @return Whether a tab was removed, false is returned when the text didn't match any tab
+        /// @see remove(std::size_t)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void remove(const sf::String& text);
+        bool remove(const sf::String& text);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes a tab with a given index
-        ///
         /// @param index  The index of the tab to remove
-        ///
-        /// When the index is too high then nothing will happen.
-        ///
+        /// @return Whether a tab was removed, false is returned when the index was too high
         /// @see remove(sf::String)
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void remove(std::size_t index);
+        bool remove(std::size_t index);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

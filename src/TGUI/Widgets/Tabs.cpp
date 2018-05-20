@@ -197,39 +197,37 @@ namespace tgui
 
         m_tabs[index].text.setString(text);
         recalculateTabsWidth();
-
         return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::select(const sf::String& text)
+    bool Tabs::select(const sf::String& text)
     {
         for (unsigned int i = 0; i < m_tabs.size(); ++i)
         {
             if (m_tabs[i].text.getString() == text)
-            {
-                select(i);
-                return;
-            }
+                return select(i);
         }
+
+        deselect();
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::select(std::size_t index)
+    bool Tabs::select(std::size_t index)
     {
-        // If the index is too big then do nothing
-        if (index > m_tabs.size() - 1)
-            return;
-
         // Don't select a tab that is already selected
         if (m_selectedTab == static_cast<int>(index))
-            return;
+            return true;
 
-        // Don't select an invisible or disabled tab
-        if (!m_enabled || !m_tabs[index].visible || !m_tabs[index].enabled)
-            return;
+        // If the index is too high or if the tab is invisible or disabled then we can't select it
+        if ((index >= m_tabs.size()) || !m_enabled || !m_tabs[index].visible || !m_tabs[index].enabled)
+        {
+            deselect();
+            return false;
+        }
 
         if (m_selectedTab >= 0)
             m_tabs[m_selectedTab].text.setColor(m_textColorCached);
@@ -240,6 +238,7 @@ namespace tgui
 
         // Send the callback
         onTabSelect.emit(this, m_tabs[index].text.getString());
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -247,32 +246,32 @@ namespace tgui
     void Tabs::deselect()
     {
         if (m_selectedTab >= 0)
-            m_tabs[m_selectedTab].text.setColor(m_textColorCached);
-
-        m_selectedTab = -1;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Tabs::remove(const sf::String& text)
-    {
-        for (unsigned int i = 0; i < m_tabs.size(); ++i)
         {
-            if (m_tabs[i].text.getString() == text)
-            {
-                remove(i);
-                break;
-            }
+            m_tabs[m_selectedTab].text.setColor(m_textColorCached);
+            m_selectedTab = -1;
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::remove(std::size_t index)
+    bool Tabs::remove(const sf::String& text)
+    {
+        for (unsigned int i = 0; i < m_tabs.size(); ++i)
+        {
+            if (m_tabs[i].text.getString() == text)
+                return remove(i);
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Tabs::remove(std::size_t index)
     {
         // The index can't be too high
         if (index > m_tabs.size() - 1)
-            return;
+            return false;
 
         // Remove the tab
         m_tabs.erase(m_tabs.begin() + index);
@@ -285,6 +284,7 @@ namespace tgui
 
         // New hovered tab depends on several factors, we keep it simple and just remove the hover state
         m_hoveringTab = -1;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
