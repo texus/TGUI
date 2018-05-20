@@ -185,9 +185,9 @@ namespace tgui
     Vector2f Slider::getWidgetOffset() const
     {
         if (m_verticalScroll)
-            return {std::min(0.f, getSize().x - m_thumb.width), -m_thumb.height / 2.f};
+            return {std::min(0.f, (getSize().x - m_thumb.width) / 2.f), -m_thumb.height / 2.f};
         else
-            return {-m_thumb.width / 2.f, std::min(0.f, getSize().y - m_thumb.height)};
+            return {-m_thumb.width / 2.f, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,6 +326,15 @@ namespace tgui
     {
         m_mouseDown = true;
 
+        if (FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
+        {
+            m_mouseDownOnThumb = true;
+            m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
+            m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
+        }
+        else // The mouse is not on top of the thumb
+            m_mouseDownOnThumb = false;
+
         // Refresh the value
         mouseMoved(pos);
     }
@@ -348,76 +357,63 @@ namespace tgui
         if (!m_mouseHover)
             mouseEnteredWidget();
 
-        // Check if the mouse button is down
-        if (m_mouseDown)
+        if (!m_mouseDown)
+            return;
+
+        // Check in which direction the slider goes
+        if (m_verticalScroll)
         {
-            // Check in which direction the slider goes
-            if (m_verticalScroll)
-            {
-                // Check if the click occurred on the track
-                if (!m_mouseDownOnThumb)
-                {
-                    m_mouseDownOnThumb = true;
-                    m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
-                    m_mouseDownOnThumbPos.y = m_thumb.height / 2.0f;
-                }
-
-                float value = m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum));
-                if (m_invertedDirection)
-                    value = m_maximum - (value - m_minimum);
-
-                setValue(value);
-
-                // Set the thumb position for smooth scrolling
-                const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
-                if ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))
-                    m_thumb.top = thumbTop;
-                else
-                {
-                    m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
-                    if (m_invertedDirection)
-                        m_thumb.top = getSize().y - m_thumb.top - m_thumb.height;
-                }
-            }
-            else // the slider lies horizontal
-            {
-                // Check if the click occurred on the track
-                if (!m_mouseDownOnThumb)
-                {
-                    m_mouseDownOnThumb = true;
-                    m_mouseDownOnThumbPos.x = m_thumb.width / 2.0f;
-                    m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
-                }
-
-                float value = (((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum;
-                if (m_invertedDirection)
-                    value = m_maximum - (value - m_minimum);
-
-                setValue(value);
-
-                // Set the thumb position for smooth scrolling
-                const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
-                if ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))
-                    m_thumb.left = thumbLeft;
-                else
-                {
-                    m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
-                    if (m_invertedDirection)
-                        m_thumb.left = getSize().x - m_thumb.left - m_thumb.width;
-                }
-            }
-        }
-        else // Normal mouse move
-        {
-            // Set some variables so that when the mouse goes down we know whether it is on the track or not
-            if (FloatRect(m_thumb.left, m_thumb.top, m_thumb.width, m_thumb.height).contains(pos))
+            // Check if the click occurred on the track
+            if (!m_mouseDownOnThumb)
             {
                 m_mouseDownOnThumb = true;
                 m_mouseDownOnThumbPos.x = pos.x - m_thumb.left;
+                m_mouseDownOnThumbPos.y = m_thumb.height / 2.0f;
+            }
+
+            float value = m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum));
+            if (m_invertedDirection)
+                value = m_maximum - (value - m_minimum);
+
+            setValue(value);
+
+            // Set the thumb position for smooth scrolling
+            const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
+            if ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))
+                m_thumb.top = thumbTop;
+            else
+            {
+                m_thumb.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_value)) - (m_thumb.height / 2.0f);
+                if (m_invertedDirection)
+                    m_thumb.top = getSize().y - m_thumb.top - m_thumb.height;
+            }
+        }
+        else // the slider lies horizontal
+        {
+            // Check if the click occurred on the track
+            if (!m_mouseDownOnThumb)
+            {
+                m_mouseDownOnThumb = true;
+                m_mouseDownOnThumbPos.x = m_thumb.width / 2.0f;
                 m_mouseDownOnThumbPos.y = pos.y - m_thumb.top;
             }
-            else // The mouse is not on top of the thumb
-                m_mouseDownOnThumb = false;
+
+            float value = (((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum;
+            if (m_invertedDirection)
+                value = m_maximum - (value - m_minimum);
+
+            setValue(value);
+
+            // Set the thumb position for smooth scrolling
+            const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
+            if ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))
+                m_thumb.left = thumbLeft;
+            else
+            {
+                m_thumb.left = (getSize().x / (m_maximum - m_minimum) * (m_value - m_minimum)) - (m_thumb.width / 2.0f);
+                if (m_invertedDirection)
+                    m_thumb.left = getSize().x - m_thumb.left - m_thumb.width;
+            }
         }
     }
 
@@ -425,10 +421,11 @@ namespace tgui
 
     void Slider::mouseWheelScrolled(float delta, Vector2f)
     {
+        if (m_invertedDirection)
+            delta = -delta;
+
         if (m_step == 0)
-        {
             setValue(m_value + delta);
-        }
         else
         {
             if (std::abs(delta) <= 1)
