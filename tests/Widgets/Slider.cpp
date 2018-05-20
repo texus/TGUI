@@ -49,13 +49,32 @@ TEST_CASE("[Slider]")
     SECTION("Position and Size")
     {
         slider->setPosition(40, 30);
-        slider->setSize(150, 25);
         slider->getRenderer()->setBorders(2);
 
-        REQUIRE(slider->getPosition() == sf::Vector2f(40, 30));
-        REQUIRE(slider->getSize() == sf::Vector2f(150, 25));
+        SECTION("Horizontal")
+        {
+            slider->setSize(150, 25);
 
-        // TODO: Test getFullSize and getWidgetOffset
+            float thumbHeight = slider->getSize().y * 1.6f;
+            float thumbWidth = thumbHeight / 2.f;
+            REQUIRE(slider->getSize() == sf::Vector2f(150, 25));
+            REQUIRE(slider->getFullSize() == sf::Vector2f(slider->getSize().x + thumbWidth, thumbHeight));
+            REQUIRE(slider->getWidgetOffset() == -sf::Vector2f(thumbWidth / 2.f, (thumbHeight - slider->getSize().y) / 2.f));
+        }
+
+        SECTION("Vertical")
+        {
+            slider->setSize(20, 140);
+
+            float thumbWidth = slider->getSize().x * 1.6f;
+            float thumbHeight = thumbWidth / 2.f;
+
+            REQUIRE(slider->getSize() == sf::Vector2f(20, 140));
+            REQUIRE(slider->getFullSize() == sf::Vector2f(thumbWidth, slider->getSize().y + thumbHeight));
+            REQUIRE(slider->getWidgetOffset() == -sf::Vector2f((thumbWidth - slider->getSize().x) / 2.f, thumbHeight / 2.f));
+        }
+
+        REQUIRE(slider->getPosition() == sf::Vector2f(40, 30));
     }
 
     SECTION("Minimum")
@@ -151,16 +170,91 @@ TEST_CASE("[Slider]")
 
         SECTION("ValueChanged")
         {
+            slider->setStep(2);
+            slider->setInvertedDirection(true);
+            slider->setValue(10);
+
             unsigned int valueChangedCount = 0;
             slider->connect("ValueChanged", &genericCallback, std::ref(valueChangedCount));
 
-            slider->setValue(14);
-            REQUIRE(valueChangedCount == 1);
+            SECTION("setValue")
+            {
+                slider->setValue(14);
+                REQUIRE(valueChangedCount == 1);
 
-            slider->setValue(14);
-            REQUIRE(valueChangedCount == 1);
+                slider->setValue(14);
+                REQUIRE(valueChangedCount == 1);
+            }
 
-            // TODO: Test value changes on mouse events
+            SECTION("Horizontal slider")
+            {
+                slider->setSize(140, 20);
+
+                SECTION("Click on track")
+                {
+                    REQUIRE(valueChangedCount == 0);
+                    slider->leftMousePressed({71, 10});
+                    REQUIRE(slider->getValue() == 14);
+                    REQUIRE(valueChangedCount == 1);
+                    slider->leftMouseReleased({71, 10});
+                    slider->mouseNoLongerDown();
+                    REQUIRE(valueChangedCount == 1);
+                }
+
+                SECTION("Dragging thumb")
+                {
+                    slider->leftMousePressed({134, 10});
+                    REQUIRE(valueChangedCount == 0);
+                    slider->mouseMoved({10, 10});
+                    REQUIRE(slider->getValue() == 18);
+                    REQUIRE(valueChangedCount == 1);
+                }
+
+                SECTION("Mouse wheel scroll")
+                {
+                    slider->mouseWheelScrolled(-2, {});
+                    REQUIRE(slider->getValue() == 14);
+                    REQUIRE(valueChangedCount == 1);
+                    slider->mouseWheelScrolled(1, {});
+                    REQUIRE(slider->getValue() == 12);
+                    REQUIRE(valueChangedCount == 2);
+                }
+            }
+
+            SECTION("Vertical slider")
+            {
+                slider->setSize(20, 140);
+
+                SECTION("Click on track")
+                {
+                    REQUIRE(valueChangedCount == 0);
+                    slider->leftMousePressed({10, 71});
+                    REQUIRE(slider->getValue() == 16);
+                    REQUIRE(valueChangedCount == 1);
+                    slider->leftMouseReleased({10, 71});
+                    slider->mouseNoLongerDown();
+                    REQUIRE(valueChangedCount == 1);
+                }
+
+                SECTION("Dragging thumb")
+                {
+                    slider->leftMousePressed({10, 6});
+                    REQUIRE(valueChangedCount == 0);
+                    slider->mouseMoved({10, 130});
+                    REQUIRE(slider->getValue() == 18);
+                    REQUIRE(valueChangedCount == 1);
+                }
+
+                SECTION("Mouse wheel scroll")
+                {
+                    slider->mouseWheelScrolled(-2, {});
+                    REQUIRE(slider->getValue() == 14);
+                    REQUIRE(valueChangedCount == 1);
+                    slider->mouseWheelScrolled(1, {});
+                    REQUIRE(slider->getValue() == 12);
+                    REQUIRE(valueChangedCount == 2);
+                }
+            }
         }
     }
 
