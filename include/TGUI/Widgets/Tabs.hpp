@@ -505,7 +505,9 @@ namespace tgui
         std::vector<Tab> m_tabs;
 
         Sprite m_spriteTab;
+        Sprite m_spriteTabHover;
         Sprite m_spriteSelectedTab;
+        Sprite m_spriteSelectedTabHover;
         Sprite m_spriteDisabledTab;
 
         // Cached renderer properties

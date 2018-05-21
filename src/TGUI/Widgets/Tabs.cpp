@@ -599,9 +599,17 @@ namespace tgui
         {
             m_spriteTab.setTexture(getSharedRenderer()->getTextureTab());
         }
+        else if (property == "texturetabhover")
+        {
+            m_spriteTabHover.setTexture(getSharedRenderer()->getTextureTabHover());
+        }
         else if (property == "textureselectedtab")
         {
             m_spriteSelectedTab.setTexture(getSharedRenderer()->getTextureSelectedTab());
+        }
+        else if (property == "textureselectedtabhover")
+        {
+            m_spriteSelectedTabHover.setTexture(getSharedRenderer()->getTextureSelectedTabHover());
         }
         else if (property == "texturedisabledtab")
         {
@@ -641,7 +649,10 @@ namespace tgui
             Widget::rendererChanged(property);
 
             m_spriteTab.setOpacity(m_opacityCached);
+            m_spriteTabHover.setOpacity(m_opacityCached);
             m_spriteSelectedTab.setOpacity(m_opacityCached);
+            m_spriteSelectedTabHover.setOpacity(m_opacityCached);
+            m_spriteDisabledTab.setOpacity(m_opacityCached);
 
             for (auto& tab : m_tabs)
                 tab.text.setOpacity(m_opacityCached);
@@ -818,7 +829,14 @@ namespace tgui
                 if ((!m_enabled || !m_tabs[i].enabled) && m_spriteDisabledTab.isSet())
                     spriteTab = m_spriteDisabledTab;
                 else if (m_selectedTab == static_cast<int>(i))
-                    spriteTab = m_spriteSelectedTab;
+                {
+                    if ((m_hoveringTab == static_cast<int>(i)) && m_spriteSelectedTabHover.isSet())
+                        spriteTab = m_spriteSelectedTabHover;
+                    else
+                        spriteTab = m_spriteSelectedTab;
+                }
+                else if ((m_hoveringTab == static_cast<int>(i)) && m_spriteTabHover.isSet())
+                    spriteTab = m_spriteTabHover;
                 else
                     spriteTab = m_spriteTab;
 

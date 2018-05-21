@@ -45,7 +45,9 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(TabsRenderer, BorderColor, Color::Black)
 
     TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureTab)
+    TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureTabHover)
     TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureSelectedTab)
+    TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureSelectedTabHover)
     TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureDisabledTab)
 
     TGUI_RENDERER_PROPERTY_NUMBER(TabsRenderer, DistanceToSide, 0)

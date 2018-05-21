@@ -338,32 +338,44 @@ TEST_CASE("[Tabs]")
 
         SECTION("textured")
         {
-            tgui::Texture textureNormal("resources/Black.png", {0, 0, 60, 32}, {16, 0, 28, 32});
-            tgui::Texture textureSelected("resources/Black.png", {0, 32, 60, 32}, {16, 0, 28, 32});
+            tgui::Texture textureNormal{"resources/Black.png", {0, 0, 60, 32}, {16, 0, 28, 32}};
+            tgui::Texture textureHover{"resources/Black.png", {0, 0, 60, 32}, {16, 0, 28, 32}};
+            tgui::Texture textureSelected{"resources/Black.png", {0, 32, 60, 32}, {16, 0, 28, 32}};
+            tgui::Texture textureSelectedHover{"resources/Black.png", {0, 32, 60, 32}, {16, 0, 28, 32}};
 
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureTab", tgui::Serializer::serialize(textureNormal)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTabHover", tgui::Serializer::serialize(textureHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTab", tgui::Serializer::serialize(textureSelected)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTabHover", tgui::Serializer::serialize(textureSelectedHover)));
             }
 
             SECTION("set object property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureTab", textureNormal));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureTabHover", textureHover));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTab", textureSelected));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTabHover", textureSelectedHover));
             }
 
             SECTION("functions")
             {
                 renderer->setTextureTab(textureNormal);
+                renderer->setTextureTabHover(textureHover);
                 renderer->setTextureSelectedTab(textureSelected);
+                renderer->setTextureSelectedTabHover(textureSelectedHover);
             }
 
             REQUIRE(renderer->getProperty("TextureTab").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureTabHover").getTexture().getData() != nullptr);
             REQUIRE(renderer->getProperty("TextureSelectedTab").getTexture().getData() != nullptr);
+            REQUIRE(renderer->getProperty("TextureSelectedTabHover").getTexture().getData() != nullptr);
 
             REQUIRE(renderer->getTextureTab().getData() == textureNormal.getData());
+            REQUIRE(renderer->getTextureTabHover().getData() == textureHover.getData());
             REQUIRE(renderer->getTextureSelectedTab().getData() == textureSelected.getData());
+            REQUIRE(renderer->getTextureSelectedTabHover().getData() == textureSelectedHover.getData());
         }
     }
 
@@ -412,8 +424,8 @@ TEST_CASE("[Tabs]")
                                         renderer.setSelectedTextColorHover(sf::Color::Yellow);
                                         if (textured)
                                         {
-                                            //renderer.setTextureTabHover("resources/Texture3.png");
-                                            //renderer.setTextureSelectedTabHover("resources/Texture4.png");
+                                            renderer.setTextureTabHover("resources/Texture3.png");
+                                            renderer.setTextureSelectedTabHover("resources/Texture4.png");
                                         }
                                      };
 
@@ -473,7 +485,7 @@ TEST_CASE("[Tabs]")
                 }
             }
 
-            SECTION("HoverState")
+            SECTION("HoverState (mouse not over selected tab)")
             {
                 tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() / 2.f));
 
@@ -486,7 +498,7 @@ TEST_CASE("[Tabs]")
                 }
             }
 
-            SECTION("HoverState")
+            SECTION("HoverState (mouse on selected tab)")
             {
                 tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() * (2.f / 3.f)));
 
