@@ -528,26 +528,26 @@ namespace tgui
     void ComboBox::mouseWheelScrolled(float delta, Vector2f)
     {
         // Only act to scrolling when the list is not being shown
-        if (!m_listBox->isVisible())
+        if (m_listBox->isVisible())
+            return;
+
+        // Check if you are scrolling down
+        if (delta < 0)
         {
-            // Check if you are scrolling down
-            if (delta < 0)
+            // Select the next item
+            if (static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1) < m_listBox->getItemCount())
             {
-                // Select the next item
-                if (static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1) < m_listBox->getItemCount())
-                {
-                    m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1));
-                    m_text.setString(m_listBox->getSelectedItem());
-                }
+                m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() + 1));
+                m_text.setString(m_listBox->getSelectedItem());
             }
-            else // You are scrolling up
+        }
+        else // You are scrolling up
+        {
+            // Select the previous item
+            if (m_listBox->getSelectedItemIndex() > 0)
             {
-                // Select the previous item
-                if (m_listBox->getSelectedItemIndex() > 0)
-                {
-                    m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() - 1));
-                    m_text.setString(m_listBox->getSelectedItem());
-                }
+                m_listBox->setSelectedItemByIndex(static_cast<std::size_t>(m_listBox->getSelectedItemIndex() - 1));
+                m_text.setString(m_listBox->getSelectedItem());
             }
         }
     }
@@ -722,13 +722,7 @@ namespace tgui
         else // If there are no items, there should be no item ids
         {
             if (node->propertyValuePairs["itemids"])
-            {
-                if (!node->propertyValuePairs["itemids"]->listNode)
-                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
-
-                if (!node->propertyValuePairs["itemids"]->valueList.empty())
-                    throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
-            }
+                throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
         }
 
         if (node->propertyValuePairs["itemstodisplay"])

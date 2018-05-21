@@ -847,13 +847,7 @@ namespace tgui
         else // If there are no items, there should be no item ids
         {
             if (node->propertyValuePairs["itemids"])
-            {
-                if (!node->propertyValuePairs["itemids"]->listNode)
-                    throw Exception{"Failed to parse 'ItemIds' property, expected a list as value"};
-
-                if (!node->propertyValuePairs["itemids"]->valueList.empty())
-                    throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
-            }
+                throw Exception{"Found 'ItemIds' property while there is no 'Items' property"};
         }
 
         if (node->propertyValuePairs["autoscroll"])

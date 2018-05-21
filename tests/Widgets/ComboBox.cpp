@@ -25,6 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
+#include <TGUI/Widgets/Group.hpp>
 
 TEST_CASE("[ComboBox]")
 {
@@ -261,7 +262,73 @@ TEST_CASE("[ComboBox]")
             testWidgetSignals(comboBox);
         }
 
-        // TODO
+        SECTION("ItemSelected")
+        {
+            auto container = tgui::Group::create({400.f, 300.f});
+            container->add(comboBox);
+
+            auto mouseClick = [container](sf::Vector2f pos) {
+                container->mouseMoved(pos);
+                container->leftMousePressed(pos);
+                container->leftMouseReleased(pos);
+            };
+
+            unsigned int itemSelectedCount = 0;
+            comboBox->connect("ItemSelected", &genericCallback, std::ref(itemSelectedCount));
+
+            comboBox->setPosition(25, 6);
+            comboBox->setSize(150, 24);
+            comboBox->getRenderer()->setBorders(2);
+            comboBox->addItem("1");
+            comboBox->addItem("2");
+            comboBox->addItem("3");
+
+            const sf::Vector2f mousePosOnComboBox = {100, 15};
+            const sf::Vector2f mousePosOnItem1 = {100, 40};
+            const sf::Vector2f mousePosOnItem2 = {100, 60};
+
+            SECTION("Click")
+            {
+                // Selecting second item
+                mouseClick(mousePosOnComboBox);
+                REQUIRE(itemSelectedCount == 0);
+                mouseClick(mousePosOnItem2);
+                REQUIRE(itemSelectedCount == 1);
+                REQUIRE(comboBox->getSelectedItemIndex() == 1);
+
+                // List was closed when item was clicked
+                mouseClick(mousePosOnItem1);
+                REQUIRE(comboBox->getSelectedItemIndex() == 1);
+
+                // Clicking on combo box when list is open also closes list
+                mouseClick(mousePosOnComboBox);
+                mouseClick(mousePosOnComboBox);
+                mouseClick(mousePosOnItem1);
+                REQUIRE(comboBox->getSelectedItemIndex() == 1);
+
+                REQUIRE(itemSelectedCount == 1);
+            }
+
+            SECTION("Mouse wheel scroll")
+            {
+                REQUIRE(itemSelectedCount == 0);
+                container->mouseWheelScrolled(-1, mousePosOnComboBox);
+                REQUIRE(comboBox->getSelectedItemIndex() == 0);
+                REQUIRE(itemSelectedCount == 1);
+                container->mouseWheelScrolled(-1, mousePosOnComboBox);
+                REQUIRE(comboBox->getSelectedItemIndex() == 1);
+                REQUIRE(itemSelectedCount == 2);
+                container->mouseWheelScrolled(1, mousePosOnComboBox);
+                REQUIRE(comboBox->getSelectedItemIndex() == 0);
+                REQUIRE(itemSelectedCount == 3);
+
+                // Scrolling on the combo box has no effect when the list is open
+                mouseClick(mousePosOnComboBox);
+                container->mouseWheelScrolled(-1, mousePosOnComboBox);
+                REQUIRE(comboBox->getSelectedItemIndex() == 0);
+                REQUIRE(itemSelectedCount == 3);
+            }
+        }
     }
 
     testWidgetRenderer(comboBox->getRenderer());
@@ -383,5 +450,144 @@ TEST_CASE("[ComboBox]")
         comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Up);
 
         testSavingWidget("ComboBox", comboBox);
+    }
+
+    SECTION("Draw")
+    {
+        TEST_DRAW_INIT(80, 35, comboBox)
+
+        comboBox->setEnabled(true);
+        comboBox->setPosition(10, 5);
+        comboBox->setSize(60, 24);
+        comboBox->setTextSize(14);
+
+        tgui::ComboBoxRenderer renderer = tgui::RendererData::create();
+        renderer.setBackgroundColor(sf::Color::Green);
+        renderer.setTextColor(sf::Color::Red);
+        renderer.setBorderColor(sf::Color::Blue);
+        renderer.setArrowBackgroundColor(sf::Color::Cyan);
+        renderer.setArrowColor(sf::Color::Magenta);
+        renderer.setBorders({1, 2, 3, 4});
+        renderer.setTextStyle(sf::Text::Italic);
+        renderer.setOpacity(0.7f);
+        comboBox->setRenderer(renderer.getData());
+
+        auto setHoverRenderer = [&](bool textured){
+            renderer.setArrowBackgroundColorHover(sf::Color::Yellow);
+            renderer.setArrowColorHover(sf::Color::Black);
+            if (textured)
+                renderer.setTextureArrowHover("resources/Texture3.png");
+        };
+
+        comboBox->addItem("1");
+        comboBox->addItem("2");
+        comboBox->addItem("3");
+
+        const sf::Vector2f mousePos{60, 15};
+
+        SECTION("Colored")
+        {
+            SECTION("No selected item")
+            {
+                SECTION("No hover")
+                {
+                    TEST_DRAW("ComboBox_NoSelectedNoHover.png")
+                }
+
+                SECTION("Hover")
+                {
+                    comboBox->mouseMoved(mousePos);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("ComboBox_NoSelectedHover_NoHoverSet.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer(false);
+                        TEST_DRAW("ComboBox_NoSelectedHover_HoverSet.png")
+                    }
+                }
+            }
+
+            SECTION("Selected item")
+            {
+                comboBox->setSelectedItem("2");
+
+                SECTION("No hover")
+                {
+                    TEST_DRAW("ComboBox_SelectedNoHover.png")
+                }
+
+                SECTION("Hover selected")
+                {
+                    comboBox->mouseMoved(mousePos);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("ComboBox_SelectedHoverSelected_NoHoverSet.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer(false);
+                        TEST_DRAW("ComboBox_SelectedHoverSelected_HoverSet.png")
+                    }
+                }
+            }
+        }
+
+        SECTION("Textured")
+        {
+            renderer.setTextureBackground("resources/Texture1.png");
+            renderer.setTextureArrow("resources/Texture2.png");
+
+            SECTION("No selected item")
+            {
+                SECTION("No hover")
+                {
+                    TEST_DRAW("ComboBox_NoSelectedNoHover_Textured.png")
+                }
+
+                SECTION("Hover")
+                {
+                    comboBox->mouseMoved(mousePos);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("ComboBox_NoSelectedHover_NoHoverSet_Textured.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer(true);
+                        TEST_DRAW("ComboBox_NoSelectedHover_HoverSet_Textured.png")
+                    }
+                }
+            }
+
+            SECTION("Selected item")
+            {
+                comboBox->setSelectedItem("2");
+
+                SECTION("No hover")
+                {
+                    TEST_DRAW("ComboBox_SelectedNoHover_Textured.png")
+                }
+
+                SECTION("Hover selected")
+                {
+                    comboBox->mouseMoved(mousePos);
+
+                    SECTION("No hover properties set")
+                    {
+                        TEST_DRAW("ComboBox_SelectedHoverSelected_NoHoverSet_Textured.png")
+                    }
+                    SECTION("Hover properties set")
+                    {
+                        setHoverRenderer(true);
+                        TEST_DRAW("ComboBox_SelectedHoverSelected_HoverSet_Textured.png")
+                    }
+                }
+            }
+        }
     }
 }
