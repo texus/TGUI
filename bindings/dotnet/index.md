@@ -4,14 +4,11 @@ title: ".Net binding"
 breadcrumb: ".net"
 ---
 
-Please note that both the binding and TGUI 0.8 are still under development and may change at any time.
+### Download TGUI.Net 0.8-alpha
 
+{% include button.ext text="x64 windows libraries" link="https://www.dropbox.com/s/axhpop20i2ndi19/TGUI.Net-0.8-alpha-64bit.zip?dl=1" style="Orange" %}
 
-### Download
-
-{% include button.ext text="x64 windows libraries" link="https://bintray.com/texus/generic/download_file?file_path=TGUI.Net-0.8-dev-64bit.zip" style="Orange" %}
-
-{% include button.ext text="Source code" link="https://github.com/texus/TGUI.Net/archive/master.zip" style="Orange" %}
+{% include button.ext text="Source code" link="https://github.com/texus/TGUI.Net/archive/0.8-alpha.zip" style="Orange" %}
 
 To install, follow the instructions in the README.
 
