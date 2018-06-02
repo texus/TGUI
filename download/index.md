@@ -12,7 +12,7 @@ Precompiled windows libraries require matching libraries from [SFML 2.5.0](https
 Minimum supported compilers: GCC 4.9, Clang 3.6, VS2015 Update 2
 <p>
   {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.8-alpha.zip" style="Orange" %}
-  {% include button.ext text=".Net binding" link="/bindings/dotnet" style="Orange" %}<br><br>
+  {% include button.ext text=".Net binding" link="https://tgui.net" style="Orange" %}<br><br>
   {% include button.ext text="Visual C++15 (2017) - 32bit" link="https://www.dropbox.com/s/jtogkgzihc01zwj/TGUI-0.8-alpha-vc15-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
   {% include button.ext text="Visual C++15 (2017) - 64bit" link="https://www.dropbox.com/s/gi86i5rip8nr2ta/TGUI-0.8-alpha-vc15-64bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}<br><br>
   {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://www.dropbox.com/s/3tkhhy594jjo0e5/TGUI-0.8-alpha-vc14-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
