@@ -195,12 +195,12 @@ namespace tgui
 
         // Draw the background
         const Vector2f innerSize = {getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight(),
-                                        getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
+                                    getSize().y - m_bordersCached.getTop() - m_bordersCached.getBottom()};
         drawRectangleShape(target, states, innerSize, m_backgroundColorCached);
 
         states.transform.translate(m_paddingCached.getLeft(), m_paddingCached.getTop());
         const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
-                                          innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+                                      innerSize.y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
 
         // Draw the child widgets
         const Clipping clipping{target, states, {}, contentSize};
