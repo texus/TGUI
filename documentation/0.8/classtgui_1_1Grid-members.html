@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8-alpha</span>
+   &#160;<span id="projectnumber">0.8-beta</span>
    </div>
   </td>
  </tr>
@@ -116,7 +116,7 @@ $(function() {
 <p>This is the complete list of members for <a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a>, including all inherited members.</p>
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Container.html#aa6f2df81711d1576a18c674fadc4d3d2">add</a>(const Widget::Ptr &amp;widgetPtr, const sf::String &amp;widgetName=&quot;&quot;)</td><td class="entry"><a class="el" href="classtgui_1_1Container.html">tgui::Container</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a2f4565719a147310dc4c388bcf684964">addWidget</a>(const Widget::Ptr &amp;widget, std::size_t row, std::size_t column, const Borders &amp;borders=Borders{0}, Alignment alignment=Alignment::Center)</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a6779dc6f09c327282ed93815eca3c6f5">addWidget</a>(const Widget::Ptr &amp;widget, std::size_t row, std::size_t column, const Padding &amp;padding=Padding{0}, Alignment alignment=Alignment::Center)</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9">Alignment</a> enum name</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a3fd15fa81807f0522606c52bc07bb5a1">canGainFocus</a>() const</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a0333174ae05e730a3694c647aee2ce4f">cast</a>() const</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
@@ -157,12 +157,12 @@ $(function() {
   <tr><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a2755b2dbcc3d690d887db8dd215f43da">getWidget</a>(std::size_t row, std::size_t column) const</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a71fe861596879d1023b88f6c853e5af5">getWidgetAlignment</a>(const Widget::Ptr &amp;widget) const</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a73cd62611384f770f1fe23c790b7bdae">getWidgetAlignment</a>(std::size_t row, std::size_t column) const</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Grid.html#ab49e947bf6a1e0e2c8e0f7fd1fcc0333">getWidgetBorders</a>(const Widget::Ptr &amp;widget) const</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a45fdb57478ab8bdc5100eed62867c4fb">getWidgetBorders</a>(std::size_t row, std::size_t column) const</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Grid.html#afa3ffdbe8568c952899799dda755c04b">getWidgetLocations</a>() const</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Container.html#ac3a51a4bd0dc9561a90af5194a9e7d9a">getWidgetName</a>(const Widget::ConstPtr &amp;widget) const</td><td class="entry"><a class="el" href="classtgui_1_1Container.html">tgui::Container</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Container.html#abc93f66ab9b24d4291b02372364c8d19">getWidgetNames</a>() const</td><td class="entry"><a class="el" href="classtgui_1_1Container.html">tgui::Container</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#ae737b8814208dca51e4fd6a1c631af45">getWidgetOffset</a>() const</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a9336f7c7e1dc31c47702d7ccaa1c8553">getWidgetPadding</a>(const Widget::Ptr &amp;widget) const</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a7a902811092ff4b6084973b7c76f8ed5">getWidgetPadding</a>(std::size_t row, std::size_t column) const</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Container.html#a65ebb83c695089c8073a4d116d1339f3">getWidgets</a>() const</td><td class="entry"><a class="el" href="classtgui_1_1Container.html">tgui::Container</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a74f39d58b9fee9233d1c9235d466f56a">getWidgetType</a>() const</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c">Grid</a>(const Grid &amp;copy)</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
@@ -219,9 +219,9 @@ $(function() {
   <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#acfb6526cef6006135d3c8a400573b099">setVisible</a>(bool visible)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Grid.html#afa14f568c3bf8fb9d158d66848adec39">setWidgetAlignment</a>(const Widget::Ptr &amp;widget, Alignment alignment=Alignment::Center)</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Grid.html#ad1f289139d633e96d8c67e71b02a5754">setWidgetAlignment</a>(std::size_t row, std::size_t column, Alignment alignment=Alignment::Center)</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Grid.html#ae567093dd02722aec752b65baee6b751">setWidgetBorders</a>(const Widget::Ptr &amp;widget, const Borders &amp;borders=Borders(0, 0, 0, 0))</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classtgui_1_1Grid.html#acdcec25aea98f5803e5270d282ab3c67">setWidgetBorders</a>(std::size_t row, std::size_t column, const Borders &amp;borders=Borders(0, 0, 0, 0))</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Container.html#a1df09925591bb67f1ce3a73ec1aa1285">setWidgetName</a>(const Widget::Ptr &amp;widget, const std::string &amp;name)</td><td class="entry"><a class="el" href="classtgui_1_1Container.html">tgui::Container</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classtgui_1_1Grid.html#ac0e86c36be02b2df329f964d73dcaccb">setWidgetPadding</a>(const Widget::Ptr &amp;widget, const Padding &amp;padding=Padding(0, 0, 0, 0))</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Grid.html#aef0d5a4206a947a461a84944c9a85dd4">setWidgetPadding</a>(std::size_t row, std::size_t column, const Padding &amp;padding=Padding(0, 0, 0, 0))</td><td class="entry"><a class="el" href="classtgui_1_1Grid.html">tgui::Grid</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b">showWithEffect</a>(ShowAnimationType type, sf::Time duration)</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtgui_1_1Container.html#adb1456b593beb954891a063567254295">uncheckRadioButtons</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Container.html">tgui::Container</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classtgui_1_1Widget.html#a60c5722d15d0733f6743bf57c86d1c6a">Widget</a>()</td><td class="entry"><a class="el" href="classtgui_1_1Widget.html">tgui::Widget</a></td><td class="entry"></td></tr>
@@ -233,7 +233,7 @@ $(function() {
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 11 2018 12:50:26 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 26 2018 19:41:17 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

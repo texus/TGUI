@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8-alpha</span>
+   &#160;<span id="projectnumber">0.8-beta</span>
    </div>
   </td>
  </tr>
@@ -114,7 +114,8 @@ $(function() {
 , <a class="el" href="classtgui_1_1Gui.html#a04253617b5cc6cf7f1b23e444ab838fb">tgui::Gui</a>
 </li>
 <li>getAbsolutePosition()
-: <a class="el" href="classtgui_1_1Widget.html#ae4e2898c4146d5eabb09a7814e4e693b">tgui::Widget</a>
+: <a class="el" href="classtgui_1_1ScrollablePanel.html#a269fb750efc174330458da85e19be42b">tgui::ScrollablePanel</a>
+, <a class="el" href="classtgui_1_1Widget.html#ae4e2898c4146d5eabb09a7814e4e693b">tgui::Widget</a>
 </li>
 <li>getAlignment()
 : <a class="el" href="classtgui_1_1EditBox.html#ac57be09006a66f74052f8d6cd151a9bd">tgui::EditBox</a>
@@ -358,6 +359,9 @@ $(function() {
 </li>
 <li>getDefaultTextStyle()
 : <a class="el" href="classtgui_1_1EditBoxRenderer.html#a4c6258921193df99cd0bd219d8d17bbd">tgui::EditBoxRenderer</a>
+</li>
+<li>getDefaultWidth()
+: <a class="el" href="classtgui_1_1Scrollbar.html#a5bab42bb09beeb3e21347b0ba7976d74">tgui::Scrollbar</a>
 </li>
 <li>getDistanceToMouse()
 : <a class="el" href="classtgui_1_1ToolTip.html#ac93fb50a87aecbe037a0ebdc98c39f4b">tgui::ToolTip</a>
@@ -669,7 +673,11 @@ $(function() {
 , <a class="el" href="classtgui_1_1TextBoxRenderer.html#a2647def1cac7f18662d92fdf1315e966">tgui::TextBoxRenderer</a>
 </li>
 <li>getScrollbarWidth()
-: <a class="el" href="classtgui_1_1ScrollablePanel.html#a6357f7882f7ccf3dee80e136f56df507">tgui::ScrollablePanel</a>
+: <a class="el" href="classtgui_1_1ChatBoxRenderer.html#ac3bb6ef7af17d7dfa4902ed0fef77b7e">tgui::ChatBoxRenderer</a>
+, <a class="el" href="classtgui_1_1ListBoxRenderer.html#aa6dade8f719605f200f530bceb657bc1">tgui::ListBoxRenderer</a>
+, <a class="el" href="classtgui_1_1ScrollablePanel.html#a6357f7882f7ccf3dee80e136f56df507">tgui::ScrollablePanel</a>
+, <a class="el" href="classtgui_1_1ScrollablePanelRenderer.html#acc19ccac7faf9ee258201e5193de5edc">tgui::ScrollablePanelRenderer</a>
+, <a class="el" href="classtgui_1_1TextBoxRenderer.html#afe29eb9afebb7a324b0da1b180705578">tgui::TextBoxRenderer</a>
 </li>
 <li>getSelected()
 : <a class="el" href="classtgui_1_1Tabs.html#a2c12771342bfb8eb4ba0ac4e0f9e758f">tgui::Tabs</a>
@@ -1008,8 +1016,14 @@ $(function() {
 <li>getTextureSelectedTab()
 : <a class="el" href="classtgui_1_1TabsRenderer.html#ae07bb21d0a853c8fa2e32e13212dc621">tgui::TabsRenderer</a>
 </li>
+<li>getTextureSelectedTabHover()
+: <a class="el" href="classtgui_1_1TabsRenderer.html#a3b53cf384e4ba882eb0f27be46d9f4a6">tgui::TabsRenderer</a>
+</li>
 <li>getTextureTab()
 : <a class="el" href="classtgui_1_1TabsRenderer.html#a1ec9a2f1a66872913893e06cd96bcee4">tgui::TabsRenderer</a>
+</li>
+<li>getTextureTabHover()
+: <a class="el" href="classtgui_1_1TabsRenderer.html#a688b979f67019d2ec9f279f5329c40e3">tgui::TabsRenderer</a>
 </li>
 <li>getTextureThumb()
 : <a class="el" href="classtgui_1_1ScrollbarRenderer.html#a1d2a5202bc8a74ec7b2d7fb339198403">tgui::ScrollbarRenderer</a>
@@ -1132,9 +1146,6 @@ $(function() {
 <li>getWidgetAlignment()
 : <a class="el" href="classtgui_1_1Grid.html#a73cd62611384f770f1fe23c790b7bdae">tgui::Grid</a>
 </li>
-<li>getWidgetBorders()
-: <a class="el" href="classtgui_1_1Grid.html#a45fdb57478ab8bdc5100eed62867c4fb">tgui::Grid</a>
-</li>
 <li>getWidgetLocations()
 : <a class="el" href="classtgui_1_1Grid.html#afa3ffdbe8568c952899799dda755c04b">tgui::Grid</a>
 </li>
@@ -1153,6 +1164,9 @@ $(function() {
 , <a class="el" href="classtgui_1_1Slider.html#a2181870ab5c1c73231029616c2330e7d">tgui::Slider</a>
 , <a class="el" href="classtgui_1_1Widget.html#ae737b8814208dca51e4fd6a1c631af45">tgui::Widget</a>
 </li>
+<li>getWidgetPadding()
+: <a class="el" href="classtgui_1_1Grid.html#a7a902811092ff4b6084973b7c76f8ed5">tgui::Grid</a>
+</li>
 <li>getWidgets()
 : <a class="el" href="classtgui_1_1Container.html#a65ebb83c695089c8073a4d116d1339f3">tgui::Container</a>
 , <a class="el" href="classtgui_1_1Gui.html#ab50beaf56f784976bfeeb128a4fa70f2">tgui::Gui</a>
@@ -1161,7 +1175,7 @@ $(function() {
 : <a class="el" href="classtgui_1_1Widget.html#a74f39d58b9fee9233d1c9235d466f56a">tgui::Widget</a>
 </li>
 <li>Grid()
-: <a class="el" href="classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c">tgui::Grid</a>
+: <a class="el" href="classtgui_1_1Grid.html#ad40bc031a9d8ede279b5086ab1084ace">tgui::Grid</a>
 </li>
 <li>Group()
 : <a class="el" href="classtgui_1_1Group.html#acc8a0bf2008a89c1e4200e2be25d5d7a">tgui::Group</a>
@@ -1174,7 +1188,7 @@ $(function() {
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 11 2018 12:50:27 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 26 2018 19:41:17 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

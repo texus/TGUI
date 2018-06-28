@@ -6,20 +6,20 @@ title: Download
 Precompiled windows libraries require matching libraries from [SFML 2.5.0](https://www.sfml-dev.org/download/sfml/2.5.0/). For other SFML versions, different compilers or different operating systems, you must download the source code and build TGUI yourself (or use a package manager if available).
 
 
-### TGUI 0.8-alpha
-<b>Development version snapshot</b>. Largest changes have already been made. Updating to a later 0.8-dev release may still require changes to your code.
+### TGUI 0.8-beta
+<b>Development version snapshot</b>. Recommended for new projects.
 
 Minimum supported compilers: GCC 4.9, Clang 3.6, VS2015 Update 2
 <p>
-  {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.8-alpha.zip" style="Orange" %}
+  {% include button.ext text="Source code" link="https://github.com/texus/TGUI/archive/0.8-beta.zip" style="Orange" %}
   {% include button.ext text=".Net binding" link="https://tgui.net" style="Orange" %}<br><br>
-  {% include button.ext text="Visual C++15 (2017) - 32bit" link="https://www.dropbox.com/s/jtogkgzihc01zwj/TGUI-0.8-alpha-vc15-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
-  {% include button.ext text="Visual C++15 (2017) - 64bit" link="https://www.dropbox.com/s/gi86i5rip8nr2ta/TGUI-0.8-alpha-vc15-64bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}<br><br>
-  {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://www.dropbox.com/s/3tkhhy594jjo0e5/TGUI-0.8-alpha-vc14-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
-  {% include button.ext text="Visual C++14 (2015) - 64bit" link="https://www.dropbox.com/s/4lgrdbav0alnlbb/TGUI-0.8-alpha-vc14-64bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}<br><br>
-  {% include button.ext text="MinGW 7.3.0 (DW2) - 32-bit" link="https://www.dropbox.com/s/bewjioogzfw3v91/TGUI-0.8-alpha-mingw-7.3.0-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
-  {% include button.ext text="MinGW 7.3.0 (SEH) - 64-bit" link="https://www.dropbox.com/s/4bqwg9a4linh6lk/TGUI-0.8-alpha-mingw-7.3.0-64bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}<br><br>
-  {% include button.ext text="MinGW 5.1.0 TDM (SJLJ) - Code::Blocks - 32-bit" link="https://www.dropbox.com/s/6n12hd32ewv9psw/TGUI-0.8-alpha-mingw-5.1.0-tdm-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
+  {% include button.ext text="Visual C++15 (2017) - 32bit" link="https://www.dropbox.com/s/j77p1men2cn353p/TGUI-0.8-beta-vc15-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
+  {% include button.ext text="Visual C++15 (2017) - 64bit" link="https://www.dropbox.com/s/1icy5dnyj9vijb1/TGUI-0.8-beta-vc15-64bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}<br><br>
+  {% include button.ext text="Visual C++14 (2015) - 32bit" link="https://www.dropbox.com/s/0rjnehy0rs5fb6q/TGUI-0.8-beta-vc14-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
+  {% include button.ext text="Visual C++14 (2015) - 64bit" link="https://www.dropbox.com/s/k91pz93esah9dwm/TGUI-0.8-beta-vc14-64bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}<br><br>
+  {% include button.ext text="MinGW 7.3.0 (DW2) - 32-bit" link="https://www.dropbox.com/s/kzm190e0i2mrt7i/TGUI-0.8-beta-mingw-7.3.0-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
+  {% include button.ext text="MinGW 7.3.0 (SEH) - 64-bit" link="https://www.dropbox.com/s/7lcs0g36tdyzfwq/TGUI-0.8-beta-mingw-7.3.0-64bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}<br><br>
+  {% include button.ext text="MinGW 5.1.0 TDM (SJLJ) - Code::Blocks - 32-bit" link="https://www.dropbox.com/s/mdq5b3gzim6hz3x/TGUI-0.8-beta-mingw-5.1.0-tdm-32bit-for-SFML-2.5.0.zip?dl=1" style="Orange" %}
 </p>
 
 

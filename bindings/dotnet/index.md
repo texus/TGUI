@@ -4,6 +4,8 @@ title: ".Net binding"
 breadcrumb: ".net"
 ---
 
+<span class="Red">This page is about the older 0.8-alpha version, a newer version is available on <a href="https://tgui.net">tgui.net</a>.</span>
+
 ### Download TGUI.Net 0.8-alpha
 
 {% include button.ext text="x64 windows libraries" link="https://www.dropbox.com/s/axhpop20i2ndi19/TGUI.Net-0.8-alpha-64bit.zip?dl=1" style="Orange" %}

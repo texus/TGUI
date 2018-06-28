@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8-alpha</span>
+   &#160;<span id="projectnumber">0.8-beta</span>
    </div>
   </td>
  </tr>
@@ -135,6 +135,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a68489f98124095ac77c8c325d38e0ce3"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structtgui_1_1RendererData.html">RendererData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanelRenderer.html#a68489f98124095ac77c8c325d38e0ce3">getScrollbar</a> () const</td></tr>
 <tr class="memdesc:a68489f98124095ac77c8c325d38e0ce3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the renderer data of the scrollbars.  <a href="#a68489f98124095ac77c8c325d38e0ce3">More...</a><br /></td></tr>
 <tr class="separator:a68489f98124095ac77c8c325d38e0ce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a749c827908816f634460b82f9af3f566"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanelRenderer.html#a749c827908816f634460b82f9af3f566">setScrollbarWidth</a> (float scrollbarWidth)</td></tr>
+<tr class="memdesc:a749c827908816f634460b82f9af3f566"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the wanted width scrollbar.  <a href="#a749c827908816f634460b82f9af3f566">More...</a><br /></td></tr>
+<tr class="separator:a749c827908816f634460b82f9af3f566"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc19ccac7faf9ee258201e5193de5edc"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanelRenderer.html#acc19ccac7faf9ee258201e5193de5edc">getScrollbarWidth</a> () const</td></tr>
+<tr class="memdesc:acc19ccac7faf9ee258201e5193de5edc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the wanted width scrollbar.  <a href="#acc19ccac7faf9ee258201e5193de5edc">More...</a><br /></td></tr>
+<tr class="separator:acc19ccac7faf9ee258201e5193de5edc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtgui_1_1PanelRenderer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtgui_1_1PanelRenderer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtgui_1_1PanelRenderer.html">tgui::PanelRenderer</a></td></tr>
 <tr class="memitem:a58c89b87a525ca09c0ebc03fd4b58fc9 inherit pub_methods_classtgui_1_1PanelRenderer"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1PanelRenderer.html#a58c89b87a525ca09c0ebc03fd4b58fc9">setBorders</a> (const <a class="el" href="classtgui_1_1Outline.html">Borders</a> &amp;borders)</td></tr>
 <tr class="memdesc:a58c89b87a525ca09c0ebc03fd4b58fc9 inherit pub_methods_classtgui_1_1PanelRenderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the borders.  <a href="classtgui_1_1PanelRenderer.html#a58c89b87a525ca09c0ebc03fd4b58fc9">More...</a><br /></td></tr>
@@ -241,6 +247,26 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
+<a id="acc19ccac7faf9ee258201e5193de5edc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc19ccac7faf9ee258201e5193de5edc">&#9670;&nbsp;</a></span>getScrollbarWidth()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float tgui::ScrollablePanelRenderer::getScrollbarWidth </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the wanted width scrollbar. </p>
+<dl class="section return"><dt>Returns</dt><dd>Requested scrollbar width or 0 if no width was set (texture width or default value will be used) </dd></dl>
+
+</div>
+</div>
 <a id="a5d46c8fb071093123b3d763460bb8fe6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5d46c8fb071093123b3d763460bb8fe6">&#9670;&nbsp;</a></span>setScrollbar()</h2>
 
@@ -267,6 +293,32 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
+<a id="a749c827908816f634460b82f9af3f566"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a749c827908816f634460b82f9af3f566">&#9670;&nbsp;</a></span>setScrollbarWidth()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ScrollablePanelRenderer::setScrollbarWidth </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>scrollbarWidth</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the wanted width scrollbar. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">scrollbarWidth</td><td>Requested scrollbar width or 0 to use the default width (texture size if using textures) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/TGUI/Renderers/<a class="el" href="ScrollablePanelRenderer_8hpp_source.html">ScrollablePanelRenderer.hpp</a></li>
 </ul>
@@ -274,7 +326,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 11 2018 12:50:27 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 26 2018 19:41:17 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

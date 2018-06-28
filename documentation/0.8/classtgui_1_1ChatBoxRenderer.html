@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8-alpha</span>
+   &#160;<span id="projectnumber">0.8-beta</span>
    </div>
   </td>
  </tr>
@@ -163,6 +163,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a36388c1132bcf394de66e69746712fe6"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structtgui_1_1RendererData.html">RendererData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBoxRenderer.html#a36388c1132bcf394de66e69746712fe6">getScrollbar</a> () const</td></tr>
 <tr class="memdesc:a36388c1132bcf394de66e69746712fe6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the renderer data of the scrollbar.  <a href="#a36388c1132bcf394de66e69746712fe6">More...</a><br /></td></tr>
 <tr class="separator:a36388c1132bcf394de66e69746712fe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6775b5ad7454d27728410f2e4f0a11d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBoxRenderer.html#ac6775b5ad7454d27728410f2e4f0a11d">setScrollbarWidth</a> (float scrollbarWidth)</td></tr>
+<tr class="memdesc:ac6775b5ad7454d27728410f2e4f0a11d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the wanted width scrollbar.  <a href="#ac6775b5ad7454d27728410f2e4f0a11d">More...</a><br /></td></tr>
+<tr class="separator:ac6775b5ad7454d27728410f2e4f0a11d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3bb6ef7af17d7dfa4902ed0fef77b7e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBoxRenderer.html#ac3bb6ef7af17d7dfa4902ed0fef77b7e">getScrollbarWidth</a> () const</td></tr>
+<tr class="memdesc:ac3bb6ef7af17d7dfa4902ed0fef77b7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the wanted width scrollbar.  <a href="#ac3bb6ef7af17d7dfa4902ed0fef77b7e">More...</a><br /></td></tr>
+<tr class="separator:ac3bb6ef7af17d7dfa4902ed0fef77b7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfcb181eb42e4239a2c26cb9f9d1287c"><td class="memItemLeft" align="right" valign="top"><a id="acfcb181eb42e4239a2c26cb9f9d1287c"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChatBoxRenderer.html#acfcb181eb42e4239a2c26cb9f9d1287c">WidgetRenderer</a> ()=default</td></tr>
 <tr class="memdesc:acfcb181eb42e4239a2c26cb9f9d1287c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br /></td></tr>
@@ -323,6 +329,26 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
+<a id="ac3bb6ef7af17d7dfa4902ed0fef77b7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3bb6ef7af17d7dfa4902ed0fef77b7e">&#9670;&nbsp;</a></span>getScrollbarWidth()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float tgui::ChatBoxRenderer::getScrollbarWidth </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the wanted width scrollbar. </p>
+<dl class="section return"><dt>Returns</dt><dd>Requested scrollbar width or 0 if no width was set (texture width or default value will be used) </dd></dl>
+
+</div>
+</div>
 <a id="aec35d365c899513c3cd8cf8a78682f37"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aec35d365c899513c3cd8cf8a78682f37">&#9670;&nbsp;</a></span>getTextureBackground()</h2>
 
@@ -473,6 +499,32 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
+<a id="ac6775b5ad7454d27728410f2e4f0a11d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6775b5ad7454d27728410f2e4f0a11d">&#9670;&nbsp;</a></span>setScrollbarWidth()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::ChatBoxRenderer::setScrollbarWidth </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>scrollbarWidth</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the wanted width scrollbar. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">scrollbarWidth</td><td>Requested scrollbar width or 0 to use the default width (texture size if using textures) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a0841f5c74078657ed7873bd0c159e3e8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0841f5c74078657ed7873bd0c159e3e8">&#9670;&nbsp;</a></span>setTextureBackground()</h2>
 
@@ -537,7 +589,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 11 2018 12:50:26 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 26 2018 19:41:16 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8-alpha</span>
+   &#160;<span id="projectnumber">0.8-beta</span>
    </div>
   </td>
  </tr>
@@ -182,9 +182,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab19389f995d4325a5772e085752a477b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#ab19389f995d4325a5772e085752a477b">getPaddingBetweenButtons</a> () const</td></tr>
 <tr class="memdesc:ab19389f995d4325a5772e085752a477b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance between the title buttons if multiple exist.  <a href="#ab19389f995d4325a5772e085752a477b">More...</a><br /></td></tr>
 <tr class="separator:ab19389f995d4325a5772e085752a477b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60603235e3d014e8f172f9c05358ca1e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#a60603235e3d014e8f172f9c05358ca1e">setMinimumResizableBorderWidth</a> (float minimumBoderWidth)</td></tr>
-<tr class="memdesc:a60603235e3d014e8f172f9c05358ca1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the minimum width of the area where you can drag to resize the child window.  <a href="#a60603235e3d014e8f172f9c05358ca1e">More...</a><br /></td></tr>
-<tr class="separator:a60603235e3d014e8f172f9c05358ca1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56ecc2ccd29d5be9b3f57913ce47baff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#a56ecc2ccd29d5be9b3f57913ce47baff">setMinimumResizableBorderWidth</a> (float minimumBorderWidth)</td></tr>
+<tr class="memdesc:a56ecc2ccd29d5be9b3f57913ce47baff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the minimum width of the area where you can drag to resize the child window.  <a href="#a56ecc2ccd29d5be9b3f57913ce47baff">More...</a><br /></td></tr>
+<tr class="separator:a56ecc2ccd29d5be9b3f57913ce47baff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a88f7b82ecb89bb7f26ff805a50c916"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ChildWindowRenderer.html#a0a88f7b82ecb89bb7f26ff805a50c916">getMinimumResizableBorderWidth</a> () const</td></tr>
 <tr class="memdesc:a0a88f7b82ecb89bb7f26ff805a50c916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the minimum width of the area where you can drag to resize the child window.  <a href="#a0a88f7b82ecb89bb7f26ff805a50c916">More...</a><br /></td></tr>
 <tr class="separator:a0a88f7b82ecb89bb7f26ff805a50c916"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -787,8 +787,8 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="a60603235e3d014e8f172f9c05358ca1e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60603235e3d014e8f172f9c05358ca1e">&#9670;&nbsp;</a></span>setMinimumResizableBorderWidth()</h2>
+<a id="a56ecc2ccd29d5be9b3f57913ce47baff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56ecc2ccd29d5be9b3f57913ce47baff">&#9670;&nbsp;</a></span>setMinimumResizableBorderWidth()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -797,7 +797,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
           <td class="memname">void tgui::ChildWindowRenderer::setMinimumResizableBorderWidth </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>minimumBoderWidth</em></td><td>)</td>
+          <td class="paramname"><em>minimumBorderWidth</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -806,11 +806,11 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <p>Changes the minimum width of the area where you can drag to resize the child window. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">minimumBoderWidth</td><td>Minimum amount of pixels where the child window can be dragged to resize it</td></tr>
+    <tr><td class="paramname">minimumBorderWidth</td><td>Minimum amount of pixels where the child window can be dragged to resize it</td></tr>
   </table>
   </dd>
 </dl>
-<p>If the border is larger than minimumBoderWidth then this function has no effect. If the borders are smaller, several invisible pixels next to the border can also be used to resize the child window. </p>
+<p>If the border is larger than minimumBorderWidth then this function has no effect. If the borders are smaller, several invisible pixels next to the border can also be used to resize the child window. </p>
 
 </div>
 </div>
@@ -1009,7 +1009,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 11 2018 12:50:26 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 26 2018 19:41:16 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

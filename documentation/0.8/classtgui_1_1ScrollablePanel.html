@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8-alpha</span>
+   &#160;<span id="projectnumber">0.8-beta</span>
    </div>
   </td>
  </tr>
@@ -220,6 +220,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab9cc55a920cffd73d159c00a15173203"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#ab9cc55a920cffd73d159c00a15173203">setSize</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;size) override</td></tr>
 <tr class="memdesc:ab9cc55a920cffd73d159c00a15173203"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the panel.  <a href="#ab9cc55a920cffd73d159c00a15173203">More...</a><br /></td></tr>
 <tr class="separator:ab9cc55a920cffd73d159c00a15173203"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a269fb750efc174330458da85e19be42b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a269fb750efc174330458da85e19be42b">getAbsolutePosition</a> () const override</td></tr>
+<tr class="separator:a269fb750efc174330458da85e19be42b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26894acd2225040bd00751229120ae6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a26894acd2225040bd00751229120ae6a">add</a> (const <a class="el" href="classtgui_1_1Widget.html#a388912f13898735531886bc676b14f81">Widget::Ptr</a> &amp;widget, const sf::String &amp;widgetName=&quot;&quot;) override</td></tr>
 <tr class="memdesc:a26894acd2225040bd00751229120ae6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a widget at the end of the layout.  <a href="#a26894acd2225040bd00751229120ae6a">More...</a><br /></td></tr>
 <tr class="separator:a26894acd2225040bd00751229120ae6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -430,9 +432,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ac800fddd07b78060f28773258ad330c8 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ac800fddd07b78060f28773258ad330c8">getFullSize</a> () const</td></tr>
 <tr class="memdesc:ac800fddd07b78060f28773258ad330c8 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the entire size that the widget is using.  <a href="classtgui_1_1Widget.html#ac800fddd07b78060f28773258ad330c8">More...</a><br /></td></tr>
 <tr class="separator:ac800fddd07b78060f28773258ad330c8 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4e2898c4146d5eabb09a7814e4e693b inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ae4e2898c4146d5eabb09a7814e4e693b">getAbsolutePosition</a> () const</td></tr>
-<tr class="memdesc:ae4e2898c4146d5eabb09a7814e4e693b inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the absolute position of the widget instead of the relative position to its parent.  <a href="classtgui_1_1Widget.html#ae4e2898c4146d5eabb09a7814e4e693b">More...</a><br /></td></tr>
-<tr class="separator:ae4e2898c4146d5eabb09a7814e4e693b inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae737b8814208dca51e4fd6a1c631af45 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#ae737b8814208dca51e4fd6a1c631af45">getWidgetOffset</a> () const</td></tr>
 <tr class="memdesc:ae737b8814208dca51e4fd6a1c631af45 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance between the position where the widget is drawn and where the widget is placed.  <a href="classtgui_1_1Widget.html#ae737b8814208dca51e4fd6a1c631af45">More...</a><br /></td></tr>
 <tr class="separator:ae737b8814208dca51e4fd6a1c631af45 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -918,6 +917,34 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
+<a id="a269fb750efc174330458da85e19be42b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a269fb750efc174330458da85e19be42b">&#9670;&nbsp;</a></span>getAbsolutePosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtgui_1_1Vector2f.html">Vector2f</a> tgui::ScrollablePanel::getAbsolutePosition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section warning"><dt>Warning</dt><dd>This function does not return the absolute position of the <a class="el" href="classtgui_1_1ScrollablePanel.html" title="Group of widgets that has a background color and optional borders. ">ScrollablePanel</a>. It is implemented in a way that allows calling <a class="el" href="classtgui_1_1ScrollablePanel.html#a269fb750efc174330458da85e19be42b">getAbsolutePosition()</a> on a child widget of the <a class="el" href="classtgui_1_1ScrollablePanel.html" title="Group of widgets that has a background color and optional borders. ">ScrollablePanel</a> to work. </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classtgui_1_1Widget.html#ae4e2898c4146d5eabb09a7814e4e693b">tgui::Widget</a>.</p>
+
+</div>
+</div>
 <a id="a8cba9bcafaa61f14dbd973c86fdb2c17"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8cba9bcafaa61f14dbd973c86fdb2c17">&#9670;&nbsp;</a></span>getContentOffset()</h2>
 
@@ -1336,7 +1363,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 11 2018 12:50:27 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 26 2018 19:41:17 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

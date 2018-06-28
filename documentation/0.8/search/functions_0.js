@@ -10,5 +10,5 @@ var searchData=
   ['addrenderer',['addRenderer',['../classtgui_1_1Theme.html#afaf85705c14acc2910e7282765cc317a',1,'tgui::Theme']]],
   ['addspace',['addSpace',['../classtgui_1_1BoxLayoutRatios.html#a9e720efa9853496fb194e85d083c615b',1,'tgui::BoxLayoutRatios']]],
   ['addtext',['addText',['../classtgui_1_1TextBox.html#ae393071b37327d8a4df03c18f8bd0f84',1,'tgui::TextBox']]],
-  ['addwidget',['addWidget',['../classtgui_1_1Grid.html#a2f4565719a147310dc4c388bcf684964',1,'tgui::Grid']]]
+  ['addwidget',['addWidget',['../classtgui_1_1Grid.html#a6779dc6f09c327282ed93815eca3c6f5',1,'tgui::Grid']]]
 ];

@@ -10,7 +10,7 @@ var searchData=
   ['addrenderer',['addRenderer',['../classtgui_1_1Theme.html#afaf85705c14acc2910e7282765cc317a',1,'tgui::Theme']]],
   ['addspace',['addSpace',['../classtgui_1_1BoxLayoutRatios.html#a9e720efa9853496fb194e85d083c615b',1,'tgui::BoxLayoutRatios']]],
   ['addtext',['addText',['../classtgui_1_1TextBox.html#ae393071b37327d8a4df03c18f8bd0f84',1,'tgui::TextBox']]],
-  ['addwidget',['addWidget',['../classtgui_1_1Grid.html#a2f4565719a147310dc4c388bcf684964',1,'tgui::Grid']]],
+  ['addwidget',['addWidget',['../classtgui_1_1Grid.html#a6779dc6f09c327282ed93815eca3c6f5',1,'tgui::Grid']]],
   ['alignment',['Alignment',['../classtgui_1_1EditBox.html#a3bdf669c969f3002777f84ef6bcc9393',1,'tgui::EditBox::Alignment()'],['../classtgui_1_1Grid.html#a862e75cc54ce2fff46c9590db7f6b5e9',1,'tgui::Grid::Alignment()']]],
   ['all',['All',['../structtgui_1_1EditBox_1_1Validator.html#a54d5192d032a1f03adc0ecd16bafc9d9',1,'tgui::EditBox::Validator']]],
   ['always',['Always',['../classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54a68eec46437c384d8dad18d5464ebc35c',1,'tgui::ScrollablePanel']]],
