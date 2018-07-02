@@ -659,22 +659,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the scrollbar of the text box.
-        ///
-        /// @param scrollbarThemeFileFilename  Filename of the theme file.
-        /// @param section  The section to look for inside the theme file.
-        ///
-        /// @throw Exception when the theme file could not be opened.
-        /// @throw Exception when the theme file did not contain the requested section with the needed information.
-        /// @throw Exception when one of the images, described in the theme file, could not be loaded.
-        ///
-        /// When an empty string is passed as filename, the built-in white theme will be used.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbar(const std::string& scrollbarThemeFileFilename = "", const std::string& section = "Scrollbar");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draws the widget on the render target.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
