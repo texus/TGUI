@@ -309,7 +309,7 @@ namespace tgui
             m_closeButton->setInheritedOpacity(m_opacityCached);
 
             if (m_showTextOnTitleButtonsCached)
-                m_closeButton->setText(L"✕");
+                m_closeButton->setText(L"\u2715");
             else
                 m_closeButton->setText("");
         }
@@ -323,7 +323,7 @@ namespace tgui
             m_maximizeButton->setInheritedOpacity(m_opacityCached);
 
             if (m_showTextOnTitleButtonsCached)
-                m_maximizeButton->setText(L"☐");
+                m_maximizeButton->setText(L"\u2610");
             else
                 m_maximizeButton->setText("");
         }
@@ -337,7 +337,7 @@ namespace tgui
             m_minimizeButton->setInheritedOpacity(m_opacityCached);
 
             if (m_showTextOnTitleButtonsCached)
-                m_minimizeButton->setText(L"⁃");
+                m_minimizeButton->setText(L"\u2043");
             else
                 m_minimizeButton->setText("");
         }
