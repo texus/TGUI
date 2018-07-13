@@ -475,6 +475,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Widget::Ptr ScrollablePanel::askToolTip(Vector2f mousePos)
+    {
+        if (mouseOnWidget(mousePos))
+        {
+            Widget::Ptr toolTip = nullptr;
+
+            mousePos -= getPosition() + getChildWidgetsOffset() - getContentOffset();
+
+            Widget::Ptr widget = mouseOnWhichWidget(mousePos);
+            if (widget)
+            {
+                toolTip = widget->askToolTip(mousePos);
+                if (toolTip)
+                    return toolTip;
+            }
+
+            if (m_toolTip)
+                return getToolTip();
+        }
+
+        return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ScrollablePanel::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform.translate(getPosition());
