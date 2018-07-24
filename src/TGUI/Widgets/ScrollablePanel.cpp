@@ -441,8 +441,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::mouseWheelScrolled(float delta, Vector2f pos)
+    bool ScrollablePanel::mouseWheelScrolled(float delta, Vector2f pos)
     {
+        const bool horizontalScrollbarVisible = m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize()));
+        const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()));
+
+        sf::Vector2f innerSize = getInnerSize();
+        if (verticalScrollbarVisible)
+            innerSize.x -= m_verticalScrollbar->getSize().x;
+        if (horizontalScrollbarVisible)
+            innerSize.y -= m_horizontalScrollbar->getSize().y;
+
+        if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, innerSize.x, innerSize.y}.contains(pos))
+        {
+            if (Container::mouseWheelScrolled(delta, pos + getContentOffset()))
+                return true; // A child widget swallowed the event
+        }
+
         if (m_horizontalScrollbar->isShown() && m_horizontalScrollbar->mouseOnWidget(pos - getPosition()))
         {
             m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
@@ -453,6 +468,8 @@ namespace tgui
             m_verticalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             mouseMoved(pos);
         }
+
+        return true; // We swallowed the event
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

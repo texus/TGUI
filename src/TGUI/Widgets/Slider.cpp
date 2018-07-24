@@ -419,7 +419,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Slider::mouseWheelScrolled(float delta, Vector2f)
+    bool Slider::mouseWheelScrolled(float delta, Vector2f)
     {
         if (m_invertedDirection)
             delta = -delta;
@@ -438,6 +438,8 @@ namespace tgui
             else
                 setValue(m_value + std::round(delta) * m_step);
         }
+
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

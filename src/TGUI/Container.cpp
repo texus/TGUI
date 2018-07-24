@@ -643,7 +643,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::mouseWheelScrolled(float delta, Vector2f pos)
+    bool Container::mouseWheelScrolled(float delta, Vector2f pos)
     {
         sf::Event event;
         event.type = sf::Event::MouseWheelScrolled;
@@ -653,7 +653,7 @@ namespace tgui
         event.mouseWheelScroll.y = static_cast<int>(pos.y - getPosition().y - getChildWidgetsOffset().y);
 
         // Let the event manager handle the event
-        handleEvent(event);
+        return handleEvent(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -944,14 +944,10 @@ namespace tgui
         // Check for mouse wheel scrolling
         else if ((event.type == sf::Event::MouseWheelScrolled) && (event.mouseWheelScroll.wheel == sf::Mouse::Wheel::VerticalWheel))
         {
-            // Find the widget under the mouse
+            // Send the event to the widget below the mouse
             Widget::Ptr widget = mouseOnWhichWidget({static_cast<float>(event.mouseWheelScroll.x), static_cast<float>(event.mouseWheelScroll.y)});
             if (widget != nullptr)
-            {
-                // Send the event to the widget
-                widget->mouseWheelScrolled(event.mouseWheelScroll.delta, {static_cast<float>(event.mouseWheelScroll.x), static_cast<float>(event.mouseWheelScroll.y)});
-                return true;
-            }
+                return widget->mouseWheelScrolled(event.mouseWheelScroll.delta, {static_cast<float>(event.mouseWheelScroll.x), static_cast<float>(event.mouseWheelScroll.y)});
 
             return false;
         }

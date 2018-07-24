@@ -525,11 +525,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ComboBox::mouseWheelScrolled(float delta, Vector2f)
+    bool ComboBox::mouseWheelScrolled(float delta, Vector2f)
     {
         // Only act to scrolling when the list is not being shown
         if (m_listBox->isVisible())
-            return;
+            return false;
 
         // Check if you are scrolling down
         if (delta < 0)
@@ -550,6 +550,8 @@ namespace tgui
                 m_text.setString(m_listBox->getSelectedItem());
             }
         }
+
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

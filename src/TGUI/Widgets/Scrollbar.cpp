@@ -551,7 +551,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Scrollbar::mouseWheelScrolled(float delta, Vector2f pos)
+    bool Scrollbar::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (static_cast<int>(m_value) - static_cast<int>(delta * m_scrollAmount) < 0)
             setValue(0);
@@ -560,6 +560,7 @@ namespace tgui
 
         // Update over which part the mouse is hovering
         mouseMoved(pos - getPosition());
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

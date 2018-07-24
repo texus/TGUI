@@ -606,7 +606,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListBox::mouseWheelScrolled(float delta, Vector2f pos)
+    bool ListBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (m_scroll->isShown())
         {
@@ -614,7 +614,10 @@ namespace tgui
 
             // Update on which item the mouse is hovering
             mouseMoved(pos);
+            return true;
         }
+
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

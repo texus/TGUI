@@ -975,13 +975,15 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TextBox::mouseWheelScrolled(float delta, Vector2f pos)
+    bool TextBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (m_verticalScroll->isShown())
         {
             m_verticalScroll->mouseWheelScrolled(delta, pos - getPosition());
             recalculateVisibleLines();
         }
+
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
