@@ -30,6 +30,7 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Vector2f.hpp>
+#include <TGUI/Animation.hpp>
 #include <SFML/System/String.hpp>
 #include <functional>
 #include <typeindex>
@@ -464,6 +465,53 @@ namespace tgui
 
             internal_signal::parameters[1] = static_cast<const void*>(&item);
             internal_signal::parameters[2] = static_cast<const void*>(&id);
+            return Signal::emit(widget);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Checks whether the unbound parameters match with this signal
+        /// @return The index in the parameters list where the parameters will be stored
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int validateTypes(std::initializer_list<std::type_index> unboundParameters) const override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    };
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Signal to which the user can subscribe to get callbacks from
+    ///
+    /// Possible optional parameters:
+    /// - ShowAnimationType
+    /// - bool
+    /// - ShowAnimationType, bool
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    class TGUI_API SignalAnimation : public Signal
+    {
+    public:
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        SignalAnimation(std::string&& name) :
+            Signal{std::move(name), 2}
+        {
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Call all connected signal handlers
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool emit(const Widget* widget, ShowAnimationType type, bool visible)
+        {
+            if (m_handlers.empty())
+                return false;
+
+            internal_signal::parameters[1] = static_cast<const void*>(&type);
+            internal_signal::parameters[2] = static_cast<const void*>(&visible);
             return Signal::emit(widget);
         }
 

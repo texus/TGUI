@@ -434,6 +434,32 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int SignalAnimation::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
+    {
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(ShowAnimationType).name()) == 0))
+    #else
+        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(ShowAnimationType)))
+    #endif
+            return 1;
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        else if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(bool).name()) == 0))
+    #else
+        else if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(bool)))
+    #endif
+            return 2;
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        else if ((unboundParameters.size() == 2) && (strcmp(unboundParameters.begin()->name(), typeid(ShowAnimationType).name()) == 0) && (strcmp((unboundParameters.begin()+1)->name(), typeid(bool).name()) == 0))
+    #else
+        else if ((unboundParameters.size() == 2) && (*unboundParameters.begin() == typeid(ShowAnimationType)) && (*(unboundParameters.begin()+1) == typeid(bool)))
+    #endif
+            return 1;
+        else
+            return Signal::validateTypes(unboundParameters);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool SignalWidgetBase::disconnect(unsigned int id)

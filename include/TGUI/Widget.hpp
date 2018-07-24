@@ -745,12 +745,13 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalVector2f  onPositionChange = {"PositionChanged"};  ///< The position of the widget changed. Optional parameter: new position
-        SignalVector2f  onSizeChange     = {"SizeChanged"};      ///< The size of the widget changed. Optional parameter: new size
-        Signal          onFocus          = {"Focused"};          ///< The widget was focused
-        Signal          onUnfocus        = {"Unfocused"};        ///< The widget was unfocused
-        Signal          onMouseEnter     = {"MouseEntered"};     ///< The mouse entered the widget
-        Signal          onMouseLeave     = {"MouseLeft"};        ///< The mouse left the widget
+        SignalVector2f  onPositionChange = {"PositionChanged"};         ///< The position of the widget changed. Optional parameter: new position
+        SignalVector2f  onSizeChange     = {"SizeChanged"};             ///< The size of the widget changed. Optional parameter: new size
+        Signal          onFocus          = {"Focused"};                 ///< The widget was focused
+        Signal          onUnfocus        = {"Unfocused"};               ///< The widget was unfocused
+        Signal          onMouseEnter     = {"MouseEntered"};            ///< The mouse entered the widget
+        Signal          onMouseLeave     = {"MouseLeft"};               ///< The mouse left the widget
+        SignalAnimation onAnimationFinished = {"AnimationFinished"};    ///< A show or hide animation finished. Optional parameters: animation type, new widget visibility or both
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -77,6 +77,11 @@ TEST_CASE("[Signal]")
         REQUIRE(widget->onMouseLeave.connect([](){}) == ++id);
         REQUIRE(widget->onMouseLeave.connect([](tgui::Widget::Ptr, std::string){}) == ++id);
 
+        REQUIRE(widget->connect("AnimationFinished", [](){}) == ++id);
+        REQUIRE(widget->connect("AnimationFinished", [](tgui::ShowAnimationType){}) == ++id);
+        REQUIRE(widget->connect("AnimationFinished", [](bool){}) == ++id);
+        REQUIRE(widget->connect("AnimationFinished", [](tgui::ShowAnimationType, bool){}) == ++id);
+
         REQUIRE_THROWS_AS(widget->connect("SomeInvalidSignal", [](){}), tgui::Exception);
 
         tgui::Widget::Ptr widget2 = tgui::Button::create();
