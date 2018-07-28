@@ -20,8 +20,8 @@
               android:icon="@drawable/tgui_logo"
               android:configChanges="keyboardHidden|orientation|screenSize">
 
-        <meta-data android:name="android.app.lib_name" android:value="sfml-activity" />
-        <meta-data android:name="sfml.app.lib_name" android:value="tgui-activity" />
+        <meta-data android:name="android.app.lib_name" android:value="sfml-activity-d" />
+        <meta-data android:name="sfml.app.lib_name" android:value="tgui-activity-d" />
         <meta-data android:name="tgui.app.lib_name" android:value="tgui-example" />
 
         <intent-filter>
