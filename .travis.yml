@@ -23,7 +23,7 @@ jobs:
       - $HOME/SFML-2.5.0_LINUX
     script:
       - chmod +x tests/travis_linux_tests.sh
-      - tests/travis_linux_tests.sh
+      - CXX=$COMPILER tests/travis_linux_tests.sh
     after_success: bash <(curl -s https://codecov.io/bash) -x gcov-6 -a "-s /home/travis/build/texus/TGUI -pr"
 
   - stage: Cross-platform tests
@@ -44,7 +44,7 @@ jobs:
       - $HOME/SFML_LINUX
     script:
       - chmod +x tests/travis_linux.sh
-      - tests/travis_linux.sh
+      - CXX=$COMPILER tests/travis_linux.sh
 
   - name: Android
     language: android
