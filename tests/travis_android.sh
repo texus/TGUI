@@ -1,35 +1,34 @@
 set -e
 
 mkdir -p $ANDROID_NDK
-wget -nv https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip
-unzip -o -q android-ndk-r12b-linux-x86_64.zip -d $HOME
+wget -nv https://dl.google.com/android/repository/android-ndk-r17b-linux-x86_64.zip
+unzip -o -q android-ndk-r17b-linux-x86_64.zip -d $HOME
 
-if [[ ! -d $ANDROID_NDK/sources/sfml/lib ]]; then
+git clone --depth 1 https://github.com/SFML/SFML
+cd SFML
+
+if [[ ! -d "$ANDROID_NDK/sources/sfml/lib" || ! -f "$ANDROID_NDK/sources/sfml/revision_cache" || `git rev-parse HEAD` != `cat "$ANDROID_NDK/sources/sfml/revision_cache"` ]]; then
+  if [[ ! -d "$ANDROID_NDK/sources/sfml/lib" ]]; then
     echo "$(tput setaf 3)Rebuilding SFML: no cache available$(tput sgr 0)"
+  else
+    echo "$(tput setaf 3)Rebuilding SFML: updating version$(tput sgr 0)"
+  fi
 
-    wget -nv https://github.com/SFML/SFML/archive/2.4.2.tar.gz -O SFML.tar.gz
-    tar -xzf SFML.tar.gz
-    cd SFML-2.4.2
-
-    # Skip building audio, which required several more dependencies to be installed in order to build SFML
-    # The SFML_BUILD_AUDIO cmake option did not exist yet in the SFML version we use here.
-    sed -i "s/add_subdirectory(Audio)/#add_subdirectory(Audio)/g" src/SFML/CMakeLists.txt
-
-    cmake -DANDROID_ABI=x86 -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/android.toolchain.cmake .
-    make -j2
-    make install
-    cd ..
+  git rev-parse HEAD > "$ANDROID_NDK/sources/sfml/revision_cache"
+  cmake -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=$ANDROID_NDK -DCMAKE_ANDROID_ARCH_ABI=x86 -DCMAKE_ANDROID_STL_TYPE=c++_static -DCMAKE_BUILD_TYPE=Debug -DSFML_BUILD_AUDIO=FALSE  -DSFML_BUILD_NETWORK=FALSE .
+  make -j2
+  make install
 else
   echo "$(tput setaf 2)Using cached SFML directory$(tput sgr 0)"
 fi
+cd ..
 
 mkdir build-android
 cd build-android
-cmake -DANDROID_ABI=x86 -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/android.toolchain.cmake -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE ..
+cmake -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=/home/texus/Documents/android/android-ndk-r13b/ -DCMAKE_ANDROID_ARCH_ABI=x86 -DCMAKE_ANDROID_STL_TYPE=c++_static -DCMAKE_BUILD_TYPE=Debug ..
 make -j2
 make install
 cd ../examples/android
-sed -i "s/armeabi-v7a/x86/g" jni/Application.mk
-$ANDROID_NDK/ndk-build
 android update project --name TGUI --path . --target android-23
+$ANDROID_NDK/ndk-build
 ant debug
