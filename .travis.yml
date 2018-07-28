@@ -49,7 +49,7 @@ jobs:
   - name: Android
     language: android
     env:
-    - ANDROID_NDK=$HOME/android-ndk-r17b
+    - NDK_DIR=$HOME/android-ndk
     android:
       components:
       - android-23
@@ -59,7 +59,7 @@ jobs:
         - ant
     cache:
       directories:
-      - $ANDROID_NDK/sources/sfml
+      - $HOME/sfml-cache
     script:
       - chmod +x tests/travis_android.sh
       - tests/travis_android.sh
