@@ -11,13 +11,13 @@ Status
 
 | Linux | macOS | Windows | Android | Test coverage |
 |-------|-------|---------|---------|---------------|
-| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8-dev/2)](https://travis-ci.org/texus/TGUI) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8-dev/4)](https://travis-ci.org/texus/TGUI) | [![Build status](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/0.8-dev?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/0.8-dev) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8-dev/3)](https://travis-ci.org/texus/TGUI) | [![codecov](https://codecov.io/gh/texus/TGUI/branch/0.8-dev/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.8-dev) |
+| [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8/2)](https://travis-ci.org/texus/TGUI) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8/4)](https://travis-ci.org/texus/TGUI) | [![Build status](https://ci.appveyor.com/api/projects/status/16e3yl71hq8x0c46/branch/0.8?svg=true)](https://ci.appveyor.com/project/texus/tgui/branch/0.8) | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/texus/TGUI/branches/0.8/3)](https://travis-ci.org/texus/TGUI) | [![codecov](https://codecov.io/gh/texus/TGUI/branch/0.8/graph/badge.svg)](https://codecov.io/gh/texus/TGUI/branch/0.8) |
 
 
 Download
 --------
 
-You can download the source code of the current development version from the [git repository](https://github.com/texus/TGUI/tree/0.8-dev): [Download ZIP](https://github.com/texus/TGUI/archive/0.8-dev.zip)
+You can download the source code of the current development version from the [git repository](https://github.com/texus/TGUI/tree/0.8): [Download ZIP](https://github.com/texus/TGUI/archive/0.8.zip)
 
 Learn
 -----
