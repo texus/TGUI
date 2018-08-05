@@ -7,6 +7,7 @@ var searchData=
   ['scrollbarrenderer',['ScrollbarRenderer',['../classtgui_1_1ScrollbarRenderer.html',1,'tgui']]],
   ['serializer',['Serializer',['../classtgui_1_1Serializer.html',1,'tgui']]],
   ['signal',['Signal',['../classtgui_1_1Signal.html',1,'tgui']]],
+  ['signalanimation',['SignalAnimation',['../classtgui_1_1SignalAnimation.html',1,'tgui']]],
   ['signalchildwindow',['SignalChildWindow',['../classtgui_1_1SignalChildWindow.html',1,'tgui']]],
   ['signalitem',['SignalItem',['../classtgui_1_1SignalItem.html',1,'tgui']]],
   ['signalmenuitem',['SignalMenuItem',['../classtgui_1_1SignalMenuItem.html',1,'tgui']]],

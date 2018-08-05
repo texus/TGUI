@@ -5,8 +5,28 @@ title: Changelog
 changelog:
 - version: 0
   minors:
+  - version: 8
+    patches:
+    - version: 0
+      date: 5 August 2018
+      changes: |
+        Global default text size for more consistent texts in widgets
+        Gui Builder was added
+        A theme can be made the default to use it for all new widgets
+        Renderers are decoupled from widgets, making them truly shared
+        BitmapButton widget to have an icon next to the button caption
+        RangeSlider widget to have two thumbs on a slider
+        ScrollablePanel widget to have a Panel with automatic scrollbars
+        Panel widget was split in Group, RadioButtonGroup and Panel widgets
+        HorizontalLayout, VerticalLayout and HorizontalWrap to arrange widgets
+        Relative layouts were improved
+        Many other improvements
   - version: 7
     patches:
+    - version: 8
+      date: 5 August 2018
+      changes: |
+        EditBox::setInputValidator now throws instead of crashing on GCC < 4.9
     - version: 7
       date: 21 April 2018
       changes: |

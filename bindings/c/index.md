@@ -6,18 +6,12 @@ breadcrumb: c
 
 The main goal of the C binding was to more easily allow creating bindings to other languages, however it is still usable for C programmers. There are currently no tutorials or documentation available for this binding.
 
-Please note that both the binding and TGUI 0.8 are still under development and may change at any time.
 
-
-### Download and install
+### Download
 
 {% include button.ext text="Download source code" link="https://github.com/texus/CTGUI/archive/master.zip" style="Orange" %}
 
-You need to have SFML and CSFML 2.4 installed.
-
-You will have to use CMake in order to build the c library. A tutorial with screenshots will be written in the future.
-
-Precompiled libraries will be added in the future as well.
+Instead of compiling the library yourself, you could also get the precompiled libraries from the [.Net binding](https://tgui.net) which includes them.
 
 
 ### Example code

@@ -12,7 +12,7 @@
         <li>
             <a href="/tutorials/">Tutorials</a>
             <ul>
-                <li><a href="/tutorials/0.8/">0.8-dev</a></li>
+                <li><a href="/tutorials/0.8/">0.8</a></li>
                 <li><a href="/tutorials/v0.7/">0.7</a></li>
                 <li><a href="/tutorials/v0.6/">0.6</a></li>
             </ul>
@@ -20,7 +20,7 @@
         <li>
             <a href="/documentation/">Documentation</a>
             <ul>
-                <li><a href="/documentation/0.8/">0.8-dev</a></li>
+                <li><a href="/documentation/0.8/">0.8</a></li>
                 <li><a href="/documentation/v0.7/">0.7</a></li>
                 <li><a href="/documentation/v0.6/">0.6</a></li>
             </ul>
@@ -28,7 +28,7 @@
         <li>
             <a href="/examples/">Examples</a>
             <ul>
-                <li><a href="/examples/0.8/">0.8-dev</a></li>
+                <li><a href="/examples/0.8/">0.8</a></li>
                 <li><a href="/examples/0.7/">0.7</a></li>
                 <li><a href="/examples/0.6/">0.6</a></li>
             </ul>

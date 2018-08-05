@@ -5,19 +5,16 @@ breadcrumb: 0.8
 ---
 
 ### Installation tutorials
-Note: when the tutorial mentions c++11, use c++14 instead.
 
-[Windows (Visual Studio)](../v0.7/visual-studio/) - Build from source code  
-[Windows (Visual Studio)](../v0.7/visual-studio-precompiled/) - Precompiled libraries
+[Windows (Visual Studio)](visual-studio) - Build from source code  
+[Windows (Visual Studio)](visual-studio-precompiled) - Precompiled libraries
 
 [Windows (CodeBlocks)](codeblocks) - Build from source code  
 [Windows (CodeBlocks)](codeblocks-precompiled) - Precompiled libraries
 
-[Mac OS X (Xcode)](../v0.7/xcode/)
+[macOS (Xcode)](xcode)
 
 [Linux / FreeBSD](linux)
-
-[Raspberry Pi](../v0.7/raspberry/) - experimental
 
 [Android](android) - experimental
 

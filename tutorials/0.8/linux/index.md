@@ -23,7 +23,7 @@ yaourt -S tgui-git
 #### Other distros / FreeBSD
 Download the source code from the [download page](/download).
 
-You will need to use CMake in order to build TGUI. How you do this depends on your distro, but it will be similar to “sudo apt-get install cmake” (Ubuntu) or “sudo pacman -S cmake” (ArchLinux).
+You will need to use CMake in order to build TGUI. How you do this depends on your distro, but it will be similar to "sudo apt-get install cmake" (Ubuntu) or "sudo pacman -S cmake" (ArchLinux).
 
 Also make sure that you already have sfml on your computer. It would be even better to make sure you have sfml working before trying to use TGUI. If something goes wrong afterwards, you can be sure that the problem does not lie with sfml.
 
@@ -45,10 +45,10 @@ g++ -std=c++14 main.cpp -ltgui -lsfml-graphics -lsfml-window -lsfml-system -o pr
 
 ### Using TGUI (CodeBlocks)
 
-Open the “Project build options” and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.  
+Open the "Project build options" and choose whether you want to change debug or release target settings. Or you can just click on the name of your project (here TGUI_Test) and set them for both.  
 [![CodeBlocks Project Build Options](/resources/LinuxCodeBlocksProjectBuildOptions.jpg){:width="641" height="355"}](/resources/LinuxCodeBlocksProjectBuildOptions.jpg)
 
-Add ‘-ltgui’ to the “Linker settings” under “Other linker options”. The order should be as follows: first tgui, then the libraries from sfml.  
+Add ‘-ltgui’ to the "Linker settings" under "Other linker options". The order should be as follows: first tgui, then the libraries from sfml.  
 [![CodeBlocks Linker Settings](/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg){:width="736" height="324"}](/resources/LinuxCodeBlocksProjectBuildOptionsLinkerSettings.jpg)
 
 You must also enable c++14.  

@@ -223,6 +223,7 @@ var searchData=
   ['setwidgetpadding',['setWidgetPadding',['../classtgui_1_1Grid.html#ac0e86c36be02b2df329f964d73dcaccb',1,'tgui::Grid::setWidgetPadding(const Widget::Ptr &amp;widget, const Padding &amp;padding=Padding(0, 0, 0, 0))'],['../classtgui_1_1Grid.html#aef0d5a4206a947a461a84944c9a85dd4',1,'tgui::Grid::setWidgetPadding(std::size_t row, std::size_t column, const Padding &amp;padding=Padding(0, 0, 0, 0))']]],
   ['showwitheffect',['showWithEffect',['../classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b',1,'tgui::Widget']]],
   ['signal',['Signal',['../classtgui_1_1Signal.html#ae66e7edf6a6a62c1d6d87a767e349241',1,'tgui::Signal::Signal(std::string &amp;&amp;name, std::size_t extraParameters=0)'],['../classtgui_1_1Signal.html#a2533de4f7124de8b8ae4644dad19717f',1,'tgui::Signal::Signal(const Signal &amp;other)'],['../classtgui_1_1Signal.html#afa1b84b35c33318e5b6082704a63a864',1,'tgui::Signal::Signal(Signal &amp;&amp;other)=default']]],
+  ['signalanimation',['SignalAnimation',['../classtgui_1_1SignalAnimation.html#a86f6c24da7348be669e894cb225755a6',1,'tgui::SignalAnimation']]],
   ['signalchildwindow',['SignalChildWindow',['../classtgui_1_1SignalChildWindow.html#a5fdab32a0a953f66425efbe7e76a65c7',1,'tgui::SignalChildWindow']]],
   ['signalitem',['SignalItem',['../classtgui_1_1SignalItem.html#a3962fd3c9db2bf59f6771fe5e9b977ef',1,'tgui::SignalItem']]],
   ['signalmenuitem',['SignalMenuItem',['../classtgui_1_1SignalMenuItem.html#acfda6455030609220ddc04d590c22ae0',1,'tgui::SignalMenuItem']]],

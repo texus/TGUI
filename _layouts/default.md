@@ -29,7 +29,7 @@
           {% endif %}
         {% endfor %}
       {% endfor %}
-      </ol>
+      </ul>
     {% endif %}
 {% endcomment %}
 
