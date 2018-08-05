@@ -1,0 +1,21 @@
+TGUI 0.8.0  (5 August 2018)
+---------------------------
+
+- Global default text size for more consistent texts in widgets
+- Gui Builder was added
+- A theme can be made the default to use it for all new widgets
+- Renderers are decoupled from widgets, making them truly shared
+- BitmapButton widget to have an icon next to the button caption
+- RangeSlider widget to have two thumbs on a slider
+- ScrollablePanel widget to have a Panel with automatic scrollbars
+- Panel widget was split in Group, RadioButtonGroup and Panel widgets
+- HorizontalLayout, VerticalLayout and HorizontalWrap to arrange widgets
+- Relative layouts were improved
+- Many other improvements
+
+
+Older Releases
+--------------
+
+See the website for changelogs of older releases: https://tgui.eu/changelog/
+
