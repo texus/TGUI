@@ -412,7 +412,7 @@ namespace tgui
                     {
                         // Calculate the new value
                         const unsigned int value = static_cast<unsigned int>((((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height)
-                                                                               / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum) + 0.5f);
+                            / (getSize().y - m_arrowUp.height - m_arrowDown.height - m_thumb.height)) * (m_maximum - m_viewportSize)) + 0.5f);
 
                         // If the value isn't too high then change it
                         if (value <= (m_maximum - m_viewportSize))
@@ -438,15 +438,15 @@ namespace tgui
                         // Make sure that you did not click on the down arrow
                         if (pos.y < getSize().y - m_arrowUp.height)
                         {
-                            // Calculate the exact position (a number between 0 and maximum)
-                            const float value = (((pos.y - m_arrowUp.height) / (getSize().y - m_arrowUp.height - m_arrowDown.height)) * m_maximum);
+                            // Calculate the exact position (a number between 0 and maximum), as if the top of the thumb will be where you clicked
+                            const float scaleFactor = (m_maximum - m_viewportSize) / (getSize().y - m_arrowUp.height - m_arrowDown.height - m_thumb.height);
+                            const float value = (pos.y - m_arrowUp.height) * scaleFactor;
 
                             // Check if you clicked above the thumb
                             if (value <= m_value)
                             {
-                                const float subtractValue = m_viewportSize / 3.0f;
-
                                 // Try to place the thumb on 2/3 of the clicked position
+                                const float subtractValue = (m_thumb.height / 3.0f) * scaleFactor;
                                 if (value >= subtractValue)
                                     setValue(static_cast<unsigned int>(value - subtractValue + 0.5f));
                                 else
@@ -454,9 +454,8 @@ namespace tgui
                             }
                             else // The click occurred below the thumb
                             {
-                                const float subtractValue = m_viewportSize * 2.0f / 3.0f;
-
                                 // Try to place the thumb on 2/3 of the clicked position
+                                const float subtractValue = (m_thumb.height * 2.0f / 3.0f) * scaleFactor;
                                 if (value <= (m_maximum - m_viewportSize + subtractValue))
                                     setValue(static_cast<unsigned int>(value - subtractValue + 0.5f));
                                 else
@@ -480,7 +479,8 @@ namespace tgui
                     {
                         // Calculate the new value
                         const unsigned int value = static_cast<unsigned int>((((pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
-                                                                               / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum) + 0.5f);
+                            / (getSize().x - m_arrowUp.width - m_arrowDown.width - m_thumb.width)) * (m_maximum - m_viewportSize)) + 0.5f);
+
                         // If the value isn't too high then change it
                         if (value <= (m_maximum - m_viewportSize))
                             setValue(value);
@@ -505,13 +505,14 @@ namespace tgui
                         // Make sure that you did not click on the down arrow
                         if (pos.x < getSize().x - m_arrowUp.width)
                         {
-                            // Calculate the exact position (a number between 0 and maximum)
-                            const float value = (((pos.x - m_arrowUp.width) / (getSize().x - m_arrowUp.width - m_arrowDown.width)) * m_maximum);
+                            // Calculate the exact position (a number between 0 and maximum), as if the left of the thumb will be where you clicked
+                            const float scaleFactor = (m_maximum - m_viewportSize) / (getSize().x - m_arrowUp.width - m_arrowDown.width - m_thumb.width);
+                            const float value = (pos.x - m_arrowUp.width) * scaleFactor;
 
                             // Check if you clicked to the left of the thumb
                             if (value <= m_value)
                             {
-                                const float subtractValue = m_viewportSize / 3.0f;
+                                const float subtractValue = (m_thumb.width / 3.0f) * scaleFactor;
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value >= subtractValue)
@@ -521,7 +522,7 @@ namespace tgui
                             }
                             else // The click occurred to the right of the thumb
                             {
-                                const float subtractValue = m_viewportSize * 2.0f / 3.0f;
+                                const float subtractValue = (m_thumb.width * 2.0f / 3.0f) * scaleFactor;
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value <= (m_maximum - m_viewportSize + subtractValue))
@@ -608,7 +609,7 @@ namespace tgui
 
             m_thumb.width = getSize().x;
             if (m_maximum > m_viewportSize)
-                m_thumb.height = m_track.height * m_viewportSize / m_maximum;
+                m_thumb.height = std::max(m_track.height * m_viewportSize / m_maximum, getSize().x);
             else
                 m_thumb.height = m_track.height;
         }
@@ -633,7 +634,7 @@ namespace tgui
 
             m_thumb.height = getSize().y;
             if (m_maximum > m_viewportSize)
-                m_thumb.width = m_track.width * m_viewportSize / m_maximum;
+                m_thumb.width = std::max(m_track.width * m_viewportSize / m_maximum, getSize().y);
             else
                 m_thumb.width = m_track.width;
         }
