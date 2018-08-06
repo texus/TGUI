@@ -4,10 +4,10 @@ codecov:
 coverage:
   range: 60...100
   status:
-    project: false
-    patch: false
-    changes: false
-  ignore:
-    - tests
-    - examples
-    - include/TGUI/Aurora
+    project: off
+    patch: off
+    changes: off
+ignore:
+- tests
+- examples
+- include/TGUI/Aurora
