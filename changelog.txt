@@ -1,3 +1,9 @@
+TGUI 0.8.1  (TBD)
+-----------------
+
+- Scrollbar thumb should not become smaller than the scrollbar width
+
+
 TGUI 0.8.0  (5 August 2018)
 ---------------------------
 

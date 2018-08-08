@@ -609,7 +609,18 @@ namespace tgui
 
             m_thumb.width = getSize().x;
             if (m_maximum > m_viewportSize)
-                m_thumb.height = std::max(m_track.height * m_viewportSize / m_maximum, getSize().x);
+            {
+                m_thumb.height = m_track.height * m_viewportSize / m_maximum;
+
+                // Don't allow the thumb to become smaller than the scrollbar width, unless there isn't enough room for it
+                if (m_thumb.height < getSize().x)
+                {
+                    if (getSize().x < m_track.height)
+                        m_thumb.height = getSize().x;
+                    else // Track is too small to contain minimum the thumb size, so instead we use 3/4th of track as size
+                        m_thumb.height = m_track.height * 0.75f;
+                }
+            }
             else
                 m_thumb.height = m_track.height;
         }
@@ -634,7 +645,18 @@ namespace tgui
 
             m_thumb.height = getSize().y;
             if (m_maximum > m_viewportSize)
-                m_thumb.width = std::max(m_track.width * m_viewportSize / m_maximum, getSize().y);
+            {
+                m_thumb.width = m_track.width * m_viewportSize / m_maximum;
+
+                // Don't allow the thumb to become smaller than the scrollbar width, unless there isn't enough room for it
+                if (m_thumb.width < getSize().y)
+                {
+                    if (getSize().y < m_track.width)
+                        m_thumb.width = getSize().y;
+                    else // Track is too small to contain minimum the thumb size, so instead we use 3/4th of track as size
+                        m_thumb.width = m_track.width * 0.75f;
+                }
+            }
             else
                 m_thumb.width = m_track.width;
         }
