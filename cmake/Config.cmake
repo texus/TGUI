@@ -69,3 +69,10 @@ else()
     message(FATAL_ERROR "Unsupported compiler")
     return()
 endif()
+
+# Set pkgconfig install directory
+if (TGUI_OS_BSD)
+    set(TGUI_PKGCONFIG_DIR "/libdata/pkgconfig")
+else()
+    set(TGUI_PKGCONFIG_DIR "/lib${LIB_SUFFIX}/pkgconfig")
+endif()

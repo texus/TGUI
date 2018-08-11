@@ -60,6 +60,22 @@ endif()
 tgui_set_option(TGUI_MISC_INSTALL_PREFIX "${DEFAULT_INSTALL_MISC_DIR}" PATH "Prefix installation path for miscellaneous files")
 mark_as_advanced(TGUI_MISC_INSTALL_PREFIX)
 
+# Install pkg-config files by default on Linux and BSD
+if (TGUI_OS_LINUX OR TGUI_OS_BSD)
+    set(TGUI_INSTALL_PKGCONFIG_DEFAULT TRUE)
+else()
+    set(TGUI_INSTALL_PKGCONFIG_DEFAULT FALSE)
+endif()
+
+tgui_set_option(TGUI_INSTALL_PKGCONFIG_FILES ${TGUI_INSTALL_PKGCONFIG_DEFAULT} BOOL "TRUE to automatically install pkg-config files so other projects can find TGUI")
+
+if (TGUI_INSTALL_PKGCONFIG_FILES)
+    tgui_set_option(TGUI_PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${TGUI_PKGCONFIG_DIR}" PATH "Install directory for TGUI's pkg-config .pc files")
+
+    configure_file("pkgconfig/tgui.pc.in" "pkgconfig/tgui.pc" @ONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_PREFIX}")
+endif()
+
 if(TGUI_USE_CPP17)
     message(WARNING "The library is being build with c++17 features. Keep in mind that you MUST define TGUI_USE_CPP17 in the project using the library as well.")
 endif()

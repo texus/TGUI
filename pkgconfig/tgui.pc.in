@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib@LIB_SUFFIX@
+includedir=${prefix}/include
+
+Name: TGUI
+Description: Cross-platform C++ GUI library for SFML
+URL: https://tgui.eu
+Version: @TGUI_VERSION_MAJOR@.@TGUI_VERSION_MINOR@.@TGUI_VERSION_PATCH@
+Libs: -L${libdir} -ltgui
+Cflags: -I${includedir}
