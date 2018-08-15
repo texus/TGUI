@@ -2,6 +2,8 @@ TGUI 0.8.1  (TBD)
 -----------------
 
 - Scrollbar thumb should not become smaller than the scrollbar width
+- Handle delete button on android correctly when using SFML 2.5
+- ChildWindow callback with parameter caused crash
 
 
 TGUI 0.8.0  (5 August 2018)

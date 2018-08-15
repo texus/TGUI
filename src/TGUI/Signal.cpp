@@ -278,7 +278,7 @@ namespace tgui
     unsigned int SignalChildWindow::connect(const DelegateChildWindow& handler)
     {
         const auto id = generateUniqueId();
-        m_handlers[id] = [handler](){ handler(std::static_pointer_cast<ChildWindow>(internal_signal::dereference<ChildWindow*>(internal_signal::parameters[1])->shared_from_this())); };
+        m_handlers[id] = [handler](){ handler(internal_signal::dereference<ChildWindow::Ptr>(internal_signal::parameters[1])); };
         return id;
     }
 
@@ -287,18 +287,19 @@ namespace tgui
     unsigned int SignalChildWindow::connect(const DelegateChildWindowEx& handler)
     {
         const auto id = generateUniqueId();
-        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, std::static_pointer_cast<ChildWindow>(internal_signal::dereference<ChildWindow*>(internal_signal::parameters[1])->shared_from_this())); };
+        m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<ChildWindow::Ptr>(internal_signal::parameters[1])); };
         return id;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool SignalChildWindow::emit(const ChildWindow* childWindow)
+    bool SignalChildWindow::emit(ChildWindow* childWindow)
     {
         if (m_handlers.empty())
             return false;
 
-        internal_signal::parameters[1] = static_cast<const void*>(&childWindow);
+        ChildWindow::Ptr sharedPtr = std::static_pointer_cast<ChildWindow>(childWindow->shared_from_this());
+        internal_signal::parameters[1] = static_cast<const void*>(&sharedPtr);
         return Signal::emit(childWindow);
     }
 
