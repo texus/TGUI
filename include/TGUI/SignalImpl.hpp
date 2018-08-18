@@ -47,7 +47,7 @@ namespace tgui
         struct TypeSet;
 
         // The dereference function turns the void* elements in the parameters list back into its original type right before calling the signal handler
-#ifdef TGUI_USE_CPP17
+    #ifdef TGUI_USE_CPP17
         template <typename Type>
         decltype(auto) dereference(const void* obj)
         {
@@ -58,7 +58,7 @@ namespace tgui
             else
                 return *static_cast<const std::decay_t<Type>*>(obj);
         }
-#else
+    #else
         template <typename Type, typename std::enable_if<std::is_same<Type, std::string>::value>::type* = nullptr>
         decltype(auto) dereference(const void* obj)
         {
@@ -78,7 +78,7 @@ namespace tgui
         {
             return *static_cast<const typename std::decay<Type>::type*>(obj);
         }
-#endif
+    #endif
 
     #ifndef TGUI_USE_CPP17
         // std::invoke only exists in c++17 so we use our own implementation to support c++14 compilers

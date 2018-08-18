@@ -40,6 +40,16 @@ namespace
     {
         return ++lastId;
     }
+
+    template <typename T>
+    bool checkParamType(std::initializer_list<std::type_index>::const_iterator type)
+    {
+    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
+        return strcmp(type->name(), typeid(T).name()) == 0;
+    #else
+        return *type == typeid(T);
+    #endif
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,11 +159,7 @@ namespace tgui
 
     unsigned int SignalInt::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(int).name()) == 0))
-    #else
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(int)))
-    #endif
+        if ((unboundParameters.size() == 1) && checkParamType<int>(unboundParameters.begin()))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -163,11 +169,7 @@ namespace tgui
 
     unsigned int SignalUInt::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(unsigned int).name()) == 0))
-    #else
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(unsigned int)))
-    #endif
+        if ((unboundParameters.size() == 1) && checkParamType<unsigned int>(unboundParameters.begin()))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -177,11 +179,7 @@ namespace tgui
 
     unsigned int SignalBool::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(bool).name()) == 0))
-    #else
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(bool)))
-    #endif
+        if ((unboundParameters.size() == 1) && checkParamType<bool>(unboundParameters.begin()))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -191,11 +189,7 @@ namespace tgui
 
     unsigned int SignalFloat::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(float).name()) == 0))
-    #else
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(float)))
-    #endif
+        if ((unboundParameters.size() == 1) && checkParamType<float>(unboundParameters.begin()))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -205,11 +199,7 @@ namespace tgui
 
     unsigned int SignalString::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(std::string).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::String).name()) == 0)))
-    #else
-        if ((unboundParameters.size() == 1) && ((*unboundParameters.begin() == typeid(std::string)) || (*unboundParameters.begin() == typeid(sf::String))))
-    #endif
+        if ((unboundParameters.size() == 1) && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin())))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -219,11 +209,7 @@ namespace tgui
 
     unsigned int SignalVector2f::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(Vector2f).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::Vector2f).name()) == 0)))
-    #else
-        if ((unboundParameters.size() == 1) && ((*unboundParameters.begin() == typeid(Vector2f)) || (*unboundParameters.begin() == typeid(sf::Vector2f))))
-    #endif
+        if ((unboundParameters.size() == 1) && (checkParamType<Vector2f>(unboundParameters.begin()) || checkParamType<sf::Vector2f>(unboundParameters.begin())))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -263,11 +249,7 @@ namespace tgui
 
     unsigned int SignalRange::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 2) && (strcmp(unboundParameters.begin()->name(), typeid(float).name()) == 0) && (strcmp((unboundParameters.begin()+1)->name(), typeid(float).name()) == 0))
-    #else
-        if ((unboundParameters.size() == 2) && (*unboundParameters.begin() == typeid(float)) && (*(unboundParameters.begin()+1) == typeid(float)))
-    #endif
+        if ((unboundParameters.size() == 2) && checkParamType<float>(unboundParameters.begin()) && checkParamType<float>(unboundParameters.begin()+1))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -306,11 +288,7 @@ namespace tgui
 
     unsigned int SignalChildWindow::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(ChildWindow::Ptr).name()) == 0))
-    #else
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(ChildWindow::Ptr)))
-    #endif
+        if ((unboundParameters.size() == 1) && checkParamType<ChildWindow::Ptr>(unboundParameters.begin()))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
@@ -356,20 +334,11 @@ namespace tgui
 
     unsigned int SignalItem::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(std::string).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::String).name()) == 0)))
-    #else
-        if ((unboundParameters.size() == 1) && ((*unboundParameters.begin() == typeid(std::string)) || (*unboundParameters.begin() == typeid(sf::String))))
-    #endif
+        if ((unboundParameters.size() == 1) && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin())))
             return 1;
         else if ((unboundParameters.size() == 2)
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-              && ((strcmp(unboundParameters.begin()->name(), typeid(std::string).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::String).name()) == 0))
-              && ((strcmp((unboundParameters.begin()+1)->name(), typeid(std::string).name()) == 0) || (strcmp((unboundParameters.begin()+1)->name(), typeid(sf::String).name()) == 0)))
-    #else
-              && ((*unboundParameters.begin() == typeid(std::string)) || (*unboundParameters.begin() == typeid(sf::String)))
-              && ((*(unboundParameters.begin()+1) == typeid(std::string)) || (*(unboundParameters.begin()+1) == typeid(sf::String))))
-    #endif
+              && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin()))
+              && (checkParamType<std::string>(unboundParameters.begin()+1) || checkParamType<sf::String>(unboundParameters.begin()+1)))
         {
             return 1;
         }
@@ -417,17 +386,9 @@ namespace tgui
 
     unsigned int SignalMenuItem::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && ((strcmp(unboundParameters.begin()->name(), typeid(std::string).name()) == 0) || (strcmp(unboundParameters.begin()->name(), typeid(sf::String).name()) == 0)))
-    #else
-        if ((unboundParameters.size() == 1) && ((*unboundParameters.begin() == typeid(std::string)) || (*unboundParameters.begin() == typeid(sf::String))))
-    #endif
+        if ((unboundParameters.size() == 1) && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin())))
             return 1;
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        else if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(std::vector<sf::String>).name()) == 0))
-    #else
-        else if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(std::vector<sf::String>)))
-    #endif
+        if ((unboundParameters.size() == 1) && checkParamType<std::vector<sf::String>>(unboundParameters.begin()))
             return 2;
         else
             return Signal::validateTypes(unboundParameters);
@@ -437,23 +398,11 @@ namespace tgui
 
     unsigned int SignalAnimation::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(ShowAnimationType).name()) == 0))
-    #else
-        if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(ShowAnimationType)))
-    #endif
+        if ((unboundParameters.size() == 1) && checkParamType<ShowAnimationType>(unboundParameters.begin()))
             return 1;
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        else if ((unboundParameters.size() == 1) && (strcmp(unboundParameters.begin()->name(), typeid(bool).name()) == 0))
-    #else
-        else if ((unboundParameters.size() == 1) && (*unboundParameters.begin() == typeid(bool)))
-    #endif
+        if ((unboundParameters.size() == 1) && checkParamType<bool>(unboundParameters.begin()))
             return 2;
-    #ifdef TGUI_UNSAFE_TYPE_INFO_COMPARISON
-        else if ((unboundParameters.size() == 2) && (strcmp(unboundParameters.begin()->name(), typeid(ShowAnimationType).name()) == 0) && (strcmp((unboundParameters.begin()+1)->name(), typeid(bool).name()) == 0))
-    #else
-        else if ((unboundParameters.size() == 2) && (*unboundParameters.begin() == typeid(ShowAnimationType)) && (*(unboundParameters.begin()+1) == typeid(bool)))
-    #endif
+        if ((unboundParameters.size() == 2) && checkParamType<ShowAnimationType>(unboundParameters.begin()) && checkParamType<bool>(unboundParameters.begin()+1))
             return 1;
         else
             return Signal::validateTypes(unboundParameters);
