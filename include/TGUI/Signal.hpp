@@ -415,7 +415,7 @@ namespace tgui
         /// @internal
         /// @brief Call all connected signal handlers
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool emit(const ChildWindow* param);
+        bool emit(ChildWindow* param);
 
 
     private:
