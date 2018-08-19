@@ -37,12 +37,6 @@ TEST_CASE("[Signal]")
         REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, std::string){}) == ++id);
         REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}) == ++id);
         REQUIRE(widget->connect("PositionChanged", [](tgui::Widget::Ptr, std::string, tgui::Vector2f){}) == ++id);
-        REQUIRE(widget->onPositionChange.connect([](){}) == ++id);
-        REQUIRE(widget->onPositionChange.connect([](sf::Vector2f){}) == ++id);
-        REQUIRE(widget->onPositionChange.connect([](tgui::Vector2f){}) == ++id);
-        REQUIRE(widget->onPositionChange.connect([](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget->onPositionChange.connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}) == ++id);
-        REQUIRE(widget->onPositionChange.connect([](tgui::Widget::Ptr, std::string, tgui::Vector2f){}) == ++id);
 
         REQUIRE(widget->connect("SizeChanged", [](){}) == ++id);
         REQUIRE(widget->connect("SizeChanged", [](sf::Vector2f){}) == ++id);
@@ -50,32 +44,18 @@ TEST_CASE("[Signal]")
         REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, std::string){}) == ++id);
         REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, std::string, sf::Vector2f){}) == ++id);
         REQUIRE(widget->connect("SizeChanged", [](tgui::Widget::Ptr, std::string, tgui::Vector2f){}) == ++id);
-        REQUIRE(widget->onSizeChange.connect([](){}) == ++id);
-        REQUIRE(widget->onSizeChange.connect([](sf::Vector2f){}) == ++id);
-        REQUIRE(widget->onSizeChange.connect([](tgui::Vector2f){}) == ++id);
-        REQUIRE(widget->onSizeChange.connect([](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget->onSizeChange.connect([](tgui::Widget::Ptr, std::string, sf::Vector2f){}) == ++id);
-        REQUIRE(widget->onSizeChange.connect([](tgui::Widget::Ptr, std::string, tgui::Vector2f){}) == ++id);
 
         REQUIRE(widget->connect("Focused", [](){}) == ++id);
         REQUIRE(widget->connect("Focused", [](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget->onFocus.connect([](){}) == ++id);
-        REQUIRE(widget->onFocus.connect([](tgui::Widget::Ptr, std::string){}) == ++id);
 
         REQUIRE(widget->connect("Unfocused", [](){}) == ++id);
         REQUIRE(widget->connect("Unfocused", [](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget->onUnfocus.connect([](){}) == ++id);
-        REQUIRE(widget->onUnfocus.connect([](tgui::Widget::Ptr, std::string){}) == ++id);
 
         REQUIRE(widget->connect("MouseEntered", [](){}) == ++id);
         REQUIRE(widget->connect("MouseEntered", [](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget->onMouseEnter.connect([](){}) == ++id);
-        REQUIRE(widget->onMouseEnter.connect([](tgui::Widget::Ptr, std::string){}) == ++id);
 
         REQUIRE(widget->connect("MouseLeft", [](){}) == ++id);
         REQUIRE(widget->connect("MouseLeft", [](tgui::Widget::Ptr, std::string){}) == ++id);
-        REQUIRE(widget->onMouseLeave.connect([](){}) == ++id);
-        REQUIRE(widget->onMouseLeave.connect([](tgui::Widget::Ptr, std::string){}) == ++id);
 
         REQUIRE(widget->connect("AnimationFinished", [](){}) == ++id);
         REQUIRE(widget->connect("AnimationFinished", [](tgui::ShowAnimationType){}) == ++id);
@@ -133,47 +113,32 @@ TEST_CASE("[Signal]")
     SECTION("disconnect")
     {
         unsigned int i = 0;
-        unsigned int id = widget->onPositionChange.connect([&](){ i++; });
-
+        unsigned int id = widget->connect("PositionChanged", [&](){ i++; });
         widget->setPosition(10, 10);
         REQUIRE(i == 1);
-
-        widget->onPositionChange.disconnect(id);
-        widget->setPosition(20, 20);
-        REQUIRE(i == 1);
-
-        id = widget->connect("PositionChanged", [&](){ i++; });
-        widget->setPosition(10, 10);
-        REQUIRE(i == 2);
 
         widget->disconnect(id);
         widget->setPosition(20, 20);
-        REQUIRE(i == 2);
+        REQUIRE(i == 1);
 
-        widget->onPositionChange.connect([&](){ i++; });
-        widget->onSizeChange.connect([&](){ i++; });
-        widget->onPositionChange.disconnectAll();
-        widget->setPosition(30, 30);
-        widget->setSize(100, 25);
-        REQUIRE(i == 3);
-
-        widget->onPositionChange.connect([&](){ i++; });
+        widget->connect("PositionChanged", [&](){ i++; });
         widget->connect("SizeChanged", [&](){ i++; });
         widget->disconnectAll("PositionChanged");
-        widget->onSizeChange.disconnectAll();
-        widget->setPosition(40, 40);
-        widget->setSize(200, 50);
-        REQUIRE(i == 3);
+        widget->setPosition(30, 30);
+        widget->setSize(100, 25);
+        REQUIRE(i == 2);
 
+        widget->disconnectAll("PositionChanged");
+        widget->disconnectAll("SizeChanged");
         widget->connect("PositionChanged", [&](){ i++; });
         widget->connect("SizeChanged", [&](){ i++; });
         widget->setPosition(50, 50);
         widget->setSize(300, 75);
-        REQUIRE(i == 5);
+        REQUIRE(i == 4);
 
         widget->disconnectAll();
         widget->setPosition(60, 60);
         widget->setSize(400, 100);
-        REQUIRE(i == 5);
+        REQUIRE(i == 4);
     }
 }

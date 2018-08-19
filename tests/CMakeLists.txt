@@ -90,6 +90,7 @@ endif()
 add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(tests PRIVATE tgui)
+target_compile_definitions(tests PRIVATE TGUI_REMOVE_DEPRECATED_CODE)
 
 tgui_set_global_compile_flags(tests)
 tgui_set_stdlib(tests)
