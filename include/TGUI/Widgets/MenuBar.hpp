@@ -89,6 +89,39 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler to the "MenuItemClicked" callback that will only be called when a specific
+        ///        menu item was clicked.
+        ///
+        /// @param signalName   Name of the signal
+        /// @param handler      Callback function to call
+        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... Args>
+        unsigned int connectMenuItem(const sf::String& menu, const sf::String& menuItem, Func&& handler, const Args&... args)
+        {
+        #ifdef TGUI_USE_CPP17
+            return connect("MenuItemClicked",
+                [=](const std::vector<sf::String>& clickedMenuItem)
+                {
+                    if ((clickedMenuItem.size() == 2) && (clickedMenuItem[0] == menu) && (clickedMenuItem[1] == menuItem))
+                        std::invoke(handler, args...);
+                }
+            );
+        #else
+            return connect("MenuItemClicked",
+                [f=std::function<void(const Args&...)>(handler),args...,menu,menuItem](const std::vector<sf::String>& clickedMenuItem)
+                {
+                    if ((clickedMenuItem.size() == 2) && (clickedMenuItem[0] == menu) && (clickedMenuItem[1] == menuItem))
+                        f(args...);
+                }
+            );
+        #endif
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the menu bar
         ///
         /// @param size  The new size of the menu bar
