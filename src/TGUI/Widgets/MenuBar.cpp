@@ -102,6 +102,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void MenuBar::setEnabled(bool enabled)
+    {
+        Widget::setEnabled(enabled);
+
+        if (!enabled)
+        {
+            closeMenu();
+            updateTextColors();
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MenuBar::addMenu(const sf::String& text)
     {
         Menu newMenu;
@@ -117,22 +130,21 @@ namespace tgui
 
     bool MenuBar::addMenuItem(const sf::String& menu, const sf::String& text)
     {
-        // Search for the menu
-        for (unsigned int i = 0; i < m_menus.size(); ++i)
+        for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
-            // If this is the menu then add the menu item to it
-            if (m_menus[i].text.getString() == menu)
-            {
-                Text menuItem;
-                menuItem.setFont(m_fontCached);
-                menuItem.setColor(m_textColorCached);
-                menuItem.setOpacity(m_opacityCached);
-                menuItem.setCharacterSize(m_textSize);
-                menuItem.setString(text);
+            if (m_menus[i].text.getString() != menu)
+                continue;
 
-                m_menus[i].menuItems.push_back(std::move(menuItem));
-                return true;
-            }
+            Text menuItem;
+            menuItem.setFont(m_fontCached);
+            menuItem.setColor(m_textColorCached);
+            menuItem.setOpacity(m_opacityCached);
+            menuItem.setCharacterSize(m_textSize);
+            menuItem.setString(text);
+
+            m_menus[i].menuItems.push_back(std::move(menuItem));
+            m_menus[i].menuItemsEnabled.push_back(true);
+            return true;
         }
 
         // Could not find the menu
@@ -153,20 +165,18 @@ namespace tgui
 
     bool MenuBar::removeMenu(const sf::String& menu)
     {
-        // Search for the menu
-        for (unsigned int i = 0; i < m_menus.size(); ++i)
+        for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
-            // If this is the menu then remove it
-            if (m_menus[i].text.getString() == menu)
-            {
-                m_menus.erase(m_menus.begin() + i);
+            if (m_menus[i].text.getString() != menu)
+                continue;
 
-                // The menu was removed, so it can't remain open
-                if (m_visibleMenu == static_cast<int>(i))
-                    m_visibleMenu = -1;
+            m_menus.erase(m_menus.begin() + i);
 
-                return true;
-            }
+            // The menu was removed, so it can't remain open
+            if (m_visibleMenu == static_cast<int>(i))
+                m_visibleMenu = -1;
+
+            return true;
         }
 
         // could not find the menu
@@ -177,26 +187,25 @@ namespace tgui
 
     bool MenuBar::removeMenuItem(const sf::String& menu, const sf::String& menuItem)
     {
-        // Search for the menu
-        for (unsigned int i = 0; i < m_menus.size(); ++i)
+        for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
-            // If this is the menu then search for the menu item
-            if (m_menus[i].text.getString() == menu)
+            if (m_menus[i].text.getString() != menu)
+                continue;
+
+            for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
             {
-                for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
-                {
-                    // If this is the menu item then remove it
-                    if (m_menus[i].menuItems[j].getString() == menuItem)
-                    {
-                        m_menus[i].menuItems.erase(m_menus[i].menuItems.begin() + j);
+                // If this is the menu item then remove it
+                if (m_menus[i].menuItems[j].getString() != menuItem)
+                    continue;
 
-                        // The item can't still be selected
-                        if (m_menus[i].selectedMenuItem == static_cast<int>(j))
-                            m_menus[i].selectedMenuItem = -1;
+                m_menus[i].menuItems.erase(m_menus[i].menuItems.begin() + j);
+                m_menus[i].menuItemsEnabled.erase(m_menus[i].menuItemsEnabled.begin() + j);
 
-                        return true;
-                    }
-                }
+                // The item can't still be selected
+                if (m_menus[i].selectedMenuItem == static_cast<int>(j))
+                    m_menus[i].selectedMenuItem = -1;
+
+                return true;
             }
         }
 
@@ -213,13 +222,91 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool MenuBar::setMenuEnabled(const sf::String& menu, bool enabled)
+    {
+        for (std::size_t i = 0; i < m_menus.size(); ++i)
+        {
+            if (m_menus[i].text.getString() != menu)
+                continue;
+
+            if (!enabled && (m_visibleMenu == static_cast<int>(i)))
+                closeMenu();
+
+            m_menus[i].enabled = enabled;
+            updateMenuTextColor(i, (m_visibleMenu == static_cast<int>(i)));
+            return true;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::getMenuEnabled(const sf::String& menuText) const
+    {
+        for (auto& menu : m_menus)
+        {
+            if (menu.text.getString() == menuText)
+                return menu.enabled;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::setMenuItemEnabled(const sf::String& menuText, const sf::String& menuItemText, bool enabled)
+    {
+        for (std::size_t i = 0; i < m_menus.size(); ++i)
+        {
+            if (m_menus[i].text.getString() != menuText)
+                continue;
+
+            for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
+            {
+                if (m_menus[i].menuItems[j].getString() != menuItemText)
+                    continue;
+
+                if (!enabled && (m_menus[i].selectedMenuItem == static_cast<int>(j)))
+                    m_menus[i].selectedMenuItem = -1;
+
+                m_menus[i].menuItemsEnabled[j] = enabled;
+                updateMenuItemTextColor(i, j, (m_menus[i].selectedMenuItem == static_cast<int>(j)));
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::getMenuItemEnabled(const sf::String& menuText, const sf::String& menuItemText) const
+    {
+        for (auto& menu : m_menus)
+        {
+            if (menu.text.getString() != menuText)
+                continue;
+
+            for (std::size_t i = 0; i < menu.menuItems.size(); ++i)
+            {
+                if (menu.menuItems[i].getString() == menuItemText)
+                    return menu.menuItemsEnabled[i];
+            }
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void MenuBar::setTextSize(unsigned int size)
     {
         m_textSize = size;
 
-        for (unsigned int i = 0; i < m_menus.size(); ++i)
+        for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
-            for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+            for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
                 m_menus[i].menuItems[j].setCharacterSize(m_textSize);
 
             m_menus[i].text.setCharacterSize(m_textSize);
@@ -283,19 +370,18 @@ namespace tgui
 
     void MenuBar::closeMenu()
     {
-        // Check if there is still a menu open
-        if (m_visibleMenu != -1)
-        {
-            // If an item in that menu was selected then unselect it first
-            if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-            {
-                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColorCached);
-                m_menus[m_visibleMenu].selectedMenuItem = -1;
-            }
+        if (m_visibleMenu == -1)
+            return;
 
-            m_menus[m_visibleMenu].text.setColor(m_textColorCached);
-            m_visibleMenu = -1;
+        // If an item in that menu was selected then unselect it first
+        if (m_menus[m_visibleMenu].selectedMenuItem != -1)
+        {
+            updateMenuItemTextColor(m_visibleMenu, m_menus[m_visibleMenu].selectedMenuItem, false);
+            m_menus[m_visibleMenu].selectedMenuItem = -1;
         }
+
+        updateMenuTextColor(m_visibleMenu, false);
+        m_visibleMenu = -1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -305,35 +391,31 @@ namespace tgui
         // Check if the mouse is on top of the menu bar
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
             return true;
-        else
+        else if (m_visibleMenu != -1)
         {
-            // Check if there is a menu open
-            if (m_visibleMenu != -1)
+            // Search the left position of the open menu
+            float left = 0;
+            for (int i = 0; i < m_visibleMenu; ++i)
+                left += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
+
+            // Find out what the width of the menu should be
+            float width = m_minimumSubMenuWidth;
+            for (std::size_t j = 0; j < m_menus[m_visibleMenu].menuItems.size(); ++j)
             {
-                // Search the left position of the open menu
-                float left = 0;
-                for (int i = 0; i < m_visibleMenu; ++i)
-                    left += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
+                if (width < m_menus[m_visibleMenu].menuItems[j].getSize().x + (3 * m_distanceToSideCached))
+                    width = m_menus[m_visibleMenu].menuItems[j].getSize().x + (3 * m_distanceToSideCached);
+            }
 
-                // Find out what the width of the menu should be
-                float width = m_minimumSubMenuWidth;
-                for (unsigned int j = 0; j < m_menus[m_visibleMenu].menuItems.size(); ++j)
-                {
-                    if (width < m_menus[m_visibleMenu].menuItems[j].getSize().x + (3 * m_distanceToSideCached))
-                        width = m_menus[m_visibleMenu].menuItems[j].getSize().x + (3 * m_distanceToSideCached);
-                }
-
-                // Check if the mouse is on top of the open menu
-                if (m_invertedMenuDirection)
-                {
-                    if (FloatRect{left, -(getSize().y * m_menus[m_visibleMenu].menuItems.size()), width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
-                        return true;
-                }
-                else
-                {
-                    if (FloatRect{getPosition().x + left, getPosition().y + getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
-                        return true;
-                }
+            // Check if the mouse is on top of the open menu
+            if (m_invertedMenuDirection)
+            {
+                if (FloatRect{left, -(getSize().y * m_menus[m_visibleMenu].menuItems.size()), width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
+                    return true;
+            }
+            else
+            {
+                if (FloatRect{getPosition().x + left, getPosition().y + getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
+                    return true;
             }
         }
 
@@ -349,37 +431,24 @@ namespace tgui
         {
             // Loop through the menus to check if the mouse is on top of them
             float menuWidth = 0;
-            for (unsigned int i = 0; i < m_menus.size(); ++i)
+            for (std::size_t i = 0; i < m_menus.size(); ++i)
             {
                 menuWidth += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
-                if (pos.x < menuWidth)
+                if (pos.x >= menuWidth)
+                    continue;
+
+                // Close the menu when it was already open
+                if (m_visibleMenu == static_cast<int>(i))
+                    closeMenu();
+
+                // If this menu can be opened then do so
+                else if (m_menus[i].enabled && !m_menus[i].menuItems.empty())
                 {
-                    // Close the menu when it was already open
-                    if (m_visibleMenu == static_cast<int>(i))
-                    {
-                        if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-                        {
-                            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColorCached);
-                            m_menus[m_visibleMenu].selectedMenuItem = -1;
-                        }
-
-                        m_menus[m_visibleMenu].text.setColor(m_textColorCached);
-                        m_visibleMenu = -1;
-                    }
-
-                    // If this menu can be opened then do so
-                    else if (!m_menus[i].menuItems.empty())
-                    {
-                        if (m_selectedTextColorCached.isSet())
-                            m_menus[i].text.setColor(m_selectedTextColorCached);
-                        else
-                            m_menus[i].text.setColor(m_textColorCached);
-
-                        m_visibleMenu = static_cast<int>(i);
-                    }
-
-                    break;
+                    updateMenuTextColor(i, true);
+                    m_visibleMenu = static_cast<int>(i);
                 }
+
+                break;
             }
         }
 
@@ -390,28 +459,28 @@ namespace tgui
 
     void MenuBar::leftMouseReleased(Vector2f pos)
     {
-        if (m_mouseDown)
+        if (!m_mouseDown)
+            return;
+
+        pos -= getPosition();
+
+        // Check if the mouse is on top of one of the menus
+        if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+            return;
+
+        std::size_t selectedMenuItem;
+        if (m_invertedMenuDirection)
+            selectedMenuItem = static_cast<std::size_t>((-pos.y-1) / getSize().y);
+        else
+            selectedMenuItem = static_cast<std::size_t>((pos.y - getSize().y) / getSize().y);
+
+        if (selectedMenuItem < m_menus[m_visibleMenu].menuItems.size())
         {
-            pos -= getPosition();
+            onMenuItemClick.emit(this,
+                                 m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString(),
+                                 {m_menus[m_visibleMenu].text.getString(), m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString()});
 
-            // Check if the mouse is on top of one of the menus
-            if (!FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
-            {
-                std::size_t selectedMenuItem;
-                if (m_invertedMenuDirection)
-                    selectedMenuItem = static_cast<std::size_t>((-pos.y-1) / getSize().y);
-                else
-                    selectedMenuItem = static_cast<std::size_t>((pos.y - getSize().y) / getSize().y);
-
-                if (selectedMenuItem < m_menus[m_visibleMenu].menuItems.size())
-                {
-                    onMenuItemClick.emit(this,
-                                         m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString(),
-                                         {m_menus[m_visibleMenu].text.getString(), m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString()});
-
-                    closeMenu();
-                }
-            }
+            closeMenu();
         }
     }
 
@@ -432,43 +501,39 @@ namespace tgui
             {
                 // Loop through the menus to check if the mouse is on top of them
                 float menuWidth = 0;
-                for (unsigned int i = 0; i < m_menus.size(); ++i)
+                for (std::size_t i = 0; i < m_menus.size(); ++i)
                 {
                     menuWidth += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
-                    if (pos.x < menuWidth)
+                    if (pos.x >= menuWidth)
+                        continue;
+
+                    // Check if the menu is already open
+                    if (m_visibleMenu == static_cast<int>(i))
                     {
-                        // Check if the menu is already open
-                        if (m_visibleMenu == static_cast<int>(i))
+                        // If one of the menu items is selected then unselect it
+                        if (m_menus[m_visibleMenu].selectedMenuItem != -1)
                         {
-                            // If one of the menu items is selected then unselect it
-                            if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-                            {
-                                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColorCached);
-                                m_menus[m_visibleMenu].selectedMenuItem = -1;
-                            }
+                            updateMenuItemTextColor(i, static_cast<std::size_t>(m_menus[m_visibleMenu].selectedMenuItem), false);
+                            m_menus[m_visibleMenu].selectedMenuItem = -1;
                         }
-                        else // The menu isn't open yet
-                        {
-                            // If there is another menu open then close it first
-                            closeMenu();
-
-                            // If this menu can be opened then do so
-                            if (!m_menus[i].menuItems.empty())
-                            {
-                                if (m_selectedTextColorCached.isSet())
-                                    m_menus[i].text.setColor(m_selectedTextColorCached);
-                                else
-                                    m_menus[i].text.setColor(m_textColorCached);
-
-                                m_visibleMenu = static_cast<int>(i);
-                            }
-                        }
-                        break;
                     }
+                    else // The menu isn't open yet
+                    {
+                        // If there is another menu open then close it first
+                        closeMenu();
+
+                        // If this menu can be opened then do so
+                        if (m_menus[i].enabled && !m_menus[i].menuItems.empty())
+                        {
+                            updateMenuTextColor(i, true);
+                            m_visibleMenu = static_cast<int>(i);
+                        }
+                    }
+                    break;
                 }
             }
         }
-        else // The mouse is on top of one of the menus
+        else if (m_visibleMenu != -1) // The mouse is on top of the open menu
         {
             // Calculate on what menu item the mouse is located
             int selectedMenuItem;
@@ -482,14 +547,16 @@ namespace tgui
             {
                 // If another of the menu items is selected then unselect it
                 if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-                    m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColorCached);
+                    updateMenuItemTextColor(m_visibleMenu, m_menus[m_visibleMenu].selectedMenuItem, false);
 
                 // Mark the item below the mouse as selected
-                m_menus[m_visibleMenu].selectedMenuItem = selectedMenuItem;
-                if (m_selectedTextColorCached.isSet())
-                    m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_selectedTextColorCached);
-                else
-                    m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColorCached);
+                if (m_menus[m_visibleMenu].menuItemsEnabled[selectedMenuItem])
+                {
+                    updateMenuItemTextColor(m_visibleMenu, selectedMenuItem, true);
+                    m_menus[m_visibleMenu].selectedMenuItem = selectedMenuItem;
+                }
+                else // Item below mouse if disabled
+                    m_menus[m_visibleMenu].selectedMenuItem = -1;
             }
         }
     }
@@ -511,11 +578,47 @@ namespace tgui
         // Menu items which are selected on mouse hover should not remain selected now that the mouse has left
         if ((m_visibleMenu != -1) && (m_menus[m_visibleMenu].selectedMenuItem != -1))
         {
-            m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColorCached);
+            updateMenuItemTextColor(m_visibleMenu, m_menus[m_visibleMenu].selectedMenuItem, false);
             m_menus[m_visibleMenu].selectedMenuItem = -1;
         }
 
         Widget::mouseLeftWidget();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::updateMenuTextColor(std::size_t menuIndex, bool selected)
+    {
+        if ((!m_enabled || !m_menus[menuIndex].enabled) && m_textColorDisabledCached.isSet())
+            m_menus[menuIndex].text.setColor(m_textColorDisabledCached);
+        else if (selected && m_selectedTextColorCached.isSet())
+            m_menus[menuIndex].text.setColor(m_selectedTextColorCached);
+        else
+            m_menus[menuIndex].text.setColor(m_textColorCached);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::updateMenuItemTextColor(std::size_t menuIndex, std::size_t menuItemIndex, bool selected)
+    {
+        if (!m_menus[menuIndex].menuItemsEnabled[menuItemIndex] && m_textColorDisabledCached.isSet())
+            m_menus[menuIndex].menuItems[menuItemIndex].setColor(m_textColorDisabledCached);
+        else if (selected && m_selectedTextColorCached.isSet())
+            m_menus[menuIndex].menuItems[menuItemIndex].setColor(m_selectedTextColorCached);
+        else
+            m_menus[menuIndex].menuItems[menuItemIndex].setColor(m_textColorCached);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::updateTextColors()
+    {
+        for (std::size_t i = 0; i < m_menus.size(); ++i)
+        {
+            updateMenuTextColor(i, (m_visibleMenu == static_cast<int>(i)));
+            for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
+                updateMenuItemTextColor(i, j, (m_menus[i].selectedMenuItem == static_cast<int>(j)));
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -535,35 +638,17 @@ namespace tgui
         if (property == "textcolor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
-
-            for (unsigned int i = 0; i < m_menus.size(); ++i)
-            {
-                for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
-                {
-                    if (m_menus[i].selectedMenuItem != static_cast<int>(j))
-                        m_menus[i].menuItems[j].setColor(m_textColorCached);
-                }
-
-                m_menus[i].text.setColor(m_textColorCached);
-            }
-
-            if ((m_visibleMenu != -1) && (m_menus[m_visibleMenu].selectedMenuItem != -1) && m_selectedTextColorCached.isSet())
-                m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_selectedTextColorCached);
+            updateTextColors();
         }
         else if (property == "selectedtextcolor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
-
-            if (m_visibleMenu != -1)
-            {
-                if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-                {
-                    if (m_selectedTextColorCached.isSet())
-                        m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_selectedTextColorCached);
-                    else
-                        m_menus[m_visibleMenu].menuItems[m_menus[m_visibleMenu].selectedMenuItem].setColor(m_textColorCached);
-                }
-            }
+            updateTextColors();
+        }
+        else if (property == "textcolordisabled")
+        {
+            m_textColorDisabledCached = getSharedRenderer()->getTextColorDisabled();
+            updateTextColors();
         }
         else if (property == "texturebackground")
         {
@@ -593,9 +678,9 @@ namespace tgui
         {
             Widget::rendererChanged(property);
 
-            for (unsigned int i = 0; i < m_menus.size(); ++i)
+            for (std::size_t i = 0; i < m_menus.size(); ++i)
             {
-                for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
                     m_menus[i].menuItems[j].setOpacity(m_opacityCached);
 
                 m_menus[i].text.setOpacity(m_opacityCached);
@@ -607,9 +692,9 @@ namespace tgui
         {
             Widget::rendererChanged(property);
 
-            for (unsigned int i = 0; i < m_menus.size(); ++i)
+            for (std::size_t i = 0; i < m_menus.size(); ++i)
             {
-                for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
                     m_menus[i].menuItems[j].setFont(m_fontCached);
 
                 m_menus[i].text.setFont(m_fontCached);
@@ -646,6 +731,25 @@ namespace tgui
                 menuNode->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
             }
 
+            if (!getMenuEnabled(menu.first))
+                menuNode->propertyValuePairs["Enabled"] = std::make_unique<DataIO::ValueNode>("false");
+
+            bool anyMenuItemDisabled = false;
+            for (std::size_t i = 0; i < items.size(); ++i)
+            {
+                if (!getMenuItemEnabled(menu.first, items[i]))
+                    anyMenuItemDisabled = true;
+            }
+            if (anyMenuItemDisabled)
+            {
+                std::string itemList = "[" + Serializer::serialize(getMenuItemEnabled(menu.first, items[0]) ? "true" : "false");
+                for (std::size_t i = 1; i < items.size(); ++i)
+                    itemList += ", " + Serializer::serialize(getMenuItemEnabled(menu.first, items[i]) ? "true" : "false");
+                itemList += "]";
+
+                menuNode->propertyValuePairs["ItemsEnabled"] = std::make_unique<DataIO::ValueNode>(itemList);
+            }
+
             node->children.push_back(std::move(menuNode));
         }
 
@@ -668,20 +772,38 @@ namespace tgui
 
         for (const auto& childNode : node->children)
         {
-            if (toLower(childNode->name) == "menu")
+            // Only parse menu nodes that have a name (no other nodes should exist)
+            if (toLower(childNode->name) != "menu")
+                continue;
+            if (!childNode->propertyValuePairs["name"])
+                throw Exception{"Failed to parse 'Menu' property, expected a nested 'Name' propery"};
+
+            const sf::String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["name"]->value).getString();
+            addMenu(menuText);
+
+            if (childNode->propertyValuePairs["enabled"])
+                setMenuEnabled(menuText, Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["enabled"]->value).getBool());
+
+            if (childNode->propertyValuePairs["items"])
             {
-                if (childNode->propertyValuePairs["name"])
+                if (!childNode->propertyValuePairs["items"]->listNode)
+                    throw Exception{"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
+
+                if (childNode->propertyValuePairs["itemsenabled"])
                 {
-                    addMenu(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["name"]->value).getString());
+                    if (!childNode->propertyValuePairs["itemsenabled"]->listNode)
+                        throw Exception{"Failed to parse 'ItemsEnabled' property inside 'Menu' property, expected a list as value"};
+                    if (childNode->propertyValuePairs["items"]->valueList.size() != childNode->propertyValuePairs["itemsenabled"]->valueList.size())
+                        throw Exception{"Failed to parse 'ItemsEnabled' property inside 'Menu' property, length differs from 'Items' propery"};
+                }
 
-                    if (childNode->propertyValuePairs["items"])
-                    {
-                        if (!childNode->propertyValuePairs["items"]->listNode)
-                            throw Exception{"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
+                for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
+                {
+                    const sf::String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString();
+                    addMenuItem(menuItemText);
 
-                        for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
-                            addMenuItem(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString());
-                    }
+                    if (childNode->propertyValuePairs["itemsenabled"])
+                        setMenuItemEnabled(menuText, menuItemText, Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["itemsenabled"]->valueList[i]).getBool());
                 }
             }
         }
@@ -711,7 +833,7 @@ namespace tgui
 
         // Draw the menu backgrounds
         Sprite backgroundSprite = m_spriteItemBackground;
-        for (unsigned int i = 0; i < m_menus.size(); ++i)
+        for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
             // Is the menu open?
             if (m_visibleMenu == static_cast<int>(i))
@@ -720,7 +842,7 @@ namespace tgui
 
                 // Find out what the width of the menu should be
                 float menuWidth = m_minimumSubMenuWidth;
-                for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
                     menuWidth = std::max(menuWidth, m_menus[i].menuItems[j].getSize().x + (2 * m_distanceToSideCached));
 
                 Sprite selectedBackgroundSprite = m_spriteSelectedItemBackground;
@@ -731,7 +853,7 @@ namespace tgui
 
                     backgroundSprite.setSize({menuWidth, getSize().y});
                     selectedBackgroundSprite.setSize({menuWidth, getSize().y});
-                    for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                    for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
                         states.transform.translate({0, nextItemDistance});
                         if (m_menus[i].selectedMenuItem == static_cast<int>(j))
@@ -746,7 +868,7 @@ namespace tgui
                     backgroundSprite.draw(target, states);
 
                     backgroundSprite.setSize({menuWidth, getSize().y});
-                    for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                    for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
                         states.transform.translate({0, nextItemDistance});
                         backgroundSprite.draw(target, states);
@@ -759,7 +881,7 @@ namespace tgui
                     else
                         drawRectangleShape(target, states, {m_menus[i].text.getSize().x + (2 * m_distanceToSideCached), getSize().y}, m_backgroundColorCached);
 
-                    for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                    for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
                         states.transform.translate({0, nextItemDistance});
                         if ((m_menus[i].selectedMenuItem == static_cast<int>(j)) && m_selectedBackgroundColorCached.isSet())
@@ -787,7 +909,7 @@ namespace tgui
         if (!m_menus.empty())
         {
             textStates.transform.translate({m_distanceToSideCached, (getSize().y - m_menus[0].text.getSize().y) / 2.f});
-            for (unsigned int i = 0; i < m_menus.size(); ++i)
+            for (std::size_t i = 0; i < m_menus.size(); ++i)
             {
                 m_menus[i].text.draw(target, textStates);
 
@@ -796,7 +918,7 @@ namespace tgui
                 {
                     const sf::RenderStates oldStates = textStates;
 
-                    for (unsigned int j = 0; j < m_menus[i].menuItems.size(); ++j)
+                    for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
                     {
                         textStates.transform.translate({0, nextItemDistance});
                         m_menus[i].menuItems[j].draw(target, textStates);

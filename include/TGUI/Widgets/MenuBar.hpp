@@ -134,6 +134,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Enables or disables the widget
+        /// @param enabled  Is the widget enabled?
+        ///
+        /// The disabled widget will no longer receive events and thus no longer send callbacks.
+        /// All widgets are enabled by default.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setEnabled(bool enabled) override;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a new menu
         ///
         /// @param text  The text written on the menu
@@ -211,6 +221,40 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeMenuItem(const sf::String& menu, const sf::String& menuItem);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Enable or disable an entire menu
+        /// @param menu  The name of the menu to enable or disable
+        /// @return True when the menu exists, false when menu was not found
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setMenuEnabled(const sf::String& menu, bool enabled);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Check if an entire menu is enabled or disabled
+        /// @param menu  The name of the menu to check
+        /// @return True if the menu is enabled, false if it was disabled or when the menu did not exist
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getMenuEnabled(const sf::String& menu) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Enable or disable a menu item
+        /// @param menu      The name of the menu in which the menu item is located
+        /// @param menuItem  The name of the menu item to enable or disable
+        /// @return True when the menu item exists, false when menu or menuItem was not found
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setMenuItemEnabled(const sf::String& menu, const sf::String& menuItem, bool enabled);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Check if a menu item is enabled or disabled
+        /// @param menu      The name of the menu in which the menu item is located
+        /// @param menuItem  The name of the menu item to check
+        /// @return True if the menu item is enabled, false if it was disabled or when the menu or menuItem did not exist
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getMenuItemEnabled(const sf::String& menu, const sf::String& menuItem) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -383,6 +427,23 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected:
+
+        struct Menu
+        {
+            Text text;
+            std::vector<Text> menuItems;
+            std::vector<bool> menuItemsEnabled;
+            int selectedMenuItem = -1;
+            bool enabled = true;
+        };
+
+        void updateMenuTextColor(std::size_t menuIndex, bool selected);
+        void updateMenuItemTextColor(std::size_t menuIndex, std::size_t menuItemIndex, bool selected);
+        void updateTextColors();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
         /// One of the menu items was clicked.
@@ -394,13 +455,6 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
-
-        struct Menu
-        {
-            Text text;
-            std::vector<Text> menuItems;
-            int selectedMenuItem = -1;
-        };
 
         std::vector<Menu> m_menus;
 
@@ -421,6 +475,7 @@ namespace tgui
         Color m_selectedBackgroundColorCached;
         Color m_textColorCached;
         Color m_selectedTextColorCached;
+        Color m_textColorDisabledCached;
         float m_distanceToSideCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

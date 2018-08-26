@@ -196,6 +196,42 @@ TEST_CASE("[MenuBar]")
         }
     }
 
+    SECTION("Disabling menus")
+    {
+        menuBar->addMenu("M1");
+        menuBar->addMenuItem("I1");
+        menuBar->addMenuItem("I2");
+        menuBar->addMenu("M2");
+        menuBar->addMenuItem("I3");
+
+        REQUIRE(menuBar->getMenuEnabled("M1"));
+        REQUIRE(menuBar->setMenuEnabled("M1", false));
+        REQUIRE(!menuBar->getMenuEnabled("M1"));
+        REQUIRE(menuBar->getMenuEnabled("M2"));
+
+        REQUIRE(menuBar->getMenuItemEnabled("M1", "I2"));
+        REQUIRE(menuBar->setMenuItemEnabled("M1", "I2", false));
+        REQUIRE(menuBar->getMenuItemEnabled("M1", "I1"));
+        REQUIRE(!menuBar->getMenuItemEnabled("M1", "I2"));
+        REQUIRE(menuBar->getMenuItemEnabled("M2", "I3"));
+
+        // Test re-enabling menus
+        REQUIRE(menuBar->setMenuEnabled("M1", true));
+        REQUIRE(menuBar->setMenuItemEnabled("M1", "I2", true));
+        REQUIRE(menuBar->getMenuEnabled("M1"));
+        REQUIRE(menuBar->getMenuItemEnabled("M1", "I2"));
+
+        REQUIRE(menuBar->setMenuEnabled("M2", true));
+        REQUIRE(menuBar->setMenuItemEnabled("M2", "I3", true));
+        REQUIRE(menuBar->getMenuEnabled("M2"));
+        REQUIRE(menuBar->getMenuItemEnabled("M2", "I3"));
+
+        // Setter returns false if menu doesn't exist
+        REQUIRE(!menuBar->setMenuEnabled("M3", false));
+        REQUIRE(!menuBar->setMenuItemEnabled("M3", "I1", false));
+        REQUIRE(!menuBar->setMenuItemEnabled("M1", "I3", false));
+    }
+
     SECTION("TextSize")
     {
         menuBar->setTextSize(25);
@@ -240,6 +276,7 @@ TEST_CASE("[MenuBar]")
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", "rgb(100, 110, 120)"));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", "rgb(130, 140, 150)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
             }
 
@@ -249,6 +286,7 @@ TEST_CASE("[MenuBar]")
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedBackgroundColor", sf::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedTextColor", sf::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("TextColorDisabled", sf::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
             }
 
@@ -258,6 +296,7 @@ TEST_CASE("[MenuBar]")
                 renderer->setSelectedBackgroundColor({40, 50, 60});
                 renderer->setTextColor({70, 80, 90});
                 renderer->setSelectedTextColor({100, 110, 120});
+                renderer->setTextColorDisabled({130, 140, 150});
                 renderer->setDistanceToSide(2);
             }
 
@@ -265,6 +304,7 @@ TEST_CASE("[MenuBar]")
             REQUIRE(renderer->getProperty("SelectedBackgroundColor").getColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("SelectedTextColor").getColor() == sf::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("TextColorDisabled").getColor() == sf::Color(130, 140, 150));
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
         }
 
@@ -337,9 +377,13 @@ TEST_CASE("[MenuBar]")
         menuBar->addMenuItem("Redo");
         menuBar->addMenu("Help");
 
+        menuBar->setMenuEnabled("File", false);
+        menuBar->setMenuItemEnabled("Edit", "Redo", false);
+
         tgui::MenuBarRenderer renderer = tgui::RendererData::create();
         renderer.setTextColor(sf::Color::Red);
         renderer.setSelectedTextColor(sf::Color::Blue);
+        renderer.setTextColorDisabled(sf::Color::Black);
         renderer.setBackgroundColor(sf::Color::Green);
         renderer.setSelectedBackgroundColor(sf::Color::Yellow);
         renderer.setDistanceToSide(3);
@@ -350,17 +394,28 @@ TEST_CASE("[MenuBar]")
         {
             TEST_DRAW("MenuBar.png")
 
-            sf::Vector2f mousePos = {52, 15};
+            sf::Vector2f mousePos = {25, 15};
             menuBar->mouseMoved(mousePos);
             menuBar->leftMousePressed(mousePos);
             menuBar->leftMouseReleased(mousePos);
+            TEST_DRAW("MenuBar_MenuDisabled.png")
 
+            mousePos = {52, 15};
+            menuBar->mouseMoved(mousePos);
+            menuBar->leftMousePressed(mousePos);
+            menuBar->leftMouseReleased(mousePos);
             TEST_DRAW("MenuBar_MenuOpen.png")
+
+            mousePos = {52, 35};
+            menuBar->mouseMoved(mousePos);
+            TEST_DRAW("MenuBar_MenuHover.png")
 
             mousePos = {52, 55};
             menuBar->mouseMoved(mousePos);
+            TEST_DRAW("MenuBar_MenuHoverDisabled.png")
 
-            TEST_DRAW("MenuBar_MenuHover.png")
+            menuBar->setEnabled(false);
+            TEST_DRAW("MenuBar_Disabled.png")
         }
 
         SECTION("Textured")
@@ -371,17 +426,28 @@ TEST_CASE("[MenuBar]")
 
             TEST_DRAW("MenuBar_Textured.png")
 
-            sf::Vector2f mousePos = {52, 15};
+            sf::Vector2f mousePos = {25, 15};
             menuBar->mouseMoved(mousePos);
             menuBar->leftMousePressed(mousePos);
             menuBar->leftMouseReleased(mousePos);
+            TEST_DRAW("MenuBar_MenuDisabled_Textured.png")
 
+            mousePos = {52, 15};
+            menuBar->mouseMoved(mousePos);
+            menuBar->leftMousePressed(mousePos);
+            menuBar->leftMouseReleased(mousePos);
             TEST_DRAW("MenuBar_MenuOpen_Textured.png")
+
+            mousePos = {52, 35};
+            menuBar->mouseMoved(mousePos);
+            TEST_DRAW("MenuBar_MenuHover_Textured.png")
 
             mousePos = {52, 55};
             menuBar->mouseMoved(mousePos);
+            TEST_DRAW("MenuBar_MenuHoverDisabled_Textured.png")
 
-            TEST_DRAW("MenuBar_MenuHover_Textured.png")
+            menuBar->setEnabled(false);
+            TEST_DRAW("MenuBar_Disabled_Textured.png")
         }
     }
 }

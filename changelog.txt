@@ -1,6 +1,7 @@
 TGUI 0.8.1  (TBD)
 -----------------
 
+- Menus can now be disabled in MenuBar and given a different text color
 - You can now connect a signal handler to a single menu item in MenuBar
 - Scrollbar thumb should not become smaller than the scrollbar width
 - Handle delete button on android correctly when using SFML 2.5

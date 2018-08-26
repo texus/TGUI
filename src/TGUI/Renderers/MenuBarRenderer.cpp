@@ -34,6 +34,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, SelectedBackgroundColor, Color(0, 110, 255))
     TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, TextColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, SelectedTextColor, Color::White)
+    TGUI_RENDERER_PROPERTY_COLOR(MenuBarRenderer, TextColorDisabled, {})
 
     TGUI_RENDERER_PROPERTY_TEXTURE(MenuBarRenderer, TextureBackground)
     TGUI_RENDERER_PROPERTY_TEXTURE(MenuBarRenderer, TextureItemBackground)
