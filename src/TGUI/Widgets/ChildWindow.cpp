@@ -378,6 +378,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::setPositionLocked(bool positionLocked)
+    {
+        m_positionLocked = positionLocked;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ChildWindow::isPositionLocked() const
+    {
+        return m_positionLocked;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::setKeepInParent(bool enabled)
     {
         m_keepInParent = enabled;
@@ -488,8 +502,11 @@ namespace tgui
             }
 
             // The mouse went down on the title bar
-            m_mouseDownOnTitleBar = true;
-            m_draggingPosition = pos;
+            if (!m_positionLocked)
+            {
+                m_mouseDownOnTitleBar = true;
+                m_draggingPosition = pos;
+            }
         }
     }
 
@@ -852,6 +869,8 @@ namespace tgui
 
         if (m_resizable)
             node->propertyValuePairs["Resizable"] = std::make_unique<DataIO::ValueNode>("true");
+        if (m_positionLocked)
+            node->propertyValuePairs["PositionLocked"] = std::make_unique<DataIO::ValueNode>("true");
 
         if (m_minimumSize != Vector2f{})
             node->propertyValuePairs["MinimumSize"] = std::make_unique<DataIO::ValueNode>("(" + to_string(m_minimumSize.x) + ", " + to_string(m_minimumSize.y) + ")");
@@ -920,6 +939,8 @@ namespace tgui
 
         if (node->propertyValuePairs["resizable"])
             setResizable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["resizable"]->value).getBool());
+        if (node->propertyValuePairs["positionlocked"])
+            setPositionLocked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["positionlocked"]->value).getBool());
 
         if (node->propertyValuePairs["minimumsize"])
             setMinimumSize(Vector2f{node->propertyValuePairs["minimumsize"]->value});

@@ -299,6 +299,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the child window can be moved by dragging its title bar or not
+        /// @param positionLocked  Is the child window frozen at its current position?
+        ///
+        /// Locking the position only affects user interaction, the setPosition function will still move the window.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setPositionLocked(bool positionLocked = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Checks whether the child window can be moved by dragging its title bar or not
+        /// @return Is the child window frozen at its current position?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isPositionLocked() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the child window to be kept inside its parent
         ///
         /// @param enabled  When it's set to true, the child window will always be kept automatically inside its parent.
@@ -475,6 +491,7 @@ namespace tgui
         bool m_mouseDownOnTitleBar = false;
         bool m_keepInParent = false;
 
+        bool m_positionLocked = false;
         bool m_resizable = false;
         int m_resizeDirection = ResizeNone;
 

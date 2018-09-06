@@ -160,6 +160,17 @@ TEST_CASE("[ChildWindow]")
         REQUIRE(childWindow->isResizable() == false);
     }
 
+    SECTION("PositionLocked")
+    {
+        REQUIRE(childWindow->isPositionLocked() == false);
+
+        childWindow->setPositionLocked(true);
+        REQUIRE(childWindow->isPositionLocked() == true);
+
+        childWindow->setPositionLocked(false);
+        REQUIRE(childWindow->isPositionLocked() == false);
+    }
+
     SECTION("KeepInParent")
     {
         REQUIRE(childWindow->isKeptInParent() == false);
@@ -382,6 +393,7 @@ TEST_CASE("[ChildWindow]")
             childWindow->setTitleAlignment(tgui::ChildWindow::TitleAlignment::Left);
             childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Minimize);
             childWindow->setResizable();
+            childWindow->setPositionLocked();
             childWindow->setKeepInParent(true);
 
             auto widget = tgui::ClickableWidget::create();
