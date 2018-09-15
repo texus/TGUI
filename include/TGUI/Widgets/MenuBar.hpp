@@ -45,6 +45,23 @@ namespace tgui
         typedef std::shared_ptr<MenuBar> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const MenuBar> ConstPtr; ///< Shared constant widget pointer
 
+        /// @brief Used for return value of getAllMenus
+        struct GetAllMenusElement
+        {
+            sf::String text;
+            bool enabled;
+            std::vector<std::unique_ptr<GetAllMenusElement>> menuItems;
+        };
+
+        /// @internal
+        struct Menu
+        {
+            Text text;
+            bool enabled = true;
+            int selectedMenuItem = -1;
+            std::vector<aurora::CopiedPtr<Menu>> menuItems;
+        };
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Default constructor
@@ -92,28 +109,47 @@ namespace tgui
         /// @brief Connects a signal handler to the "MenuItemClicked" callback that will only be called when a specific
         ///        menu item was clicked.
         ///
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function to call
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
+        /// @param menu     Menu containing the menu item
+        /// @param menuItem Menu item which should trigger the signal
+        /// @param handler  Callback function to call
+        /// @param args     Optional extra arguments to pass to the signal handler when the signal is emitted
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... Args>
         unsigned int connectMenuItem(const sf::String& menu, const sf::String& menuItem, Func&& handler, const Args&... args)
         {
+            return connectMenuItem({menu, menuItem}, std::forward<Func>(handler), args...);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Connects a signal handler to the "MenuItemClicked" callback that will only be called when a specific
+        ///        menu item was clicked.
+        ///
+        /// @param hierarchy Hierarchy of the menu items, starting with the menu and ending with menu item that should trigger
+        ///                  the signal when pressed
+        /// @param handler   Callback function to call
+        /// @param args      Optional extra arguments to pass to the signal handler when the signal is emitted
+        ///
+        /// @return Unique id of the connection
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        template <typename Func, typename... Args>
+        unsigned int connectMenuItem(const std::vector<sf::String>& hierarchy, Func&& handler, const Args&... args)
+        {
         #ifdef TGUI_USE_CPP17
             return connect("MenuItemClicked",
                 [=](const std::vector<sf::String>& clickedMenuItem)
                 {
-                    if ((clickedMenuItem.size() == 2) && (clickedMenuItem[0] == menu) && (clickedMenuItem[1] == menuItem))
+                    if (clickedMenuItem == hierarchy)
                         std::invoke(handler, args...);
                 }
             );
         #else
             return connect("MenuItemClicked",
-                [f=std::function<void(const Args&...)>(handler),args...,menu,menuItem](const std::vector<sf::String>& clickedMenuItem)
+                [f=std::function<void(const Args&...)>(handler),args...,hierarchy](const std::vector<sf::String>& clickedMenuItem)
                 {
-                    if ((clickedMenuItem.size() == 2) && (clickedMenuItem[0] == menu) && (clickedMenuItem[1] == menuItem))
+                    if (clickedMenuItem == hierarchy)
                         f(args...);
                 }
             );
@@ -153,26 +189,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds a new menu item
-        ///
-        /// @param menu  The name of the menu to which the menu item will be added
-        /// @param text  The text written on this menu item
-        ///
-        /// @return True when the item was added, false when menu was not found
-        ///
-        /// @code
-        /// menuBar->addMenu("File");
-        /// menuBar->addMenu("Edit");
-        /// menuBar->addMenuItem("File", "Load");
-        /// menuBar->addMenuItem("File", "Save");
-        /// menuBar->addMenuItem("Edit", "Undo");
-        /// @endcode
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool addMenuItem(const sf::String& menu, const sf::String& text);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a new menu item to the last added menu
         ///
         /// @param text  The text written on this menu item
@@ -186,9 +202,50 @@ namespace tgui
         /// menuBar->addMenu("Edit");
         /// menuBar->addMenuItem("Undo");
         /// @endcode
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool addMenuItem(const sf::String& text);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds a new menu item to an existing menu
+        ///
+        /// @param menu  The name of the menu to which the menu item will be added
+        /// @param text  The text written on this menu item
+        ///
+        /// @return True when the item was added, false when menu was not found
+        ///
+        /// @code
+        /// menuBar->addMenu("File");
+        /// menuBar->addMenu("Edit");
+        /// menuBar->addMenuItem("File", "Load");
+        /// menuBar->addMenuItem("File", "Save");
+        /// menuBar->addMenuItem("Edit", "Undo");
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool addMenuItem(const sf::String& menu, const sf::String& text);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds a new menu item (or sub menu item)
+        ///
+        /// @param hierarchy     Hierarchy of the menu items, starting with the menu and ending with menu item to be added
+        /// @param createParents Should the hierarchy be created if it did not exist yet?
+        ///
+        /// @return True when the item was added, false when createParents was false and the parents hierarchy does not exist
+        ///         or if hierarchy does not contain at least 2 elements.
+        ///
+        /// @code
+        /// addMenuItem({"File", "Save"});
+        /// addMenuItem({"View", "Messages", "Tags", "Important"});
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool addMenuItem(const std::vector<sf::String>& hierarchy, bool createParents = true);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Removes all menus
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void removeAllMenus();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,13 +262,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all menus
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void removeAllMenus();
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes a menu item
         ///
         /// @param menu      The name of the menu in which the menu item is located
@@ -221,6 +271,20 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeMenuItem(const sf::String& menu, const sf::String& menuItem);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Removes a menu item (or sub menu item)
+        ///
+        /// @param hierarchy  Hierarchy of the menu item, starting with the menu and ending with menu item to be deleted
+        /// @param removeParentsWhenEmpty  Also delete the parent of the deleted menu item if it has no other children
+        ///
+        /// @code
+        /// removeMenuItem({"File", "Save"});
+        /// removeMenuItem({"View", "Messages", "Tags", "Important"});
+        /// @endcode
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool removeMenuItem(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,6 +313,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Enable or disable a menu item
+        /// @param hierarchy  Hierarchy of menu items, starting with the menu and ending with the menu item to enable/disable
+        /// @return True when the menu item exists, false when hierarchy was incorrect
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool setMenuItemEnabled(const std::vector<sf::String>& hierarchy, bool enabled);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Check if a menu item is enabled or disabled
         /// @param menu      The name of the menu in which the menu item is located
         /// @param menuItem  The name of the menu item to check
@@ -258,11 +330,16 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Check if a menu item is enabled or disabled
+        /// @param hierarchy  Hierarchy of menu items, starting with the menu and ending with the menu item to check
+        /// @return True if the menu item is enabled, false if it was disabled or when the hierarchy was incorrect
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getMenuItemEnabled(const std::vector<sf::String>& hierarchy) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the character size of the text
-        ///
         /// @param size  The new size of the text.
-        ///              If the size is 0 (default) then the text will be scaled to fit in the menu bar
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int size);
 
@@ -317,13 +394,22 @@ namespace tgui
         bool getInvertedMenuDirection() const;
 
 
+    #ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
         /// @brief Returns a copy of all the menus and their menu items
-        ///
         /// @return Map of menus and their items
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_DEPRECATED("This function doesn't work with submenus, use getAllMenus instead")
         std::vector<std::pair<sf::String, std::vector<sf::String>>> getMenus() const;
+    #endif
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Returns the menus and their menu items, including submenus
+        /// @return List of menus
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        std::vector<std::unique_ptr<GetAllMenusElement>> getAllMenus() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,22 +511,67 @@ namespace tgui
             return std::make_shared<MenuBar>(*this);
         }
 
+        /// @internal
+        /// Helper function to create a new menu or menu item
+        void createMenu(std::vector<aurora::CopiedPtr<Menu>>& menus, const sf::String& text);
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
+        /// @internal
+        /// Recursively search for the menu containing the menu item specified in the hierarchy, creating the hierarchy if requested.
+        /// The initial call to this function must pass "parentIndex = 0" and "menus = m_menus".
+        aurora::CopiedPtr<Menu>* findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<aurora::CopiedPtr<Menu>>& menus, bool createParents);
 
-        struct Menu
-        {
-            Text text;
-            std::vector<Text> menuItems;
-            std::vector<bool> menuItemsEnabled;
-            int selectedMenuItem = -1;
-            bool enabled = true;
-        };
+        /// @internal
+        /// Recursively search for the menu containing the menu item specified in the hierarchy.
+        /// The initial call to this function must pass "parentIndex = 0" and "menus = m_menus".
+        const aurora::CopiedPtr<Menu>* findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, const std::vector<aurora::CopiedPtr<Menu>>& menus) const;
 
-        void updateMenuTextColor(std::size_t menuIndex, bool selected);
-        void updateMenuItemTextColor(std::size_t menuIndex, std::size_t menuItemIndex, bool selected);
-        void updateTextColors();
+        /// @internal
+        /// Search for the menu item specified in the hierarchy.
+        const aurora::CopiedPtr<Menu>* findMenuItem(const std::vector<sf::String>& hierarchy) const;
+
+        /// @internal
+        /// Helper function to load the menus when the menu bar is being loaded from a text file
+        void loadMenus(const std::unique_ptr<DataIO::Node>& node, std::vector<aurora::CopiedPtr<Menu>>& menus);
+
+        /// @internal
+        /// Closes the open menu and its submenus
+        void closeSubMenus(std::vector<aurora::CopiedPtr<Menu>>& menus, int& selectedMenu);
+
+        /// @internal
+        void deselectBottomItem();
+
+        /// @internal
+        void updateMenuTextColor(aurora::CopiedPtr<Menu>& menu, bool selected);
+
+        /// @internal
+        void updateTextColors(std::vector<aurora::CopiedPtr<Menu>>& menus, int selectedMenu);
+
+        /// @internal
+        void updateTextOpacity(std::vector<aurora::CopiedPtr<Menu>>& menus);
+
+        /// @internal
+        void updateTextFont(std::vector<aurora::CopiedPtr<Menu>>& menus);
+
+        /// @internal
+        /// Calculate the width that is needed for the menu to fit all menu items
+        float calculateMenuWidth(const aurora::CopiedPtr<MenuBar::Menu>& menu) const;
+
+        /// @internal
+        Vector2f calculateSubmenuOffset(const aurora::CopiedPtr<Menu>& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const;
+
+        /// @internal
+        bool isMouseOnTopOfMenu(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, const aurora::CopiedPtr<Menu>& menu, float menuWidth) const;
+
+        /// @internal
+        bool findMenuItemBelowMouse(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, aurora::CopiedPtr<Menu>& menu, float menuWidth, aurora::CopiedPtr<Menu>** resultMenu, int* resultSelectedMenuItem);
+
+        /// @internal
+        /// Draw the backgrounds and text of the menu names on top of the bar itself
+        void drawMenusOnBar(sf::RenderTarget& target, sf::RenderStates states, Sprite& backgroundSprite) const;
+
+        /// @internal
+        /// Draw an open menu and recusively draw submenus when open
+        void drawMenu(sf::RenderTarget& target, sf::RenderStates states, const aurora::CopiedPtr<Menu>& menu, float menuWidth, Sprite& backgroundSprite, float globalLeftPos, bool openSubMenuToRight) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -456,7 +587,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::vector<Menu> m_menus;
+        std::vector<aurora::CopiedPtr<Menu>> m_menus;
 
         int m_visibleMenu = -1;
 

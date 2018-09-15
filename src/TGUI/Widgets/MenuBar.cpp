@@ -26,11 +26,122 @@
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Clipping.hpp>
+#include <SFML/Graphics/ConvexShape.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+    namespace
+    {
+        bool removeMenuImpl(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<aurora::CopiedPtr<MenuBar::Menu>>& menus)
+        {
+            for (auto it = menus.begin(); it != menus.end(); ++it)
+            {
+                if ((*it)->text.getString() != hierarchy[parentIndex])
+                    continue;
+
+                if (parentIndex + 1 == hierarchy.size())
+                {
+                    menus.erase(it);
+                    return true;
+                }
+                else
+                {
+                    // Return false if some menu in the hierarchy couldn't be found
+                    if (!removeMenuImpl(hierarchy, removeParentsWhenEmpty, parentIndex + 1, (*it)->menuItems))
+                        return false;
+
+                    // If parents don't have to be removed as well then we are done
+                    if (!removeParentsWhenEmpty)
+                        return true;
+
+                    // Also delete the parent if empty
+                    if ((*it)->menuItems.empty())
+                        menus.erase(it);
+
+                    return true;
+                }
+            }
+
+            // The hierarchy doesn't exist
+            return false;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void setTextSizeImpl(std::vector<aurora::CopiedPtr<MenuBar::Menu>>& menus, unsigned int textSize)
+        {
+            for (auto& menu : menus)
+            {
+                menu->text.setCharacterSize(textSize);
+                if (!menu->menuItems.empty())
+                    setTextSizeImpl(menu->menuItems, textSize);
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        std::vector<std::unique_ptr<MenuBar::GetAllMenusElement>> getAllMenusImpl(const std::vector<aurora::CopiedPtr<MenuBar::Menu>>& menus)
+        {
+            std::vector<std::unique_ptr<MenuBar::GetAllMenusElement>> menuElements;
+
+            for (const auto& menu : menus)
+            {
+                menuElements.emplace_back(std::make_unique<MenuBar::GetAllMenusElement>());
+                menuElements.back()->text = menu->text.getString();
+                menuElements.back()->enabled = menu->enabled;
+                if (!menu->menuItems.empty())
+                    menuElements.back()->menuItems = getAllMenusImpl(menu->menuItems);
+            }
+
+            return menuElements;
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void saveMenus(std::unique_ptr<DataIO::Node>& parentNode, const std::vector<aurora::CopiedPtr<MenuBar::Menu>>& menus)
+        {
+            for (const auto& menu : menus)
+            {
+                auto menuNode = std::make_unique<DataIO::Node>();
+                menuNode->name = "Menu";
+
+                menuNode->propertyValuePairs["Text"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu->text.getString()));
+                if (!menu->enabled)
+                    menuNode->propertyValuePairs["Enabled"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu->enabled));
+
+                if (!menu->menuItems.empty())
+                {
+                    // Save as nested 'Menu' sections only when needed, use the more compact string list when just storing the menu items
+                    bool recursionNeeded = false;
+                    for (const auto& menuItem : menu->menuItems)
+                    {
+                        if (!menuItem->enabled || !menuItem->menuItems.empty())
+                        {
+                            recursionNeeded = true;
+                            break;
+                        }
+                    }
+
+                    if (recursionNeeded)
+                        saveMenus(menuNode, menu->menuItems);
+                    else
+                    {
+                        std::string itemList = "[" + Serializer::serialize(menu->menuItems[0]->text.getString());
+                        for (std::size_t i = 1; i < menu->menuItems.size(); ++i)
+                            itemList += ", " + Serializer::serialize(menu->menuItems[i]->text.getString());
+                        itemList += "]";
+
+                        menuNode->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
+                    }
+                }
+
+                parentNode->children.push_back(std::move(menuNode));
+            }
+        }
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MenuBar::MenuBar()
@@ -109,7 +220,7 @@ namespace tgui
         if (!enabled)
         {
             closeMenu();
-            updateTextColors();
+            updateTextColors(m_menus, m_visibleMenu);
         }
     }
 
@@ -117,38 +228,7 @@ namespace tgui
 
     void MenuBar::addMenu(const sf::String& text)
     {
-        Menu newMenu;
-        newMenu.text.setFont(m_fontCached);
-        newMenu.text.setColor(m_textColorCached);
-        newMenu.text.setOpacity(m_opacityCached);
-        newMenu.text.setCharacterSize(m_textSize);
-        newMenu.text.setString(text);
-        m_menus.push_back(std::move(newMenu));
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool MenuBar::addMenuItem(const sf::String& menu, const sf::String& text)
-    {
-        for (std::size_t i = 0; i < m_menus.size(); ++i)
-        {
-            if (m_menus[i].text.getString() != menu)
-                continue;
-
-            Text menuItem;
-            menuItem.setFont(m_fontCached);
-            menuItem.setColor(m_textColorCached);
-            menuItem.setOpacity(m_opacityCached);
-            menuItem.setCharacterSize(m_textSize);
-            menuItem.setString(text);
-
-            m_menus[i].menuItems.push_back(std::move(menuItem));
-            m_menus[i].menuItemsEnabled.push_back(true);
-            return true;
-        }
-
-        // Could not find the menu
-        return false;
+        createMenu(m_menus, text);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,9 +236,38 @@ namespace tgui
     bool MenuBar::addMenuItem(const sf::String& text)
     {
         if (!m_menus.empty())
-            return addMenuItem(m_menus.back().text.getString(), text);
+            return addMenuItem(m_menus.back()->text.getString(), text);
         else
             return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::addMenuItem(const sf::String& menu, const sf::String& text)
+    {
+        return addMenuItem({menu, text}, false);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::addMenuItem(const std::vector<sf::String>& hierarchy, bool createParents)
+    {
+        if (hierarchy.size() < 2)
+            return false;
+
+        auto* menu = findMenu(hierarchy, 0, m_menus, createParents);
+        if (!menu)
+            return false;
+
+        createMenu((*menu)->menuItems, hierarchy.back());
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::removeAllMenus()
+    {
+        m_menus.clear();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +276,7 @@ namespace tgui
     {
         for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
-            if (m_menus[i].text.getString() != menu)
+            if (m_menus[i]->text.getString() != menu)
                 continue;
 
             m_menus.erase(m_menus.begin() + i);
@@ -187,37 +296,17 @@ namespace tgui
 
     bool MenuBar::removeMenuItem(const sf::String& menu, const sf::String& menuItem)
     {
-        for (std::size_t i = 0; i < m_menus.size(); ++i)
-        {
-            if (m_menus[i].text.getString() != menu)
-                continue;
-
-            for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-            {
-                // If this is the menu item then remove it
-                if (m_menus[i].menuItems[j].getString() != menuItem)
-                    continue;
-
-                m_menus[i].menuItems.erase(m_menus[i].menuItems.begin() + j);
-                m_menus[i].menuItemsEnabled.erase(m_menus[i].menuItemsEnabled.begin() + j);
-
-                // The item can't still be selected
-                if (m_menus[i].selectedMenuItem == static_cast<int>(j))
-                    m_menus[i].selectedMenuItem = -1;
-
-                return true;
-            }
-        }
-
-        // could not find menu item
-        return false;
+        return removeMenuItem({menu, menuItem}, false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void MenuBar::removeAllMenus()
+    bool MenuBar::removeMenuItem(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty)
     {
-        m_menus.clear();
+        if (hierarchy.size() < 2)
+            return false;
+
+        return removeMenuImpl(hierarchy, removeParentsWhenEmpty, 0, m_menus);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,14 +315,14 @@ namespace tgui
     {
         for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
-            if (m_menus[i].text.getString() != menu)
+            if (m_menus[i]->text.getString() != menu)
                 continue;
 
             if (!enabled && (m_visibleMenu == static_cast<int>(i)))
                 closeMenu();
 
-            m_menus[i].enabled = enabled;
-            updateMenuTextColor(i, (m_visibleMenu == static_cast<int>(i)));
+            m_menus[i]->enabled = enabled;
+            updateMenuTextColor(m_menus[i], (m_visibleMenu == static_cast<int>(i)));
             return true;
         }
 
@@ -246,8 +335,8 @@ namespace tgui
     {
         for (auto& menu : m_menus)
         {
-            if (menu.text.getString() == menuText)
-                return menu.enabled;
+            if (menu->text.getString() == menuText)
+                return menu->enabled;
         }
 
         return false;
@@ -257,23 +346,32 @@ namespace tgui
 
     bool MenuBar::setMenuItemEnabled(const sf::String& menuText, const sf::String& menuItemText, bool enabled)
     {
-        for (std::size_t i = 0; i < m_menus.size(); ++i)
+        return setMenuItemEnabled({menuText, menuItemText}, enabled);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::setMenuItemEnabled(const std::vector<sf::String>& hierarchy, bool enabled)
+    {
+        if (hierarchy.size() < 2)
+            return false;
+
+        auto* menu = findMenu(hierarchy, 0, m_menus, false);
+        if (!menu)
+            return false;
+
+        for (unsigned int j = 0; j < (*menu)->menuItems.size(); ++j)
         {
-            if (m_menus[i].text.getString() != menuText)
+            auto& menuItem = (*menu)->menuItems[j];
+            if (menuItem->text.getString() != hierarchy.back())
                 continue;
 
-            for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-            {
-                if (m_menus[i].menuItems[j].getString() != menuItemText)
-                    continue;
+            if (!enabled && ((*menu)->selectedMenuItem == static_cast<int>(j)))
+                (*menu)->selectedMenuItem = -1;
 
-                if (!enabled && (m_menus[i].selectedMenuItem == static_cast<int>(j)))
-                    m_menus[i].selectedMenuItem = -1;
-
-                m_menus[i].menuItemsEnabled[j] = enabled;
-                updateMenuItemTextColor(i, j, (m_menus[i].selectedMenuItem == static_cast<int>(j)));
-                return true;
-            }
+            menuItem->enabled = enabled;
+            updateMenuTextColor(menuItem, ((*menu)->selectedMenuItem == static_cast<int>(j)));
+            return true;
         }
 
         return false;
@@ -283,19 +381,21 @@ namespace tgui
 
     bool MenuBar::getMenuItemEnabled(const sf::String& menuText, const sf::String& menuItemText) const
     {
-        for (auto& menu : m_menus)
-        {
-            if (menu.text.getString() != menuText)
-                continue;
+        return getMenuItemEnabled({menuText, menuItemText});
+    }
 
-            for (std::size_t i = 0; i < menu.menuItems.size(); ++i)
-            {
-                if (menu.menuItems[i].getString() == menuItemText)
-                    return menu.menuItemsEnabled[i];
-            }
-        }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return false;
+    bool MenuBar::getMenuItemEnabled(const std::vector<sf::String>& hierarchy) const
+    {
+        if (hierarchy.size() < 2)
+            return false;
+
+        auto* menuItem = findMenuItem(hierarchy);
+        if (!menuItem)
+            return false;
+
+        return (*menuItem)->enabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -303,14 +403,7 @@ namespace tgui
     void MenuBar::setTextSize(unsigned int size)
     {
         m_textSize = size;
-
-        for (std::size_t i = 0; i < m_menus.size(); ++i)
-        {
-            for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-                m_menus[i].menuItems[j].setCharacterSize(m_textSize);
-
-            m_menus[i].text.setCharacterSize(m_textSize);
-        }
+        setTextSizeImpl(m_menus, size);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -350,6 +443,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     std::vector<std::pair<sf::String, std::vector<sf::String>>> MenuBar::getMenus() const
     {
         std::vector<std::pair<sf::String, std::vector<sf::String>>> menus;
@@ -357,66 +451,58 @@ namespace tgui
         for (const auto& menu : m_menus)
         {
             std::vector<sf::String> items;
-            for (const auto& item : menu.menuItems)
-                items.push_back(item.getString());
+            for (const auto& item : menu->menuItems)
+                items.push_back(item->text.getString());
 
-            menus.emplace_back(menu.text.getString(), std::move(items));
+            menus.emplace_back(menu->text.getString(), std::move(items));
         }
 
         return menus;
+    }
+#endif
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<std::unique_ptr<MenuBar::GetAllMenusElement>> MenuBar::getAllMenus() const
+    {
+        return getAllMenusImpl(m_menus);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void MenuBar::closeMenu()
     {
-        if (m_visibleMenu == -1)
-            return;
-
-        // If an item in that menu was selected then unselect it first
-        if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-        {
-            updateMenuItemTextColor(m_visibleMenu, m_menus[m_visibleMenu].selectedMenuItem, false);
-            m_menus[m_visibleMenu].selectedMenuItem = -1;
-        }
-
-        updateMenuTextColor(m_visibleMenu, false);
-        m_visibleMenu = -1;
+        if (m_visibleMenu != -1)
+            closeSubMenus(m_menus, m_visibleMenu);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool MenuBar::mouseOnWidget(Vector2f pos) const
     {
-        // Check if the mouse is on top of the menu bar
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
             return true;
         else if (m_visibleMenu != -1)
         {
-            // Search the left position of the open menu
-            float left = 0;
+            Vector2f menuPos = getPosition();
             for (int i = 0; i < m_visibleMenu; ++i)
-                left += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
+                menuPos.x += m_menus[i]->text.getSize().x + (2 * m_distanceToSideCached);
 
-            // Find out what the width of the menu should be
-            float width = m_minimumSubMenuWidth;
-            for (std::size_t j = 0; j < m_menus[m_visibleMenu].menuItems.size(); ++j)
-            {
-                if (width < m_menus[m_visibleMenu].menuItems[j].getSize().x + (3 * m_distanceToSideCached))
-                    width = m_menus[m_visibleMenu].menuItems[j].getSize().x + (3 * m_distanceToSideCached);
-            }
-
-            // Check if the mouse is on top of the open menu
             if (m_invertedMenuDirection)
-            {
-                if (FloatRect{left, -(getSize().y * m_menus[m_visibleMenu].menuItems.size()), width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
-                    return true;
-            }
+                menuPos.y -= getSize().y * m_menus[m_visibleMenu]->menuItems.size();
             else
+                menuPos.y += getSize().y;
+
+            // The menu is moved to the left if it otherwise falls off the screen
+            bool openSubMenuToRight = true;
+            const float menuWidth = calculateMenuWidth(m_menus[m_visibleMenu]);
+            if (getParent() && (menuPos.x + menuWidth > getParent()->getSize().x))
             {
-                if (FloatRect{getPosition().x + left, getPosition().y + getSize().y, width, getSize().y * m_menus[m_visibleMenu].menuItems.size()}.contains(pos))
-                    return true;
+                menuPos.x = std::max(0.f, getParent()->getSize().x - menuWidth);
+                openSubMenuToRight = false;
             }
+
+            return isMouseOnTopOfMenu(menuPos, pos, openSubMenuToRight, m_menus[m_visibleMenu], menuWidth);
         }
 
         return false;
@@ -427,13 +513,14 @@ namespace tgui
     void MenuBar::leftMousePressed(Vector2f pos)
     {
         // Check if a menu should be opened or closed
+        pos -= getPosition();
         if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
             // Loop through the menus to check if the mouse is on top of them
             float menuWidth = 0;
             for (std::size_t i = 0; i < m_menus.size(); ++i)
             {
-                menuWidth += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
+                menuWidth += m_menus[i]->text.getSize().x + (2 * m_distanceToSideCached);
                 if (pos.x >= menuWidth)
                     continue;
 
@@ -442,9 +529,9 @@ namespace tgui
                     closeMenu();
 
                 // If this menu can be opened then do so
-                else if (m_menus[i].enabled && !m_menus[i].menuItems.empty())
+                else if (m_menus[i]->enabled && !m_menus[i]->menuItems.empty())
                 {
-                    updateMenuTextColor(i, true);
+                    updateMenuTextColor(m_menus[i], true);
                     m_visibleMenu = static_cast<int>(i);
                 }
 
@@ -459,7 +546,7 @@ namespace tgui
 
     void MenuBar::leftMouseReleased(Vector2f pos)
     {
-        if (!m_mouseDown)
+        if (!m_mouseDown || (m_visibleMenu == -1))
             return;
 
         pos -= getPosition();
@@ -468,19 +555,21 @@ namespace tgui
         if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
             return;
 
-        std::size_t selectedMenuItem;
-        if (m_invertedMenuDirection)
-            selectedMenuItem = static_cast<std::size_t>((-pos.y-1) / getSize().y);
-        else
-            selectedMenuItem = static_cast<std::size_t>((pos.y - getSize().y) / getSize().y);
-
-        if (selectedMenuItem < m_menus[m_visibleMenu].menuItems.size())
+        auto* menu = &m_menus[m_visibleMenu];
+        std::vector<sf::String> hierarchy;
+        hierarchy.push_back(m_menus[m_visibleMenu]->text.getString());
+        while ((*menu)->selectedMenuItem != -1)
         {
-            onMenuItemClick.emit(this,
-                                 m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString(),
-                                 {m_menus[m_visibleMenu].text.getString(), m_menus[m_visibleMenu].menuItems[selectedMenuItem].getString()});
+            auto& menuItem = (*menu)->menuItems[(*menu)->selectedMenuItem];
+            hierarchy.push_back(menuItem->text.getString());
+            if (menuItem->menuItems.empty())
+            {
+                onMenuItemClick.emit(this, menuItem->text.getString(), hierarchy);
+                closeMenu();
+                break;
+            }
 
-            closeMenu();
+            menu = &menuItem;
         }
     }
 
@@ -488,75 +577,103 @@ namespace tgui
 
     void MenuBar::mouseMoved(Vector2f pos)
     {
-        pos -= getPosition();
-
         if (!m_mouseHover)
             mouseEnteredWidget();
 
+        // Don't open a menu without having clicked first
+        if (m_visibleMenu == -1)
+            return;
+
         // Check if the mouse is on top of the menu bar (not on an open menus)
-        if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
+        if (FloatRect{getPosition(), getSize()}.contains(pos))
         {
-            // Don't open a menu without having clicked first
-            if (m_visibleMenu != -1)
+            pos -= getPosition();
+
+            // Loop through the menus to check if the mouse is on top of them
+            bool handled = false;
+            float menuWidth = 0;
+            for (std::size_t i = 0; i < m_menus.size(); ++i)
             {
-                // Loop through the menus to check if the mouse is on top of them
-                float menuWidth = 0;
-                for (std::size_t i = 0; i < m_menus.size(); ++i)
+                menuWidth += m_menus[i]->text.getSize().x + (2 * m_distanceToSideCached);
+                if (pos.x >= menuWidth)
+                    continue;
+
+                // Check if the menu is already open
+                if (m_visibleMenu == static_cast<int>(i))
                 {
-                    menuWidth += m_menus[i].text.getSize().x + (2 * m_distanceToSideCached);
-                    if (pos.x >= menuWidth)
-                        continue;
-
-                    // Check if the menu is already open
-                    if (m_visibleMenu == static_cast<int>(i))
+                    // If one of the menu items is selected then unselect it
+                    if (m_menus[m_visibleMenu]->selectedMenuItem != -1)
                     {
-                        // If one of the menu items is selected then unselect it
-                        if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-                        {
-                            updateMenuItemTextColor(i, static_cast<std::size_t>(m_menus[m_visibleMenu].selectedMenuItem), false);
-                            m_menus[m_visibleMenu].selectedMenuItem = -1;
-                        }
+                        updateMenuTextColor(m_menus[i]->menuItems[m_menus[m_visibleMenu]->selectedMenuItem], false);
+                        m_menus[m_visibleMenu]->selectedMenuItem = -1;
                     }
-                    else // The menu isn't open yet
-                    {
-                        // If there is another menu open then close it first
-                        closeMenu();
-
-                        // If this menu can be opened then do so
-                        if (m_menus[i].enabled && !m_menus[i].menuItems.empty())
-                        {
-                            updateMenuTextColor(i, true);
-                            m_visibleMenu = static_cast<int>(i);
-                        }
-                    }
-                    break;
                 }
+                else // The menu isn't open yet
+                {
+                    // If there is another menu open then close it first
+                    closeMenu();
+
+                    // If this menu can be opened then do so
+                    if (m_menus[i]->enabled && !m_menus[i]->menuItems.empty())
+                    {
+                        updateMenuTextColor(m_menus[i], true);
+                        m_visibleMenu = static_cast<int>(i);
+                    }
+                }
+
+                handled = true;
+                break;
             }
+
+            // The mouse is to the right of all menus, deselect the selected item of the deepest submenu
+            if (!handled)
+                deselectBottomItem();
         }
-        else if (m_visibleMenu != -1) // The mouse is on top of the open menu
+        else // The mouse is on top of the open menu
         {
-            // Calculate on what menu item the mouse is located
-            int selectedMenuItem;
+            Vector2f menuPos = getPosition();
+            for (int i = 0; i < m_visibleMenu; ++i)
+                menuPos.x += m_menus[i]->text.getSize().x + (2 * m_distanceToSideCached);
+
             if (m_invertedMenuDirection)
-                selectedMenuItem = static_cast<int>((-pos.y-1) / getSize().y);
+                menuPos.y -= getSize().y * m_menus[m_visibleMenu]->menuItems.size();
             else
-                selectedMenuItem = static_cast<int>((pos.y - getSize().y) / getSize().y);
+                menuPos.y += getSize().y;
 
-            // Check if the mouse is on a different item than before
-            if (selectedMenuItem != m_menus[m_visibleMenu].selectedMenuItem)
+            // The menu is moved to the left if it otherwise falls off the screen
+            bool openSubMenuToRight = true;
+            const float menuWidth = calculateMenuWidth(m_menus[m_visibleMenu]);
+            if (getParent() && (menuPos.x + menuWidth > getParent()->getSize().x))
             {
-                // If another of the menu items is selected then unselect it
-                if (m_menus[m_visibleMenu].selectedMenuItem != -1)
-                    updateMenuItemTextColor(m_visibleMenu, m_menus[m_visibleMenu].selectedMenuItem, false);
+                menuPos.x = std::max(0.f, getParent()->getSize().x - menuWidth);
+                openSubMenuToRight = false;
+            }
 
-                // Mark the item below the mouse as selected
-                if (m_menus[m_visibleMenu].menuItemsEnabled[selectedMenuItem])
+            aurora::CopiedPtr<Menu>* menuBelowMouse;
+            int menuItemIndexBelowMouse;
+            if (findMenuItemBelowMouse(menuPos, pos, openSubMenuToRight, m_menus[m_visibleMenu], menuWidth, &menuBelowMouse, &menuItemIndexBelowMouse))
+            {
+                // Check if the mouse is on a different item than before
+                auto& menu = *menuBelowMouse;
+                if (menuItemIndexBelowMouse != menu->selectedMenuItem)
                 {
-                    updateMenuItemTextColor(m_visibleMenu, selectedMenuItem, true);
-                    m_menus[m_visibleMenu].selectedMenuItem = selectedMenuItem;
+                    // If another of the menu items is selected then unselect it
+                    if (menu->selectedMenuItem != -1)
+                        closeSubMenus(menu->menuItems, menu->selectedMenuItem);
+
+                    // Mark the item below the mouse as selected
+                    if (menu->menuItems[menuItemIndexBelowMouse]->enabled)
+                    {
+                        updateMenuTextColor(menu->menuItems[menuItemIndexBelowMouse], true);
+                        menu->selectedMenuItem = menuItemIndexBelowMouse;
+                    }
                 }
-                else // Item below mouse if disabled
-                    m_menus[m_visibleMenu].selectedMenuItem = -1;
+                else // We already selected this item
+                {
+                    // If the selected item has a submenu then unselect its item
+                    if (menu->menuItems[menuItemIndexBelowMouse]->selectedMenuItem != -1)
+                        closeSubMenus(menu->menuItems[menuItemIndexBelowMouse]->menuItems, menu->menuItems[menuItemIndexBelowMouse]->selectedMenuItem);
+                }
             }
         }
     }
@@ -565,6 +682,7 @@ namespace tgui
 
     void MenuBar::mouseNoLongerDown()
     {
+        // Close the open menu, but not when it just opened because of this mouse click
         if (!m_mouseDown)
             closeMenu();
 
@@ -575,50 +693,11 @@ namespace tgui
 
     void MenuBar::mouseLeftWidget()
     {
-        // Menu items which are selected on mouse hover should not remain selected now that the mouse has left
-        if ((m_visibleMenu != -1) && (m_menus[m_visibleMenu].selectedMenuItem != -1))
-        {
-            updateMenuItemTextColor(m_visibleMenu, m_menus[m_visibleMenu].selectedMenuItem, false);
-            m_menus[m_visibleMenu].selectedMenuItem = -1;
-        }
+        // Deselect the selected item of the deepest submenu
+        if (m_visibleMenu != -1)
+            deselectBottomItem();
 
         Widget::mouseLeftWidget();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MenuBar::updateMenuTextColor(std::size_t menuIndex, bool selected)
-    {
-        if ((!m_enabled || !m_menus[menuIndex].enabled) && m_textColorDisabledCached.isSet())
-            m_menus[menuIndex].text.setColor(m_textColorDisabledCached);
-        else if (selected && m_selectedTextColorCached.isSet())
-            m_menus[menuIndex].text.setColor(m_selectedTextColorCached);
-        else
-            m_menus[menuIndex].text.setColor(m_textColorCached);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MenuBar::updateMenuItemTextColor(std::size_t menuIndex, std::size_t menuItemIndex, bool selected)
-    {
-        if (!m_menus[menuIndex].menuItemsEnabled[menuItemIndex] && m_textColorDisabledCached.isSet())
-            m_menus[menuIndex].menuItems[menuItemIndex].setColor(m_textColorDisabledCached);
-        else if (selected && m_selectedTextColorCached.isSet())
-            m_menus[menuIndex].menuItems[menuItemIndex].setColor(m_selectedTextColorCached);
-        else
-            m_menus[menuIndex].menuItems[menuItemIndex].setColor(m_textColorCached);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void MenuBar::updateTextColors()
-    {
-        for (std::size_t i = 0; i < m_menus.size(); ++i)
-        {
-            updateMenuTextColor(i, (m_visibleMenu == static_cast<int>(i)));
-            for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-                updateMenuItemTextColor(i, j, (m_menus[i].selectedMenuItem == static_cast<int>(j)));
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -638,17 +717,17 @@ namespace tgui
         if (property == "textcolor")
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
-            updateTextColors();
+            updateTextColors(m_menus, m_visibleMenu);
         }
         else if (property == "selectedtextcolor")
         {
             m_selectedTextColorCached = getSharedRenderer()->getSelectedTextColor();
-            updateTextColors();
+            updateTextColors(m_menus, m_visibleMenu);
         }
         else if (property == "textcolordisabled")
         {
             m_textColorDisabledCached = getSharedRenderer()->getTextColorDisabled();
-            updateTextColors();
+            updateTextColors(m_menus, m_visibleMenu);
         }
         else if (property == "texturebackground")
         {
@@ -677,30 +756,13 @@ namespace tgui
         else if (property == "opacity")
         {
             Widget::rendererChanged(property);
-
-            for (std::size_t i = 0; i < m_menus.size(); ++i)
-            {
-                for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-                    m_menus[i].menuItems[j].setOpacity(m_opacityCached);
-
-                m_menus[i].text.setOpacity(m_opacityCached);
-            }
-
+            updateTextOpacity(m_menus);
             m_spriteBackground.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
             Widget::rendererChanged(property);
-
-            for (std::size_t i = 0; i < m_menus.size(); ++i)
-            {
-                for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-                    m_menus[i].menuItems[j].setFont(m_fontCached);
-
-                m_menus[i].text.setFont(m_fontCached);
-            }
-
-            setTextSize(Text::findBestTextSize(m_fontCached, getSize().y * 0.8f));
+            updateTextFont(m_menus);
         }
         else
             Widget::rendererChanged(property);
@@ -712,49 +774,12 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        const auto& menus = getMenus();
-        for (const auto& menu : menus)
-        {
-            auto menuNode = std::make_unique<DataIO::Node>();
-            menuNode->name = "Menu";
-
-            menuNode->propertyValuePairs["Name"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(menu.first));
-
-            const auto& items = menu.second;
-            if (!items.empty())
-            {
-                std::string itemList = "[" + Serializer::serialize(items[0]);
-                for (std::size_t i = 1; i < items.size(); ++i)
-                    itemList += ", " + Serializer::serialize(items[i]);
-                itemList += "]";
-
-                menuNode->propertyValuePairs["Items"] = std::make_unique<DataIO::ValueNode>(itemList);
-            }
-
-            if (!getMenuEnabled(menu.first))
-                menuNode->propertyValuePairs["Enabled"] = std::make_unique<DataIO::ValueNode>("false");
-
-            bool anyMenuItemDisabled = false;
-            for (std::size_t i = 0; i < items.size(); ++i)
-            {
-                if (!getMenuItemEnabled(menu.first, items[i]))
-                    anyMenuItemDisabled = true;
-            }
-            if (anyMenuItemDisabled)
-            {
-                std::string itemList = "[" + Serializer::serialize(getMenuItemEnabled(menu.first, items[0]) ? "true" : "false");
-                for (std::size_t i = 1; i < items.size(); ++i)
-                    itemList += ", " + Serializer::serialize(getMenuItemEnabled(menu.first, items[i]) ? "true" : "false");
-                itemList += "]";
-
-                menuNode->propertyValuePairs["ItemsEnabled"] = std::make_unique<DataIO::ValueNode>(itemList);
-            }
-
-            node->children.push_back(std::move(menuNode));
-        }
+        saveMenus(node, m_menus);
 
         node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
         node->propertyValuePairs["MinimumSubMenuWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_minimumSubMenuWidth));
+        if (m_invertedMenuDirection)
+            node->propertyValuePairs["InvertedMenuDirection"] = std::make_unique<DataIO::ValueNode>("true");
 
         return node;
     }
@@ -769,46 +794,17 @@ namespace tgui
             setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["minimumsubmenuwidth"])
             setMinimumSubMenuWidth(tgui::stof(node->propertyValuePairs["minimumsubmenuwidth"]->value));
+        if (node->propertyValuePairs["invertedmenudirection"])
+            setInvertedMenuDirection(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, node->propertyValuePairs["invertedmenudirection"]->value).getBool());
 
-        for (const auto& childNode : node->children)
-        {
-            // Only parse menu nodes that have a name (no other nodes should exist)
-            if (toLower(childNode->name) != "menu")
-                continue;
-            if (!childNode->propertyValuePairs["name"])
-                throw Exception{"Failed to parse 'Menu' property, expected a nested 'Name' propery"};
+        loadMenus(node, m_menus);
 
-            const sf::String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["name"]->value).getString();
-            addMenu(menuText);
+        // Remove the 'menu' nodes as they have been processed
+        node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
+            [](const std::unique_ptr<DataIO::Node>& child){ return toLower(child->name) == "menu"; }), node->children.end());
 
-            if (childNode->propertyValuePairs["enabled"])
-                setMenuEnabled(menuText, Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["enabled"]->value).getBool());
-
-            if (childNode->propertyValuePairs["items"])
-            {
-                if (!childNode->propertyValuePairs["items"]->listNode)
-                    throw Exception{"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
-
-                if (childNode->propertyValuePairs["itemsenabled"])
-                {
-                    if (!childNode->propertyValuePairs["itemsenabled"]->listNode)
-                        throw Exception{"Failed to parse 'ItemsEnabled' property inside 'Menu' property, expected a list as value"};
-                    if (childNode->propertyValuePairs["items"]->valueList.size() != childNode->propertyValuePairs["itemsenabled"]->valueList.size())
-                        throw Exception{"Failed to parse 'ItemsEnabled' property inside 'Menu' property, length differs from 'Items' propery"};
-                }
-
-                for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
-                {
-                    const sf::String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString();
-                    addMenuItem(menuItemText);
-
-                    if (childNode->propertyValuePairs["itemsenabled"])
-                        setMenuItemEnabled(menuText, menuItemText, Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["itemsenabled"]->valueList[i]).getBool());
-                }
-            }
-        }
-        node->children.erase(std::remove_if(node->children.begin(), node->children.end(), \
-                                        [](const std::unique_ptr<DataIO::Node>& child){ return toLower(child->name) == "menu"; }), node->children.end());
+        // Update the text colors to properly display disabled menus
+        updateTextColors(m_menus, m_visibleMenu);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -817,118 +813,530 @@ namespace tgui
     {
         states.transform.translate(getPosition());
 
-        sf::RenderStates textStates = states;
-
-        float nextItemDistance;
-        if (m_invertedMenuDirection)
-            nextItemDistance = -getSize().y;
-        else
-            nextItemDistance = getSize().y;
-
         // Draw the background
         if (m_spriteBackground.isSet())
             m_spriteBackground.draw(target, states);
         else
             drawRectangleShape(target, states, getSize(), m_backgroundColorCached);
 
-        // Draw the menu backgrounds
+        if (m_menus.empty())
+            return;
+
         Sprite backgroundSprite = m_spriteItemBackground;
+        drawMenusOnBar(target, states, backgroundSprite);
+
+        // Draw the menu if one is opened
+        if (m_visibleMenu >= 0)
+        {
+            // Find the position of the menu
+            float leftOffset = 0;
+            for (int i = 0; i < m_visibleMenu; ++i)
+                leftOffset += m_menus[i]->text.getSize().x + (2 * m_distanceToSideCached);
+
+            // Move the menu to the left if it otherwise falls off the screen
+            bool openSubMenuToRight = true;
+            const float menuWidth = calculateMenuWidth(m_menus[m_visibleMenu]);
+            if (getParent() && (getPosition().x + leftOffset + menuWidth > getParent()->getSize().x))
+            {
+                leftOffset = std::max(0.f, getParent()->getSize().x - menuWidth);
+                openSubMenuToRight = false;
+            }
+
+            if (m_invertedMenuDirection)
+                states.transform.translate({leftOffset, -getSize().y * m_menus[m_visibleMenu]->menuItems.size()});
+            else
+                states.transform.translate({leftOffset, getSize().y});
+
+            drawMenu(target, states, m_menus[m_visibleMenu], menuWidth, backgroundSprite, getPosition().x + leftOffset, openSubMenuToRight);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::createMenu(std::vector<aurora::CopiedPtr<Menu>>& menus, const sf::String& text)
+    {
+        auto newMenu = aurora::makeCopied<Menu>();
+        newMenu->text.setFont(m_fontCached);
+        newMenu->text.setColor(m_textColorCached);
+        newMenu->text.setOpacity(m_opacityCached);
+        newMenu->text.setCharacterSize(m_textSize);
+        newMenu->text.setString(text);
+        menus.push_back(std::move(newMenu));
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    aurora::CopiedPtr<MenuBar::Menu>* MenuBar::findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<aurora::CopiedPtr<MenuBar::Menu>>& menus, bool createParents)
+    {
+        for (auto& menu : menus)
+        {
+            if (menu->text.getString() != hierarchy[parentIndex])
+                continue;
+
+            if (parentIndex + 2 == hierarchy.size())
+                return &menu;
+            else
+                return findMenu(hierarchy, parentIndex + 1, menu->menuItems, createParents);
+        }
+
+        if (createParents)
+        {
+            createMenu(menus, hierarchy[parentIndex]);
+            if (parentIndex + 2 == hierarchy.size())
+                return &menus.back();
+            else
+                return findMenu(hierarchy, parentIndex + 1, menus.back()->menuItems, createParents);
+        }
+
+        return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const aurora::CopiedPtr<MenuBar::Menu>* MenuBar::findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, const std::vector<aurora::CopiedPtr<MenuBar::Menu>>& menus) const
+    {
+        for (auto& menu : menus)
+        {
+            if (menu->text.getString() != hierarchy[parentIndex])
+                continue;
+
+            if (parentIndex + 2 == hierarchy.size())
+                return &menu;
+            else
+                return findMenu(hierarchy, parentIndex + 1, menu->menuItems);
+        }
+
+        return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const aurora::CopiedPtr<MenuBar::Menu>* MenuBar::findMenuItem(const std::vector<sf::String>& hierarchy) const
+    {
+        if (hierarchy.size() < 2)
+            return nullptr;
+
+        const auto* menu = findMenu(hierarchy, 0, m_menus);
+        if (!menu)
+            return nullptr;
+
+        for (auto& menuItem : (*menu)->menuItems)
+        {
+            if (menuItem->text.getString() != hierarchy.back())
+                continue;
+
+            return &menuItem;
+        }
+
+        return nullptr;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::loadMenus(const std::unique_ptr<DataIO::Node>& node, std::vector<aurora::CopiedPtr<Menu>>& menus)
+    {
+        for (const auto& childNode : node->children)
+        {
+            if (toLower(childNode->name) != "menu")
+                continue;
+
+            // Every menu node should either have a Name (TGUI 0.8.0) or a Text (TGUI >= 0.8.1) property
+        #ifdef TGUI_REMOVE_DEPRECATED_CODE
+            if (!childNode->propertyValuePairs["text"])
+                throw Exception{"Failed to parse 'Menu' property, expected a nested 'Text' propery"};
+
+            const sf::String menuText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString();
+            createMenu(menus, menuText);
+        #else
+            if (!childNode->propertyValuePairs["name"] && !childNode->propertyValuePairs["text"])
+                throw Exception{"Failed to parse 'Menu' property, expected a nested 'Text' propery"};
+
+            const sf::String menuText = Deserializer::deserialize(ObjectConverter::Type::String,
+                childNode->propertyValuePairs[childNode->propertyValuePairs["text"] ? "text" : "name"]->value).getString();
+            createMenu(menus, menuText);
+        #endif
+
+            if (childNode->propertyValuePairs["enabled"])
+                menus.back()->enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["enabled"]->value).getBool();
+
+            // Recursively handle the menu nodes
+            if (!childNode->children.empty())
+                loadMenus(childNode, menus.back()->menuItems);
+
+            // Menu items can also be stored in an string array in the 'Items' property instead of as a nested Menu section
+            if (childNode->propertyValuePairs["items"])
+            {
+                if (!childNode->propertyValuePairs["items"]->listNode)
+                    throw Exception{"Failed to parse 'Items' property inside 'Menu' property, expected a list as value"};
+
+            #ifndef TGUI_REMOVE_DEPRECATED_CODE
+                // The ItemsEnabled property existed in TGUI 0.8.0 but was replaced with nested Menu sections in TGUI 0.8.1
+                if (childNode->propertyValuePairs["itemsenabled"])
+                {
+                    if (!childNode->propertyValuePairs["itemsenabled"]->listNode)
+                        throw Exception{"Failed to parse 'ItemsEnabled' property inside 'Menu' property, expected a list as value"};
+                    if (childNode->propertyValuePairs["items"]->valueList.size() != childNode->propertyValuePairs["itemsenabled"]->valueList.size())
+                        throw Exception{"Failed to parse 'ItemsEnabled' property inside 'Menu' property, length differs from 'Items' propery"};
+                }
+            #endif
+
+                for (std::size_t i = 0; i < childNode->propertyValuePairs["items"]->valueList.size(); ++i)
+                {
+                    const sf::String menuItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["items"]->valueList[i]).getString();
+                    createMenu(menus.back()->menuItems, menuItemText);
+
+                #ifndef TGUI_REMOVE_DEPRECATED_CODE
+                    if (childNode->propertyValuePairs["itemsenabled"])
+                        menus.back()->menuItems.back()->enabled = Deserializer::deserialize(ObjectConverter::Type::Bool, childNode->propertyValuePairs["itemsenabled"]->valueList[i]).getBool();
+                #endif
+                }
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::closeSubMenus(std::vector<aurora::CopiedPtr<Menu>>& menus, int& selectedMenu)
+    {
+        if (menus[selectedMenu]->selectedMenuItem != -1)
+            closeSubMenus(menus[selectedMenu]->menuItems, menus[selectedMenu]->selectedMenuItem);
+
+        updateMenuTextColor(menus[selectedMenu], false);
+        selectedMenu = -1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::deselectBottomItem()
+    {
+        auto* menu = &m_menus[m_visibleMenu];
+        while ((*menu)->selectedMenuItem != -1)
+        {
+            auto& menuItem = (*menu)->menuItems[(*menu)->selectedMenuItem];
+            if (menuItem->menuItems.empty())
+            {
+                closeSubMenus((*menu)->menuItems, (*menu)->selectedMenuItem);
+                break;
+            }
+
+            menu = &menuItem;
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::updateMenuTextColor(aurora::CopiedPtr<Menu>& menu, bool selected)
+    {
+        if ((!m_enabled || !menu->enabled) && m_textColorDisabledCached.isSet())
+            menu->text.setColor(m_textColorDisabledCached);
+        else if (selected && m_selectedTextColorCached.isSet())
+            menu->text.setColor(m_selectedTextColorCached);
+        else
+            menu->text.setColor(m_textColorCached);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::updateTextColors(std::vector<aurora::CopiedPtr<MenuBar::Menu>>& menus, int selectedMenu)
+    {
+        for (std::size_t i = 0; i < menus.size(); ++i)
+        {
+            updateMenuTextColor(menus[i], (selectedMenu == static_cast<int>(i)));
+            updateTextColors(menus[i]->menuItems, menus[i]->selectedMenuItem);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::updateTextOpacity(std::vector<aurora::CopiedPtr<MenuBar::Menu>>& menus)
+    {
+        for (auto& menu : menus)
+        {
+            menu->text.setOpacity(m_opacityCached);
+            updateTextOpacity(menu->menuItems);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::updateTextFont(std::vector<aurora::CopiedPtr<MenuBar::Menu>>& menus)
+    {
+        for (auto& menu : menus)
+        {
+            menu->text.setFont(m_fontCached);
+            updateTextFont(menu->menuItems);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float MenuBar::calculateMenuWidth(const aurora::CopiedPtr<MenuBar::Menu>& menu) const
+    {
+        float maxWidth = m_minimumSubMenuWidth;
+        for (const auto& item : menu->menuItems)
+        {
+            float width = item->text.getSize().x + (2.f * m_distanceToSideCached);
+
+            // Reserve space for an arrow if there are submenus
+            if (!item->menuItems.empty())
+                width += (getSize().y / 4.f) + m_distanceToSideCached;
+
+            if (width > maxWidth)
+                maxWidth = width;
+        }
+
+        return maxWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f MenuBar::calculateSubmenuOffset(const aurora::CopiedPtr<Menu>& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const
+    {
+        float leftOffset;
+        if (openSubMenuToRight)
+        {
+            leftOffset = menuWidth;
+            if (getParent() && (globalLeftPos + leftOffset + subMenuWidth > getParent()->getSize().x))
+            {
+                if (globalLeftPos + leftOffset + subMenuWidth - getParent()->getSize().x < globalLeftPos)
+                {
+                    leftOffset = -subMenuWidth;
+                    openSubMenuToRight = false;
+                }
+            }
+        }
+        else // Submenu opens to the left side
+        {
+            leftOffset = -subMenuWidth;
+            if (getParent() && (globalLeftPos < subMenuWidth))
+            {
+                if (getParent()->getSize().x - subMenuWidth - globalLeftPos > globalLeftPos)
+                {
+                    leftOffset = menuWidth;
+                    openSubMenuToRight = true;
+                }
+            }
+        }
+
+        float topOffset = getSize().y * menu->selectedMenuItem;
+        if (m_invertedMenuDirection)
+            topOffset -= getSize().y * (menu->menuItems[menu->selectedMenuItem]->menuItems.size() - 1);
+
+        return {leftOffset, topOffset};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::isMouseOnTopOfMenu(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, const aurora::CopiedPtr<Menu>& menu, float menuWidth) const
+    {
+        // Check if the mouse is on top of the menu
+        if (FloatRect{menuPos.x, menuPos.y, menuWidth, menu->menuItems.size() * getSize().y}.contains(mousePos))
+            return true;
+
+        // Check if the mouse is on one of the submenus
+        if ((menu->selectedMenuItem >= 0) && !menu->menuItems[menu->selectedMenuItem]->menuItems.empty())
+        {
+            const float subMenuWidth = calculateMenuWidth(menu->menuItems[menu->selectedMenuItem]);
+            const Vector2f offset = calculateSubmenuOffset(menu, menuPos.x, menuWidth, subMenuWidth, openSubMenuToRight);
+            if (isMouseOnTopOfMenu(menuPos + offset, mousePos, openSubMenuToRight, menu->menuItems[menu->selectedMenuItem], subMenuWidth))
+                return true;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MenuBar::findMenuItemBelowMouse(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, aurora::CopiedPtr<Menu>& menu, float menuWidth, aurora::CopiedPtr<Menu>** resultMenu, int* resultSelectedMenuItem)
+    {
+        // Loop over the open submenus and make sure to handle them first as menus can overlap
+        if ((menu->selectedMenuItem >= 0) && !menu->menuItems[menu->selectedMenuItem]->menuItems.empty())
+        {
+            const float subMenuWidth = calculateMenuWidth(menu->menuItems[menu->selectedMenuItem]);
+            const Vector2f offset = calculateSubmenuOffset(menu, menuPos.x, menuWidth, subMenuWidth, openSubMenuToRight);
+            if (findMenuItemBelowMouse(menuPos + offset, mousePos, openSubMenuToRight, menu->menuItems[menu->selectedMenuItem], subMenuWidth, resultMenu, resultSelectedMenuItem))
+                return true;
+        }
+
+        // Check if the mouse is on top of the menu
+        if (FloatRect{menuPos.x, menuPos.y, menuWidth, menu->menuItems.size() * getSize().y}.contains(mousePos))
+        {
+            *resultMenu = &menu;
+            *resultSelectedMenuItem = (mousePos.y - menuPos.y) / getSize().y;
+            return true;
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::drawMenusOnBar(sf::RenderTarget& target, sf::RenderStates states, Sprite& backgroundSprite) const
+    {
+        sf::Transform oldTransform = states.transform;
+
+        // Draw the backgrounds
         for (std::size_t i = 0; i < m_menus.size(); ++i)
         {
-            // Is the menu open?
-            if (m_visibleMenu == static_cast<int>(i))
+            const bool isMenuOpen = (m_visibleMenu == static_cast<int>(i));
+            const float width = m_menus[i]->text.getSize().x + (2 * m_distanceToSideCached);
+            if (backgroundSprite.isSet())
             {
-                const sf::RenderStates oldStates = states;
-
-                // Find out what the width of the menu should be
-                float menuWidth = m_minimumSubMenuWidth;
-                for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-                    menuWidth = std::max(menuWidth, m_menus[i].menuItems[j].getSize().x + (2 * m_distanceToSideCached));
-
-                Sprite selectedBackgroundSprite = m_spriteSelectedItemBackground;
-                if (selectedBackgroundSprite.isSet() && backgroundSprite.isSet())
+                if (isMenuOpen && m_spriteSelectedItemBackground.isSet())
                 {
-                    selectedBackgroundSprite.setSize({m_menus[i].text.getSize().x + (2 * m_distanceToSideCached), getSize().y});
+                    Sprite selectedBackgroundSprite = m_spriteSelectedItemBackground;
+                    selectedBackgroundSprite.setSize({width, getSize().y});
                     selectedBackgroundSprite.draw(target, states);
-
-                    backgroundSprite.setSize({menuWidth, getSize().y});
-                    selectedBackgroundSprite.setSize({menuWidth, getSize().y});
-                    for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-                    {
-                        states.transform.translate({0, nextItemDistance});
-                        if (m_menus[i].selectedMenuItem == static_cast<int>(j))
-                            selectedBackgroundSprite.draw(target, states);
-                        else
-                            backgroundSprite.draw(target, states);
-                    }
                 }
-                else if (backgroundSprite.isSet())
+                else // Not selected or no different texture for selected menu
                 {
-                    backgroundSprite.setSize({m_menus[i].text.getSize().x + (2 * m_distanceToSideCached), getSize().y});
+                    backgroundSprite.setSize({width, getSize().y});
                     backgroundSprite.draw(target, states);
+                }
+            }
+            else // No textures where loaded
+            {
+                if (isMenuOpen && m_selectedBackgroundColorCached.isSet())
+                    drawRectangleShape(target, states, {width, getSize().y}, m_selectedBackgroundColorCached);
+            }
 
-                    backgroundSprite.setSize({menuWidth, getSize().y});
-                    for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
+            states.transform.translate({width, 0});
+        }
+
+        states.transform = oldTransform;
+
+        // Draw the texts
+        const float textHeight = m_menus[0]->text.getSize().y;
+        states.transform.translate({m_distanceToSideCached, (getSize().y - textHeight) / 2.f});
+        for (std::size_t i = 0; i < m_menus.size(); ++i)
+        {
+            m_menus[i]->text.draw(target, states);
+
+            const float width = m_menus[i]->text.getSize().x + (2 * m_distanceToSideCached);
+            states.transform.translate({width, 0});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MenuBar::drawMenu(sf::RenderTarget& target, sf::RenderStates states, const aurora::CopiedPtr<Menu>& menu, float menuWidth, Sprite& backgroundSprite, float globalLeftPos, bool openSubMenuToRight) const
+    {
+        if (menu->menuItems.empty())
+            return;
+
+        sf::Transform oldTransform = states.transform;
+
+        // Draw the backgrounds
+        if ((menu->selectedMenuItem == -1) && !backgroundSprite.isSet() && !m_selectedBackgroundColorCached.isSet())
+        {
+            drawRectangleShape(target, states, {menuWidth, getSize().y * menu->menuItems.size()}, m_backgroundColorCached);
+        }
+        else // We can't draw the entire menu with a singe draw call
+        {
+            for (std::size_t j = 0; j < menu->menuItems.size(); ++j)
+            {
+                const bool isMenuItemSelected = (menu->selectedMenuItem == static_cast<int>(j));
+                if (backgroundSprite.isSet())
+                {
+                    if (isMenuItemSelected && m_spriteSelectedItemBackground.isSet())
                     {
-                        states.transform.translate({0, nextItemDistance});
+                        Sprite selectedBackgroundSprite = m_spriteSelectedItemBackground;
+                        selectedBackgroundSprite.setSize({menuWidth, getSize().y});
+                        selectedBackgroundSprite.draw(target, states);
+                    }
+                    else // Not selected or no different texture for selected menu
+                    {
+                        backgroundSprite.setSize({menuWidth, getSize().y});
                         backgroundSprite.draw(target, states);
                     }
                 }
                 else // No textures where loaded
                 {
-                    if (m_selectedBackgroundColorCached.isSet())
-                        drawRectangleShape(target, states, {m_menus[i].text.getSize().x + (2 * m_distanceToSideCached), getSize().y}, m_selectedBackgroundColorCached);
+                    if (isMenuItemSelected && m_selectedBackgroundColorCached.isSet())
+                        drawRectangleShape(target, states, {menuWidth, getSize().y}, m_selectedBackgroundColorCached);
                     else
-                        drawRectangleShape(target, states, {m_menus[i].text.getSize().x + (2 * m_distanceToSideCached), getSize().y}, m_backgroundColorCached);
-
-                    for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-                    {
-                        states.transform.translate({0, nextItemDistance});
-                        if ((m_menus[i].selectedMenuItem == static_cast<int>(j)) && m_selectedBackgroundColorCached.isSet())
-                            drawRectangleShape(target, states, {menuWidth, getSize().y}, m_selectedBackgroundColorCached);
-                        else
-                            drawRectangleShape(target, states, {menuWidth, getSize().y}, m_backgroundColorCached);
-                    }
+                        drawRectangleShape(target, states, {menuWidth, getSize().y}, m_backgroundColorCached);
                 }
 
-                states = oldStates;
-            }
-            else // This menu is not open
-            {
-                if (backgroundSprite.isSet())
-                {
-                    backgroundSprite.setSize({m_menus[i].text.getSize().x + (2 * m_distanceToSideCached), getSize().y});
-                    backgroundSprite.draw(target, states);
-                }
+                states.transform.translate({0, getSize().y});
             }
 
-            states.transform.translate({m_menus[i].text.getSize().x + (2 * m_distanceToSideCached), 0});
+            states.transform = oldTransform;
         }
 
-        // Draw the texts of the menus
-        if (!m_menus.empty())
+        // Draw the texts (and arrows when there are submenus)
+        states.transform.translate({m_distanceToSideCached, (getSize().y - menu->text.getSize().y) / 2.f});
+        for (std::size_t j = 0; j < menu->menuItems.size(); ++j)
         {
-            textStates.transform.translate({m_distanceToSideCached, (getSize().y - m_menus[0].text.getSize().y) / 2.f});
-            for (std::size_t i = 0; i < m_menus.size(); ++i)
+            menu->menuItems[j]->text.draw(target, states);
+
+            // Draw an arrow next to the text if there is a submenu
+            if (!menu->menuItems[j]->menuItems.empty())
             {
-                m_menus[i].text.draw(target, textStates);
+                sf::Transform textTransform = states.transform;
+                const float arrowHeight = getSize().y / 2.f;
+                const float arrowWidth = arrowHeight / 2.f;
+                states.transform.translate({menuWidth - 2*m_distanceToSideCached - arrowWidth, // 2x m_distanceToSideCached because we already translated once
+                                            (menu->menuItems[j]->text.getSize().y - arrowHeight) / 2.f});
 
-                // Draw the menu items when the menu is open
-                if (m_visibleMenu == static_cast<int>(i))
-                {
-                    const sf::RenderStates oldStates = textStates;
+                sf::ConvexShape arrow{3};
+                arrow.setPoint(0, {0, 0});
+                arrow.setPoint(1, {arrowWidth, arrowHeight / 2.f});
+                arrow.setPoint(2, {0, arrowHeight});
 
-                    for (std::size_t j = 0; j < m_menus[i].menuItems.size(); ++j)
-                    {
-                        textStates.transform.translate({0, nextItemDistance});
-                        m_menus[i].menuItems[j].draw(target, textStates);
-                    }
+                if ((!m_enabled || !menu->menuItems[j]->enabled) && m_textColorDisabledCached.isSet())
+                    arrow.setFillColor(Color::calcColorOpacity(m_textColorDisabledCached, m_opacityCached));
+                else if ((menu->selectedMenuItem == static_cast<int>(j)) && m_selectedTextColorCached.isSet())
+                    arrow.setFillColor(Color::calcColorOpacity(m_selectedTextColorCached, m_opacityCached));
+                else
+                    arrow.setFillColor(Color::calcColorOpacity(m_textColorCached, m_opacityCached));
 
-                    textStates = oldStates;
-                }
-
-                textStates.transform.translate({m_menus[i].text.getSize().x + (2 * m_distanceToSideCached), 0});
+                target.draw(arrow, states);
+                states.transform = textTransform;
             }
+
+            states.transform.translate({0, getSize().y});
+        }
+
+        // Draw the submenu if one is opened
+        if ((menu->selectedMenuItem >= 0) && !menu->menuItems[menu->selectedMenuItem]->menuItems.empty())
+        {
+            states.transform = oldTransform;
+
+            // If there isn't enough room on the right side then open the menu to the left if it has more room
+            const float subMenuWidth = calculateMenuWidth(menu->menuItems[menu->selectedMenuItem]);
+            float leftOffset;
+            if (openSubMenuToRight)
+            {
+                leftOffset = menuWidth;
+                if (getParent() && (globalLeftPos + leftOffset + subMenuWidth > getParent()->getSize().x))
+                {
+                    if (globalLeftPos + leftOffset + subMenuWidth - getParent()->getSize().x < globalLeftPos)
+                    {
+                        leftOffset = -subMenuWidth;
+                        openSubMenuToRight = false;
+                    }
+                }
+            }
+            else // Submenu opens to the left side
+            {
+                leftOffset = -subMenuWidth;
+                if (getParent() && (globalLeftPos < subMenuWidth))
+                {
+                    if (getParent()->getSize().x - subMenuWidth - globalLeftPos > globalLeftPos)
+                    {
+                        leftOffset = menuWidth;
+                        openSubMenuToRight = true;
+                    }
+                }
+            }
+
+            float topOffset = getSize().y * menu->selectedMenuItem;
+            if (m_invertedMenuDirection)
+                topOffset -= getSize().y * (menu->menuItems[menu->selectedMenuItem]->menuItems.size() - 1);
+
+            states.transform.translate({leftOffset, topOffset});
+            drawMenu(target, states, menu->menuItems[menu->selectedMenuItem], subMenuWidth, backgroundSprite, globalLeftPos + leftOffset, openSubMenuToRight);
         }
     }
 
