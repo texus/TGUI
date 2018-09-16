@@ -54,14 +54,14 @@ namespace tgui
                 // We don't know if we have to bind the width or height, so bind "size" and let the connectWidget function figure it out later
                 if (expression == "100%")
                 {
-                    m_boundString = "&.size";
+                    m_boundString = "&.innersize";
                     m_operation = Operation::BindingString;
                 }
                 else // value is a fraction of parent size
                 {
                     *this = Layout{Layout::Operation::Multiplies,
                                    std::make_unique<Layout>(tgui::stof(expression.substr(0, expression.length()-1)) / 100.f),
-                                   std::make_unique<Layout>("&.size")};
+                                   std::make_unique<Layout>("&.innersize")};
                 }
             }
             else
@@ -72,13 +72,18 @@ namespace tgui
                  || (expression.substr(expression.size()-1) == "y")
                  || (expression.substr(expression.size()-1) == "w") // width
                  || (expression.substr(expression.size()-1) == "h") // height
+                 || (expression.size() >= 2 && expression.substr(expression.size()-2) == "iw") // width inside the container
+                 || (expression.size() >= 2 && expression.substr(expression.size()-2) == "ih") // height inside the container
                  || (expression.size() >= 4 && expression.substr(expression.size()-4) == "left")
                  || (expression.size() >= 3 && expression.substr(expression.size()-3) == "top")
                  || (expression.size() >= 5 && expression.substr(expression.size()-5) == "width")
                  || (expression.size() >= 6 && expression.substr(expression.size()-6) == "height")
                  || (expression.size() >= 4 && expression.substr(expression.size()-4) == "size")
                  || (expression.size() >= 3 && expression.substr(expression.size()-3) == "pos")
-                 || (expression.size() >= 8 && expression.substr(expression.size()-8) == "position"))
+                 || (expression.size() >= 8 && expression.substr(expression.size()-8) == "position")
+                 || (expression.size() >= 9 && expression.substr(expression.size()-9) == "innersize")
+                 || (expression.size() >= 10 && expression.substr(expression.size()-10) == "innerwidth")
+                 || (expression.size() >= 11 && expression.substr(expression.size()-11) == "innerheight"))
                 {
                     // We can't search for the referenced widget yet as no widget is connected to the widget yet, so store the string for future parsing
                     m_boundString = expression;
@@ -228,7 +233,9 @@ namespace tgui
         m_operation  {operation},
         m_boundWidget{boundWidget}
     {
-        assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop) || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight));
+        assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+               || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
+               || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight));
         assert(m_boundWidget != nullptr);
 
         if (m_operation == Operation::BindingLeft)
@@ -239,6 +246,18 @@ namespace tgui
             m_value = m_boundWidget->getSize().x;
         else if (m_operation == Operation::BindingHeight)
             m_value = m_boundWidget->getSize().y;
+        else if (m_operation == Operation::BindingInnerWidth)
+        {
+            const auto* boundContainer = dynamic_cast<Container*>(boundWidget);
+            if (boundContainer)
+                m_value = boundContainer->getInnerSize().x;
+        }
+        else if (m_operation == Operation::BindingInnerHeight)
+        {
+            const auto* boundContainer = dynamic_cast<Container*>(boundWidget);
+            if (boundContainer)
+                m_value = boundContainer->getInnerSize().y;
+        }
 
         resetPointers();
         recalculateValue();
@@ -386,11 +405,13 @@ namespace tgui
     {
         if (m_boundWidget)
         {
-            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop) || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight));
+            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+                   || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
+                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight));
 
             if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
                 m_boundWidget->unbindPositionLayout(this);
-            else // if ((m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight))
+            else
                 m_boundWidget->unbindSizeLayout(this);
         }
     }
@@ -409,11 +430,13 @@ namespace tgui
 
         if (m_boundWidget)
         {
-            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop) || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight));
+            assert((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+                   || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
+                   || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight));
 
             if ((m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop))
                 m_boundWidget->bindPositionLayout(this);
-            else // if ((m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight))
+            else
                 m_boundWidget->bindSizeLayout(this);
         }
     }
@@ -493,8 +516,23 @@ namespace tgui
             case Operation::BindingHeight:
                 m_value = m_boundWidget->getSize().y;
                 break;
+            case Operation::BindingInnerWidth:
+            {
+                const auto* boundContainer = dynamic_cast<Container*>(m_boundWidget);
+                if (boundContainer)
+                    m_value = boundContainer->getInnerSize().x;
+                break;
+            }
+            case Operation::BindingInnerHeight:
+            {
+                const auto* boundContainer = dynamic_cast<Container*>(m_boundWidget);
+                if (boundContainer)
+                    m_value = boundContainer->getInnerSize().y;
+                break;
+            }
             case Operation::BindingString:
-                // Passing here either means something is wrong with the string or the layout was not connected to a widget with a parent yet
+                // The string should have already been parsed by now.
+                // Passing here either means something is wrong with the string or the layout was not connected to a widget with a parent yet.
                 break;
         };
 
@@ -552,12 +590,29 @@ namespace tgui
             m_operation = Operation::BindingHeight;
             m_boundWidget = widget;
         }
+        else if (expression == "iw" || expression == "innerwidth")
+        {
+            m_operation = Operation::BindingInnerWidth;
+            m_boundWidget = widget;
+        }
+        else if (expression == "ih" || expression == "innerheight")
+        {
+            m_operation = Operation::BindingInnerHeight;
+            m_boundWidget = widget;
+        }
         else if (expression == "size")
         {
             if (xAxis)
                 return parseBindingString("width", widget, xAxis);
             else
                 return parseBindingString("height", widget, xAxis);
+        }
+        else if (expression == "innersize")
+        {
+            if (xAxis)
+                return parseBindingString("innerwidth", widget, xAxis);
+            else
+                return parseBindingString("innerheight", widget, xAxis);
         }
         else if ((expression == "pos") || (expression == "position"))
         {

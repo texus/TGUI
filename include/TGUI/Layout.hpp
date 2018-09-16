@@ -61,6 +61,8 @@ namespace tgui
             BindingTop,
             BindingWidth,
             BindingHeight,
+            BindingInnerWidth,
+            BindingInnerHeight,
             BindingString
         };
 

@@ -185,6 +185,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Container::setSize(const Layout2d& size)
+    {
+        if (size.getValue() != m_prevSize)
+        {
+            Widget::setSize(size);
+            m_prevInnerSize = getInnerSize();
+        }
+        else // Size didn't change, but also check the inner size in case the borders or padding changed
+        {
+            Widget::setSize(size);
+            if (getInnerSize() != m_prevInnerSize)
+            {
+                m_prevInnerSize = getInnerSize();
+                for (auto& layout : m_boundSizeLayouts)
+                    layout->recalculateValue();
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Container::add(const Widget::Ptr& widgetPtr, const sf::String& widgetName)
     {
         assert(widgetPtr != nullptr);
@@ -309,6 +330,13 @@ namespace tgui
             if (widget->getWidgetType() == "RadioButton")
                 std::static_pointer_cast<RadioButton>(widget)->setChecked(false);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f Container::getInnerSize() const
+    {
+        return getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

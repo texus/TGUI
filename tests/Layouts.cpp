@@ -180,7 +180,7 @@ TEST_CASE("[Layouts]")
         SECTION("percentages")
         {
             Layout layout{"50%"};
-            REQUIRE(layout.toString() == "0.5 * &.size");
+            REQUIRE(layout.toString() == "0.5 * &.innersize");
 
             auto button = std::make_shared<tgui::Button>();
             button->setPosition({"40%", "30%"});
@@ -195,6 +195,15 @@ TEST_CASE("[Layouts]")
 
             REQUIRE(button->getSize() == sf::Vector2f(80, 30));
             REQUIRE(button->getPosition() == sf::Vector2f(160, 90));
+
+            SECTION("Inner size is used")
+            {
+                panel->getRenderer()->setBorders({5, 10, 15, 20});
+                panel->getRenderer()->setPadding({25, 30, 35, 40});
+
+                REQUIRE(button->getSize() == sf::Vector2f(0.2f * (400 - 5 - 15 - 25 - 35), 0.1f * (300 - 10 - 20 - 30 - 40)));
+                REQUIRE(button->getPosition() == sf::Vector2f(0.4f * (400 - 5 - 15 - 25 - 35), 0.3f * (300 - 10 - 20 - 30 - 40)));
+            }
         }
 
         SECTION("operators")

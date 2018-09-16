@@ -43,6 +43,7 @@ TEST_CASE("[MenuBar]")
         REQUIRE_NOTHROW(menuBar->connect("MenuItemClicked", [](tgui::Widget::Ptr, std::string, std::vector<sf::String>){}));
 
         REQUIRE_NOTHROW(menuBar->connectMenuItem("File", "Save", [](){}));
+        REQUIRE_NOTHROW(menuBar->connectMenuItem({"Help", "About", "Version"}, [](){}));
     }
 
     SECTION("WidgetType")

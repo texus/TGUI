@@ -98,6 +98,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Vector2f Group::getInnerSize() const
+    {
+        return {getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
+                getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Vector2f Group::getChildWidgetsOffset() const
     {
         return {m_paddingCached.getLeft(), m_paddingCached.getTop()};

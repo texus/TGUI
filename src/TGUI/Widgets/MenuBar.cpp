@@ -496,9 +496,9 @@ namespace tgui
             // The menu is moved to the left if it otherwise falls off the screen
             bool openSubMenuToRight = true;
             const float menuWidth = calculateMenuWidth(m_menus[m_visibleMenu]);
-            if (getParent() && (menuPos.x + menuWidth > getParent()->getSize().x))
+            if (getParent() && (menuPos.x + menuWidth > getParent()->getInnerSize().x))
             {
-                menuPos.x = std::max(0.f, getParent()->getSize().x - menuWidth);
+                menuPos.x = std::max(0.f, getParent()->getInnerSize().x - menuWidth);
                 openSubMenuToRight = false;
             }
 
@@ -643,9 +643,9 @@ namespace tgui
             // The menu is moved to the left if it otherwise falls off the screen
             bool openSubMenuToRight = true;
             const float menuWidth = calculateMenuWidth(m_menus[m_visibleMenu]);
-            if (getParent() && (menuPos.x + menuWidth > getParent()->getSize().x))
+            if (getParent() && (menuPos.x + menuWidth > getParent()->getInnerSize().x))
             {
-                menuPos.x = std::max(0.f, getParent()->getSize().x - menuWidth);
+                menuPos.x = std::max(0.f, getParent()->getInnerSize().x - menuWidth);
                 openSubMenuToRight = false;
             }
 
@@ -836,9 +836,9 @@ namespace tgui
             // Move the menu to the left if it otherwise falls off the screen
             bool openSubMenuToRight = true;
             const float menuWidth = calculateMenuWidth(m_menus[m_visibleMenu]);
-            if (getParent() && (getPosition().x + leftOffset + menuWidth > getParent()->getSize().x))
+            if (getParent() && (getPosition().x + leftOffset + menuWidth > getParent()->getInnerSize().x))
             {
-                leftOffset = std::max(0.f, getParent()->getSize().x - menuWidth);
+                leftOffset = std::max(0.f, getParent()->getInnerSize().x - menuWidth);
                 openSubMenuToRight = false;
             }
 
@@ -1096,9 +1096,9 @@ namespace tgui
         if (openSubMenuToRight)
         {
             leftOffset = menuWidth;
-            if (getParent() && (globalLeftPos + leftOffset + subMenuWidth > getParent()->getSize().x))
+            if (getParent() && (globalLeftPos + leftOffset + subMenuWidth > getParent()->getInnerSize().x))
             {
-                if (globalLeftPos + leftOffset + subMenuWidth - getParent()->getSize().x < globalLeftPos)
+                if (globalLeftPos + leftOffset + subMenuWidth - getParent()->getInnerSize().x < globalLeftPos)
                 {
                     leftOffset = -subMenuWidth;
                     openSubMenuToRight = false;
@@ -1110,7 +1110,7 @@ namespace tgui
             leftOffset = -subMenuWidth;
             if (getParent() && (globalLeftPos < subMenuWidth))
             {
-                if (getParent()->getSize().x - subMenuWidth - globalLeftPos > globalLeftPos)
+                if (getParent()->getInnerSize().x - menuWidth - globalLeftPos > globalLeftPos)
                 {
                     leftOffset = menuWidth;
                     openSubMenuToRight = true;
@@ -1309,9 +1309,9 @@ namespace tgui
             if (openSubMenuToRight)
             {
                 leftOffset = menuWidth;
-                if (getParent() && (globalLeftPos + leftOffset + subMenuWidth > getParent()->getSize().x))
+                if (getParent() && (globalLeftPos + leftOffset + subMenuWidth > getParent()->getInnerSize().x))
                 {
-                    if (globalLeftPos + leftOffset + subMenuWidth - getParent()->getSize().x < globalLeftPos)
+                    if (globalLeftPos + leftOffset + subMenuWidth - getParent()->getInnerSize().x < globalLeftPos)
                     {
                         leftOffset = -subMenuWidth;
                         openSubMenuToRight = false;
@@ -1323,7 +1323,7 @@ namespace tgui
                 leftOffset = -subMenuWidth;
                 if (getParent() && (globalLeftPos < subMenuWidth))
                 {
-                    if (getParent()->getSize().x - subMenuWidth - globalLeftPos > globalLeftPos)
+                    if (getParent()->getInnerSize().x - menuWidth - globalLeftPos > globalLeftPos)
                     {
                         leftOffset = menuWidth;
                         openSubMenuToRight = true;
