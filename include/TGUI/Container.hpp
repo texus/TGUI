@@ -38,7 +38,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Container widget
     ///
-    /// Parent class for widgets that store multiple widgets.
+    /// Parent class for widgets that contain child widgets.
     ///
     /// Signals:
     ///     - Inherited signals from Widget
@@ -97,7 +97,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a list of all the widgets
+        /// @brief Returns a list of all the widgets in this container
         ///
         /// @return Vector of all widget pointers
         ///
@@ -109,7 +109,7 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a list of the names of all the widgets
+        /// @brief Returns a list of the names of all the widgets in this container
         ///
         /// @return Vector of all widget names
         ///
@@ -124,7 +124,7 @@ namespace tgui
         /// @brief Adds a widget to the container
         ///
         /// @param widgetPtr   Pointer to the widget you would like to add
-        /// @param widgetName  If you want to access the widget later then you must do this with this name
+        /// @param widgetName  You can give the widget a unique name to retrieve it from the container later
         ///
         /// @warning The widget name should not contain whitespace
         ///
@@ -133,14 +133,14 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a pointer to an earlier created widget
+        /// @brief Returns a pointer to a widget that was added earlier
         ///
         /// @param widgetName The name that was given to the widget when it was added to the container
         ///
         /// The container will first search for widgets that are direct children of it, but when none of the child widgets match
         /// the given name, a recursive search will be performed.
         ///
-        /// @return Pointer to the earlier created widget
+        /// @return Pointer to the earlier added widget
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed
         ///
@@ -149,11 +149,11 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a pointer to an earlier created widget
+        /// @brief Returns a pointer to a widget that was added earlier
         ///
         /// @param widgetName The name that was given to the widget when it was added to the container
         ///
-        /// @return Pointer to the earlier created widget.
+        /// @return Pointer to the earlier added widget.
         ///         The pointer will already be casted to the desired type
         ///
         /// The container will first search for widgets that are direct children of it, but when none of the child widgets match
@@ -239,16 +239,16 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the child widgets from a text file
-        ///
         /// @param filename  Filename of the widget file
+        /// @throw Exception when file could not be opened or parsing failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsFromFile(const std::string& filename);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the child widgets to a text file
-        ///
         /// @param filename  Filename of the widget file
+        /// @throw Exception when file could not be opened for writing
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void saveWidgetsToFile(const std::string& filename);
 

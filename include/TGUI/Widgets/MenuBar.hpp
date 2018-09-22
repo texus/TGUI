@@ -235,8 +235,8 @@ namespace tgui
         ///         or if hierarchy does not contain at least 2 elements.
         ///
         /// @code
-        /// addMenuItem({"File", "Save"});
-        /// addMenuItem({"View", "Messages", "Tags", "Important"});
+        /// menuBar->addMenuItem({"File", "Save"});
+        /// menuBar->addMenuItem({"View", "Messages", "Tags", "Important"});
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool addMenuItem(const std::vector<sf::String>& hierarchy, bool createParents = true);
@@ -279,9 +279,11 @@ namespace tgui
         /// @param hierarchy  Hierarchy of the menu item, starting with the menu and ending with menu item to be deleted
         /// @param removeParentsWhenEmpty  Also delete the parent of the deleted menu item if it has no other children
         ///
+        /// @return True when the menu item exists, false when hierarchy was incorrect
+        ///
         /// @code
-        /// removeMenuItem({"File", "Save"});
-        /// removeMenuItem({"View", "Messages", "Tags", "Important"});
+        /// menuBar->removeMenuItem({"File", "Save"});
+        /// menuBar->removeMenuItem({"View", "Messages", "Tags", "Important"});
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeMenuItem(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty = true);
@@ -289,7 +291,8 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Enable or disable an entire menu
-        /// @param menu  The name of the menu to enable or disable
+        /// @param menu     The name of the menu to enable or disable
+        /// @param enabled  Should the menu be enabled or disabled?
         /// @return True when the menu exists, false when menu was not found
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setMenuEnabled(const sf::String& menu, bool enabled);
@@ -307,6 +310,7 @@ namespace tgui
         /// @brief Enable or disable a menu item
         /// @param menu      The name of the menu in which the menu item is located
         /// @param menuItem  The name of the menu item to enable or disable
+        /// @param enabled   Should the menu item be enabled or disabled?
         /// @return True when the menu item exists, false when menu or menuItem was not found
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setMenuItemEnabled(const sf::String& menu, const sf::String& menuItem, bool enabled);
@@ -315,6 +319,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Enable or disable a menu item
         /// @param hierarchy  Hierarchy of menu items, starting with the menu and ending with the menu item to enable/disable
+        /// @param enabled    Should the menu item be enabled or disabled?
         /// @return True when the menu item exists, false when hierarchy was incorrect
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setMenuItemEnabled(const std::vector<sf::String>& hierarchy, bool enabled);

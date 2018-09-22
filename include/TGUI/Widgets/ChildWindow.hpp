@@ -153,7 +153,7 @@ namespace tgui
         /// @param size   Sets the new maximum size of the child window
         ///
         /// This function sets the maximum size of the window excluding borders and titlebar.
-        /// If the window is larger than the new maximum size, it will automatically be resized down.
+        /// If the window is larger than the new maximum size, it will automatically be shrunk.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMaximumSize(Vector2f size);
@@ -176,7 +176,7 @@ namespace tgui
         /// @param size   Sets the new minimum size of the child window
         ///
         /// This function sets the minimum size of the window excluding borders and titlebar.
-        /// If the window is smaller than the new minimum size, it will automatically be resized up.
+        /// If the window is smaller than the new minimum size, it will automatically be enlarged.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setMinimumSize(Vector2f size);
@@ -249,8 +249,8 @@ namespace tgui
         ///
         /// @param buttons  Which buttons should be available in the title bar?
         ///
-        /// By default ChildWindows only display a close button. You may set the window to show a combination of buttons.
-        /// For example, the following will set the ChildWindow to have both a minimize and close button.
+        /// By default ChildWindows only display a close button.
+        /// The following example gives the ChildWindow both a minimize and close button.
         /// @code
         /// childWindow->setTitleButtons(ChildWindow::TitleButtons::Minimize | ChildWindow::TitleButtons::Close);
         /// @endcode
@@ -318,9 +318,7 @@ namespace tgui
         /// @brief Sets the child window to be kept inside its parent
         ///
         /// @param enabled  When it's set to true, the child window will always be kept automatically inside its parent.
-        ///                 It will be fully kept on left, right and top.
-        ///                 At the bottom of the parent only the title bar will be kept inside.
-        ///                 It's set to false by default
+        ///                 It's set to false by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setKeepInParent(bool enabled = true);
@@ -329,10 +327,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Tells whether the child window is kept inside its parent
         ///
-        /// @return  When it's set to true, the child window will always be kept automatically inside its parent.
-        ///          It will be fully kept on left, right and top.
-        ///          At the bottom of the parent only the title bar will be kept inside.
-        ///          It's set to false by default
+        /// @return When it's set to true, the child window will always be kept automatically inside its parent.
+        ///         It's set to false by default.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool isKeptInParent() const;
