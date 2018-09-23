@@ -281,7 +281,7 @@ namespace tgui
             else // There is no texture, the widget has a circle shape
             {
                 const Vector2f centerPoint = getSize() / 2.f;
-                const float distance = std::sqrt(std::pow(centerPoint.x - pos.x, 2) + std::pow(centerPoint.y - pos.y, 2));
+                const float distance = std::sqrt(std::pow(centerPoint.x - pos.x, 2.f) + std::pow(centerPoint.y - pos.y, 2.f));
                 return (distance <= std::min(getSize().x, getSize().y));
             }
         }

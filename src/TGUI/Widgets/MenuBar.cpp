@@ -1162,7 +1162,7 @@ namespace tgui
         if (FloatRect{menuPos.x, menuPos.y, menuWidth, menu->menuItems.size() * getSize().y}.contains(mousePos))
         {
             *resultMenu = &menu;
-            *resultSelectedMenuItem = (mousePos.y - menuPos.y) / getSize().y;
+            *resultSelectedMenuItem = static_cast<int>((mousePos.y - menuPos.y) / getSize().y);
             return true;
         }
 

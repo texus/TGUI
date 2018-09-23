@@ -12,7 +12,7 @@ version: 0.8-build-{build}
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      SFML_ROOT:      C:\SFML-VS2017
+      SFML_PATH:      C:\SFML-VS2017
       SFML_VERSION:   master
       GENERATOR:      Visual Studio 15 2017 Win64
       BUILD_TYPE:     Debug
@@ -23,7 +23,7 @@ environment:
       BUILD_FOLDER:   build-VS2017-Win64
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      SFML_ROOT:      C:\SFML-VS2015
+      SFML_PATH:      C:\SFML-VS2015
       SFML_VERSION:   2.4.1
       GENERATOR:      Visual Studio 14 2015
       BUILD_TYPE:     Release
@@ -34,7 +34,7 @@ environment:
       BUILD_FOLDER:   build-VS2015-Win32
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      SFML_ROOT:      C:\SFML
+      SFML_PATH:      C:\SFML
       SFML_VERSION:   2.5.0
 
 clone_depth: 3
@@ -47,56 +47,57 @@ cache:
   - C:\SFML-VS2015 -> .appveyor.yml
   - C:\SFML        -> .appveyor.yml
 
+
 install:
 - IF "%SFML_VERSION%" == "master" (
     git clone https://github.com/SFML/SFML --depth 1 &&
     cd SFML &&
-    IF EXIST "%SFML_ROOT%\lib" (
-      IF EXIST "%SFML_ROOT%\revision_cache" (
+    IF EXIST "%SFML_PATH%\lib" (
+      IF EXIST "%SFML_PATH%\revision_cache" (
         git rev-parse HEAD > revision &&
-        fc revision "%SFML_ROOT%\revision_cache" > nul || (exit 0) &&
+        fc revision "%SFML_PATH%\revision_cache" > nul || (exit 0) &&
         IF %ERRORLEVEL% EQU 0 (
           echo Using cached SFML directory
         ) ELSE (
           echo Rebuilding SFML, cached version is out of date &&
-          cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+          cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_PATH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
           cmake --build . --target install --config %BUILD_TYPE% -- /m &&
-          git rev-parse HEAD > "%SFML_ROOT%\revision_cache"
+          git rev-parse HEAD > "%SFML_PATH%\revision_cache"
         )
       ) ELSE (
         echo Rebuilding SFML, cached version is missing revision_cache file &&
-        cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+        cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_PATH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
         cmake --build . --target install --config %BUILD_TYPE% -- /m &&
-        git rev-parse HEAD > "%SFML_ROOT%\revision_cache"
+        git rev-parse HEAD > "%SFML_PATH%\revision_cache"
       )
     ) ELSE (
       echo Rebuilding SFML, no cache available &&
-      cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+      cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_PATH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
       cmake --build . --target install --config %BUILD_TYPE% -- /m &&
-      git rev-parse HEAD > "%SFML_ROOT%\revision_cache"
+      git rev-parse HEAD > "%SFML_PATH%\revision_cache"
     )
-  ) ELSE IF NOT "%SFML_ROOT%" == "C:\SFML" (
-    IF NOT EXIST %SFML_ROOT% (
+  ) ELSE IF NOT "%SFML_PATH%" == "C:\SFML" (
+    IF NOT EXIST %SFML_PATH% (
       appveyor DownloadFile https://github.com/SFML/SFML/archive/%SFML_VERSION%.zip -FileName SFML.zip &&
       7z x SFML.zip > nul &&
-      move SFML-%SFML_VERSION% %SFML_ROOT% > nul &&
-      cd %SFML_ROOT% &&
+      move SFML-%SFML_VERSION% %SFML_PATH% > nul &&
+      cd %SFML_PATH% &&
       mkdir lib &&
-      cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_ROOT% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
+      cmake -G "%GENERATOR%" -DCMAKE_INSTALL_PREFIX=%SFML_PATH% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DBUILD_SHARED_LIBS=%SHARED_LIBS% . &&
       cmake --build . --target install --config %BUILD_TYPE% -- /m
     )
   ) ELSE IF "%APPVEYOR_PULL_REQUEST_NUMBER%" == "" IF /I "%APPVEYOR_REPO_TAG%"=="false" (
     cd C:\ &&
     appveyor-retry choco install doxygen.portable &&
-    IF NOT EXIST %SFML_ROOT% (
-      appveyor DownloadFile http://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc15-32-bit.zip -FileName SFML-Win32.zip &&
+    IF NOT EXIST %SFML_PATH% (
+      appveyor DownloadFile https://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc15-32-bit.zip -FileName SFML-Win32.zip &&
       7z x SFML-Win32.zip > nul &&
-      mkdir %SFML_ROOT%\Win32 &&
-      move SFML-%SFML_VERSION% %SFML_ROOT%\Win32\ > nul &&
-      appveyor DownloadFile http://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc15-64-bit.zip -FileName SFML-Win64.zip &&
+      mkdir %SFML_PATH%\Win32 &&
+      move SFML-%SFML_VERSION% %SFML_PATH%\Win32\ > nul &&
+      appveyor DownloadFile https://www.sfml-dev.org/files/SFML-%SFML_VERSION%-windows-vc15-64-bit.zip -FileName SFML-Win64.zip &&
       7z x SFML-Win64.zip > nul &&
-      mkdir %SFML_ROOT%\Win64 &&
-      move SFML-%SFML_VERSION% %SFML_ROOT%\Win64\ > nul
+      mkdir %SFML_PATH%\Win64 &&
+      move SFML-%SFML_VERSION% %SFML_PATH%\Win64\ > nul
     )
   )
 
@@ -107,14 +108,10 @@ install:
 
 build_script:
   - cd C:\projects\tgui
-  - IF NOT "%SFML_ROOT%" == "C:\SFML" (
+  - IF NOT "%SFML_PATH%" == "C:\SFML" (
       mkdir %BUILD_FOLDER% &&
       cd %BUILD_FOLDER% &&
-      IF "%SFML_VERSION%" == "master" (
-        cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DTGUI_OPTIMIZE_SINGLE_BUILD=%FAST_BUILD% -DSFML_DIR=%SFML_ROOT%\lib\cmake\SFML ..
-      ) ELSE (
-        cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DTGUI_OPTIMIZE_SINGLE_BUILD=%FAST_BUILD% -DSFML_ROOT=%SFML_ROOT% ..
-      ) &&
+      cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DTGUI_SHARED_LIBS=%SHARED_LIBS% -DTGUI_BUILD_TESTS=%BUILD_TESTS% -DTGUI_BUILD_EXAMPLES=%BUILD_EXAMPLES% -DTGUI_OPTIMIZE_SINGLE_BUILD=%FAST_BUILD% -DSFML_DIR=%SFML_PATH%\lib\cmake\SFML .. &&
       msbuild tgui.sln /p:Configuration=%BUILD_TYPE% /m &&
       cd .. &&
       IF "%BUILD_TESTS%"=="TRUE" (
@@ -125,13 +122,13 @@ build_script:
       cd .. &&
       mkdir build-Win32 &&
       cd build-Win32 &&
-      cmake -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_DOC=TRUE ..\tgui &&
+      cmake -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win32\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_DOC=TRUE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
+      cmake -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win32\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Debug /m &&
-      cmake -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
+      cmake -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win32\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_ROOT=%SFML_ROOT%\Win32\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
+      cmake -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win32\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Debug /m &&
       mkdir ..\tgui\lib &&
       move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
@@ -151,13 +148,13 @@ build_script:
       rmdir /S /Q tgui\lib > nul &&
       mkdir build-Win64 &&
       cd build-Win64 &&
-      cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_DOC=TRUE ..\tgui &&
+      cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win64\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=TRUE -DTGUI_BUILD_DOC=TRUE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
+      cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=FALSE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win64\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Debug /m &&
-      cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
+      cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Release -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win64\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Release /m &&
-      cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_ROOT=%SFML_ROOT%\Win64\SFML-%SFML_VERSION% -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
+      cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Debug -DTGUI_SHARED_LIBS=TRUE -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DSFML_DIR=%SFML_PATH%\Win64\SFML-%SFML_VERSION%\lib\cmake\SFML -DTGUI_BUILD_GUI_BUILDER=FALSE -DTGUI_BUILD_DOC=FALSE ..\tgui &&
       msbuild tgui.sln /p:Configuration=Debug /m &&
       mkdir ..\tgui\lib &&
       move lib\Release\tgui-s.lib ..\tgui\lib\ > nul &&
