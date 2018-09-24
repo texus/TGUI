@@ -24,7 +24,7 @@ environment:
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       SFML_PATH:      C:\SFML-VS2015
-      SFML_VERSION:   2.4.1
+      SFML_VERSION:   2.5.0
       GENERATOR:      Visual Studio 14 2015
       BUILD_TYPE:     Release
       SHARED_LIBS:    TRUE
