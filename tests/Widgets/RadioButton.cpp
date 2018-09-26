@@ -320,7 +320,7 @@ TEST_CASE("[RadioButton]")
             REQUIRE(renderer->getProperty("CheckColorDisabled").getColor() == sf::Color(240, 230, 220));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Italic);
             REQUIRE(renderer->getProperty("TextStyleChecked").getTextStyle() == sf::Text::Bold);
-            REQUIRE(renderer->getProperty("TextDistanceRatio").getNumber() == 0.5);
+            REQUIRE(renderer->getProperty("TextDistanceRatio").getNumber() == 0.5f);
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
             REQUIRE(renderer->getTextColor() == sf::Color(50, 60, 70));
@@ -346,7 +346,7 @@ TEST_CASE("[RadioButton]")
             REQUIRE(renderer->getCheckColorDisabled() == sf::Color(240, 230, 220));
             REQUIRE(renderer->getTextStyle() == sf::Text::Italic);
             REQUIRE(renderer->getTextStyleChecked() == sf::Text::Bold);
-            REQUIRE(renderer->getTextDistanceRatio() == 0.5);
+            REQUIRE(renderer->getTextDistanceRatio() == 0.5f);
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         }
 

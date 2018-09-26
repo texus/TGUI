@@ -104,7 +104,7 @@ TEST_CASE("[Deserializer]")
     {
         REQUIRE(tgui::Deserializer::deserialize(Type::Number, "0").getNumber() == 0);
         REQUIRE(tgui::Deserializer::deserialize(Type::Number, "1").getNumber() == 1);
-        REQUIRE(tgui::Deserializer::deserialize(Type::Number, "2.25").getNumber() == 2.25);
+        REQUIRE(tgui::Deserializer::deserialize(Type::Number, "2.25").getNumber() == 2.25f);
     }
 
     SECTION("deserialize outline")

@@ -51,8 +51,8 @@ TEST_CASE("[Text]")
     SECTION("Opacity")
     {
         REQUIRE(text.getOpacity() == 1);
-        text.setOpacity(0.75);
-        REQUIRE(text.getOpacity() == 0.75);
+        text.setOpacity(0.75f);
+        REQUIRE(text.getOpacity() == 0.75f);
     }
 
     SECTION("Font")
