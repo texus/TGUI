@@ -4,9 +4,14 @@ else()
     cmake_minimum_required(VERSION 3.5)  # Can be at most 3.5.1 as long as Ubuntu 16.04 is supported
 endif()
 
-# Use new RPATH behavior on macOS
+# Use new RPATH behavior on macOS (CMake 3.9 and newer)
 if(POLICY CMP0068)
     cmake_policy(SET CMP0068 NEW)
+endif()
+
+# Don't warn about existence of SFML_ROOT variable (CMake 3.12 and newer)
+if(POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW)
 endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
@@ -50,12 +55,10 @@ tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentatio
 # Define the install directory for miscellaneous files
 if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
     set(DEFAULT_INSTALL_MISC_DIR .)
-elseif(TGUI_OS_LINUX OR TGUI_OS_BSD)
-    set(DEFAULT_INSTALL_MISC_DIR share/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
-elseif(TGUI_OS_MACOSX)
-    set(DEFAULT_INSTALL_MISC_DIR /usr/local/share/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
 elseif(TGUI_OS_ANDROID)
     set(DEFAULT_INSTALL_MISC_DIR ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
+else()
+    set(DEFAULT_INSTALL_MISC_DIR share/tgui-${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR})
 endif()
 tgui_set_option(TGUI_MISC_INSTALL_PREFIX "${DEFAULT_INSTALL_MISC_DIR}" PATH "Prefix installation path for miscellaneous files")
 mark_as_advanced(TGUI_MISC_INSTALL_PREFIX)
