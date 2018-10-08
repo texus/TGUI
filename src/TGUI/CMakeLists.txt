@@ -4,6 +4,7 @@ set(TGUI_SRC
     Clipping.cpp
     Color.cpp
     Container.cpp
+    CustomWidgetForBindings.cpp
     Font.cpp
     Global.cpp
     Gui.cpp
