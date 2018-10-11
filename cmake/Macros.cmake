@@ -72,9 +72,9 @@ function(tgui_export_target export_name)
     include(CMakePackageConfigHelpers)
     if(CMAKE_VERSION VERSION_LESS 3.11)
         set(CVF_VERSION ${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR}.${TGUI_VERSION_PATCH})
-        configure_file("${PROJECT_SOURCE_DIR}/cmake/TGUIConfigVersion.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/TGUIConfigVersion.cmake" @ONLY)
+        configure_file("${PROJECT_SOURCE_DIR}/cmake/TGUIConfigVersion.cmake.in" "${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake" @ONLY)
     else()
-        write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/TGUIConfigVersion.cmake"
+        write_basic_package_version_file("${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake"
                                          VERSION ${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR}.${TGUI_VERSION_PATCH}
                                          COMPATIBILITY SameMinorVersion)
     endif()
@@ -86,22 +86,22 @@ function(tgui_export_target export_name)
     endif()
 
     export(EXPORT ${export_name}
-           FILE "${CMAKE_CURRENT_BINARY_DIR}/${targets_config_filename}")
+           FILE "${PROJECT_BINARY_DIR}/${targets_config_filename}")
 
     if (TGUI_BUILD_FRAMEWORK)
         set(config_package_location "TGUI.framework/Resources/CMake")
     else()
         set(config_package_location lib${LIB_SUFFIX}/cmake/TGUI)
     endif()
-    configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/TGUIConfig.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/TGUIConfig.cmake"
+    configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/TGUIConfig.cmake.in" "${PROJECT_BINARY_DIR}/TGUIConfig.cmake"
         INSTALL_DESTINATION "${config_package_location}")
 
     install(EXPORT ${export_name}
             FILE ${targets_config_filename}
             DESTINATION ${config_package_location})
 
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/TGUIConfig.cmake"
-                  "${CMAKE_CURRENT_BINARY_DIR}/TGUIConfigVersion.cmake"
+    install(FILES "${PROJECT_BINARY_DIR}/TGUIConfig.cmake"
+                  "${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake"
             DESTINATION ${config_package_location}
             COMPONENT devel)
 endfunction()
