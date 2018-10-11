@@ -16,8 +16,15 @@ if(TGUI_OS_WINDOWS)
 endif()
 
 add_executable(gui-builder ${GUI_TYPE} ${GUI_BUILDER_SOURCES})
-target_link_libraries(gui-builder PRIVATE tgui)
 target_include_directories(gui-builder PRIVATE include)
+if(DEFINED SFML_LIBRARIES)
+    # SFML found via FindSFML.cmake
+    target_include_directories(gui-builder PRIVATE ${SFML_INCLUDE_DIR})
+    target_link_libraries(gui-builder PRIVATE tgui ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+else()
+    # SFML found via SFMLConfig.cmake
+    target_link_libraries(gui-builder PRIVATE tgui sfml-graphics)
+endif()
 
 # Link to sfml-main (only when SFMLConfig.cmake is used, this is done through the tgui target if FindSFML.cmake is used)
 if(TGUI_OS_WINDOWS AND NOT DEFINED SFML_LIBRARIES)

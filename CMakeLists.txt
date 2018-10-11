@@ -250,6 +250,3 @@ install(DIRECTORY themes DESTINATION "${TGUI_MISC_INSTALL_PREFIX}")
 if(TGUI_OS_ANDROID)
     install(FILES Android.mk DESTINATION .)
 endif()
-
-# Generate the TGUIConfig.cmake file
-tgui_export_target(TGUIConfigExport)

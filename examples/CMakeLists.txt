@@ -14,7 +14,14 @@ macro(tgui_add_example target)
     endif()
 
     add_executable(${target} ${GUI_APP} ${THIS_SOURCES})
-    target_link_libraries(${target} PRIVATE tgui)
+    if(DEFINED SFML_LIBRARIES)
+        # SFML found via FindSFML.cmake
+        target_include_directories(${target} PRIVATE ${SFML_INCLUDE_DIR})
+        target_link_libraries(${target} PRIVATE tgui ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+    else()
+        # SFML found via SFMLConfig.cmake
+        target_link_libraries(${target} PRIVATE tgui sfml-graphics)
+    endif()
 
     # Link to sfml-main (only when SFMLConfig.cmake is used, this is done through the tgui target if FindSFML.cmake is used)
     if((TGUI_OS_WINDOWS OR TGUI_OS_IOS) AND NOT DEFINED SFML_LIBRARIES)

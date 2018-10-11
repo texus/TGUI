@@ -89,8 +89,15 @@ endif()
 
 add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(tests PRIVATE tgui)
 target_compile_definitions(tests PRIVATE TGUI_REMOVE_DEPRECATED_CODE)
+if(DEFINED SFML_LIBRARIES)
+    # SFML found via FindSFML.cmake
+    target_include_directories(tests PRIVATE ${SFML_INCLUDE_DIR})
+    target_link_libraries(tests PRIVATE tgui ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+else()
+    # SFML found via SFMLConfig.cmake
+    target_link_libraries(tests PRIVATE tgui sfml-graphics)
+endif()
 
 tgui_set_global_compile_flags(tests)
 tgui_set_stdlib(tests)

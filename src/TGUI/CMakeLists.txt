@@ -157,13 +157,16 @@ else()
 endif()
 
 # Link to SFML
+# Altough we could use PUBLIC here instead of PRIVATE, it causes the files in lib/cmake/TGUI to
+# hardcode the SFML directories, making it harder to distribute them with the precompiled libs.
+# You will thus have to link to SFML yourself, but you were likely to already do this anyway.
 if(DEFINED SFML_LIBRARIES)
     # SFML found via FindSFML.cmake
-    target_include_directories(tgui PUBLIC ${SFML_INCLUDE_DIR})
-    target_link_libraries(tgui PUBLIC ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+    target_include_directories(tgui PRIVATE ${SFML_INCLUDE_DIR})
+    target_link_libraries(tgui PRIVATE ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 else()
     # SFML found via SFMLConfig.cmake
-    target_link_libraries(tgui PUBLIC sfml-graphics)
+    target_link_libraries(tgui PRIVATE sfml-graphics)
 endif()
 
 # define TGUI_USE_CPP17 if requested
@@ -233,3 +236,9 @@ install(TARGETS tgui EXPORT TGUIConfigExport
         ARCHIVE DESTINATION lib${LIB_SUFFIX} COMPONENT devel
         FRAMEWORK DESTINATION . COMPONENT devel
 )
+
+# Generate the TGUIConfig.cmake file
+# This has to happen here instead of in the root CMakeLists.txt because otherwise
+# it might try to write to the macOS framework before the framework is installed.
+# This is because the order of install rules is undefined between directories.
+tgui_export_target(TGUIConfigExport)
