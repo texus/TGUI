@@ -1,7 +1,7 @@
 set -e
 
 NDK_DIR=$HOME/android-ndk
-NDK_VER=r17b
+NDK_VER=r17c
 
 wget -nv https://dl.google.com/android/repository/android-ndk-${NDK_VER}-linux-x86_64.zip
 unzip -o -q android-ndk-${NDK_VER}-linux-x86_64.zip
@@ -41,9 +41,8 @@ cmake -DTGUI_OPTIMIZE_SINGLE_BUILD=TRUE -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDR
 make -j2
 make install
 cd ../examples/android
-android update project --name TGUI --path . --target android-23
-$NDK_DIR/ndk-build
-ant debug
+echo ndk.dir=$NDK_DIR >> local.properties
+gradle build
 
 rm -R $HOME/sfml-cache/*
 mv $NDK_DIR/sources/third_party/sfml/* $HOME/sfml-cache/

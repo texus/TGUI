@@ -55,7 +55,7 @@ jobs:
     addons:
       apt:
         packages:
-        - ant
+        - gradle
     cache:
       directories:
       - $HOME/sfml-cache
