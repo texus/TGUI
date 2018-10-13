@@ -45,7 +45,10 @@ void setBackground(tgui::Gui& gui, sf::View view)
 
 int main(int argc, char *argv[])
 {
-    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "");
+    sf::VideoMode screen(sf::VideoMode::getDesktopMode());
+    sf::RenderWindow window(screen, "");
+    window.setFramerateLimit(30);
+
     tgui::Gui gui(window);
 
     auto picLandscape = tgui::Picture::create("Background-Landscape.png");
@@ -70,32 +73,68 @@ int main(int argc, char *argv[])
 
     setBackground(gui, window.getDefaultView());
 
+    // We shouldn't try drawing to the screen while in background
+    // so we'll have to track that. You can do minor background
+    // work, but keep battery life in mind.
+    bool active = true;
+
     while (window.isOpen())
     {
         sf::Event event;
-
-        while (window.pollEvent(event))
+        while (active ? window.pollEvent(event) : window.waitEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            switch (event.type)
             {
-                window.close();
-            }
-            else if (event.type == sf::Event::Resized)
-            {
-                sf::View view = window.getView();
-                view.setSize(event.size.width, event.size.height);
-                view.setCenter(event.size.width/2, event.size.height/2);
-                window.setView(view);
-                gui.setView(view);
+                case sf::Event::Closed:
+                {
+                    window.close();
+                    break;
+                }
+                case sf::Event::KeyPressed:
+                {
+                    if (event.key.code == sf::Keyboard::Escape)
+                        window.close();
 
-                setBackground(gui, view);
+                    break;
+                }
+                case sf::Event::Resized:
+                {
+                    sf::View view = window.getView();
+                    view.setSize(event.size.width, event.size.height);
+                    view.setCenter(event.size.width / 2, event.size.height / 2);
+                    window.setView(view);
+                    gui.setView(view);
+
+                    setBackground(gui, view);
+                    break;
+                }
+
+                // On Android MouseLeft/MouseEntered are (for now) triggered,
+                // whenever the app loses or gains focus.
+                case sf::Event::MouseLeft:
+                {
+                    active = false;
+                    break;
+                }
+                case sf::Event::MouseEntered:
+                {
+                    active = true;
+                    break;
+                }
+                default:
+                    break;
             }
-            
+
             gui.handleEvent(event);
         }
 
-        window.clear();
-        gui.draw();
-        window.display();
+        if (active)
+        {
+            window.clear();
+            gui.draw();
+            window.display();
+        }
+        else // Application is in background
+            sf::sleep(sf::milliseconds(100));
     }
 }
