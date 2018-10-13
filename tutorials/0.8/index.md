@@ -38,6 +38,12 @@ breadcrumb: 0.8
 
 [Using themes/skins](using-themes)
 
+[Show/Hide animations](show-hide-animations)
+
+[Tool Tips](tool-tips)
+
+[HorizontalLayout and VerticalLayout](box-layouts)
+
 
 ### Advanced tutorials
 [Custom theme loader](custom-theme-loader)
