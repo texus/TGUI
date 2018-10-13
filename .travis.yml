@@ -51,7 +51,7 @@ jobs:
     - NDK_DIR=$HOME/android-ndk
     android:
       components:
-      - android-23
+      - android-27
     addons:
       apt:
         packages:
@@ -59,6 +59,9 @@ jobs:
     cache:
       directories:
       - $HOME/sfml-cache
+    before_script:
+      - yes | sdkmanager --update
+      - yes | sdkmanager --licenses
     script:
       - chmod +x tests/travis_android.sh
       - tests/travis_android.sh
