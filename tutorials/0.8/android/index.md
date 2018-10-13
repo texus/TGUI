@@ -6,7 +6,7 @@ breadcrumb: android
 
 Please note that support for android is still in an early stage. Building for android has so far only been tested on linux, altough it should be very similar on other systems.
 
-You must use the SFML version from github, SFML 2.5.0 is NOT recent enough. Android NDK 13b or higher is required.
+You must use at least SFML 2.5.1 and Android NDK 13b or higher (tested up to NDK 17c).
 
 ### Requirements
 
@@ -14,7 +14,7 @@ You must have already build SFML for android and verified that you can run your 
 
 You will need to use CMake in order to build TGUI. You can download the latest version [here](https://www.cmake.org/download/).
 
-If you create the .apk file through the command line like described below then you will also need [Apache Ant](https://ant.apache.org).
+You will also need [gradle](https://gradle.org) to build the apk files.
 
 
 ### Building the library
@@ -35,32 +35,34 @@ make install
 ```
 
 
-### Running the demo
+### Running the example
 
 To test if everything is working, you can build the example code.
 
-First make sure to check the `APP_ABI` in `jni/Application.mk` inside the android example folder, it has to match the `CMAKE_ANDROID_ARCH_ABI` that was passed to cmake. The error that TGUI.hpp is not found can mean that this value is wrong. If you used a different value for `CMAKE_ANDROID_STL_TYPE` in cmake then you must also change `APP_STL` in this file.
-
-Opening your console inside the `TGUI/example/android` folder. Setup the project once with the following command. The `name` parameter will be used for the filename of the apk while the `target` specifies the API level (you need this version of the android SDK installed). If the `android` command is not in your PATH then use the absolute path instead (the `android` command is located in the tools directory inside the android SDK).
+Open the `TGUI/example/android` folder. Add a "local.properties" file with the following contents, specifying the android SDK and NDK paths:
 ```bash
-android update project --name TGUI --path . --target android-23
+sdk.dir=/path/to/android-sdk
+ndk.dir=/path/to/android-ndk
 ```
 
-You can now build the apk file with the following commands. You will need to rerun both of these commands each time you make a change to the code. If the android NDK is not in your PATH then you must provide the absolute path of `ndk-build` instead.
+Make sure to check the `abiFilters` in `app/build.gradle` and `APP_ABI` in `app/src/main/jni/Application.mk` inside the android example folder, they have to match the `CMAKE_ANDROID_ARCH_ABI` that was passed to cmake. The error that TGUI.hpp is not found can mean that this value is wrong. If you used a different value for `CMAKE_ANDROID_STL_TYPE` in cmake then you must also change `APP_STL` in `app/src/main/jni/Application.mk`.
+
+Now you should be able to build project with gradle by running the following from the command line:
 ```bash
-ndk-build
-ant debug
+gradle build
 ```
 
-You can now install the .apk file to your android device (or a running simulator) with adb. Note that the adb server might have to run as root to have permissions to access the android device. The `-r` parameter is only to allow replacing the app if it already existed.
+If this results in an error stating `Could not open terminal for stdout: could not get termcap entry` then set the TERM variable to dumb (e.g. run `TERM=dumb gradle build` on linux).
+
+If all goes well then you can now install the apk to a device (or a running simulator) by running
 ```bash
-adb install -r bin/TGUI-debug.apk
+gradle installDebug
 ```
 
 
 ### Using TGUI
 
-If you don't have much experience with android then your can just use the tgui demo code as a starting point. But below I will explain some settings that you need in order to use tgui if you have your own project set up.
+If you don't have much experience with android then your can just use the tgui demo code as a starting point. Below I will explain some settings that you need in order to use tgui if you have your own project set up.
 
 In the Android.mk file you must add the tgui library
 ```bash
