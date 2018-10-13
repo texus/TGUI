@@ -42,7 +42,10 @@ make -j2
 make install
 cd ../examples/android
 echo ndk.dir=$NDK_DIR >> local.properties
-gradle build
+# Gradle 4.1 is required but Travis only has 4.0 right now, so use a wrapper instead of just running "gradle build"
+gradle wrapper
+./gradlew wrapper --gradle-version 4.10
+./gradlew build
 
 rm -R $HOME/sfml-cache/*
 mv $NDK_DIR/sources/third_party/sfml/* $HOME/sfml-cache/
