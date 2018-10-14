@@ -32,8 +32,10 @@
 #include <cassert>
 
 #ifdef SFML_SYSTEM_WINDOWS
+    #ifndef NOMINMAX // MinGW already defines this which causes a warning without this check
+        #define NOMINMAX
+    #endif
     #define NOMB
-    #define NOMINMAX
     #define VC_EXTRALEAN
     #define WIN32_LEAN_AND_MEAN
     #include <Windows.h>

@@ -32,6 +32,8 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Renderers/MessageBoxRenderer.hpp>
 
+#undef MessageBox  // Windows.h defines MessageBox when NOMB isn't defined before including Windows.h
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
