@@ -55,7 +55,7 @@
 // Version of the library
 #define TGUI_VERSION_MAJOR 0
 #define TGUI_VERSION_MINOR 8
-#define TGUI_VERSION_PATCH 0
+#define TGUI_VERSION_PATCH 1
 
 // The signal system detects whether it can provide unbound parameters by checking the arguments of the function at runtime.
 // This comparion is made by checking the typeid of the parameters with the typeid of the value which the widget can transmit.
