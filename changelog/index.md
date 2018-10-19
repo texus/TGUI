@@ -7,6 +7,19 @@ changelog:
   minors:
   - version: 8
     patches:
+    - version: 1
+      date: 15 October 2018
+      changes: |
+        Submenus are now supported in MenuBar
+        Menus can now be disabled in MenuBar and given a different text color
+        You can now connect a signal handler to a single menu item in MenuBar
+        ChildWindow position can be locked to disable dragging it
+        Scrollbar thumb should not become smaller than the scrollbar width
+        Percentage in layout no longer includes the outline of the parent
+        MenuBar didn't work when moved and inverted menu direction was broken
+        Text size in MenuBar was reset when changing font
+        Handle delete button on android correctly when using SFML >= 2.5
+        ChildWindow callback with unbound parameter caused crash
     - version: 0
       date: 5 August 2018
       changes: |

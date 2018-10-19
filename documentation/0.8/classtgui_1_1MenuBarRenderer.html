@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.0</span>
+   &#160;<span id="projectnumber">0.8.1</span>
    </div>
   </td>
  </tr>
@@ -115,6 +115,11 @@ $(function() {
 <div class="title">tgui::MenuBarRenderer Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Renderer for the <a class="el" href="classtgui_1_1MenuBar.html" title="Menu bar widget. ">MenuBar</a> widget.  
+ <a href="classtgui_1_1MenuBarRenderer.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="MenuBarRenderer_8hpp_source.html">TGUI/Renderers/MenuBarRenderer.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for tgui::MenuBarRenderer:</div>
 <div class="dyncontent">
@@ -151,6 +156,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac0bdf0703ca7c3b928ae53e81cb9bfb3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBarRenderer.html#ac0bdf0703ca7c3b928ae53e81cb9bfb3">getSelectedTextColor</a> () const</td></tr>
 <tr class="memdesc:ac0bdf0703ca7c3b928ae53e81cb9bfb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the color of the text from the selected item.  <a href="#ac0bdf0703ca7c3b928ae53e81cb9bfb3">More...</a><br /></td></tr>
 <tr class="separator:ac0bdf0703ca7c3b928ae53e81cb9bfb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd8d2ae49e242ce72a4665f6c72fd8f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBarRenderer.html#acd8d2ae49e242ce72a4665f6c72fd8f5">setTextColorDisabled</a> (<a class="el" href="classtgui_1_1Color.html">Color</a> textColor)</td></tr>
+<tr class="memdesc:acd8d2ae49e242ce72a4665f6c72fd8f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the color of the text when disabled.  <a href="#acd8d2ae49e242ce72a4665f6c72fd8f5">More...</a><br /></td></tr>
+<tr class="separator:acd8d2ae49e242ce72a4665f6c72fd8f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e78fce56c36e30a1471130a8d2633d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBarRenderer.html#a3e78fce56c36e30a1471130a8d2633d4">getTextColorDisabled</a> () const</td></tr>
+<tr class="memdesc:a3e78fce56c36e30a1471130a8d2633d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the color of the text when disabled.  <a href="#a3e78fce56c36e30a1471130a8d2633d4">More...</a><br /></td></tr>
+<tr class="separator:a3e78fce56c36e30a1471130a8d2633d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6613987518e81b715079c66bd36e02d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBarRenderer.html#a6613987518e81b715079c66bd36e02d4">setTextureBackground</a> (const <a class="el" href="classtgui_1_1Texture.html">Texture</a> &amp;texture)</td></tr>
 <tr class="memdesc:a6613987518e81b715079c66bd36e02d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the image that is used to fill the entire menu bar.  <a href="#a6613987518e81b715079c66bd36e02d4">More...</a><br /></td></tr>
 <tr class="separator:a6613987518e81b715079c66bd36e02d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -234,7 +245,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memdesc:a05ebc602da72d1314688f031690ff31c inherit pub_methods_classtgui_1_1WidgetRenderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a clone of the renderer data.  <a href="classtgui_1_1WidgetRenderer.html#a05ebc602da72d1314688f031690ff31c">More...</a><br /></td></tr>
 <tr class="separator:a05ebc602da72d1314688f031690ff31c inherit pub_methods_classtgui_1_1WidgetRenderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Renderer for the <a class="el" href="classtgui_1_1MenuBar.html" title="Menu bar widget. ">MenuBar</a> widget. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a3ef5ac30f25edffdfd0980b8f8b3cefc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3ef5ac30f25edffdfd0980b8f8b3cefc">&#9670;&nbsp;</a></span>getBackgroundColor()</h2>
 
@@ -331,6 +344,26 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 </div><div class="memdoc">
 
 <p>Returns the color of the text. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtgui_1_1Text.html">Text</a> color </dd></dl>
+
+</div>
+</div>
+<a id="a3e78fce56c36e30a1471130a8d2633d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e78fce56c36e30a1471130a8d2633d4">&#9670;&nbsp;</a></span>getTextColorDisabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtgui_1_1Color.html">Color</a> tgui::MenuBarRenderer::getTextColorDisabled </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the color of the text when disabled. </p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtgui_1_1Text.html">Text</a> color </dd></dl>
 
 </div>
@@ -525,6 +558,32 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
+<a id="acd8d2ae49e242ce72a4665f6c72fd8f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd8d2ae49e242ce72a4665f6c72fd8f5">&#9670;&nbsp;</a></span>setTextColorDisabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::MenuBarRenderer::setTextColorDisabled </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Color.html">Color</a>&#160;</td>
+          <td class="paramname"><em>textColor</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the color of the text when disabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">textColor</td><td>The new text color </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a6613987518e81b715079c66bd36e02d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6613987518e81b715079c66bd36e02d4">&#9670;&nbsp;</a></span>setTextureBackground()</h2>
 
@@ -641,7 +700,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 5 2018 11:49:48 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 16 2018 19:52:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

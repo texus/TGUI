@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.0</span>
+   &#160;<span id="projectnumber">0.8.1</span>
    </div>
   </td>
  </tr>
@@ -138,6 +138,9 @@ Inheritance diagram for tgui::MenuBar:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtgui_1_1MenuBar_1_1GetAllMenusElement.html">GetAllMenusElement</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used for return value of getAllMenus.  <a href="structtgui_1_1MenuBar_1_1GetAllMenusElement.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtgui_1_1MenuBar_1_1Menu.html">Menu</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -169,28 +172,63 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae4fc3f8271794bd3afa43b5376799c28"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1MenuBarRenderer.html">MenuBarRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#ae4fc3f8271794bd3afa43b5376799c28">getRenderer</a> ()</td></tr>
 <tr class="memdesc:ae4fc3f8271794bd3afa43b5376799c28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the renderer, which gives access to functions that determine how the widget is displayed.  <a href="#ae4fc3f8271794bd3afa43b5376799c28">More...</a><br /></td></tr>
 <tr class="separator:ae4fc3f8271794bd3afa43b5376799c28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f5a69003429449896da47714ca8aa17"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args&gt; </td></tr>
+<tr class="memitem:a0f5a69003429449896da47714ca8aa17"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a0f5a69003429449896da47714ca8aa17">connectMenuItem</a> (const sf::String &amp;menu, const sf::String &amp;menuItem, Func &amp;&amp;handler, const Args &amp;... args)</td></tr>
+<tr class="memdesc:a0f5a69003429449896da47714ca8aa17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler to the "MenuItemClicked" callback that will only be called when a specific menu item was clicked.  <a href="#a0f5a69003429449896da47714ca8aa17">More...</a><br /></td></tr>
+<tr class="separator:a0f5a69003429449896da47714ca8aa17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab71bf302aa931d83782a269f8cbdfbf5"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args&gt; </td></tr>
+<tr class="memitem:ab71bf302aa931d83782a269f8cbdfbf5"><td class="memTemplItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#ab71bf302aa931d83782a269f8cbdfbf5">connectMenuItem</a> (const std::vector&lt; sf::String &gt; &amp;hierarchy, Func &amp;&amp;handler, const Args &amp;... args)</td></tr>
+<tr class="memdesc:ab71bf302aa931d83782a269f8cbdfbf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects a signal handler to the "MenuItemClicked" callback that will only be called when a specific menu item was clicked.  <a href="#ab71bf302aa931d83782a269f8cbdfbf5">More...</a><br /></td></tr>
+<tr class="separator:ab71bf302aa931d83782a269f8cbdfbf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfb1acbfd5c20cef2c96355691ecd989"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#adfb1acbfd5c20cef2c96355691ecd989">setSize</a> (const <a class="el" href="classtgui_1_1Layout2d.html">Layout2d</a> &amp;size) override</td></tr>
 <tr class="memdesc:adfb1acbfd5c20cef2c96355691ecd989"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the size of the menu bar.  <a href="#adfb1acbfd5c20cef2c96355691ecd989">More...</a><br /></td></tr>
 <tr class="separator:adfb1acbfd5c20cef2c96355691ecd989"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19b684b762b806fdf86044dafd730bd9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a19b684b762b806fdf86044dafd730bd9">setEnabled</a> (bool enabled) override</td></tr>
+<tr class="memdesc:a19b684b762b806fdf86044dafd730bd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disables the widget.  <a href="#a19b684b762b806fdf86044dafd730bd9">More...</a><br /></td></tr>
+<tr class="separator:a19b684b762b806fdf86044dafd730bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c396d8974348871bd19957b6108d3e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a0c396d8974348871bd19957b6108d3e2">addMenu</a> (const sf::String &amp;text)</td></tr>
 <tr class="memdesc:a0c396d8974348871bd19957b6108d3e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new menu.  <a href="#a0c396d8974348871bd19957b6108d3e2">More...</a><br /></td></tr>
 <tr class="separator:a0c396d8974348871bd19957b6108d3e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e06072507a5085cec4e3a06a5ae3ed8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a6e06072507a5085cec4e3a06a5ae3ed8">addMenuItem</a> (const sf::String &amp;menu, const sf::String &amp;text)</td></tr>
-<tr class="memdesc:a6e06072507a5085cec4e3a06a5ae3ed8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new menu item.  <a href="#a6e06072507a5085cec4e3a06a5ae3ed8">More...</a><br /></td></tr>
-<tr class="separator:a6e06072507a5085cec4e3a06a5ae3ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5eadf1233b439a0a1aa4f6f6f987004"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#ac5eadf1233b439a0a1aa4f6f6f987004">addMenuItem</a> (const sf::String &amp;text)</td></tr>
 <tr class="memdesc:ac5eadf1233b439a0a1aa4f6f6f987004"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new menu item to the last added menu.  <a href="#ac5eadf1233b439a0a1aa4f6f6f987004">More...</a><br /></td></tr>
 <tr class="separator:ac5eadf1233b439a0a1aa4f6f6f987004"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a894e210ea45ce428a9c3acbb029b53fd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a894e210ea45ce428a9c3acbb029b53fd">removeMenu</a> (const sf::String &amp;menu)</td></tr>
-<tr class="memdesc:a894e210ea45ce428a9c3acbb029b53fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a menu.  <a href="#a894e210ea45ce428a9c3acbb029b53fd">More...</a><br /></td></tr>
-<tr class="separator:a894e210ea45ce428a9c3acbb029b53fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e06072507a5085cec4e3a06a5ae3ed8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a6e06072507a5085cec4e3a06a5ae3ed8">addMenuItem</a> (const sf::String &amp;menu, const sf::String &amp;text)</td></tr>
+<tr class="memdesc:a6e06072507a5085cec4e3a06a5ae3ed8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new menu item to an existing menu.  <a href="#a6e06072507a5085cec4e3a06a5ae3ed8">More...</a><br /></td></tr>
+<tr class="separator:a6e06072507a5085cec4e3a06a5ae3ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f379fc83bc2440cc12f36128b33bf02"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a0f379fc83bc2440cc12f36128b33bf02">addMenuItem</a> (const std::vector&lt; sf::String &gt; &amp;hierarchy, bool createParents=true)</td></tr>
+<tr class="memdesc:a0f379fc83bc2440cc12f36128b33bf02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new menu item (or sub menu item)  <a href="#a0f379fc83bc2440cc12f36128b33bf02">More...</a><br /></td></tr>
+<tr class="separator:a0f379fc83bc2440cc12f36128b33bf02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a828d1bc545646b93c9b45788d7cada45"><td class="memItemLeft" align="right" valign="top"><a id="a828d1bc545646b93c9b45788d7cada45"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a828d1bc545646b93c9b45788d7cada45">removeAllMenus</a> ()</td></tr>
 <tr class="memdesc:a828d1bc545646b93c9b45788d7cada45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all menus. <br /></td></tr>
 <tr class="separator:a828d1bc545646b93c9b45788d7cada45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a894e210ea45ce428a9c3acbb029b53fd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a894e210ea45ce428a9c3acbb029b53fd">removeMenu</a> (const sf::String &amp;menu)</td></tr>
+<tr class="memdesc:a894e210ea45ce428a9c3acbb029b53fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a menu.  <a href="#a894e210ea45ce428a9c3acbb029b53fd">More...</a><br /></td></tr>
+<tr class="separator:a894e210ea45ce428a9c3acbb029b53fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e8b910fb177cca87cd37a17dad5be06"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a7e8b910fb177cca87cd37a17dad5be06">removeMenuItem</a> (const sf::String &amp;menu, const sf::String &amp;menuItem)</td></tr>
 <tr class="memdesc:a7e8b910fb177cca87cd37a17dad5be06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a menu item.  <a href="#a7e8b910fb177cca87cd37a17dad5be06">More...</a><br /></td></tr>
 <tr class="separator:a7e8b910fb177cca87cd37a17dad5be06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaca60982b10eff922fac43291102b86"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#adaca60982b10eff922fac43291102b86">removeMenuItem</a> (const std::vector&lt; sf::String &gt; &amp;hierarchy, bool removeParentsWhenEmpty=true)</td></tr>
+<tr class="memdesc:adaca60982b10eff922fac43291102b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a menu item (or sub menu item)  <a href="#adaca60982b10eff922fac43291102b86">More...</a><br /></td></tr>
+<tr class="separator:adaca60982b10eff922fac43291102b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b1754a1091408d810b1482b7f746320"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a7b1754a1091408d810b1482b7f746320">setMenuEnabled</a> (const sf::String &amp;menu, bool enabled)</td></tr>
+<tr class="memdesc:a7b1754a1091408d810b1482b7f746320"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable an entire menu.  <a href="#a7b1754a1091408d810b1482b7f746320">More...</a><br /></td></tr>
+<tr class="separator:a7b1754a1091408d810b1482b7f746320"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e0a39c03ff8327df3935068ad722f9b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a9e0a39c03ff8327df3935068ad722f9b">getMenuEnabled</a> (const sf::String &amp;menu) const</td></tr>
+<tr class="memdesc:a9e0a39c03ff8327df3935068ad722f9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if an entire menu is enabled or disabled.  <a href="#a9e0a39c03ff8327df3935068ad722f9b">More...</a><br /></td></tr>
+<tr class="separator:a9e0a39c03ff8327df3935068ad722f9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd17929acd42205a0166498e5135fb18"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#abd17929acd42205a0166498e5135fb18">setMenuItemEnabled</a> (const sf::String &amp;menu, const sf::String &amp;menuItem, bool enabled)</td></tr>
+<tr class="memdesc:abd17929acd42205a0166498e5135fb18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable a menu item.  <a href="#abd17929acd42205a0166498e5135fb18">More...</a><br /></td></tr>
+<tr class="separator:abd17929acd42205a0166498e5135fb18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ebc0d2a1e5844e577e8c021bd1b4543"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a9ebc0d2a1e5844e577e8c021bd1b4543">setMenuItemEnabled</a> (const std::vector&lt; sf::String &gt; &amp;hierarchy, bool enabled)</td></tr>
+<tr class="memdesc:a9ebc0d2a1e5844e577e8c021bd1b4543"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable a menu item.  <a href="#a9ebc0d2a1e5844e577e8c021bd1b4543">More...</a><br /></td></tr>
+<tr class="separator:a9ebc0d2a1e5844e577e8c021bd1b4543"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b00eaeec41b65ebff57c9d0a54734d1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a3b00eaeec41b65ebff57c9d0a54734d1">getMenuItemEnabled</a> (const sf::String &amp;menu, const sf::String &amp;menuItem) const</td></tr>
+<tr class="memdesc:a3b00eaeec41b65ebff57c9d0a54734d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a menu item is enabled or disabled.  <a href="#a3b00eaeec41b65ebff57c9d0a54734d1">More...</a><br /></td></tr>
+<tr class="separator:a3b00eaeec41b65ebff57c9d0a54734d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38d09ad17ed4d8d65ade2321a626e4b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a38d09ad17ed4d8d65ade2321a626e4b8">getMenuItemEnabled</a> (const std::vector&lt; sf::String &gt; &amp;hierarchy) const</td></tr>
+<tr class="memdesc:a38d09ad17ed4d8d65ade2321a626e4b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a menu item is enabled or disabled.  <a href="#a38d09ad17ed4d8d65ade2321a626e4b8">More...</a><br /></td></tr>
+<tr class="separator:a38d09ad17ed4d8d65ade2321a626e4b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f172b408b783ce7d68602409d6daa87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a7f172b408b783ce7d68602409d6daa87">setTextSize</a> (unsigned int size)</td></tr>
 <tr class="memdesc:a7f172b408b783ce7d68602409d6daa87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the character size of the text.  <a href="#a7f172b408b783ce7d68602409d6daa87">More...</a><br /></td></tr>
 <tr class="separator:a7f172b408b783ce7d68602409d6daa87"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -209,9 +247,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a5d72722c1ddf0b01b66fe3e473607a7f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a5d72722c1ddf0b01b66fe3e473607a7f">getInvertedMenuDirection</a> () const</td></tr>
 <tr class="memdesc:a5d72722c1ddf0b01b66fe3e473607a7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the menus open above or below the menu bar.  <a href="#a5d72722c1ddf0b01b66fe3e473607a7f">More...</a><br /></td></tr>
 <tr class="separator:a5d72722c1ddf0b01b66fe3e473607a7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a2a91e097144451e08f1b28dd9770e9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; sf::String, std::vector&lt; sf::String &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a8a2a91e097144451e08f1b28dd9770e9">getMenus</a> () const</td></tr>
-<tr class="memdesc:a8a2a91e097144451e08f1b28dd9770e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a copy of all the menus and their menu items.  <a href="#a8a2a91e097144451e08f1b28dd9770e9">More...</a><br /></td></tr>
-<tr class="separator:a8a2a91e097144451e08f1b28dd9770e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a312ec65ba2bd3cc63b3f9e4e4ee5c777"><td class="memItemLeft" align="right" valign="top"><a id="a312ec65ba2bd3cc63b3f9e4e4ee5c777"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1MenuBar.html#a312ec65ba2bd3cc63b3f9e4e4ee5c777">closeMenu</a> ()</td></tr>
 <tr class="memdesc:a312ec65ba2bd3cc63b3f9e4e4ee5c777"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes the open menu when one of the menus is open. <br /></td></tr>
@@ -295,9 +330,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a4b7bcaba92ecc9603cd804f811e8e787 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#a4b7bcaba92ecc9603cd804f811e8e787">isVisible</a> () const</td></tr>
 <tr class="memdesc:a4b7bcaba92ecc9603cd804f811e8e787 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true when the widget is visible.  <a href="classtgui_1_1Widget.html#a4b7bcaba92ecc9603cd804f811e8e787">More...</a><br /></td></tr>
 <tr class="separator:a4b7bcaba92ecc9603cd804f811e8e787 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebe5ff11fc3812aefbf62d98baf2622c inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#aebe5ff11fc3812aefbf62d98baf2622c">setEnabled</a> (bool enabled)</td></tr>
-<tr class="memdesc:aebe5ff11fc3812aefbf62d98baf2622c inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disables the widget.  <a href="classtgui_1_1Widget.html#aebe5ff11fc3812aefbf62d98baf2622c">More...</a><br /></td></tr>
-<tr class="separator:aebe5ff11fc3812aefbf62d98baf2622c inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1dcaa2bb45dd0b16b66095c1d197e36 inherit pub_methods_classtgui_1_1Widget"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Widget.html#aa1dcaa2bb45dd0b16b66095c1d197e36">isEnabled</a> () const</td></tr>
 <tr class="memdesc:aa1dcaa2bb45dd0b16b66095c1d197e36 inherit pub_methods_classtgui_1_1Widget"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true when the widget is enabled.  <a href="classtgui_1_1Widget.html#aa1dcaa2bb45dd0b16b66095c1d197e36">More...</a><br /></td></tr>
 <tr class="separator:aa1dcaa2bb45dd0b16b66095c1d197e36 inherit pub_methods_classtgui_1_1Widget"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -485,8 +517,35 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="ac5eadf1233b439a0a1aa4f6f6f987004"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5eadf1233b439a0a1aa4f6f6f987004">&#9670;&nbsp;</a></span>addMenuItem() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::MenuBar::addMenuItem </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds a new menu item to the last added menu. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>The text written on this menu item</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the item was added, false when the menu bar doesn't contain any menus yet</dd></dl>
+<div class="fragment"><div class="line">menuBar-&gt;addMenu(<span class="stringliteral">&quot;File&quot;</span>);</div><div class="line">menuBar-&gt;addMenuItem(<span class="stringliteral">&quot;Load&quot;</span>);</div><div class="line">menuBar-&gt;addMenuItem(<span class="stringliteral">&quot;Save&quot;</span>);</div><div class="line">menuBar-&gt;addMenu(<span class="stringliteral">&quot;Edit&quot;</span>);</div><div class="line">menuBar-&gt;addMenuItem(<span class="stringliteral">&quot;Undo&quot;</span>);</div></div><!-- fragment --> 
+</div>
+</div>
 <a id="a6e06072507a5085cec4e3a06a5ae3ed8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e06072507a5085cec4e3a06a5ae3ed8">&#9670;&nbsp;</a></span>addMenuItem() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e06072507a5085cec4e3a06a5ae3ed8">&#9670;&nbsp;</a></span>addMenuItem() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -511,7 +570,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
       </table>
 </div><div class="memdoc">
 
-<p>Adds a new menu item. </p>
+<p>Adds a new menu item to an existing menu. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">menu</td><td>The name of the menu to which the menu item will be added </td></tr>
@@ -523,8 +582,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <div class="fragment"><div class="line">menuBar-&gt;addMenu(<span class="stringliteral">&quot;File&quot;</span>);</div><div class="line">menuBar-&gt;addMenu(<span class="stringliteral">&quot;Edit&quot;</span>);</div><div class="line">menuBar-&gt;addMenuItem(<span class="stringliteral">&quot;File&quot;</span>, <span class="stringliteral">&quot;Load&quot;</span>);</div><div class="line">menuBar-&gt;addMenuItem(<span class="stringliteral">&quot;File&quot;</span>, <span class="stringliteral">&quot;Save&quot;</span>);</div><div class="line">menuBar-&gt;addMenuItem(<span class="stringliteral">&quot;Edit&quot;</span>, <span class="stringliteral">&quot;Undo&quot;</span>);</div></div><!-- fragment --> 
 </div>
 </div>
-<a id="ac5eadf1233b439a0a1aa4f6f6f987004"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac5eadf1233b439a0a1aa4f6f6f987004">&#9670;&nbsp;</a></span>addMenuItem() <span class="overload">[2/2]</span></h2>
+<a id="a0f379fc83bc2440cc12f36128b33bf02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f379fc83bc2440cc12f36128b33bf02">&#9670;&nbsp;</a></span>addMenuItem() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -532,22 +591,33 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
         <tr>
           <td class="memname">bool tgui::MenuBar::addMenuItem </td>
           <td>(</td>
-          <td class="paramtype">const sf::String &amp;&#160;</td>
-          <td class="paramname"><em>text</em></td><td>)</td>
+          <td class="paramtype">const std::vector&lt; sf::String &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hierarchy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>createParents</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Adds a new menu item to the last added menu. </p>
+<p>Adds a new menu item (or sub menu item) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">text</td><td>The text written on this menu item</td></tr>
+    <tr><td class="paramname">hierarchy</td><td>Hierarchy of the menu items, starting with the menu and ending with menu item to be added </td></tr>
+    <tr><td class="paramname">createParents</td><td>Should the hierarchy be created if it did not exist yet?</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True when the item was added, false when the menu bar doesn't contain any menus yet</dd></dl>
-<div class="fragment"><div class="line">menuBar-&gt;addMenu(<span class="stringliteral">&quot;File&quot;</span>);</div><div class="line">menuBar-&gt;addMenuItem(<span class="stringliteral">&quot;Load&quot;</span>);</div><div class="line">menuBar-&gt;addMenuItem(<span class="stringliteral">&quot;Save&quot;</span>);</div><div class="line">menuBar-&gt;addMenu(<span class="stringliteral">&quot;Edit&quot;</span>);</div><div class="line">menuBar-&gt;addMenuItem(<span class="stringliteral">&quot;Undo&quot;</span>);</div></div><!-- fragment --> 
+<dl class="section return"><dt>Returns</dt><dd>True when the item was added, false when createParents was false and the parents hierarchy does not exist or if hierarchy does not contain at least 2 elements.</dd></dl>
+<div class="fragment"><div class="line">menuBar-&gt;addMenuItem({<span class="stringliteral">&quot;File&quot;</span>, <span class="stringliteral">&quot;Save&quot;</span>});</div><div class="line">menuBar-&gt;addMenuItem({<span class="stringliteral">&quot;View&quot;</span>, <span class="stringliteral">&quot;Messages&quot;</span>, <span class="stringliteral">&quot;Tags&quot;</span>, <span class="stringliteral">&quot;Important&quot;</span>});</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="a1f786475719e13a525d10bc120f073b6"></a>
@@ -578,6 +648,123 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <dl class="section return"><dt>Returns</dt><dd>Copy of the widget </dd></dl>
 
 <p>Implements <a class="el" href="classtgui_1_1Widget.html#a135aa28677e4ac3604c6285b469d6a89">tgui::Widget</a>.</p>
+
+</div>
+</div>
+<a id="a0f5a69003429449896da47714ca8aa17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f5a69003429449896da47714ca8aa17">&#9670;&nbsp;</a></span>connectMenuItem() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Func , typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int tgui::MenuBar::connectMenuItem </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>menu</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>menuItem</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func &amp;&amp;&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Args &amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Connects a signal handler to the "MenuItemClicked" callback that will only be called when a specific menu item was clicked. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">menu</td><td><a class="el" href="structtgui_1_1MenuBar_1_1Menu.html">Menu</a> containing the menu item </td></tr>
+    <tr><td class="paramname">menuItem</td><td><a class="el" href="structtgui_1_1MenuBar_1_1Menu.html">Menu</a> item which should trigger the signal </td></tr>
+    <tr><td class="paramname">handler</td><td>Callback function to call </td></tr>
+    <tr><td class="paramname">args</td><td>Optional extra arguments to pass to the signal handler when the signal is emitted</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Unique id of the connection </dd></dl>
+
+</div>
+</div>
+<a id="ab71bf302aa931d83782a269f8cbdfbf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab71bf302aa931d83782a269f8cbdfbf5">&#9670;&nbsp;</a></span>connectMenuItem() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Func , typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int tgui::MenuBar::connectMenuItem </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; sf::String &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hierarchy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func &amp;&amp;&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Args &amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Connects a signal handler to the "MenuItemClicked" callback that will only be called when a specific menu item was clicked. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hierarchy</td><td>Hierarchy of the menu items, starting with the menu and ending with menu item that should trigger the signal when pressed </td></tr>
+    <tr><td class="paramname">handler</td><td>Callback function to call </td></tr>
+    <tr><td class="paramname">args</td><td>Optional extra arguments to pass to the signal handler when the signal is emitted</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Unique id of the connection </dd></dl>
 
 </div>
 </div>
@@ -664,23 +851,95 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
-<a id="a8a2a91e097144451e08f1b28dd9770e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a2a91e097144451e08f1b28dd9770e9">&#9670;&nbsp;</a></span>getMenus()</h2>
+<a id="a9e0a39c03ff8327df3935068ad722f9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e0a39c03ff8327df3935068ad722f9b">&#9670;&nbsp;</a></span>getMenuEnabled()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::pair&lt;sf::String, std::vector&lt;sf::String&gt; &gt; &gt; tgui::MenuBar::getMenus </td>
+          <td class="memname">bool tgui::MenuBar::getMenuEnabled </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>menu</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns a copy of all the menus and their menu items. </p>
-<dl class="section return"><dt>Returns</dt><dd>Map of menus and their items </dd></dl>
+<p>Check if an entire menu is enabled or disabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">menu</td><td>The name of the menu to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the menu is enabled, false if it was disabled or when the menu did not exist </dd></dl>
+
+</div>
+</div>
+<a id="a3b00eaeec41b65ebff57c9d0a54734d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b00eaeec41b65ebff57c9d0a54734d1">&#9670;&nbsp;</a></span>getMenuItemEnabled() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::MenuBar::getMenuItemEnabled </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>menu</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>menuItem</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if a menu item is enabled or disabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">menu</td><td>The name of the menu in which the menu item is located </td></tr>
+    <tr><td class="paramname">menuItem</td><td>The name of the menu item to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the menu item is enabled, false if it was disabled or when the menu or menuItem did not exist </dd></dl>
+
+</div>
+</div>
+<a id="a38d09ad17ed4d8d65ade2321a626e4b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38d09ad17ed4d8d65ade2321a626e4b8">&#9670;&nbsp;</a></span>getMenuItemEnabled() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::MenuBar::getMenuItemEnabled </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; sf::String &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hierarchy</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if a menu item is enabled or disabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hierarchy</td><td>Hierarchy of menu items, starting with the menu and ending with the menu item to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the menu item is enabled, false if it was disabled or when the hierarchy was incorrect </dd></dl>
 
 </div>
 </div>
@@ -869,7 +1128,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </div>
 </div>
 <a id="a7e8b910fb177cca87cd37a17dad5be06"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e8b910fb177cca87cd37a17dad5be06">&#9670;&nbsp;</a></span>removeMenuItem()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e8b910fb177cca87cd37a17dad5be06">&#9670;&nbsp;</a></span>removeMenuItem() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -904,6 +1163,44 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True when the item was removed, false when menu or menuItem was not found </dd></dl>
 
+</div>
+</div>
+<a id="adaca60982b10eff922fac43291102b86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adaca60982b10eff922fac43291102b86">&#9670;&nbsp;</a></span>removeMenuItem() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::MenuBar::removeMenuItem </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; sf::String &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hierarchy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>removeParentsWhenEmpty</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Removes a menu item (or sub menu item) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hierarchy</td><td>Hierarchy of the menu item, starting with the menu and ending with menu item to be deleted </td></tr>
+    <tr><td class="paramname">removeParentsWhenEmpty</td><td>Also delete the parent of the deleted menu item if it has no other children</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the menu item exists, false when hierarchy was incorrect</dd></dl>
+<div class="fragment"><div class="line">menuBar-&gt;removeMenuItem({<span class="stringliteral">&quot;File&quot;</span>, <span class="stringliteral">&quot;Save&quot;</span>});</div><div class="line">menuBar-&gt;removeMenuItem({<span class="stringliteral">&quot;View&quot;</span>, <span class="stringliteral">&quot;Messages&quot;</span>, <span class="stringliteral">&quot;Tags&quot;</span>, <span class="stringliteral">&quot;Important&quot;</span>});</div></div><!-- fragment --> 
 </div>
 </div>
 <a id="a4efea15156bfee3f158bb75e1bcb6e11"></a>
@@ -942,6 +1239,43 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="a19b684b762b806fdf86044dafd730bd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19b684b762b806fdf86044dafd730bd9">&#9670;&nbsp;</a></span>setEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::MenuBar::setEnabled </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enables or disables the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enabled</td><td>Is the widget enabled?</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The disabled widget will no longer receive events and thus no longer send callbacks. All widgets are enabled by default. </p>
+
+<p>Reimplemented from <a class="el" href="classtgui_1_1Widget.html#aebe5ff11fc3812aefbf62d98baf2622c">tgui::Widget</a>.</p>
+
+</div>
+</div>
 <a id="acdd44995df591c3f760a7fcec0823bdf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acdd44995df591c3f760a7fcec0823bdf">&#9670;&nbsp;</a></span>setInvertedMenuDirection()</h2>
 
@@ -965,6 +1299,127 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a7b1754a1091408d810b1482b7f746320"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b1754a1091408d810b1482b7f746320">&#9670;&nbsp;</a></span>setMenuEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::MenuBar::setMenuEnabled </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>menu</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enable or disable an entire menu. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">menu</td><td>The name of the menu to enable or disable </td></tr>
+    <tr><td class="paramname">enabled</td><td>Should the menu be enabled or disabled? </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the menu exists, false when menu was not found </dd></dl>
+
+</div>
+</div>
+<a id="abd17929acd42205a0166498e5135fb18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd17929acd42205a0166498e5135fb18">&#9670;&nbsp;</a></span>setMenuItemEnabled() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::MenuBar::setMenuItemEnabled </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>menu</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>menuItem</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enable or disable a menu item. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">menu</td><td>The name of the menu in which the menu item is located </td></tr>
+    <tr><td class="paramname">menuItem</td><td>The name of the menu item to enable or disable </td></tr>
+    <tr><td class="paramname">enabled</td><td>Should the menu item be enabled or disabled? </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the menu item exists, false when menu or menuItem was not found </dd></dl>
+
+</div>
+</div>
+<a id="a9ebc0d2a1e5844e577e8c021bd1b4543"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ebc0d2a1e5844e577e8c021bd1b4543">&#9670;&nbsp;</a></span>setMenuItemEnabled() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tgui::MenuBar::setMenuItemEnabled </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; sf::String &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hierarchy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enable or disable a menu item. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hierarchy</td><td>Hierarchy of menu items, starting with the menu and ending with the menu item to enable/disable </td></tr>
+    <tr><td class="paramname">enabled</td><td>Should the menu item be enabled or disabled? </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the menu item exists, false when hierarchy was incorrect </dd></dl>
 
 </div>
 </div>
@@ -1032,8 +1487,30 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setSize</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the size of the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
+</div>
+</div>
 <a id="a087a60617c86fcf6521da7bc9f4723bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1064,28 +1541,6 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
-<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setSize</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Changes the size of the widget. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
-</div>
-</div>
 <a id="a7f172b408b783ce7d68602409d6daa87"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7f172b408b783ce7d68602409d6daa87">&#9670;&nbsp;</a></span>setTextSize()</h2>
 
@@ -1105,7 +1560,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>Changes the character size of the text. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">size</td><td>The new size of the text. If the size is 0 (default) then the text will be scaled to fit in the menu bar </td></tr>
+    <tr><td class="paramname">size</td><td>The new size of the text. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1138,7 +1593,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 5 2018 11:49:48 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 16 2018 19:52:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

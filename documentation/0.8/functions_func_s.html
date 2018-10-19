@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.0</span>
+   &#160;<span id="projectnumber">0.8.1</span>
    </div>
   </td>
  </tr>
@@ -385,7 +385,9 @@ $(function() {
 </li>
 <li>setEnabled()
 : <a class="el" href="classtgui_1_1Button.html#a6b13908f6ca84ede7b7b7fcdb289a41a">tgui::Button</a>
+, <a class="el" href="classtgui_1_1CustomWidgetForBindings.html#a1a00ba2f24d84e35ad6d3de6a8ab41d5">tgui::CustomWidgetForBindings</a>
 , <a class="el" href="classtgui_1_1EditBox.html#adaabbb0cc20f40100506b3286373334d">tgui::EditBox</a>
+, <a class="el" href="classtgui_1_1MenuBar.html#a19b684b762b806fdf86044dafd730bd9">tgui::MenuBar</a>
 , <a class="el" href="classtgui_1_1Tabs.html#a44185f240013a1badd7259e2c436a878">tgui::Tabs</a>
 , <a class="el" href="classtgui_1_1Widget.html#aebe5ff11fc3812aefbf62d98baf2622c">tgui::Widget</a>
 </li>
@@ -403,6 +405,7 @@ $(function() {
 </li>
 <li>setFocused()
 : <a class="el" href="classtgui_1_1Container.html#acdb49b1a938a8354a1f7f613c533466f">tgui::Container</a>
+, <a class="el" href="classtgui_1_1CustomWidgetForBindings.html#a4fc2a1ab99f8d5a1793ec304fcdb419b">tgui::CustomWidgetForBindings</a>
 , <a class="el" href="classtgui_1_1EditBox.html#a01cf2ce1c2f82ad03b83e488317e5b8a">tgui::EditBox</a>
 , <a class="el" href="classtgui_1_1TextBox.html#a234b1196cbd5604d8a7515a01804a1fa">tgui::TextBox</a>
 , <a class="el" href="classtgui_1_1Widget.html#ac5cd2e875bf4e25edd80d9ab0f2072d2">tgui::Widget</a>
@@ -491,6 +494,12 @@ $(function() {
 <li>setMaximumTextWidth()
 : <a class="el" href="classtgui_1_1Label.html#a1d9b68fcf3bdb28c2a255c50dc124725">tgui::Label</a>
 </li>
+<li>setMenuEnabled()
+: <a class="el" href="classtgui_1_1MenuBar.html#a7b1754a1091408d810b1482b7f746320">tgui::MenuBar</a>
+</li>
+<li>setMenuItemEnabled()
+: <a class="el" href="classtgui_1_1MenuBar.html#abd17929acd42205a0166498e5135fb18">tgui::MenuBar</a>
+</li>
 <li>setMinimizeButton()
 : <a class="el" href="classtgui_1_1ChildWindowRenderer.html#a52302f6c3dd785536f09178e0156951a">tgui::ChildWindowRenderer</a>
 </li>
@@ -539,9 +548,13 @@ $(function() {
 </li>
 <li>setPosition()
 : <a class="el" href="classtgui_1_1ChildWindow.html#a4a7d5caf381281a794601d6811297c22">tgui::ChildWindow</a>
+, <a class="el" href="classtgui_1_1CustomWidgetForBindings.html#a1973d21e90331e651b2fcbb9d11c9c27">tgui::CustomWidgetForBindings</a>
 , <a class="el" href="classtgui_1_1FloatRect.html#ae18cce83aeb8225c9f5694fc86064b43">tgui::FloatRect</a>
 , <a class="el" href="classtgui_1_1ListBox.html#ae078f6424c19e8e8cdbd9a07b61902f6">tgui::ListBox</a>
 , <a class="el" href="classtgui_1_1Widget.html#afc57c2d17eebd0a528e7f5ca8e088011">tgui::Widget</a>
+</li>
+<li>setPositionLocked()
+: <a class="el" href="classtgui_1_1ChildWindow.html#a18b504e1403ebd9e196c74b1e25aea3f">tgui::ChildWindow</a>
 </li>
 <li>setProperty()
 : <a class="el" href="classtgui_1_1WidgetRenderer.html#a7042cf28c8d3e4a5529e773a7405fed8">tgui::WidgetRenderer</a>
@@ -640,6 +653,8 @@ $(function() {
 , <a class="el" href="classtgui_1_1ChatBox.html#a9d9f808b82a3885ad8a17d9f6ab84833">tgui::ChatBox</a>
 , <a class="el" href="classtgui_1_1ChildWindow.html#aec967e7a4232d4159095de6b3bf511e0">tgui::ChildWindow</a>
 , <a class="el" href="classtgui_1_1ComboBox.html#a1ec641a5605129cad9ba2d15d48ce0e5">tgui::ComboBox</a>
+, <a class="el" href="classtgui_1_1Container.html#adc4426f228566b6369cdf7833917609e">tgui::Container</a>
+, <a class="el" href="classtgui_1_1CustomWidgetForBindings.html#a27f852b5e09316e48678092a44380914">tgui::CustomWidgetForBindings</a>
 , <a class="el" href="classtgui_1_1EditBox.html#adce8afe4ae78efd245f899034606bc85">tgui::EditBox</a>
 , <a class="el" href="classtgui_1_1FloatRect.html#aef4d1cb17e984363d5b5d7a2f63dd891">tgui::FloatRect</a>
 , <a class="el" href="classtgui_1_1Grid.html#a47085d6f090e0fd91861507ddb4405ed">tgui::Grid</a>
@@ -660,7 +675,7 @@ $(function() {
 , <a class="el" href="classtgui_1_1Sprite.html#a8894369880d235d173ced6df8d6a7ef0">tgui::Sprite</a>
 , <a class="el" href="classtgui_1_1Tabs.html#a9c423f93f83d868f65a4c45dd695447e">tgui::Tabs</a>
 , <a class="el" href="classtgui_1_1TextBox.html#a434d8c1dd0932bfbf7ef2bbf74fe77aa">tgui::TextBox</a>
-, <a class="el" href="classtgui_1_1Widget.html#a087a60617c86fcf6521da7bc9f4723bd">tgui::Widget</a>
+, <a class="el" href="classtgui_1_1Widget.html#aa593c0cf9c1dca1393e60849719417cf">tgui::Widget</a>
 </li>
 <li>setSmooth()
 : <a class="el" href="classtgui_1_1Texture.html#a955bff3e4065fa08d44be9965412ff27">tgui::Texture</a>
@@ -733,6 +748,7 @@ $(function() {
 <li>setTextColorDisabled()
 : <a class="el" href="classtgui_1_1ButtonRenderer.html#ab3c3ce9beb5891bee1c901d26a6d5a19">tgui::ButtonRenderer</a>
 , <a class="el" href="classtgui_1_1EditBoxRenderer.html#abdbcc6c140f4e6d0f5a44fb4dcbadde6">tgui::EditBoxRenderer</a>
+, <a class="el" href="classtgui_1_1MenuBarRenderer.html#acd8d2ae49e242ce72a4665f6c72fd8f5">tgui::MenuBarRenderer</a>
 , <a class="el" href="classtgui_1_1RadioButtonRenderer.html#a49a81becf7aa56d4b37d6a9c64929730">tgui::RadioButtonRenderer</a>
 , <a class="el" href="classtgui_1_1TabsRenderer.html#acd15ed1501d41efd81244f1a814b7366">tgui::TabsRenderer</a>
 </li>
@@ -994,7 +1010,8 @@ $(function() {
 : <a class="el" href="classtgui_1_1Scrollbar.html#a525fca528387a3c757015ac741fb32b3">tgui::Scrollbar</a>
 </li>
 <li>setVisible()
-: <a class="el" href="classtgui_1_1Widget.html#acfb6526cef6006135d3c8a400573b099">tgui::Widget</a>
+: <a class="el" href="classtgui_1_1CustomWidgetForBindings.html#ac76ab87ca526e93b43aef027caf03782">tgui::CustomWidgetForBindings</a>
+, <a class="el" href="classtgui_1_1Widget.html#acfb6526cef6006135d3c8a400573b099">tgui::Widget</a>
 </li>
 <li>setVisibleRect()
 : <a class="el" href="classtgui_1_1Sprite.html#ad64884b1526e66f9fcaf6d37a388acdf">tgui::Sprite</a>
@@ -1007,13 +1024,13 @@ $(function() {
 , <a class="el" href="classtgui_1_1Gui.html#a7a4d61aad8239596e2170bc24520ab50">tgui::Gui</a>
 </li>
 <li>setWidgetPadding()
-: <a class="el" href="classtgui_1_1Grid.html#ac0e86c36be02b2df329f964d73dcaccb">tgui::Grid</a>
+: <a class="el" href="classtgui_1_1Grid.html#aef0d5a4206a947a461a84944c9a85dd4">tgui::Grid</a>
 </li>
 <li>showWithEffect()
 : <a class="el" href="classtgui_1_1Widget.html#a71432e6c38c2110991cd3856cf74670b">tgui::Widget</a>
 </li>
 <li>Signal()
-: <a class="el" href="classtgui_1_1Signal.html#ae66e7edf6a6a62c1d6d87a767e349241">tgui::Signal</a>
+: <a class="el" href="classtgui_1_1Signal.html#afa1b84b35c33318e5b6082704a63a864">tgui::Signal</a>
 </li>
 <li>SignalAnimation()
 : <a class="el" href="classtgui_1_1SignalAnimation.html#a86f6c24da7348be669e894cb225755a6">tgui::SignalAnimation</a>
@@ -1038,7 +1055,7 @@ $(function() {
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 5 2018 11:49:48 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 16 2018 19:52:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

@@ -13,6 +13,7 @@ var searchData=
   ['iskeptinparent',['isKeptInParent',['../classtgui_1_1ChildWindow.html#addbf79ac606e11a0aa3de87e6ab9619c',1,'tgui::ChildWindow']]],
   ['ismousedown',['isMouseDown',['../classtgui_1_1ScrollbarChildWidget.html#ac064716d3bb6c4e7db43d3444fe3a548',1,'tgui::ScrollbarChildWidget']]],
   ['ismousedownonthumb',['isMouseDownOnThumb',['../classtgui_1_1ScrollbarChildWidget.html#a84947d25d8c4f825c31833e0d023e7ac',1,'tgui::ScrollbarChildWidget']]],
+  ['ispositionlocked',['isPositionLocked',['../classtgui_1_1ChildWindow.html#a6aece1183965fe2d33a08fe40951fe8f',1,'tgui::ChildWindow']]],
   ['isreadonly',['isReadOnly',['../classtgui_1_1EditBox.html#aeccc30eadc5861af3c771ad0579d5e42',1,'tgui::EditBox::isReadOnly()'],['../classtgui_1_1TextBox.html#a48953673104ac7bdb2e98c15b52e9bb2',1,'tgui::TextBox::isReadOnly()']]],
   ['isresizable',['isResizable',['../classtgui_1_1ChildWindow.html#ae3bca0d423460e0f41e0fe996d038bc5',1,'tgui::ChildWindow']]],
   ['isset',['isSet',['../classtgui_1_1Color.html#a9f7d80d673382846386697e28d9022d7',1,'tgui::Color::isSet()'],['../classtgui_1_1Sprite.html#a68e68ccb3b0e5f77069821500c0863b4',1,'tgui::Sprite::isSet()'],['../classtgui_1_1TextStyle.html#afae1f84f67794ed79adf8f4d779fd022',1,'tgui::TextStyle::isSet()']]],

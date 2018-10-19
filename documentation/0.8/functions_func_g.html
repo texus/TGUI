@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.0</span>
+   &#160;<span id="projectnumber">0.8.1</span>
    </div>
   </td>
  </tr>
@@ -114,7 +114,8 @@ $(function() {
 , <a class="el" href="classtgui_1_1Gui.html#a04253617b5cc6cf7f1b23e444ab838fb">tgui::Gui</a>
 </li>
 <li>getAbsolutePosition()
-: <a class="el" href="classtgui_1_1ScrollablePanel.html#a269fb750efc174330458da85e19be42b">tgui::ScrollablePanel</a>
+: <a class="el" href="classtgui_1_1CustomWidgetForBindings.html#a8ff7569c822ab89fa9456ef63a78e022">tgui::CustomWidgetForBindings</a>
+, <a class="el" href="classtgui_1_1ScrollablePanel.html#a269fb750efc174330458da85e19be42b">tgui::ScrollablePanel</a>
 , <a class="el" href="classtgui_1_1Widget.html#ae4e2898c4146d5eabb09a7814e4e693b">tgui::Widget</a>
 </li>
 <li>getAlignment()
@@ -399,6 +400,7 @@ $(function() {
 <li>getFullSize()
 : <a class="el" href="classtgui_1_1CheckBox.html#ac9e541b83891c0b46f904c48ba76283b">tgui::CheckBox</a>
 , <a class="el" href="classtgui_1_1ChildWindow.html#a4a29f9884728e3e8d871f35423b9979b">tgui::ChildWindow</a>
+, <a class="el" href="classtgui_1_1CustomWidgetForBindings.html#ae1b68a8f3d604e4ea2ad686bdd143870">tgui::CustomWidgetForBindings</a>
 , <a class="el" href="classtgui_1_1RadioButton.html#a9c78e21551fda9323053eaa0dc428583">tgui::RadioButton</a>
 , <a class="el" href="classtgui_1_1RangeSlider.html#a480f39b6dbcf6934ff38512047c587bc">tgui::RangeSlider</a>
 , <a class="el" href="classtgui_1_1Slider.html#a9be2ab28965af2d4e1fccc421e73c813">tgui::Slider</a>
@@ -445,7 +447,9 @@ $(function() {
 : <a class="el" href="classtgui_1_1Widget.html#af818bded35516b1492432af9714a4af5">tgui::Widget</a>
 </li>
 <li>getInnerSize()
-: <a class="el" href="classtgui_1_1Panel.html#a81561a828d1d1520c971aa42a59e0e66">tgui::Panel</a>
+: <a class="el" href="classtgui_1_1Container.html#a62dc08fc6da89683e860b8daf734de31">tgui::Container</a>
+, <a class="el" href="classtgui_1_1Group.html#a65861b658a208e8984b5e5208734c66c">tgui::Group</a>
+, <a class="el" href="classtgui_1_1Panel.html#a85c756ac466f9f0ce94ace881a5e0420">tgui::Panel</a>
 </li>
 <li>getInputValidator()
 : <a class="el" href="classtgui_1_1EditBox.html#aa50835df7fabb66a9a164e4bdcd9088e">tgui::EditBox</a>
@@ -539,8 +543,11 @@ $(function() {
 <li>getMaximumTextWidth()
 : <a class="el" href="classtgui_1_1Label.html#a48b7c06839765ebae6928526f83eb192">tgui::Label</a>
 </li>
-<li>getMenus()
-: <a class="el" href="classtgui_1_1MenuBar.html#a8a2a91e097144451e08f1b28dd9770e9">tgui::MenuBar</a>
+<li>getMenuEnabled()
+: <a class="el" href="classtgui_1_1MenuBar.html#a9e0a39c03ff8327df3935068ad722f9b">tgui::MenuBar</a>
+</li>
+<li>getMenuItemEnabled()
+: <a class="el" href="classtgui_1_1MenuBar.html#a3b00eaeec41b65ebff57c9d0a54734d1">tgui::MenuBar</a>
 </li>
 <li>getMiddleRect()
 : <a class="el" href="classtgui_1_1Texture.html#a00325ed7989d5ffbc80e3f5d42f22e05">tgui::Texture</a>
@@ -868,6 +875,7 @@ $(function() {
 <li>getTextColorDisabled()
 : <a class="el" href="classtgui_1_1ButtonRenderer.html#ad731ef12e1907f162bb0f9eb9d8901be">tgui::ButtonRenderer</a>
 , <a class="el" href="classtgui_1_1EditBoxRenderer.html#af30eb8a13b0f0c4e3d919b6929a3e194">tgui::EditBoxRenderer</a>
+, <a class="el" href="classtgui_1_1MenuBarRenderer.html#a3e78fce56c36e30a1471130a8d2633d4">tgui::MenuBarRenderer</a>
 , <a class="el" href="classtgui_1_1RadioButtonRenderer.html#acebc05d3ea9ea8e7a0114a4399219e0e">tgui::RadioButtonRenderer</a>
 , <a class="el" href="classtgui_1_1TabsRenderer.html#a46877a17a6b1024d4c560c8f09b153cf">tgui::TabsRenderer</a>
 </li>
@@ -1159,6 +1167,7 @@ $(function() {
 </li>
 <li>getWidgetOffset()
 : <a class="el" href="classtgui_1_1CheckBox.html#a1be286621e2b0cbcd0d537bf528c0af2">tgui::CheckBox</a>
+, <a class="el" href="classtgui_1_1CustomWidgetForBindings.html#a138de45eeab3d7ba452d7b8100047743">tgui::CustomWidgetForBindings</a>
 , <a class="el" href="classtgui_1_1RadioButton.html#a6ec5599060f2c4fd29066524f87225b6">tgui::RadioButton</a>
 , <a class="el" href="classtgui_1_1RangeSlider.html#a1adb917c36470e58764aa347a309a4f2">tgui::RangeSlider</a>
 , <a class="el" href="classtgui_1_1Slider.html#a2181870ab5c1c73231029616c2330e7d">tgui::Slider</a>
@@ -1175,20 +1184,20 @@ $(function() {
 : <a class="el" href="classtgui_1_1Widget.html#a74f39d58b9fee9233d1c9235d466f56a">tgui::Widget</a>
 </li>
 <li>Grid()
-: <a class="el" href="classtgui_1_1Grid.html#ad40bc031a9d8ede279b5086ab1084ace">tgui::Grid</a>
+: <a class="el" href="classtgui_1_1Grid.html#a10e992afea62e2964652df980970667c">tgui::Grid</a>
 </li>
 <li>Group()
 : <a class="el" href="classtgui_1_1Group.html#acc8a0bf2008a89c1e4200e2be25d5d7a">tgui::Group</a>
 </li>
 <li>Gui()
-: <a class="el" href="classtgui_1_1Gui.html#a50f9bf863bc443a6ae8add6e7a8ec7c9">tgui::Gui</a>
+: <a class="el" href="classtgui_1_1Gui.html#aaf24c9b2f9d11a7db7f8d4b49ee488fa">tgui::Gui</a>
 </li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 5 2018 11:49:48 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 16 2018 19:52:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

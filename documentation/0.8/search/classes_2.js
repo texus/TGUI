@@ -15,5 +15,6 @@ var searchData=
   ['container',['Container',['../classtgui_1_1Container.html',1,'tgui']]],
   ['copiedsharedptr',['CopiedSharedPtr',['../classtgui_1_1CopiedSharedPtr.html',1,'tgui']]],
   ['copiedsharedptr_3c_20tgui_3a_3abutton_20_3e',['CopiedSharedPtr&lt; tgui::Button &gt;',['../classtgui_1_1CopiedSharedPtr.html',1,'tgui']]],
-  ['copiedsharedptr_3c_20tgui_3a_3ascrollbarchildwidget_20_3e',['CopiedSharedPtr&lt; tgui::ScrollbarChildWidget &gt;',['../classtgui_1_1CopiedSharedPtr.html',1,'tgui']]]
+  ['copiedsharedptr_3c_20tgui_3a_3ascrollbarchildwidget_20_3e',['CopiedSharedPtr&lt; tgui::ScrollbarChildWidget &gt;',['../classtgui_1_1CopiedSharedPtr.html',1,'tgui']]],
+  ['customwidgetforbindings',['CustomWidgetForBindings',['../classtgui_1_1CustomWidgetForBindings.html',1,'tgui']]]
 ];
