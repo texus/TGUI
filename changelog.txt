@@ -1,5 +1,5 @@
-TGUI 0.8.1  (TBD)
------------------
+TGUI 0.8.1  (15 October 2018)
+-----------------------------
 
 - Submenus are now supported in MenuBar
 - Menus can now be disabled in MenuBar and given a different text color

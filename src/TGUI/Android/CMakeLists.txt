@@ -27,3 +27,8 @@ install(TARGETS tgui-activity
         LIBRARY DESTINATION lib${LIB_SUFFIX} COMPONENT bin
         ARCHIVE DESTINATION lib${LIB_SUFFIX} COMPONENT devel
         FRAMEWORK DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX} COMPONENT bin)
+
+# Install Android.mk so the NDK knows how to set up TGUI
+if(TGUI_OS_ANDROID)
+    install(FILES Android.mk DESTINATION .)
+endif()
