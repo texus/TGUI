@@ -136,8 +136,10 @@ if(TGUI_OS_ANDROID)
         message(WARNING "CMake might not properly support setting the STL. Make sure to adjust all generated library projects!")
     endif()
 
-    # Install everything in $NDK/sources/ because this path is appended by the NDK (convenient)
-    set(CMAKE_INSTALL_PREFIX ${CMAKE_ANDROID_NDK}/sources/third_party/tgui)
+    # Install everything in $NDK/sources/third_party by default
+    if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+        set(CMAKE_INSTALL_PREFIX ${CMAKE_ANDROID_NDK}/sources/third_party/tgui CACHE PATH "Installation path (should be inside your NDK's 'sources' directory)" FORCE)
+    endif()
 
     # We install libs in a subdirectory named after the ABI (e.g. lib/armeabi/libtgui.so)
     set(LIB_SUFFIX "/${CMAKE_ANDROID_ARCH_ABI}")
