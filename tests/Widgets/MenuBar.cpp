@@ -94,17 +94,17 @@ TEST_CASE("[MenuBar]")
     {
         SECTION("Single menu")
         {
-            REQUIRE(menuBar->getAllMenus().empty());
+            REQUIRE(menuBar->getMenuList().empty());
             menuBar->addMenu("Help");
-            REQUIRE(menuBar->getAllMenus().size() == 1);
-            REQUIRE(menuBar->getAllMenus()[0]->text == "Help");
-            REQUIRE(menuBar->getAllMenus()[0]->menuItems.empty());
+            REQUIRE(menuBar->getMenuList().size() == 1);
+            REQUIRE(menuBar->getMenuList()[0].text == "Help");
+            REQUIRE(menuBar->getMenuList()[0].menuItems.empty());
 
             menuBar->addMenuItem("About");
-            REQUIRE(menuBar->getAllMenus().size() == 1);
-            REQUIRE(menuBar->getAllMenus()[0]->text == "Help");
-            REQUIRE(menuBar->getAllMenus()[0]->menuItems.size() == 1);
-            REQUIRE(menuBar->getAllMenus()[0]->menuItems[0]->text == "About");
+            REQUIRE(menuBar->getMenuList().size() == 1);
+            REQUIRE(menuBar->getMenuList()[0].text == "Help");
+            REQUIRE(menuBar->getMenuList()[0].menuItems.size() == 1);
+            REQUIRE(menuBar->getMenuList()[0].menuItems[0].text == "About");
         }
 
         SECTION("Multiple menus")
@@ -122,36 +122,36 @@ TEST_CASE("[MenuBar]")
 
             SECTION("Verify that menus were added")
             {
-                REQUIRE(menuBar->getAllMenus().size() == 3);
-                REQUIRE(menuBar->getAllMenus()[0]->text == "File");
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems.size() == 2);
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems[0]->text == "Load");
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems[1]->text == "Save");
-                REQUIRE(menuBar->getAllMenus()[1]->text == "Edit");
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems.size() == 4);
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems[0]->text == "Undo");
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems[1]->text == "Redo");
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems[2]->text == "Copy");
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems[3]->text == "Paste");
-                REQUIRE(menuBar->getAllMenus()[2]->text == "Help");
-                REQUIRE(menuBar->getAllMenus()[2]->menuItems.size() == 1);
-                REQUIRE(menuBar->getAllMenus()[2]->menuItems[0]->text == "About");
+                REQUIRE(menuBar->getMenuList().size() == 3);
+                REQUIRE(menuBar->getMenuList()[0].text == "File");
+                REQUIRE(menuBar->getMenuList()[0].menuItems.size() == 2);
+                REQUIRE(menuBar->getMenuList()[0].menuItems[0].text == "Load");
+                REQUIRE(menuBar->getMenuList()[0].menuItems[1].text == "Save");
+                REQUIRE(menuBar->getMenuList()[1].text == "Edit");
+                REQUIRE(menuBar->getMenuList()[1].menuItems.size() == 4);
+                REQUIRE(menuBar->getMenuList()[1].menuItems[0].text == "Undo");
+                REQUIRE(menuBar->getMenuList()[1].menuItems[1].text == "Redo");
+                REQUIRE(menuBar->getMenuList()[1].menuItems[2].text == "Copy");
+                REQUIRE(menuBar->getMenuList()[1].menuItems[3].text == "Paste");
+                REQUIRE(menuBar->getMenuList()[2].text == "Help");
+                REQUIRE(menuBar->getMenuList()[2].menuItems.size() == 1);
+                REQUIRE(menuBar->getMenuList()[2].menuItems[0].text == "About");
             }
 
             SECTION("Adding menu items to older menu")
             {
                 REQUIRE(menuBar->addMenuItem("File", "Quit"));
 
-                REQUIRE(menuBar->getAllMenus().size() == 3);
-                REQUIRE(menuBar->getAllMenus()[0]->text == "File");
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems.size() == 3);
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems[0]->text == "Load");
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems[1]->text == "Save");
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems[2]->text == "Quit");
-                REQUIRE(menuBar->getAllMenus()[1]->text == "Edit");
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems.size() == 4);
-                REQUIRE(menuBar->getAllMenus()[2]->text == "Help");
-                REQUIRE(menuBar->getAllMenus()[2]->menuItems.size() == 1);
+                REQUIRE(menuBar->getMenuList().size() == 3);
+                REQUIRE(menuBar->getMenuList()[0].text == "File");
+                REQUIRE(menuBar->getMenuList()[0].menuItems.size() == 3);
+                REQUIRE(menuBar->getMenuList()[0].menuItems[0].text == "Load");
+                REQUIRE(menuBar->getMenuList()[0].menuItems[1].text == "Save");
+                REQUIRE(menuBar->getMenuList()[0].menuItems[2].text == "Quit");
+                REQUIRE(menuBar->getMenuList()[1].text == "Edit");
+                REQUIRE(menuBar->getMenuList()[1].menuItems.size() == 4);
+                REQUIRE(menuBar->getMenuList()[2].text == "Help");
+                REQUIRE(menuBar->getMenuList()[2].menuItems.size() == 1);
             }
 
             SECTION("Removing menu items")
@@ -160,31 +160,31 @@ TEST_CASE("[MenuBar]")
                 menuBar->removeMenuItem("Edit", "Paste");
                 menuBar->removeMenuItem("Help", "About");
 
-                REQUIRE(menuBar->getAllMenus()[0]->text == "File");
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems.size() == 2);
-                REQUIRE(menuBar->getAllMenus()[1]->text == "Edit");
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems.size() == 2);
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems[0]->text == "Redo");
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems[1]->text == "Copy");
-                REQUIRE(menuBar->getAllMenus()[2]->text == "Help");
-                REQUIRE(menuBar->getAllMenus()[2]->menuItems.size() == 0);
+                REQUIRE(menuBar->getMenuList()[0].text == "File");
+                REQUIRE(menuBar->getMenuList()[0].menuItems.size() == 2);
+                REQUIRE(menuBar->getMenuList()[1].text == "Edit");
+                REQUIRE(menuBar->getMenuList()[1].menuItems.size() == 2);
+                REQUIRE(menuBar->getMenuList()[1].menuItems[0].text == "Redo");
+                REQUIRE(menuBar->getMenuList()[1].menuItems[1].text == "Copy");
+                REQUIRE(menuBar->getMenuList()[2].text == "Help");
+                REQUIRE(menuBar->getMenuList()[2].menuItems.size() == 0);
             }
 
             SECTION("Removing menu")
             {
                 menuBar->removeMenu("File");
 
-                REQUIRE(menuBar->getAllMenus().size() == 2);
-                REQUIRE(menuBar->getAllMenus()[0]->text == "Edit");
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems.size() == 4);
-                REQUIRE(menuBar->getAllMenus()[1]->text == "Help");
-                REQUIRE(menuBar->getAllMenus()[1]->menuItems.size() == 1);
+                REQUIRE(menuBar->getMenuList().size() == 2);
+                REQUIRE(menuBar->getMenuList()[0].text == "Edit");
+                REQUIRE(menuBar->getMenuList()[0].menuItems.size() == 4);
+                REQUIRE(menuBar->getMenuList()[1].text == "Help");
+                REQUIRE(menuBar->getMenuList()[1].menuItems.size() == 1);
             }
 
             SECTION("Removing all menus")
             {
                 menuBar->removeAllMenus();
-                REQUIRE(menuBar->getAllMenus().empty());
+                REQUIRE(menuBar->getMenuList().empty());
             }
 
             SECTION("Submenus")
@@ -192,15 +192,15 @@ TEST_CASE("[MenuBar]")
                 REQUIRE(menuBar->addMenuItem({"File", "Other", "Print"}));
                 REQUIRE(menuBar->addMenuItem({"File", "Other", "Extra", "Quit"}));
 
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems.size() == 3);
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems[2]->text == "Other");
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems[2]->menuItems.size() == 2);
+                REQUIRE(menuBar->getMenuList()[0].menuItems.size() == 3);
+                REQUIRE(menuBar->getMenuList()[0].menuItems[2].text == "Other");
+                REQUIRE(menuBar->getMenuList()[0].menuItems[2].menuItems.size() == 2);
 
                 REQUIRE(menuBar->removeMenuItem({"File", "Other", "Extra", "Quit"}));
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems[2]->menuItems.size() == 1);
+                REQUIRE(menuBar->getMenuList()[0].menuItems[2].menuItems.size() == 1);
 
                 REQUIRE(menuBar->removeMenuItem({"File", "Other", "Print"}));
-                REQUIRE(menuBar->getAllMenus()[0]->menuItems.size() == 2);
+                REQUIRE(menuBar->getMenuList()[0].menuItems.size() == 2);
             }
         }
 
@@ -236,15 +236,15 @@ TEST_CASE("[MenuBar]")
         REQUIRE(!menuBar->getMenuItemEnabled("M1", "I2"));
         REQUIRE(menuBar->getMenuItemEnabled("M2", "I3"));
 
-        // Check that getAllMenus confirms that the menus are disabled
-        REQUIRE(menuBar->getAllMenus().size() == 2);
-        REQUIRE(!menuBar->getAllMenus()[0]->enabled);
-        REQUIRE(menuBar->getAllMenus()[0]->menuItems.size() == 2);
-        REQUIRE(menuBar->getAllMenus()[0]->menuItems[0]->enabled);
-        REQUIRE(!menuBar->getAllMenus()[0]->menuItems[1]->enabled);
-        REQUIRE(menuBar->getAllMenus()[1]->enabled);
-        REQUIRE(menuBar->getAllMenus()[1]->menuItems.size() == 1);
-        REQUIRE(menuBar->getAllMenus()[1]->menuItems[0]->enabled);
+        // Check that getMenuList confirms that the menus are disabled
+        REQUIRE(menuBar->getMenuList().size() == 2);
+        REQUIRE(!menuBar->getMenuList()[0].enabled);
+        REQUIRE(menuBar->getMenuList()[0].menuItems.size() == 2);
+        REQUIRE(menuBar->getMenuList()[0].menuItems[0].enabled);
+        REQUIRE(!menuBar->getMenuList()[0].menuItems[1].enabled);
+        REQUIRE(menuBar->getMenuList()[1].enabled);
+        REQUIRE(menuBar->getMenuList()[1].menuItems.size() == 1);
+        REQUIRE(menuBar->getMenuList()[1].menuItems[0].enabled);
 
         // Test re-enabling menus
         REQUIRE(menuBar->setMenuEnabled("M1", true));

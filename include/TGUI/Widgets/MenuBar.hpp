@@ -45,12 +45,23 @@ namespace tgui
         typedef std::shared_ptr<MenuBar> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const MenuBar> ConstPtr; ///< Shared constant widget pointer
 
+    #ifndef TGUI_REMOVE_DEPRECATED_CODE
         /// @brief Used for return value of getAllMenus
+        /// @deprecated The getMenuList should be used instead of getAllMenus
         struct GetAllMenusElement
         {
             sf::String text;
             bool enabled;
             std::vector<std::unique_ptr<GetAllMenusElement>> menuItems;
+        };
+    #endif
+
+        /// @brief Used for return value of getMenuList
+        struct GetMenuListElement
+        {
+            sf::String text;
+            bool enabled;
+            std::vector<GetMenuListElement> menuItems;
         };
 
         /// @internal
@@ -59,7 +70,7 @@ namespace tgui
             Text text;
             bool enabled = true;
             int selectedMenuItem = -1;
-            std::vector<aurora::CopiedPtr<Menu>> menuItems;
+            std::vector<Menu> menuItems;
         };
 
 
@@ -405,8 +416,17 @@ namespace tgui
         /// @brief Returns a copy of all the menus and their menu items
         /// @return Map of menus and their items
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("This function doesn't work with submenus, use getAllMenus instead")
+        TGUI_DEPRECATED("This function doesn't work with submenus, use getMenuList instead")
         std::vector<std::pair<sf::String, std::vector<sf::String>>> getMenus() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Returns the menus and their menu items, including submenus
+        /// @return List of menus
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_DEPRECATED("This function is deprecated, use getMenuList instead")
+        std::vector<std::unique_ptr<GetAllMenusElement>> getAllMenus() const;
     #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,7 +434,7 @@ namespace tgui
         /// @brief Returns the menus and their menu items, including submenus
         /// @return List of menus
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector<std::unique_ptr<GetAllMenusElement>> getAllMenus() const;
+        std::vector<GetMenuListElement> getMenuList() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -518,57 +538,57 @@ namespace tgui
 
         /// @internal
         /// Helper function to create a new menu or menu item
-        void createMenu(std::vector<aurora::CopiedPtr<Menu>>& menus, const sf::String& text);
+        void createMenu(std::vector<Menu>& menus, const sf::String& text);
 
         /// @internal
         /// Recursively search for the menu containing the menu item specified in the hierarchy, creating the hierarchy if requested.
         /// The initial call to this function must pass "parentIndex = 0" and "menus = m_menus".
-        aurora::CopiedPtr<Menu>* findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<aurora::CopiedPtr<Menu>>& menus, bool createParents);
+        Menu* findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<Menu>& menus, bool createParents);
 
         /// @internal
         /// Recursively search for the menu containing the menu item specified in the hierarchy.
         /// The initial call to this function must pass "parentIndex = 0" and "menus = m_menus".
-        const aurora::CopiedPtr<Menu>* findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, const std::vector<aurora::CopiedPtr<Menu>>& menus) const;
+        const Menu* findMenu(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, const std::vector<Menu>& menus) const;
 
         /// @internal
         /// Search for the menu item specified in the hierarchy.
-        const aurora::CopiedPtr<Menu>* findMenuItem(const std::vector<sf::String>& hierarchy) const;
+        const Menu* findMenuItem(const std::vector<sf::String>& hierarchy) const;
 
         /// @internal
         /// Helper function to load the menus when the menu bar is being loaded from a text file
-        void loadMenus(const std::unique_ptr<DataIO::Node>& node, std::vector<aurora::CopiedPtr<Menu>>& menus);
+        void loadMenus(const std::unique_ptr<DataIO::Node>& node, std::vector<Menu>& menus);
 
         /// @internal
         /// Closes the open menu and its submenus
-        void closeSubMenus(std::vector<aurora::CopiedPtr<Menu>>& menus, int& selectedMenu);
+        void closeSubMenus(std::vector<Menu>& menus, int& selectedMenu);
 
         /// @internal
         void deselectBottomItem();
 
         /// @internal
-        void updateMenuTextColor(aurora::CopiedPtr<Menu>& menu, bool selected);
+        void updateMenuTextColor(Menu& menu, bool selected);
 
         /// @internal
-        void updateTextColors(std::vector<aurora::CopiedPtr<Menu>>& menus, int selectedMenu);
+        void updateTextColors(std::vector<Menu>& menus, int selectedMenu);
 
         /// @internal
-        void updateTextOpacity(std::vector<aurora::CopiedPtr<Menu>>& menus);
+        void updateTextOpacity(std::vector<Menu>& menus);
 
         /// @internal
-        void updateTextFont(std::vector<aurora::CopiedPtr<Menu>>& menus);
+        void updateTextFont(std::vector<Menu>& menus);
 
         /// @internal
         /// Calculate the width that is needed for the menu to fit all menu items
-        float calculateMenuWidth(const aurora::CopiedPtr<MenuBar::Menu>& menu) const;
+        float calculateMenuWidth(const Menu& menu) const;
 
         /// @internal
-        Vector2f calculateSubmenuOffset(const aurora::CopiedPtr<Menu>& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const;
+        Vector2f calculateSubmenuOffset(const Menu& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const;
 
         /// @internal
-        bool isMouseOnTopOfMenu(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, const aurora::CopiedPtr<Menu>& menu, float menuWidth) const;
+        bool isMouseOnTopOfMenu(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, const Menu& menu, float menuWidth) const;
 
         /// @internal
-        bool findMenuItemBelowMouse(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, aurora::CopiedPtr<Menu>& menu, float menuWidth, aurora::CopiedPtr<Menu>** resultMenu, int* resultSelectedMenuItem);
+        bool findMenuItemBelowMouse(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, Menu& menu, float menuWidth, Menu** resultMenu, int* resultSelectedMenuItem);
 
         /// @internal
         /// Draw the backgrounds and text of the menu names on top of the bar itself
@@ -576,7 +596,7 @@ namespace tgui
 
         /// @internal
         /// Draw an open menu and recusively draw submenus when open
-        void drawMenu(sf::RenderTarget& target, sf::RenderStates states, const aurora::CopiedPtr<Menu>& menu, float menuWidth, Sprite& backgroundSprite, float globalLeftPos, bool openSubMenuToRight) const;
+        void drawMenu(sf::RenderTarget& target, sf::RenderStates states, const Menu& menu, float menuWidth, Sprite& backgroundSprite, float globalLeftPos, bool openSubMenuToRight) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -592,7 +612,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        std::vector<aurora::CopiedPtr<Menu>> m_menus;
+        std::vector<Menu> m_menus;
 
         int m_visibleMenu = -1;
 
