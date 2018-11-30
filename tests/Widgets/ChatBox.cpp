@@ -50,18 +50,27 @@ TEST_CASE("[ChatBox]")
     SECTION("Adding lines")
     {
         chatBox->setTextColor(sf::Color::Black);
+        chatBox->setTextStyle(sf::Text::Style::Bold);
 
         REQUIRE(chatBox->getLineAmount() == 0);
         chatBox->addLine("Line 1");
         REQUIRE(chatBox->getLineAmount() == 1);
         chatBox->addLine("Line 2", sf::Color::Green);
         REQUIRE(chatBox->getLineAmount() == 2);
+        chatBox->addLine("Line 3", sf::Color::Blue, sf::Text::Style::Italic);
+        REQUIRE(chatBox->getLineAmount() == 3);
 
         REQUIRE(chatBox->getLine(0) == "Line 1");
         REQUIRE(chatBox->getLine(1) == "Line 2");
+        REQUIRE(chatBox->getLine(2) == "Line 3");
 
         REQUIRE(chatBox->getLineColor(0) == sf::Color::Black);
         REQUIRE(chatBox->getLineColor(1) == sf::Color::Green);
+        REQUIRE(chatBox->getLineColor(2) == sf::Color::Blue);
+
+        REQUIRE(chatBox->getLineTextStyle(0) == sf::Text::Style::Bold);
+        REQUIRE(chatBox->getLineTextStyle(1) == sf::Text::Style::Bold);
+        REQUIRE(chatBox->getLineTextStyle(2) == sf::Text::Style::Italic);
     }
 
     SECTION("Removing lines")
@@ -139,6 +148,15 @@ TEST_CASE("[ChatBox]")
 
         chatBox->addLine("Text");
         REQUIRE(chatBox->getLineColor(0) == sf::Color::Red);
+    }
+
+    SECTION("Default text style")
+    {
+        chatBox->setTextStyle(sf::Text::Style::StrikeThrough);
+        REQUIRE(chatBox->getTextStyle() == sf::Text::Style::StrikeThrough);
+
+        chatBox->addLine("Text");
+        REQUIRE(chatBox->getLineTextStyle(0) == sf::Text::Style::StrikeThrough);
     }
 
     SECTION("Get unexisting line")
@@ -246,12 +264,13 @@ TEST_CASE("[ChatBox]")
     SECTION("Saving and loading from file")
     {
         chatBox->setTextColor(sf::Color::White);
+        chatBox->setTextStyle(sf::Text::Style::Underlined);
         chatBox->setTextSize(34);
         chatBox->setLineLimit(5);
         chatBox->setLinesStartFromTop(true);
         chatBox->setNewLinesBelowOthers(false);
         chatBox->addLine("L2");
-        chatBox->addLine("L4", sf::Color::Magenta);
+        chatBox->addLine("L4", sf::Color::Magenta, sf::Text::Style::Bold | sf::Text::Style::StrikeThrough);
         chatBox->addLine("L3");
         chatBox->addLine("L1", sf::Color::Cyan);
 

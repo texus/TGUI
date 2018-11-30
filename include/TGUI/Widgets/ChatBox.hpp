@@ -132,10 +132,23 @@ namespace tgui
         /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
         ///
-        /// @param text      Text that will be added to the chat box
-        /// @param color     Color of the text
+        /// @param text   Text that will be added to the chat box
+        /// @param color  Color of the text
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addLine(const sf::String& text, Color color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Adds a new line of text to the chat box
+        ///
+        /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
+        /// even if it is too long and gets split over multiple lines.
+        ///
+        /// @param text   Text that will be added to the chat box
+        /// @param color  Color of the text
+        /// @param style  Text style
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void addLine(const sf::String& text, Color color, TextStyle style);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,10 +169,18 @@ namespace tgui
         ///
         /// @param lineIndex  The index of the line of which you request the color. The first line has index 0
         ///
-        /// @return The color of the requested line. The default color (set with setTextColor) when the index is too high
+        /// @return The color of the requested line. The default color (set with setTextColor) when the index is too high.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Color getLineColor(std::size_t lineIndex) const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the text style of the requested line
+        /// @param lineIndex  The index of the line of which you request the text style. The first line has index 0.
+        /// @return The text style of the requested line. The default style (set with setTextStyle) when the index is too high.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TextStyle getLineTextStyle(std::size_t lineIndex) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,6 +261,20 @@ namespace tgui
         /// @return The currently used default text color
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const Color& getTextColor() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the default text style
+        /// @param color  The new default text style
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTextStyle(TextStyle style);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the default text style
+        /// @return The currently used default text style
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TextStyle getTextStyle() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,6 +449,7 @@ namespace tgui
 
         unsigned int m_textSize = 0;
         Color m_textColor = Color::Black;
+        TextStyle m_textStyle;
 
         std::size_t m_maxLines = 0;
 

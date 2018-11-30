@@ -115,12 +115,19 @@ namespace tgui
 
     void ChatBox::addLine(const sf::String& text)
     {
-        addLine(text, m_textColor);
+        addLine(text, m_textColor, m_textStyle);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ChatBox::addLine(const sf::String& text, Color color)
+    {
+        addLine(text, color, m_textStyle);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::addLine(const sf::String& text, Color color, TextStyle style)
     {
         // Remove the oldest line if you exceed the maximum
         if ((m_maxLines > 0) && (m_maxLines == m_lines.size()))
@@ -134,6 +141,7 @@ namespace tgui
         Line line;
         line.string = text;
         line.text.setColor(color);
+        line.text.setStyle(style);
         line.text.setOpacity(m_opacityCached);
         line.text.setCharacterSize(m_textSize);
         line.text.setString(text);
@@ -171,6 +179,16 @@ namespace tgui
         }
         else // Index too high
             return m_textColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TextStyle ChatBox::getLineTextStyle(std::size_t lineIndex) const
+    {
+        if (lineIndex < m_lines.size())
+            return m_lines[lineIndex].text.getStyle();
+        else // Index too high
+            return m_textStyle;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,6 +279,20 @@ namespace tgui
     const Color& ChatBox::getTextColor() const
     {
         return m_textColor;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ChatBox::setTextStyle(TextStyle style)
+    {
+        m_textStyle = style;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TextStyle ChatBox::getTextStyle() const
+    {
+        return m_textStyle;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -483,6 +515,9 @@ namespace tgui
         node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
         node->propertyValuePairs["TextColor"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_textColor));
 
+        if (m_textStyle != sf::Text::Style::Regular)
+            node->propertyValuePairs["TextStyle"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_textStyle));
+
         if (m_maxLines > 0)
             node->propertyValuePairs["LineLimit"] = std::make_unique<DataIO::ValueNode>(to_string(m_maxLines));
 
@@ -507,6 +542,10 @@ namespace tgui
             if (lineTextColor != m_textColor)
                 lineNode->propertyValuePairs["Color"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(lineTextColor));
 
+            const TextStyle lineTextStyle = getLineTextStyle(i);
+            if (lineTextStyle != m_textStyle)
+                lineNode->propertyValuePairs["Style"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(lineTextStyle));
+
             node->children.push_back(std::move(lineNode));
         }
 
@@ -523,6 +562,8 @@ namespace tgui
             setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["textcolor"])
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs["textcolor"]->value).getColor());
+        if (node->propertyValuePairs["textstyle"])
+            setTextStyle(Deserializer::deserialize(ObjectConverter::Type::TextStyle, node->propertyValuePairs["textstyle"]->value).getTextStyle());
         if (node->propertyValuePairs["linelimit"])
             setLineLimit(tgui::stoi(node->propertyValuePairs["linelimit"]->value));
 
@@ -534,8 +575,12 @@ namespace tgui
                 if (childNode->propertyValuePairs["color"])
                     lineTextColor = Deserializer::deserialize(ObjectConverter::Type::Color, childNode->propertyValuePairs["color"]->value).getColor();
 
+                TextStyle lineTextStyle = getTextStyle();
+                if (childNode->propertyValuePairs["style"])
+                    lineTextStyle = Deserializer::deserialize(ObjectConverter::Type::TextStyle, childNode->propertyValuePairs["style"]->value).getTextStyle();
+
                 if (childNode->propertyValuePairs["text"])
-                    addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString(), lineTextColor);
+                    addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString(), lineTextColor, lineTextStyle);
             }
         }
         node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
