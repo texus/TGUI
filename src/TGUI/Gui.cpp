@@ -138,8 +138,6 @@ namespace tgui
         }
         else // Set it anyway in case something changed that we didn't care to check
             m_view = view;
-
-        Clipping::setGuiView(m_view);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -246,6 +244,7 @@ namespace tgui
         // Change the view
         sf::View oldView = m_window->getView();
         m_window->setView(m_view);
+        Clipping::setGuiView(m_view);
 
         // Draw the window with all widgets inside it
         m_container->drawWidgetContainer(m_window, sf::RenderStates::Default);
