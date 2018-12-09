@@ -31,10 +31,22 @@ macro(tgui_add_example target)
     tgui_set_global_compile_flags(${target})
     tgui_set_stdlib(${target})
 
+    set(target_install_dir ${TGUI_MISC_INSTALL_PREFIX}/examples/${target})
+
+    # Set the RPATH of the executable on Linux and BSD
+    if (TGUI_SHARED_LIBS AND (TGUI_OS_LINUX OR TGUI_OS_BSD))
+        file(RELATIVE_PATH rel_lib_dir
+             ${CMAKE_INSTALL_PREFIX}/${target_install_dir}
+             ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
+
+        set_target_properties(${target} PROPERTIES
+                              INSTALL_RPATH "$ORIGIN/${rel_lib_dir}")
+    endif()
+
     # Add the install rule for the executable
     install(TARGETS ${target}
-            RUNTIME DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/examples/${target} COMPONENT examples
-            BUNDLE DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/examples/${target} COMPONENT examples)
+            RUNTIME DESTINATION ${target_install_dir} COMPONENT examples
+            BUNDLE DESTINATION ${target_install_dir} COMPONENT examples)
 
 endmacro()
 

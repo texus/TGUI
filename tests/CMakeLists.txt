@@ -115,13 +115,28 @@ add_custom_command(TARGET tests
                    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/themes/Black.png $<TARGET_FILE_DIR:tests>/resources
                    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/themes/Black.txt $<TARGET_FILE_DIR:tests>/resources)
 
+set(target_install_dir ${TGUI_MISC_INSTALL_PREFIX}/tests/)
+
+# Set the RPATH of the executable on Linux and BSD
+if (TGUI_SHARED_LIBS AND (TGUI_OS_LINUX OR TGUI_OS_BSD))
+    file(RELATIVE_PATH rel_lib_dir
+         ${CMAKE_INSTALL_PREFIX}/${target_install_dir}
+         ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
+
+    set_target_properties(tests PROPERTIES
+                          INSTALL_RPATH "$ORIGIN/${rel_lib_dir}")
+endif()
+
 # Add the install rule for the executable
 install(TARGETS tests
-        RUNTIME DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/tests/ COMPONENT tests
-        BUNDLE DESTINATION ${TGUI_MISC_INSTALL_PREFIX}/tests/ COMPONENT tests)
+        RUNTIME DESTINATION ${target_install_dir} COMPONENT tests
+        BUNDLE DESTINATION ${target_install_dir} COMPONENT tests)
 
 # Install the resources next to the test executable
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/tests/resources"
+        DESTINATION "${TGUI_MISC_INSTALL_PREFIX}/tests"
+        COMPONENT tests)
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/tests/expected"
         DESTINATION "${TGUI_MISC_INSTALL_PREFIX}/tests"
         COMPONENT tests)
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/themes/"
