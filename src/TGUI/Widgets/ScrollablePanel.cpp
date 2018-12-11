@@ -41,11 +41,11 @@ namespace tgui
     {
         m_type = "ScrollablePanel";
 
-        m_renderer = aurora::makeCopied<ScrollablePanelRenderer>();
-        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
-
         // Rotate the horizontal scrollbar
         m_horizontalScrollbar->setSize(m_horizontalScrollbar->getSize().y, m_horizontalScrollbar->getSize().x);
+
+        m_renderer = aurora::makeCopied<ScrollablePanelRenderer>();
+        setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setContentSize(contentSize);
     }
@@ -671,7 +671,10 @@ namespace tgui
 
             const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()));
             if (verticalScrollbarVisible)
+            {
+                m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
                 m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
+            }
             else
                 m_horizontalScrollbar->setSize(scrollbarSpace.x, m_horizontalScrollbar->getSize().y);
         }
