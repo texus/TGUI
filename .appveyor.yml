@@ -162,7 +162,6 @@ build_script:
       move lib\Release\tgui.dll ..\tgui\lib\ > nul &&
       move lib\Debug\tgui-d.lib ..\tgui\lib\ > nul &&
       move lib\Debug\tgui-d.dll ..\tgui\lib\ > nul &&
-      move doc\html ..\tgui\doc\ > nul &&
       move gui-builder\Release\gui-builder.exe ..\tgui\gui-builder\ > nul &&
       cd .. &&
       echo d | xcopy /s tgui TGUI-0.8-dev > nul &&
