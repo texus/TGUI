@@ -47,7 +47,7 @@ namespace tgui
 
         std::shared_ptr<TreeView::Node> cloneNode(const std::shared_ptr<TreeView::Node>& oldNode, TreeView::Node* parent)
         {
-            auto newNode = std::make_unique<TreeView::Node>();
+            auto newNode = std::make_shared<TreeView::Node>();
             newNode->text = oldNode->text;
             newNode->depth = oldNode->depth;
             newNode->expanded = oldNode->expanded;
@@ -1166,7 +1166,7 @@ namespace tgui
 
     void TreeView::createNode(std::vector<std::shared_ptr<Node>>& nodes, Node* parent, const sf::String& text)
     {
-        auto newNode = std::make_unique<Node>();
+        auto newNode = std::make_shared<Node>();
         newNode->text.setFont(m_fontCached);
         newNode->text.setColor(m_textColorCached);
         newNode->text.setOpacity(m_opacityCached);
