@@ -23,13 +23,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_LIST_BOX_HPP
-#define TGUI_LIST_BOX_HPP
-
+#ifndef TGUI_TREE_VIEW_HPP
+#define TGUI_TREE_VIEW_HPP
 
 #include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
-#include <TGUI/Renderers/ListBoxRenderer.hpp>
+#include <TGUI/Renderers/TreeViewRenderer.hpp>
 #include <TGUI/Text.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,338 +36,187 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief List box widget
+    /// @brief Tree view widget
+    /// @warning This widget is new and API stability is not yet guaranteed. Functions and their behavior may still change in newer patch releases, based on feedback.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API ListBox : public Widget
+    class TGUI_API TreeView : public Widget
     {
-      public:
+    public:
 
-        typedef std::shared_ptr<ListBox> Ptr; ///< Shared widget pointer
-        typedef std::shared_ptr<const ListBox> ConstPtr; ///< Shared constant widget pointer
+        typedef std::shared_ptr<TreeView> Ptr;
+        typedef std::shared_ptr<const TreeView> ConstPtr;
+
+        /// @brief Read-only node representation used by getNodes
+        struct ConstNode
+        {
+            bool expanded;
+            sf::String text;
+            std::vector<ConstNode> nodes;
+        };
+
+        /// @brief Internal representation of a node
+        struct Node
+        {
+            Text text;
+            unsigned depth = 0;
+            bool expanded = true;
+            Node* parent;
+            std::vector<std::shared_ptr<Node>> nodes;
+        };
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ListBox();
+        TreeView();
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Copy constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TreeView(const TreeView&);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Move constructor
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TreeView(TreeView&&) = default;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Overload of copy assignment operator
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TreeView& operator=(const TreeView&);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Overload of move assignment operator
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TreeView& operator=(TreeView&&) = default;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Creates a new list box widget
-        ///
-        /// @return The new list box
-        ///
+        /// @brief Creates a new tree view widget
+        /// @return The new tree view
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ListBox::Ptr create();
+        static TreeView::Ptr create();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Makes a copy of another list box
-        ///
-        /// @param listBox  The other list box
-        ///
-        /// @return The new list box
-        ///
+        /// @brief Makes a copy of another tree view
+        /// @param treeView  The other tree view
+        /// @return The new tree view
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static ListBox::Ptr copy(ListBox::ConstPtr listBox);
+        static TreeView::Ptr copy(TreeView::ConstPtr treeView);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ListBoxRenderer* getSharedRenderer();
-        const ListBoxRenderer* getSharedRenderer() const;
+        TreeViewRenderer* getSharedRenderer();
+        const TreeViewRenderer* getSharedRenderer() const;
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ListBoxRenderer* getRenderer();
-        const ListBoxRenderer* getRenderer() const;
+        TreeViewRenderer* getRenderer();
+        const TreeViewRenderer* getRenderer() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Sets the position of the widget
-        ///
-        /// @param position  New position
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setPosition(const Layout2d& position) override;
-        using Widget::setPosition;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the size of the list box
-        ///
-        /// @param size  The new size of the list box
-        ///
+        /// @brief Changes the size of the tree view
+        /// @param size  The new size of the tree view
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;
         using Widget::setSize;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Adds an item to the list
+        /// @brief Adds a new item to the tree view
         ///
-        /// @param itemName  The name of the item you want to add (this is the text that will be displayed inside the list box)
-        /// @param id        Optional unique id given to this item for the purpose to later identifying this item
+        /// @param hierarchy     Hierarchy of items, with the last item being the leaf item
+        /// @param createParents Should the hierarchy be created if it did not exist yet?
         ///
-        /// @return
-        ///         - true when the item was successfully added
-        ///         - false when the list box is full (you have set a maximum item limit and you are trying to add more items)
-        ///         - false when there is no scrollbar and you try to have more items than fit inside the list box
-        ///
-        /// @see setMaximumItems
-        ///
+        /// @return True when the item was added (always the case if createParents is true)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool addItem(const sf::String& itemName, const sf::String& id = "");
+        bool addItem(const std::vector<sf::String>& hierarchy, bool createParents = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Selects an item in the list box
+        /// @brief Expands the given item
         ///
-        /// @param itemName  The item you want to select
-        ///
-        /// In case the names are not unique, the first item with that name will be selected.
-        ///
-        /// @return
-        ///         - true on success
-        ///         - false when none of the items matches the name
-        ///
-        /// @see setSelectedItemById
-        ///
+        /// @param hierarchy  Hierarchy of items, identifying the node that has to be expanded
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setSelectedItem(const sf::String& itemName);
+        void expand(const std::vector<sf::String>& hierarchy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Selects an item in the list box
-        ///
-        /// @param id  Unique id passed to addItem
-        ///
-        /// In case the id would not be unique, the first item with that id will be selected.
-        ///
-        /// @return
-        ///         - true on success
-        ///         - false when none of the items has the given id
-        ///
-        /// @see setSelectedItem
-        ///
+        /// @brief Expands all items
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setSelectedItemById(const sf::String& id);
+        void expandAll();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Selects an item in the list box
+        /// @brief Collapses the given item
         ///
-        /// @param index  Index of the item in the list box
-        ///
-        /// @return
-        ///         - true on success
-        ///         - false when the index was too high
-        ///
-        /// @see setSelectedItem
-        /// @see setSelectedItemById
-        ///
+        /// @param hierarchy  Hierarchy of items, identifying the node that has to be collapsed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool setSelectedItemByIndex(std::size_t index);
+        void collapse(const std::vector<sf::String>& hierarchy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Deselects the selected item
-        ///
+        /// @brief Collapses all items
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void collapseAll();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Deselect the item if one was selected
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void deselectItem();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the item from the list with the given name
+        /// @brief Removes an item
         ///
-        /// @param itemName  The item to remove
+        /// @param hierarchy  Hierarchy of items, identifying the node to be removed
+        /// @param removeParentsWhenEmpty  Also delete the parent of the deleted item if it has no other children
         ///
-        /// In case the names are not unique, only the first item with that name will be removed.
-        ///
-        /// @return
-        ///        - true when the item was removed
-        ///        - false when the name did not match any item
-        ///
+        /// @return True when the item existed and was removed, false when hierarchy was incorrect
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeItem(const sf::String& itemName);
+        bool removeItem(const std::vector<sf::String>& hierarchy, bool removeParentsWhenEmpty = true);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the item that were added with the given id
-        ///
-        /// @param id  Id that was given to the addItem function
-        ///
-        /// In case the id is not unique, only the first item with that id will be removed.
-        ///
-        /// @return
-        ///        - true when the item was removed
-        ///        - false when there was no item with the given id
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeItemById(const sf::String& id);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes the item from the list box
-        ///
-        /// @param index  Index of the item in the list box
-        ///
-        /// @return
-        ///        - true when the item was removed
-        ///        - false when the index was too high
-        ///
-        /// @see removeItem
-        /// @see removeItemById
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool removeItemByIndex(std::size_t index);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Removes all items from the list
-        ///
+        /// @brief Removes all items
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAllItems();
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the item name of the item with the given id
-        ///
-        /// @param id  The id of the item that was given to it when it was added
-        ///
-        /// In case the id is not unique, the first item with that id will be returned.
-        ///
-        /// @return The requested item, or an empty string when no item matches the id
-        ///
+        /// @brief Returns the selected item
+        /// @return Hierarchy of items, identifying the selected node, or an empty list when no item was selected
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getItemById(const sf::String& id) const;
+        std::vector<sf::String> getSelectedItem() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the currently selected item
-        ///
-        /// @return The selected item
-        ///         When no item was selected then this function will return an empty string.
-        ///
+        /// @brief Returns the nodes in the tree view
+        /// @return List of nodes
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getSelectedItem() const;
+        std::vector<ConstNode> getNodes() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Gets the id of the selected item
-        ///
-        /// @return The id of the selected item, which was the optional id passed to the addItem function.
-        ///         When no item was selected then this function returns an empty string
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        sf::String getSelectedItemId() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Gets the index of the selected item
-        ///
-        /// @return The index of the selected item, or -1 when no item was selected
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int getSelectedItemIndex() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes an item with name originalValue to newValue
-        ///
-        /// @param originalValue The name of the item which you want to change
-        /// @param newValue      The new name for that item
-        ///
-        /// In case the names are not unique, only the first item with that name will be changed.
-        ///
-        /// @return
-        ///        - true when the item was changed
-        ///        - false when none of the items had the given name
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool changeItem(const sf::String& originalValue, const sf::String& newValue);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the name of an item with the given id to newValue
-        ///
-        /// @param id       The unique id of the item which you want to change
-        /// @param newValue The new name for that item
-        ///
-        /// In case the id is not unique, only the first item with that id will be changed.
-        ///
-        /// @return
-        ///        - true when the item was changed
-        ///        - false when none of the items had the given id
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool changeItemById(const sf::String& id, const sf::String& newValue);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the name of an item at the given index to newValue
-        ///
-        /// @param index    The index of the item which you want to change
-        /// @param newValue The new name for that item
-        ///
-        /// @return
-        ///        - true when the item was changed
-        ///        - false when the index was too high
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool changeItemByIndex(std::size_t index, const sf::String& newValue);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the amount of items in the list box
-        ///
-        /// @return Number of items inside the list box
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::size_t getItemCount() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a copy of the items in the list box
-        ///
-        /// @return items
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::vector<sf::String> getItems() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns a copy of the item ids in the list box
-        ///
-        /// @return item ids
-        ///
-        /// Items that were not given an id simply have an empty string as id.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const std::vector<sf::String>& getItemIds() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the height of the items in the list box
-        ///
-        /// @param itemHeight  The size of a single item in the list
-        ///
-        /// @warning When there is no scrollbar then the items will be removed when they no longer fit inside the list box
-        ///
+        /// @brief Changes the height of the items in the tree view
+        /// @param itemHeight  The size of a single item in the tree view
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setItemHeight(unsigned int itemHeight);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the height of the items in the list box
-        ///
+        /// @brief Returns the height of the items in the tree view
         /// @return The item height
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getItemHeight() const;
 
@@ -382,81 +230,25 @@ namespace tgui
         /// be auto-sized to nicely fit inside this item height.
         ///
         /// @see setItemHeight
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int textSize);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the text size of the items
-        ///
         /// @return The text size
-        ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         unsigned int getTextSize() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the maximum items that the list box can contain
+        /// @brief Returns whether the tree view contains the given item
         ///
-        /// @param maximumItems  The maximum items inside the list box.
-        ///                      When the maximum is set to 0 then the limit will be disabled
+        /// @param hierarchy  Hierarchy of items, identifying the node to search for
         ///
-        /// If no scrollbar was loaded then there is always a limitation because there will be a limited space for the items.
-        ///
+        /// @return Does the tree view contain the item?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMaximumItems(std::size_t maximumItems = 0);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum items that the list box can contain
-        ///
-        /// @return The maximum items inside the list box.
-        ///         If the function returns 0 then there is no limit
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::size_t getMaximumItems() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes whether the list box scrolls to the bottom when a new item is added
-        ///
-        /// @param autoScroll  Should list box scroll to the bottom when new items are added?
-        ///
-        /// Auto scrolling is enabled by default.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setAutoScroll(bool autoScroll);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum items that the list box can contain
-        ///
-        /// @return The maximum items inside the list box
-        ///         If the function returns 0 then there is no limit.
-        ///
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool getAutoScroll() const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the list box contains the given item
-        ///
-        /// @param item  The item to search for
-        ///
-        /// @return Does the list box contain the item?
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool contains(const sf::String& item) const;
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the list box contains an item with the given id
-        ///
-        /// @param id  The id of the item to search for
-        ///
-        /// @return Does the list box contain the id?
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool containsId(const sf::String& id) const;
+        bool contains(const std::vector<sf::String>& hierarchy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -497,6 +289,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void mouseNoLongerDown() override;
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void markNodesDirty();
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
@@ -506,6 +303,7 @@ namespace tgui
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -563,18 +361,6 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Update on which item the mouse is standing
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateHoveringItem(int item);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Update which item is selected
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void updateSelectedItem(int item);
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called every frame with the time passed since the last frame.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void update(sf::Time elapsedTime) override;
@@ -585,64 +371,121 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Widget::Ptr clone() const override
         {
-            return std::make_shared<ListBox>(*this);
+            return std::make_shared<TreeView>(*this);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateTextColors(std::vector<std::shared_ptr<Node>>& nodes);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void createNode(std::vector<std::shared_ptr<Node>>& menus, Node* parent, const sf::String& text);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Node* findParentNode(const std::vector<sf::String>& hierarchy, unsigned int parentIndex, std::vector<std::shared_ptr<Node>>& nodes, Node* parent, bool createParents);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Expands or collapses one of the visible items
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void toggleNodeInternal(std::size_t index);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Expands or collapses a node
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool expandOrCollapse(const std::vector<sf::String>& hierarchy, bool expand);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Helper function to load the items from a text file
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void loadItems(const std::unique_ptr<DataIO::Node>& node, std::vector<std::shared_ptr<Node>>& items, Node* parent);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Rebuilds the list of visible items and positions the texts
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        unsigned int updateVisibleNodes(std::vector<std::shared_ptr<Node>>& nodes, Node* selectedNode, float textPadding, unsigned int pos);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates the text colors of the selected and hovered items
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateSelectedAndHoveringItemColors();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates the text color of the hovered item
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateHoveredItem(int item);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates the text color of the selected item
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateSelectedItem(int item);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:
 
-        SignalItem onItemSelect   = {"ItemSelected"};   ///< An item was selected in the list box. Optional parameter: selected item
-        SignalItem onMousePress   = {"MousePressed"};   ///< The mouse went down on an item. Optional parameter: selected item
-        SignalItem onMouseRelease = {"MouseReleased"};  ///< The mouse was released on one of the items. Optional parameter: selected item
-        SignalItem onDoubleClick  = {"DoubleClicked"};  ///< An item was double clicked. Optional parameter: selected item
+        SignalItemHierarchy onItemSelect = {"ItemSelected"};   ///< An node was selected in the tree view. Optional parameter: selected node
+        SignalItemHierarchy onDoubleClick = {"DoubleClicked"}; ///< A leaf node was double clicked. Optional parameter: selected node
+        SignalItemHierarchy onExpand = {"Expanded"};           ///< A branch node was expanded in the tree view. Optional parameter: expanded node
+        SignalItemHierarchy onCollapse = {"Collapsed"};        ///< A branch node was collapsed in the tree view. Optional parameter: collapsed node
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        // This contains the different items in the list box
-        std::vector<Text>       m_items;
-        std::vector<sf::String> m_itemIds;
+        // This contains the nodes of the tree
+        std::vector<std::shared_ptr<Node>> m_nodes;
+        std::vector<std::shared_ptr<Node>> m_visibleNodes;
 
-        // What is the index of the selected item?
-        // This is also used by combo box, so it can't just be changed to a pointer!
         int m_selectedItem = -1;
-
-        int m_hoveringItem = -1;
+        int m_hoveredItem = -1;
 
         // The size must be stored
         unsigned int m_itemHeight = 0;
         unsigned int m_requestedTextSize = 0;
         unsigned int m_textSize = 0;
+        float m_maxRight = 0;
 
-        // This will store the maximum number of items in the list box (zero by default, meaning that there is no limit)
-        std::size_t m_maxItems = 0;
+        Vector2f m_iconBounds;
 
-        // When there are too many items a scrollbar will be shown
-        CopiedSharedPtr<ScrollbarChildWidget> m_scroll;
+        CopiedSharedPtr<ScrollbarChildWidget> m_verticalScrollbar;
+        CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScrollbar;
 
-        // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
+
         bool m_possibleDoubleClick = false;
+        int m_doubleClickNodeIndex = -1;
 
-        bool m_autoScroll = true;
-
-        Sprite m_spriteBackground;
+        Sprite    m_spriteBranchExpanded;
+        Sprite    m_spriteBranchCollapsed;
+        Sprite    m_spriteLeaf;
 
         // Cached renderer properties
         Borders   m_bordersCached;
         Borders   m_paddingCached;
         Color     m_borderColorCached;
         Color     m_backgroundColorCached;
-        Color     m_backgroundColorHoverCached;
-        Color     m_selectedBackgroundColorCached;
-        Color     m_selectedBackgroundColorHoverCached;
         Color     m_textColorCached;
         Color     m_textColorHoverCached;
         Color     m_selectedTextColorCached;
         Color     m_selectedTextColorHoverCached;
+        Color     m_selectedBackgroundColorCached;
+        Color     m_selectedBackgroundColorHoverCached;
+        Color     m_backgroundColorHoverCached;
         TextStyle m_textStyleCached;
-        TextStyle m_selectedTextStyleCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
@@ -652,4 +495,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_LIST_BOX_HPP
+#endif // TGUI_TREE_VIEW_HPP

@@ -223,6 +223,16 @@ namespace tgui
                                                       {"selectedtextcolor", Color::White},
                                                       {"selectedtextbackgroundcolor", Color{0, 110, 255}},
                                                       {"backgroundcolor", Color::White}})},
+                    {"treeview", RendererData::create({{"borders", Borders{1}},
+                                                       {"padding", Padding{0}},
+                                                       {"bordercolor", Color::Black},
+                                                       {"textcolor", Color{60, 60, 60}},
+                                                       {"textcolorhover", Color::Black},
+                                                       {"selectedtextcolor", Color::White},
+                                                       {"backgroundcolor", Color{245, 245, 245}},
+                                                       {"backgroundcolorhover", Color::White},
+                                                       {"selectedbackgroundcolor", Color{0, 110, 255}},
+                                                       {"selectedbackgroundcolorhover", Color{30, 150, 255}}})},
                     {"verticallayout", RendererData::create({})}
                };
             }

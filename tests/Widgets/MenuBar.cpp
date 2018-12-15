@@ -204,7 +204,7 @@ TEST_CASE("[MenuBar]")
             }
         }
 
-        SECTION("Invalid addMenuItem calls")
+        SECTION("Invalid calls")
         {
             REQUIRE(!menuBar->addMenuItem("Item"));
 

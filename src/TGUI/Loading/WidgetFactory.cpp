@@ -53,6 +53,7 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/TextBox.hpp>
+#include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Widgets/VerticalLayout.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,6 +92,7 @@ namespace tgui
         {"spinbutton", std::make_shared<SpinButton>},
         {"tabs", std::make_shared<Tabs>},
         {"textbox", std::make_shared<TextBox>},
+        {"treeview", std::make_shared<TreeView>},
         {"verticallayout", std::make_shared<VerticalLayout>}
     };
 

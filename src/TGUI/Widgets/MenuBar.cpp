@@ -277,7 +277,7 @@ namespace tgui
         if (!menu)
             return false;
 
-        createMenu((*menu).menuItems, hierarchy.back());
+        createMenu(menu->menuItems, hierarchy.back());
         return true;
     }
 
@@ -378,17 +378,17 @@ namespace tgui
         if (!menu)
             return false;
 
-        for (unsigned int j = 0; j < (*menu).menuItems.size(); ++j)
+        for (unsigned int j = 0; j < menu->menuItems.size(); ++j)
         {
-            auto& menuItem = (*menu).menuItems[j];
+            auto& menuItem = menu->menuItems[j];
             if (menuItem.text.getString() != hierarchy.back())
                 continue;
 
-            if (!enabled && ((*menu).selectedMenuItem == static_cast<int>(j)))
-                (*menu).selectedMenuItem = -1;
+            if (!enabled && (menu->selectedMenuItem == static_cast<int>(j)))
+                menu->selectedMenuItem = -1;
 
             menuItem.enabled = enabled;
-            updateMenuTextColor(menuItem, ((*menu).selectedMenuItem == static_cast<int>(j)));
+            updateMenuTextColor(menuItem, (menu->selectedMenuItem == static_cast<int>(j)));
             return true;
         }
 
@@ -413,7 +413,7 @@ namespace tgui
         if (!menuItem)
             return false;
 
-        return (*menuItem).enabled;
+        return menuItem->enabled;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,9 +583,9 @@ namespace tgui
         auto* menu = &m_menus[m_visibleMenu];
         std::vector<sf::String> hierarchy;
         hierarchy.push_back(m_menus[m_visibleMenu].text.getString());
-        while ((*menu).selectedMenuItem != -1)
+        while (menu->selectedMenuItem != -1)
         {
-            auto& menuItem = (*menu).menuItems[(*menu).selectedMenuItem];
+            auto& menuItem = menu->menuItems[menu->selectedMenuItem];
             hierarchy.push_back(menuItem.text.getString());
             if (menuItem.menuItems.empty())
             {
@@ -945,7 +945,7 @@ namespace tgui
         if (!menu)
             return nullptr;
 
-        for (auto& menuItem : (*menu).menuItems)
+        for (auto& menuItem : menu->menuItems)
         {
             if (menuItem.text.getString() != hierarchy.back())
                 continue;
@@ -1035,12 +1035,12 @@ namespace tgui
     void MenuBar::deselectBottomItem()
     {
         auto* menu = &m_menus[m_visibleMenu];
-        while ((*menu).selectedMenuItem != -1)
+        while (menu->selectedMenuItem != -1)
         {
-            auto& menuItem = (*menu).menuItems[(*menu).selectedMenuItem];
+            auto& menuItem = menu->menuItems[menu->selectedMenuItem];
             if (menuItem.menuItems.empty())
             {
-                closeSubMenus((*menu).menuItems, (*menu).selectedMenuItem);
+                closeSubMenus(menu->menuItems, menu->selectedMenuItem);
                 break;
             }
 

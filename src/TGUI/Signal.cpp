@@ -351,7 +351,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
-    unsigned int SignalMenuItem::connect(const DelegateMenuItem& handler)
+    unsigned int SignalItemHierarchy::connect(const DelegateMenuItem& handler)
     {
         const auto id = generateUniqueId();
         m_handlers[id] = [handler](){ handler(internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
@@ -360,7 +360,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SignalMenuItem::connect(const DelegateMenuItemEx& handler)
+    unsigned int SignalItemHierarchy::connect(const DelegateMenuItemEx& handler)
     {
         const auto id = generateUniqueId();
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<sf::String>(internal_signal::parameters[1])); };
@@ -369,7 +369,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SignalMenuItem::connect(const DelegateMenuItemFull& handler)
+    unsigned int SignalItemHierarchy::connect(const DelegateMenuItemFull& handler)
     {
         const auto id = generateUniqueId();
         m_handlers[id] = [handler](){ handler(internal_signal::dereference<std::vector<sf::String>>(internal_signal::parameters[2])); };
@@ -378,7 +378,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SignalMenuItem::connect(const DelegateMenuItemFullEx& handler)
+    unsigned int SignalItemHierarchy::connect(const DelegateMenuItemFullEx& handler)
     {
         const auto id = generateUniqueId();
         m_handlers[id] = [handler, name=m_name](){ handler(getWidget(), name, internal_signal::dereference<std::vector<sf::String>>(internal_signal::parameters[2])); };
@@ -387,7 +387,7 @@ namespace tgui
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int SignalMenuItem::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
+    unsigned int SignalItemHierarchy::validateTypes(std::initializer_list<std::type_index> unboundParameters) const
     {
         if ((unboundParameters.size() == 1) && (checkParamType<std::string>(unboundParameters.begin()) || checkParamType<sf::String>(unboundParameters.begin())))
             return 1;

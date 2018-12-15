@@ -290,7 +290,7 @@ namespace tgui
         /// @param hierarchy  Hierarchy of the menu item, starting with the menu and ending with menu item to be deleted
         /// @param removeParentsWhenEmpty  Also delete the parent of the deleted menu item if it has no other children
         ///
-        /// @return True when the menu item exists, false when hierarchy was incorrect
+        /// @return True when the menu item existed and was removed, false when hierarchy was incorrect
         ///
         /// @code
         /// menuBar->removeMenuItem({"File", "Save"});
@@ -606,7 +606,7 @@ namespace tgui
         /// Optional parameters:
         ///     - The text of the clicked menu item
         ///     - List containing both the name of the menu and the menu item that was clicked
-        SignalMenuItem onMenuItemClick = {"MenuItemClicked"};
+        SignalItemHierarchy onMenuItemClick = {"MenuItemClicked"};
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

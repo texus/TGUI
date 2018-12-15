@@ -1010,7 +1010,7 @@ namespace tgui
             // Draw the background of the selected item
             if (m_selectedItem >= 0)
             {
-                states.transform.translate({0, static_cast<float>(m_selectedItem * m_itemHeight)});
+                states.transform.translate({0, m_selectedItem * static_cast<float>(m_itemHeight)});
 
                 const Vector2f size = {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)};
                 if ((m_selectedItem == m_hoveringItem) && m_selectedBackgroundColorHoverCached.isSet())
@@ -1018,15 +1018,15 @@ namespace tgui
                 else
                     drawRectangleShape(target, states, size, m_selectedBackgroundColorCached);
 
-                states.transform.translate({0, -static_cast<float>(m_selectedItem * m_itemHeight)});
+                states.transform.translate({0, -m_selectedItem * static_cast<float>(m_itemHeight)});
             }
 
             // Draw the background of the item on which the mouse is standing
             if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
             {
-                states.transform.translate({0, static_cast<float>(m_hoveringItem * m_itemHeight)});
+                states.transform.translate({0, m_hoveringItem * static_cast<float>(m_itemHeight)});
                 drawRectangleShape(target, states, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), static_cast<float>(m_itemHeight)}, m_backgroundColorHoverCached);
-                states.transform.translate({0, -static_cast<float>(m_hoveringItem * m_itemHeight)});
+                states.transform.translate({0, -m_hoveringItem * static_cast<float>(m_itemHeight)});
             }
 
             // Draw the items

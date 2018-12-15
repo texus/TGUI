@@ -47,6 +47,7 @@ set(TGUI_SRC
     Renderers/SpinButtonRenderer.cpp
     Renderers/TabsRenderer.cpp
     Renderers/TextBoxRenderer.cpp
+    Renderers/TreeViewRenderer.cpp
     Renderers/WidgetRenderer.cpp
     Widgets/BitmapButton.cpp
     Widgets/BoxLayout.cpp
@@ -80,6 +81,7 @@ set(TGUI_SRC
     Widgets/SpinButton.cpp
     Widgets/Tabs.cpp
     Widgets/TextBox.cpp
+    Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
 )
 

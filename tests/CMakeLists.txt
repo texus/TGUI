@@ -54,6 +54,7 @@ set(TEST_SOURCES
     Widgets/SpinButton.cpp
     Widgets/Tabs.cpp
     Widgets/TextBox.cpp
+    Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
 )
 
