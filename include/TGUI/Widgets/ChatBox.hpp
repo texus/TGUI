@@ -119,7 +119,7 @@ namespace tgui
         /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
         ///
-        /// The default text color will be used.
+        /// The default text color and style will be used.
         ///
         /// @param text  Text that will be added to the chat box
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,6 +131,8 @@ namespace tgui
         ///
         /// The whole text passed to this function will be considered as one line for the getLine and removeLine functions,
         /// even if it is too long and gets split over multiple lines.
+        ///
+        /// The default text style will be used.
         ///
         /// @param text   Text that will be added to the chat box
         /// @param color  Color of the text
@@ -281,7 +283,7 @@ namespace tgui
         /// @brief Lets the first lines start from the top or from the bottom of the chat box
         ///
         /// Note that this only makes a difference when the lines don't fill the entire chat box.
-        /// This does not change the order of the lines, new lines will always be below older lines.
+        /// This does not change the order of the lines.
         ///
         /// @param startFromTop  Let the first lines be placed at the top of the chat box, or remain at the bottom?
         ///
@@ -295,7 +297,7 @@ namespace tgui
         /// @brief Returns whether the first lines start from the top or from the bottom of the chat box
         ///
         /// Note that this only makes a difference when the lines don't fill the entire chat box.
-        /// This does not change the order of the lines, new lines will always be below older lines.
+        /// This does not change the order of the lines.
         ///
         /// @return Are the first lines displayed at the top of the chat box?
         ///
