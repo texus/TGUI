@@ -1,8 +1,8 @@
-TGUI 0.8.2  (TBD)
------------------
+TGUI 0.8.2  (16 December 2018)
+------------------------------
 
-- TreeView widget
-- Text styles of lines in ChatBox can now changed
+- TreeView widget added
+- Text styles of lines in ChatBox can now be changed
 - Clipping was broken when using multiple windows
 - ScrollbablePanel didn't fully scroll to right with both scrollbars visible
 
