@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.1</span>
+   &#160;<span id="projectnumber">0.8.2</span>
    </div>
   </td>
  </tr>
@@ -186,6 +186,7 @@ $(function() {
 , <a class="el" href="classtgui_1_1SpinButton.html#a929a7ac08993fa0e316b16c185f797d4">tgui::SpinButton</a>
 , <a class="el" href="classtgui_1_1Tabs.html#aa8c8c4cf332ed47a2cfba19ce77614de">tgui::Tabs</a>
 , <a class="el" href="classtgui_1_1TextBox.html#a47c6d717fc29324735ee297827d650fe">tgui::TextBox</a>
+, <a class="el" href="classtgui_1_1TreeView.html#a2028020a5c5d5ec69f25f2fd961e68f2">tgui::TreeView</a>
 , <a class="el" href="classtgui_1_1VerticalLayout.html#a631c3a5478b964a3b892e8e20a022f33">tgui::VerticalLayout</a>
 , <a class="el" href="classtgui_1_1Widget.html#a135aa28677e4ac3604c6285b469d6a89">tgui::Widget</a>
 , <a class="el" href="classtgui_1_1WidgetRenderer.html#a05ebc602da72d1314688f031690ff31c">tgui::WidgetRenderer</a>
@@ -193,15 +194,25 @@ $(function() {
 <li>closeMenu()
 : <a class="el" href="classtgui_1_1MenuBar.html#a312ec65ba2bd3cc63b3f9e4e4ee5c777">tgui::MenuBar</a>
 </li>
+<li>collapse()
+: <a class="el" href="classtgui_1_1TreeView.html#aa193389b31c19a62f5a55bf5cd1e3e2c">tgui::TreeView</a>
+</li>
+<li>collapseAll()
+: <a class="el" href="classtgui_1_1TreeView.html#a5eb044dfc92d14570dd1fe9edbdcb958">tgui::TreeView</a>
+</li>
 <li>Color()
-: <a class="el" href="classtgui_1_1Color.html#aa9e4053a43d22fa354a676cb28a92706">tgui::Color</a>
+: <a class="el" href="classtgui_1_1Color.html#a9c74477778994d5c16678a7cdf1ac174">tgui::Color</a>
 </li>
 <li>connect()
 : <a class="el" href="classtgui_1_1Signal.html#aa182953cceb75b06e8e6ce12c6e190ea">tgui::Signal</a>
+, <a class="el" href="classtgui_1_1SignalChildWindow.html#a064ba28170c72c013f37bc443e912d6d">tgui::SignalChildWindow</a>
+, <a class="el" href="classtgui_1_1SignalItem.html#ab4b2fd4d3753c27e485217118d8aa8ab">tgui::SignalItem</a>
+, <a class="el" href="classtgui_1_1SignalItemHierarchy.html#afdb43a21ab20aa41d3a73d4cbe18f013">tgui::SignalItemHierarchy</a>
+, <a class="el" href="classtgui_1_1SignalRange.html#a8ca13d36884a536f64a1e24a356ec463">tgui::SignalRange</a>
 , <a class="el" href="classtgui_1_1SignalWidgetBase.html#a71a57f0500ef818b1a0a0d8a35cdea06">tgui::SignalWidgetBase</a>
 </li>
 <li>connectMenuItem()
-: <a class="el" href="classtgui_1_1MenuBar.html#a0f5a69003429449896da47714ca8aa17">tgui::MenuBar</a>
+: <a class="el" href="classtgui_1_1MenuBar.html#ab71bf302aa931d83782a269f8cbdfbf5">tgui::MenuBar</a>
 </li>
 <li>Container()
 : <a class="el" href="classtgui_1_1Container.html#a0939764cbdc168b0cd477f39d55ffdb7">tgui::Container</a>
@@ -245,6 +256,7 @@ $(function() {
 , <a class="el" href="classtgui_1_1SpinButton.html#a659e2a6d1c08da1bd8002beb9ba9017c">tgui::SpinButton</a>
 , <a class="el" href="classtgui_1_1Tabs.html#a649720acbd2c69b59a35cc4c5aea50f7">tgui::Tabs</a>
 , <a class="el" href="classtgui_1_1TextBox.html#acd3589ec083c10493a3c463f3d915d9f">tgui::TextBox</a>
+, <a class="el" href="classtgui_1_1TreeView.html#ae9fe608a9a233e8726d141e0917b5ea6">tgui::TreeView</a>
 , <a class="el" href="classtgui_1_1VerticalLayout.html#aec9a857e019da1b5ca3a1a5883372b8f">tgui::VerticalLayout</a>
 </li>
 <li>copyTexture()
@@ -282,6 +294,7 @@ $(function() {
 , <a class="el" href="classtgui_1_1SpinButton.html#a018404af4e81ac22dbd8c3954bf1a592">tgui::SpinButton</a>
 , <a class="el" href="classtgui_1_1Tabs.html#a1812f439574eca22ce3e2bd97fa6ea01">tgui::Tabs</a>
 , <a class="el" href="classtgui_1_1TextBox.html#a5d348e0bf6643ee73b99bb3fa42e2486">tgui::TextBox</a>
+, <a class="el" href="classtgui_1_1TreeView.html#adf2958ac7081766447877face9d12bfd">tgui::TreeView</a>
 , <a class="el" href="classtgui_1_1VerticalLayout.html#a9086e70227c840b525c512179a6ac140">tgui::VerticalLayout</a>
 </li>
 </ul>
@@ -289,7 +302,7 @@ $(function() {
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 16 2018 19:52:42 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Dec 16 2018 18:06:25 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

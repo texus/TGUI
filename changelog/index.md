@@ -7,6 +7,13 @@ changelog:
   minors:
   - version: 8
     patches:
+    - version: 2
+      date: 16 December 2018
+      changes: |
+        TreeView widget added
+        Text styles of lines in ChatBox can now be changed
+        Clipping was broken when using multiple windows
+        ScrollbablePanel didn't fully scroll to right with both scrollbars visible
     - version: 1
       date: 15 October 2018
       changes: |
