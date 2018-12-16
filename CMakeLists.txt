@@ -25,7 +25,7 @@ if(NOT SFML_DIR AND NOT CMAKE_MODULE_PATH)
 endif()
 
 # Project name and version
-project(TGUI VERSION 0.8.1)
+project(TGUI VERSION 0.8.2)
 
 # Include the configuration file
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
