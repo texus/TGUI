@@ -1133,7 +1133,20 @@ namespace tgui
                     }
                     else // No textures are used
                     {
-                        const Color& iconColor = (i == m_hoveredItem) ? m_textColorHoverCached : m_textColorCached;
+                        Color iconColor = m_textColorCached;
+                        if (i == m_selectedItem)
+                        {
+                            if ((m_selectedItem == m_hoveredItem) && m_selectedTextColorHoverCached.isSet())
+                                iconColor = m_selectedTextColorHoverCached;
+                            else if (m_selectedTextColorCached.isSet())
+                                iconColor = m_selectedTextColorCached;
+                        }
+                        if ((i == m_hoveredItem) && (m_selectedItem != m_hoveredItem))
+                        {
+                            if (m_textColorHoverCached.isSet())
+                                iconColor = m_textColorHoverCached;
+                        }
+
                         const float thickness = std::max(1.f, std::round(m_itemHeight / 10.f));
                         if (m_visibleNodes[i]->expanded)
                         {
