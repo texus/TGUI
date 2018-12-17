@@ -1097,7 +1097,7 @@ namespace tgui
                 auto statesForIcon = states;
                 const float iconPadding = (m_iconBounds.x / 4.f);
                 const float iconOffset = iconPadding + ((m_iconBounds.x + iconPadding) * m_visibleNodes[i]->depth);
-                statesForIcon.transform.translate(iconOffset, std::round((i * m_itemHeight) + ((m_itemHeight - m_iconBounds.y) / 2.f)));
+                statesForIcon.transform.translate(std::round(iconOffset), std::round((i * m_itemHeight) + ((m_itemHeight - m_iconBounds.y) / 2.f)));
 
                 // Draw an icon for the leaf node if a texture is set
                 if (m_visibleNodes[i]->nodes.empty())
