@@ -49,7 +49,7 @@ namespace tgui
         enum class ScrollbarPolicy
         {
             Automatic,  ///< Show the scrollbar only when needed (default)
-            Always,     ///< Always show the scrollbar, even when the contents fit inside the panel
+            Always,     ///< Always show the scrollbar, even when the contents fits inside the panel
             Never       ///< Never show the scrollbar, even if the contents does not fit inside the panel
         };
 
@@ -198,20 +198,20 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Vector2f getContentOffset() const;
 
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the width of the scrollbars
         /// @param width  Scrollbar width
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbarWidth(float width);
+        TGUI_DEPRECATED("Use the ScrollbarWidth renderer property instead") void setScrollbarWidth(float width);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the width of the scrollbars
         /// @return Scrollbar width
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        float getScrollbarWidth() const;
-
+        TGUI_DEPRECATED("Use the ScrollbarWidth renderer property instead") float getScrollbarWidth() const;
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the vertical scrollbar should be displayed

@@ -78,12 +78,6 @@ TEST_CASE("[ScrollablePanel]")
         }
     }
 
-    SECTION("ScrollbarWidth")
-    {
-        panel->setScrollbarWidth(25);
-        REQUIRE(panel->getScrollbarWidth() == 25);
-    }
-
     SECTION("Events / Signals")
     {
         unsigned int mousePressedCount = 0;

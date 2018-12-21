@@ -304,7 +304,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void ScrollablePanel::setScrollbarWidth(float width)
     {
         m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
@@ -318,7 +318,7 @@ namespace tgui
     {
         return m_verticalScrollbar->getSize().x;
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ScrollablePanel::setVerticalScrollbarPolicy(ScrollbarPolicy policy)

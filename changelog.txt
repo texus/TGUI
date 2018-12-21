@@ -1,3 +1,10 @@
+TGUI 0.8.3  (TBD)
+-----------------
+
+- Default icons in TreeView didn't change color when item was selected
+- Rounded icon position in TreeView to avoid bad icon alignment
+
+
 TGUI 0.8.2  (16 December 2018)
 ------------------------------
 
