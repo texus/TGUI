@@ -853,6 +853,15 @@ namespace tgui
         {
             m_verticalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
             m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
+
+            // If no scrollbar width was set then we may need to use the one from the texture
+            if (!getSharedRenderer()->getScrollbarWidth())
+            {
+                const float width = m_verticalScrollbar->getDefaultWidth();
+                m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
+                m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
+                markNodesDirty();
+            }
         }
         else if (property == "scrollbarwidth")
         {

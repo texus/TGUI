@@ -1492,6 +1492,13 @@ namespace tgui
         else if (property == "scrollbar")
         {
             m_verticalScroll->setRenderer(getSharedRenderer()->getScrollbar());
+
+            // If no scrollbar width was set then we may need to use the one from the texture
+            if (!getSharedRenderer()->getScrollbarWidth())
+            {
+                m_verticalScroll->setSize({m_verticalScroll->getDefaultWidth(), m_verticalScroll->getSize().y});
+                setSize(m_size);
+            }
         }
         else if (property == "scrollbarwidth")
         {
