@@ -78,6 +78,28 @@ TEST_CASE("[ScrollablePanel]")
         }
     }
 
+    SECTION("VerticalScrollbarPolicy")
+    {
+        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+        panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
+        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Always);
+        panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+        panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
+        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Never);
+    }
+
+    SECTION("HorizontalScrollbarPolicy")
+    {
+        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+        panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
+        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Always);
+        panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+        panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
+        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Never);
+    }
+
     SECTION("Events / Signals")
     {
         unsigned int mousePressedCount = 0;

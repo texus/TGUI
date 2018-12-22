@@ -1,6 +1,9 @@
 TGUI 0.8.3  (TBD)
 -----------------
 
+- Label can now have a vertical scrollbar
+- Default scrollbar width wasn't always taken from texture size in widgets containing scrollbars
+- Scrollbar wasn't drawn correctly when Maximum equaled ViewportSize with AutoHide disabled
 - Default icons in TreeView didn't change color when item was selected
 - Rounded icon position in TreeView to avoid bad icon alignment
 
@@ -11,7 +14,7 @@ TGUI 0.8.2  (16 December 2018)
 - TreeView widget added
 - Text styles of lines in ChatBox can now be changed
 - Clipping was broken when using multiple windows
-- ScrollbablePanel didn't fully scroll to right with both scrollbars visible
+- ScrollbablePanel didn't fully scroll to the right with both scrollbars visible
 
 
 TGUI 0.8.1  (15 October 2018)

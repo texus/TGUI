@@ -102,7 +102,7 @@ TEST_CASE("[Clipping]")
         auto group = tgui::Group::create();
         panel->add(group);
 
-        auto layout = tgui::HorizontalLayout::create({150, 25});
+        auto layout = tgui::HorizontalLayout::create({150, 30});
         layout->setPosition({-30, -15});
         group->add(layout);
 

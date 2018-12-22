@@ -144,7 +144,7 @@
             return it->second.getRenderer(); \
         else \
         { \
-            auto renderer = Theme::getDefault()->getRendererNoThrow(RENDERER); \
+            const auto& renderer = Theme::getDefault()->getRendererNoThrow(RENDERER); \
             m_data->propertyValuePairs[toLower(#NAME)] = {renderer ? renderer : RendererData::create()}; \
             return renderer; \
         } \

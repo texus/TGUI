@@ -128,6 +128,17 @@ TEST_CASE("[Label]")
         REQUIRE(label->getMaximumTextWidth() == 500);
     }
 
+    SECTION("ScrollbarPolicy")
+    {
+        REQUIRE(label->getScrollbarPolicy() == tgui::Label::ScrollbarPolicy::Never);
+        label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Always);
+        REQUIRE(label->getScrollbarPolicy() == tgui::Label::ScrollbarPolicy::Always);
+        label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Automatic);
+        REQUIRE(label->getScrollbarPolicy() == tgui::Label::ScrollbarPolicy::Automatic);
+        label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Never);
+        REQUIRE(label->getScrollbarPolicy() == tgui::Label::ScrollbarPolicy::Never);
+    }
+
     SECTION("IgnoreMouseEvents")
     {
         REQUIRE(!label->isIgnoringMouseEvents());
@@ -176,6 +187,10 @@ TEST_CASE("[Label]")
     {
         auto renderer = label->getRenderer();
 
+        tgui::ScrollbarRenderer scrollbarRenderer;
+        scrollbarRenderer.setTrackColor(sf::Color::Red);
+        scrollbarRenderer.setThumbColor(sf::Color::Blue);
+
         SECTION("set serialized property")
         {
             REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(100, 50, 150)"));
@@ -184,6 +199,8 @@ TEST_CASE("[Label]")
             REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
             REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold | Italic"));
+            REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", "{ TrackColor = Red; ThumbColor = Blue; }"));
+            REQUIRE_NOTHROW(renderer->setProperty("ScrollbarWidth", "15"));
         }
 
         SECTION("set object property")
@@ -194,6 +211,8 @@ TEST_CASE("[Label]")
             REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
             REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle{sf::Text::Bold | sf::Text::Italic}));
+            REQUIRE_NOTHROW(renderer->setProperty("Scrollbar", scrollbarRenderer.getData()));
+            REQUIRE_NOTHROW(renderer->setProperty("ScrollbarWidth", 15));
         }
 
         SECTION("functions")
@@ -204,6 +223,8 @@ TEST_CASE("[Label]")
             renderer->setBorders({1, 2, 3, 4});
             renderer->setPadding({5, 6, 7, 8});
             renderer->setTextStyle(sf::Text::Bold | sf::Text::Italic);
+            renderer->setScrollbar(scrollbarRenderer.getData());
+            renderer->setScrollbarWidth(15);
         }
 
         REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(100, 50, 150));
@@ -212,6 +233,7 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
+        REQUIRE(renderer->getProperty("ScrollbarWidth").getNumber() == 15);
 
         REQUIRE(renderer->getTextColor() == sf::Color(100, 50, 150));
         REQUIRE(renderer->getBackgroundColor() == sf::Color(150, 100, 50));
@@ -219,6 +241,10 @@ TEST_CASE("[Label]")
         REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         REQUIRE(renderer->getPadding() == tgui::Padding(5, 6, 7, 8));
         REQUIRE(renderer->getTextStyle() == (sf::Text::Bold | sf::Text::Italic));
+
+        REQUIRE(renderer->getScrollbar()->propertyValuePairs.size() == 2);
+        REQUIRE(renderer->getScrollbar()->propertyValuePairs["trackcolor"].getColor() == sf::Color::Red);
+        REQUIRE(renderer->getScrollbar()->propertyValuePairs["thumbcolor"].getColor() == sf::Color::Blue);
     }
 
     SECTION("Saving and loading from file")
@@ -227,6 +253,7 @@ TEST_CASE("[Label]")
         label->setTextSize(25);
         label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
         label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
+        label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Never);
         label->setMaximumTextWidth(300);
         label->ignoreMouseEvents(true);
 
@@ -250,6 +277,7 @@ TEST_CASE("[Label]")
         SECTION("Complex")
         {
             TEST_DRAW_INIT(420, 215, label)
+            label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Automatic);
             label->setText("Bacon ipsum dolor amet alcatra jerky turkey ball tip jowl beef. Shank landjaeger frankfurter, doner burgdoggen strip steak chicken pancetta jowl. Pork loin leberkas meatloaf ham shoulder cow hamburger pancetta. Rump turducken ribeye salami pork chop sirloin. Leberkas alcatra filet mignon jerky pork belly.");
             label->setTextSize(18);
             label->setSize(400, 205);
@@ -259,6 +287,12 @@ TEST_CASE("[Label]")
             label->getRenderer()->setPadding({4, 3, 2, 1});
             label->getRenderer()->setOpacity(0.7f);
             TEST_DRAW("Label_Complex.png")
+
+            SECTION("With scrollbar")
+            {
+                label->setText(label->getText() + "\n" + label->getText());
+                TEST_DRAW("Label_Complex_WithScrollbar.png")
+            }
         }
     }
 }

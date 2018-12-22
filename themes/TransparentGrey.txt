@@ -67,6 +67,7 @@ EditBox {
 
 Label {
     TextColor = rgba(255, 255, 255, 215);
+    Scrollbar = &Scrollbar;
 }
 
 ListBox {
