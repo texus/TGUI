@@ -389,10 +389,19 @@ namespace tgui
 
     void Scrollbar::mouseMoved(Vector2f pos)
     {
-        pos -= getPosition();
+        // When dragging the scrollbar we can pass here without the mouse being on top of the scrollbar
+        if (mouseOnWidget(pos))
+        {
+            if (!m_mouseHover)
+                mouseEnteredWidget();
+        }
+        else
+        {
+            if (m_mouseHover)
+                mouseLeftWidget();
+        }
 
-        if (!m_mouseHover)
-            mouseEnteredWidget();
+        pos -= getPosition();
 
         // Check if the mouse button went down on top of the track (or thumb)
         if (m_mouseDown && !m_mouseDownOnArrow)
@@ -428,7 +437,12 @@ namespace tgui
                     if ((thumbTop - m_arrowUp.height > 0) && (thumbTop + m_thumb.height + m_arrowDown.height < getSize().y))
                         m_thumb.top = thumbTop;
                     else // Prevent the thumb from going outside the scrollbar
-                        m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_viewportSize));
+                    {
+                        if (m_maximum != m_viewportSize)
+                            m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_viewportSize));
+                        else
+                            m_thumb.top = m_track.top;
+                    }
                 }
                 else // The click occurred on the track
                 {
@@ -495,7 +509,12 @@ namespace tgui
                     if ((thumbLeft - m_arrowUp.width > 0) && (thumbLeft + m_thumb.width + m_arrowDown.width < getSize().x))
                         m_thumb.left = thumbLeft;
                     else // Prevent the thumb from going outside the scrollbar
-                        m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_viewportSize));
+                    {
+                        if (m_maximum != m_viewportSize)
+                            m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_viewportSize));
+                        else
+                            m_thumb.left = m_track.left;
+                    }
                 }
                 else // The click occurred on the track
                 {
@@ -560,7 +579,9 @@ namespace tgui
             setValue(static_cast<unsigned int>(m_value - (delta * m_scrollAmount)));
 
         // Update over which part the mouse is hovering
-        mouseMoved(pos - getPosition());
+        if (mouseOnWidget(pos - getPosition()))
+            mouseMoved(pos - getPosition());
+
         return true;
     }
 
@@ -880,12 +901,18 @@ namespace tgui
         if (m_verticalScroll)
         {
             m_thumb.left = 0;
-            m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_viewportSize));
+            if (m_maximum != m_viewportSize)
+                m_thumb.top = m_track.top + ((m_track.height - m_thumb.height) * m_value / (m_maximum - m_viewportSize));
+            else
+                m_thumb.top = m_track.top;
         }
         else
         {
-            m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_viewportSize));
             m_thumb.top = 0;
+            if (m_maximum != m_viewportSize)
+                m_thumb.left = m_track.left + ((m_track.width - m_thumb.width) * m_value / (m_maximum - m_viewportSize));
+            else
+                m_thumb.left = m_track.left;
         }
     }
 
