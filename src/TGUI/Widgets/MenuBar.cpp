@@ -81,7 +81,7 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         std::vector<std::unique_ptr<MenuBar::GetAllMenusElement>> getAllMenusImpl(const std::vector<MenuBar::Menu>& menus)
         {
             std::vector<std::unique_ptr<MenuBar::GetAllMenusElement>> menuElements;
@@ -97,7 +97,7 @@ namespace tgui
 
             return menuElements;
         }
-
+#endif
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         std::vector<MenuBar::GetMenuListElement> getMenuListImpl(const std::vector<MenuBar::Menu>& menus)
