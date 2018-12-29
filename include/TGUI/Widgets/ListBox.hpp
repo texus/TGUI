@@ -376,7 +376,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the text size of the items
         ///
-        /// @param textSize  The size size of the text
+        /// @param textSize  The character size of the text
         ///
         /// This will not change the height that each item has. By default (or when passing 0 to this function) the text will
         /// be auto-sized to nicely fit inside this item height.
@@ -430,11 +430,8 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum items that the list box can contain
-        ///
-        /// @return The maximum items inside the list box
-        ///         If the function returns 0 then there is no limit.
-        ///
+        /// @brief Returns whether the list box scrolls to the bottom when a new item is added
+        /// @return Does the list box scroll to the bottom when new items are added
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool getAutoScroll() const;
 
