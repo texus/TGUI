@@ -6,6 +6,8 @@ TGUI 0.8.3  (TBD)
 - Scrollbar wasn't drawn correctly when Maximum equaled ViewportSize with AutoHide disabled
 - Default icons in TreeView didn't change color when item was selected
 - Rounded icon position in TreeView to avoid bad icon alignment
+- TreeView didn't handle opacity and font changes
+- Sprites didn't keep their transparency when resized
 
 
 TGUI 0.8.2  (16 December 2018)

@@ -45,6 +45,30 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        void setTextOpacityImpl(std::vector<std::shared_ptr<TreeView::Node>>& nodes, float opacity)
+        {
+            for (auto& node : nodes)
+            {
+                node->text.setOpacity(opacity);
+                if (!node->nodes.empty())
+                    setTextOpacityImpl(node->nodes, opacity);
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void setTextFontImpl(std::vector<std::shared_ptr<TreeView::Node>>& nodes, const Font& font)
+        {
+            for (auto& node : nodes)
+            {
+                node->text.setFont(font);
+                if (!node->nodes.empty())
+                    setTextFontImpl(node->nodes, font);
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         std::shared_ptr<TreeView::Node> cloneNode(const std::shared_ptr<TreeView::Node>& oldNode, TreeView::Node* parent)
         {
             auto newNode = std::make_shared<TreeView::Node>();
@@ -558,7 +582,6 @@ namespace tgui
             m_textSize = Text::findBestTextSize(m_fontCached, m_itemHeight * 0.8f);
 
         setTextSizeImpl(m_nodes, textSize);
-        markNodesDirty();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -870,10 +893,26 @@ namespace tgui
             m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
             markNodesDirty();
         }
-        else
+        else if (property == "opacity")
         {
             Widget::rendererChanged(property);
+
+            setTextOpacityImpl(m_nodes, m_opacityCached);
+
+            m_spriteBranchExpanded.setOpacity(m_opacityCached);
+            m_spriteBranchCollapsed.setOpacity(m_opacityCached);
+            m_spriteLeaf.setOpacity(m_opacityCached);
+
+            m_verticalScrollbar->setInheritedOpacity(m_opacityCached);
+            m_horizontalScrollbar->setInheritedOpacity(m_opacityCached);
         }
+        else if (property == "font")
+        {
+            Widget::rendererChanged(property);
+            setTextFontImpl(m_nodes, m_fontCached);
+        }
+        else
+            Widget::rendererChanged(property);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
