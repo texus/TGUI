@@ -1273,6 +1273,8 @@ namespace tgui
 			m_selEnd = m_selStart;
 		}
 
+		updateScrollbars();
+
 		// Tell the scrollbar how many pixels the text contains
 		const bool vertScrollbarShown = m_verticalScroll->isShown();
 		const bool horiScrollbarShown = m_horizontalScroll->isShown();
