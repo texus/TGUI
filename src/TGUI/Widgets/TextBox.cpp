@@ -118,6 +118,9 @@ namespace tgui
 		if (m_lineHeight == 0)
 			return;
 
+
+		updateScrollbars();
+
 		// The size of the text box has changed, update the text
 		rearrangeText(true);
 	}
@@ -229,6 +232,8 @@ namespace tgui
 			m_horizontalScroll->setVisible(false);
 			rearrangeText(false);
 		}
+
+		updateScrollbars();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,6 +257,8 @@ namespace tgui
 			m_verticalScroll->setVisible(false);
 			rearrangeText(false);
 		}
+
+		updateScrollbars();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1277,6 +1284,20 @@ namespace tgui
 		m_horizontalScroll->setMaximum(static_cast<unsigned int>(m_maxLineWidth
 																 + Text::getExtraHorizontalPadding(m_fontCached, m_textSize) * 2));
 
+		// We may have to recalculate what we just calculated if the scrollbar just appeared or disappeared
+		if ((vertScrollbarShown != m_verticalScroll->isShown()) || (horiScrollbarShown != m_horizontalScroll->isShown()))
+		{
+			rearrangeText(true);
+			return;
+		}
+
+		updateSelectionTexts();
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void TextBox::updateScrollbars()
+	{
 		if (isVerticalScrollbarPresent())
 		{
 			if ((m_maxLineWidth + m_verticalScroll->getSize().x) > (getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()))
@@ -1304,15 +1325,6 @@ namespace tgui
 				m_horizontalScroll->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
 			}
 		}
-
-		// We may have to recalculate what we just calculated if the scrollbar just appeared or disappeared
-		if ((vertScrollbarShown != m_verticalScroll->isShown()) || (horiScrollbarShown != m_horizontalScroll->isShown()))
-		{
-			rearrangeText((horiScrollbarShown != m_horizontalScroll->isShown()));
-			return;
-		}
-
-		updateSelectionTexts();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
