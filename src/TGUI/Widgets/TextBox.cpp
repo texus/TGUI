@@ -1308,7 +1308,7 @@ namespace tgui
 		// We may have to recalculate what we just calculated if the scrollbar just appeared or disappeared
 		if ((vertScrollbarShown != m_verticalScroll->isShown()) || (horiScrollbarShown != m_horizontalScroll->isShown()))
 		{
-			rearrangeText((horiScrollbarShown == m_horizontalScroll->isShown()));
+			rearrangeText((horiScrollbarShown != m_horizontalScroll->isShown()));
 			return;
 		}
 
