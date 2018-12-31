@@ -75,11 +75,11 @@ namespace tgui
     {
         m_color = color;
 
-    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         m_text.setFillColor(Color::calcColorOpacity(color, m_opacity));
-    #else
+#else
         m_text.setColor(Color::calcColorOpacity(color, m_opacity));
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,11 +95,11 @@ namespace tgui
     {
         m_opacity = opacity;
 
-    #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
         m_text.setFillColor(Color::calcColorOpacity(m_color, opacity));
-    #else
+#else
         m_text.setColor(Color::calcColorOpacity(m_color, opacity));
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,11 +127,11 @@ namespace tgui
                 m_text.setCharacterSize(getCharacterSize());
                 m_text.setStyle(getStyle());
 
-            #if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
+#if SFML_VERSION_MAJOR > 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4)
                 m_text.setFillColor(Color::calcColorOpacity(getColor(), getOpacity()));
-            #else
+#else
                 m_text.setColor(Color::calcColorOpacity(getColor(), getOpacity()));
-            #endif
+#endif
             }
         }
 
@@ -272,31 +272,31 @@ namespace tgui
 
     float Text::getLineWidth(const sf::String &text, Font font, unsigned int characterSize, TextStyle textStyle)
     {
-		if (font == nullptr)
-			return 0.0F;
+        if (font == nullptr)
+            return 0.0F;
 
-		bool bold = (textStyle & sf::Text::Bold) != 0;
+        bool bold = (textStyle & sf::Text::Bold) != 0;
 
-		float width = 0.0F;
-		std::uint32_t prevChar = 0;
-		for (std::size_t i = 0; i < text.getSize(); ++i)
-		{
-			float charWidth;
-			const std::uint32_t curChar = text[i];
-			if (curChar == '\n')
-				break;
-			else if (curChar == '\t')
-				charWidth = font.getFont()->getGlyph(' ', characterSize, bold).advance * 4.0F;
-			else
-				charWidth = font.getFont()->getGlyph(curChar, characterSize, bold).advance;
+        float width = 0.0F;
+        std::uint32_t prevChar = 0;
+        for (std::size_t i = 0; i < text.getSize(); ++i)
+        {
+            float charWidth;
+            const std::uint32_t curChar = text[i];
+            if (curChar == '\n')
+                break;
+            else if (curChar == '\t')
+                charWidth = font.getFont()->getGlyph(' ', characterSize, bold).advance * 4.0F;
+            else
+                charWidth = font.getFont()->getGlyph(curChar, characterSize, bold).advance;
 
-			const float kerning = font.getFont()->getKerning(prevChar, curChar, characterSize);
+            const float kerning = font.getFont()->getKerning(prevChar, curChar, characterSize);
 
-			width = width + charWidth + kerning;
-			prevChar = curChar;
-		}
+            width = width + charWidth + kerning;
+            prevChar = curChar;
+        }
 
-		return width;
+        return width;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -350,8 +350,8 @@ namespace tgui
 
         // Calculate the height of the first line (char size = everything above baseline, height + top = part below baseline)
         const float lineHeight = characterSize
-                                 + font.getFont()->getGlyph('g', characterSize, bold).bounds.height
-                                 + font.getFont()->getGlyph('g', characterSize, bold).bounds.top;
+            + font.getFont()->getGlyph('g', characterSize, bold).bounds.height
+            + font.getFont()->getGlyph('g', characterSize, bold).bounds.top;
 
         // Get the line spacing sfml returns
         const float lineSpacing = font.getFont()->getLineSpacing(characterSize);
