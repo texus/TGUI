@@ -263,6 +263,44 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    float Text::getLineWidth(const Text& text)
+    {
+        return getLineWidth(text.getString(), text.getFont(), text.getCharacterSize(), text.getStyle());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float Text::getLineWidth(const sf::String &text, Font font, unsigned int characterSize, TextStyle textStyle)
+    {
+		if (font == nullptr)
+			return 0.0F;
+
+		bool bold = (textStyle & sf::Text::Bold) != 0;
+
+		float width = 0.0F;
+		std::uint32_t prevChar = 0;
+		for (std::size_t i = 0; i < text.getSize(); ++i)
+		{
+			float charWidth;
+			const std::uint32_t curChar = text[i];
+			if (curChar == '\n')
+				break;
+			else if (curChar == '\t')
+				charWidth = font.getFont()->getGlyph(' ', characterSize, bold).advance * 4.0F;
+			else
+				charWidth = font.getFont()->getGlyph(curChar, characterSize, bold).advance;
+
+			const float kerning = font.getFont()->getKerning(prevChar, curChar, characterSize);
+
+			width = width + charWidth + kerning;
+			prevChar = curChar;
+		}
+
+		return width;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     unsigned int Text::findBestTextSize(Font fontWrapper, float height, int fit)
     {
         const std::shared_ptr<sf::Font> font = fontWrapper.getFont();
