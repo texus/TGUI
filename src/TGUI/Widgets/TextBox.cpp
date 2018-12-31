@@ -46,6 +46,9 @@ namespace tgui
         m_textAfterSelection1.setFont(m_fontCached);
         m_textAfterSelection2.setFont(m_fontCached);
 
+        m_horizontalScroll->setSize(m_horizontalScroll->getSize().y, m_horizontalScroll->getSize().x);
+        m_horizontalScroll->setVisible(false);
+
         m_renderer = aurora::makeCopied<TextBoxRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
@@ -115,12 +118,8 @@ namespace tgui
         if (m_lineHeight == 0)
             return;
 
-        // If there is a scrollbar then reinitialize it
-        if (isVerticalScrollbarPresent())
-        {
-            m_verticalScroll->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
-            m_verticalScroll->setSize({m_verticalScroll->getSize().x, getInnerSize().y});
-        }
+
+        updateScrollbars();
 
         // The size of the text box has changed, update the text
         rearrangeText(true);
@@ -184,6 +183,7 @@ namespace tgui
         m_lineHeight = static_cast<unsigned int>(m_fontCached.getLineSpacing(m_textSize));
 
         m_verticalScroll->setScrollAmount(m_lineHeight);
+        m_horizontalScroll->setScrollAmount(m_textSize);
 
         rearrangeText(true);
     }
@@ -220,6 +220,31 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::setHorizontalScrollbarPresent(bool present)
+    {
+        if (present)
+        {
+            m_horizontalScroll->setVisible(true);
+            setSize(m_size);
+        }
+        else
+        {
+            m_horizontalScroll->setVisible(false);
+            rearrangeText(false);
+        }
+
+        updateScrollbars();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool TextBox::isHorizontalScrollbarPresent() const
+    {
+        return m_horizontalScroll->isVisible();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TextBox::setVerticalScrollbarPresent(bool present)
     {
         if (present)
@@ -232,6 +257,8 @@ namespace tgui
             m_verticalScroll->setVisible(false);
             rearrangeText(false);
         }
+
+        updateScrollbars();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,12 +342,12 @@ namespace tgui
             {
                 m_selStart = m_selEnd;
                 updateSelectionTexts();
-            }
         }
+    }
 
-    #if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
+#if defined (SFML_SYSTEM_ANDROID) || defined (SFML_SYSTEM_IOS)
         sf::Keyboard::setVirtualKeyboardVisible(focused);
-    #endif
+#endif
 
         Widget::setFocused(focused);
     }
@@ -353,6 +380,8 @@ namespace tgui
             m_verticalScroll->leftMousePressed(pos);
             recalculateVisibleLines();
         }
+        else if (m_horizontalScroll->isShown() && m_horizontalScroll->mouseOnWidget(pos))
+            m_horizontalScroll->leftMousePressed(pos);
         else // The click occurred on the text box
         {
             // Don't continue when line height is 0
@@ -438,6 +467,15 @@ namespace tgui
                 recalculateVisibleLines();
             }
         }
+
+        if (m_horizontalScroll->isShown())
+        {
+            if (m_horizontalScroll->isMouseDown())
+            {
+                m_horizontalScroll->leftMouseReleased(pos - getPosition());
+                recalculateVisibleLines();
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -452,10 +490,17 @@ namespace tgui
         // The mouse has moved so a double click is no longer possible
         m_possibleDoubleClick = false;
 
-        // Check if the mouse event should go to the scrollbar
+        // Check if the mouse event should go to the vertical scrollbar
         if (m_verticalScroll->isShown() && ((m_verticalScroll->isMouseDown() && m_verticalScroll->isMouseDownOnThumb()) || m_verticalScroll->mouseOnWidget(pos)))
         {
             m_verticalScroll->mouseMoved(pos);
+            recalculateVisibleLines();
+        }
+
+        // Check if the mouse event should go to the horizontal scrollbar
+        else if (m_horizontalScroll->isShown() && ((m_horizontalScroll->isMouseDown() && m_horizontalScroll->isMouseDownOnThumb()) || m_horizontalScroll->mouseOnWidget(pos)))
+        {
+            m_horizontalScroll->mouseMoved(pos);
             recalculateVisibleLines();
         }
 
@@ -491,6 +536,9 @@ namespace tgui
 
         if (m_verticalScroll->isShown())
             m_verticalScroll->mouseNoLongerOnWidget();
+
+        if (m_horizontalScroll->isShown())
+            m_horizontalScroll->mouseNoLongerOnWidget();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -501,6 +549,9 @@ namespace tgui
 
         if (m_verticalScroll->isShown())
             m_verticalScroll->mouseNoLongerDown();
+
+        if (m_horizontalScroll->isShown())
+            m_horizontalScroll->mouseNoLongerDown();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -977,7 +1028,15 @@ namespace tgui
 
     bool TextBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
-        if (m_verticalScroll->isShown())
+        if (m_horizontalScroll->isShown() && (m_horizontalScroll->mouseOnWidget(pos - getPosition())
+                                              || (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
+                                              || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+                                              || !m_verticalScroll->isShown()))
+        {
+            m_horizontalScroll->mouseWheelScrolled(delta, pos - getPosition());
+            recalculateVisibleLines();
+        }
+        else if (m_verticalScroll->isShown())
         {
             m_verticalScroll->mouseWheelScrolled(delta, pos - getPosition());
             recalculateVisibleLines();
@@ -1019,7 +1078,7 @@ namespace tgui
             return sf::Vector2<std::size_t>(m_lines[m_lines.size()-1].getSize(), m_lines.size()-1);
 
         // Find between which character the mouse is standing
-        float width = Text::getExtraHorizontalPadding(m_fontCached, m_textSize);
+        float width = Text::getExtraHorizontalPadding(m_fontCached, m_textSize) - m_horizontalScroll->getValue();
         std::uint32_t prevChar = 0;
         for (std::size_t i = 0; i < m_lines[lineNumber].getSize(); ++i)
         {
@@ -1103,28 +1162,36 @@ namespace tgui
         if ((m_lineHeight == 0) || (m_fontCached == nullptr))
             return;
 
-        // Find the maximum width of one line
-        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSize);
-        float maxLineWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - 2 * textOffset;
-        if (m_verticalScroll->isShown())
-            maxLineWidth -= m_verticalScroll->getSize().x;
+        sf::String string;
+        if (!isHorizontalScrollbarPresent())
+        {
+            // Find the maximum width of one line
+            const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSize);
+            float maxLineWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - 2 * textOffset;
+            if (m_verticalScroll->isShown())
+                maxLineWidth -= m_verticalScroll->getSize().x;
 
-        // Don't do anything when there is no room for the text
-        if (maxLineWidth <= 0)
-            return;
+            // Don't do anything when there is no room for the text
+            if (maxLineWidth <= 0)
+                return;
+
+            string = Text::wordWrap(maxLineWidth, m_text, m_fontCached, m_textSize, false, false);
+        }
+        else
+            string = m_text;
 
         // Store the current selection position when we are keeping the selection
         std::pair<std::size_t, std::size_t> textSelectionPositions;
         if (keepSelection)
             textSelectionPositions = findTextSelectionPositions();
 
-        // Fit the text in the available space
-        const sf::String string = Text::wordWrap(maxLineWidth, m_text, m_fontCached, m_textSize, false, false);
-
         // Split the string in multiple lines
         m_lines.clear();
         std::size_t searchPosStart = 0;
         std::size_t newLinePos = 0;
+
+        std::size_t maxStrCount = 0;
+        std::size_t longestLine = 0;
         while (newLinePos != sf::String::InvalidPos)
         {
             newLinePos = string.find('\n', searchPosStart);
@@ -1134,8 +1201,22 @@ namespace tgui
             else
                 m_lines.push_back(string.substring(searchPosStart));
 
+            if (m_lines.back().getSize() > maxStrCount)
+            {
+                maxStrCount = m_lines.back().getSize();
+                longestLine = m_lines.size() - 1;
+            }
+
             searchPosStart = newLinePos + 1;
         }
+
+        // Hack: Only guaranteed to work with monospaced fonts, will fail if the font is not monospaced and
+        //       the line with the most amount of characters contains physically smaller characters than
+        //       another line with a similar amount of characters, but uses wider ones. However, calculating
+        //       the line width of every line caused a lot of performance issues.
+        // TODO: Find a better way to calculate this accurately without a massive performance hit
+
+        m_maxLineWidth = Text::getLineWidth(m_lines[longestLine], m_fontCached, m_textSize);
 
         // Check if we should try to keep our selection
         if (keepSelection)
@@ -1192,21 +1273,60 @@ namespace tgui
             m_selEnd = m_selStart;
         }
 
+        updateScrollbars();
+
         // Tell the scrollbar how many pixels the text contains
-        const bool scrollbarShown = m_verticalScroll->isShown();
+        const bool vertScrollbarShown = m_verticalScroll->isShown();
+        const bool horiScrollbarShown = m_horizontalScroll->isShown();
 
         m_verticalScroll->setMaximum(static_cast<unsigned int>(m_lines.size() * m_lineHeight
-                                                              + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)
-                                                              + Text::getExtraVerticalPadding(m_textSize)));
+                                                               + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)
+                                                               + Text::getExtraVerticalPadding(m_textSize)));
+
+        m_horizontalScroll->setMaximum(static_cast<unsigned int>(m_maxLineWidth
+                                                                 + Text::getExtraHorizontalPadding(m_fontCached, m_textSize) * 2));
 
         // We may have to recalculate what we just calculated if the scrollbar just appeared or disappeared
-        if (scrollbarShown != m_verticalScroll->isShown())
+        if ((vertScrollbarShown != m_verticalScroll->isShown()) || (horiScrollbarShown != m_horizontalScroll->isShown()))
         {
             rearrangeText(true);
             return;
         }
 
         updateSelectionTexts();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextBox::updateScrollbars()
+    {
+        if (isVerticalScrollbarPresent())
+        {
+            if ((m_maxLineWidth + m_verticalScroll->getSize().x) > (getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()))
+            {
+                m_verticalScroll->setSize({m_verticalScroll->getSize().x, getInnerSize().y - m_horizontalScroll->getSize().y});
+                m_verticalScroll->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScroll->getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+            }
+            else
+            {
+                m_verticalScroll->setSize({m_verticalScroll->getSize().x, getInnerSize().y});
+                m_verticalScroll->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+            }
+        }
+
+        if (isHorizontalScrollbarPresent())
+        {
+            if (m_verticalScroll->isShown())
+            {
+                m_horizontalScroll->setSize({getInnerSize().x - m_verticalScroll->getSize().x, m_horizontalScroll->getSize().y});
+                m_horizontalScroll->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_verticalScroll->getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
+            }
+            else
+            {
+                m_horizontalScroll->setSize({getInnerSize().x, m_horizontalScroll->getSize().y});
+                m_horizontalScroll->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1285,9 +1405,45 @@ namespace tgui
                 m_verticalScroll->setValue(static_cast<unsigned int>(m_selEnd.y * m_lineHeight));
             else if (m_selEnd.y + 1 >= m_topLine + m_visibleLines)
                 m_verticalScroll->setValue(static_cast<unsigned int>(((m_selEnd.y + 1) * m_lineHeight)
-                                                                    + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)
-                                                                    + Text::getExtraVerticalPadding(m_textSize)
-                                                                    - m_verticalScroll->getViewportSize()));
+                                                                     + Text::calculateExtraVerticalSpace(m_fontCached, m_textSize)
+                                                                     + Text::getExtraVerticalPadding(m_textSize)
+                                                                     - m_verticalScroll->getViewportSize()));
+        }
+
+        // Hack: Recalculate m_caretPosition early to fix issue with Ctrl+V
+        //       not moving the cursor to the end of the line
+
+        const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSize);
+        sf::Text tempText{"", *m_fontCached.getFont(), getTextSize()};
+
+        // Position the caret
+        {
+            tempText.setString(m_lines[m_selEnd.y].substring(0, m_selEnd.x));
+
+            float kerning = 0;
+            if ((m_selEnd.x > 0) && (m_selEnd.x < m_lines[m_selEnd.y].getSize()))
+                kerning = m_fontCached.getKerning(m_lines[m_selEnd.y][m_selEnd.x - 1], m_lines[m_selEnd.y][m_selEnd.x], m_textSize);
+
+            m_caretPosition = {textOffset + tempText.findCharacterPos(tempText.getString().getSize()).x + kerning, static_cast<float>(m_selEnd.y * m_lineHeight)};
+        }
+
+        if (isHorizontalScrollbarPresent())
+        {
+            const unsigned int left = m_horizontalScroll->getValue();
+            if (m_caretPosition.x <= left)
+            {
+                unsigned int newValue =
+                    static_cast<unsigned int>(std::max(0, static_cast<int>(m_caretPosition.x
+                                                                           - (Text::getExtraHorizontalPadding(m_fontCached, m_textSize) * 2))));
+                m_horizontalScroll->setValue(newValue);
+            }
+            else if (m_caretPosition.x > (left + m_horizontalScroll->getViewportSize()))
+            {
+                unsigned int newValue = static_cast<unsigned int>(m_caretPosition.x
+                                                                  + (Text::getExtraHorizontalPadding(m_fontCached, m_textSize) * 2)
+                                                                  - m_horizontalScroll->getViewportSize());
+                m_horizontalScroll->setValue(newValue);
+            }
         }
 
         recalculatePositions();
@@ -1330,17 +1486,6 @@ namespace tgui
 
         const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSize);
         sf::Text tempText{"", *m_fontCached.getFont(), getTextSize()};
-
-        // Position the caret
-        {
-            tempText.setString(m_lines[m_selEnd.y].substring(0, m_selEnd.x));
-
-            float kerning = 0;
-            if ((m_selEnd.x > 0) && (m_selEnd.x < m_lines[m_selEnd.y].getSize()))
-                kerning = m_fontCached.getKerning(m_lines[m_selEnd.y][m_selEnd.x-1], m_lines[m_selEnd.y][m_selEnd.x], m_textSize);
-
-            m_caretPosition = {textOffset + tempText.findCharacterPos(tempText.getString().getSize()).x + kerning, static_cast<float>(m_selEnd.y * m_lineHeight)};
-        }
 
         // Calculate the position of the text objects
         m_selectionRects.clear();
@@ -1430,7 +1575,14 @@ namespace tgui
 
     void TextBox::recalculateVisibleLines()
     {
-        m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight), m_lines.size());
+        float horiScrollOffset = 0.0F;
+        if (m_horizontalScroll->isShown())
+        {
+            horiScrollOffset = m_horizontalScroll->getSize().y;
+            m_horizontalScroll->setPosition(m_bordersCached.getLeft(), getSize().y - m_bordersCached.getBottom() - m_horizontalScroll->getSize().y);
+        }
+
+        m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
 
         // Store which area is visible
         if (m_verticalScroll->isShown())
@@ -1440,13 +1592,13 @@ namespace tgui
             m_topLine = m_verticalScroll->getValue() / m_lineHeight;
 
             // The scrollbar may be standing between lines in which case one more line is visible
-            if (((static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) % m_lineHeight) != 0) || ((m_verticalScroll->getValue() % m_lineHeight) != 0))
+            if (((static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) % m_lineHeight) != 0) || ((m_verticalScroll->getValue() % m_lineHeight) != 0))
                 m_visibleLines++;
         }
         else // There is no scrollbar
         {
             m_topLine = 0;
-            m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) / m_lineHeight), m_lines.size());
+            m_visibleLines = std::min(static_cast<std::size_t>((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - horiScrollOffset) / m_lineHeight), m_lines.size());
         }
     }
 
@@ -1492,11 +1644,13 @@ namespace tgui
         else if (property == "scrollbar")
         {
             m_verticalScroll->setRenderer(getSharedRenderer()->getScrollbar());
+            m_horizontalScroll->setRenderer(getSharedRenderer()->getScrollbar());
 
             // If no scrollbar width was set then we may need to use the one from the texture
             if (!getSharedRenderer()->getScrollbarWidth())
             {
                 m_verticalScroll->setSize({m_verticalScroll->getDefaultWidth(), m_verticalScroll->getSize().y});
+                m_horizontalScroll->setSize({m_horizontalScroll->getSize().x, m_horizontalScroll->getDefaultWidth()});
                 setSize(m_size);
             }
         }
@@ -1504,6 +1658,7 @@ namespace tgui
         {
             const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_verticalScroll->getDefaultWidth();
             m_verticalScroll->setSize({width, m_verticalScroll->getSize().y});
+            m_horizontalScroll->setSize({m_horizontalScroll->getSize().x, width});
             setSize(m_size);
         }
         else if (property == "backgroundcolor")
@@ -1531,6 +1686,7 @@ namespace tgui
             Widget::rendererChanged(property);
 
             m_verticalScroll->setInheritedOpacity(m_opacityCached);
+            m_horizontalScroll->setInheritedOpacity(m_opacityCached);
             m_spriteBackground.setOpacity(m_opacityCached);
             m_textBeforeSelection.setOpacity(m_opacityCached);
             m_textAfterSelection1.setOpacity(m_opacityCached);
@@ -1569,6 +1725,9 @@ namespace tgui
         if (!isVerticalScrollbarPresent())
             node->propertyValuePairs["VerticalScrollbarPresent"] = std::make_unique<DataIO::ValueNode>("false");
 
+        if (!isHorizontalScrollbarPresent())
+            node->propertyValuePairs["HorizontalScrollbarPresent"] = std::make_unique<DataIO::ValueNode>("false");
+
         return node;
     }
 
@@ -1588,6 +1747,8 @@ namespace tgui
             setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["readonly"]->value).getBool());
         if (node->propertyValuePairs["verticalscrollbarpresent"])
             setVerticalScrollbarPresent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["verticalscrollbarpresent"]->value).getBool());
+        if (node->propertyValuePairs["horizontalscrollbarpresent"])
+            setHorizontalScrollbarPresent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["horizontalscrollbarpresent"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1614,15 +1775,19 @@ namespace tgui
         {
             states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
 
-            float maxLineWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+            float clipWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
             if (m_verticalScroll->isShown())
-                maxLineWidth -= m_verticalScroll->getSize().x;
+                clipWidth -= m_verticalScroll->getSize().x;
+
+            float clipHeight = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom();
+            if (m_horizontalScroll->isShown())
+                clipHeight -= m_horizontalScroll->getSize().y;
 
             // Set the clipping for all draw calls that happen until this clipping object goes out of scope
-            const Clipping clipping{target, states, {}, {maxLineWidth, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
+            const Clipping clipping{target, states, {}, {clipWidth, clipHeight}};
 
-            // Move the text according to the vertical scrollar
-            states.transform.translate({0, -static_cast<float>(m_verticalScroll->getValue())});
+            // Move the text according to the scrollars
+            states.transform.translate({-static_cast<float>(m_horizontalScroll->getValue()), -static_cast<float>(m_verticalScroll->getValue())});
 
             // Draw the background of the selected text
             for (const auto& selectionRect : m_selectionRects)
@@ -1651,9 +1816,12 @@ namespace tgui
             }
         }
 
-        // Draw the scrollbar if needed
+        // Draw the scrollbars if needed
         if (m_verticalScroll->isShown())
             m_verticalScroll->draw(target, statesForScrollbar);
+
+        if (m_horizontalScroll->isShown())
+            m_horizontalScroll->draw(target, statesForScrollbar);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

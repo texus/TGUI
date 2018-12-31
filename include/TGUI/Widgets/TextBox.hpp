@@ -231,6 +231,30 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets whether the horizontal scrollbar is present
+        ///
+        /// When present, the scrollbar will appear once the text takes more space than the text box.
+        /// When not present, the text will attempt to word wrap once the text line is full.
+        /// The horizontal scroll is not present by default.
+        ///
+        /// @param present  Should the horizontal scrollbar be present?
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setHorizontalScrollbarPresent(bool present);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the horizontal scrollbar is present
+        ///
+        /// @return Is the horizontal scrollbar present?
+        ///
+        /// @see setHorizontalScrollbarPresent
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool isHorizontalScrollbarPresent() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets whether the vertical scrollbar is present
         ///
         /// When present, the scrollbar will appear once the text takes more space than the text box.
@@ -361,6 +385,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void rearrangeText(bool keepSelection);
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Updates the physical size of the scrollbars, as well as the viewport size.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void updateScrollbars();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function will split the text into five pieces so that the text can be easily drawn.
@@ -460,6 +488,9 @@ namespace tgui
         unsigned int m_textSize = 18;
         unsigned int m_lineHeight = 24;
 
+        // The width of the largest line
+        float m_maxLineWidth;
+
         std::vector<sf::String> m_lines;
 
         // The maximum characters (0 by default, which means no limit)
@@ -485,8 +516,9 @@ namespace tgui
 
         std::vector<FloatRect> m_selectionRects;
 
-        // The scrollbar
+        // The scrollbars
         CopiedSharedPtr<ScrollbarChildWidget> m_verticalScroll;
+        CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScroll;
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick = false;
