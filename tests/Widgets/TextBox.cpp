@@ -505,7 +505,7 @@ TEST_CASE("[TextBox]")
         textBox->setSize(250, 150);
         textBox->setText("Something");
         textBox->setTextSize(16);
-        textBox->setText("Cupcake ipsum dolor sit. Amet candy canes sesame snaps cupcake apple pie lemon drops jelly apple pie candy canes. Powder donut sugar plum croissant gingerbread sesame snaps pie. Caramels cupcake icing. Bear claw lemon drops carrot cake chocolate ice cream jelly beans gummi bears.");
+        textBox->setText("Cupcake ipsum dolor sit.\nAmet candy canes sesame snaps cupcake apple pie lemon drops jelly apple pie candy canes.\nPowder donut sugar plum croissant gingerbread sesame snaps pie.\nCaramels cupcake icing.\nBear claw lemon drops carrot cake chocolate ice cream jelly beans gummi bears.\nMuffin ice cream cupcake chocolate cake.\nTopping oat cake bonbon.");
 
         tgui::TextBoxRenderer renderer = tgui::RendererData::create();
         renderer.setBackgroundColor(sf::Color::Yellow);
@@ -541,6 +541,45 @@ TEST_CASE("[TextBox]")
         {
             renderer.setTextureBackground("resources/Texture1.png");
             TEST_DRAW("TextBox_Textured.png")
+        }
+
+        SECTION("Scrollbars")
+        {
+            SECTION("No scrollbars")
+            {
+                textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+                textBox->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+                TEST_DRAW("TextBox_NoScrollbars.png")
+            }
+
+            SECTION("Vertical scrollbar")
+            {
+                textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
+                textBox->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+                TEST_DRAW("TextBox_VerticalScrollbar.png")
+            }
+
+            SECTION("Horizontal scrollbar")
+            {
+                textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+                textBox->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
+                TEST_DRAW("TextBox_HorizontalScrollbar.png")
+            }
+
+            SECTION("Both scrollbars")
+            {
+                textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
+                textBox->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
+                TEST_DRAW("TextBox_BothScrollbars.png")
+            }
+
+            SECTION("Forced scrollbars")
+            {
+                textBox->setText("Test");
+                textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+                textBox->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+                TEST_DRAW("TextBox_ForcedScrollbars.png")
+            }
         }
     }
 

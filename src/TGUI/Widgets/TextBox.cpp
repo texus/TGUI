@@ -1369,8 +1369,7 @@ namespace tgui
     {
         if (m_verticalScrollbarPolicy != Scrollbar::Policy::Never)
         {
-            if ((m_horizontalScrollbarPolicy != Scrollbar::Policy::Never)
-                && ((m_maxLineWidth + m_verticalScrollbar->getSize().x) > (getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight())))
+            if (m_horizontalScrollbar->isShown())
             {
                 m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, getInnerSize().y - m_horizontalScrollbar->getSize().y});
                 m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
