@@ -273,11 +273,11 @@ namespace tgui
     float Text::getLineWidth(const sf::String &text, Font font, unsigned int characterSize, TextStyle textStyle)
     {
         if (font == nullptr)
-            return 0.0F;
+            return 0.0f;
 
         bool bold = (textStyle & sf::Text::Bold) != 0;
 
-        float width = 0.0F;
+        float width = 0.0f;
         std::uint32_t prevChar = 0;
         for (std::size_t i = 0; i < text.getSize(); ++i)
         {
@@ -286,7 +286,7 @@ namespace tgui
             if (curChar == '\n')
                 break;
             else if (curChar == '\t')
-                charWidth = font.getFont()->getGlyph(' ', characterSize, bold).advance * 4.0F;
+                charWidth = font.getFont()->getGlyph(' ', characterSize, bold).advance * 4.0f;
             else
                 charWidth = font.getFont()->getGlyph(curChar, characterSize, bold).advance;
 
