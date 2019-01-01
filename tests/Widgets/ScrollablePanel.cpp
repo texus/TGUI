@@ -80,24 +80,24 @@ TEST_CASE("[ScrollablePanel]")
 
     SECTION("VerticalScrollbarPolicy")
     {
-        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
-        panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
-        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Always);
-        panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
-        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
-        panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
-        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Never);
+        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
+        panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::Scrollbar::Policy::Always);
+        panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
+        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
+        panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+        REQUIRE(panel->getVerticalScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
     }
 
     SECTION("HorizontalScrollbarPolicy")
     {
-        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
-        panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
-        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Always);
-        panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
-        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
-        panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
-        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::ScrollablePanel::ScrollbarPolicy::Never);
+        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
+        panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Always);
+        panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
+        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
+        panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+        REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
     }
 
     SECTION("Events / Signals")
@@ -242,8 +242,8 @@ TEST_CASE("[ScrollablePanel]")
     SECTION("Saving and loading from file")
     {
         panel = tgui::ScrollablePanel::create({400, 300});
-        panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
-        panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
+        panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+        panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
 
         auto widget = tgui::ClickableWidget::create();
         widget->setPosition({20, 10});
@@ -297,13 +297,13 @@ TEST_CASE("[ScrollablePanel]")
         {
             TEST_DRAW("ScrollablePanel.png")
 
-            panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
+            panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
             TEST_DRAW("ScrollablePanel_NoHorizontalScrollbar.png")
 
-            panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
+            panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
             TEST_DRAW("ScrollablePanel_NoScrollbars.png")
 
-            panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+            panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
             TEST_DRAW("ScrollablePanel_NoVerticalScrollbar.png")
         }
 
@@ -313,13 +313,13 @@ TEST_CASE("[ScrollablePanel]")
 
             TEST_DRAW("ScrollablePanel_SmallContentSize.png")
 
-            panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
+            panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
             TEST_DRAW("ScrollablePanel_SmallContentSize_VerticalScrollbar.png")
 
-            panel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
+            panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
             TEST_DRAW("ScrollablePanel_SmallContentSize_BothScrollbars.png")
 
-            panel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Automatic);
+            panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
             TEST_DRAW("ScrollablePanel_SmallContentSize_HorizontalScrollbar.png")
         }
     }

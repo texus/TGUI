@@ -45,14 +45,10 @@ namespace tgui
         typedef std::shared_ptr<ScrollablePanel> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const ScrollablePanel> ConstPtr; ///< Shared constant widget pointer
 
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /// @brief Defines when the scrollbar shows up
-        enum class ScrollbarPolicy
-        {
-            Automatic,  ///< Show the scrollbar only when needed (default)
-            Always,     ///< Always show the scrollbar, even when the contents fits inside the panel
-            Never       ///< Never show the scrollbar, even if the contents does not fit inside the panel
-        };
-
+        using ScrollbarPolicy TGUI_DEPRECATED("Use tgui::Scrollbar::Policy instead") = Scrollbar::Policy;
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
@@ -217,28 +213,28 @@ namespace tgui
         /// @brief Changes when the vertical scrollbar should be displayed
         /// @param policy  The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setVerticalScrollbarPolicy(ScrollbarPolicy policy);
+        void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the vertical scrollbar should be displayed
         /// @return The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ScrollbarPolicy getVerticalScrollbarPolicy() const;
+        Scrollbar::Policy getVerticalScrollbarPolicy() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the horizontal scrollbar should be displayed
         /// @param policy  The policy for displaying the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setHorizontalScrollbarPolicy(ScrollbarPolicy policy);
+        void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the horizontal scrollbar should be displayed
         /// @return The policy for displaying the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ScrollbarPolicy getHorizontalScrollbarPolicy() const;
+        Scrollbar::Policy getHorizontalScrollbarPolicy() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,8 +354,8 @@ namespace tgui
         CopiedSharedPtr<ScrollbarChildWidget> m_verticalScrollbar;
         CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScrollbar;
 
-        ScrollbarPolicy  m_verticalScrollbarPolicy = ScrollbarPolicy::Automatic;
-        ScrollbarPolicy  m_horizontalScrollbarPolicy = ScrollbarPolicy::Automatic;
+        Scrollbar::Policy m_verticalScrollbarPolicy = Scrollbar::Policy::Automatic;
+        Scrollbar::Policy m_horizontalScrollbarPolicy = Scrollbar::Policy::Automatic;
 
         std::map<Widget::Ptr, unsigned int> m_connectedCallbacks;
 

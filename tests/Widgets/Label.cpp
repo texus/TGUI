@@ -130,13 +130,13 @@ TEST_CASE("[Label]")
 
     SECTION("ScrollbarPolicy")
     {
-        REQUIRE(label->getScrollbarPolicy() == tgui::Label::ScrollbarPolicy::Never);
-        label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Always);
-        REQUIRE(label->getScrollbarPolicy() == tgui::Label::ScrollbarPolicy::Always);
-        label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Automatic);
-        REQUIRE(label->getScrollbarPolicy() == tgui::Label::ScrollbarPolicy::Automatic);
-        label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Never);
-        REQUIRE(label->getScrollbarPolicy() == tgui::Label::ScrollbarPolicy::Never);
+        REQUIRE(label->getScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
+        label->setScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+        REQUIRE(label->getScrollbarPolicy() == tgui::Scrollbar::Policy::Always);
+        label->setScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
+        REQUIRE(label->getScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
+        label->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+        REQUIRE(label->getScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
     }
 
     SECTION("IgnoreMouseEvents")
@@ -253,7 +253,7 @@ TEST_CASE("[Label]")
         label->setTextSize(25);
         label->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
         label->setVerticalAlignment(tgui::Label::VerticalAlignment::Bottom);
-        label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Never);
+        label->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
         label->setMaximumTextWidth(300);
         label->ignoreMouseEvents(true);
 
@@ -277,7 +277,7 @@ TEST_CASE("[Label]")
         SECTION("Complex")
         {
             TEST_DRAW_INIT(420, 215, label)
-            label->setScrollbarPolicy(tgui::Label::ScrollbarPolicy::Automatic);
+            label->setScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
             label->setText("Bacon ipsum dolor amet alcatra jerky turkey ball tip jowl beef. Shank landjaeger frankfurter, doner burgdoggen strip steak chicken pancetta jowl. Pork loin leberkas meatloaf ham shoulder cow hamburger pancetta. Rump turducken ribeye salami pork chop sirloin. Leberkas alcatra filet mignon jerky pork belly.");
             label->setTextSize(18);
             label->setSize(400, 205);

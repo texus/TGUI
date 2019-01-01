@@ -47,15 +47,10 @@ namespace tgui
         typedef std::shared_ptr<Label> Ptr; ///< Shared widget pointer
         typedef std::shared_ptr<const Label> ConstPtr; ///< Shared constant widget pointer
 
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
         /// @brief Defines when the scrollbar shows up
-        enum class ScrollbarPolicy
-        {
-            Automatic,  ///< Show the scrollbar only when needed (default)
-            Always,     ///< Always show the scrollbar (except for auto-sized labels), even when the text fits inside the label
-            Never       ///< Never show the scrollbar, even if the text does not fit inside the label
-        };
-
+        using ScrollbarPolicy TGUI_DEPRECATED("Use tgui::Scrollbar::Policy instead") = Scrollbar::Policy;
+#endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The horizontal text alignment
@@ -226,14 +221,14 @@ namespace tgui
         /// @brief Changes when the vertical scrollbar should be displayed
         /// @param policy  The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setScrollbarPolicy(ScrollbarPolicy policy);
+        void setScrollbarPolicy(Scrollbar::Policy policy);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the vertical scrollbar should be displayed
         /// @return The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ScrollbarPolicy getScrollbarPolicy() const;
+        Scrollbar::Policy getScrollbarPolicy() const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -434,9 +429,9 @@ namespace tgui
 
         CopiedSharedPtr<ScrollbarChildWidget> m_scrollbar;
 #ifdef TGUI_NEXT
-        ScrollbarPolicy  m_scrollbarPolicy = ScrollbarPolicy::Automatic;
+        Scrollbar::Policy  m_scrollbarPolicy = Scrollbar::Policy::Automatic;
 #else
-        ScrollbarPolicy  m_scrollbarPolicy = ScrollbarPolicy::Never;
+        Scrollbar::Policy  m_scrollbarPolicy = Scrollbar::Policy::Never;
 #endif
 
         // Cached renderer properties

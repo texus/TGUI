@@ -175,7 +175,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setScrollbarPolicy(ScrollbarPolicy policy)
+    void Label::setScrollbarPolicy(Scrollbar::Policy policy)
     {
         m_scrollbarPolicy = policy;
 
@@ -186,7 +186,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Label::ScrollbarPolicy Label::getScrollbarPolicy() const
+    Scrollbar::Policy Label::getScrollbarPolicy() const
     {
         return m_scrollbarPolicy;
     }
@@ -454,11 +454,11 @@ namespace tgui
         if (m_ignoringMouseEvents)
             node->propertyValuePairs["IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
 
-        if (m_scrollbarPolicy != ScrollbarPolicy::Automatic)
+        if (m_scrollbarPolicy != Scrollbar::Policy::Automatic)
         {
-            if (m_scrollbarPolicy == ScrollbarPolicy::Always)
+            if (m_scrollbarPolicy == Scrollbar::Policy::Always)
                 node->propertyValuePairs["ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_scrollbarPolicy == ScrollbarPolicy::Never)
+            else if (m_scrollbarPolicy == Scrollbar::Policy::Never)
                 node->propertyValuePairs["ScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
 
@@ -498,11 +498,11 @@ namespace tgui
         {
             std::string policy = toLower(trim(node->propertyValuePairs["scrollbarpolicy"]->value));
             if (policy == "automatic")
-                setScrollbarPolicy(ScrollbarPolicy::Automatic);
+                setScrollbarPolicy(Scrollbar::Policy::Automatic);
             else if (policy == "always")
-                setScrollbarPolicy(ScrollbarPolicy::Always);
+                setScrollbarPolicy(Scrollbar::Policy::Always);
             else if (policy == "never")
-                setScrollbarPolicy(ScrollbarPolicy::Never);
+                setScrollbarPolicy(Scrollbar::Policy::Never);
             else
                 throw Exception{"Failed to parse ScrollbarPolicy property, found unknown value."};
         }
@@ -549,16 +549,16 @@ namespace tgui
             m_scrollbar->setVisible(false);
         else
         {
-            if (m_scrollbarPolicy == ScrollbarPolicy::Always)
+            if (m_scrollbarPolicy == Scrollbar::Policy::Always)
             {
                 m_scrollbar->setVisible(true);
                 m_scrollbar->setAutoHide(false);
             }
-            else if (m_scrollbarPolicy == ScrollbarPolicy::Never)
+            else if (m_scrollbarPolicy == Scrollbar::Policy::Never)
             {
                 m_scrollbar->setVisible(false);
             }
-            else // ScrollbarPolicy::Automatic
+            else // Scrollbar::Policy::Automatic
             {
                 m_scrollbar->setVisible(true);
                 m_scrollbar->setAutoHide(true);
@@ -574,7 +574,7 @@ namespace tgui
             maxWidth = getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight() - 2*textOffset;
 
             // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar
-            if (m_scrollbarPolicy == ScrollbarPolicy::Always)
+            if (m_scrollbarPolicy == Scrollbar::Policy::Always)
                 maxWidth -= m_scrollbar->getSize().x;
 
             if (maxWidth <= 0)
@@ -598,7 +598,7 @@ namespace tgui
         if (!m_autoSize)
         {
             // If the text doesn't fit in the label then we need to run the word-wrap again, but this time taking the scrollbar into account
-            if ((m_scrollbarPolicy == ScrollbarPolicy::Automatic) && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
+            if ((m_scrollbarPolicy == Scrollbar::Policy::Automatic) && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
             {
                 maxWidth -= m_scrollbar->getSize().x;
                 if (maxWidth <= 0)

@@ -140,15 +140,26 @@ TEST_CASE("[TextBox]")
         }
     }
 
-    SECTION("VerticalScrollbarPresent")
+    SECTION("VerticalScrollbarPolicy")
     {
-        REQUIRE(textBox->isVerticalScrollbarPresent() == true);
+        REQUIRE(textBox->getVerticalScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
+        textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+        REQUIRE(textBox->getVerticalScrollbarPolicy() == tgui::Scrollbar::Policy::Always);
+        textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
+        REQUIRE(textBox->getVerticalScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
+        textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+        REQUIRE(textBox->getVerticalScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
+    }
 
-        textBox->setVerticalScrollbarPresent(false);
-        REQUIRE(textBox->isVerticalScrollbarPresent() == false);
-
-        textBox->setVerticalScrollbarPresent(true);
-        REQUIRE(textBox->isVerticalScrollbarPresent() == true);
+    SECTION("HorizontalScrollbarPolicy")
+    {
+        REQUIRE(textBox->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
+        textBox->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
+        REQUIRE(textBox->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Always);
+        textBox->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
+        REQUIRE(textBox->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Automatic);
+        textBox->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+        REQUIRE(textBox->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
     }
 
     SECTION("CaretPosition")
@@ -360,7 +371,7 @@ TEST_CASE("[TextBox]")
             REQUIRE(textBox->getText() == "ABCDE");
 
             textBox->setText("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-            textBox->setVerticalScrollbarPresent(false);
+            textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
 
             textBox->textEntered('A');
             textBox->textEntered('B');
@@ -369,7 +380,7 @@ TEST_CASE("[TextBox]")
             textBox->textEntered('C');
             REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZAB");
 
-            textBox->setVerticalScrollbarPresent(true);
+            textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
             textBox->textEntered('C');
             REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVWXYZABC");
         }
@@ -478,7 +489,8 @@ TEST_CASE("[TextBox]")
         textBox->setTextSize(25);
         textBox->setMaximumCharacters(16);
         textBox->setReadOnly(true);
-        textBox->setVerticalScrollbarPresent(false);
+        textBox->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+        textBox->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
 
         testSavingWidget("TextBox", textBox);
     }

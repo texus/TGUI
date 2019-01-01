@@ -321,20 +321,20 @@ namespace tgui
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::setVerticalScrollbarPolicy(ScrollbarPolicy policy)
+    void ScrollablePanel::setVerticalScrollbarPolicy(Scrollbar::Policy policy)
     {
         m_verticalScrollbarPolicy = policy;
 
-        if (policy == ScrollbarPolicy::Always)
+        if (policy == Scrollbar::Policy::Always)
         {
             m_verticalScrollbar->setVisible(true);
             m_verticalScrollbar->setAutoHide(false);
         }
-        else if (policy == ScrollbarPolicy::Never)
+        else if (policy == Scrollbar::Policy::Never)
         {
             m_verticalScrollbar->setVisible(false);
         }
-        else // ScrollbarPolicy::Automatic
+        else // Scrollbar::Policy::Automatic
         {
             m_verticalScrollbar->setVisible(true);
             m_verticalScrollbar->setAutoHide(true);
@@ -345,27 +345,27 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel::ScrollbarPolicy ScrollablePanel::getVerticalScrollbarPolicy() const
+    Scrollbar::Policy ScrollablePanel::getVerticalScrollbarPolicy() const
     {
         return m_verticalScrollbarPolicy;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ScrollablePanel::setHorizontalScrollbarPolicy(ScrollbarPolicy policy)
+    void ScrollablePanel::setHorizontalScrollbarPolicy(Scrollbar::Policy policy)
     {
         m_horizontalScrollbarPolicy = policy;
 
-        if (policy == ScrollbarPolicy::Always)
+        if (policy == Scrollbar::Policy::Always)
         {
             m_horizontalScrollbar->setVisible(true);
             m_horizontalScrollbar->setAutoHide(false);
         }
-        else if (policy == ScrollbarPolicy::Never)
+        else if (policy == Scrollbar::Policy::Never)
         {
             m_horizontalScrollbar->setVisible(false);
         }
-        else // ScrollbarPolicy::Automatic
+        else // Scrollbar::Policy::Automatic
         {
             m_horizontalScrollbar->setVisible(true);
             m_horizontalScrollbar->setAutoHide(true);
@@ -376,7 +376,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel::ScrollbarPolicy ScrollablePanel::getHorizontalScrollbarPolicy() const
+    Scrollbar::Policy ScrollablePanel::getHorizontalScrollbarPolicy() const
     {
         return m_horizontalScrollbarPolicy;
     }
@@ -602,18 +602,18 @@ namespace tgui
     {
         auto node = Panel::save(renderers);
 
-        if (m_verticalScrollbarPolicy != ScrollbarPolicy::Automatic)
+        if (m_verticalScrollbarPolicy != Scrollbar::Policy::Automatic)
         {
-            if (m_verticalScrollbarPolicy == ScrollbarPolicy::Always)
+            if (m_verticalScrollbarPolicy == Scrollbar::Policy::Always)
                 node->propertyValuePairs["VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_verticalScrollbarPolicy == ScrollbarPolicy::Never)
+            else if (m_verticalScrollbarPolicy == Scrollbar::Policy::Never)
                 node->propertyValuePairs["VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
-        if (m_horizontalScrollbarPolicy != ScrollbarPolicy::Automatic)
+        if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Automatic)
         {
-            if (m_horizontalScrollbarPolicy == ScrollbarPolicy::Always)
+            if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Always)
                 node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
-            else if (m_horizontalScrollbarPolicy == ScrollbarPolicy::Never)
+            else if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Never)
                 node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
         }
 
@@ -634,11 +634,11 @@ namespace tgui
         {
             std::string policy = toLower(trim(node->propertyValuePairs["verticalscrollbarpolicy"]->value));
             if (policy == "automatic")
-                setVerticalScrollbarPolicy(ScrollbarPolicy::Automatic);
+                setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
             else if (policy == "always")
-                setVerticalScrollbarPolicy(ScrollbarPolicy::Always);
+                setVerticalScrollbarPolicy(Scrollbar::Policy::Always);
             else if (policy == "never")
-                setVerticalScrollbarPolicy(ScrollbarPolicy::Never);
+                setVerticalScrollbarPolicy(Scrollbar::Policy::Never);
             else
                 throw Exception{"Failed to parse VerticalScrollbarPolicy property, found unknown value."};
         }
@@ -647,11 +647,11 @@ namespace tgui
         {
             std::string policy = toLower(trim(node->propertyValuePairs["horizontalscrollbarpolicy"]->value));
             if (policy == "automatic")
-                setHorizontalScrollbarPolicy(ScrollbarPolicy::Automatic);
+                setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
             else if (policy == "always")
-                setHorizontalScrollbarPolicy(ScrollbarPolicy::Always);
+                setHorizontalScrollbarPolicy(Scrollbar::Policy::Always);
             else if (policy == "never")
-                setHorizontalScrollbarPolicy(ScrollbarPolicy::Never);
+                setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
             else
                 throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value."};
         }
