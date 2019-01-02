@@ -574,6 +574,13 @@ namespace tgui
                 recalculateVisibleLines();
             }
         }
+
+        // Inform the scrollbars that the mouse is not on them
+        else
+        {
+            m_verticalScrollbar->mouseNoLongerOnWidget();
+            m_horizontalScrollbar->mouseNoLongerOnWidget();
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
