@@ -36,8 +36,15 @@ namespace tgui
     Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
     Texture::ImageLoaderFunc Texture::m_imageLoader = [](const sf::String& filename) -> std::shared_ptr<sf::Image>
         {
+#ifdef SFML_SYSTEM_WINDOWS
+            const std::string filenameAnsiString(filename.toAnsiString());
+#else
+            const std::basic_string<sf::Uint8>& filenameUtf8 = filename.toUtf8();
+            const std::string filenameAnsiString(filenameUtf8.begin(), filenameUtf8.end());
+#endif
+
             auto image = std::make_shared<sf::Image>();
-            if (image->loadFromFile(filename))
+            if (image->loadFromFile(filenameAnsiString))
                 return image;
             else
                 return nullptr;

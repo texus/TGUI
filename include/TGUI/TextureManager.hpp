@@ -31,6 +31,8 @@
 #include <TGUI/TextureData.hpp>
 #include <TGUI/Config.hpp>
 
+#include <SFML/System/String.hpp>
+
 #include <list>
 #include <map>
 #include <memory>
@@ -58,7 +60,7 @@ namespace tgui
         /// @return False when the image could not be loaded, true otherwise.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static bool getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0));
+        static bool getTexture(Texture& texture, const sf::String& filename, const sf::IntRect& partRect = sf::IntRect(0, 0, 0, 0));
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +86,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        static std::map<std::string, std::list<TextureDataHolder>> m_imageMap;
+        static std::map<sf::String, std::list<TextureDataHolder>> m_imageMap;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
