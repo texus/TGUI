@@ -31,11 +31,11 @@
 
 namespace tgui
 {
-    std::map<std::string, std::list<TextureDataHolder>> TextureManager::m_imageMap;
+    std::map<sf::String, std::list<TextureDataHolder>> TextureManager::m_imageMap;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<TextureData> TextureManager::getTexture(Texture& texture, const std::string& filename, const sf::IntRect& partRect)
+    std::shared_ptr<TextureData> TextureManager::getTexture(Texture& texture, const sf::String& filename, const sf::IntRect& partRect)
     {
         // Look if we already had this image
         auto imageIt = m_imageMap.find(filename);

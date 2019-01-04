@@ -37,8 +37,15 @@ namespace tgui
     Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
     Texture::ImageLoaderFunc Texture::m_imageLoader = [](const sf::String& filename) -> std::unique_ptr<sf::Image>
         {
+#ifdef SFML_SYSTEM_WINDOWS
+            const std::string filenameAnsiString(filename.toAnsiString());
+#else
+            const std::basic_string<sf::Uint8>& filenameUtf8 = filename.toUtf8();
+            const std::string filenameAnsiString(filenameUtf8.begin(), filenameUtf8.end());
+#endif
+
             auto image = std::make_unique<sf::Image>();
-            if (image->loadFromFile(filename))
+            if (image->loadFromFile(filenameAnsiString))
                 return image;
             else
                 return nullptr;
@@ -147,11 +154,11 @@ namespace tgui
         m_data = nullptr;
 
         std::shared_ptr<TextureData> data;
-    #ifdef SFML_SYSTEM_WINDOWS
+#ifdef SFML_SYSTEM_WINDOWS
         if ((id[0] != '/') && (id[0] != '\\') && ((id.getSize() <= 1) || (id[1] != ':')))
-    #else
+#else
         if (id[0] != '/')
-    #endif
+#endif
         {
             data = m_textureLoader(*this, getResourcePath() + id, partRect);
             if (!data)
