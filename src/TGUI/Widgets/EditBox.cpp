@@ -1063,7 +1063,7 @@ namespace tgui
         {
             m_selectedTextBackgroundColorCached = getSharedRenderer()->getSelectedTextBackgroundColor();
         }
-        else if (property == "opacity")
+        else if ((property == "opacity") || (property == "opacitydisabled"))
         {
             Widget::rendererChanged(property);
 

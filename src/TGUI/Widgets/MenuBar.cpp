@@ -778,7 +778,7 @@ namespace tgui
         {
             m_distanceToSideCached = getSharedRenderer()->getDistanceToSide();
         }
-        else if (property == "opacity")
+        else if ((property == "opacity") || (property == "opacitydisabled"))
         {
             Widget::rendererChanged(property);
             updateTextOpacity(m_menus);

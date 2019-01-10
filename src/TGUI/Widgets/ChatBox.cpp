@@ -490,7 +490,7 @@ namespace tgui
         {
             m_backgroundColorCached = getSharedRenderer()->getBackgroundColor();
         }
-        else if (property == "opacity")
+        else if ((property == "opacity") || (property == "opacitydisabled"))
         {
             Widget::rendererChanged(property);
 

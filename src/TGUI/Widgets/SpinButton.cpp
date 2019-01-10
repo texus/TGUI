@@ -361,7 +361,7 @@ namespace tgui
         {
             m_arrowColorHoverCached = getSharedRenderer()->getArrowColorHover();
         }
-        else if (property == "opacity")
+        else if ((property == "opacity") || (property == "opacitydisabled"))
         {
             Widget::rendererChanged(property);
 

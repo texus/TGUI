@@ -38,12 +38,19 @@ namespace tgui
 
     void WidgetRenderer::setOpacity(float opacity)
     {
-        if (opacity < 0)
-            opacity = 0;
-        else if (opacity > 1)
-            opacity = 1;
+        setProperty("opacity", ObjectConverter{std::max(0.f, std::min(1.f, opacity))});
+    }
 
-        setProperty("opacity", ObjectConverter{opacity});
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_RENDERER_PROPERTY_GET_NUMBER(WidgetRenderer, OpacityDisabled, -1)
+
+    void WidgetRenderer::setOpacityDisabled(float opacity)
+    {
+        if (opacity != -1.f)
+            setProperty("opacitydisabled", ObjectConverter{std::max(0.f, std::min(1.f, opacity))});
+        else
+            setProperty("opacitydisabled", ObjectConverter{-1.f});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

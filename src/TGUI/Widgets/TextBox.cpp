@@ -1750,7 +1750,7 @@ namespace tgui
         {
             m_caretWidthCached = getSharedRenderer()->getCaretWidth();
         }
-        else if (property == "opacity")
+        else if ((property == "opacity") || (property == "opacitydisabled"))
         {
             Widget::rendererChanged(property);
 

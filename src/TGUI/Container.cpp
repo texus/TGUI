@@ -741,7 +741,7 @@ namespace tgui
     {
         Widget::rendererChanged(property);
 
-        if (property == "opacity")
+        if ((property == "opacity") || (property == "opacitydisabled"))
         {
             for (std::size_t i = 0; i < m_widgets.size(); ++i)
                 m_widgets[i]->setInheritedOpacity(m_opacityCached);

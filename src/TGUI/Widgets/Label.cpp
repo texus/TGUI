@@ -418,7 +418,7 @@ namespace tgui
             Widget::rendererChanged(property);
             rearrangeText();
         }
-        else if (property == "opacity")
+        else if ((property == "opacity") || (property == "opacitydisabled"))
         {
             Widget::rendererChanged(property);
 

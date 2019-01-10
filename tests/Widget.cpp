@@ -233,6 +233,29 @@ TEST_CASE("[Widget]")
             REQUIRE(renderer->getProperty("Opacity").getNumber() == renderer->getOpacity());
         }
 
+        SECTION("OpacityDisabled")
+        {
+            // Default value is -1, indicating that the Opacity propery will be used if when the widget is disabled
+            REQUIRE(renderer->getOpacityDisabled() == -1.f);
+
+            renderer->setOpacityDisabled(0.5f);
+            REQUIRE(renderer->getOpacityDisabled() == 0.5f);
+
+            renderer->setOpacityDisabled(2.f);
+            REQUIRE(renderer->getOpacityDisabled() == 1.f);
+
+            renderer->setOpacityDisabled(-2.f);
+            REQUIRE(renderer->getOpacityDisabled() == 0.f);
+
+            // -1 is the only value outside the [0,1] range that is accepted
+            renderer->setOpacityDisabled(-1.f);
+            REQUIRE(renderer->getOpacityDisabled() == -1.f);
+
+            auto pairs = renderer->getPropertyValuePairs();
+            REQUIRE(pairs["opacitydisabled"].getNumber() == renderer->getOpacityDisabled());
+            REQUIRE(renderer->getProperty("opacitydisabled").getNumber() == renderer->getOpacityDisabled());
+        }
+
         SECTION("Font")
         {
             REQUIRE(renderer->getFont() == nullptr);

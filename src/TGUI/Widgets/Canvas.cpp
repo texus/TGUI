@@ -150,8 +150,8 @@ namespace tgui
     {
         Widget::rendererChanged(property);
 
-        if (property == "opacity")
-            m_sprite.setColor(Color::calcColorOpacity(Color::White, getSharedRenderer()->getOpacity()));
+        if ((property == "opacity") || (property == "opacitydisabled"))
+            m_sprite.setColor(Color::calcColorOpacity(Color::White, m_opacityCached));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 TGUI 0.8.3  (TBD)
 -----------------
 
+- TextBox can now have a horizontal scrollbar
 - Label can now have a vertical scrollbar
 - Default scrollbar width wasn't always taken from texture size in widgets containing scrollbars
 - Scrollbar wasn't drawn correctly when Maximum equaled ViewportSize with AutoHide disabled
@@ -8,6 +9,8 @@ TGUI 0.8.3  (TBD)
 - Rounded icon position in TreeView to avoid bad icon alignment
 - TreeView didn't handle opacity and font changes
 - Sprites didn't keep their transparency when resized
+- Texture filenames can now contain UTF8 characters on linux
+- Added propery to widget renderer to set an opacity for the disabled state
 
 
 TGUI 0.8.2  (16 December 2018)
