@@ -129,12 +129,12 @@ namespace tgui
             if (y < 0)
                 y = 0;
             else if (y > m_parent->getSize().y - getFullSize().y)
-                y = m_parent->getSize().y - getFullSize().y;
+                y = std::max(0.f, m_parent->getSize().y - getFullSize().y);
 
             if (x < 0)
                 x = 0;
             else if (x > m_parent->getSize().x - getFullSize().x)
-                x = m_parent->getSize().x - getFullSize().x;
+                x = std::max(0.f, m_parent->getSize().x - getFullSize().x);
 
             Container::setPosition({x, y});
         }
