@@ -791,8 +791,8 @@ namespace tgui
 
         if (getItemCount() > 0)
         {
-            auto items = getItems();
-            auto& ids = getItemIds();
+            const auto& items = getItems();
+            const auto& ids = getItemIds();
 
             bool itemIdsUsed = false;
             std::string itemList = "[" + Serializer::serialize(items[0]);

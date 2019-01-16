@@ -60,8 +60,8 @@ namespace tgui
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setTextSize(getGlobalTextSize());
-        setSize({Text::getLineHeight(m_textFull) * 10,
-                 Text::getLineHeight(m_textFull) * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        setSize({m_textFull.getLineHeight() * 10,
+                 m_textFull.getLineHeight() * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -490,7 +490,7 @@ namespace tgui
         const float positionX = pos.x - m_bordersCached.getLeft() - m_paddingCached.getLeft();
 
         std::size_t caretPosition = findCaretPosition(positionX);
-        const float textOffset = Text::getExtraHorizontalPadding(m_textFull);
+        const float textOffset = m_textFull.getExtraHorizontalPadding();
 
         // When clicking on the left of the first character, move the caret to the left
         if ((positionX < textOffset) && (caretPosition > 0))
@@ -558,7 +558,7 @@ namespace tgui
             else // Scrolling is enabled
             {
                 const float width = getVisibleEditBoxWidth();
-                const float textOffset = Text::getExtraHorizontalPadding(m_textFull);
+                const float textOffset = m_textFull.getExtraHorizontalPadding();
 
                 // Check if the mouse is on the left of the text
                 if (pos.x < m_bordersCached.getLeft() + m_paddingCached.getLeft() + textOffset)
@@ -1186,7 +1186,7 @@ namespace tgui
 
     float EditBox::getFullTextWidth() const
     {
-        return m_textFull.getSize().x + (2 * Text::getExtraHorizontalPadding(m_textFull));
+        return m_textFull.getSize().x + (2 * m_textFull.getExtraHorizontalPadding());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1212,7 +1212,7 @@ namespace tgui
         posX += m_textCropPosition;
 
         if (m_textAlignment == Alignment::Left)
-            posX -= Text::getExtraHorizontalPadding(m_textFull);
+            posX -= m_textFull.getExtraHorizontalPadding();
         else
         {
             // If the text is centered or aligned to the right then the position has to be corrected when the edit box is not entirely full
@@ -1303,7 +1303,7 @@ namespace tgui
 
     void EditBox::recalculateTextPositions()
     {
-        const float textOffset = Text::getExtraHorizontalPadding(m_textFull);
+        const float textOffset = m_textFull.getExtraHorizontalPadding();
         float textX = m_paddingCached.getLeft() - m_textCropPosition + textOffset;
         const float textY = m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) - m_textFull.getSize().y) / 2.f);
 
@@ -1407,8 +1407,8 @@ namespace tgui
             const float caretPosition = m_textFull.findCharacterPos(m_selEnd).x;
 
             // If the caret is too far on the right then adjust the cropping
-            if (m_textCropPosition + getVisibleEditBoxWidth() - (2 * Text::getExtraHorizontalPadding(m_textFull)) < caretPosition)
-                m_textCropPosition = static_cast<unsigned int>(caretPosition - getVisibleEditBoxWidth() + (2 * Text::getExtraHorizontalPadding(m_textFull)));
+            if (m_textCropPosition + getVisibleEditBoxWidth() - (2 * m_textFull.getExtraHorizontalPadding()) < caretPosition)
+                m_textCropPosition = static_cast<unsigned int>(caretPosition - getVisibleEditBoxWidth() + (2 * m_textFull.getExtraHorizontalPadding()));
 
             // If the caret is too far on the left then adjust the cropping
             if (m_textCropPosition > caretPosition)

@@ -47,8 +47,8 @@ namespace tgui
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setTextSize(getGlobalTextSize());
-        setSize({Text::getLineHeight(m_text) * 10,
-                 Text::getLineHeight(m_text) * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+        setSize({m_text.getLineHeight() * 10,
+                 m_text.getLineHeight() * 1.25f + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -892,7 +892,7 @@ namespace tgui
         {
             const Clipping clipping{target, statesForText, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - arrowSize, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
-            statesForText.transform.translate(m_paddingCached.getLeft() + Text::getExtraHorizontalPadding(m_text),
+            statesForText.transform.translate(m_paddingCached.getLeft() + m_text.getExtraHorizontalPadding(),
                                               m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) - m_text.getSize().y) / 2.0f));
             m_text.draw(target, statesForText);
         }

@@ -507,7 +507,9 @@ namespace tgui
                         [=](){ setVisible(false); setPosition(position); onAnimationFinished.emit(this, type, false); }));
                 }
                 else
+                {
                     TGUI_PRINT_WARNING("hideWithEffect(SlideToRight) does not work before widget has a parent.");
+                }
 
                 break;
             }
@@ -525,7 +527,9 @@ namespace tgui
                         [=](){ setVisible(false); setPosition(position); onAnimationFinished.emit(this, type, false); }));
                 }
                 else
+                {
                     TGUI_PRINT_WARNING("hideWithEffect(SlideToBottom) does not work before widget has a parent.");
+                }
 
                 break;
             }
