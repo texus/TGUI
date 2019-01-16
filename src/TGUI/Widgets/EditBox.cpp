@@ -1130,6 +1130,8 @@ namespace tgui
             node->propertyValuePairs["MaximumCharacters"] = std::make_unique<DataIO::ValueNode>(to_string(getMaximumCharacters()));
         if (isTextWidthLimited())
             node->propertyValuePairs["TextWidthLimited"] = std::make_unique<DataIO::ValueNode>("true");
+        if (isReadOnly())
+            node->propertyValuePairs["ReadOnly"] = std::make_unique<DataIO::ValueNode>("true");
 
         node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
 
@@ -1152,6 +1154,8 @@ namespace tgui
             setMaximumCharacters(tgui::stoi(node->propertyValuePairs["maximumcharacters"]->value));
         if (node->propertyValuePairs["textwidthlimited"])
             limitTextWidth(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["textwidthlimited"]->value).getBool());
+        if (node->propertyValuePairs["readonly"])
+            setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["readonly"]->value).getBool());
         if (node->propertyValuePairs["passwordcharacter"])
         {
             const std::string pass = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs["passwordcharacter"]->value).getString();

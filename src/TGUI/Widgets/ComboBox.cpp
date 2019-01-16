@@ -687,6 +687,9 @@ namespace tgui
         if (getExpandDirection() != ComboBox::ExpandDirection::Down)
             node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Up");
 
+        if (m_listBox->getSelectedItemIndex() >= 0)
+            node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(to_string(m_listBox->getSelectedItemIndex()));
+
         return node;
     }
 
@@ -733,6 +736,8 @@ namespace tgui
             setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["maximumitems"])
             setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
+        if (node->propertyValuePairs["selecteditemindex"])
+            setSelectedItemByIndex(tgui::stoi(node->propertyValuePairs["selecteditemindex"]->value));
 
         if (node->propertyValuePairs["expanddirection"])
         {

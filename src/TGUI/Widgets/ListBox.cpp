@@ -816,6 +816,9 @@ namespace tgui
         if (!m_autoScroll)
             node->propertyValuePairs["AutoScroll"] = std::make_unique<DataIO::ValueNode>("false");
 
+        if (m_selectedItem >= 0)
+            node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(to_string(m_selectedItem));
+
         node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
         node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_itemHeight));
         node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(to_string(m_maxItems));
@@ -868,6 +871,8 @@ namespace tgui
             setItemHeight(tgui::stoi(node->propertyValuePairs["itemheight"]->value));
         if (node->propertyValuePairs["maximumitems"])
             setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
+        if (node->propertyValuePairs["selecteditemindex"])
+            setSelectedItemByIndex(tgui::stoi(node->propertyValuePairs["selecteditemindex"]->value));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

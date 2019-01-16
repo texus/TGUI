@@ -566,6 +566,7 @@ TEST_CASE("[EditBox]")
         editBox->setMaximumCharacters(5);
         editBox->setAlignment(tgui::EditBox::Alignment::Right);
         editBox->limitTextWidth();
+        editBox->setReadOnly(true);
         editBox->setInputValidator("[0-9a-zA-Z]*");
 
         testSavingWidget("EditBox", editBox);
