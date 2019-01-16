@@ -745,7 +745,11 @@ namespace tgui
 
     bool TreeView::mouseWheelScrolled(float delta, Vector2f pos)
     {
-        if (m_horizontalScrollbar->isShown() && m_horizontalScrollbar->mouseOnWidget(pos - getPosition()))
+        if (m_horizontalScrollbar->isShown()
+            && (!m_verticalScrollbar->isShown()
+                || m_horizontalScrollbar->mouseOnWidget(pos - getPosition())
+                || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
+                || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
         {
             m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             mouseMoved(pos);

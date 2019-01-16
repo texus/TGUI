@@ -1085,10 +1085,10 @@ namespace tgui
     bool TextBox::mouseWheelScrolled(float delta, Vector2f pos)
     {
         if (m_horizontalScrollbar->isShown()
-            && (m_horizontalScrollbar->mouseOnWidget(pos - getPosition())
-                || (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-                || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
-                || !m_verticalScrollbar->isShown()))
+            && (!m_verticalScrollbar->isShown()
+                || m_horizontalScrollbar->mouseOnWidget(pos - getPosition())
+                || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
+                || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)))
         {
             m_horizontalScrollbar->mouseWheelScrolled(delta, pos - getPosition());
             recalculateVisibleLines();
