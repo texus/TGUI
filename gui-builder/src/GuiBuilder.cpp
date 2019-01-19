@@ -325,7 +325,7 @@ void GuiBuilder::reloadProperties()
     }
 
     const auto& rendererSelector = m_propertiesContainer->get<tgui::ComboBox>("RendererSelectorComboBox");
-    if (static_cast<std::size_t>(rendererSelector->getSelectedItemIndex() + 1) == rendererSelector->getItemCount())
+    if (static_cast<std::size_t>(rendererSelector->getSelectedItemIndex() + 1) == rendererSelector->getItemCount()) // If "Custom" is selected
     {
         for (const auto& property : m_propertyValuePairs.second)
         {
@@ -702,7 +702,7 @@ void GuiBuilder::initProperties()
             m_selectedForm->setChanged(true);
         });
 
-        if (static_cast<std::size_t>(rendererComboBox->getSelectedItemIndex() + 1) == rendererComboBox->getItemCount())
+        if (static_cast<std::size_t>(rendererComboBox->getSelectedItemIndex() + 1) == rendererComboBox->getItemCount()) // If "Custom" is selected
         {
             topPosition += rendererComboBox->getSize().y + 10;
             for (const auto& property : m_propertyValuePairs.second)
@@ -714,6 +714,11 @@ void GuiBuilder::initProperties()
                         m_selectedForm->setChanged(true);
                         updateWidgetProperty(property.first, valueEditBox->getText());
                         m_previousValue = valueEditBox->getText();
+
+                        // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
+                        // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
+                        // back to the widget, so that the string stored in the renderer is always a valid string.
+                        m_selectedForm->getSelectedWidget()->ptr->getRenderer()->setProperty(property.first, valueEditBox->getText());
                     }
                 });
             }
