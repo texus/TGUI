@@ -176,7 +176,7 @@ namespace tgui
             {
                 char c = static_cast<char>(stream.peek());
 
-                if (stream.peek() == '/')
+                if (c == '/')
                 {
                     stream.read(&c, 1);
                     if (stream.peek() == '/')
@@ -205,8 +205,11 @@ namespace tgui
                         }
                         continue;
                     }
-                    else
-                        return "";
+                    else // The slash is part of the value
+                    {
+                        whitespaceFound = false;
+                        line.push_back(c);
+                    }
 
                     continue;
                 }

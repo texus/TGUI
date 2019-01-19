@@ -99,6 +99,12 @@ TEST_CASE("[DataIO]")
                     == "\\\"Value\"\\");
         }
 
+        SECTION("Value can contain slash")
+        {
+            std::stringstream input("Property = First/Second;");
+            REQUIRE_NOTHROW(tgui::DataIO::parse(input));
+        }
+
         SECTION("Unexpected '/' found")
         {
             std::stringstream input("/ {}");
@@ -251,7 +257,7 @@ TEST_CASE("[DataIO]")
             stream << "}" << std::endl;
         }
 
-        // Check that emit function works correctly be parsing the result and check if it equals the input
+        // Check that emit function works correctly by parsing the result and check if it equals the input
         auto parsedRoot = tgui::DataIO::parse(stream);
         REQUIRE(parsedRoot->name == ""); // Root node name is ignored when saving
         REQUIRE(parsedRoot->parent == nullptr);
