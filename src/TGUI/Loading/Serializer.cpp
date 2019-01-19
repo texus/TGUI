@@ -98,6 +98,9 @@ namespace tgui
         {
             Color color = value.getColor();
 
+            if (!color.isSet())
+                return "None";
+
             // Check if the color can be represented by a string with its name
             for (const auto& pair : Color::colorMap)
             {

@@ -97,11 +97,11 @@ namespace tgui
 
             // Load the font but insert the resource path into the filename unless the filename is an absolute path
             auto font = std::make_shared<sf::Font>();
-        #ifdef SFML_SYSTEM_WINDOWS
+#ifdef SFML_SYSTEM_WINDOWS
             if ((filename[0] != '/') && (filename[0] != '\\') && ((filename.getSize() <= 1) || (filename[1] != ':')))
-        #else
+#else
             if (filename[0] != '/')
-        #endif
+#endif
                 font->loadFromFile(getResourcePath() + filename);
             else
                 font->loadFromFile(filename);
@@ -113,75 +113,73 @@ namespace tgui
 
         ObjectConverter deserializeColor(const std::string& value)
         {
-            std::string str = trim(value);
+            std::string str = toLower(trim(value));
+            if (str.empty() || (str == "none"))
+                return Color();
 
-            // Make sure that the line isn't empty
-            if (!str.empty())
+            // Check if the color is represented by a string with its name
+            const auto it = Color::colorMap.find(toLower(str));
+            if (it != Color::colorMap.end())
+                return it->second;
+
+            // The color can be represented with a hexadecimal number
+            if (str[0] == '#')
             {
-                // Check if the color is represented by a string with its name
-                const auto it = Color::colorMap.find(toLower(str));
-                if (it != Color::colorMap.end())
-                    return it->second;
-
-                // The color can be represented with a hexadecimal number
-                if (str[0] == '#')
+                // You can only have hex characters
+                for (std::size_t i = 1; i < value.length(); ++i)
                 {
-                    // You can only have hex characters
-                    for (std::size_t i = 1; i < value.length(); ++i)
-                    {
-                        if (!((value[i] >= '0' && value[i] <= '9') || (value[i] >= 'A' && value[i] <= 'F')  || (value[i] >= 'a' && value[i] <= 'f')))
-                            throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but contained an invalid character afterwards."};
-                    }
-
-                    // Parse the different types of strings (#123, #1234, #112233 and #11223344)
-                    if (value.length() == 4)
-                    {
-                        return Color{static_cast<std::uint8_t>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
-                                     static_cast<std::uint8_t>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
-                                     static_cast<std::uint8_t>(hexToDec(value[3]) * 16 + hexToDec(value[3]))};
-                    }
-                    else if (value.length() == 5)
-                    {
-                        return Color{static_cast<std::uint8_t>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
-                                     static_cast<std::uint8_t>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
-                                     static_cast<std::uint8_t>(hexToDec(value[3]) * 16 + hexToDec(value[3])),
-                                     static_cast<std::uint8_t>(hexToDec(value[4]) * 16 + hexToDec(value[4]))};
-                    }
-                    else if (value.length() == 7)
-                    {
-                        return Color{static_cast<std::uint8_t>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
-                                     static_cast<std::uint8_t>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
-                                     static_cast<std::uint8_t>(hexToDec(value[5]) * 16 + hexToDec(value[6]))};
-                    }
-                    else if (value.length() == 9)
-                    {
-                        return Color{static_cast<std::uint8_t>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
-                                     static_cast<std::uint8_t>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
-                                     static_cast<std::uint8_t>(hexToDec(value[5]) * 16 + hexToDec(value[6])),
-                                     static_cast<std::uint8_t>(hexToDec(value[7]) * 16 + hexToDec(value[8]))};
-                    }
-                    else
-                        throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but has the wrong length."};
+                    if (!((value[i] >= '0' && value[i] <= '9') || (value[i] >= 'A' && value[i] <= 'F')  || (value[i] >= 'a' && value[i] <= 'f')))
+                        throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but contained an invalid character afterwards."};
                 }
 
-                // The string can optionally start with "rgb" or "rgba", but this is ignored
-                if (str.substr(0, 4) == "rgba")
-                    str.erase(0, 4);
-                else if (str.substr(0, 3) == "rgb")
-                    str.erase(0, 3);
-
-                // Remove the first and last characters when they are brackets
-                if ((str[0] == '(') && (str[str.length()-1] == ')'))
-                    str = str.substr(1, str.length()-2);
-
-                const std::vector<std::string> tokens = Deserializer::split(str, ',');
-                if (tokens.size() == 3 || tokens.size() == 4)
+                // Parse the different types of strings (#123, #1234, #112233 and #11223344)
+                if (value.length() == 4)
                 {
-                    return Color{static_cast<std::uint8_t>(tgui::stoi(tokens[0])),
-                                 static_cast<std::uint8_t>(tgui::stoi(tokens[1])),
-                                 static_cast<std::uint8_t>(tgui::stoi(tokens[2])),
-                                 static_cast<std::uint8_t>((tokens.size() == 4) ? tgui::stoi(tokens[3]) : 255)};
+                    return Color{static_cast<std::uint8_t>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
+                                 static_cast<std::uint8_t>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
+                                 static_cast<std::uint8_t>(hexToDec(value[3]) * 16 + hexToDec(value[3]))};
                 }
+                else if (value.length() == 5)
+                {
+                    return Color{static_cast<std::uint8_t>(hexToDec(value[1]) * 16 + hexToDec(value[1])),
+                                 static_cast<std::uint8_t>(hexToDec(value[2]) * 16 + hexToDec(value[2])),
+                                 static_cast<std::uint8_t>(hexToDec(value[3]) * 16 + hexToDec(value[3])),
+                                 static_cast<std::uint8_t>(hexToDec(value[4]) * 16 + hexToDec(value[4]))};
+                }
+                else if (value.length() == 7)
+                {
+                    return Color{static_cast<std::uint8_t>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
+                                 static_cast<std::uint8_t>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
+                                 static_cast<std::uint8_t>(hexToDec(value[5]) * 16 + hexToDec(value[6]))};
+                }
+                else if (value.length() == 9)
+                {
+                    return Color{static_cast<std::uint8_t>(hexToDec(value[1]) * 16 + hexToDec(value[2])),
+                                 static_cast<std::uint8_t>(hexToDec(value[3]) * 16 + hexToDec(value[4])),
+                                 static_cast<std::uint8_t>(hexToDec(value[5]) * 16 + hexToDec(value[6])),
+                                 static_cast<std::uint8_t>(hexToDec(value[7]) * 16 + hexToDec(value[8]))};
+                }
+                else
+                    throw Exception{"Failed to deserialize color '" + value + "'. Value started but '#' but has the wrong length."};
+            }
+
+            // The string can optionally start with "rgb" or "rgba", but this is ignored
+            if (str.substr(0, 4) == "rgba")
+                str.erase(0, 4);
+            else if (str.substr(0, 3) == "rgb")
+                str.erase(0, 3);
+
+            // Remove the first and last characters when they are brackets
+            if ((str[0] == '(') && (str[str.length()-1] == ')'))
+                str = str.substr(1, str.length()-2);
+
+            const std::vector<std::string> tokens = Deserializer::split(str, ',');
+            if (tokens.size() == 3 || tokens.size() == 4)
+            {
+                return Color{static_cast<std::uint8_t>(tgui::stoi(tokens[0])),
+                             static_cast<std::uint8_t>(tgui::stoi(tokens[1])),
+                             static_cast<std::uint8_t>(tgui::stoi(tokens[2])),
+                             static_cast<std::uint8_t>((tokens.size() == 4) ? tgui::stoi(tokens[3]) : 255)};
             }
 
             throw Exception{"Failed to deserialize color '" + value + "'."};
@@ -262,11 +260,11 @@ namespace tgui
             if (value[0] != '"')
             {
                 // Load the texture but insert the resource path into the filename unless the filename is an absolute path
-            #ifdef SFML_SYSTEM_WINDOWS
+#ifdef SFML_SYSTEM_WINDOWS
                 if ((value[0] != '/') && (value[0] != '\\') && ((value.size() <= 1) || (value[1] != ':')))
-            #else
+#else
                 if (value[0] != '/')
-            #endif
+#endif
                     return Texture{getResourcePath() + value};
                 else
                     return Texture{value};

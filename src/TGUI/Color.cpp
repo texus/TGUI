@@ -58,8 +58,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Color::Color(const std::string& string) :
-        m_isSet{true},
-        m_color(Deserializer::deserialize(ObjectConverter::Type::Color, string).getColor()) // Did not compile with clang 3.6 when using braces
+        Color{Deserializer::deserialize(ObjectConverter::Type::Color, string).getColor()}
     {
     }
 
