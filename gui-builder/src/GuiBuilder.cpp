@@ -499,7 +499,7 @@ void GuiBuilder::loadToolbox()
 
         auto verticalLayout = tgui::VerticalLayout::create();
         verticalLayout->setPosition(0, topPosition);
-        verticalLayout->setSize({bindWidth(toolbox) - toolbox->getScrollbarWidth(), icon->getSize().y + 4});
+        verticalLayout->setSize({bindWidth(toolbox) - toolbox->getRenderer()->getScrollbarWidth(), icon->getSize().y + 4});
         verticalLayout->getRenderer()->setPadding({2});
 
         auto panel = tgui::Panel::create();
@@ -618,27 +618,29 @@ void GuiBuilder::initProperties()
 
     if (selectedWidget)
     {
+        const float scrollbarWidth = m_propertiesContainer->getRenderer()->getScrollbarWidth();
+
         auto buttonCopy = tgui::Button::create("Copy");
-        buttonCopy->setSize({((bindWidth(m_propertiesContainer) - m_propertiesContainer->getScrollbarWidth()) / 4.f) - 5, 25});
+        buttonCopy->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
         buttonCopy->setPosition({0, topPosition});
         buttonCopy->connect("Pressed", [this]{ copyWidget(m_selectedForm->getSelectedWidget()); });
         m_propertiesContainer->add(buttonCopy);
 
         auto buttonRemove = tgui::Button::create("Remove");
-        buttonRemove->setSize({((bindWidth(m_propertiesContainer) - m_propertiesContainer->getScrollbarWidth()) / 4.f) - 5, 25});
-        buttonRemove->setPosition({((bindWidth(m_propertiesContainer) - 20 - m_propertiesContainer->getScrollbarWidth()) / 4.f) + (20.f * 1.f / 3.f), topPosition});
+        buttonRemove->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
+        buttonRemove->setPosition({((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 1.f / 3.f), topPosition});
         buttonRemove->connect("Pressed", [this]{ removeSelectedWidget(); });
         m_propertiesContainer->add(buttonRemove);
 
         auto buttonToFront = tgui::Button::create("ToFront");
-        buttonToFront->setSize({((bindWidth(m_propertiesContainer) - m_propertiesContainer->getScrollbarWidth()) / 4.f) - 4, 25});
-        buttonToFront->setPosition({2.f * ((bindWidth(m_propertiesContainer) - 20 - m_propertiesContainer->getScrollbarWidth()) / 4.f) + (20.f * 2.f / 3.f), topPosition});
+        buttonToFront->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 4, 25});
+        buttonToFront->setPosition({2.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 2.f / 3.f), topPosition});
         buttonToFront->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToFront(); m_selectedForm->setChanged(true); });
         m_propertiesContainer->add(buttonToFront);
 
         auto buttonToBack = tgui::Button::create("ToBack");
-        buttonToBack->setSize({((bindWidth(m_propertiesContainer) - m_propertiesContainer->getScrollbarWidth()) / 4.f) - 5, 25});
-        buttonToBack->setPosition({3.f * ((bindWidth(m_propertiesContainer) - 20 - m_propertiesContainer->getScrollbarWidth()) / 4.f) + (20.f * 3.f / 3.f), topPosition});
+        buttonToBack->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
+        buttonToBack->setPosition({3.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 3.f / 3.f), topPosition});
         buttonToBack->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToBack(); m_selectedForm->setChanged(true); });
         m_propertiesContainer->add(buttonToBack);
 
@@ -677,7 +679,7 @@ void GuiBuilder::initProperties()
         topPosition += 10;
         auto rendererComboBox = tgui::ComboBox::create();
         rendererComboBox->setPosition({0, topPosition});
-        rendererComboBox->setSize({bindWidth(m_propertiesContainer) - m_propertiesContainer->getScrollbarWidth(), 20});
+        rendererComboBox->setSize({bindWidth(m_propertiesContainer) - scrollbarWidth, 20});
 
         for (auto& theme : m_themes)
             rendererComboBox->addItem(theme.first);
@@ -770,18 +772,19 @@ tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBoxes(float& topPosition, con
     const auto& property = propertyValuePair.first;
     //const auto& type = propertyValuePair.second.first;
     const auto& value = propertyValuePair.second.second;
+    const float scrollbarWidth = m_propertiesContainer->getRenderer()->getScrollbarWidth();
 
     auto propertyEditBox = tgui::EditBox::create();
     propertyEditBox->setPosition({0, topPosition});
-    propertyEditBox->setSize({((bindWidth(m_propertiesContainer) - m_propertiesContainer->getScrollbarWidth()) / 2.f) + propertyEditBox->getRenderer()->getBorders().getRight(), EDIT_BOX_HEIGHT});
+    propertyEditBox->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f) + propertyEditBox->getRenderer()->getBorders().getRight(), EDIT_BOX_HEIGHT});
     propertyEditBox->setReadOnly();
     propertyEditBox->setText(property);
     m_propertiesContainer->add(propertyEditBox, "Property" + property);
     propertyEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
 
     auto valueEditBox = tgui::EditBox::create();
-    valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - m_propertiesContainer->getScrollbarWidth()) / 2.f, topPosition});
-    valueEditBox->setSize({(bindWidth(m_propertiesContainer) - m_propertiesContainer->getScrollbarWidth()) / 2.f, EDIT_BOX_HEIGHT});
+    valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
+    valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
     valueEditBox->setText(value);
     valueEditBox->connect({"focused"}, [=]{ m_previousValue = valueEditBox->getText(); });
     m_propertiesContainer->add(valueEditBox, "Value" + property);
