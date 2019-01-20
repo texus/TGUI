@@ -42,6 +42,8 @@ struct LabelProperties : WidgetProperties
             label->setHorizontalAlignment(deserializeHorizontalAlignment(value));
         else if (property == "VerticalAlignment")
             label->setVerticalAlignment(deserializeVerticalAlignment(value));
+        else if (property == "ScrollbarPolicy")
+            label->setScrollbarPolicy(deserializeScrollbarPolicy(value));
         else if (property == "AutoSize")
             label->setAutoSize(parseBoolean(value, true));
         else if (property == "MaximumTextWidth")
@@ -60,6 +62,7 @@ struct LabelProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::to_string(label->getTextSize())};
         pair.first["HorizontalAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(label->getHorizontalAlignment())};
         pair.first["VerticalAlignment"] = {"Enum{Top,Center,Bottom}", serializeVerticalAlignment(label->getVerticalAlignment())};
+        pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(label->getScrollbarPolicy())};
         pair.first["AutoSize"] = {"Bool", tgui::Serializer::serialize(label->getAutoSize())};
         pair.first["MaximumTextWidth"] = {"Float", tgui::to_string(label->getMaximumTextWidth())};
         pair.first["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(label->isIgnoringMouseEvents())};

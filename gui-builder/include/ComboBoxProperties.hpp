@@ -46,6 +46,8 @@ struct ComboBoxProperties : WidgetProperties
         }
         else if (property == "SelectedItemIndex")
             comboBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::stoi(value)));
+        else if (property == "ItemsToDisplay")
+            comboBox->setItemsToDisplay(static_cast<std::size_t>(tgui::stoi(value)));
         else if (property == "TextSize")
             comboBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "MaximumItems")
@@ -62,6 +64,7 @@ struct ComboBoxProperties : WidgetProperties
         auto comboBox = std::dynamic_pointer_cast<tgui::ComboBox>(widget);
         pair.first["Items"] = {"List<String>", serializeList(comboBox->getItems())};
         pair.first["SelectedItemIndex"] = {"Int", tgui::to_string(comboBox->getSelectedItemIndex())};
+        pair.first["ItemsToDisplay"] = {"Int", tgui::to_string(comboBox->getItemsToDisplay())};
         pair.first["TextSize"] = {"UInt", tgui::to_string(comboBox->getTextSize())};
         pair.first["MaximumItems"] = {"UInt", tgui::to_string(comboBox->getMaximumItems())};
         pair.first["ExpandDirection"] = {"Enum{Down, Up}", serializeExpandDirection(comboBox->getExpandDirection())};

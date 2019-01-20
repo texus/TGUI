@@ -44,8 +44,10 @@ struct TextBoxProperties : WidgetProperties
             textBox->setMaximumCharacters(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "ReadOnly")
             textBox->setReadOnly(parseBoolean(value, false));
-        else if (property == "VerticalScrollbarPresent")
-            textBox->setVerticalScrollbarPresent(parseBoolean(value, true));
+        else if (property == "VerticalScrollbarPolicy")
+            textBox->setVerticalScrollbarPolicy(deserializeScrollbarPolicy(value));
+        else if (property == "HorizontalScrollbarPolicy")
+            textBox->setHorizontalScrollbarPolicy(deserializeScrollbarPolicy(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -58,7 +60,8 @@ struct TextBoxProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::to_string(textBox->getTextSize())};
         pair.first["MaximumCharacters"] = {"UInt", tgui::to_string(textBox->getMaximumCharacters())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textBox->isReadOnly())};
-        pair.first["VerticalScrollbarPresent"] = {"Bool", tgui::Serializer::serialize(textBox->isVerticalScrollbarPresent())};
+        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textBox->getVerticalScrollbarPolicy())};
+        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textBox->getHorizontalScrollbarPolicy())};
 
         const auto renderer = textBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};

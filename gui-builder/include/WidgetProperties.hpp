@@ -30,6 +30,7 @@
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
 #include <iostream>
 
 using PropertyValueMap = std::map<std::string, std::pair<std::string, std::string>>;
@@ -123,6 +124,27 @@ protected:
 
         itemList += "]";
         return itemList;
+    }
+
+    static tgui::Scrollbar::Policy deserializeScrollbarPolicy(std::string value)
+    {
+        value = tgui::toLower(tgui::trim(value));
+        if (value == "always")
+            return tgui::Scrollbar::Policy::Always;
+        else if (value == "never")
+            return tgui::Scrollbar::Policy::Never;
+        else
+            return tgui::Scrollbar::Policy::Automatic;
+    }
+
+    static std::string serializeScrollbarPolicy(tgui::Scrollbar::Policy policy)
+    {
+        if (policy == tgui::Scrollbar::Policy::Always)
+            return "Always";
+        else if (policy == tgui::Scrollbar::Policy::Never)
+            return "Never";
+        else
+            return "Automatic";
     }
 };
 

@@ -11,6 +11,7 @@ TGUI 0.8.3  (TBD)
 - Sprites didn't keep their transparency when resized
 - Texture filenames can now contain UTF8 characters on linux
 - Added propery to widget renderer to set an opacity for the disabled state
+- Fixed some bugs in saving and loading widget files (#90)
 
 
 TGUI 0.8.2  (16 December 2018)

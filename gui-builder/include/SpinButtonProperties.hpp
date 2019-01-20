@@ -40,6 +40,8 @@ struct SpinButtonProperties : WidgetProperties
             spinButton->setMaximum(tgui::stof(value));
         else if (property == "Value")
             spinButton->setValue(tgui::stof(value));
+        else if (property == "Step")
+            spinButton->setStep(tgui::stof(value));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
