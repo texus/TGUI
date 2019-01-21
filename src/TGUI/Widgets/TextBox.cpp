@@ -520,10 +520,7 @@ namespace tgui
         if (m_horizontalScrollbar->isShown())
         {
             if (m_horizontalScrollbar->isMouseDown())
-            {
                 m_horizontalScrollbar->leftMouseReleased(pos - getPosition());
-                recalculateVisibleLines();
-            }
         }
     }
 
@@ -550,7 +547,6 @@ namespace tgui
         else if (m_horizontalScrollbar->isShown() && ((m_horizontalScrollbar->isMouseDown() && m_horizontalScrollbar->isMouseDownOnThumb()) || m_horizontalScrollbar->mouseOnWidget(pos)))
         {
             m_horizontalScrollbar->mouseMoved(pos);
-            recalculateVisibleLines();
         }
 
         // If the mouse is held down then you are selecting text

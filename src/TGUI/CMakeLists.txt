@@ -34,6 +34,7 @@ set(TGUI_SRC
     Renderers/KnobRenderer.cpp
     Renderers/LabelRenderer.cpp
     Renderers/ListBoxRenderer.cpp
+    Renderers/ListViewRenderer.cpp
     Renderers/MenuBarRenderer.cpp
     Renderers/MessageBoxRenderer.cpp
     Renderers/PanelRenderer.cpp
@@ -67,6 +68,7 @@ set(TGUI_SRC
     Widgets/Knob.cpp
     Widgets/Label.cpp
     Widgets/ListBox.cpp
+    Widgets/ListView.cpp
     Widgets/MenuBar.cpp
     Widgets/MessageBox.cpp
     Widgets/Panel.cpp

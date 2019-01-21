@@ -40,6 +40,7 @@ set(TEST_SOURCES
     Widgets/Knob.cpp
     Widgets/Label.cpp
     Widgets/ListBox.cpp
+    Widgets/ListView.cpp
     Widgets/MenuBar.cpp
     Widgets/MessageBox.cpp
     Widgets/Panel.cpp

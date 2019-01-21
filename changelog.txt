@@ -1,6 +1,7 @@
 TGUI 0.8.3  (TBD)
 -----------------
 
+- ListView widget added
 - TextBox can now have a horizontal scrollbar
 - Label can now have a vertical scrollbar
 - Default scrollbar width wasn't always taken from texture size in widgets containing scrollbars
