@@ -38,3 +38,28 @@ tgui_set_stdlib(gui-builder)
 add_custom_command(TARGET gui-builder POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gui-builder> ${PROJECT_SOURCE_DIR}/gui-builder/
                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/themes ${PROJECT_SOURCE_DIR}/gui-builder/themes)
+
+set(target_install_dir "${TGUI_MISC_INSTALL_PREFIX}/gui-builder")
+
+# Set the RPATH of the executable on Linux and BSD
+if (TGUI_SHARED_LIBS AND (TGUI_OS_LINUX OR TGUI_OS_BSD))
+    file(RELATIVE_PATH rel_lib_dir
+         ${CMAKE_INSTALL_PREFIX}/${target_install_dir}
+         ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
+
+    set_target_properties(gui-builder PROPERTIES
+                          INSTALL_RPATH "$ORIGIN/${rel_lib_dir}")
+endif()
+
+# Add the install rule for the executable
+install(TARGETS gui-builder
+        RUNTIME DESTINATION ${target_install_dir} COMPONENT gui-builder
+        BUNDLE DESTINATION ${target_install_dir} COMPONENT gui-builder)
+
+# Install the resources next to the test executable
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/gui-builder/resources"
+        DESTINATION "${target_install_dir}"
+        COMPONENT gui-builder)
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/themes"
+        DESTINATION "${target_install_dir}"
+        COMPONENT gui-builder)
