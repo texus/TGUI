@@ -161,6 +161,14 @@ TEST_CASE("[EditBox]")
         REQUIRE(!editBox->isReadOnly());
     }
 
+    SECTION("Suffix")
+    {
+        REQUIRE(editBox->getSuffix().isEmpty());
+
+        editBox->setSuffix("Tn");
+        REQUIRE(editBox->getSuffix() == "Tn");
+    }
+
     SECTION("Input Validator")
     {
         editBox->setText(L"++Some123 Ê Text456--");
@@ -738,6 +746,15 @@ TEST_CASE("[EditBox]")
                 editBox->setAlignment(tgui::EditBox::Alignment::Right);
                 TEST_DRAW("EditBox_Alignment_Right.png")
             }
+        }
+
+        SECTION("Suffix")
+        {
+            editBox->setTextSize(12);
+            editBox->setAlignment(tgui::EditBox::Alignment::Right);
+            editBox->setText("50");
+            editBox->setSuffix("kg");
+            TEST_DRAW("EditBox_Suffix.png")
         }
     }
 

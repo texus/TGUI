@@ -390,6 +390,24 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Places a suffix at the right side of the edit box
+        ///
+        /// @param suffix  Text to show on right side of edit box
+        ///
+        /// Setting a suffix can be useful for inputting numbers where you want to unit to be displayed inside the edit box.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setSuffix(const sf::String& suffix);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the suffix currently displayed on the right side of the edit box
+        ///
+        /// @return Text shown on right side of edit box
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const sf::String& getSuffix() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Focus or unfocus the widget
         /// @param focused  Is the widget focused?
         ///
@@ -600,6 +618,7 @@ namespace tgui
         Text m_textAfterSelection;
         Text m_defaultText;
         Text m_textFull;
+        Text m_textSuffix;
 
         Sprite m_sprite;
         Sprite m_spriteHover;

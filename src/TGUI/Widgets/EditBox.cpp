@@ -52,6 +52,7 @@ namespace tgui
         m_textSelection.setFont(m_fontCached);
         m_textAfterSelection.setFont(m_fontCached);
         m_textFull.setFont(m_fontCached);
+        m_textSuffix.setFont(m_fontCached);
         m_defaultText.setFont(m_fontCached);
 
         m_draggableWidget = true;
@@ -150,6 +151,7 @@ namespace tgui
         if (m_textSize == 0)
         {
             m_textFull.setCharacterSize(Text::findBestTextSize(m_fontCached, (getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) * 0.8f));
+            m_textSuffix.setCharacterSize(m_textFull.getCharacterSize());
             m_textBeforeSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textSelection.setCharacterSize(m_textFull.getCharacterSize());
             m_textAfterSelection.setCharacterSize(m_textFull.getCharacterSize());
@@ -158,6 +160,7 @@ namespace tgui
         else // When the text has a fixed size
         {
             m_textFull.setCharacterSize(m_textSize);
+            m_textSuffix.setCharacterSize(m_textSize);
             m_textBeforeSelection.setCharacterSize(m_textSize);
             m_textSelection.setCharacterSize(m_textSize);
             m_textAfterSelection.setCharacterSize(m_textSize);
@@ -442,6 +445,21 @@ namespace tgui
     const std::string& EditBox::getInputValidator() const
     {
         return m_regexString;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::setSuffix(const sf::String& suffix)
+    {
+        m_textSuffix.setString(suffix);
+        recalculateTextPositions();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::String& EditBox::getSuffix() const
+    {
+        return m_textSuffix.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1009,6 +1027,7 @@ namespace tgui
             m_textBeforeSelection.setStyle(style);
             m_textAfterSelection.setStyle(style);
             m_textSelection.setStyle(style);
+            m_textSuffix.setStyle(style);
             m_textFull.setStyle(style);
         }
         else if (property == "defaulttextstyle")
@@ -1071,6 +1090,7 @@ namespace tgui
             m_textAfterSelection.setOpacity(m_opacityCached);
             m_textSelection.setOpacity(m_opacityCached);
             m_defaultText.setOpacity(m_opacityCached);
+            m_textSuffix.setOpacity(m_opacityCached);
 
             m_sprite.setOpacity(m_opacityCached);
             m_spriteHover.setOpacity(m_opacityCached);
@@ -1084,6 +1104,7 @@ namespace tgui
             m_textBeforeSelection.setFont(m_fontCached);
             m_textSelection.setFont(m_fontCached);
             m_textAfterSelection.setFont(m_fontCached);
+            m_textSuffix.setFont(m_fontCached);
             m_textFull.setFont(m_fontCached);
             m_defaultText.setFont(m_fontCached);
 
@@ -1205,7 +1226,14 @@ namespace tgui
 
     float EditBox::getVisibleEditBoxWidth() const
     {
-        return std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight());
+        float extraSuffixWidth = 0;
+        if (!m_textSuffix.getString().isEmpty())
+        {
+            const float textOffset = m_textFull.getExtraHorizontalPadding();
+            extraSuffixWidth = m_textSuffix.getSize().x + textOffset;
+        }
+
+        return std::max(0.f, getSize().x - m_bordersCached.getLeft() - m_bordersCached.getRight() - m_paddingCached.getLeft() - m_paddingCached.getRight() - extraSuffixWidth);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1430,16 +1458,19 @@ namespace tgui
         {
             m_textBeforeSelection.setColor(getSharedRenderer()->getTextColorDisabled());
             m_textAfterSelection.setColor(getSharedRenderer()->getTextColorDisabled());
+            m_textSuffix.setColor(getSharedRenderer()->getTextColorDisabled());
         }
         else if (m_focused && getSharedRenderer()->getTextColorFocused().isSet())
         {
             m_textBeforeSelection.setColor(getSharedRenderer()->getTextColorFocused());
             m_textAfterSelection.setColor(getSharedRenderer()->getTextColorFocused());
+            m_textSuffix.setColor(getSharedRenderer()->getTextColorFocused());
         }
         else
         {
             m_textBeforeSelection.setColor(getSharedRenderer()->getTextColor());
             m_textAfterSelection.setColor(getSharedRenderer()->getTextColor());
+            m_textSuffix.setColor(getSharedRenderer()->getTextColor());
         }
     }
 
@@ -1508,9 +1539,26 @@ namespace tgui
                 drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
         }
 
+        // Draw the suffix
+        float suffixSpace = 0;
+        if (!m_textSuffix.getString().isEmpty())
         {
-            // Set the clipping for all draw calls that happen until this clipping object goes out of scope
             const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
+
+            const float textOffset = m_textFull.getExtraHorizontalPadding();
+            sf::Vector2f offset{getInnerSize().x - m_paddingCached.getRight() - textOffset - m_textSuffix.getSize().x,
+                                m_paddingCached.getTop() + ((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - m_textSuffix.getSize().y) / 2.f)};
+
+            states.transform.translate(offset);
+            m_textSuffix.draw(target, states);
+            states.transform.translate(-offset);
+
+            suffixSpace = m_textSuffix.getSize().x + textOffset;
+        }
+
+        // Draw the text
+        {
+            const Clipping clipping{target, states, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - suffixSpace, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
             if ((m_textBeforeSelection.getString() != "") || (m_textSelection.getString() != ""))
             {
