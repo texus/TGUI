@@ -52,6 +52,8 @@ struct EditBoxProperties : WidgetProperties
             editBox->setReadOnly(parseBoolean(value, false));
         else if (property == "InputValidator")
             editBox->setInputValidator(value);
+        else if (property == "Suffix")
+            editBox->setSuffix(value);
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -69,6 +71,7 @@ struct EditBoxProperties : WidgetProperties
         pair.first["LimitTextWidth"] = {"Bool", tgui::Serializer::serialize(editBox->isTextWidthLimited())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(editBox->isReadOnly())};
         pair.first["InputValidator"] = {"String", editBox->getInputValidator()};
+        pair.first["Suffix"] = {"String", editBox->getSuffix()};
 
         const auto renderer = editBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
