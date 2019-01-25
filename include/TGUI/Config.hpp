@@ -59,13 +59,13 @@
 
 // The signal system detects whether it can provide unbound parameters by checking the arguments of the function at runtime.
 // This comparion is made by checking the typeid of the parameters with the typeid of the value which the widget can transmit.
-// Although typeid returns a unique value and the operator== is guarenteed to only be true for the same type, it may not always work correctly.
-// Dynamically linked libraries may have a different type_info internally than in the code using the library. In such case the comparison will always be false.
-// This behavior has so far only been seen on android (using NDK 12b), so the alternative is currently only used when compiling on android.
-// The alternative that is used on android is to compare the strings returned by type_info.name(). This is however considered undefined behavior since the compiler
+// Although typeid returns a unique value and the operator== is guarenteed to only be true for the same type, dynamically linked libraries may have a
+// different type_info internally than in the code using the library. In such case the comparison will always be false.
+// This behavior has so far only been seen on android and macOS, so the alternative is currently only used when compiling on these platforms.
+// The alternative that is used is to compare the strings returned by type_info.name(). This is however considered undefined behavior since the compiler
 // is not guarenteed to have unique names for different types. The names will however be the same inside and outside the library so this method solves the issue.
 // I am also not aware of any supported compiler that does not create unique names.
-#ifdef __ANDROID__
+#if (defined(SFML_SYSTEM_ANDROID) || defined(SFML_SYSTEM_MACOS)) && !defined(TGUI_STATIC)
     #define TGUI_UNSAFE_TYPE_INFO_COMPARISON
 #endif
 
