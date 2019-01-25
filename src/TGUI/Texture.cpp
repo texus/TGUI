@@ -69,6 +69,8 @@ namespace tgui
 
     Texture::Texture(const Texture& other) :
         m_data            {other.m_data},
+        m_color           {other.m_color},
+        m_shader          {other.m_shader},
         m_middleRect      {other.m_middleRect},
         m_id              {other.m_id},
         m_copyCallback    {other.m_copyCallback},
@@ -82,6 +84,8 @@ namespace tgui
 
     Texture::Texture(Texture&& other) :
         m_data            {std::move(other.m_data)},
+        m_color           {std::move(other.m_color)},
+        m_shader          {std::move(other.m_shader)},
         m_middleRect      {std::move(other.m_middleRect)},
         m_id              {std::move(other.m_id)},
         m_copyCallback    {std::move(other.m_copyCallback)},
@@ -109,6 +113,8 @@ namespace tgui
             Texture temp{other};
 
             std::swap(m_data,             temp.m_data);
+            std::swap(m_color,            temp.m_color);
+            std::swap(m_shader,           temp.m_shader);
             std::swap(m_middleRect,       temp.m_middleRect);
             std::swap(m_id,               temp.m_id);
             std::swap(m_copyCallback,     temp.m_copyCallback);
@@ -125,6 +131,8 @@ namespace tgui
         if (this != &other)
         {
             m_data             = std::move(other.m_data);
+            m_color            = std::move(other.m_color);
+            m_shader           = std::move(other.m_shader);
             m_middleRect       = std::move(other.m_middleRect);
             m_id               = std::move(other.m_id);
             m_copyCallback     = std::move(other.m_copyCallback);
@@ -240,20 +248,42 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Texture::setColor(const Color& color)
+    {
+        m_color = color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const Color& Texture::getColor() const
+    {
+        return m_color;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Texture::setShader(sf::Shader* shader)
     {
+#ifdef TGUI_NEXT
+        m_shader = shader;
+#else
         if (m_data)
             m_data->shader = shader;
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Shader* Texture::getShader() const
     {
+#ifdef TGUI_NEXT
+        return m_shader;
+#else
         if (m_data)
             return m_data->shader;
         else
             return nullptr;
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,10 +326,11 @@ namespace tgui
 
     bool Texture::operator==(const Texture& right) const
     {
-        if (m_id.isEmpty() && right.m_id.isEmpty())
-            return (m_data == right.m_data) && (m_middleRect == right.m_middleRect);
-        else
-            return (m_middleRect == right.m_middleRect) && (m_id == right.m_id);
+        return (m_id == right.m_id)
+            && (!m_id.isEmpty() || (m_data == right.m_data))
+            && (m_middleRect == right.m_middleRect)
+            && (m_shader == right.m_shader)
+            && (m_color == right.m_color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

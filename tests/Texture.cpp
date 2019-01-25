@@ -179,6 +179,15 @@ TEST_CASE("[Texture]")
         REQUIRE(!texture.isSmooth());
     }
 
+    SECTION("Color")
+    {
+        tgui::Texture texture{"resources/image.png"};
+        REQUIRE(texture.getColor() == sf::Color::White);
+
+        texture.setColor("red");
+        REQUIRE(texture.getColor() == sf::Color::Red);
+    }
+
     SECTION("Shader")
     {
         tgui::Texture texture{"resources/image.png"};

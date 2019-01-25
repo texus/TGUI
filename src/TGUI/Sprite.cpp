@@ -37,9 +37,13 @@
 
 namespace tgui
 {
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Sprite::setTexture(const Texture& texture)
     {
         m_texture = texture;
+        m_vertexColor = m_texture.getColor();
+        m_shader = m_texture.getShader();
 
         if (isSet())
         {
@@ -58,12 +62,12 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_NEXT
     Texture& Sprite::getTexture()
     {
         return m_texture;
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Sprite::isSet() const
@@ -90,7 +94,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#ifndef TGUI_REMOVE_DEPRECATED_CODE
     void Sprite::setColor(const Color& color)
     {
         m_vertexColor = color;
@@ -106,13 +110,16 @@ namespace tgui
     {
         return m_vertexColor;
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Sprite::setOpacity(float opacity)
     {
         m_opacity = opacity;
-        setColor(getColor());
+
+        const sf::Color vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
+        for (auto& vertex : m_vertices)
+            vertex.color = vertexColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,6 +402,9 @@ namespace tgui
 
     void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
+        if (!isSet())
+            return;
+
         // A rotation can cause the image to be shifted, so we move it upfront so that it ends at the correct location
         if (getRotation() != 0)
         {
@@ -406,23 +416,20 @@ namespace tgui
 
         states.transform *= getTransform();
 
-        if (isSet())
-        {
-            // Apply clipping when needed
-        #ifdef TGUI_USE_CPP17
-            std::optional<Clipping> clipping;
-            if (m_visibleRect != FloatRect{})
-                clipping.emplace(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
-        #else
-            std::unique_ptr<Clipping> clipping;
-            if (m_visibleRect != FloatRect{0, 0, 0, 0})
-                clipping = std::make_unique<Clipping>(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
-        #endif
+        // Apply clipping when needed
+#ifdef TGUI_USE_CPP17
+        std::optional<Clipping> clipping;
+        if (m_visibleRect != FloatRect{})
+            clipping.emplace(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
+#else
+        std::unique_ptr<Clipping> clipping;
+        if (m_visibleRect != FloatRect{0, 0, 0, 0})
+            clipping = std::make_unique<Clipping>(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
+#endif
 
-            states.shader = m_texture.getData()->shader;
-            states.texture = &m_texture.getData()->texture;
-            target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
-        }
+        states.shader = m_shader;
+        states.texture = &m_texture.getData()->texture;
+        target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

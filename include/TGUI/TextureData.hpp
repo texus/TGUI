@@ -50,7 +50,10 @@ namespace tgui
         std::unique_ptr<sf::Image> image;
         sf::Texture texture;
         sf::IntRect rect;
+
+#ifndef TGUI_NEXT
         sf::Shader* shader = nullptr;
+#endif
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

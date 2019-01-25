@@ -49,7 +49,6 @@ TEST_CASE("[Sprite]")
             REQUIRE(sprite.getSize() == sf::Vector2f(50, 50));
         }
 
-        REQUIRE(sprite.getColor() == sf::Color::White);
         REQUIRE(sprite.getVisibleRect() == sf::FloatRect());
         REQUIRE(sprite.getScalingType() == tgui::Sprite::ScalingType::Normal);
     }
@@ -69,15 +68,6 @@ TEST_CASE("[Sprite]")
 
         sprite.setTexture({"resources/image.png"});
         REQUIRE(sprite.getSize() == sf::Vector2f(80, 60));
-    }
-
-    SECTION("Color")
-    {
-        sprite.setTexture({"resources/image.png"});
-        REQUIRE(sprite.getColor() == sf::Color::White);
-
-        sprite.setColor(sf::Color::Blue);
-        REQUIRE(sprite.getColor() == sf::Color::Blue);
     }
 
     SECTION("Opacity")

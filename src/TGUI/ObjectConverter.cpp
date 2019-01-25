@@ -59,11 +59,11 @@ namespace tgui
             m_type = Type::Font;
         }
 
-    #ifdef TGUI_USE_CPP17
+#ifdef TGUI_USE_CPP17
         return std::get<Font>(m_value);
-    #else
+#else
         return m_value.as<Font>();
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,11 +79,11 @@ namespace tgui
             m_type = Type::Color;
         }
 
-    #ifdef TGUI_USE_CPP17
+#ifdef TGUI_USE_CPP17
         return std::get<Color>(m_value);
-    #else
+#else
         return m_value.as<Color>();
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,11 +99,11 @@ namespace tgui
             m_type = Type::Bool;
         }
 
-    #ifdef TGUI_USE_CPP17
+#ifdef TGUI_USE_CPP17
         return std::get<bool>(m_value);
-    #else
+#else
         return m_value.as<bool>();
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,11 +119,11 @@ namespace tgui
             m_type = Type::Number;
         }
 
-    #ifdef TGUI_USE_CPP17
+#ifdef TGUI_USE_CPP17
         return std::get<float>(m_value);
-    #else
+#else
         return m_value.as<float>();
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,11 +139,11 @@ namespace tgui
             m_type = Type::Outline;
         }
 
-    #ifdef TGUI_USE_CPP17
+#ifdef TGUI_USE_CPP17
         return std::get<Outline>(m_value);
-    #else
+#else
         return m_value.as<Outline>();
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,11 +159,11 @@ namespace tgui
             m_type = Type::Texture;
         }
 
-    #ifdef TGUI_USE_CPP17
+#ifdef TGUI_USE_CPP17
         return std::get<Texture>(m_value);
-    #else
+#else
         return m_value.as<Texture>();
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,11 +179,11 @@ namespace tgui
             m_type = Type::TextStyle;
         }
 
-    #ifdef TGUI_USE_CPP17
+#ifdef TGUI_USE_CPP17
         return std::get<TextStyle>(m_value);
-    #else
+#else
         return m_value.as<TextStyle>();
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,11 +199,11 @@ namespace tgui
             m_type = Type::RendererData;
         }
 
-    #ifdef TGUI_USE_CPP17
+#ifdef TGUI_USE_CPP17
         return std::get<std::shared_ptr<RendererData>>(m_value);
-    #else
+#else
         return m_value.as<std::shared_ptr<RendererData>>();
-    #endif
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +229,7 @@ namespace tgui
             return true;
         case Type::String:
             return m_string == right.m_string;
-    #ifdef TGUI_USE_CPP17
+#ifdef TGUI_USE_CPP17
         case Type::Bool:
             return std::get<bool>(m_value) == std::get<bool>(right.m_value);
         case Type::Font:
@@ -246,7 +246,7 @@ namespace tgui
             return std::get<TextStyle>(m_value) == std::get<TextStyle>(right.m_value);
         case Type::RendererData:
             return std::get<std::shared_ptr<RendererData>>(m_value) == std::get<std::shared_ptr<RendererData>>(right.m_value);
-    #else
+#else
         case Type::Bool:
             return m_value.as<bool>() == right.m_value.as<bool>();
         case Type::Font:
@@ -263,7 +263,7 @@ namespace tgui
             return m_value.as<TextStyle>() == right.m_value.as<TextStyle>();
         case Type::RendererData:
             return m_value.as<std::shared_ptr<RendererData>>() == right.m_value.as<std::shared_ptr<RendererData>>();
-    #endif
+#endif
         default: // This case should never occur, but prevents a warning that control reaches end of non-void function
             return false;
         }

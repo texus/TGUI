@@ -100,7 +100,6 @@
 
 #ifdef TGUI_NEXT
     #define TGUI_REMOVE_DEPRECATED_CODE
-    #define TGUI_USE_CPP17
 #endif
 
 #endif // TGUI_CONFIG_HPP

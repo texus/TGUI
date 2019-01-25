@@ -30,6 +30,7 @@
 
 #include <TGUI/TextureData.hpp>
 #include <TGUI/Vector2f.hpp>
+#include <TGUI/Color.hpp>
 #include <SFML/System/String.hpp>
 #include <functional>
 
@@ -235,6 +236,33 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets the global color of the texture
+        ///
+        /// This color is modulated (multiplied) with the pixel color. It can be used to colorize the texture,
+        /// or change its global opacity. Note that the alpha component is multiplied with the opacity of the widget.
+        ///
+        /// By default, the texture's color is opaque white.
+        ///
+        /// @param color  New color of the texture
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setColor(const Color& color);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the global color of the texture
+        ///
+        /// This color is modulated (multiplied) with the pixel color. It can be used to colorize the texture,
+        /// or change its global opacity. Note that the alpha component is multiplied with the opacity of the widget.
+        ///
+        /// By default, the texture's color is opaque white.
+        ///
+        /// @return Current color of the texture
+        ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        const Color& getColor() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the shader used to draw the texture
         /// @param shader  New shader to use
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -367,7 +395,8 @@ namespace tgui
     private:
 
         std::shared_ptr<TextureData> m_data = nullptr;
-
+        Color m_color = Color::White;
+        sf::Shader* m_shader = nullptr;
         sf::IntRect m_middleRect;
         sf::String  m_id;
 

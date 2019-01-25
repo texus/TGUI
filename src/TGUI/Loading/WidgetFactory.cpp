@@ -39,6 +39,7 @@
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Widgets/MessageBox.hpp>
 #include <TGUI/Widgets/Panel.hpp>
@@ -78,6 +79,7 @@ namespace tgui
         {"knob", std::make_shared<Knob>},
         {"label", std::make_shared<Label>},
         {"listbox", std::make_shared<ListBox>},
+        {"listview", std::make_shared<ListView>},
         {"menubar", std::make_shared<MenuBar>},
         {"messagebox", std::make_shared<MessageBox>},
         {"panel", std::make_shared<Panel>},
