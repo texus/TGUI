@@ -9,6 +9,7 @@ var searchData=
   ['iscontainer',['isContainer',['../classtgui_1_1Widget.html#a68ed654d85df0f69077e3caad6b9a712',1,'tgui::Widget']]],
   ['isenabled',['isEnabled',['../classtgui_1_1Widget.html#aa1dcaa2bb45dd0b16b66095c1d197e36',1,'tgui::Widget']]],
   ['isfocused',['isFocused',['../classtgui_1_1Widget.html#aff719de74e3d9a59ff23a034ae3bd427',1,'tgui::Widget']]],
+  ['ishorizontalscrollbarpresent',['isHorizontalScrollbarPresent',['../classtgui_1_1TextBox.html#a0ab464cc23e2a2d276324f4574db7f8f',1,'tgui::TextBox']]],
   ['isignoringmouseevents',['isIgnoringMouseEvents',['../classtgui_1_1Label.html#a8e025076fe6c01a6030856aedd13d309',1,'tgui::Label::isIgnoringMouseEvents()'],['../classtgui_1_1Picture.html#a5592db723eae334ce2de371261a20db1',1,'tgui::Picture::isIgnoringMouseEvents()']]],
   ['iskeptinparent',['isKeptInParent',['../classtgui_1_1ChildWindow.html#addbf79ac606e11a0aa3de87e6ab9619c',1,'tgui::ChildWindow']]],
   ['ismousedown',['isMouseDown',['../classtgui_1_1ScrollbarChildWidget.html#ac064716d3bb6c4e7db43d3444fe3a548',1,'tgui::ScrollbarChildWidget']]],

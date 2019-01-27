@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['objectconverter',['ObjectConverter',['../classtgui_1_1ObjectConverter.html',1,'tgui']]],
-  ['outline',['Outline',['../classtgui_1_1Outline.html',1,'tgui']]]
+  ['node',['Node',['../structtgui_1_1TreeView_1_1Node.html',1,'tgui::TreeView']]]
 ];

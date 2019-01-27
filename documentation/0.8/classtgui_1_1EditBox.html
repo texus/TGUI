@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.2</span>
+   &#160;<span id="projectnumber">0.8.3</span>
    </div>
   </td>
  </tr>
@@ -258,6 +258,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa50835df7fabb66a9a164e4bdcd9088e"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#aa50835df7fabb66a9a164e4bdcd9088e">getInputValidator</a> () const</td></tr>
 <tr class="memdesc:aa50835df7fabb66a9a164e4bdcd9088e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the regex to which the text is matched.  <a href="#aa50835df7fabb66a9a164e4bdcd9088e">More...</a><br /></td></tr>
 <tr class="separator:aa50835df7fabb66a9a164e4bdcd9088e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ef0677487ba21e1833d007d75befdbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a0ef0677487ba21e1833d007d75befdbd">setSuffix</a> (const sf::String &amp;suffix)</td></tr>
+<tr class="memdesc:a0ef0677487ba21e1833d007d75befdbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places a suffix at the right side of the edit box.  <a href="#a0ef0677487ba21e1833d007d75befdbd">More...</a><br /></td></tr>
+<tr class="separator:a0ef0677487ba21e1833d007d75befdbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21da0cf8a60d379314c751e7cef9ed14"><td class="memItemLeft" align="right" valign="top">const sf::String &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a21da0cf8a60d379314c751e7cef9ed14">getSuffix</a> () const</td></tr>
+<tr class="memdesc:a21da0cf8a60d379314c751e7cef9ed14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the suffix currently displayed on the right side of the edit box.  <a href="#a21da0cf8a60d379314c751e7cef9ed14">More...</a><br /></td></tr>
+<tr class="separator:a21da0cf8a60d379314c751e7cef9ed14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01cf2ce1c2f82ad03b83e488317e5b8a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1EditBox.html#a01cf2ce1c2f82ad03b83e488317e5b8a">setFocused</a> (bool focused) override</td></tr>
 <tr class="memdesc:a01cf2ce1c2f82ad03b83e488317e5b8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focus or unfocus the widget.  <a href="#a01cf2ce1c2f82ad03b83e488317e5b8a">More...</a><br /></td></tr>
 <tr class="separator:a01cf2ce1c2f82ad03b83e488317e5b8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -937,6 +943,26 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
+<a id="a21da0cf8a60d379314c751e7cef9ed14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21da0cf8a60d379314c751e7cef9ed14">&#9670;&nbsp;</a></span>getSuffix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const sf::String&amp; tgui::EditBox::getSuffix </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the suffix currently displayed on the right side of the edit box. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtgui_1_1Text.html">Text</a> shown on right side of edit box </dd></dl>
+
+</div>
+</div>
 <a id="a84dc791f05e864f3c6f7434ecdca7b9e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a84dc791f05e864f3c6f7434ecdca7b9e">&#9670;&nbsp;</a></span>getText()</h2>
 
@@ -1449,30 +1475,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
-<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void tgui::Widget::setSize</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Changes the size of the widget. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
-</div>
-</div>
 <a id="a087a60617c86fcf6521da7bc9f4723bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a087a60617c86fcf6521da7bc9f4723bd">&#9670;&nbsp;</a></span>setSize() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1500,6 +1504,55 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This setSize overload must never be used from internal TGUI code or by custom widget implementations </dd></dl>
+
+</div>
+</div>
+<a id="aa593c0cf9c1dca1393e60849719417cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa593c0cf9c1dca1393e60849719417cf">&#9670;&nbsp;</a></span>setSize() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tgui::Widget::setSize</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the size of the widget. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Size of the widget</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Usage examples: </p><div class="fragment"><div class="line"><span class="comment">// Give the widget an exact size</span></div><div class="line">widget-&gt;setSize({40, 30});</div><div class="line"></div><div class="line"><span class="comment">// Give the widget a size relative to the size of its parent</span></div><div class="line">widget-&gt;setSize({<span class="stringliteral">&quot;20%&quot;</span>, <span class="stringliteral">&quot;5%&quot;</span>});</div><div class="line"></div><div class="line"><span class="comment">// Make the widget 50 pixels higher than some other widget and automatically resize it when the other widget resizes</span></div><div class="line">widget-&gt;setSize({200, tgui::bindHeight(otherWidget) + 50});</div></div><!-- fragment --> 
+</div>
+</div>
+<a id="a0ef0677487ba21e1833d007d75befdbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ef0677487ba21e1833d007d75befdbd">&#9670;&nbsp;</a></span>setSuffix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::EditBox::setSuffix </td>
+          <td>(</td>
+          <td class="paramtype">const sf::String &amp;&#160;</td>
+          <td class="paramname"><em>suffix</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Places a suffix at the right side of the edit box. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">suffix</td><td><a class="el" href="classtgui_1_1Text.html">Text</a> to show on right side of edit box</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Setting a suffix can be useful for inputting numbers where you want to unit to be displayed inside the edit box. </p>
 
 </div>
 </div>
@@ -1569,7 +1622,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Dec 16 2018 18:06:24 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jan 27 2019 22:13:18 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

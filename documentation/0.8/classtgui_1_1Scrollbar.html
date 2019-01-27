@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.2</span>
+   &#160;<span id="projectnumber">0.8.3</span>
    </div>
   </td>
  </tr>
@@ -138,6 +138,12 @@ Inheritance diagram for tgui::Scrollbar:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:a1618e7c70a2c67bafe9be77193b89d7d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Policy</a> { <a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7da086247a9b57fde6eefee2a0c4752242d">Policy::Automatic</a>, 
+<a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7da68eec46437c384d8dad18d5464ebc35c">Policy::Always</a>, 
+<a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7da6e7b34fa59e1bd229b207892956dc41c">Policy::Never</a>
+ }</td></tr>
+<tr class="memdesc:a1618e7c70a2c67bafe9be77193b89d7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines when the scrollbar shows up.  <a href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">More...</a><br /></td></tr>
+<tr class="separator:a1618e7c70a2c67bafe9be77193b89d7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb6fe6c3e98166c60f43ef95536effb3"><td class="memItemLeft" align="right" valign="top"><a id="abb6fe6c3e98166c60f43ef95536effb3"></a>
 typedef std::shared_ptr&lt; <a class="el" href="classtgui_1_1Scrollbar.html">Scrollbar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Scrollbar.html#abb6fe6c3e98166c60f43ef95536effb3">Ptr</a></td></tr>
 <tr class="memdesc:abb6fe6c3e98166c60f43ef95536effb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shared widget pointer. <br /></td></tr>
@@ -451,7 +457,40 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classtgui_1_1Scrollbar.html" title="Scrollbar widget. ">Scrollbar</a> widget. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a1618e7c70a2c67bafe9be77193b89d7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1618e7c70a2c67bafe9be77193b89d7d">&#9670;&nbsp;</a></span>Policy</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">tgui::Scrollbar::Policy</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Defines when the scrollbar shows up. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1618e7c70a2c67bafe9be77193b89d7da086247a9b57fde6eefee2a0c4752242d"></a>Automatic&#160;</td><td class="fielddoc"><p>Show the scrollbar only when needed (default) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1618e7c70a2c67bafe9be77193b89d7da68eec46437c384d8dad18d5464ebc35c"></a>Always&#160;</td><td class="fielddoc"><p>Always show the scrollbar, even when the contents fits. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1618e7c70a2c67bafe9be77193b89d7da6e7b34fa59e1bd229b207892956dc41c"></a>Never&#160;</td><td class="fielddoc"><p>Never show the scrollbar, even if the contents does not fit. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="aad8dc78f13b3876022490277a344f1b4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aad8dc78f13b3876022490277a344f1b4">&#9670;&nbsp;</a></span>clone()</h2>
 
@@ -1099,7 +1138,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Dec 16 2018 18:06:25 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jan 27 2019 22:13:18 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

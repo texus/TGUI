@@ -7,6 +7,22 @@ changelog:
   minors:
   - version: 8
     patches:
+    - version: 3
+      date: 27 January 2019
+      changes: |
+        ListView widget added
+        EditBox can now have a suffix
+        TextBox can now have a horizontal scrollbar
+        Label can now have a vertical scrollbar
+        Default scrollbar width wasn't always taken from texture size in widgets containing scrollbars
+        Scrollbar wasn't drawn correctly when Maximum equaled ViewportSize with AutoHide disabled
+        Default icons in TreeView didn't change color when item was selected
+        Rounded icon position in TreeView to avoid bad icon alignment
+        TreeView didn't handle opacity and font changes
+        Sprites didn't keep their transparency when resized
+        Texture filenames can now contain UTF8 characters on linux
+        Added propery to widget renderer to set an opacity for the disabled state
+        Fixed some bugs in saving and loading widget files ([#90](https://github.com/texus/TGUI/issues/90))
     - version: 2
       date: 16 December 2018
       changes: |
@@ -100,7 +116,7 @@ changelog:
       date: 2 December 2016
       changes: |
         EditBox did not send a TextChanged signal when pressing ctrl+X
-        Added optional maximize and minimize buttons to ChildWindow (<a href="https://github.com/texus/TGUI/pull/61">#61</a>)
+        Added optional maximize and minimize buttons to ChildWindow ([#61](https://github.com/texus/TGUI/pull/61))
         Calling Picture::setTexture yourself now works properly
         Added optional parameter to Widget::disable to let mouse events pass through to the widgets behind it
         ChatBox didn't scroll down automatically when size was not a multiple of item heigh
@@ -108,7 +124,7 @@ changelog:
         Mouse wheel scroll on top of combo box changed the item internally but did not display the new item
         When ComboBox was destroyed while the list was still open then the list remained visible
         Fixed invalid memory reads when widget gets destroyed from inside a callback function
-        Allow the ChildWindow to have maximum and minimum sizes (<a href="https://github.com/texus/TGUI/pull/64">#64</a>)
+        Allow the ChildWindow to have maximum and minimum sizes ([#64](https://github.com/texus/TGUI/pull/64))
         Removed support for 32-bit on OS X
         Fixed texture rotation in some rare cases
         Menus in MenuBar didn't stay open when the menu bar was added inside a Panel
@@ -162,7 +178,7 @@ changelog:
         Fixed segfault during handleEvent in a rare situation
         Removed warnings in ListBox when index was too high
         References from getWidgets and getWidgetNames should be const
-        Worked around a syntax error when using SWIG (<a href="https://github.com/texus/TGUI/issues/37">#37</a>)
+        Worked around a syntax error when using SWIG ([#37](https://github.com/texus/TGUI/issues/37))
     - version: 7
       date: 7 February 2015
       changes: |

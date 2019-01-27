@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.2</span>
+   &#160;<span id="projectnumber">0.8.3</span>
    </div>
   </td>
  </tr>
@@ -172,6 +172,20 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad00c7732100af16b4f841ccb4cdbbec8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#ad00c7732100af16b4f841ccb4cdbbec8">draw</a> (sf::RenderTarget &amp;target, sf::RenderStates states) const</td></tr>
 <tr class="memdesc:ad00c7732100af16b4f841ccb4cdbbec8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw the text to a render target.  <a href="#ad00c7732100af16b4f841ccb4cdbbec8">More...</a><br /></td></tr>
 <tr class="separator:ad00c7732100af16b4f841ccb4cdbbec8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4754ad29e7a34589f627a4cb6314619"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#ac4754ad29e7a34589f627a4cb6314619">getExtraHorizontalPadding</a> () const</td></tr>
+<tr class="memdesc:ac4754ad29e7a34589f627a4cb6314619"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a small distance that text should be placed from the side of a widget as padding.  <a href="#ac4754ad29e7a34589f627a4cb6314619">More...</a><br /></td></tr>
+<tr class="separator:ac4754ad29e7a34589f627a4cb6314619"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba07f38f6a7f4de39f2482aef5634b01"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#aba07f38f6a7f4de39f2482aef5634b01">getExtraHorizontalOffset</a> () const</td></tr>
+<tr class="memdesc:aba07f38f6a7f4de39f2482aef5634b01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an extra distance that text should be placed from the side of a widget as padding.  <a href="#aba07f38f6a7f4de39f2482aef5634b01">More...</a><br /></td></tr>
+<tr class="separator:aba07f38f6a7f4de39f2482aef5634b01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71577a0a5a3544b12a3a5663778849bf"><td class="memItemLeft" align="right" valign="top"><a id="a71577a0a5a3544b12a3a5663778849bf"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#a71577a0a5a3544b12a3a5663778849bf">getLineHeight</a> () const</td></tr>
+<tr class="memdesc:a71577a0a5a3544b12a3a5663778849bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the height of a single line of text. <br /></td></tr>
+<tr class="separator:a71577a0a5a3544b12a3a5663778849bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f9e0e0b221a417b2b67ac9e57aa959e"><td class="memItemLeft" align="right" valign="top"><a id="a8f9e0e0b221a417b2b67ac9e57aa959e"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#a8f9e0e0b221a417b2b67ac9e57aa959e">getLineWidth</a> () const</td></tr>
+<tr class="memdesc:a8f9e0e0b221a417b2b67ac9e57aa959e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the width of a single line of text. <br /></td></tr>
+<tr class="separator:a8f9e0e0b221a417b2b67ac9e57aa959e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -179,10 +193,12 @@ Static Public Member Functions</h2></td></tr>
 static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#afbbb1ccd3ef9b92a85011525da743564">getExtraHorizontalPadding</a> (const <a class="el" href="classtgui_1_1Text.html">Text</a> &amp;text)</td></tr>
 <tr class="memdesc:afbbb1ccd3ef9b92a85011525da743564"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance that text should be placed from the side of a widget as padding. <br /></td></tr>
 <tr class="separator:afbbb1ccd3ef9b92a85011525da743564"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a034c9af92af286d8274a95d908edab35"><td class="memItemLeft" align="right" valign="top"><a id="a034c9af92af286d8274a95d908edab35"></a>
-static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#a034c9af92af286d8274a95d908edab35">getExtraHorizontalPadding</a> (<a class="el" href="classtgui_1_1Font.html">Font</a> font, unsigned int characterSize, <a class="el" href="classtgui_1_1TextStyle.html">TextStyle</a> textStyle={})</td></tr>
-<tr class="memdesc:a034c9af92af286d8274a95d908edab35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance that text should be placed from the side of a widget as padding. <br /></td></tr>
+<tr class="memitem:a034c9af92af286d8274a95d908edab35"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#a034c9af92af286d8274a95d908edab35">getExtraHorizontalPadding</a> (<a class="el" href="classtgui_1_1Font.html">Font</a> font, unsigned int characterSize, <a class="el" href="classtgui_1_1TextStyle.html">TextStyle</a> textStyle={})</td></tr>
+<tr class="memdesc:a034c9af92af286d8274a95d908edab35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a small distance that text should be placed from the side of a widget as padding.  <a href="#a034c9af92af286d8274a95d908edab35">More...</a><br /></td></tr>
 <tr class="separator:a034c9af92af286d8274a95d908edab35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03e6573ad8deb4a6ad915d5a0465cda8"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#a03e6573ad8deb4a6ad915d5a0465cda8">getExtraHorizontalOffset</a> (<a class="el" href="classtgui_1_1Font.html">Font</a> font, unsigned int characterSize, <a class="el" href="classtgui_1_1TextStyle.html">TextStyle</a> textStyle={})</td></tr>
+<tr class="memdesc:a03e6573ad8deb4a6ad915d5a0465cda8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an extra distance that text should be placed from the side of a widget as padding.  <a href="#a03e6573ad8deb4a6ad915d5a0465cda8">More...</a><br /></td></tr>
+<tr class="separator:a03e6573ad8deb4a6ad915d5a0465cda8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6392cdfbdc8fe99f1bc26391b54da075"><td class="memItemLeft" align="right" valign="top"><a id="a6392cdfbdc8fe99f1bc26391b54da075"></a>
 static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#a6392cdfbdc8fe99f1bc26391b54da075">getExtraVerticalPadding</a> (unsigned int characterSize)</td></tr>
 <tr class="memdesc:a6392cdfbdc8fe99f1bc26391b54da075"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance that text should be placed from the bottom of the widget as padding. <br /></td></tr>
@@ -195,6 +211,14 @@ static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#a348581bc372e9eeeacb98404ec626f11">getLineHeight</a> (<a class="el" href="classtgui_1_1Font.html">Font</a> font, unsigned int characterSize, <a class="el" href="classtgui_1_1TextStyle.html">TextStyle</a> textStyle={})</td></tr>
 <tr class="memdesc:a348581bc372e9eeeacb98404ec626f11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the height of a single line of text. <br /></td></tr>
 <tr class="separator:a348581bc372e9eeeacb98404ec626f11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5190b70e3688771a8a3a6ebdd2026735"><td class="memItemLeft" align="right" valign="top"><a id="a5190b70e3688771a8a3a6ebdd2026735"></a>
+static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#a5190b70e3688771a8a3a6ebdd2026735">getLineWidth</a> (const <a class="el" href="classtgui_1_1Text.html">Text</a> &amp;text)</td></tr>
+<tr class="memdesc:a5190b70e3688771a8a3a6ebdd2026735"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the width of a single line of text. <br /></td></tr>
+<tr class="separator:a5190b70e3688771a8a3a6ebdd2026735"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af29219a7248723aabfcd3e341ce4d560"><td class="memItemLeft" align="right" valign="top"><a id="af29219a7248723aabfcd3e341ce4d560"></a>
+static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#af29219a7248723aabfcd3e341ce4d560">getLineWidth</a> (const sf::String &amp;text, <a class="el" href="classtgui_1_1Font.html">Font</a> font, unsigned int characterSize, <a class="el" href="classtgui_1_1TextStyle.html">TextStyle</a> textStyle={})</td></tr>
+<tr class="memdesc:af29219a7248723aabfcd3e341ce4d560"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the width of a single line of text. <br /></td></tr>
+<tr class="separator:af29219a7248723aabfcd3e341ce4d560"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21f2c9292ab0db2bb31847c8746c6963"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Text.html#a21f2c9292ab0db2bb31847c8746c6963">findBestTextSize</a> (<a class="el" href="classtgui_1_1Font.html">Font</a> font, float height, int fit=0)</td></tr>
 <tr class="memdesc:a21f2c9292ab0db2bb31847c8746c6963"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the best character size for the text.  <a href="#a21f2c9292ab0db2bb31847c8746c6963">More...</a><br /></td></tr>
 <tr class="separator:a21f2c9292ab0db2bb31847c8746c6963"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -402,6 +426,136 @@ static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 <p>Returns the text color. </p>
 <dl class="section return"><dt>Returns</dt><dd>text color </dd></dl>
+
+</div>
+</div>
+<a id="a03e6573ad8deb4a6ad915d5a0465cda8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03e6573ad8deb4a6ad915d5a0465cda8">&#9670;&nbsp;</a></span>getExtraHorizontalOffset() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static float tgui::Text::getExtraHorizontalOffset </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Font.html">Font</a>&#160;</td>
+          <td class="paramname"><em>font</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>characterSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1TextStyle.html">TextStyle</a>&#160;</td>
+          <td class="paramname"><em>textStyle</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns an extra distance that text should be placed from the side of a widget as padding. </p>
+<p>This distance is slightly larger than getExtraHorizontalPadding. </p>
+
+</div>
+</div>
+<a id="aba07f38f6a7f4de39f2482aef5634b01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba07f38f6a7f4de39f2482aef5634b01">&#9670;&nbsp;</a></span>getExtraHorizontalOffset() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float tgui::Text::getExtraHorizontalOffset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns an extra distance that text should be placed from the side of a widget as padding. </p>
+<p>This distance is slightly larger than getExtraHorizontalPadding. </p>
+
+</div>
+</div>
+<a id="a034c9af92af286d8274a95d908edab35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a034c9af92af286d8274a95d908edab35">&#9670;&nbsp;</a></span>getExtraHorizontalPadding() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static float tgui::Text::getExtraHorizontalPadding </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Font.html">Font</a>&#160;</td>
+          <td class="paramname"><em>font</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>characterSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1TextStyle.html">TextStyle</a>&#160;</td>
+          <td class="paramname"><em>textStyle</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns a small distance that text should be placed from the side of a widget as padding. </p>
+<p>This distance is slightly smaller than getExtraHorizontalOffset. </p>
+
+</div>
+</div>
+<a id="ac4754ad29e7a34589f627a4cb6314619"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4754ad29e7a34589f627a4cb6314619">&#9670;&nbsp;</a></span>getExtraHorizontalPadding() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float tgui::Text::getExtraHorizontalPadding </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a small distance that text should be placed from the side of a widget as padding. </p>
+<p>This distance is slightly smaller than getExtraHorizontalOffset. </p>
 
 </div>
 </div>
@@ -741,7 +895,7 @@ static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Dec 16 2018 18:06:25 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jan 27 2019 22:13:19 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

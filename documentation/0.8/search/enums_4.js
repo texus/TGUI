@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['operation',['Operation',['../classtgui_1_1Layout.html#a35bfb195a1f1e6fd4ed82b0568feb81b',1,'tgui::Layout']]]
+  ['horizontalalignment',['HorizontalAlignment',['../classtgui_1_1Label.html#afcabdb6aa458f5883f6831ccc731cb3b',1,'tgui::Label']]]
 ];

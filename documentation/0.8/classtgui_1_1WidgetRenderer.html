@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.2</span>
+   &#160;<span id="projectnumber">0.8.3</span>
    </div>
   </td>
  </tr>
@@ -135,16 +135,17 @@ Inheritance diagram for tgui::WidgetRenderer:</div>
 <area href="classtgui_1_1KnobRenderer.html" alt="tgui::KnobRenderer" shape="rect" coords="174,392,338,416"/>
 <area href="classtgui_1_1LabelRenderer.html" alt="tgui::LabelRenderer" shape="rect" coords="174,448,338,472"/>
 <area href="classtgui_1_1ListBoxRenderer.html" alt="tgui::ListBoxRenderer" shape="rect" coords="174,504,338,528"/>
-<area href="classtgui_1_1MenuBarRenderer.html" title="Renderer for the MenuBar widget. " alt="tgui::MenuBarRenderer" shape="rect" coords="174,560,338,584"/>
-<area href="classtgui_1_1PictureRenderer.html" alt="tgui::PictureRenderer" shape="rect" coords="174,616,338,640"/>
-<area href="classtgui_1_1ProgressBarRenderer.html" alt="tgui::ProgressBarRenderer" shape="rect" coords="174,672,338,696"/>
-<area href="classtgui_1_1RadioButtonRenderer.html" alt="tgui::RadioButtonRenderer" shape="rect" coords="174,728,338,752"/>
-<area href="classtgui_1_1ScrollbarRenderer.html" alt="tgui::ScrollbarRenderer" shape="rect" coords="174,784,338,808"/>
-<area href="classtgui_1_1SliderRenderer.html" alt="tgui::SliderRenderer" shape="rect" coords="174,840,338,864"/>
-<area href="classtgui_1_1SpinButtonRenderer.html" alt="tgui::SpinButtonRenderer" shape="rect" coords="174,896,338,920"/>
-<area href="classtgui_1_1TabsRenderer.html" alt="tgui::TabsRenderer" shape="rect" coords="174,952,338,976"/>
-<area href="classtgui_1_1TextBoxRenderer.html" alt="tgui::TextBoxRenderer" shape="rect" coords="174,1008,338,1032"/>
-<area href="classtgui_1_1TreeViewRenderer.html" alt="tgui::TreeViewRenderer" shape="rect" coords="174,1064,338,1088"/>
+<area href="classtgui_1_1ListViewRenderer.html" alt="tgui::ListViewRenderer" shape="rect" coords="174,560,338,584"/>
+<area href="classtgui_1_1MenuBarRenderer.html" title="Renderer for the MenuBar widget. " alt="tgui::MenuBarRenderer" shape="rect" coords="174,616,338,640"/>
+<area href="classtgui_1_1PictureRenderer.html" alt="tgui::PictureRenderer" shape="rect" coords="174,672,338,696"/>
+<area href="classtgui_1_1ProgressBarRenderer.html" alt="tgui::ProgressBarRenderer" shape="rect" coords="174,728,338,752"/>
+<area href="classtgui_1_1RadioButtonRenderer.html" alt="tgui::RadioButtonRenderer" shape="rect" coords="174,784,338,808"/>
+<area href="classtgui_1_1ScrollbarRenderer.html" alt="tgui::ScrollbarRenderer" shape="rect" coords="174,840,338,864"/>
+<area href="classtgui_1_1SliderRenderer.html" alt="tgui::SliderRenderer" shape="rect" coords="174,896,338,920"/>
+<area href="classtgui_1_1SpinButtonRenderer.html" alt="tgui::SpinButtonRenderer" shape="rect" coords="174,952,338,976"/>
+<area href="classtgui_1_1TabsRenderer.html" alt="tgui::TabsRenderer" shape="rect" coords="174,1008,338,1032"/>
+<area href="classtgui_1_1TextBoxRenderer.html" alt="tgui::TextBoxRenderer" shape="rect" coords="174,1064,338,1088"/>
+<area href="classtgui_1_1TreeViewRenderer.html" alt="tgui::TreeViewRenderer" shape="rect" coords="174,1120,338,1144"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -167,6 +168,12 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memitem:a64696a2768fb5d87f7ae05ca3c3613fd"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1WidgetRenderer.html#a64696a2768fb5d87f7ae05ca3c3613fd">getOpacity</a> () const</td></tr>
 <tr class="memdesc:a64696a2768fb5d87f7ae05ca3c3613fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the opacity of the widget.  <a href="#a64696a2768fb5d87f7ae05ca3c3613fd">More...</a><br /></td></tr>
 <tr class="separator:a64696a2768fb5d87f7ae05ca3c3613fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac55884caa735e246d8aa631c4b638def"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1WidgetRenderer.html#ac55884caa735e246d8aa631c4b638def">setOpacityDisabled</a> (float opacity)</td></tr>
+<tr class="memdesc:ac55884caa735e246d8aa631c4b638def"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the opacity of the widget when it is disabled.  <a href="#ac55884caa735e246d8aa631c4b638def">More...</a><br /></td></tr>
+<tr class="separator:ac55884caa735e246d8aa631c4b638def"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3a15e8faf092ce744b77709c12921a3"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1WidgetRenderer.html#aa3a15e8faf092ce744b77709c12921a3">getOpacityDisabled</a> () const</td></tr>
+<tr class="memdesc:aa3a15e8faf092ce744b77709c12921a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the opacity of the widget when it is disabled.  <a href="#aa3a15e8faf092ce744b77709c12921a3">More...</a><br /></td></tr>
+<tr class="separator:aa3a15e8faf092ce744b77709c12921a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3974563f296fe6ba3f69222f15440aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1WidgetRenderer.html#af3974563f296fe6ba3f69222f15440aa">setFont</a> (<a class="el" href="classtgui_1_1Font.html">Font</a> font)</td></tr>
 <tr class="memdesc:af3974563f296fe6ba3f69222f15440aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the font used for the text in the widget.  <a href="#af3974563f296fe6ba3f69222f15440aa">More...</a><br /></td></tr>
 <tr class="separator:af3974563f296fe6ba3f69222f15440aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -320,6 +327,26 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
+<a id="aa3a15e8faf092ce744b77709c12921a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3a15e8faf092ce744b77709c12921a3">&#9670;&nbsp;</a></span>getOpacityDisabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float tgui::WidgetRenderer::getOpacityDisabled </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the opacity of the widget when it is disabled. </p>
+<dl class="section return"><dt>Returns</dt><dd>The opacity of the widget in disabled state, or -1 when using the not using a different opacity when the widget is enabled or disabled. </dd></dl>
+
+</div>
+</div>
 <a id="ab718f4917835a534459436dc2a675029"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab718f4917835a534459436dc2a675029">&#9670;&nbsp;</a></span>getProperty()</h2>
 
@@ -435,6 +462,32 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">opacity</td><td>The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac55884caa735e246d8aa631c4b638def"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac55884caa735e246d8aa631c4b638def">&#9670;&nbsp;</a></span>setOpacityDisabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::WidgetRenderer::setOpacityDisabled </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>opacity</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the opacity of the widget when it is disabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">opacity</td><td>The opacity of the widget in disabled state. 0 means completely transparent, while 1 (default) means fully opaque. Set to -1 (default) to use the normal opacity value even when the widget is disabled. </td></tr>
   </table>
   </dd>
 </dl>
@@ -577,7 +630,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Dec 16 2018 18:06:25 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jan 27 2019 22:13:19 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

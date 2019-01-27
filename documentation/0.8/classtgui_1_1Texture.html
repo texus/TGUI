@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.2</span>
+   &#160;<span id="projectnumber">0.8.3</span>
    </div>
   </td>
  </tr>
@@ -176,6 +176,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aaa04f8a2bbe14b549802eae4a3539eda"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Texture.html#aaa04f8a2bbe14b549802eae4a3539eda">isSmooth</a> () const</td></tr>
 <tr class="memdesc:aaa04f8a2bbe14b549802eae4a3539eda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tells whether the smooth filter is enabled or not.  <a href="#aaa04f8a2bbe14b549802eae4a3539eda">More...</a><br /></td></tr>
 <tr class="separator:aaa04f8a2bbe14b549802eae4a3539eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a973661b96bbf4211a98fc0dca835d056"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Texture.html#a973661b96bbf4211a98fc0dca835d056">setColor</a> (const <a class="el" href="classtgui_1_1Color.html">Color</a> &amp;color)</td></tr>
+<tr class="memdesc:a973661b96bbf4211a98fc0dca835d056"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the global color of the texture.  <a href="#a973661b96bbf4211a98fc0dca835d056">More...</a><br /></td></tr>
+<tr class="separator:a973661b96bbf4211a98fc0dca835d056"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb38b13580d47d0b384fb20210be2009"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classtgui_1_1Color.html">Color</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Texture.html#afb38b13580d47d0b384fb20210be2009">getColor</a> () const</td></tr>
+<tr class="memdesc:afb38b13580d47d0b384fb20210be2009"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the global color of the texture.  <a href="#afb38b13580d47d0b384fb20210be2009">More...</a><br /></td></tr>
+<tr class="separator:afb38b13580d47d0b384fb20210be2009"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c13cbdb5bf561090386cf2e80902528"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Texture.html#a7c13cbdb5bf561090386cf2e80902528">setShader</a> (sf::Shader *shader)</td></tr>
 <tr class="memdesc:a7c13cbdb5bf561090386cf2e80902528"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the shader used to draw the texture.  <a href="#a7c13cbdb5bf561090386cf2e80902528">More...</a><br /></td></tr>
 <tr class="separator:a7c13cbdb5bf561090386cf2e80902528"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -437,6 +443,28 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="afb38b13580d47d0b384fb20210be2009"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb38b13580d47d0b384fb20210be2009">&#9670;&nbsp;</a></span>getColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classtgui_1_1Color.html">Color</a>&amp; tgui::Texture::getColor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the global color of the texture. </p>
+<p>This color is modulated (multiplied) with the pixel color. It can be used to colorize the texture, or change its global opacity. Note that the alpha component is multiplied with the opacity of the widget.</p>
+<p>By default, the texture's color is opaque white.</p>
+<dl class="section return"><dt>Returns</dt><dd>Current color of the texture </dd></dl>
+
+</div>
+</div>
 <a id="a7a40cc76ebbf955693db899d9ce2c986"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7a40cc76ebbf955693db899d9ce2c986">&#9670;&nbsp;</a></span>getData()</h2>
 
@@ -739,6 +767,34 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a973661b96bbf4211a98fc0dca835d056"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a973661b96bbf4211a98fc0dca835d056">&#9670;&nbsp;</a></span>setColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tgui::Texture::setColor </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtgui_1_1Color.html">Color</a> &amp;&#160;</td>
+          <td class="paramname"><em>color</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the global color of the texture. </p>
+<p>This color is modulated (multiplied) with the pixel color. It can be used to colorize the texture, or change its global opacity. Note that the alpha component is multiplied with the opacity of the widget.</p>
+<p>By default, the texture's color is opaque white.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">color</td><td>New color of the texture </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ad59af8931b0988fb49d4c27887e71e8b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad59af8931b0988fb49d4c27887e71e8b">&#9670;&nbsp;</a></span>setCopyCallback()</h2>
 
@@ -926,7 +982,7 @@ Static Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Dec 16 2018 18:06:25 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jan 27 2019 22:13:19 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

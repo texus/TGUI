@@ -10,6 +10,7 @@ var searchData=
   ['clipboard',['Clipboard',['../classtgui_1_1Clipboard.html',1,'tgui']]],
   ['clipping',['Clipping',['../classtgui_1_1Clipping.html',1,'tgui']]],
   ['color',['Color',['../classtgui_1_1Color.html',1,'tgui']]],
+  ['column',['Column',['../structtgui_1_1ListView_1_1Column.html',1,'tgui::ListView']]],
   ['combobox',['ComboBox',['../classtgui_1_1ComboBox.html',1,'tgui']]],
   ['comboboxrenderer',['ComboBoxRenderer',['../classtgui_1_1ComboBoxRenderer.html',1,'tgui']]],
   ['constnode',['ConstNode',['../structtgui_1_1TreeView_1_1ConstNode.html',1,'tgui::TreeView']]],

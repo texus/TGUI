@@ -64,7 +64,7 @@ function getXPos(item) {
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">TGUI
-   &#160;<span id="projectnumber">0.8.2</span>
+   &#160;<span id="projectnumber">0.8.3</span>
    </div>
   </td>
  </tr>
@@ -139,12 +139,6 @@ Inheritance diagram for tgui::ScrollablePanel:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a3c6c22cc52e267565ee4b113e39f7e54"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> { <a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54a086247a9b57fde6eefee2a0c4752242d">ScrollbarPolicy::Automatic</a>, 
-<a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54a68eec46437c384d8dad18d5464ebc35c">ScrollbarPolicy::Always</a>, 
-<a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54a6e7b34fa59e1bd229b207892956dc41c">ScrollbarPolicy::Never</a>
- }</td></tr>
-<tr class="memdesc:a3c6c22cc52e267565ee4b113e39f7e54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines when the scrollbar shows up.  <a href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">More...</a><br /></td></tr>
-<tr class="separator:a3c6c22cc52e267565ee4b113e39f7e54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a025463003b07579476bc75c335e5decb"><td class="memItemLeft" align="right" valign="top"><a id="a025463003b07579476bc75c335e5decb"></a>
 typedef std::shared_ptr&lt; <a class="el" href="classtgui_1_1ScrollablePanel.html">ScrollablePanel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a025463003b07579476bc75c335e5decb">Ptr</a></td></tr>
 <tr class="memdesc:a025463003b07579476bc75c335e5decb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shared widget pointer. <br /></td></tr>
@@ -153,6 +147,10 @@ typedef std::shared_ptr&lt; <a class="el" href="classtgui_1_1ScrollablePanel.htm
 typedef std::shared_ptr&lt; const <a class="el" href="classtgui_1_1ScrollablePanel.html">ScrollablePanel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a93596c6e42bb7308ea9ada11dffadd71">ConstPtr</a></td></tr>
 <tr class="memdesc:a93596c6e42bb7308ea9ada11dffadd71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shared constant widget pointer. <br /></td></tr>
 <tr class="separator:a93596c6e42bb7308ea9ada11dffadd71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac236a7db31e57806e30dee05bfb293e"><td class="memItemLeft" align="right" valign="top"><a id="aac236a7db31e57806e30dee05bfb293e"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#aac236a7db31e57806e30dee05bfb293e">ScrollbarPolicy</a> = <a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Scrollbar::Policy</a></td></tr>
+<tr class="memdesc:aac236a7db31e57806e30dee05bfb293e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines when the scrollbar shows up. <br /></td></tr>
+<tr class="separator:aac236a7db31e57806e30dee05bfb293e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classtgui_1_1Panel"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classtgui_1_1Panel')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classtgui_1_1Panel.html">tgui::Panel</a></td></tr>
 <tr class="memitem:a34b136a7d90420e28a8f4aa66a58f9d0 inherit pub_types_classtgui_1_1Panel"><td class="memItemLeft" align="right" valign="top"><a id="a34b136a7d90420e28a8f4aa66a58f9d0"></a>
 typedef std::shared_ptr&lt; <a class="el" href="classtgui_1_1Panel.html">Panel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1Panel.html#a34b136a7d90420e28a8f4aa66a58f9d0">Ptr</a></td></tr>
@@ -247,18 +245,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a6357f7882f7ccf3dee80e136f56df507"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a6357f7882f7ccf3dee80e136f56df507">getScrollbarWidth</a> () const</td></tr>
 <tr class="memdesc:a6357f7882f7ccf3dee80e136f56df507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the width of the scrollbars.  <a href="#a6357f7882f7ccf3dee80e136f56df507">More...</a><br /></td></tr>
 <tr class="separator:a6357f7882f7ccf3dee80e136f56df507"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3754502e612bb43c2df6c599fc5e1000"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3754502e612bb43c2df6c599fc5e1000">setVerticalScrollbarPolicy</a> (<a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> policy)</td></tr>
-<tr class="memdesc:a3754502e612bb43c2df6c599fc5e1000"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes when the vertical scrollbar should be displayed.  <a href="#a3754502e612bb43c2df6c599fc5e1000">More...</a><br /></td></tr>
-<tr class="separator:a3754502e612bb43c2df6c599fc5e1000"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9dd6b54f59d83cebcc4a9499b301b6ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a9dd6b54f59d83cebcc4a9499b301b6ea">getVerticalScrollbarPolicy</a> () const</td></tr>
-<tr class="memdesc:a9dd6b54f59d83cebcc4a9499b301b6ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns when the vertical scrollbar should be displayed.  <a href="#a9dd6b54f59d83cebcc4a9499b301b6ea">More...</a><br /></td></tr>
-<tr class="separator:a9dd6b54f59d83cebcc4a9499b301b6ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abadda508ef17a21912262686df142d40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#abadda508ef17a21912262686df142d40">setHorizontalScrollbarPolicy</a> (<a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> policy)</td></tr>
-<tr class="memdesc:abadda508ef17a21912262686df142d40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes when the horizontal scrollbar should be displayed.  <a href="#abadda508ef17a21912262686df142d40">More...</a><br /></td></tr>
-<tr class="separator:abadda508ef17a21912262686df142d40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7f26eade930d0c8f3b3c58a0dbf108a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#ac7f26eade930d0c8f3b3c58a0dbf108a">getHorizontalScrollbarPolicy</a> () const</td></tr>
-<tr class="memdesc:ac7f26eade930d0c8f3b3c58a0dbf108a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns when the horizontal scrollbar should be displayed.  <a href="#ac7f26eade930d0c8f3b3c58a0dbf108a">More...</a><br /></td></tr>
-<tr class="separator:ac7f26eade930d0c8f3b3c58a0dbf108a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeae5c7d3941a8eab82c0db12f7beed27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#aeae5c7d3941a8eab82c0db12f7beed27">setVerticalScrollbarPolicy</a> (<a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Scrollbar::Policy</a> policy)</td></tr>
+<tr class="memdesc:aeae5c7d3941a8eab82c0db12f7beed27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes when the vertical scrollbar should be displayed.  <a href="#aeae5c7d3941a8eab82c0db12f7beed27">More...</a><br /></td></tr>
+<tr class="separator:aeae5c7d3941a8eab82c0db12f7beed27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6fa1d15ea4f36bc2d2a98d5a119e215"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Scrollbar::Policy</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#ac6fa1d15ea4f36bc2d2a98d5a119e215">getVerticalScrollbarPolicy</a> () const</td></tr>
+<tr class="memdesc:ac6fa1d15ea4f36bc2d2a98d5a119e215"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns when the vertical scrollbar should be displayed.  <a href="#ac6fa1d15ea4f36bc2d2a98d5a119e215">More...</a><br /></td></tr>
+<tr class="separator:ac6fa1d15ea4f36bc2d2a98d5a119e215"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafaa454fe2531e437f96e80ce5c5596f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#aafaa454fe2531e437f96e80ce5c5596f">setHorizontalScrollbarPolicy</a> (<a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Scrollbar::Policy</a> policy)</td></tr>
+<tr class="memdesc:aafaa454fe2531e437f96e80ce5c5596f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes when the horizontal scrollbar should be displayed.  <a href="#aafaa454fe2531e437f96e80ce5c5596f">More...</a><br /></td></tr>
+<tr class="separator:aafaa454fe2531e437f96e80ce5c5596f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4527f3cf32aac3523f175a5e1207168e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Scrollbar::Policy</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a4527f3cf32aac3523f175a5e1207168e">getHorizontalScrollbarPolicy</a> () const</td></tr>
+<tr class="memdesc:a4527f3cf32aac3523f175a5e1207168e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns when the horizontal scrollbar should be displayed.  <a href="#a4527f3cf32aac3523f175a5e1207168e">More...</a><br /></td></tr>
+<tr class="separator:a4527f3cf32aac3523f175a5e1207168e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a663748e18dbf2ac318e0fab7e29190a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtgui_1_1ScrollablePanel.html#a663748e18dbf2ac318e0fab7e29190a8">draw</a> (sf::RenderTarget &amp;target, sf::RenderStates states) const override</td></tr>
 <tr class="memdesc:a663748e18dbf2ac318e0fab7e29190a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw the widget to a render target.  <a href="#a663748e18dbf2ac318e0fab7e29190a8">More...</a><br /></td></tr>
 <tr class="separator:a663748e18dbf2ac318e0fab7e29190a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -646,40 +644,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classtgui_1_1Group.html" title="Group widget. ">Group</a> of widgets that has a background color and optional borders. </p>
-</div><h2 class="groupheader">Member Enumeration Documentation</h2>
-<a id="a3c6c22cc52e267565ee4b113e39f7e54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c6c22cc52e267565ee4b113e39f7e54">&#9670;&nbsp;</a></span>ScrollbarPolicy</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">tgui::ScrollablePanel::ScrollbarPolicy</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Defines when the scrollbar shows up. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3c6c22cc52e267565ee4b113e39f7e54a086247a9b57fde6eefee2a0c4752242d"></a>Automatic&#160;</td><td class="fielddoc"><p>Show the scrollbar only when needed (default) </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a3c6c22cc52e267565ee4b113e39f7e54a68eec46437c384d8dad18d5464ebc35c"></a>Always&#160;</td><td class="fielddoc"><p>Always show the scrollbar, even when the contents fit inside the panel. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a3c6c22cc52e267565ee4b113e39f7e54a6e7b34fa59e1bd229b207892956dc41c"></a>Never&#160;</td><td class="fielddoc"><p>Never show the scrollbar, even if the contents does not fit inside the panel. </p>
-</td></tr>
-</table>
-
-</div>
-</div>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a424a1a50e226b7e41ba36f216af1c4ef"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a424a1a50e226b7e41ba36f216af1c4ef">&#9670;&nbsp;</a></span>ScrollablePanel()</h2>
 
@@ -995,14 +960,14 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
-<a id="ac7f26eade930d0c8f3b3c58a0dbf108a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7f26eade930d0c8f3b3c58a0dbf108a">&#9670;&nbsp;</a></span>getHorizontalScrollbarPolicy()</h2>
+<a id="a4527f3cf32aac3523f175a5e1207168e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4527f3cf32aac3523f175a5e1207168e">&#9670;&nbsp;</a></span>getHorizontalScrollbarPolicy()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> tgui::ScrollablePanel::getHorizontalScrollbarPolicy </td>
+          <td class="memname"><a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Scrollbar::Policy</a> tgui::ScrollablePanel::getHorizontalScrollbarPolicy </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1076,14 +1041,14 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
-<a id="a9dd6b54f59d83cebcc4a9499b301b6ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9dd6b54f59d83cebcc4a9499b301b6ea">&#9670;&nbsp;</a></span>getVerticalScrollbarPolicy()</h2>
+<a id="ac6fa1d15ea4f36bc2d2a98d5a119e215"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6fa1d15ea4f36bc2d2a98d5a119e215">&#9670;&nbsp;</a></span>getVerticalScrollbarPolicy()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a> tgui::ScrollablePanel::getVerticalScrollbarPolicy </td>
+          <td class="memname"><a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Scrollbar::Policy</a> tgui::ScrollablePanel::getVerticalScrollbarPolicy </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1197,8 +1162,8 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
-<a id="abadda508ef17a21912262686df142d40"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abadda508ef17a21912262686df142d40">&#9670;&nbsp;</a></span>setHorizontalScrollbarPolicy()</h2>
+<a id="aafaa454fe2531e437f96e80ce5c5596f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafaa454fe2531e437f96e80ce5c5596f">&#9670;&nbsp;</a></span>setHorizontalScrollbarPolicy()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1206,7 +1171,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
         <tr>
           <td class="memname">void tgui::ScrollablePanel::setHorizontalScrollbarPolicy </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Scrollbar::Policy</a>&#160;</td>
           <td class="paramname"><em>policy</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1339,8 +1304,8 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 
 </div>
 </div>
-<a id="a3754502e612bb43c2df6c599fc5e1000"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3754502e612bb43c2df6c599fc5e1000">&#9670;&nbsp;</a></span>setVerticalScrollbarPolicy()</h2>
+<a id="aeae5c7d3941a8eab82c0db12f7beed27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeae5c7d3941a8eab82c0db12f7beed27">&#9670;&nbsp;</a></span>setVerticalScrollbarPolicy()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1348,7 +1313,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
         <tr>
           <td class="memname">void tgui::ScrollablePanel::setVerticalScrollbarPolicy </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classtgui_1_1ScrollablePanel.html#a3c6c22cc52e267565ee4b113e39f7e54">ScrollbarPolicy</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classtgui_1_1Scrollbar.html#a1618e7c70a2c67bafe9be77193b89d7d">Scrollbar::Policy</a>&#160;</td>
           <td class="paramname"><em>policy</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1372,7 +1337,7 @@ SignalVector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <!-- HTML footer for doxygen 1.8.10-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Dec 16 2018 18:06:25 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jan 27 2019 22:13:18 for TGUI by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

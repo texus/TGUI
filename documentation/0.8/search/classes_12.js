@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['widget',['Widget',['../classtgui_1_1Widget.html',1,'tgui']]],
-  ['widgetfactory',['WidgetFactory',['../classtgui_1_1WidgetFactory.html',1,'tgui']]],
-  ['widgetrenderer',['WidgetRenderer',['../classtgui_1_1WidgetRenderer.html',1,'tgui']]]
+  ['validator',['Validator',['../structtgui_1_1EditBox_1_1Validator.html',1,'tgui::EditBox']]],
+  ['vector2f',['Vector2f',['../classtgui_1_1Vector2f.html',1,'tgui']]],
+  ['verticallayout',['VerticalLayout',['../classtgui_1_1VerticalLayout.html',1,'tgui']]]
 ];
