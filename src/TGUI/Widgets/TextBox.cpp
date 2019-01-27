@@ -1370,32 +1370,26 @@ namespace tgui
 
     void TextBox::updateScrollbars()
     {
-        if (m_verticalScrollbarPolicy != Scrollbar::Policy::Never)
+        if (m_horizontalScrollbar->isShown())
         {
-            if (m_horizontalScrollbar->isShown())
-            {
-                m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, getInnerSize().y - m_horizontalScrollbar->getSize().y});
-                m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
-            }
-            else
-            {
-                m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, getInnerSize().y});
-                m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
-            }
+            m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, getInnerSize().y - m_horizontalScrollbar->getSize().y});
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
+        }
+        else
+        {
+            m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, getInnerSize().y});
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()));
         }
 
-        if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Never)
+        if (m_verticalScrollbar->isShown())
         {
-            if (m_verticalScrollbar->isShown())
-            {
-                m_horizontalScrollbar->setSize({getInnerSize().x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y});
-                m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_verticalScrollbar->getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
-            }
-            else
-            {
-                m_horizontalScrollbar->setSize({getInnerSize().x, m_horizontalScrollbar->getSize().y});
-                m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
-            }
+            m_horizontalScrollbar->setSize({getInnerSize().x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y});
+            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_verticalScrollbar->getSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
+        }
+        else
+        {
+            m_horizontalScrollbar->setSize({getInnerSize().x, m_horizontalScrollbar->getSize().y});
+            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()));
         }
     }
 

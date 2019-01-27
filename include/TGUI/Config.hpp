@@ -93,9 +93,9 @@
 #endif
 
 #ifndef TGUI_NO_RUNTIME_WARNINGS
-    #define TGUI_PRINT_WARNING(msg) sf::err() << "TGUI Warning: " << msg << std::endl;
+    #define TGUI_PRINT_WARNING(msg) { sf::err() << "TGUI Warning: " << msg << std::endl; }
 #else
-    #define TGUI_PRINT_WARNING(msg)
+    #define TGUI_PRINT_WARNING(msg) {}
 #endif
 
 #ifdef TGUI_NEXT

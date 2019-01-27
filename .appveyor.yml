@@ -14,24 +14,24 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       SFML_PATH:      C:\SFML-VS2017
       SFML_VERSION:   master
-      GENERATOR:      Visual Studio 15 2017 Win64
+      GENERATOR:      Visual Studio 15 2017
       BUILD_TYPE:     Debug
       SHARED_LIBS:    FALSE
       BUILD_TESTS:    TRUE
       BUILD_EXAMPLES: FALSE
       FAST_BUILD:     TRUE
-      BUILD_FOLDER:   build-VS2017-Win64
+      BUILD_FOLDER:   build-VS2017-Win32
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       SFML_PATH:      C:\SFML-VS2015
       SFML_VERSION:   2.5.0
-      GENERATOR:      Visual Studio 14 2015
+      GENERATOR:      Visual Studio 14 2015 Win64
       BUILD_TYPE:     Release
       SHARED_LIBS:    TRUE
       BUILD_TESTS:    FALSE
       BUILD_EXAMPLES: TRUE
       FAST_BUILD:     FALSE
-      BUILD_FOLDER:   build-VS2015-Win32
+      BUILD_FOLDER:   build-VS2015-Win64
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       SFML_PATH:      C:\SFML

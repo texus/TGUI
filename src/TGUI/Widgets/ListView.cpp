@@ -114,8 +114,7 @@ namespace tgui
     std::size_t ListView::addColumn(const sf::String& text, float width, ColumnAlignment alignment)
     {
         Column column;
-        column.text = createText(text);
-        column.text.setCharacterSize(getHeaderTextSize());
+        column.text = createHeaderText(text);
         column.alignment = alignment;
         column.designWidth = width;
         if (width)
@@ -131,10 +130,43 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::setColumnText(std::size_t index, const sf::String& text)
+    {
+        if (index >= m_columns.size())
+        {
+            TGUI_PRINT_WARNING("setColumnText called with invalid index.");
+            return;
+        }
+
+        m_columns[index].text = createHeaderText(text);
+        if (m_columns[index].designWidth == 0)
+            m_columns[index].width = calculateAutoColumnWidth(m_columns[index].text);
+
+        updateHorizontalScrollbarMaximum();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::String ListView::getColumnText(std::size_t index)
+    {
+        if (index < m_columns.size())
+            return m_columns[index].text.getString();
+        else
+        {
+            TGUI_PRINT_WARNING("getColumnText called with invalid index.");
+            return "";
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::setColumnWidth(std::size_t index, float width)
     {
         if (index >= m_columns.size())
+        {
+            TGUI_PRINT_WARNING("setColumnWidth called with invalid index.");
             return;
+        }
 
         m_columns[index].designWidth = width;
         if (width)
@@ -143,6 +175,19 @@ namespace tgui
             m_columns[index].width = calculateAutoColumnWidth(m_columns[index].text);
 
         updateHorizontalScrollbarMaximum();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    float ListView::getColumnWidth(std::size_t index)
+    {
+        if (index < m_columns.size())
+            return m_columns[index].width;
+        else
+        {
+            TGUI_PRINT_WARNING("getColumnWidth called with invalid index.");
+            return 0;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,21 +225,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::setHeaderVisible(bool showHeader)
-    {
-        m_headerVisible = showHeader;
-        updateHorizontalScrollbarMaximum();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool ListView::getHeaderVisible() const
-    {
-        return m_headerVisible;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void ListView::setColumnAlignment(unsigned int columnIndex, ColumnAlignment alignment)
     {
         if (columnIndex < m_columns.size())
@@ -216,6 +246,21 @@ namespace tgui
             TGUI_PRINT_WARNING("getColumnAlignment called with invalid columnIndex.");
             return ColumnAlignment::Left;
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setHeaderVisible(bool showHeader)
+    {
+        m_headerVisible = showHeader;
+        updateHorizontalScrollbarMaximum();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::getHeaderVisible() const
+    {
+        return m_headerVisible;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,7 +413,7 @@ namespace tgui
                 row.push_back(text.getString());
         }
 
-        row.resize(m_columns.size());
+        row.resize(std::max<std::size_t>(1, m_columns.size()));
         return row;
     }
 
@@ -401,7 +446,7 @@ namespace tgui
             for (const auto& text : item.texts)
                 row.push_back(text.getString());
 
-            row.resize(m_columns.size());
+            row.resize(std::max<std::size_t>(1, m_columns.size()));
             rows.push_back(std::move(row));
         }
 
@@ -783,6 +828,9 @@ namespace tgui
         {
             m_textColorCached = getSharedRenderer()->getTextColor();
             updateItemColors();
+
+            if (!m_headerTextColorCached.isSet())
+                updateHeaderTextsColor();
         }
         else if (property == "textcolorhover")
         {
@@ -802,11 +850,13 @@ namespace tgui
         else if (property == "scrollbar")
         {
             m_verticalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
+            m_horizontalScrollbar->setRenderer(getSharedRenderer()->getScrollbar());
 
             // If no scrollbar width was set then we may need to use the one from the texture
             if (!getSharedRenderer()->getScrollbarWidth())
             {
                 m_verticalScrollbar->setSize({m_verticalScrollbar->getDefaultWidth(), m_verticalScrollbar->getSize().y});
+                m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, m_horizontalScrollbar->getDefaultWidth()});
                 setSize(m_size);
             }
         }
@@ -814,6 +864,7 @@ namespace tgui
         {
             const float width = getSharedRenderer()->getScrollbarWidth() ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
             m_verticalScrollbar->setSize({width, m_verticalScrollbar->getSize().y});
+            m_horizontalScrollbar->setSize({m_verticalScrollbar->getSize().x, width});
             setSize(m_size);
         }
         else if (property == "bordercolor")
@@ -827,6 +878,7 @@ namespace tgui
         else if (property == "headertextcolor")
         {
             m_headerTextColorCached = getSharedRenderer()->getHeaderTextColor();
+            updateHeaderTextsColor();
         }
         else if (property == "headerbackgroundcolor")
         {
@@ -925,6 +977,8 @@ namespace tgui
                 columnNode->propertyValuePairs["Alignment"] = std::make_unique<DataIO::ValueNode>("Center");
             else if (column.alignment == ColumnAlignment::Right)
                 columnNode->propertyValuePairs["Alignment"] = std::make_unique<DataIO::ValueNode>("Right");
+
+            node->children.push_back(std::move(columnNode));
         }
 
         for (const auto& item : m_items)
@@ -939,18 +993,38 @@ namespace tgui
                     textsList += ", " + Serializer::serialize(item.texts[i].getString());
                 textsList += "]";
 
-                node->propertyValuePairs["Texts"] = std::make_unique<DataIO::ValueNode>(textsList);
+                itemNode->propertyValuePairs["Texts"] = std::make_unique<DataIO::ValueNode>(textsList);
             }
+
+            node->children.push_back(std::move(itemNode));
         }
 
         if (!m_autoScroll)
             node->propertyValuePairs["AutoScroll"] = std::make_unique<DataIO::ValueNode>("false");
+
+        if (!m_headerVisible)
+            node->propertyValuePairs["HeaderVisible"] = std::make_unique<DataIO::ValueNode>("false");
 
         if (m_headerTextSize)
             node->propertyValuePairs["HeaderTextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_headerTextSize));
 
         if (m_selectedItem >= 0)
             node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(to_string(m_selectedItem));
+
+        if (m_verticalScrollbarPolicy != Scrollbar::Policy::Automatic)
+        {
+            if (m_verticalScrollbarPolicy == Scrollbar::Policy::Always)
+                node->propertyValuePairs["VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
+            else if (m_verticalScrollbarPolicy == Scrollbar::Policy::Never)
+                node->propertyValuePairs["VerticalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
+        }
+        if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Automatic)
+        {
+            if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Always)
+                node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Always");
+            else if (m_horizontalScrollbarPolicy == Scrollbar::Policy::Never)
+                node->propertyValuePairs["HorizontalScrollbarPolicy"] = std::make_unique<DataIO::ValueNode>("Never");
+        }
 
         node->propertyValuePairs["HeaderVisible"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_headerVisible));
         node->propertyValuePairs["HeaderHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_requestedHeaderHeight));
@@ -978,7 +1052,7 @@ namespace tgui
             if (childNode->propertyValuePairs["text"])
                 text = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs["text"]->value).getString();
             if (childNode->propertyValuePairs["width"])
-                width = static_cast<unsigned int>(Deserializer::deserialize(ObjectConverter::Type::Number, childNode->propertyValuePairs["width"]->value).getNumber());
+                width = Deserializer::deserialize(ObjectConverter::Type::Number, childNode->propertyValuePairs["width"]->value).getNumber();
 
             if (childNode->propertyValuePairs["alignment"])
             {
@@ -999,13 +1073,17 @@ namespace tgui
             if (toLower(childNode->name) != "item")
                 continue;
 
-            if (!node->propertyValuePairs["items"])
+            if (!childNode->propertyValuePairs["texts"])
                 throw Exception{"Failed to parse 'Item' property, no Texts property found"};
-            if (!node->propertyValuePairs["texts"]->listNode)
+            if (!childNode->propertyValuePairs["texts"]->listNode)
                 throw Exception{"Failed to parse 'Texts' property inside the 'Item' property, expected a list as value"};
 
+            std::vector<sf::String> itemRow;
+            itemRow.reserve(childNode->propertyValuePairs["texts"]->valueList.size());
             for (const auto& item : childNode->propertyValuePairs["texts"]->valueList)
-                addItem(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
+                itemRow.push_back(Deserializer::deserialize(ObjectConverter::Type::String, item).getString());
+
+            addItem(itemRow);
         }
 
         if (node->propertyValuePairs["autoscroll"])
@@ -1013,7 +1091,9 @@ namespace tgui
         if (node->propertyValuePairs["headervisible"])
             setHeaderVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["headervisible"]->value).getBool());
         if (node->propertyValuePairs["headerheight"])
-            setHeaderHeight(tgui::stoi(node->propertyValuePairs["headerheight"]->value));
+            setHeaderHeight(tgui::stof(node->propertyValuePairs["headerheight"]->value));
+        if (node->propertyValuePairs["headertextsize"])
+            setHeaderTextSize(tgui::stoi(node->propertyValuePairs["headertextsize"]->value));
         if (node->propertyValuePairs["separatorwidth"])
             setSeparatorWidth(tgui::stoi(node->propertyValuePairs["separatorwidth"]->value));
         if (node->propertyValuePairs["textsize"])
@@ -1022,6 +1102,32 @@ namespace tgui
             setItemHeight(tgui::stoi(node->propertyValuePairs["itemheight"]->value));
         if (node->propertyValuePairs["selecteditemindex"])
             setSelectedItem(tgui::stoi(node->propertyValuePairs["selecteditemindex"]->value));
+
+        if (node->propertyValuePairs["verticalscrollbarpolicy"])
+        {
+            std::string policy = toLower(trim(node->propertyValuePairs["verticalscrollbarpolicy"]->value));
+            if (policy == "automatic")
+                setVerticalScrollbarPolicy(Scrollbar::Policy::Automatic);
+            else if (policy == "always")
+                setVerticalScrollbarPolicy(Scrollbar::Policy::Always);
+            else if (policy == "never")
+                setVerticalScrollbarPolicy(Scrollbar::Policy::Never);
+            else
+                throw Exception{"Failed to parse VerticalScrollbarPolicy property, found unknown value."};
+        }
+
+        if (node->propertyValuePairs["horizontalscrollbarpolicy"])
+        {
+            std::string policy = toLower(trim(node->propertyValuePairs["horizontalscrollbarpolicy"]->value));
+            if (policy == "automatic")
+                setHorizontalScrollbarPolicy(Scrollbar::Policy::Automatic);
+            else if (policy == "always")
+                setHorizontalScrollbarPolicy(Scrollbar::Policy::Always);
+            else if (policy == "never")
+                setHorizontalScrollbarPolicy(Scrollbar::Policy::Never);
+            else
+                throw Exception{"Failed to parse HorizontalScrollbarPolicy property, found unknown value."};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1041,6 +1147,24 @@ namespace tgui
         text.setOpacity(m_opacityCached);
         text.setCharacterSize(m_textSize);
         text.setString(caption);
+        return text;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Text ListView::createHeaderText(const sf::String& caption)
+    {
+        Text text;
+        text.setFont(m_fontCached);
+        text.setOpacity(m_opacityCached);
+        text.setCharacterSize(getHeaderTextSize());
+        text.setString(caption);
+
+        if (m_headerTextColorCached.isSet())
+            text.setColor(m_headerTextColorCached);
+        else
+            text.setColor(m_textColorCached);
+
         return text;
     }
 
@@ -1086,6 +1210,19 @@ namespace tgui
             setItemColor(i, m_textColorCached);
 
         updateSelectedAndhoveredItemColors();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::updateHeaderTextsColor()
+    {
+        for (auto& column : m_columns)
+        {
+            if (m_headerTextColorCached.isSet())
+                column.text.setColor(m_headerTextColorCached);
+            else
+                column.text.setColor(m_textColorCached);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1137,32 +1274,26 @@ namespace tgui
         const Vector2f innerSize = {std::max(0.f, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()),
                                     std::max(0.f, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - headerHeight)};
 
-        if (m_verticalScrollbarPolicy != Scrollbar::Policy::Never)
+        if (m_horizontalScrollbar->isShown())
         {
-            if (m_horizontalScrollbar->isShown())
-            {
-                m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y) - m_horizontalScrollbar->getSize().y});
-                m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.y - m_horizontalScrollbar->getSize().y));
-            }
-            else
-            {
-                m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y)});
-                m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.y));
-            }
+            m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y) - m_horizontalScrollbar->getSize().y});
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.y - m_horizontalScrollbar->getSize().y));
+        }
+        else
+        {
+            m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y)});
+            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.y));
         }
 
-        if (m_horizontalScrollbarPolicy != Scrollbar::Policy::Never)
+        if (m_verticalScrollbar->isShown())
         {
-            if (m_verticalScrollbar->isShown())
-            {
-                m_horizontalScrollbar->setSize({getInnerSize().x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y});
-                m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.x - m_verticalScrollbar->getSize().x));
-            }
-            else
-            {
-                m_horizontalScrollbar->setSize({getInnerSize().x, m_horizontalScrollbar->getSize().y});
-                m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.x));
-            }
+            m_horizontalScrollbar->setSize({getInnerSize().x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y});
+            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.x - m_verticalScrollbar->getSize().x));
+        }
+        else
+        {
+            m_horizontalScrollbar->setSize({getInnerSize().x, m_horizontalScrollbar->getSize().y});
+            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.x));
         }
     }
 
