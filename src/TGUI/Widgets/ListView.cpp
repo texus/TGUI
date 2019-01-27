@@ -359,7 +359,7 @@ namespace tgui
             return;
         }
 
-        updateSelectedItem(index);
+        updateSelectedItem(static_cast<int>(index));
 
         // Move the scrollbar
         if (m_selectedItem * getItemHeight() < m_verticalScrollbar->getValue())

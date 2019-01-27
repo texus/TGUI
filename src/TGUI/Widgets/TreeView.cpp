@@ -1047,7 +1047,7 @@ namespace tgui
             updateSelectedAndHoveringItemColors();
         }
 
-        m_verticalScrollbar->setMaximum(m_itemHeight * m_visibleNodes.size());
+        m_verticalScrollbar->setMaximum(static_cast<unsigned int>(m_itemHeight * m_visibleNodes.size()));
         m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_maxRight));
 
         if ((m_maxRight + m_verticalScrollbar->getSize().x) > (getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()))
@@ -1108,7 +1108,7 @@ namespace tgui
             };
 
             int firstNode = 0;
-            int lastNode = m_visibleNodes.size();
+            int lastNode = static_cast<int>(m_visibleNodes.size());
             if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
             {
                 firstNode = static_cast<int>(m_verticalScrollbar->getValue() / m_itemHeight);
