@@ -60,6 +60,7 @@ namespace tgui
         struct Item
         {
             std::vector<Text> texts;
+            Sprite icon;
         };
 
         struct Column
@@ -290,6 +291,25 @@ namespace tgui
         /// @return The index of the selected item, or -1 when no item was selected
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int getSelectedItemIndex() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets a small icon in front of the item
+        ///
+        /// @param index   Index of the item
+        /// @param texture Texture of the item icon
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setItemIcon(std::size_t index, const Texture& texture);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Gets the icon displayed in front of the item
+        ///
+        /// @param index  Index of the item
+        ///
+        /// @return Texture of the item icon
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Texture getItemIcon(std::size_t index) const;
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -661,6 +681,8 @@ namespace tgui
         unsigned int m_textSize = 0;
         unsigned int m_headerTextSize = 0;
         unsigned int m_separatorWidth = 1;
+        unsigned int m_iconCount = 0;
+        float m_maxIconWidth = 0;
         bool m_headerVisible = true;
 
         CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScrollbar;

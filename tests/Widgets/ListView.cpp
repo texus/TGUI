@@ -229,9 +229,14 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getTextSize() == 20);
 
         listView->setTextSize(0);
-        REQUIRE(listView->getTextSize() > 0);
-        REQUIRE(listView->getTextSize() != 20);
-        REQUIRE(listView->getTextSize() < 50);
+        const unsigned int textSize = listView->getTextSize();
+        REQUIRE(textSize > 0);
+        REQUIRE(textSize != 20);
+        REQUIRE(textSize < 50);
+
+        listView->setItemHeight(60);
+        REQUIRE(listView->getTextSize() > textSize);
+        REQUIRE(listView->getTextSize() < 60);
     }
 
     SECTION("HeaderTextSize")
@@ -380,20 +385,20 @@ TEST_CASE("[ListView]")
             }
         }
 
-        SECTION("Header changes item positions")
+        SECTION("Click on header")
         {
             listView->setHeaderHeight(30);
             listView->addColumn("Col 1", 50);
             listView->addColumn("Col 2", 50);
 
-            mousePressed({40, 68});
-            mouseReleased({40, 68});
-            REQUIRE(listView->getSelectedItemIndex() == 0);
+            mousePressed({40, 35});
+            mouseReleased({40, 35});
+            REQUIRE(listView->getSelectedItemIndex() == -1);
 
             listView->setHeaderVisible(false);
-            mousePressed({40, 68});
-            mouseReleased({40, 68});
-            REQUIRE(listView->getSelectedItemIndex() == 2);
+            mousePressed({40, 35});
+            mouseReleased({40, 35});
+            REQUIRE(listView->getSelectedItemIndex() == 0);
         }
 
         SECTION("Vertical scrollbar interaction")
@@ -623,10 +628,6 @@ TEST_CASE("[ListView]")
                                     renderer.setSelectedTextColorHover("#808080");
                                  };
 
-        listView->addColumn("C1", 40);
-        listView->addColumn("C2", 70);
-        listView->addColumn("C3", 70);
-
         listView->addItem({"1", "1.2"});
         listView->addItem("2");
         listView->addItem({"3", "3.2"});
@@ -637,6 +638,15 @@ TEST_CASE("[ListView]")
         const sf::Vector2f mousePos1{30, 85};
         const sf::Vector2f mousePos2{30, 50};
         const sf::Vector2f mousePos3{30, 45};
+
+        SECTION("No columns")
+        {
+            TEST_DRAW("ListView_NoColumns.png")
+        }
+
+        listView->addColumn("C1", 40);
+        listView->addColumn("C2", 70);
+        listView->addColumn("C3", 70);
 
         SECTION("No selected item")
         {
@@ -781,6 +791,13 @@ TEST_CASE("[ListView]")
                     TEST_DRAW("ListView_ForcedScrollbars_Policy.png")
                 }
             }
+        }
+
+        SECTION("Icons")
+        {
+            listView->setItemIcon(3, {"resources/Texture6.png", {0, 0, 20, 14}});
+            listView->setItemIcon(4, {"resources/Texture7.png", {0, 0, 14, 14}});
+            TEST_DRAW("ListView_Icons.png")
         }
     }
 }

@@ -269,6 +269,7 @@ namespace tgui
     {
         Item item;
         item.texts.push_back(createText(text));
+        item.icon.setOpacity(m_opacityCached);
         m_items.push_back(std::move(item));
 
         updateVerticalScrollbarMaximum();
@@ -289,6 +290,7 @@ namespace tgui
         for (const auto& text : itemTexts)
             item.texts.push_back(createText(text));
 
+        item.icon.setOpacity(m_opacityCached);
         m_items.push_back(std::move(item));
 
         updateVerticalScrollbarMaximum();
@@ -331,7 +333,29 @@ namespace tgui
         if (index >= m_items.size())
             return false;
 
+        const bool wasIconSet = m_items[index].icon.isSet();
         m_items.erase(m_items.begin() + index);
+
+        if (wasIconSet)
+        {
+            --m_iconCount;
+
+            const float oldMaxIconWidth = m_maxIconWidth;
+            m_maxIconWidth = 0;
+            if (m_iconCount > 0)
+            {
+                // Rescan all items to find the largest icon
+                for (const auto& item : m_items)
+                {
+                    if (!item.icon.isSet())
+                        continue;
+
+                    m_maxIconWidth = std::max(m_maxIconWidth, item.icon.getSize().x);
+                    if (m_maxIconWidth == oldMaxIconWidth)
+                        break;
+                }
+            }
+        }
 
         updateVerticalScrollbarMaximum();
         return true;
@@ -345,6 +369,9 @@ namespace tgui
         updateHoveredItem(-1);
 
         m_items.clear();
+
+        m_iconCount = 0;
+        m_maxIconWidth = 0;
 
         updateVerticalScrollbarMaximum();
     }
@@ -380,6 +407,60 @@ namespace tgui
     int ListView::getSelectedItemIndex() const
     {
         return m_selectedItem;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setItemIcon(std::size_t index, const Texture& texture)
+    {
+        if (index >= m_items.size())
+        {
+            TGUI_PRINT_WARNING("setItemIcon called with invalid index.");
+            return;
+        }
+
+        const bool wasIconSet = m_items[index].icon.isSet();
+        m_items[index].icon.setTexture(texture);
+
+        if (m_items[index].icon.isSet())
+        {
+            m_maxIconWidth = std::max(m_maxIconWidth, m_items[index].icon.getSize().x);
+            if (!wasIconSet)
+                ++m_iconCount;
+        }
+        else if (wasIconSet)
+        {
+            --m_iconCount;
+
+            const float oldMaxIconWidth = m_maxIconWidth;
+            m_maxIconWidth = 0;
+            if (m_iconCount > 0)
+            {
+                // Rescan all items to find the largest icon
+                for (const auto& item : m_items)
+                {
+                    if (!item.icon.isSet())
+                        continue;
+
+                    m_maxIconWidth = std::max(m_maxIconWidth, item.icon.getSize().x);
+                    if (m_maxIconWidth == oldMaxIconWidth)
+                        break;
+                }
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Texture ListView::getItemIcon(std::size_t index) const
+    {
+        if (index < m_items.size())
+            return m_items[index].icon.getTexture();
+        else
+        {
+            TGUI_PRINT_WARNING("getItemIcon called with invalid index.");
+            return {};
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -914,6 +995,8 @@ namespace tgui
             {
                 for (auto& text : item.texts)
                     text.setOpacity(m_opacityCached);
+
+                item.icon.setOpacity(m_opacityCached);
             }
         }
         else if (property == "font")
@@ -1270,6 +1353,7 @@ namespace tgui
 
     void ListView::updateScrollbars()
     {
+        const bool verticalScrollbarAtBottom = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() >= m_verticalScrollbar->getMaximum());
         const float headerHeight = (m_headerVisible && !m_columns.empty()) ? getHeaderHeight() : 0.f;
         const Vector2f innerSize = {std::max(0.f, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()),
                                     std::max(0.f, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - headerHeight)};
@@ -1295,6 +1379,10 @@ namespace tgui
             m_horizontalScrollbar->setSize({getInnerSize().x, m_horizontalScrollbar->getSize().y});
             m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.x));
         }
+
+        // If the scrollbar was at the bottom then keep it at the bottom if it changes due to a different viewport size
+        if (verticalScrollbarAtBottom && (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
+            m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1356,15 +1444,46 @@ namespace tgui
         if (firstItem == lastItem)
             return;
 
+        const float verticalTextOffset = (m_itemHeight - Text::getLineHeight(m_fontCached, m_textSize)) / 2.0f;
         const float headerHeight = (m_headerVisible && !m_columns.empty()) ? getHeaderHeight() : 0.f;
         const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSize);
         const float columnHeight = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()
                                    - headerHeight - (m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0);
+
+        // Draw the icons.
+        // If at least one icon is set then all items in the first column have to be shifted to make room for the icon.
+        if ((column == 0) && (m_iconCount > 0))
+        {
+            const sf::Transform transformBeforeIcons = states.transform;
+            const Clipping clipping{target, states, {textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}};
+
+            states.transform.translate({0, (m_itemHeight * firstItem) - static_cast<float>(m_verticalScrollbar->getValue())});
+
+            for (std::size_t i = firstItem; i < lastItem; ++i)
+            {
+                if (!m_items[i].icon.isSet())
+                {
+                    states.transform.translate({0, static_cast<float>(m_itemHeight)});
+                    continue;
+                }
+
+                const float verticalIconOffset = (m_itemHeight - m_items[i].icon.getSize().y) / 2.f;
+
+                states.transform.translate({textPadding, verticalIconOffset});
+                m_items[i].icon.draw(target, states);
+                states.transform.translate({-textPadding, static_cast<float>(m_itemHeight) - verticalIconOffset});
+            }
+
+            states.transform = transformBeforeIcons;
+
+            const float extraIconSpace = m_maxIconWidth + textPadding;
+            columnWidth -= extraIconSpace;
+            states.transform.translate({extraIconSpace, 0});
+        }
+
         const Clipping clipping{target, states, {textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}};
 
-        states.transform.translate({0, -static_cast<float>(m_verticalScrollbar->getValue())});
-        states.transform.translate({0, (m_itemHeight * firstItem) + (m_itemHeight - Text::getLineHeight(m_fontCached, m_textSize)) / 2.0f});
-
+        states.transform.translate({0, (m_itemHeight * firstItem) - static_cast<float>(m_verticalScrollbar->getValue())});
         for (std::size_t i = firstItem; i < lastItem; ++i)
         {
             if (column >= m_items[i].texts.size())
@@ -1374,16 +1493,16 @@ namespace tgui
             }
 
             float translateX;
-            if ((m_columns[column].alignment == ColumnAlignment::Left) || (column >= m_columns.size()))
+            if ((column >= m_columns.size()) || (m_columns[column].alignment == ColumnAlignment::Left))
                 translateX = textPadding;
             else if (m_columns[column].alignment == ColumnAlignment::Center)
                 translateX = (columnWidth - m_items[i].texts[column].getSize().x) / 2.f;
             else // if (m_columns[column].alignment == ColumnAlignment::Right)
                 translateX = columnWidth - textPadding - m_items[i].texts[column].getSize().x;
 
-            states.transform.translate({translateX, 0});
+            states.transform.translate({translateX, verticalTextOffset});
             m_items[i].texts[column].draw(target, states);
-            states.transform.translate({-translateX, static_cast<float>(m_itemHeight)});
+            states.transform.translate({-translateX, static_cast<float>(m_itemHeight) - verticalTextOffset});
         }
     }
 
