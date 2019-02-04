@@ -298,7 +298,7 @@ namespace tgui
         /// @brief Changes the character size of the text
         ///
         /// @param size  The new size of the text
-        ///              If the size is 0 (default) then the text will be scaled to fit in the tab.
+        ///              If the size is 0 then the text will be scaled to fit in the tab.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int size);

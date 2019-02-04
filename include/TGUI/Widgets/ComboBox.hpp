@@ -439,7 +439,7 @@ namespace tgui
         ///
         /// @param textSize  The size size of the text
         ///
-        /// By default (or when passing 0 to this function) the text will be auto-sized to nicely fit inside the combo box.
+        /// When passing 0 to this function, the text will be auto-sized to nicely fit inside the combo box.
         ///
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTextSize(unsigned int textSize);

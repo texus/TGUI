@@ -226,8 +226,8 @@ namespace tgui
         ///
         /// @param textSize  The size size of the text
         ///
-        /// This will not change the height that each item has. By default (or when passing 0 to this function) the text will
-        /// be auto-sized to nicely fit inside this item height.
+        /// This will not change the height that each item has.
+        /// When passing 0 to this function, the text will be auto-sized to nicely fit inside this item height.
         ///
         /// @see setItemHeight
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
