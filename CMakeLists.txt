@@ -49,7 +49,7 @@ else()
 endif()
 
 tgui_set_option(TGUI_BUILD_TESTS FALSE BOOL "TRUE to build the TGUI tests")
-tgui_set_option(TGUI_BUILD_GUI_BUILDER FALSE BOOL "TRUE to compile the GUI Builder")
+tgui_set_option(TGUI_BUILD_GUI_BUILDER TRUE BOOL "TRUE to compile the GUI Builder")
 tgui_set_option(TGUI_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 
 # Define the install directory for miscellaneous files

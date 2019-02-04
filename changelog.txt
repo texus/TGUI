@@ -1,5 +1,5 @@
-TGUI 0.8.3  (TBD)
------------------
+TGUI 0.8.3  (27 January 2019)
+-----------------------------
 
 - ListView widget added
 - EditBox can now have a suffix
