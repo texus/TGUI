@@ -31,7 +31,7 @@ int main()
 
         auto menu = tgui::MenuBar::create();
         menu->setRenderer(theme.getRenderer("MenuBar"));
-        menu->setSize((float)window.getSize().x, 22.f);
+        menu->setSize(static_cast<float>(window.getSize().x), 22.f);
         menu->addMenu("File");
         menu->addMenuItem("Load");
         menu->addMenuItem("Save");
@@ -143,7 +143,7 @@ int main()
         scrollbar->setPosition(380, 40);
         scrollbar->setSize(18, 540);
         scrollbar->setMaximum(100);
-        scrollbar->setLowValue(70);
+        scrollbar->setViewportSize(70);
         gui.add(scrollbar);
 
         auto comboBox = tgui::ComboBox::create();
@@ -175,7 +175,7 @@ int main()
         button->setPosition(75, 70);
         button->setText("OK");
         button->setSize(100, 30);
-        button->connect("pressed", [=](){ child->hide(); });
+        button->connect("pressed", [=](){ child->setVisible(false); });
         child->add(button);
 
         auto checkbox = tgui::CheckBox::create();
@@ -261,5 +261,4 @@ int main()
 
     return EXIT_SUCCESS;
 }
-
 ```
