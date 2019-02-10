@@ -6,6 +6,14 @@ breadcrumb: xcode
 
 Tip: The sfml example comes with a `resourcePath()` function which you have to put before the paths to load resources. You can use `tgui::setResourcePath(resourcePath())` at the beginning of your program so that everything tgui loads starts with that folder.
 
+### Homebrew
+
+If you use homebrew then you can install the [unofficial TGUI formula](https://formulae.brew.sh/formula/tgui) by executing:
+```bash
+brew install tgui
+```
+When doing this you can skip the building steps below and go directly to the [Using TGUI (dylib)](#using-tgui-dylib) section.
+
 ### CMake
 
 - You will need to use CMake in order to build TGUI. You can download the latest version [here](https://www.cmake.org/download/).
