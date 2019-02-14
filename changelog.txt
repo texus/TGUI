@@ -1,3 +1,12 @@
+TGUI 0.8.4  (TBD)
+-----------------
+
+- Added horizontal grid lines to ListView
+- Added option to ListView to expand the last column to fill the remaining space
+- Allow a separator between the header and contents in a ListView
+- Split separator in ListView into separator and vertical grid line
+
+
 TGUI 0.8.3  (27 January 2019)
 -----------------------------
 

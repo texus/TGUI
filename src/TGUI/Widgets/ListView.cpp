@@ -25,6 +25,7 @@
 
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Clipping.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,7 +46,8 @@ namespace tgui
         setTextSize(getGlobalTextSize());
         setItemHeight(static_cast<unsigned int>(Text::getLineHeight(m_fontCached, m_textSize) * 1.25f));
         setSize({m_itemHeight * 12,
-                 getHeaderHeight() + (m_itemHeight * 6) + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
+                 getHeaderHeight() + getHeaderSeparatorHeight() + (m_itemHeight * 6)
+                 + m_paddingCached.getTop() + m_paddingCached.getBottom() + m_bordersCached.getTop() + m_bordersCached.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +149,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    sf::String ListView::getColumnText(std::size_t index)
+    sf::String ListView::getColumnText(std::size_t index) const
     {
         if (index < m_columns.size())
             return m_columns[index].text.getString();
@@ -179,7 +181,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float ListView::getColumnWidth(std::size_t index)
+    float ListView::getColumnWidth(std::size_t index) const
     {
         if (index < m_columns.size())
             return m_columns[index].width;
@@ -210,7 +212,7 @@ namespace tgui
     void ListView::setHeaderHeight(float height)
     {
         m_requestedHeaderHeight = height;
-        setSize(getSize());
+        updateVerticalScrollbarMaximum();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,7 +227,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void ListView::setColumnAlignment(unsigned int columnIndex, ColumnAlignment alignment)
+    float ListView::getCurrentHeaderHeight() const
+    {
+        if (m_headerVisible && !m_columns.empty())
+            return getHeaderHeight() + getHeaderSeparatorHeight();
+        else
+            return 0;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setColumnAlignment(std::size_t columnIndex, ColumnAlignment alignment)
     {
         if (columnIndex < m_columns.size())
             m_columns[columnIndex].alignment = alignment;
@@ -237,7 +249,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ListView::ColumnAlignment ListView::getColumnAlignment(unsigned int columnIndex) const
+    ListView::ColumnAlignment ListView::getColumnAlignment(std::size_t columnIndex) const
     {
         if (columnIndex < m_columns.size())
             return m_columns[columnIndex].alignment;
@@ -253,7 +265,7 @@ namespace tgui
     void ListView::setHeaderVisible(bool showHeader)
     {
         m_headerVisible = showHeader;
-        updateHorizontalScrollbarMaximum();
+        updateVerticalScrollbarMaximum();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -550,7 +562,6 @@ namespace tgui
             }
         }
 
-        m_verticalScrollbar->setScrollAmount(m_itemHeight);
         updateVerticalScrollbarMaximum();
     }
 
@@ -637,6 +648,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::setHeaderSeparatorHeight(unsigned int height)
+    {
+        m_headerSeparatorHeight = height;
+        updateVerticalScrollbarMaximum();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ListView::getHeaderSeparatorHeight() const
+    {
+        return m_headerSeparatorHeight;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setGridLinesWidth(unsigned int width)
+    {
+        m_gridLinesWidth = width;
+        updateHorizontalScrollbarMaximum();
+        updateVerticalScrollbarMaximum();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int ListView::getGridLinesWidth() const
+    {
+        return m_gridLinesWidth;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::setAutoScroll(bool autoScroll)
     {
         m_autoScroll = autoScroll;
@@ -647,6 +689,50 @@ namespace tgui
     bool ListView::getAutoScroll() const
     {
         return m_autoScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setShowVerticalGridLines(bool showGridLines)
+    {
+        m_showVerticalGridLines = showGridLines;
+        updateHorizontalScrollbarMaximum();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::getShowVerticalGridLines() const
+    {
+        return m_showVerticalGridLines;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setShowHorizontalGridLines(bool showGridLines)
+    {
+        m_showHorizontalGridLines = showGridLines;
+        updateVerticalScrollbarMaximum();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::getShowHorizontalGridLines() const
+    {
+        return m_showHorizontalGridLines;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::setExpandLastColumn(bool expand)
+    {
+        m_expandLastColumn = expand;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::getExpandLastColumn() const
+    {
+        return m_expandLastColumn;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -726,8 +812,6 @@ namespace tgui
 
         m_mouseDown = true;
 
-        const float headerHeight = (m_headerVisible && !m_columns.empty()) ? getHeaderHeight() : 0.f;
-
         if (m_verticalScrollbar->mouseOnWidget(pos))
         {
             m_verticalScrollbar->leftMousePressed(pos);
@@ -736,16 +820,10 @@ namespace tgui
         {
             m_horizontalScrollbar->leftMousePressed(pos);
         }
-        else if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop() + headerHeight,
+        else if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
                            getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
         {
-            pos.y -= (m_bordersCached.getTop() + m_paddingCached.getTop() + headerHeight);
-
-            int hoveredItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
-            if (hoveredItem < static_cast<int>(m_items.size()))
-                updateHoveredItem(hoveredItem);
-            else
-                updateHoveredItem(-1);
+            updateHoveredItemByMousePos(pos);
 
             if (m_selectedItem != m_hoveredItem)
             {
@@ -805,19 +883,12 @@ namespace tgui
             m_horizontalScrollbar->mouseNoLongerOnWidget();
 
             // Find out on which item the mouse is hovered
-            const float headerHeight = (m_headerVisible && !m_columns.empty()) ? getHeaderHeight() : 0.f;
             if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
-                          m_bordersCached.getTop() + m_paddingCached.getTop() + headerHeight,
+                          m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
                           getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(),
                           getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
             {
-                pos.y -= (m_bordersCached.getTop() + m_paddingCached.getTop() + headerHeight);
-
-                int hoveredItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
-                if (hoveredItem < static_cast<int>(m_items.size()))
-                    updateHoveredItem(hoveredItem);
-                else
-                    updateHoveredItem(-1);
+                updateHoveredItemByMousePos(pos);
 
                 // If the mouse is held down then select the item below the mouse
                 if (m_mouseDown && !m_verticalScrollbar->isMouseDown())
@@ -955,6 +1026,10 @@ namespace tgui
         else if (property == "separatorcolor")
         {
             m_separatorColorCached = getSharedRenderer()->getSeparatorColor();
+        }
+        else if (property == "gridlinescolor")
+        {
+            m_gridLinesColorCached = getSharedRenderer()->getGridLinesColor();
         }
         else if (property == "headertextcolor")
         {
@@ -1094,6 +1169,12 @@ namespace tgui
         if (m_selectedItem >= 0)
             node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(to_string(m_selectedItem));
 
+        if (m_gridLinesWidth != 1)
+            node->propertyValuePairs["GridLinesWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_gridLinesWidth));
+
+        if (m_showHorizontalGridLines)
+            node->propertyValuePairs["ShowHorizontalGridLines"] = std::make_unique<DataIO::ValueNode>(to_string(m_showHorizontalGridLines));
+
         if (m_verticalScrollbarPolicy != Scrollbar::Policy::Automatic)
         {
             if (m_verticalScrollbarPolicy == Scrollbar::Policy::Always)
@@ -1112,8 +1193,12 @@ namespace tgui
         node->propertyValuePairs["HeaderVisible"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_headerVisible));
         node->propertyValuePairs["HeaderHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_requestedHeaderHeight));
         node->propertyValuePairs["SeparatorWidth"] = std::make_unique<DataIO::ValueNode>(to_string(m_separatorWidth));
+        node->propertyValuePairs["HeaderSeparatorHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_headerSeparatorHeight));
         node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(m_textSize));
         node->propertyValuePairs["ItemHeight"] = std::make_unique<DataIO::ValueNode>(to_string(m_itemHeight));
+        node->propertyValuePairs["ShowVerticalGridLines"] = std::make_unique<DataIO::ValueNode>(to_string(m_showVerticalGridLines));
+        node->propertyValuePairs["ExpandLastColumn"] = std::make_unique<DataIO::ValueNode>(to_string(m_expandLastColumn));
+
         return node;
     }
 
@@ -1179,12 +1264,22 @@ namespace tgui
             setHeaderTextSize(tgui::stoi(node->propertyValuePairs["headertextsize"]->value));
         if (node->propertyValuePairs["separatorwidth"])
             setSeparatorWidth(tgui::stoi(node->propertyValuePairs["separatorwidth"]->value));
+        if (node->propertyValuePairs["headerseparatorheight"])
+            setHeaderSeparatorHeight(tgui::stoi(node->propertyValuePairs["headerseparatorheight"]->value));
         if (node->propertyValuePairs["textsize"])
             setTextSize(tgui::stoi(node->propertyValuePairs["textsize"]->value));
         if (node->propertyValuePairs["itemheight"])
             setItemHeight(tgui::stoi(node->propertyValuePairs["itemheight"]->value));
         if (node->propertyValuePairs["selecteditemindex"])
             setSelectedItem(tgui::stoi(node->propertyValuePairs["selecteditemindex"]->value));
+        if (node->propertyValuePairs["gridlineswidth"])
+            setGridLinesWidth(tgui::stoi(node->propertyValuePairs["gridlineswidth"]->value));
+        if (node->propertyValuePairs["showhorizontalgridlines"])
+            setShowHorizontalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["showhorizontalgridlines"]->value).getBool());
+        if (node->propertyValuePairs["showverticalgridlines"])
+            setShowVerticalGridLines(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["showverticalgridlines"]->value).getBool());
+        if (node->propertyValuePairs["expandlastcolumn"])
+            setExpandLastColumn(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["expandlastcolumn"]->value).getBool());
 
         if (node->propertyValuePairs["verticalscrollbarpolicy"])
         {
@@ -1351,12 +1446,29 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::updateHoveredItemByMousePos(Vector2f mousePos)
+    {
+        mousePos.y -= (m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight());
+
+        int hoveredItem;
+        if (m_showHorizontalGridLines && (m_gridLinesWidth > 0))
+            hoveredItem = static_cast<int>(std::ceil((mousePos.y + m_verticalScrollbar->getValue() - m_itemHeight - (m_gridLinesWidth / 2.f)) / (m_itemHeight + m_gridLinesWidth)));
+        else
+            hoveredItem = static_cast<int>(std::ceil((mousePos.y + m_verticalScrollbar->getValue() - m_itemHeight + 1) / m_itemHeight));
+
+        if ((hoveredItem >= 0) && (hoveredItem < static_cast<int>(m_items.size())))
+            updateHoveredItem(hoveredItem);
+        else
+            updateHoveredItem(-1);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::updateScrollbars()
     {
         const bool verticalScrollbarAtBottom = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() >= m_verticalScrollbar->getMaximum());
-        const float headerHeight = (m_headerVisible && !m_columns.empty()) ? getHeaderHeight() : 0.f;
         const Vector2f innerSize = {std::max(0.f, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight()),
-                                    std::max(0.f, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - headerHeight)};
+                                    std::max(0.f, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom() - getCurrentHeaderHeight())};
 
         if (m_horizontalScrollbar->isShown())
         {
@@ -1380,6 +1492,11 @@ namespace tgui
             m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(innerSize.x));
         }
 
+        if (m_showHorizontalGridLines && (m_gridLinesWidth > 0))
+            m_verticalScrollbar->setScrollAmount(m_itemHeight + m_gridLinesWidth);
+        else
+            m_verticalScrollbar->setScrollAmount(m_itemHeight);
+
         // If the scrollbar was at the bottom then keep it at the bottom if it changes due to a different viewport size
         if (verticalScrollbarAtBottom && (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
             m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
@@ -1389,8 +1506,18 @@ namespace tgui
 
     void ListView::updateVerticalScrollbarMaximum()
     {
-        m_verticalScrollbar->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
+        const bool verticalScrollbarAtBottom = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() >= m_verticalScrollbar->getMaximum());
+
+        unsigned int maximum = static_cast<unsigned int>(m_items.size() * m_itemHeight);
+        if (m_showHorizontalGridLines && (m_gridLinesWidth > 0) && !m_items.empty())
+            maximum += (m_items.size() - 1) * m_gridLinesWidth;
+
+        m_verticalScrollbar->setMaximum(maximum);
         updateScrollbars();
+
+        // If the scrollbar was at the bottom then keep it at the bottom
+        if (verticalScrollbarAtBottom && (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
+            m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1403,9 +1530,18 @@ namespace tgui
             m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_columns[0].width));
         else
         {
+            unsigned int separatorWidth = m_separatorWidth;
+            if (m_showVerticalGridLines && (m_gridLinesWidth > separatorWidth))
+                separatorWidth = m_gridLinesWidth;
+
             float width = 0;
             for (const auto& column : m_columns)
-                width += column.width + m_separatorWidth;
+                width += column.width;
+
+            if (m_expandLastColumn)
+                width += (m_columns.size() - 1) * static_cast<float>(separatorWidth);
+            else
+                width += m_columns.size() * static_cast<float>(separatorWidth);
 
             m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(width));
         }
@@ -1444,11 +1580,11 @@ namespace tgui
         if (firstItem == lastItem)
             return;
 
+        const unsigned int requiredItemHeight = m_itemHeight + (m_showHorizontalGridLines ? m_gridLinesWidth : 0);
         const float verticalTextOffset = (m_itemHeight - Text::getLineHeight(m_fontCached, m_textSize)) / 2.0f;
-        const float headerHeight = (m_headerVisible && !m_columns.empty()) ? getHeaderHeight() : 0.f;
         const float textPadding = Text::getExtraHorizontalOffset(m_fontCached, m_textSize);
         const float columnHeight = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()
-                                   - headerHeight - (m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0);
+                                   - getCurrentHeaderHeight() - (m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0);
 
         // Draw the icons.
         // If at least one icon is set then all items in the first column have to be shifted to make room for the icon.
@@ -1457,13 +1593,13 @@ namespace tgui
             const sf::Transform transformBeforeIcons = states.transform;
             const Clipping clipping{target, states, {textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}};
 
-            states.transform.translate({0, (m_itemHeight * firstItem) - static_cast<float>(m_verticalScrollbar->getValue())});
+            states.transform.translate({0, (requiredItemHeight * firstItem) - static_cast<float>(m_verticalScrollbar->getValue())});
 
             for (std::size_t i = firstItem; i < lastItem; ++i)
             {
                 if (!m_items[i].icon.isSet())
                 {
-                    states.transform.translate({0, static_cast<float>(m_itemHeight)});
+                    states.transform.translate({0, static_cast<float>(requiredItemHeight)});
                     continue;
                 }
 
@@ -1471,7 +1607,7 @@ namespace tgui
 
                 states.transform.translate({textPadding, verticalIconOffset});
                 m_items[i].icon.draw(target, states);
-                states.transform.translate({-textPadding, static_cast<float>(m_itemHeight) - verticalIconOffset});
+                states.transform.translate({-textPadding, static_cast<float>(requiredItemHeight) - verticalIconOffset});
             }
 
             states.transform = transformBeforeIcons;
@@ -1483,12 +1619,12 @@ namespace tgui
 
         const Clipping clipping{target, states, {textPadding, 0}, {columnWidth - (2 * textPadding), columnHeight}};
 
-        states.transform.translate({0, (m_itemHeight * firstItem) - static_cast<float>(m_verticalScrollbar->getValue())});
+        states.transform.translate({0, (requiredItemHeight * firstItem) - static_cast<float>(m_verticalScrollbar->getValue())});
         for (std::size_t i = firstItem; i < lastItem; ++i)
         {
             if (column >= m_items[i].texts.size())
             {
-                states.transform.translate({0, static_cast<float>(m_itemHeight)});
+                states.transform.translate({0, static_cast<float>(requiredItemHeight)});
                 continue;
             }
 
@@ -1502,7 +1638,7 @@ namespace tgui
 
             states.transform.translate({translateX, verticalTextOffset});
             m_items[i].texts[column].draw(target, states);
-            states.transform.translate({-translateX, static_cast<float>(m_itemHeight) - verticalTextOffset});
+            states.transform.translate({-translateX, static_cast<float>(requiredItemHeight) - verticalTextOffset});
         }
     }
 
@@ -1536,21 +1672,17 @@ namespace tgui
         // Draw the background
         drawRectangleShape(target, states, getInnerSize(), m_backgroundColorCached);
 
-        float availableWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
-        if (m_verticalScrollbar->isShown())
-            availableWidth -= m_verticalScrollbar->getSize().x;
+        const unsigned int totalItemHeight = m_itemHeight + (m_showHorizontalGridLines ? m_gridLinesWidth : 0);
 
         // Find out which items are visible
         std::size_t firstItem = 0;
         std::size_t lastItem = m_items.size();
         if (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum())
         {
-            firstItem = m_verticalScrollbar->getValue() / m_itemHeight;
-            lastItem = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) / m_itemHeight;
-
-            // Show another item when the scrollbar is standing between two items
-            if ((m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) % m_itemHeight != 0)
-                ++lastItem;
+            firstItem = m_verticalScrollbar->getValue() / totalItemHeight;
+            lastItem = ((m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize()) / totalItemHeight) + 1;
+            if (lastItem > m_items.size())
+                lastItem = m_items.size();
         }
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
@@ -1561,68 +1693,117 @@ namespace tgui
         if (m_horizontalScrollbar->isVisible())
             m_horizontalScrollbar->draw(target, statesForScrollbar);
 
-        const float headerHeight = (m_headerVisible && !m_columns.empty()) ? getHeaderHeight() : 0.f;
+        const float headerHeight = getHeaderHeight();
+        const float totalHeaderHeight = getCurrentHeaderHeight();
         const float innerHeight = getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()
                                   - (m_horizontalScrollbar->isShown() ? m_horizontalScrollbar->getSize().y : 0);
 
-        // Draw the background of the selected and hovered items
-        if ((m_selectedItem >= 0) || (m_hoveredItem >= 0))
+        float availableWidth = getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight();
+        if (m_verticalScrollbar->isShown())
+            availableWidth -= m_verticalScrollbar->getSize().x;
+
+        // Draw the header background
+        if (totalHeaderHeight > 0)
         {
-            states.transform.translate({0, headerHeight});
-            const Clipping clipping{target, states, {}, {availableWidth, innerHeight - headerHeight}};
+            // We deliberately draw behind the header separator to make sure it has the same color as
+            // the column separator when the color is semi-transparent.
+            if (m_headerBackgroundColorCached.isSet())
+                drawRectangleShape(target, states, {availableWidth, totalHeaderHeight}, m_headerBackgroundColorCached);
+
+            // Draw the separator line between the header and the contents
+            if (m_headerSeparatorHeight > 0)
+            {
+                sf::RenderStates headerStates = states;
+                headerStates.transform.translate({0, static_cast<float>(headerHeight)});
+
+                const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
+                drawRectangleShape(target, headerStates, {availableWidth, static_cast<float>(m_headerSeparatorHeight)}, separatorColor);
+            }
+        }
+
+        if (m_showHorizontalGridLines || (m_selectedItem >= 0) || (m_hoveredItem >= 0))
+        {
+            states.transform.translate({0, totalHeaderHeight});
+            const Clipping clipping{target, states, {}, {availableWidth, innerHeight - totalHeaderHeight}};
+
+            // Draw the horizontal grid lines
+            if (m_showHorizontalGridLines && (m_gridLinesWidth > 0) && !m_items.empty())
+            {
+                sf::Transform transformBeforeGridLines = states.transform;
+
+                states.transform.translate({0, (totalItemHeight * firstItem) + m_itemHeight - static_cast<float>(m_verticalScrollbar->getValue())});
+
+                const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
+                for (std::size_t i = firstItem; i <= lastItem; ++i)
+                {
+                    drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_gridLinesWidth)}, gridLineColor);
+                    states.transform.translate({0, static_cast<float>(totalItemHeight)});
+                }
+
+                states.transform = transformBeforeGridLines;
+            }
 
             // Draw the background of the selected item
             if (m_selectedItem >= 0)
             {
-                states.transform.translate({0, m_selectedItem * static_cast<float>(m_itemHeight) - m_verticalScrollbar->getValue()});
+                states.transform.translate({0, m_selectedItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
 
                 if ((m_selectedItem == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
                     drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorHoverCached);
                 else
                     drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_selectedBackgroundColorCached);
 
-                states.transform.translate({0, -m_selectedItem * static_cast<float>(m_itemHeight) + m_verticalScrollbar->getValue()});
+                states.transform.translate({0, -m_selectedItem * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
             }
 
             // Draw the background of the item on which the mouse is standing
             if ((m_hoveredItem >= 0) && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
             {
-                states.transform.translate({0, m_hoveredItem * static_cast<float>(m_itemHeight) - m_verticalScrollbar->getValue()});
+                states.transform.translate({0, m_hoveredItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
                 drawRectangleShape(target, states, {availableWidth, static_cast<float>(m_itemHeight)}, m_backgroundColorHoverCached);
-                states.transform.translate({0, -m_hoveredItem * static_cast<float>(m_itemHeight) + m_verticalScrollbar->getValue()});
+                states.transform.translate({0, -m_hoveredItem * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
             }
 
-            states.transform.translate({0, -headerHeight});
-        }
-
-        // Draw the header background
-        if (m_headerVisible && !m_columns.empty())
-        {
-            if (m_headerBackgroundColorCached.isSet())
-                drawRectangleShape(target, states, {availableWidth, headerHeight}, m_headerBackgroundColorCached);
+            // We haven't drawn the header yet, so move back up
+            states.transform.translate({0, -totalHeaderHeight});
         }
 
         const Clipping clipping{target, states, {}, {availableWidth, innerHeight}};
         if (m_horizontalScrollbar->isShown())
             states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), 0});
 
-        // Draw the header texts
-        if (m_headerVisible && !m_columns.empty())
-        {
-            if (m_columns.empty())
-                drawHeaderText(target, states, getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), headerHeight, 0);
-            else
-            {
-                sf::RenderStates headerStates = states;
+        unsigned int separatorWidth = m_separatorWidth;
+        if (m_showVerticalGridLines && (m_gridLinesWidth > separatorWidth))
+            separatorWidth = m_gridLinesWidth;
 
-                for (std::size_t col = 0; col < m_columns.size(); ++col)
+        // Draw the header texts
+        if (totalHeaderHeight > 0)
+        {
+            const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
+
+            sf::RenderStates headerStates = states;
+            for (std::size_t col = 0; col < m_columns.size(); ++col)
+            {
+                drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
+                headerStates.transform.translate({m_columns[col].width, 0});
+
+                if (m_separatorWidth && (!m_expandLastColumn || (col + 1 < m_columns.size())))
                 {
-                    drawHeaderText(target, headerStates, m_columns[col].width, headerHeight, col);
-                    headerStates.transform.translate({m_columns[col].width + m_separatorWidth, 0});
+                    if (m_separatorWidth == separatorWidth)
+                        drawRectangleShape(target, headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
+                    else
+                    {
+                        const float separatorOffset = (separatorWidth - m_separatorWidth) / 2.f;
+                        headerStates.transform.translate({separatorOffset, 0});
+                        drawRectangleShape(target, headerStates, {static_cast<float>(m_separatorWidth), headerHeight}, separatorColor);
+                        headerStates.transform.translate({-separatorOffset, 0});
+                    }
                 }
+
+                headerStates.transform.translate({static_cast<float>(separatorWidth), 0});
             }
 
-            states.transform.translate({0, headerHeight});
+            states.transform.translate({0, totalHeaderHeight});
         }
 
         // Draw the items and the separation lines
@@ -1635,14 +1816,23 @@ namespace tgui
                 drawColumn(target, states, firstItem, lastItem, col, m_columns[col].width);
                 states.transform.translate({m_columns[col].width, 0});
 
-                if (m_separatorWidth)
+                if (separatorWidth && (!m_expandLastColumn || (col + 1 < m_columns.size())))
                 {
-                    if (headerHeight)
-                        states.transform.translate({0, -headerHeight});
+                    if (m_showVerticalGridLines && (m_gridLinesWidth > 0))
+                    {
+                        const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
+                        if (m_gridLinesWidth == separatorWidth)
+                            drawRectangleShape(target, states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, gridLineColor);
+                        else
+                        {
+                            const float gridLineOffset = (separatorWidth - m_gridLinesWidth) / 2.f;
+                            states.transform.translate({gridLineOffset, 0});
+                            drawRectangleShape(target, states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, gridLineColor);
+                            states.transform.translate({-gridLineOffset, 0});
+                        }
+                    }
 
-                    const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
-                    drawRectangleShape(target, states, {static_cast<float>(m_separatorWidth), innerHeight}, separatorColor);
-                    states.transform.translate({static_cast<float>(m_separatorWidth), headerHeight});
+                    states.transform.translate({static_cast<float>(separatorWidth), 0});
                 }
             }
         }

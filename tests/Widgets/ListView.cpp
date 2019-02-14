@@ -206,6 +206,12 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getHeaderHeight() == 50);
     }
 
+    SECTION("Header separator height")
+    {
+        listView->setHeaderSeparatorHeight(2);
+        REQUIRE(listView->getHeaderSeparatorHeight() == 2);
+    }
+
     SECTION("Header visible")
     {
         REQUIRE(listView->getHeaderVisible());
@@ -213,6 +219,35 @@ TEST_CASE("[ListView]")
         REQUIRE(!listView->getHeaderVisible());
         listView->setHeaderVisible(true);
         REQUIRE(listView->getHeaderVisible());
+    }
+
+    SECTION("Current header height")
+    {
+        listView->addItem("1,1");
+        listView->addItem({"2,1", "2,2", "2,3"});
+        listView->addItem({"3,1", "3,2"});
+
+        listView->setHeaderVisible(true);
+        listView->setHeaderHeight(35);
+        listView->setHeaderSeparatorHeight(2);
+        REQUIRE(listView->getCurrentHeaderHeight() == 0);
+
+        listView->addColumn("Col 1");
+        listView->addColumn("Col 2");
+        REQUIRE(listView->getCurrentHeaderHeight() == 37);
+
+        listView->setHeaderVisible(false);
+        REQUIRE(listView->getCurrentHeaderHeight() == 0);
+
+        listView->setHeaderVisible(true);
+        listView->setHeaderHeight(25);
+        REQUIRE(listView->getCurrentHeaderHeight() == 27);
+
+        listView->setHeaderSeparatorHeight(0);
+        REQUIRE(listView->getCurrentHeaderHeight() == 25);
+
+        listView->removeAllColumns();
+        REQUIRE(listView->getCurrentHeaderHeight() == 0);
     }
 
     SECTION("ItemHeight")
@@ -259,6 +294,40 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getSeparatorWidth() == 1);
         listView->setSeparatorWidth(4);
         REQUIRE(listView->getSeparatorWidth() == 4);
+    }
+
+    SECTION("GridLinesWidth")
+    {
+        REQUIRE(listView->getGridLinesWidth() == 1);
+        listView->setGridLinesWidth(4);
+        REQUIRE(listView->getGridLinesWidth() == 4);
+    }
+
+    SECTION("Show vertical grid lines")
+    {
+        REQUIRE(listView->getShowVerticalGridLines());
+        listView->setShowVerticalGridLines(false);
+        REQUIRE(!listView->getShowVerticalGridLines());
+        listView->setShowVerticalGridLines(true);
+        REQUIRE(listView->getShowVerticalGridLines());
+    }
+
+    SECTION("Show horizontal grid lines")
+    {
+        REQUIRE(!listView->getShowHorizontalGridLines());
+        listView->setShowHorizontalGridLines(true);
+        REQUIRE(listView->getShowHorizontalGridLines());
+        listView->setShowHorizontalGridLines(false);
+        REQUIRE(!listView->getShowHorizontalGridLines());
+    }
+
+    SECTION("Expand last column")
+    {
+        REQUIRE(!listView->getExpandLastColumn());
+        listView->setExpandLastColumn(true);
+        REQUIRE(listView->getExpandLastColumn());
+        listView->setExpandLastColumn(false);
+        REQUIRE(!listView->getExpandLastColumn());
     }
 
     SECTION("AutoScroll")
@@ -493,6 +562,7 @@ TEST_CASE("[ListView]")
                 REQUIRE_NOTHROW(renderer->setProperty("HeaderBackgroundColor", "rgb(110, 120, 130)"));
                 REQUIRE_NOTHROW(renderer->setProperty("HeaderTextColor", "rgb(120, 130, 140)"));
                 REQUIRE_NOTHROW(renderer->setProperty("SeparatorColor", "rgb(130, 140, 150)"));
+                REQUIRE_NOTHROW(renderer->setProperty("GridLinesColor", "rgb(140, 150, 160)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
@@ -513,6 +583,7 @@ TEST_CASE("[ListView]")
                 REQUIRE_NOTHROW(renderer->setProperty("HeaderBackgroundColor", sf::Color{110, 120, 130}));
                 REQUIRE_NOTHROW(renderer->setProperty("HeaderTextColor", sf::Color{120, 130, 140}));
                 REQUIRE_NOTHROW(renderer->setProperty("SeparatorColor", sf::Color{130, 140, 150}));
+                REQUIRE_NOTHROW(renderer->setProperty("GridLinesColor", sf::Color{140, 150, 160}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
@@ -533,6 +604,7 @@ TEST_CASE("[ListView]")
                 renderer->setHeaderBackgroundColor({110, 120, 130});
                 renderer->setHeaderTextColor({120, 130, 140});
                 renderer->setSeparatorColor({130, 140, 150});
+                renderer->setGridLinesColor({140, 150, 160});
                 renderer->setBorderColor({80, 90, 100});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
@@ -551,6 +623,7 @@ TEST_CASE("[ListView]")
             REQUIRE(renderer->getProperty("HeaderBackgroundColor").getColor() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getProperty("HeaderTextColor").getColor() == sf::Color(120, 130, 140));
             REQUIRE(renderer->getProperty("SeparatorColor").getColor() == sf::Color(130, 140, 150));
+            REQUIRE(renderer->getProperty("GridLinesColor").getColor() == sf::Color(140, 150, 160));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
@@ -576,9 +649,14 @@ TEST_CASE("[ListView]")
         listView->setTextSize(20);
         listView->setHeaderHeight(28);
         listView->setHeaderTextSize(22);
-        listView->setSeparatorWidth(3);
+        listView->setHeaderSeparatorHeight(3);
+        listView->setSeparatorWidth(5);
+        listView->setGridLinesWidth(2);
         listView->setHeaderVisible(false);
         listView->setAutoScroll(false);
+        listView->setShowVerticalGridLines(false);
+        listView->setShowHorizontalGridLines(true);
+        listView->setExpandLastColumn(true);
         listView->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
         listView->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
 
@@ -596,7 +674,8 @@ TEST_CASE("[ListView]")
         listView->setItemHeight(18);
         listView->setHeaderHeight(25);
         listView->setHeaderTextSize(20);
-        listView->setSeparatorWidth(3);
+        listView->setSeparatorWidth(4);
+        listView->setGridLinesWidth(2);
 
         tgui::ListViewRenderer renderer = tgui::RendererData::create();
         renderer.setBackgroundColor(sf::Color::Green);
@@ -607,6 +686,7 @@ TEST_CASE("[ListView]")
         renderer.setHeaderBackgroundColor("#ff6403");
         renderer.setHeaderTextColor("#4700a5");
         renderer.setSeparatorColor("#562c05");
+        renderer.setGridLinesColor(sf::Color::Black);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setPadding({4, 3, 2, 1});
         renderer.setScrollbarWidth(14);
@@ -798,6 +878,84 @@ TEST_CASE("[ListView]")
             listView->setItemIcon(3, {"resources/Texture6.png", {0, 0, 20, 14}});
             listView->setItemIcon(4, {"resources/Texture7.png", {0, 0, 14, 14}});
             TEST_DRAW("ListView_Icons.png")
+        }
+
+        SECTION("Grid lines and separators")
+        {
+            listView->removeAllColumns();
+            listView->addColumn("C1", 40);
+            listView->addColumn("C2", 60);
+
+            listView->setHeaderSeparatorHeight(2);
+            listView->setSeparatorWidth(5);
+            listView->setGridLinesWidth(3);
+            listView->setShowVerticalGridLines(true);
+            listView->setShowHorizontalGridLines(true);
+
+            SECTION("All separators")
+            {
+                TEST_DRAW("ListView_GridLinesAndSeparators_All.png")
+            }
+
+            SECTION("No column separators")
+            {
+                listView->setSeparatorWidth(0);
+                TEST_DRAW("ListView_GridLinesAndSeparators_NoColumnSeparator.png")
+            }
+
+            SECTION("No header separator")
+            {
+                listView->setHeaderSeparatorHeight(0);
+                TEST_DRAW("ListView_GridLinesAndSeparators_NoHeaderSeparator.png")
+            }
+
+            SECTION("No vertical grid lines")
+            {
+                listView->setShowVerticalGridLines(false);
+                TEST_DRAW("ListView_GridLinesAndSeparators_NoVerticalGridLines.png")
+            }
+
+            SECTION("No horizontal grid lines")
+            {
+                listView->setShowHorizontalGridLines(false);
+                TEST_DRAW("ListView_GridLinesAndSeparators_NoHorizontalGridLines.png")
+            }
+
+            SECTION("No grid lines")
+            {
+                listView->setShowVerticalGridLines(false);
+                listView->setShowHorizontalGridLines(false);
+                TEST_DRAW("ListView_GridLinesAndSeparators_NoGridLines.png")
+            }
+        }
+
+        SECTION("Expand last column")
+        {
+            listView->removeAllColumns();
+
+            SECTION("Columns fit inside ListView")
+            {
+                listView->addColumn("C1", 40);
+                listView->addColumn("C2", 50);
+
+                listView->setExpandLastColumn(true);
+                TEST_DRAW("ListView_ExpandLastColumnTrue_NoScrollbar.png")
+
+                listView->setExpandLastColumn(false);
+                TEST_DRAW("ListView_ExpandLastColumnFalse_NoScrollbar.png")
+            }
+
+            SECTION("Horizontal scrollbar needed")
+            {
+                listView->addColumn("C1", 70);
+                listView->addColumn("C2", 90);
+
+                listView->setExpandLastColumn(true);
+                TEST_DRAW("ListView_ExpandLastColumnTrue_WithScrollbar.png")
+
+                listView->setExpandLastColumn(false);
+                TEST_DRAW("ListView_ExpandLastColumnFalse_WithScrollbar.png")
+            }
         }
     }
 }
