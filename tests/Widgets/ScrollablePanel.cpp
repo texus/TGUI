@@ -100,6 +100,21 @@ TEST_CASE("[ScrollablePanel]")
         REQUIRE(panel->getHorizontalScrollbarPolicy() == tgui::Scrollbar::Policy::Never);
     }
 
+    SECTION("Scrollbar width")
+    {
+        auto scrollbar = tgui::Scrollbar::create();
+        REQUIRE(panel->getScrollbarWidth() == scrollbar->getDefaultWidth());
+
+        tgui::Texture image("resources/Texture1.png");
+        tgui::ScrollbarRenderer scrollbarRenderer;
+        scrollbarRenderer.setTextureTrack(image);
+        panel->getRenderer()->setScrollbar(scrollbarRenderer.getData());
+        REQUIRE(panel->getScrollbarWidth() == image.getImageSize().x);
+
+        panel->getRenderer()->setScrollbarWidth(15);
+        REQUIRE(panel->getScrollbarWidth() == 15);
+    }
+
     SECTION("Events / Signals")
     {
         unsigned int mousePressedCount = 0;

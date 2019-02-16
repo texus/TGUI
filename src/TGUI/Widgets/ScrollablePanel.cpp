@@ -311,14 +311,14 @@ namespace tgui
         m_horizontalScrollbar->setSize({m_horizontalScrollbar->getSize().x, width});
         updateScrollbars();
     }
-
+#endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float ScrollablePanel::getScrollbarWidth() const
     {
         return m_verticalScrollbar->getSize().x;
     }
-#endif
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ScrollablePanel::setVerticalScrollbarPolicy(Scrollbar::Policy policy)
