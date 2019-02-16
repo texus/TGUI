@@ -52,7 +52,7 @@ private:
     void copyWidget(std::shared_ptr<WidgetInfo> widgetInfo);
     void updateWidgetProperty(const std::string& property, const std::string& value);
     void initProperties();
-    tgui::EditBox::Ptr addPropertyValueEditBoxes(float& topPosition, const std::pair<std::string, std::pair<std::string, std::string>>& propertyValuePair);
+    void addPropertyValueEditBoxes(float& topPosition, const std::pair<std::string, std::pair<std::string, std::string>>& propertyValuePair, const std::function<void(const sf::String& value)>& onChange);
     void changeWidgetName(const std::string& name);
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();

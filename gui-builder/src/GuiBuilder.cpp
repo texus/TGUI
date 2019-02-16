@@ -651,29 +651,29 @@ void GuiBuilder::initProperties()
         buttonToBack->setTextSize(smallestTextsize);
 
         topPosition += 35;
-        auto valueEditBox = addPropertyValueEditBoxes(topPosition, {"Name", {"String", selectedWidget->name}});
-        valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{
-            if (m_previousValue != valueEditBox->getText())
-            {
-                m_selectedForm->setChanged(true);
-                changeWidgetName(valueEditBox->getText());
-                m_previousValue = valueEditBox->getText();
-            }
-        });
+        addPropertyValueEditBoxes(topPosition, {"Name", {"String", selectedWidget->name}},
+            [=](const sf::String& value){
+                if (m_previousValue != value)
+                {
+                    m_selectedForm->setChanged(true);
+                    changeWidgetName(value);
+                    m_previousValue = value;
+                }
+            });
 
         topPosition += 10;
         m_propertyValuePairs = m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->initProperties(selectedWidget->ptr);
         for (const auto& property : m_propertyValuePairs.first)
         {
-            valueEditBox = addPropertyValueEditBoxes(topPosition, property);
-            valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{
-                if (m_previousValue != valueEditBox->getText())
-                {
-                    m_selectedForm->setChanged(true);
-                    updateWidgetProperty(property.first, valueEditBox->getText());
-                    m_previousValue = valueEditBox->getText();
-                }
-            });
+            addPropertyValueEditBoxes(topPosition, property,
+                [=](const sf::String& value){
+                    if (m_previousValue != value)
+                    {
+                        m_selectedForm->setChanged(true);
+                        updateWidgetProperty(property.first, value);
+                        m_previousValue = value;
+                    }
+                });
         }
 
         topPosition += 10;
@@ -709,20 +709,20 @@ void GuiBuilder::initProperties()
             topPosition += rendererComboBox->getSize().y + 10;
             for (const auto& property : m_propertyValuePairs.second)
             {
-                valueEditBox = addPropertyValueEditBoxes(topPosition, property);
-                valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{
-                    if (m_previousValue != valueEditBox->getText())
-                    {
-                        m_selectedForm->setChanged(true);
-                        updateWidgetProperty(property.first, valueEditBox->getText());
-                        m_previousValue = valueEditBox->getText();
+                addPropertyValueEditBoxes(topPosition, property,
+                    [=](const sf::String& value){
+                        if (m_previousValue != value)
+                        {
+                            m_selectedForm->setChanged(true);
+                            updateWidgetProperty(property.first, value);
+                            m_previousValue = value;
 
-                        // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
-                        // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
-                        // back to the widget, so that the string stored in the renderer is always a valid string.
-                        m_selectedForm->getSelectedWidget()->ptr->getRenderer()->setProperty(property.first, valueEditBox->getText());
-                    }
-                });
+                            // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
+                            // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
+                            // back to the widget, so that the string stored in the renderer is always a valid string.
+                            m_selectedForm->getSelectedWidget()->ptr->getRenderer()->setProperty(property.first, value);
+                        }
+                    });
             }
 
             rendererComboBox->moveToFront();
@@ -730,47 +730,45 @@ void GuiBuilder::initProperties()
     }
     else // The form itself was selected
     {
-        auto valueEditBox = addPropertyValueEditBoxes(topPosition, {"Filename", {"String", m_selectedForm->getFilename()}});
-        valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{
-            if (m_previousValue != valueEditBox->getText())
-            {
-                m_selectedForm->setChanged(true);
-                m_selectedForm->setFilename(valueEditBox->getText());
-                m_selectedWidgetComboBox->changeItemById("form", valueEditBox->getText());
-                m_previousValue = valueEditBox->getText();
-            }
-        });
+        addPropertyValueEditBoxes(topPosition, {"Filename", {"String", m_selectedForm->getFilename()}},
+            [=](const sf::String& value){
+                if (m_previousValue != value)
+                {
+                    m_selectedForm->setChanged(true);
+                    m_selectedForm->setFilename(value);
+                    m_selectedWidgetComboBox->changeItemById("form", value);
+                    m_previousValue = value;
+                }
+            });
 
-        valueEditBox = addPropertyValueEditBoxes(topPosition, {"Width", {"Float", tgui::to_string(m_selectedForm->getSize().x)}});
-        valueEditBox->setInputValidator(tgui::EditBox::Validator::UInt);
-        valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{
-            if (m_previousValue != valueEditBox->getText())
-            {
-                // Form is not marked as changed since the width is not saved
-                m_selectedForm->setSize({tgui::stoi(valueEditBox->getText()), m_selectedForm->getSize().y});
-                m_previousValue = valueEditBox->getText();
-            }
-        });
+        addPropertyValueEditBoxes(topPosition, {"Width", {"UInt", tgui::to_string(m_selectedForm->getSize().x)}},
+            [=](const sf::String& value){
+                if (m_previousValue != value)
+                {
+                    // Form is not marked as changed since the width is not saved
+                    m_selectedForm->setSize({tgui::stoi(value), m_selectedForm->getSize().y});
+                    m_previousValue = value;
+                }
+            });
 
-        valueEditBox = addPropertyValueEditBoxes(topPosition, {"Height", {"Float", tgui::to_string(m_selectedForm->getSize().y)}});
-        valueEditBox->setInputValidator(tgui::EditBox::Validator::UInt);
-        valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{
-            if (m_previousValue != valueEditBox->getText())
-            {
-                // Form is not marked as changed since the height is not saved
-                m_selectedForm->setSize({m_selectedForm->getSize().x, tgui::stoi(valueEditBox->getText())});
-                m_previousValue = valueEditBox->getText();
-            }
-        });
+        addPropertyValueEditBoxes(topPosition, {"Height", {"UInt", tgui::to_string(m_selectedForm->getSize().y)}},
+            [=](const sf::String& value){
+                if (m_previousValue != value)
+                {
+                    // Form is not marked as changed since the height is not saved
+                    m_selectedForm->setSize({m_selectedForm->getSize().x, tgui::stoi(value)});
+                    m_previousValue = value;
+                }
+            });
     }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBoxes(float& topPosition, const std::pair<std::string, std::pair<std::string, std::string>>& propertyValuePair)
+void GuiBuilder::addPropertyValueEditBoxes(float& topPosition, const std::pair<std::string, std::pair<std::string, std::string>>& propertyValuePair, const std::function<void(const sf::String& value)>& onChange)
 {
     const auto& property = propertyValuePair.first;
-    //const auto& type = propertyValuePair.second.first;
+    const auto& type = propertyValuePair.second.first;
     const auto& value = propertyValuePair.second.second;
     const float scrollbarWidth = m_propertiesContainer->getRenderer()->getScrollbarWidth();
 
@@ -786,13 +784,20 @@ tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBoxes(float& topPosition, con
     valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
     valueEditBox->setText(value);
-    valueEditBox->connect({"focused"}, [=]{ m_previousValue = valueEditBox->getText(); });
     m_propertiesContainer->add(valueEditBox, "Value" + property);
     valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
 
-    topPosition += EDIT_BOX_HEIGHT - valueEditBox->getRenderer()->getBorders().getBottom();
+    if (type == "UInt")
+        valueEditBox->setInputValidator(tgui::EditBox::Validator::UInt);
+    else if (type == "Int")
+        valueEditBox->setInputValidator(tgui::EditBox::Validator::Int);
+    else if (type == "Float")
+        valueEditBox->setInputValidator(tgui::EditBox::Validator::Float);
 
-    return valueEditBox;
+    valueEditBox->connect({"focused"}, [=]{ m_previousValue = valueEditBox->getText(); });
+    valueEditBox->connect({"ReturnKeyPressed", "unfocused"}, [=]{ onChange(valueEditBox->getText()); });
+
+    topPosition += EDIT_BOX_HEIGHT - valueEditBox->getRenderer()->getBorders().getBottom();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
