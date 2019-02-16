@@ -1,6 +1,7 @@
 TGUI 0.8.4  (TBD)
 -----------------
 
+- Added min and max functions to layouts again
 - Added horizontal grid lines to ListView
 - Added option to ListView to expand the last column to fill the remaining space
 - Allow a separator between the header and contents in a ListView

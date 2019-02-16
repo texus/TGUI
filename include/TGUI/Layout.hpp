@@ -57,6 +57,8 @@ namespace tgui
             Minus,
             Multiplies,
             Divides,
+            Minimum,
+            Maximum,
             BindingLeft,
             BindingTop,
             BindingWidth,
@@ -433,6 +435,12 @@ namespace tgui
 
         /// @brief Bind to the size of the gui view
         TGUI_API Layout2d bindSize(Gui& gui);
+
+        /// @brief Bind to the minimum value of two layouts
+        TGUI_API Layout bindMin(const Layout& value1, const Layout& value2);
+
+        /// @brief Bind to the maximum value of two layouts
+        TGUI_API Layout bindMax(const Layout& value1, const Layout& value2);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

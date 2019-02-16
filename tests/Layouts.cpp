@@ -60,17 +60,18 @@ TEST_CASE("[Layouts]")
         Layout l3 = l2;
         Layout l4;
         Layout l5{0};
-        l5 = std::move(l2);
+        Layout l6{"max(2,3)+1"};
+        l5 = std::move(l6);
 
         REQUIRE(l1.getValue() == 0);
         REQUIRE(l3.getValue() == 2);
         REQUIRE(l4.getValue() == 0);
-        REQUIRE(l5.getValue() == 2);
+        REQUIRE(l5.getValue() == 4);
 
         REQUIRE(l1.toString() == "0");
         REQUIRE(l3.toString() == "2");
         REQUIRE(l4.toString() == "0");
-        REQUIRE(l5.toString() == "2");
+        REQUIRE(l5.toString() == "max(2, 3) + 1");
     }
 
     SECTION("without strings")
@@ -172,6 +173,37 @@ TEST_CASE("[Layouts]")
             button3->setPosition(2 * bindRight(button1) + bindLeft(button2) / 4 + bindWidth(button1), 50 - bindBottom(button2) + 75 * bindTop(button2));
             REQUIRE(button3->getPosition() == sf::Vector2f(995, 5560));
             REQUIRE(button3->getAbsolutePosition() == sf::Vector2f(1005, 5585));
+
+            auto button4 = std::make_shared<tgui::Button>();
+            button4->setSize(200, 50);
+
+            auto button5 = std::make_shared<tgui::Button>();
+            button5->setSize(bindMax(bindWidth(button4), bindHeight(button4)), bindMin(bindWidth(button4), bindHeight(button4)));
+            REQUIRE(button5->getSize() == sf::Vector2f(200, 50));
+
+            button4->setSize(80, 120);
+            REQUIRE(button5->getSize() == sf::Vector2f(120, 80));
+
+            SECTION("Gui")
+            {
+                sf::RenderTexture texture;
+                texture.create(20, 15);
+                tgui::Gui gui{texture};
+
+                auto width = bindWidth(gui);
+                auto height = bindHeight(gui);
+                auto size = bindSize(gui);
+
+                REQUIRE(width.getValue() == 20);
+                REQUIRE(height.getValue() == 15);
+                REQUIRE(size.getValue() == sf::Vector2f(20, 15));
+
+                gui.setView(sf::View{{4, 3, 40, 30}});
+
+                REQUIRE(width.getValue() == 40);
+                REQUIRE(height.getValue() == 30);
+                REQUIRE(size.getValue() == sf::Vector2f(40, 30));
+            }
         }
     }
 
@@ -219,6 +251,10 @@ TEST_CASE("[Layouts]")
             REQUIRE(Layout("2 + -3").getValue() == -1);
             REQUIRE(Layout("2 * 3").getValue() == 6);
             REQUIRE(Layout("5 / 3").getValue() == 5.f/3.f);
+            REQUIRE(Layout("min(1,2)").getValue() == 1);
+            REQUIRE(Layout("min(2,1)").getValue() == 1);
+            REQUIRE(Layout("max(1,2)").getValue() == 2);
+            REQUIRE(Layout("max(2,1)").getValue() == 2);
 
             REQUIRE(Layout("2").toString() == "2");
             REQUIRE(Layout("+2").toString() == "0 + 2");
@@ -231,13 +267,22 @@ TEST_CASE("[Layouts]")
             REQUIRE(Layout("2 + -3").toString() == "(2 + 0) - 3");
             REQUIRE(Layout("2 * 3").toString() == "2 * 3");
             REQUIRE(Layout("5 / 3").toString() == "5 / 3");
+            REQUIRE(Layout("min(1,2)").toString() == "min(1, 2)");
+            REQUIRE(Layout("max(2,1)").toString() == "max(2, 1)");
 
             REQUIRE(Layout("5 + 3 * 2 - 1").getValue() == 10);
             REQUIRE(Layout("5 + 3 * (2 - 1)").getValue() == 8);
             REQUIRE(Layout("(5 + 3) * 2 - 1").getValue() == 15);
+            REQUIRE(Layout("min(5 + min(2, 3), max(2, 1) * 3)").getValue() == 6);
+            REQUIRE(Layout("min(5 + min(2, 3), max(2, 1) * 4)").getValue() == 7);
+            REQUIRE(Layout("6 * (max(2,1) + (1 - (5))) / (-3)").getValue() == 4);
 
             REQUIRE(Layout("5 + 3 * 2 - 1").toString() == "(5 + (3 * 2)) - 1");
             REQUIRE(Layout("5 + 3 * (2 - 1)").toString() == "5 + (3 * (2 - 1))");
+            REQUIRE(Layout("(5 + 3) * 2 - 1").toString() == "((5 + 3) * 2) - 1");
+            REQUIRE(Layout("min(5 + min(2, 3), max(2, 1) * 3)").toString() == "min(5 + min(2, 3), max(2, 1) * 3)");
+            REQUIRE(Layout("6 * (max(2,1) + (1 - (5))) / (-3)").toString() == "(6 * (max(2, 1) + (1 - 5))) / (0 - 3)");
+
             REQUIRE(Layout("(5 + 3) * 2 - 1").toString() == "((5 + 3) * 2) - 1");
 
             REQUIRE(Layout("xyz").getValue() == 0);
@@ -323,30 +368,6 @@ TEST_CASE("[Layouts]")
             REQUIRE(button3->getPosition() == sf::Vector2f(995, 5560));
             REQUIRE(button3->getAbsolutePosition() == sf::Vector2f(1005, 5585));
             REQUIRE(button3->getPositionLayout().toString() == "(((2 * (b1.left + b1.width)) + (b2.x / 4)) + b1.w, (50 - (b2.top + b2.height)) + (75 * b2.y))");
-
-            auto button4 = std::make_shared<tgui::Button>();
-            button4->setSize(200, 50);
-
-            SECTION("Gui")
-            {
-                sf::RenderTexture texture;
-                texture.create(20, 15);
-                tgui::Gui gui{texture};
-
-                auto width = bindWidth(gui);
-                auto height = bindHeight(gui);
-                auto size = bindSize(gui);
-
-                REQUIRE(width.getValue() == 20);
-                REQUIRE(height.getValue() == 15);
-                REQUIRE(size.getValue() == sf::Vector2f(20, 15));
-
-                gui.setView(sf::View{{4, 3, 40, 30}});
-
-                REQUIRE(width.getValue() == 40);
-                REQUIRE(height.getValue() == 30);
-                REQUIRE(size.getValue() == sf::Vector2f(40, 30));
-            }
         }
 
         SECTION("No ambiguity with 0")

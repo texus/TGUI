@@ -34,6 +34,34 @@
 
 namespace tgui
 {
+    static std::pair<std::string, std::string> parseMinMaxExpresssion(const std::string& expression)
+    {
+        unsigned int bracketCount = 0;
+        auto commaOrBracketPos = expression.find_first_of(",()");
+        while (commaOrBracketPos != std::string::npos)
+        {
+            if (expression[commaOrBracketPos] == '(')
+                bracketCount++;
+            else if (expression[commaOrBracketPos] == ')')
+            {
+                if (bracketCount == 0)
+                    break;
+
+                bracketCount--;
+            }
+            else // if (expression[commaOrBracketPos] == ',')
+            {
+                if (bracketCount == 0)
+                    return {expression.substr(0, commaOrBracketPos), expression.substr(commaOrBracketPos + 1)};
+            }
+
+            commaOrBracketPos = expression.find_first_of(",()", commaOrBracketPos + 1);
+        }
+
+        TGUI_PRINT_WARNING("bracket mismatch while parsing min or max in layout string '" << expression << "'.");
+        return {};
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout::Layout(std::string expression)
@@ -43,7 +71,7 @@ namespace tgui
         if (expression.empty())
             return;
 
-        auto searchPos = expression.find_first_of("+-*/()");
+        auto searchPos = expression.find_first_of("+-/*()");
 
         // Extract the value from the string when there are no more operators
         if (searchPos == std::string::npos)
@@ -151,6 +179,18 @@ namespace tgui
                             *this = Layout{expression.substr(1, expression.size()-2)};
                             return;
                         }
+                        else if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == "min"))
+                        {
+                            const auto& minSubExpressions = parseMinMaxExpresssion(expression.substr(4, expression.size() - 5));
+                            *this = Layout{Operation::Minimum, std::make_unique<Layout>(minSubExpressions.first), std::make_unique<Layout>(minSubExpressions.second)};
+                            return;
+                        }
+                        else if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == "max"))
+                        {
+                            const auto& maxSubExpressions = parseMinMaxExpresssion(expression.substr(4, expression.size() - 5));
+                            *this = Layout{Operation::Maximum, std::make_unique<Layout>(maxSubExpressions.first), std::make_unique<Layout>(maxSubExpressions.second)};
+                            return;
+                        }
                         else // The brackets form a sub-expression
                             searchPos = bracketPos;
 
@@ -168,7 +208,7 @@ namespace tgui
                 else
                 {
                     // Search for the next operator, starting from the closing bracket, but keeping prevSearchPos before the opening bracket
-                    searchPos = expression.find_first_of("+-*/()", searchPos + 1);
+                    searchPos = expression.find_first_of("+-/*()", searchPos + 1);
                     continue;
                 }
             }
@@ -178,7 +218,14 @@ namespace tgui
             };
 
             prevSearchPos = searchPos + 1;
-            searchPos = expression.find_first_of("+-*/()", searchPos + 1);
+            searchPos = expression.find_first_of("+-/*()", searchPos + 1);
+        }
+
+        if (prevSearchPos == 0)
+        {
+            // We would get an infinite loop if we don't abort in this condition
+            TGUI_PRINT_WARNING("error in expression '" << expression << "'.");
+            return;
         }
 
         operands.emplace_back(expression.substr(prevSearchPos));
@@ -371,6 +418,14 @@ namespace tgui
         {
             return to_string(m_value);
         }
+        else if (m_operation == Operation::Minimum)
+        {
+            return "min(" + m_leftOperand->toString() + ", " + m_rightOperand->toString() + ")";
+        }
+        else if (m_operation == Operation::Maximum)
+        {
+            return "max(" + m_leftOperand->toString() + ", " + m_rightOperand->toString() + ")";
+        }
         else if ((m_operation == Operation::Plus) || (m_operation == Operation::Minus) || (m_operation == Operation::Multiplies) || (m_operation == Operation::Divides))
         {
             char operatorChar;
@@ -383,11 +438,22 @@ namespace tgui
             else // if (m_operation == Operation::Divides)
                 operatorChar = '/';
 
-            if ((m_leftOperand->m_leftOperand) && (m_rightOperand->m_leftOperand))
+            auto subExpressionNeedsBrackets = [](const std::unique_ptr<Layout>& operand)
+                {
+                    if (!operand->m_leftOperand)
+                        return false;
+
+                    if ((operand->m_operation == Operation::Minimum) || (operand->m_operation == Operation::Maximum))
+                        return false;
+
+                    return true;
+                };
+
+            if (subExpressionNeedsBrackets(m_leftOperand) && subExpressionNeedsBrackets(m_rightOperand))
                 return "(" + m_leftOperand->toString() + ") " + operatorChar + " (" + m_rightOperand->toString() + ")";
-            else if (m_leftOperand->m_leftOperand)
+            else if (subExpressionNeedsBrackets(m_leftOperand))
                 return "(" + m_leftOperand->toString() + ") " + operatorChar + " " + m_rightOperand->toString();
-            else if (m_rightOperand->m_leftOperand)
+            else if (subExpressionNeedsBrackets(m_rightOperand))
                 return m_leftOperand->toString() + " " + operatorChar + " (" + m_rightOperand->toString() + ")";
             else
                 return m_leftOperand->toString() + " " + operatorChar + " " + m_rightOperand->toString();
@@ -503,6 +569,12 @@ namespace tgui
                     m_value = m_leftOperand->getValue() / m_rightOperand->getValue();
                 else
                     m_value = 0;
+                break;
+            case Operation::Minimum:
+                m_value = std::min(m_leftOperand->getValue(), m_rightOperand->getValue());
+                break;
+            case Operation::Maximum:
+                m_value = std::max(m_leftOperand->getValue(), m_rightOperand->getValue());
                 break;
             case Operation::BindingLeft:
                 m_value = m_boundWidget->getPosition().x;
@@ -831,6 +903,20 @@ namespace tgui
         Layout2d bindSize(Gui& gui)
         {
             return bindSize(gui.getContainer());
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindMin(const Layout& value1, const Layout& value2)
+        {
+            return Layout{Layout::Operation::Minimum, std::make_unique<Layout>(value1), std::make_unique<Layout>(value2)};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Layout bindMax(const Layout& value1, const Layout& value2)
+        {
+            return Layout{Layout::Operation::Maximum, std::make_unique<Layout>(value1), std::make_unique<Layout>(value2)};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
