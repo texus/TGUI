@@ -45,7 +45,8 @@ namespace tgui
         enum class ExpandDirection
         {
             Down, ///< Display the list below the combo box
-            Up    ///< Display the list above the combo box
+            Up,   ///< Display the list above the combo box
+            Automatic  ///< Display the list below the combo box unless it wouldn't fit on the screen
         };
 
     public:
@@ -612,7 +613,11 @@ namespace tgui
 
         Text m_text;
 
+#ifdef TGUI_NEXT
+        ExpandDirection m_expandDirection = ExpandDirection::Automatic;
+#else
         ExpandDirection m_expandDirection = ExpandDirection::Down;
+#endif
 
         Sprite m_spriteBackground;
         Sprite m_spriteArrow;

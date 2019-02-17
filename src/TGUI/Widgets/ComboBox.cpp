@@ -684,9 +684,14 @@ namespace tgui
         node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(getTextSize()));
         node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(to_string(getMaximumItems()));
 
-        if (getExpandDirection() != ComboBox::ExpandDirection::Down)
+        if (getExpandDirection() == ComboBox::ExpandDirection::Down)
+            node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Down");
+        else if (getExpandDirection() == ComboBox::ExpandDirection::Up)
             node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Up");
-
+#ifndef TGUI_NEXT
+        else if (getExpandDirection() == ComboBox::ExpandDirection::Automatic)
+            node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Automatic");
+#endif
         if (m_listBox->getSelectedItemIndex() >= 0)
             node->propertyValuePairs["SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(to_string(m_listBox->getSelectedItemIndex()));
 
@@ -745,8 +750,10 @@ namespace tgui
                 setExpandDirection(ComboBox::ExpandDirection::Up);
             else if (toLower(node->propertyValuePairs["expanddirection"]->value) == "down")
                 setExpandDirection(ComboBox::ExpandDirection::Down);
+            else if (toLower(node->propertyValuePairs["expanddirection"]->value) == "automatic")
+                setExpandDirection(ComboBox::ExpandDirection::Automatic);
             else
-                throw Exception{"Failed to parse ExpandDirection property. Only the values Up and Down are correct."};
+                throw Exception{"Failed to parse ExpandDirection property. Only the values Up, Down and Automatic are correct."};
         }
     }
 
@@ -787,9 +794,19 @@ namespace tgui
             while (container->getParent() != nullptr)
                 container = container->getParent();
 
-            if (m_expandDirection == ExpandDirection::Down)
+            ExpandDirection direction = m_expandDirection;
+            if (direction == ExpandDirection::Automatic)
+            {
+                if ((getAbsolutePosition().y + getSize().y + m_listBox->getSize().y - m_bordersCached.getBottom() > container->getSize().y)
+                 && (getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop() > 0))
+                    direction = ExpandDirection::Up;
+                else
+                    direction = ExpandDirection::Down;
+            }
+
+            if (direction == ExpandDirection::Down)
                 m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y + getSize().y - m_bordersCached.getBottom()});
-            else // if (m_expandDirection == ExpandDirection::Up)
+            else if (direction == ExpandDirection::Up)
                 m_listBox->setPosition({getAbsolutePosition().x, getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop()});
 
             container->add(m_listBox, "#TGUI_INTERNAL$ComboBoxListBox#");

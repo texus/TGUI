@@ -251,6 +251,8 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Down);
         comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Up);
         REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Up);
+        comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+        REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Automatic);
         comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Down);
         REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Down);
     }
@@ -282,6 +284,7 @@ TEST_CASE("[ComboBox]")
             comboBox->addItem("1");
             comboBox->addItem("2");
             comboBox->addItem("3");
+            comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
 
             const sf::Vector2f mousePosOnComboBox = {100, 15};
             const sf::Vector2f mousePosOnItem1 = {100, 40};
