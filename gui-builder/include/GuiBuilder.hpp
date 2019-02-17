@@ -27,7 +27,7 @@
 #define TGUI_GUI_BUILDER_GUI_BUILDER_HPP
 
 #include <TGUI/TGUI.hpp>
-#include "WidgetProperties.hpp"
+#include "WidgetProperties/WidgetProperties.hpp"
 #include "Form.hpp"
 
 class GuiBuilder
@@ -51,6 +51,7 @@ private:
     void recursiveCopyWidget(tgui::Container::Ptr oldContainer, tgui::Container::Ptr newContainer);
     void copyWidget(std::shared_ptr<WidgetInfo> widgetInfo);
     void updateWidgetProperty(const std::string& property, const std::string& value);
+    void initProperties();
     void addPropertyValueEditBoxes(float& topPosition, const std::pair<std::string, std::pair<std::string, std::string>>& propertyValuePair, const std::function<void(const sf::String& value)>& onChange);
     void changeWidgetName(const std::string& name);
     void initSelectedWidgetComboBoxAfterLoad();
@@ -78,8 +79,6 @@ private:
 
     std::map<std::string, tgui::Theme> m_themes;
     std::string m_defaultTheme;
-
-    sf::String m_previousValue;
 };
 
 #endif // TGUI_GUI_BUILDER_GUI_BUILDER_HPP

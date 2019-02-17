@@ -67,7 +67,7 @@ struct ComboBoxProperties : WidgetProperties
         pair.first["ItemsToDisplay"] = {"Int", tgui::to_string(comboBox->getItemsToDisplay())};
         pair.first["TextSize"] = {"UInt", tgui::to_string(comboBox->getTextSize())};
         pair.first["MaximumItems"] = {"UInt", tgui::to_string(comboBox->getMaximumItems())};
-        pair.first["ExpandDirection"] = {"Enum{Down, Up}", serializeExpandDirection(comboBox->getExpandDirection())};
+        pair.first["ExpandDirection"] = {"Enum{Down, Up, Automatic}", serializeExpandDirection(comboBox->getExpandDirection())};
 
         const auto renderer = comboBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
@@ -94,16 +94,20 @@ private:
         value = tgui::toLower(tgui::trim(value));
         if (value == "up")
             return tgui::ComboBox::ExpandDirection::Up;
-        else
+        else if (value == "down")
             return tgui::ComboBox::ExpandDirection::Down;
+        else
+            return tgui::ComboBox::ExpandDirection::Automatic;
     }
 
     static std::string serializeExpandDirection(tgui::ComboBox::ExpandDirection alignment)
     {
         if (alignment == tgui::ComboBox::ExpandDirection::Up)
             return "Up";
-        else
+        else if (alignment == tgui::ComboBox::ExpandDirection::Down)
             return "Down";
+        else
+            return "Automatic";
     }
 };
 

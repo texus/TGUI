@@ -23,19 +23,19 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "ButtonProperties.hpp"
-#include "ComboBoxProperties.hpp"
-#include "EditBoxProperties.hpp"
-#include "LabelProperties.hpp"
-#include "ListBoxProperties.hpp"
-#include "PanelProperties.hpp"
-#include "PictureProperties.hpp"
-#include "ProgressBarProperties.hpp"
-#include "RadioButtonProperties.hpp"
-#include "ScrollbarProperties.hpp"
-#include "SliderProperties.hpp"
-#include "SpinButtonProperties.hpp"
-#include "TextBoxProperties.hpp"
+#include "WidgetProperties/ButtonProperties.hpp"
+#include "WidgetProperties/ComboBoxProperties.hpp"
+#include "WidgetProperties/EditBoxProperties.hpp"
+#include "WidgetProperties/LabelProperties.hpp"
+#include "WidgetProperties/ListBoxProperties.hpp"
+#include "WidgetProperties/PanelProperties.hpp"
+#include "WidgetProperties/PictureProperties.hpp"
+#include "WidgetProperties/ProgressBarProperties.hpp"
+#include "WidgetProperties/RadioButtonProperties.hpp"
+#include "WidgetProperties/ScrollbarProperties.hpp"
+#include "WidgetProperties/SliderProperties.hpp"
+#include "WidgetProperties/SpinButtonProperties.hpp"
+#include "WidgetProperties/TextBoxProperties.hpp"
 #include "GuiBuilder.hpp"
 
 #include <fstream>
@@ -313,56 +313,18 @@ void GuiBuilder::mainLoop()
 
 void GuiBuilder::reloadProperties()
 {
-    // Set a fixed content size to keep the scrollbar at the same position while recreating the widgets
-    m_propertiesContainer->setContentSize(m_propertiesContainer->getContentSize());
-
-    m_propertiesContainer->removeAllWidgets();
-
     auto selectedWidget = m_selectedForm->getSelectedWidget();
     float topPosition = 0;
 
     if (selectedWidget)
     {
-        const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
-
-        auto buttonCopy = tgui::Button::create("Copy");
-        buttonCopy->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
-        buttonCopy->setPosition({0, topPosition});
-        buttonCopy->connect("Pressed", [this]{ copyWidget(m_selectedForm->getSelectedWidget()); });
-        m_propertiesContainer->add(buttonCopy);
-
-        auto buttonRemove = tgui::Button::create("Remove");
-        buttonRemove->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
-        buttonRemove->setPosition({((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 1.f / 3.f), topPosition});
-        buttonRemove->connect("Pressed", [this]{ removeSelectedWidget(); });
-        m_propertiesContainer->add(buttonRemove);
-
-        auto buttonToFront = tgui::Button::create("ToFront");
-        buttonToFront->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 4, 25});
-        buttonToFront->setPosition({2.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 2.f / 3.f), topPosition});
-        buttonToFront->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToFront(); m_selectedForm->setChanged(true); });
-        m_propertiesContainer->add(buttonToFront);
-
-        auto buttonToBack = tgui::Button::create("ToBack");
-        buttonToBack->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
-        buttonToBack->setPosition({3.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 3.f / 3.f), topPosition});
-        buttonToBack->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToBack(); m_selectedForm->setChanged(true); });
-        m_propertiesContainer->add(buttonToBack);
-
-        const auto smallestTextsize = std::min({buttonCopy->getTextSize(), buttonRemove->getTextSize(), buttonToFront->getTextSize(), buttonToBack->getTextSize()});
-        buttonCopy->setTextSize(smallestTextsize);
-        buttonRemove->setTextSize(smallestTextsize);
-        buttonToFront->setTextSize(smallestTextsize);
-        buttonToBack->setTextSize(smallestTextsize);
-
         topPosition += 35;
         addPropertyValueEditBoxes(topPosition, {"Name", {"String", selectedWidget->name}},
             [=](const sf::String& value){
-                if (m_previousValue != value)
+                if (selectedWidget->name != value)
                 {
                     m_selectedForm->setChanged(true);
                     changeWidgetName(value);
-                    m_previousValue = value;
                 }
             });
 
@@ -372,42 +334,17 @@ void GuiBuilder::reloadProperties()
         {
             addPropertyValueEditBoxes(topPosition, property,
                 [=](const sf::String& value){
-                    if (m_previousValue != value)
+                    if (property.second.second != value)
                     {
                         m_selectedForm->setChanged(true);
                         updateWidgetProperty(property.first, value);
-                        m_previousValue = value;
                     }
                 });
         }
 
         topPosition += 10;
-        auto rendererComboBox = tgui::ComboBox::create();
+        auto rendererComboBox = m_propertiesContainer->get<tgui::ComboBox>("RendererSelectorComboBox");
         rendererComboBox->setPosition({0, topPosition});
-        rendererComboBox->setSize({bindWidth(m_propertiesContainer) - scrollbarWidth, 20});
-
-        for (auto& theme : m_themes)
-            rendererComboBox->addItem(theme.first);
-
-        rendererComboBox->addItem("Custom");
-
-        // Set the theme to Custom if the theme used by the widget would have been deleted
-        if (!rendererComboBox->contains(selectedWidget->theme))
-            selectedWidget->theme = "Custom";
-
-        rendererComboBox->setSelectedItem(selectedWidget->theme);
-        m_propertiesContainer->add(rendererComboBox, "RendererSelectorComboBox");
-
-        rendererComboBox->connect("ItemSelected", [=](const std::string& item){
-            selectedWidget->theme = item;
-            if (item != "Custom")
-                selectedWidget->ptr->setRenderer(m_themes[item].getRendererNoThrow(selectedWidget->ptr->getWidgetType()));
-            else
-                selectedWidget->ptr->setRenderer(selectedWidget->ptr->getRenderer()->getData());
-
-            reloadProperties();
-            m_selectedForm->setChanged(true);
-        });
 
         if (static_cast<std::size_t>(rendererComboBox->getSelectedItemIndex() + 1) == rendererComboBox->getItemCount()) // If "Custom" is selected
         {
@@ -416,16 +353,15 @@ void GuiBuilder::reloadProperties()
             {
                 addPropertyValueEditBoxes(topPosition, property,
                     [=](const sf::String& value){
-                        if (m_previousValue != value)
+                        if (property.second.second != value)
                         {
                             m_selectedForm->setChanged(true);
                             updateWidgetProperty(property.first, value);
-                            m_previousValue = value;
 
                             // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
                             // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
                             // back to the widget, so that the string stored in the renderer is always a valid string.
-                            m_selectedForm->getSelectedWidget()->ptr->getRenderer()->setProperty(property.first, value);
+                            m_selectedForm->getSelectedWidget()->ptr->getRenderer()->setProperty(property.first, m_propertyValuePairs.second[property.first].second);
                         }
                     });
             }
@@ -437,45 +373,39 @@ void GuiBuilder::reloadProperties()
     {
         addPropertyValueEditBoxes(topPosition, {"Filename", {"String", m_selectedForm->getFilename()}},
             [=](const sf::String& value){
-                if (m_previousValue != value)
+                if (m_selectedForm->getFilename() != value)
                 {
                     m_selectedForm->setChanged(true);
                     m_selectedForm->setFilename(value);
                     m_selectedWidgetComboBox->changeItemById("form", value);
-                    m_previousValue = value;
                 }
             });
 
         addPropertyValueEditBoxes(topPosition, {"Width", {"UInt", tgui::to_string(m_selectedForm->getSize().x)}},
             [=](const sf::String& value){
-                if (m_previousValue != value)
+                if (tgui::to_string(m_selectedForm->getSize().x) != value)
                 {
                     // Form is not marked as changed since the width is not saved
                     m_selectedForm->setSize({tgui::stoi(value), m_selectedForm->getSize().y});
-                    m_previousValue = value;
                 }
             });
 
         addPropertyValueEditBoxes(topPosition, {"Height", {"UInt", tgui::to_string(m_selectedForm->getSize().y)}},
             [=](const sf::String& value){
-                if (m_previousValue != value)
+                if (tgui::to_string(m_selectedForm->getSize().y) != value)
                 {
                     // Form is not marked as changed since the height is not saved
                     m_selectedForm->setSize({m_selectedForm->getSize().x, tgui::stoi(value)});
-                    m_previousValue = value;
                 }
             });
     }
-
-    // Let the content size of the panel be determined automatically again
-    m_propertiesContainer->setContentSize({0, 0});
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GuiBuilder::widgetSelected(tgui::Widget::Ptr widget)
 {
-    reloadProperties();
+    initProperties();
 
     if (widget)
         m_selectedWidgetComboBox->setSelectedItemById(tgui::to_string(widget.get()));
@@ -598,7 +528,7 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
     m_menuBar->connect("MenuItemClicked", [this](std::string item){ menuBarItemClicked(item); });
 
     loadToolbox();
-    reloadProperties();
+    initProperties();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -721,7 +651,7 @@ void GuiBuilder::copyWidget(std::shared_ptr<WidgetInfo> widgetInfo)
 
     m_selectedWidgetComboBox->setSelectedItemById(id);
     m_selectedForm->getSelectedWidget()->theme = widgetInfo->theme;
-    reloadProperties();
+    initProperties();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -736,11 +666,89 @@ void GuiBuilder::updateWidgetProperty(const std::string& property, const std::st
     }
     catch (const tgui::Exception& e) {
         std::cout << "Exception caught when setting property: " << e.what() << std::endl;
-        m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property, m_previousValue);
+
+        sf::String oldValue;
+        if (m_propertyValuePairs.first.find(property) != m_propertyValuePairs.first.end())
+            oldValue = m_propertyValuePairs.first[property].second;
+        else
+            oldValue = m_propertyValuePairs.second[property].second;
+
+        m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property, oldValue);
     }
 
     reloadProperties(); // reload all properties in case something else changed
     m_selectedForm->updateSelectionSquarePositions(); // update the position of the selection squares in case the position or size of the widget changed
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::initProperties()
+{
+    m_propertiesContainer->removeAllWidgets();
+
+    auto selectedWidget = m_selectedForm->getSelectedWidget();
+    if (selectedWidget)
+    {
+        const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+        auto buttonCopy = tgui::Button::create("Copy");
+        buttonCopy->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
+        buttonCopy->setPosition({0, 0});
+        buttonCopy->connect("Pressed", [this]{ copyWidget(m_selectedForm->getSelectedWidget()); });
+        m_propertiesContainer->add(buttonCopy);
+
+        auto buttonRemove = tgui::Button::create("Remove");
+        buttonRemove->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
+        buttonRemove->setPosition({((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 1.f / 3.f), 0});
+        buttonRemove->connect("Pressed", [this]{ removeSelectedWidget(); });
+        m_propertiesContainer->add(buttonRemove);
+
+        auto buttonToFront = tgui::Button::create("ToFront");
+        buttonToFront->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 4, 25});
+        buttonToFront->setPosition({2.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 2.f / 3.f), 0});
+        buttonToFront->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToFront(); m_selectedForm->setChanged(true); });
+        m_propertiesContainer->add(buttonToFront);
+
+        auto buttonToBack = tgui::Button::create("ToBack");
+        buttonToBack->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
+        buttonToBack->setPosition({3.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 3.f / 3.f), 0});
+        buttonToBack->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToBack(); m_selectedForm->setChanged(true); });
+        m_propertiesContainer->add(buttonToBack);
+
+        const auto smallestTextsize = std::min({buttonCopy->getTextSize(), buttonRemove->getTextSize(), buttonToFront->getTextSize(), buttonToBack->getTextSize()});
+        buttonCopy->setTextSize(smallestTextsize);
+        buttonRemove->setTextSize(smallestTextsize);
+        buttonToFront->setTextSize(smallestTextsize);
+        buttonToBack->setTextSize(smallestTextsize);
+
+        auto rendererComboBox = tgui::ComboBox::create();
+        rendererComboBox->setSize({bindWidth(m_propertiesContainer) - scrollbarWidth, 20});
+        rendererComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+
+        for (auto& theme : m_themes)
+            rendererComboBox->addItem(theme.first);
+
+        rendererComboBox->addItem("Custom");
+
+        // Set the theme to Custom if the theme used by the widget would have been deleted
+        if (!rendererComboBox->contains(selectedWidget->theme))
+            selectedWidget->theme = "Custom";
+
+        rendererComboBox->setSelectedItem(selectedWidget->theme);
+        m_propertiesContainer->add(rendererComboBox, "RendererSelectorComboBox");
+
+        rendererComboBox->connect("ItemSelected", [=](const std::string& item){
+            selectedWidget->theme = item;
+            if (item != "Custom")
+                selectedWidget->ptr->setRenderer(m_themes[item].getRendererNoThrow(selectedWidget->ptr->getWidgetType()));
+            else
+                selectedWidget->ptr->setRenderer(selectedWidget->ptr->getRenderer()->getData());
+
+            m_selectedForm->setChanged(true);
+            initProperties();
+        });
+    }
+
+    reloadProperties();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -752,22 +760,34 @@ void GuiBuilder::addPropertyValueEditBoxes(float& topPosition, const std::pair<s
     const auto& value = propertyValuePair.second.second;
     const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
 
-    auto propertyEditBox = tgui::EditBox::create();
-    propertyEditBox->setPosition({0, topPosition});
-    propertyEditBox->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f) + propertyEditBox->getRenderer()->getBorders().getRight(), EDIT_BOX_HEIGHT});
-    propertyEditBox->setReadOnly();
-    propertyEditBox->setText(property);
-    m_propertiesContainer->add(propertyEditBox, "Property" + property);
-    propertyEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
+    auto propertyEditBox = m_propertiesContainer->get<tgui::EditBox>("Property" + property);
+    if (!propertyEditBox)
+    {
+        propertyEditBox = tgui::EditBox::create();
+        propertyEditBox->setPosition({0, topPosition});
+        propertyEditBox->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f) + propertyEditBox->getRenderer()->getBorders().getRight(), EDIT_BOX_HEIGHT});
+        propertyEditBox->setReadOnly();
+        propertyEditBox->setText(property);
+        m_propertiesContainer->add(propertyEditBox, "Property" + property);
+        propertyEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
+        propertyEditBox->connect("Focused", [=]{ m_propertiesContainer->focusNextWidget(); });
+    }
 
     if (type == "Bool")
     {
-        auto valueComboBox = tgui::ComboBox::create();
+        auto valueComboBox = m_propertiesContainer->get<tgui::ComboBox>("ValueComboBox" + property);
+        if (!valueComboBox)
+        {
+            valueComboBox = tgui::ComboBox::create();
+            valueComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+            valueComboBox->addItem("False");
+            valueComboBox->addItem("True");
+            m_propertiesContainer->add(valueComboBox, "ValueComboBox" + property);
+        }
+
+        valueComboBox->disconnectAll("ItemSelected");
         valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
         valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
-        valueComboBox->addItem("False");
-        valueComboBox->addItem("True");
-        m_propertiesContainer->add(valueComboBox);
 
         std::string str = tgui::toLower(value);
         if (str == "true" || str == "yes" || str == "on" || str == "y" || str == "t" || str == "1")
@@ -775,45 +795,99 @@ void GuiBuilder::addPropertyValueEditBoxes(float& topPosition, const std::pair<s
         else
             valueComboBox->setSelectedItemByIndex(0);
 
-        valueComboBox->connect({"Focused", "MouseEntered"}, [=]{ m_previousValue = valueComboBox->getSelectedItem(); });
         valueComboBox->connect("ItemSelected", [=]{ onChange(valueComboBox->getSelectedItem()); });
+    }
+    else if (type == "Color")
+    {
+        auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property);
+        auto transparentPicture = m_propertiesContainer->get<tgui::Picture>("ValueTransparentPicture" + property);
+        auto colorPreviewPanel = m_propertiesContainer->get<tgui::Panel>("ValueColorPanel" + property);
+        if (!valueEditBox)
+        {
+            valueEditBox = tgui::EditBox::create();
+            m_propertiesContainer->add(valueEditBox, "Value" + property);
+            valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
+
+            transparentPicture = tgui::Picture::create("resources/Transparent.png");
+            m_propertiesContainer->add(transparentPicture, "ValueTransparentPicture" + property);
+
+            colorPreviewPanel = tgui::Panel::create();
+            m_propertiesContainer->add(colorPreviewPanel, "ValueColorPanel" + property);
+        }
+
+        valueEditBox->disconnectAll("Unfocused");
+        valueEditBox->disconnectAll("ReturnKeyPressed");
+        valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
+        valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f - EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
+        valueEditBox->setText(value);
+
+        transparentPicture->setSize({EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
+        transparentPicture->setPosition({bindWidth(m_propertiesContainer) - scrollbarWidth - EDIT_BOX_HEIGHT, topPosition});
+
+        colorPreviewPanel->setSize({EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
+        colorPreviewPanel->setPosition({bindWidth(m_propertiesContainer) - scrollbarWidth - EDIT_BOX_HEIGHT, topPosition});
+        if (value != "None")
+            colorPreviewPanel->getRenderer()->setBackgroundColor(value);
+        else
+            colorPreviewPanel->getRenderer()->setBackgroundColor(sf::Color::Transparent);
+
+        valueEditBox->connect({"ReturnKeyPressed", "Unfocused"}, [=]{ onChange(valueEditBox->getText()); });
     }
     else if (type.substr(0, 5) == "Enum{")
     {
-        auto valueComboBox = tgui::ComboBox::create();
+        std::vector<std::string> enumValues = tgui::Deserializer::split(type.substr(5, type.size() - 6), ',');
+
+        auto valueComboBox = m_propertiesContainer->get<tgui::ComboBox>("ValueComboBox" + property);
+        if (!valueComboBox)
+        {
+            valueComboBox = tgui::ComboBox::create();
+            valueComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+            m_propertiesContainer->add(valueComboBox, "ValueComboBox" + property);
+
+            for (const auto& enumValue : enumValues)
+                valueComboBox->addItem(enumValue);
+        }
+
+        valueComboBox->disconnectAll("ItemSelected");
         valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
         valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
-        m_propertiesContainer->add(valueComboBox);
 
         std::string valueLower = tgui::toLower(value);
-        std::vector<std::string> values = tgui::Deserializer::split(type.substr(5, type.size() - 6), ',');
-        for (unsigned int i = 0; i < values.size(); ++i)
+        for (unsigned int i = 0; i < enumValues.size(); ++i)
         {
-            valueComboBox->addItem(values[i]);
-            if (tgui::toLower(values[i]) == valueLower)
+            if (tgui::toLower(enumValues[i]) == valueLower)
                 valueComboBox->setSelectedItemByIndex(i);
         }
 
-        valueComboBox->connect({"Focused", "MouseEntered"}, [=]{ m_previousValue = valueComboBox->getSelectedItem(); });
         valueComboBox->connect("ItemSelected", [=]{ onChange(valueComboBox->getSelectedItem()); });
     }
     else
     {
-        auto valueEditBox = tgui::EditBox::create();
+        auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property);
+        if (!valueEditBox)
+        {
+            valueEditBox = tgui::EditBox::create();
+            m_propertiesContainer->add(valueEditBox, "Value" + property);
+            valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
+
+            if (type == "UInt")
+                valueEditBox->setInputValidator(tgui::EditBox::Validator::UInt);
+            else if (type == "Int")
+                valueEditBox->setInputValidator(tgui::EditBox::Validator::Int);
+            else if (type == "Float")
+                valueEditBox->setInputValidator(tgui::EditBox::Validator::Float);
+            else if (type == "Char")
+                valueEditBox->setMaximumCharacters(1);
+            //else if (type != "String")
+            //    std::cerr << "DEBUG: Unhandled type: " << type << "\n";
+        }
+
+        valueEditBox->disconnectAll("Unfocused");
+        valueEditBox->disconnectAll("ReturnKeyPressed");
         valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
         valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
         valueEditBox->setText(value);
-        m_propertiesContainer->add(valueEditBox);
-        valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
 
-        if (type == "UInt")
-            valueEditBox->setInputValidator(tgui::EditBox::Validator::UInt);
-        else if (type == "Int")
-            valueEditBox->setInputValidator(tgui::EditBox::Validator::Int);
-        else if (type == "Float")
-            valueEditBox->setInputValidator(tgui::EditBox::Validator::Float);
-
-        valueEditBox->connect({"Focused"}, [=]{ m_previousValue = valueEditBox->getText(); });
         valueEditBox->connect({"ReturnKeyPressed", "Unfocused"}, [=]{ onChange(valueEditBox->getText()); });
     }
 
@@ -966,7 +1040,7 @@ void GuiBuilder::menuBarItemClicked(const std::string& menuItem)
                 std::cout << "Exception caught when adding theme: " << e.what() << std::endl;
             }
 
-            reloadProperties();
+            initProperties();
         });
 
         buttonDelete->connect("Pressed", [=]{
@@ -974,7 +1048,7 @@ void GuiBuilder::menuBarItemClicked(const std::string& menuItem)
             m_themes.erase(item);
             themesList->removeItem(item);
             buttonDelete->setEnabled(false);
-            reloadProperties();
+            initProperties();
         });
 
         editThemesWindow->connect("Closed", [=]{
