@@ -2,12 +2,6 @@ set(GUI_BUILDER_SOURCES
     src/main.cpp
     src/Form.cpp
     src/GuiBuilder.cpp
-    include/ButtonProperties.hpp
-    include/EditBoxProperties.hpp
-    include/Form.hpp
-    include/GuiBuilder.hpp
-    include/PictureProperties.hpp
-    include/WidgetProperties.hpp
 )
 
 # Make a GUI application on windows (without having the command line window)
