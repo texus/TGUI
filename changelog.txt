@@ -7,6 +7,7 @@ TGUI 0.8.4  (TBD)
 - Added option to ListView to expand the last column to fill the remaining space
 - Allow a separator between the header and contents in a ListView
 - Split separator in ListView into separator and vertical grid line
+- Fixed corrupted white theme when DefaultTheme was initialized before Color constants
 
 
 TGUI 0.8.3  (27 January 2019)

@@ -35,7 +35,7 @@ namespace tgui
     {
         struct DefaultTheme : public Theme
         {
-            DefaultTheme()
+            void reset()
             {
                 m_renderers = {
                     {"button", RendererData::create({{"borders", Borders{1}},
@@ -250,15 +250,11 @@ namespace tgui
                };
             }
         };
-
-
-
-        DefaultTheme defaultTheme;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Theme* Theme::m_defaultTheme = &defaultTheme;
+    Theme* Theme::m_defaultTheme = nullptr;
     std::shared_ptr<BaseThemeLoader> Theme::m_themeLoader = std::make_shared<DefaultThemeLoader>();
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -434,19 +430,20 @@ namespace tgui
 
     void Theme::setDefault(Theme* theme)
     {
-        if (theme)
-            m_defaultTheme = theme;
-        else
-        {
-            defaultTheme = {};
-            m_defaultTheme = &defaultTheme;
-        }
+        m_defaultTheme = theme;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Theme* Theme::getDefault()
     {
+        if (!m_defaultTheme)
+        {
+            static DefaultTheme defaultTheme;
+            defaultTheme.reset();
+            m_defaultTheme = &defaultTheme;
+        }
+
         return m_defaultTheme;
     }
 
