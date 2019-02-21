@@ -58,6 +58,7 @@ private:
     void removeSelectedWidget();
     void loadForm();
     void menuBarItemClicked(const std::string& item);
+    tgui::ChildWindow::Ptr openWindowWithFocus();
 
 private:
 

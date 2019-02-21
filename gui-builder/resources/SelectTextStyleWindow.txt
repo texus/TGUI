@@ -1,0 +1,57 @@
+Renderer.1 {
+    backgroundcolor = #F5F5F5;
+    backgroundcolordisabled = #E6E6E6;
+    backgroundcolorhover = white;
+    bordercolor = #3C3C3C;
+    bordercolordisabled = #7D7D7D;
+    bordercolorfocused = #1E1EB4;
+    bordercolorhover = black;
+    borders = (1, 1, 1, 1);
+    checkcolor = #3C3C3C;
+    checkcolordisabled = #7D7D7D;
+    checkcolorhover = black;
+    textcolor = #3C3C3C;
+    textcolordisabled = #7D7D7D;
+    textcolorhover = black;
+    textdistanceratio = 0.2;
+    texturechecked = None;
+    texturecheckeddisabled = None;
+    texturecheckedfocused = None;
+    texturecheckedhover = None;
+    textureunchecked = None;
+    textureuncheckeddisabled = None;
+    textureuncheckedfocused = None;
+    textureuncheckedhover = None;
+}
+
+CheckBox."CheckBoxBold" {
+    Position = (20, 20);
+    Size = (18, 18);
+    Text = "Bold";
+    TextSize = 13;
+    renderer = &1;
+}
+
+CheckBox."CheckBoxItalic" {
+    Position = (20, 50);
+    Size = (18, 18);
+    Text = "Italic";
+    TextSize = 13;
+    renderer = &1;
+}
+
+CheckBox."CheckBoxUnderlined" {
+    Position = (20, 80);
+    Size = (18, 18);
+    Text = "Underlined";
+    TextSize = 13;
+    renderer = &1;
+}
+
+CheckBox."CheckBoxStrikeThrough" {
+    Position = (20, 110);
+    Size = (18, 18);
+    Text = "Strike through";
+    TextSize = 13;
+    renderer = &1;
+}

@@ -721,7 +721,7 @@ void GuiBuilder::initProperties()
         buttonToBack->setTextSize(smallestTextsize);
 
         auto rendererComboBox = tgui::ComboBox::create();
-        rendererComboBox->setSize({bindWidth(m_propertiesContainer) - scrollbarWidth, 20});
+        rendererComboBox->setSize({bindWidth(m_propertiesContainer) - scrollbarWidth, EDIT_BOX_HEIGHT});
         rendererComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
 
         for (auto& theme : m_themes)
@@ -759,6 +759,26 @@ void GuiBuilder::addPropertyValueEditBoxes(float& topPosition, const std::pair<s
     const auto& type = propertyValuePair.second.first;
     const auto& value = propertyValuePair.second.second;
     const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+
+    auto createValueEditBox = [&](float rightPadding)
+    {
+        auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property);
+        if (!valueEditBox)
+        {
+            valueEditBox = tgui::EditBox::create();
+            m_propertiesContainer->add(valueEditBox, "Value" + property);
+            valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
+        }
+
+        valueEditBox->disconnectAll("Unfocused");
+        valueEditBox->disconnectAll("ReturnKeyPressed");
+        valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
+        valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f - rightPadding, EDIT_BOX_HEIGHT});
+        valueEditBox->setText(value);
+
+        valueEditBox->connect({"ReturnKeyPressed", "Unfocused"}, [=]{ onChange(valueEditBox->getText()); });
+        return valueEditBox;
+    };
 
     auto propertyEditBox = m_propertiesContainer->get<tgui::EditBox>("Property" + property);
     if (!propertyEditBox)
@@ -799,28 +819,20 @@ void GuiBuilder::addPropertyValueEditBoxes(float& topPosition, const std::pair<s
     }
     else if (type == "Color")
     {
-        auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property);
         auto transparentPicture = m_propertiesContainer->get<tgui::Picture>("ValueTransparentPicture" + property);
         auto colorPreviewPanel = m_propertiesContainer->get<tgui::Panel>("ValueColorPanel" + property);
-        if (!valueEditBox)
+        if (!transparentPicture)
         {
-            valueEditBox = tgui::EditBox::create();
-            m_propertiesContainer->add(valueEditBox, "Value" + property);
-            valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
-
             transparentPicture = tgui::Picture::create("resources/Transparent.png");
             m_propertiesContainer->add(transparentPicture, "ValueTransparentPicture" + property);
 
             colorPreviewPanel = tgui::Panel::create();
+            colorPreviewPanel->getRenderer()->setBorders(1);
+            colorPreviewPanel->getRenderer()->setBorderColor(sf::Color::Black);
             m_propertiesContainer->add(colorPreviewPanel, "ValueColorPanel" + property);
         }
 
-        valueEditBox->disconnectAll("Unfocused");
-        valueEditBox->disconnectAll("ReturnKeyPressed");
-        valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
-        valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f - EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
-        valueEditBox->setText(value);
-
+        createValueEditBox(EDIT_BOX_HEIGHT - 1);
         transparentPicture->setSize({EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
         transparentPicture->setPosition({bindWidth(m_propertiesContainer) - scrollbarWidth - EDIT_BOX_HEIGHT, topPosition});
 
@@ -830,8 +842,6 @@ void GuiBuilder::addPropertyValueEditBoxes(float& topPosition, const std::pair<s
             colorPreviewPanel->getRenderer()->setBackgroundColor(value);
         else
             colorPreviewPanel->getRenderer()->setBackgroundColor(sf::Color::Transparent);
-
-        valueEditBox->connect({"ReturnKeyPressed", "Unfocused"}, [=]{ onChange(valueEditBox->getText()); });
     }
     else if (type.substr(0, 5) == "Enum{")
     {
@@ -861,15 +871,61 @@ void GuiBuilder::addPropertyValueEditBoxes(float& topPosition, const std::pair<s
 
         valueComboBox->connect("ItemSelected", [=]{ onChange(valueComboBox->getSelectedItem()); });
     }
+    else if (type == "TextStyle")
+    {
+        auto buttonMore = m_propertiesContainer->get<tgui::Button>("ValueButton" + property);
+        if (!buttonMore)
+        {
+            buttonMore = tgui::Button::create();
+            buttonMore->setText(L"\u22EF");
+            buttonMore->setTextSize(18);
+            m_propertiesContainer->add(buttonMore, "ValueButton" + property);
+        }
+
+        createValueEditBox(EDIT_BOX_HEIGHT - 1);
+
+        buttonMore->disconnectAll("pressed");
+        buttonMore->setSize({EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
+        buttonMore->setPosition({bindWidth(m_propertiesContainer) - scrollbarWidth - EDIT_BOX_HEIGHT, topPosition});
+
+        buttonMore->connect("pressed", [=]{
+            auto textStyleWindow = openWindowWithFocus();
+            textStyleWindow->setTitle("Choose text style");
+            textStyleWindow->setSize(180, 160);
+            textStyleWindow->loadWidgetsFromFile("resources/SelectTextStyleWindow.txt");
+
+            auto checkBoxBold = textStyleWindow->get<tgui::CheckBox>("CheckBoxBold");
+            auto checkBoxItalic = textStyleWindow->get<tgui::CheckBox>("CheckBoxItalic");
+            auto checkBoxUnderlined = textStyleWindow->get<tgui::CheckBox>("CheckBoxUnderlined");
+            auto checkBoxStrikeThrough = textStyleWindow->get<tgui::CheckBox>("CheckBoxStrikeThrough");
+
+            unsigned int style = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::TextStyle, value).getTextStyle();
+            checkBoxBold->setChecked(style & sf::Text::Style::Bold);
+            checkBoxItalic->setChecked(style & sf::Text::Style::Italic);
+            checkBoxUnderlined->setChecked(style & sf::Text::Style::Underlined);
+            checkBoxStrikeThrough->setChecked(style & sf::Text::Style::StrikeThrough);
+
+            auto updateTextStyleProperty = [=]{
+                unsigned int newStyle = 0;
+                newStyle |= (checkBoxBold->isChecked() ? sf::Text::Style::Bold : 0);
+                newStyle |= (checkBoxItalic->isChecked() ? sf::Text::Style::Italic : 0);
+                newStyle |= (checkBoxUnderlined->isChecked() ? sf::Text::Style::Underlined : 0);
+                newStyle |= (checkBoxStrikeThrough->isChecked() ? sf::Text::Style::StrikeThrough : 0);
+                updateWidgetProperty(property, tgui::Serializer::serialize(tgui::TextStyle{newStyle}));
+            };
+            checkBoxBold->connect("changed", updateTextStyleProperty);
+            checkBoxItalic->connect("changed", updateTextStyleProperty);
+            checkBoxUnderlined->connect("changed", updateTextStyleProperty);
+            checkBoxStrikeThrough->connect("changed", updateTextStyleProperty);
+        });
+    }
     else
     {
-        auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property);
-        if (!valueEditBox)
-        {
-            valueEditBox = tgui::EditBox::create();
-            m_propertiesContainer->add(valueEditBox, "Value" + property);
-            valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
+        const bool valueEditBoxExists = (m_propertiesContainer->get<tgui::EditBox>("Value" + property) != nullptr);
+        auto valueEditBox = createValueEditBox(0);
 
+        if (valueEditBoxExists)
+        {
             if (type == "UInt")
                 valueEditBox->setInputValidator(tgui::EditBox::Validator::UInt);
             else if (type == "Int")
@@ -881,14 +937,6 @@ void GuiBuilder::addPropertyValueEditBoxes(float& topPosition, const std::pair<s
             //else if (type != "String")
             //    std::cerr << "DEBUG: Unhandled type: " << type << "\n";
         }
-
-        valueEditBox->disconnectAll("Unfocused");
-        valueEditBox->disconnectAll("ReturnKeyPressed");
-        valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
-        valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
-        valueEditBox->setText(value);
-
-        valueEditBox->connect({"ReturnKeyPressed", "Unfocused"}, [=]{ onChange(valueEditBox->getText()); });
     }
 
     topPosition += EDIT_BOX_HEIGHT - propertyEditBox->getRenderer()->getBorders().getBottom();
@@ -988,15 +1036,10 @@ void GuiBuilder::menuBarItemClicked(const std::string& menuItem)
     }
     else if (menuItem == "Edit")
     {
-        auto panel = tgui::Panel::create({"100%", "100%"});
-        panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
-        m_gui.add(panel, "TransparentBlackBackground");
-
-        auto editThemesWindow = tgui::ChildWindow::create("Edit themes");
+        auto editThemesWindow = openWindowWithFocus();
+        editThemesWindow->setTitle("Edit themes");
         editThemesWindow->setSize({320, 280});
-        editThemesWindow->setPosition("(&.w - w) / 2", "(&.h - h) / 2");
         editThemesWindow->loadWidgetsFromFile("resources/EditThemesWindow.txt");
-        m_gui.add(editThemesWindow);
 
         auto buttonAdd = editThemesWindow->get<tgui::Button>("ButtonAdd");
         auto buttonDelete = editThemesWindow->get<tgui::Button>("ButtonDelete");
@@ -1050,12 +1093,34 @@ void GuiBuilder::menuBarItemClicked(const std::string& menuItem)
             buttonDelete->setEnabled(false);
             initProperties();
         });
-
-        editThemesWindow->connect("Closed", [=]{
-            m_gui.remove(editThemesWindow);
-            m_gui.remove(panel);
-        });
     }
 }
 
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
+{
+    auto panel = tgui::Panel::create({"100%", "100%"});
+    panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
+    m_gui.add(panel, "TransparentBlackBackground");
+
+    auto window = tgui::ChildWindow::create();
+    window->setPosition("(&.w - w) / 2", "(&.h - h) / 2");
+    m_gui.add(window);
+
+    window->setFocused(true);
+
+    panel->connect("Clicked", [=]{
+        m_gui.remove(window);
+        m_gui.remove(panel);
+    });
+
+    window->connect({"Closed", "EscapeKeyPressed"}, [=]{
+        m_gui.remove(window);
+        m_gui.remove(panel);
+    });
+
+    return window;
+}
