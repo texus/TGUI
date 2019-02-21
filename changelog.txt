@@ -1,6 +1,7 @@
 TGUI 0.8.4  (TBD)
 -----------------
 
+- Added Changed signal to CheckBox and RadioButton (to more easily combine Checked and Unchecked)
 - Added EscapeKeyPressed signal to ChildWindow
 - ExpandDirection of ComboBox can now be set to Automatic
 - Added min and max functions to layouts again

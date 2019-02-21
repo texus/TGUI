@@ -139,11 +139,13 @@ namespace tgui
 
             m_checked = true;
             onCheck.emit(this, true);
+            onChange.emit(this, true);
         }
         else
         {
             m_checked = false;
             onUncheck.emit(this, false);
+            onChange.emit(this, false);
         }
 
         updateTextColor();
@@ -279,6 +281,8 @@ namespace tgui
             return onCheck;
         else if (signalName == toLower(onUncheck.getName()))
             return onUncheck;
+        else if (signalName == toLower(onChange.getName()))
+            return onChange;
         else
             return ClickableWidget::getSignal(std::move(signalName));
     }

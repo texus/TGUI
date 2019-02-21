@@ -122,6 +122,7 @@ namespace tgui
                 m_text.setStyle(m_textStyleCached);
 
             onCheck.emit(this, true);
+            onChange.emit(this, true);
         }
         else
             RadioButton::setChecked(checked);
