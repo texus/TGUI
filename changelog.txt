@@ -1,6 +1,7 @@
 TGUI 0.8.4  (TBD)
 -----------------
 
+- Added EscapeKeyPressed signal to ChildWindow
 - ExpandDirection of ComboBox can now be set to Automatic
 - Added min and max functions to layouts again
 - Added horizontal grid lines to ListView

@@ -472,6 +472,9 @@ namespace tgui
         }
         else if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, getSize().y + m_titleBarHeightCached + m_borderBelowTitleBarCached}.contains(pos))
         {
+            if (!m_focused)
+                setFocused(true);
+
             // Mouse is on top of the borders
             if (m_resizable)
             {
@@ -491,6 +494,9 @@ namespace tgui
         }
         else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getSize().x, m_titleBarHeightCached}.contains(pos))
         {
+            if (!m_focused)
+                setFocused(true);
+
             // Send the mouse press event to the title buttons
             for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
@@ -652,6 +658,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ChildWindow::keyPressed(const sf::Event::KeyEvent& event)
+    {
+        if (event.code == sf::Keyboard::Escape)
+            onEscapeKeyPressed.emit(this);
+
+        Container::keyPressed(event);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ChildWindow::mouseNoLongerOnWidget()
     {
         Container::mouseNoLongerOnWidget();
@@ -719,6 +735,8 @@ namespace tgui
             return onMinimize;
         else if (signalName == toLower(onMaximize.getName()))
             return onMaximize;
+        else if (signalName == toLower(onEscapeKeyPressed.getName()))
+            return onEscapeKeyPressed;
         else
             return Container::getSignal(std::move(signalName));
     }
