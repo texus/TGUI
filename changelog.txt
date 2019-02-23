@@ -1,5 +1,5 @@
-TGUI 0.8.4  (TBD)
------------------
+TGUI 0.8.4  (23 February 2019)
+------------------------------
 
 - Added Changed signal to CheckBox and RadioButton (to more easily combine Checked and Unchecked)
 - Added EscapeKeyPressed signal to ChildWindow
