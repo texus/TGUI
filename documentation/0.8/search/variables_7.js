@@ -2,11 +2,13 @@ var searchData=
 [
   ['onanimationfinished',['onAnimationFinished',['../classtgui_1_1Widget.html#a108a35a64ec55b9a77896b571b3795e4',1,'tgui::Widget']]],
   ['onbuttonpress',['onButtonPress',['../classtgui_1_1MessageBox.html#a01d442b44ea29943fea9bc4c926766e2',1,'tgui::MessageBox']]],
+  ['onchange',['onChange',['../classtgui_1_1RadioButton.html#af9bdd3e0c39c5f03fa42149a82407f8d',1,'tgui::RadioButton']]],
   ['oncheck',['onCheck',['../classtgui_1_1RadioButton.html#aeca2315243858e76a8371890d4376db4',1,'tgui::RadioButton']]],
   ['onclick',['onClick',['../classtgui_1_1ClickableWidget.html#a4faa0a32ca37a34b509b79a350ac1aa5',1,'tgui::ClickableWidget::onClick()'],['../classtgui_1_1Panel.html#a27e40e92909accaa4f00fe3f206fe8eb',1,'tgui::Panel::onClick()']]],
   ['onclose',['onClose',['../classtgui_1_1ChildWindow.html#a95cf6938d1e20ab798d06c32db58268b',1,'tgui::ChildWindow']]],
   ['oncollapse',['onCollapse',['../classtgui_1_1TreeView.html#a06482f123bc2ba772cc78c8902dc8c19',1,'tgui::TreeView']]],
   ['ondoubleclick',['onDoubleClick',['../classtgui_1_1Label.html#abf0014cf8353a988355853803bd617d6',1,'tgui::Label::onDoubleClick()'],['../classtgui_1_1ListBox.html#a4f4e178da2c7fe9f774966185399d0f9',1,'tgui::ListBox::onDoubleClick()'],['../classtgui_1_1ListView.html#acf4579ce237e07b36d373ea6179f6257',1,'tgui::ListView::onDoubleClick()'],['../classtgui_1_1Picture.html#a1f6be224cac8c8dfd9ced8df7c519570',1,'tgui::Picture::onDoubleClick()'],['../classtgui_1_1TreeView.html#a41c86bea500914f2aea31fc4b7cde188',1,'tgui::TreeView::onDoubleClick()']]],
+  ['onescapekeypressed',['onEscapeKeyPressed',['../classtgui_1_1ChildWindow.html#a8332b4288db6747b2042bb965a955c42',1,'tgui::ChildWindow']]],
   ['onexpand',['onExpand',['../classtgui_1_1TreeView.html#a17d311d1edbda9c4ff755b6dd15c3d2e',1,'tgui::TreeView']]],
   ['onfocus',['onFocus',['../classtgui_1_1Widget.html#a3e8abf6cc15ae2c78dd644f653c20778',1,'tgui::Widget']]],
   ['onfull',['onFull',['../classtgui_1_1ProgressBar.html#abf98d734307d6e1d4a912e8a4713d875',1,'tgui::ProgressBar']]],

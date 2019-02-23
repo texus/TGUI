@@ -7,6 +7,18 @@ changelog:
   minors:
   - version: 8
     patches:
+    - version: 4
+      date: 23 February 2019
+      changes: |
+        Added Changed signal to CheckBox and RadioButton (to more easily combine Checked and Unchecked)
+        Added EscapeKeyPressed signal to ChildWindow
+        ExpandDirection of ComboBox can now be set to Automatic
+        Added min and max functions to layouts again
+        Added horizontal grid lines to ListView
+        Added option to ListView to expand the last column to fill the remaining space
+        Allow a separator between the header and contents in a ListView
+        Split separator in ListView into separator and vertical grid line
+        Fixed corrupted white theme when DefaultTheme was initialized before Color constants
     - version: 3
       date: 27 January 2019
       changes: |
