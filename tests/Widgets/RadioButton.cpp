@@ -42,6 +42,11 @@ TEST_CASE("[RadioButton]")
         REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](bool){}));
         REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](tgui::Widget::Ptr, std::string){}));
         REQUIRE_NOTHROW(radioButton->connect("Unchecked", [](tgui::Widget::Ptr, std::string, bool){}));
+
+        REQUIRE_NOTHROW(radioButton->connect("Changed", [](){}));
+        REQUIRE_NOTHROW(radioButton->connect("Changed", [](bool){}));
+        REQUIRE_NOTHROW(radioButton->connect("Changed", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(radioButton->connect("Changed", [](tgui::Widget::Ptr, std::string, bool){}));
     }
 
     SECTION("WidgetType")
@@ -160,27 +165,33 @@ TEST_CASE("[RadioButton]")
 
             unsigned int checkCount = 0;
             unsigned int uncheckCount = 0;
+            unsigned int changedCount = 0;
             radioButton->connect("Checked", &genericCallback, std::ref(checkCount));
             radioButton->connect("Unchecked", &genericCallback, std::ref(uncheckCount));
+            radioButton->connect("Changed", &genericCallback, std::ref(changedCount));
 
             radioButton->leftMousePressed({105, 90});
             REQUIRE(checkCount == 0);
             REQUIRE(uncheckCount == 0);
+            REQUIRE(changedCount == 0);
 
             radioButton->leftMouseReleased({105, 90});
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 0);
+            REQUIRE(changedCount == 1);
 
             // Radio buttons can't be unchecked by user interaction
             radioButton->leftMousePressed({105, 90});
             radioButton->leftMouseReleased({105, 90});
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 0);
+            REQUIRE(changedCount == 1);
 
             // Programmably unchecking is however possible
             radioButton->setChecked(false);
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 1);
+            REQUIRE(changedCount == 2);
 
             SECTION("Key pressed")
             {
@@ -193,12 +204,15 @@ TEST_CASE("[RadioButton]")
                 keyEvent.code = sf::Keyboard::Space;
                 radioButton->keyPressed(keyEvent);
                 REQUIRE(checkCount == 2);
+                REQUIRE(changedCount == 3);
 
                 radioButton->setChecked(false);
+                REQUIRE(changedCount == 4);
 
                 keyEvent.code = sf::Keyboard::Return;
                 radioButton->keyPressed(keyEvent);
                 REQUIRE(checkCount == 3);
+                REQUIRE(changedCount == 5);
             }
         }
     }

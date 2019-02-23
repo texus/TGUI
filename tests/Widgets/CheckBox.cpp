@@ -41,6 +41,11 @@ TEST_CASE("[CheckBox]")
         REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](bool){}));
         REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](tgui::Widget::Ptr, std::string){}));
         REQUIRE_NOTHROW(checkBox->connect("Unchecked", [](tgui::Widget::Ptr, std::string, bool){}));
+
+        REQUIRE_NOTHROW(checkBox->connect("Changed", [](){}));
+        REQUIRE_NOTHROW(checkBox->connect("Changed", [](bool){}));
+        REQUIRE_NOTHROW(checkBox->connect("Changed", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(checkBox->connect("Changed", [](tgui::Widget::Ptr, std::string, bool){}));
     }
 
     SECTION("WidgetType")
@@ -183,29 +188,36 @@ TEST_CASE("[CheckBox]")
 
             unsigned int checkCount = 0;
             unsigned int uncheckCount = 0;
+            unsigned int changedCount = 0;
             checkBox->connect("Checked", &genericCallback, std::ref(checkCount));
             checkBox->connect("Unchecked", &genericCallback, std::ref(uncheckCount));
+            checkBox->connect("Changed", &genericCallback, std::ref(changedCount));
 
             checkBox->setChecked(true);
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 0);
+            REQUIRE(changedCount == 1);
 
             checkBox->setChecked(false);
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 1);
+            REQUIRE(changedCount == 2);
 
             checkBox->leftMousePressed({65, 60});
             REQUIRE(checkCount == 1);
             REQUIRE(uncheckCount == 1);
+            REQUIRE(changedCount == 2);
 
             checkBox->leftMouseReleased({65, 60});
             REQUIRE(checkCount == 2);
             REQUIRE(uncheckCount == 1);
+            REQUIRE(changedCount == 3);
 
             checkBox->leftMousePressed({65, 60});
             checkBox->leftMouseReleased({65, 60});
             REQUIRE(checkCount == 2);
             REQUIRE(uncheckCount == 2);
+            REQUIRE(changedCount == 4);
 
             SECTION("Key pressed")
             {
@@ -219,11 +231,13 @@ TEST_CASE("[CheckBox]")
                 checkBox->keyPressed(keyEvent);
                 REQUIRE(checkCount == 3);
                 REQUIRE(uncheckCount == 2);
+                REQUIRE(changedCount == 5);
 
                 keyEvent.code = sf::Keyboard::Return;
                 checkBox->keyPressed(keyEvent);
                 REQUIRE(checkCount == 3);
                 REQUIRE(uncheckCount == 3);
+                REQUIRE(changedCount == 6);
             }
         }
     }

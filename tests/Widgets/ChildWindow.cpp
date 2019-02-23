@@ -51,6 +51,11 @@ TEST_CASE("[ChildWindow]")
         REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::ChildWindow::Ptr){}));
         REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::Widget::Ptr, std::string){}));
         REQUIRE_NOTHROW(childWindow->connect("Minimized", [](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
+
+        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](){}));
+        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::ChildWindow::Ptr){}));
+        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::Widget::Ptr, std::string){}));
+        REQUIRE_NOTHROW(childWindow->connect("EscapeKeyPressed", [](tgui::Widget::Ptr, std::string, tgui::ChildWindow::Ptr){}));
     }
 
     SECTION("WidgetType")
@@ -184,10 +189,6 @@ TEST_CASE("[ChildWindow]")
 
     SECTION("Events / Signals")
     {
-        unsigned int mousePressedCount = 0;
-        unsigned int mouseReleasedCount = 0;
-        unsigned int clickedCount = 0;
-
         childWindow->setPosition(40, 30);
         childWindow->setSize(150, 100);
         childWindow->getRenderer()->setTitleBarHeight(20);
@@ -229,6 +230,20 @@ TEST_CASE("[ChildWindow]")
             parent->mouseMoved({224, 179});
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 1);
+        }
+
+        SECTION("EscapeKeyPressed")
+        {
+            unsigned int escapeKeyPressedCount = 0;
+            childWindow->connect("EscapeKeyPressed", &genericCallback, std::ref(escapeKeyPressedCount));
+
+            sf::Event::KeyEvent event;
+            event.code = sf::Keyboard::Escape;
+            event.alt = false;
+            event.control = false;
+            event.shift = false;
+            event.system = false;
+            childWindow->keyPressed(event);
         }
 
         /// TODO: Test title button events and dragging and resizing window
