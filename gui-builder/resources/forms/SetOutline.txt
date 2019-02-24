@@ -1,0 +1,100 @@
+Renderer.1 {
+    backgroundcolor = #F5F5F5;
+    backgroundcolordisabled = #E6E6E6;
+    backgroundcolorhover = white;
+    bordercolor = #3C3C3C;
+    bordercolordisabled = #7D7D7D;
+    bordercolorhover = black;
+    borders = (1, 1, 1, 1);
+    caretcolor = black;
+    caretwidth = 1;
+    defaulttextcolor = #A0A0A0;
+    padding = (0, 0, 0, 0);
+    selectedtextbackgroundcolor = #006EFF;
+    selectedtextcolor = white;
+    textcolor = #3C3C3C;
+    textcolordisabled = #7D7D7D;
+    texture = None;
+    texturedisabled = None;
+    texturefocused = None;
+    texturehover = None;
+}
+
+Renderer.2 {
+    backgroundcolor = transparent;
+    bordercolor = #3C3C3C;
+    borders = (0, 0, 0, 0);
+    textcolor = #3C3C3C;
+}
+
+Label."Widget1" {
+    AutoSize = true;
+    Position = (20, 20);
+    ScrollbarPolicy = Never;
+    Size = (33.2, 18);
+    Text = "Left:";
+    TextSize = 13;
+    renderer = &2;
+}
+
+Label."Widget2" {
+    AutoSize = true;
+    Position = (20, 50);
+    ScrollbarPolicy = Never;
+    Size = (31.2, 18);
+    Text = "Top:";
+    TextSize = 13;
+    renderer = &2;
+}
+
+Label."Widget3" {
+    AutoSize = true;
+    Position = (20, 80);
+    ScrollbarPolicy = Never;
+    Size = (41.2, 18);
+    Text = "Right;";
+    TextSize = 13;
+    renderer = &2;
+}
+
+Label."Widget4" {
+    AutoSize = true;
+    Position = (20, 110);
+    ScrollbarPolicy = Never;
+    Size = (55.2, 18);
+    Text = "Bottom:";
+    TextSize = 13;
+    renderer = &2;
+}
+
+EditBox."EditLeft" {
+    InputValidator = "[0-9]*%?";
+    Position = (85, 17);
+    Size = (40, 22);
+    TextSize = 13;
+    renderer = &1;
+}
+
+EditBox."EditTop" {
+    InputValidator = "[0-9]*%?";
+    Position = (85, 47);
+    Size = (40, 22);
+    TextSize = 13;
+    renderer = &1;
+}
+
+EditBox."EditRight" {
+    InputValidator = "[0-9]*%?";
+    Position = (85, 77);
+    Size = (40, 22);
+    TextSize = 13;
+    renderer = &1;
+}
+
+EditBox."EditBottom" {
+    InputValidator = "[0-9]*%?";
+    Position = (85, 107);
+    Size = (40, 22);
+    TextSize = 13;
+    renderer = &1;
+}

@@ -38,4 +38,5 @@ TEST_CASE("[Color]")
     REQUIRE(sf::Color(tgui::Color("#10204080")) == color);
     REQUIRE(sf::Color(tgui::Color(std::string("#10204080"))) == color);
     REQUIRE(sf::Color(tgui::Color(std::string("Red"))) == sf::Color::Red);
+    REQUIRE(sf::Color(tgui::Color(sf::String("blue"))) == sf::Color::Blue);
 }

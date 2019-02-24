@@ -28,6 +28,7 @@
 
 #include <TGUI/Config.hpp>
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/System/String.hpp>
 #include <cstdint>
 #include <string>
 #include <map>
@@ -95,6 +96,16 @@ namespace tgui
             m_color{red, green, blue, alpha}
         {
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Creates the object from a string
+        ///
+        /// @param string  String to be deserialized as color
+        ///
+        /// The Deserializer class is used to convert the string into a color.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Color(const sf::String& string);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

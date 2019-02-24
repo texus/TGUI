@@ -44,6 +44,9 @@ public:
 
 private:
 
+    using PropertyValuePair = std::pair<std::string, std::pair<std::string, std::string>>;
+    using OnValueChangeFunc = std::function<void(const sf::String& value)>;
+
     void loadStartScreen();
     void loadEditingScreen(const std::string& filename);
     void loadToolbox();
@@ -52,13 +55,20 @@ private:
     void copyWidget(std::shared_ptr<WidgetInfo> widgetInfo);
     void updateWidgetProperty(const std::string& property, const std::string& value);
     void initProperties();
-    void addPropertyValueEditBoxes(float& topPosition, const std::pair<std::string, std::pair<std::string, std::string>>& propertyValuePair, const std::function<void(const sf::String& value)>& onChange);
+    tgui::EditBox::Ptr addPropertyValueEditBox(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
+    void addPropertyValueWidgets(float& topPosition, const PropertyValuePair& propertyValuePair, const OnValueChangeFunc& onChange);
     void changeWidgetName(const std::string& name);
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
     void loadForm();
     void menuBarItemClicked(const std::string& item);
     tgui::ChildWindow::Ptr openWindowWithFocus();
+
+    void addPropertyValueBool(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueColor(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueTextStyle(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueOutline(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueEnum(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<std::string>& enumValues);
 
 private:
 
