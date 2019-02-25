@@ -54,12 +54,13 @@ namespace tgui
         m_isolatedFocus = true;
         m_titleText.setFont(m_fontCached);
 
+        setTitleTextSize(getGlobalTextSize());
+        m_titleBarHeightCached = m_titleText.getSize().y * 1.25f;
+
         m_renderer = aurora::makeCopied<ChildWindowRenderer>();
         setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
         setTitle(title);
-        setTitleTextSize(getGlobalTextSize());
-        m_titleBarHeightCached = m_titleText.getSize().y * 1.25f;
         setTitleButtons(titleButtons);
         setSize({400, 300});
 

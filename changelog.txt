@@ -1,3 +1,9 @@
+TGUI 0.8.5  (TBD)
+-----------------
+
+- TitleBarHeight property of default renderer was ignored in ChildWindow
+
+
 TGUI 0.8.4  (23 February 2019)
 ------------------------------
 
