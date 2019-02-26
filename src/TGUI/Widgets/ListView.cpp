@@ -279,10 +279,14 @@ namespace tgui
 
     std::size_t ListView::addItem(const sf::String& text)
     {
-        Item item;
+#ifdef TGUI_USE_CPP17
+        Item& item = m_items.emplace_back();
+#else
+        m_items.emplace_back();
+        Item& item = m_items.back();
+#endif
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
-        m_items.push_back(std::move(item));
 
         updateVerticalScrollbarMaximum();
 
@@ -297,13 +301,17 @@ namespace tgui
 
     std::size_t ListView::addItem(const std::vector<sf::String>& itemTexts)
     {
-        Item item;
+#ifdef TGUI_USE_CPP17
+        Item& item = m_items.emplace_back();
+#else
+        m_items.emplace_back();
+        Item& item = m_items.back();
+#endif
         item.texts.reserve(itemTexts.size());
         for (const auto& text : itemTexts)
             item.texts.push_back(createText(text));
 
         item.icon.setOpacity(m_opacityCached);
-        m_items.push_back(std::move(item));
 
         updateVerticalScrollbarMaximum();
 
@@ -312,6 +320,32 @@ namespace tgui
             m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
 
         return m_items.size()-1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ListView::addMultipleItems(const std::vector<std::vector<sf::String>>& items)
+    {
+        for (unsigned int i = 0; i < items.size(); ++i)
+        {
+#ifdef TGUI_USE_CPP17
+            Item& item = m_items.emplace_back();
+#else
+            m_items.emplace_back();
+            Item& item = m_items.back();
+#endif
+            item.texts.reserve(items[i].size());
+            for (const auto& text : items[i])
+                item.texts.push_back(createText(text));
+
+            item.icon.setOpacity(m_opacityCached);
+        }
+
+        updateVerticalScrollbarMaximum();
+
+        // Scroll down when auto-scrolling is enabled
+        if (m_autoScroll && (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum()))
+            m_verticalScrollbar->setValue(m_verticalScrollbar->getMaximum() - m_verticalScrollbar->getViewportSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

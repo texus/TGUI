@@ -158,6 +158,11 @@ TEST_CASE("[ListView]")
 
         listView->removeAllItems();
         REQUIRE(listView->getItemCount() == 0);
+
+        std::vector<std::vector<sf::String>> items = {{"1,1"}, {"2,1", "2,2", "2,3"}, {"3,1", "3,2"}};
+        listView->addMultipleItems(items);
+        REQUIRE(listView->getItemCount() == 3);
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", ""}, {"2,1", "2,2"}, {"3,1", "3,2"}});
     }
 
     SECTION("Returned item rows depend on columns")
