@@ -153,6 +153,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void TextBox::setSelectedText(std::size_t selectionStartIndex, std::size_t selectionEndIndex)
+    {
+        setCaretPosition(selectionEndIndex);
+        sf::Vector2<std::size_t> selEnd = m_selEnd;
+        setCaretPosition(selectionStartIndex);
+        m_selEnd = selEnd;
+        updateSelectionTexts();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     sf::String TextBox::getSelectedText() const
     {
         auto pos = findTextSelectionPositions();

@@ -72,6 +72,21 @@ TEST_CASE("[TextBox]")
         REQUIRE(textBox->getText() == "World\n\tText");
     }
 
+    SECTION("Selected text")
+    {
+        textBox->setText("SomeText");
+        REQUIRE(textBox->getSelectedText() == "");
+
+        textBox->setSelectedText(3, 6);
+        REQUIRE(textBox->getSelectedText() == "eTe");
+
+        textBox->setSelectedText(7, 1);
+        REQUIRE(textBox->getSelectedText() == "omeTex");
+
+        textBox->setSelectedText(2, 2);
+        REQUIRE(textBox->getSelectedText() == "");
+    }
+
     SECTION("TextSize")
     {
         textBox->setTextSize(50);
