@@ -272,6 +272,29 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes an item with values for multiple columns to the list
+        ///
+        /// @param index Index of the item to update
+        /// @param item  Texts for each column
+        ///
+        /// @return True when the item was updated, false when the index was too high
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeItem(std::size_t index, const std::vector<sf::String>& item);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the caption of a single value in the item
+        ///
+        /// @param index  Index of the item to update
+        /// @param column Index of the column to change
+        /// @param item   Texts for the given column for the given item
+        ///
+        /// @return True when the item was updated, false when the index was too high
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeSubItem(std::size_t index, std::size_t column, const sf::String& item);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes the item from the list view
         ///
         /// @param index  Index of the item in the list view

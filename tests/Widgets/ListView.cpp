@@ -163,6 +163,16 @@ TEST_CASE("[ListView]")
         listView->addMultipleItems(items);
         REQUIRE(listView->getItemCount() == 3);
         REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", ""}, {"2,1", "2,2"}, {"3,1", "3,2"}});
+
+        REQUIRE(listView->changeItem(1, {"b,1"}));
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", ""}, {"b,1", ""}, {"3,1", "3,2"}});
+        REQUIRE(listView->changeItem(2, {"c,1", "c,2", "c,3"}));
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", ""}, {"b,1", ""}, {"c,1", "c,2"}});
+        REQUIRE(listView->changeSubItem(0, 1, {"a,2"}));
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
+        REQUIRE(!listView->changeItem(3, {"d,1"}));
+        REQUIRE(!listView->changeSubItem(3, 1, {"d,2"}));
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<sf::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
     }
 
     SECTION("Returned item rows depend on columns")

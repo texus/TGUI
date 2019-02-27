@@ -350,6 +350,37 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool ListView::changeItem(std::size_t index, const std::vector<sf::String>& itemTexts)
+    {
+        if (index >= m_items.size())
+            return false;
+
+        Item& item = m_items[index];
+        item.texts.clear();
+        item.texts.reserve(itemTexts.size());
+        for (const auto& text : itemTexts)
+            item.texts.push_back(createText(text));
+
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ListView::changeSubItem(std::size_t index, std::size_t column, const sf::String& itemText)
+    {
+        if (index >= m_items.size())
+            return false;
+
+        Item& item = m_items[index];
+        if (column >= item.texts.size())
+            item.texts.resize(column + 1);
+
+        item.texts[column] = createText(itemText);
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool ListView::removeItem(std::size_t index)
     {
         // Update the hovered item
