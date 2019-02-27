@@ -1,6 +1,7 @@
 TGUI 0.8.5  (TBD)
 -----------------
 
+- Added RightClicked signal to ListView
 - Added functions to ListView to change existing items
 - TitleBarHeight property of default renderer was ignored in ChildWindow
 

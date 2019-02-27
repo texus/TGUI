@@ -388,18 +388,18 @@ TEST_CASE("[ListView]")
             event.mouseMove.y = pos.y;
             container->handleEvent(event);
         };
-        auto mousePressed = [container](sf::Vector2i pos){
+        auto mousePressed = [container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
             sf::Event event;
             event.type = sf::Event::MouseButtonPressed;
-            event.mouseButton.button = sf::Mouse::Left;
+            event.mouseButton.button = mouseButton;
             event.mouseButton.x = pos.x;
             event.mouseButton.y = pos.y;
             container->handleEvent(event);
         };
-        auto mouseReleased = [container](sf::Vector2i pos){
+        auto mouseReleased = [container](sf::Vector2i pos, sf::Mouse::Button mouseButton = sf::Mouse::Left){
             sf::Event event;
             event.type = sf::Event::MouseButtonReleased;
-            event.mouseButton.button = sf::Mouse::Left;
+            event.mouseButton.button = mouseButton;
             event.mouseButton.x = pos.x;
             event.mouseButton.y = pos.y;
             container->handleEvent(event);
@@ -483,6 +483,34 @@ TEST_CASE("[ListView]")
             mousePressed({40, 35});
             mouseReleased({40, 35});
             REQUIRE(listView->getSelectedItemIndex() == 0);
+        }
+
+        SECTION("Right click")
+        {
+            int lastIndex = -1;
+            unsigned int rightClickCount = 0;
+            listView->connect("RightClicked", [&](int index){ lastIndex = index; ++rightClickCount; });
+
+            // Right click 3th item
+            mousePressed({40, 70}, sf::Mouse::Right);
+            mouseReleased({40, 70}, sf::Mouse::Right);
+            REQUIRE(rightClickCount == 1);
+            REQUIRE(lastIndex == 2);
+
+            // Right click behind last item
+            listView->removeItem(1);
+            mousePressed({40, 70}, sf::Mouse::Right);
+            mouseReleased({40, 70}, sf::Mouse::Right);
+            REQUIRE(rightClickCount == 2);
+            REQUIRE(lastIndex == -1);
+
+            // Right click on scrollbar
+            listView->addItem("Item 5");
+            listView->addItem("Item 6");
+            listView->addItem("Item 7");
+            mousePressed({125, 50}, sf::Mouse::Right);
+            mouseReleased({125, 50}, sf::Mouse::Right);
+            REQUIRE(rightClickCount == 2);
         }
 
         SECTION("Vertical scrollbar interaction")

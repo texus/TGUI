@@ -924,6 +924,25 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ListView::rightMousePressed(Vector2f pos)
+    {
+        pos -= getPosition();
+        if ((m_verticalScrollbar->isShown() && m_verticalScrollbar->mouseOnWidget(pos)) || (m_horizontalScrollbar->isShown() && m_horizontalScrollbar->mouseOnWidget(pos)))
+            return;
+
+        int itemIndex = -1;
+        if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop() + getCurrentHeaderHeight(),
+                      getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight(), getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}.contains(pos))
+        {
+            updateHoveredItemByMousePos(pos);
+            itemIndex = m_hoveredItem;
+        }
+
+        onRightClick.emit(this, itemIndex);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ListView::mouseMoved(Vector2f pos)
     {
         pos -= getPosition();
@@ -1023,6 +1042,8 @@ namespace tgui
             return onItemSelect;
         else if (signalName == toLower(onDoubleClick.getName()))
             return onDoubleClick;
+        else if (signalName == toLower(onRightClick.getName()))
+            return onRightClick;
         else
             return Widget::getSignal(std::move(signalName));
     }
