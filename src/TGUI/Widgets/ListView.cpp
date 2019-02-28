@@ -388,11 +388,8 @@ namespace tgui
         {
             if (m_hoveredItem == static_cast<int>(index))
                 updateHoveredItem(-1);
-            else if (m_selectedItem > static_cast<int>(index))
-            {
-                // Don't call updateSelectedItem here, there should not be no callback and the item hasn't been erased yet so it would point to the wrong place
-                m_selectedItem = m_selectedItem - 1;
-            }
+            else if (m_hoveredItem > static_cast<int>(index))
+                m_hoveredItem = m_hoveredItem - 1;
         }
 
         // Update the selected item
