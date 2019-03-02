@@ -48,12 +48,14 @@ public:
     void selectWidgetById(const std::string& id);
     void mouseMoved(sf::Vector2i pos);
     void mouseReleased();
+    void arrowKeyPressed(const sf::Event::KeyEvent& keyEvent);
     void setFilename(const sf::String& filename);
     sf::String getFilename() const;
     void setSize(sf::Vector2i filename);
     sf::Vector2i getSize() const;
     void setChanged(bool changed);
     bool isChanged() const;
+    bool hasFocus() const;
     bool load();
     void save();
 

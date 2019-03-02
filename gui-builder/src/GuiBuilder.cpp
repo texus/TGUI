@@ -299,6 +299,15 @@ void GuiBuilder::mainLoop()
                 if (m_selectedForm)
                     m_selectedForm->mouseMoved({event.mouseMove.x, event.mouseMove.y});
             }
+            else if (event.type == sf::Event::KeyPressed)
+            {
+                if ((event.key.code == sf::Keyboard::Key::Left) || (event.key.code == sf::Keyboard::Key::Right)
+                 || (event.key.code == sf::Keyboard::Key::Up) || (event.key.code == sf::Keyboard::Key::Down))
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus())
+                        m_selectedForm->arrowKeyPressed(event.key);
+                }
+            }
 
             m_gui.handleEvent(event);
         }
@@ -788,24 +797,32 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         const std::vector<std::string> enumValues = tgui::Deserializer::split(type.substr(5, type.size() - 6), ',');
         addPropertyValueEnum(property, value, onChange, topPosition, enumValues);
     }
+    else if (type == "Font")
+    {
+        // TODO: Allowing picking font from list (e.g. managed similar to themes) or via file dialog.
+        addPropertyValueEditBox(property, value, onChange, topPosition, 0);
+    }
+    else if (type == "Texture")
+    {
+        // TODO: Open dialog where filename, bounding rect and middle rect can be chosen
+        addPropertyValueEditBox(property, value, onChange, topPosition, 0);
+    }
+    else if (type == "List<String>")
+    {
+        // TODO: Open dialog with list box and edit box where items can be added and removed to list
+        addPropertyValueEditBox(property, value, onChange, topPosition, 0);
+    }
     else
     {
-        const bool valueEditBoxExists = (m_propertiesContainer->get<tgui::EditBox>("Value" + property) != nullptr);
         auto valueEditBox = addPropertyValueEditBox(property, value, onChange, topPosition, 0);
-
-        if (!valueEditBoxExists)
-        {
-            if (type == "UInt")
-                valueEditBox->setInputValidator(tgui::EditBox::Validator::UInt);
-            else if (type == "Int")
-                valueEditBox->setInputValidator(tgui::EditBox::Validator::Int);
-            else if (type == "Float")
-                valueEditBox->setInputValidator(tgui::EditBox::Validator::Float);
-            else if (type == "Char")
-                valueEditBox->setMaximumCharacters(1);
-            //else if (type != "String")
-            //    std::cerr << "DEBUG: Unhandled type: " << type << "\n";
-        }
+        if (type == "UInt")
+            valueEditBox->setInputValidator(tgui::EditBox::Validator::UInt);
+        else if (type == "Int")
+            valueEditBox->setInputValidator(tgui::EditBox::Validator::Int);
+        else if (type == "Float")
+            valueEditBox->setInputValidator(tgui::EditBox::Validator::Float);
+        else if (type == "Char")
+            valueEditBox->setMaximumCharacters(1);
     }
 
     topPosition += EDIT_BOX_HEIGHT - propertyEditBox->getRenderer()->getBorders().getBottom();
