@@ -307,6 +307,11 @@ void GuiBuilder::mainLoop()
                     if (m_selectedForm && m_selectedForm->hasFocus())
                         m_selectedForm->arrowKeyPressed(event.key);
                 }
+                else if (event.key.code == sf::Keyboard::Key::Delete)
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
+                        removeSelectedWidget();
+                }
                 else if ((event.key.code == sf::Keyboard::Key::S) && event.key.control)
                 {
                     if (m_selectedForm)
