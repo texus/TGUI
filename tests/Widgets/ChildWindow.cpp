@@ -271,6 +271,7 @@ TEST_CASE("[ChildWindow]")
                 REQUIRE_NOTHROW(renderer->setProperty("TitleColor", "rgb(40, 50, 60)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarColor", "rgb(70, 80, 90)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(100, 110, 120)"));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", "rgb(130, 140, 150)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderBelowTitleBar", "3"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
@@ -288,6 +289,7 @@ TEST_CASE("[ChildWindow]")
                 REQUIRE_NOTHROW(renderer->setProperty("TitleColor", sf::Color{40, 50, 60}));
                 REQUIRE_NOTHROW(renderer->setProperty("TitleBarColor", sf::Color{70, 80, 90}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{100, 110, 120}));
+                REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", sf::Color{130, 140, 150}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderBelowTitleBar", 3));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
@@ -305,6 +307,7 @@ TEST_CASE("[ChildWindow]")
                 renderer->setTitleColor({40, 50, 60});
                 renderer->setTitleBarColor({70, 80, 90});
                 renderer->setBorderColor({100, 110, 120});
+                renderer->setBorderColorFocused({130, 140, 150});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setBorderBelowTitleBar(3);
                 renderer->setDistanceToSide(2);
@@ -321,6 +324,7 @@ TEST_CASE("[ChildWindow]")
             REQUIRE(renderer->getProperty("TitleColor").getColor() == sf::Color(40, 50, 60));
             REQUIRE(renderer->getProperty("TitleBarColor").getColor() == sf::Color(70, 80, 90));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(100, 110, 120));
+            REQUIRE(renderer->getProperty("BorderColorFocused").getColor() == sf::Color(130, 140, 150));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("BorderBelowTitleBar").getNumber() == 3);
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
@@ -435,6 +439,7 @@ TEST_CASE("[ChildWindow]")
         renderer.setTitleColor(sf::Color::Magenta);
         renderer.setBackgroundColor(sf::Color::Green);
         renderer.setBorderColor(sf::Color::Red);
+        renderer.setBorderColorFocused(sf::Color::Yellow);
         renderer.setDistanceToSide(10);
         renderer.setPaddingBetweenButtons(5);
         renderer.setShowTextOnTitleButtons(false);
@@ -465,6 +470,9 @@ TEST_CASE("[ChildWindow]")
 
             renderer.setShowTextOnTitleButtons(true);
             TEST_DRAW("ChildWindow_TitleButtonText.png")
+
+            childWindow->setFocused(true);
+            TEST_DRAW("ChildWindow_Focused.png")
         }
 
         SECTION("Textured")

@@ -502,6 +502,7 @@ namespace tgui
         // Cached renderer properties
         Borders m_bordersCached;
         Color   m_borderColorCached;
+        Color   m_borderColorFocusedCached;
         Color   m_titleColorCached;
         Color   m_titleBarColorCached;
         Color   m_backgroundColorCached;

@@ -834,6 +834,10 @@ namespace tgui
         {
             m_borderColorCached = getSharedRenderer()->getBorderColor();
         }
+        else if (property == "bordercolorfocused")
+        {
+            m_borderColorFocusedCached = getSharedRenderer()->getBorderColorFocused();
+        }
         else if ((property == "opacity") || (property == "opacitydisabled"))
         {
             Container::rendererChanged(property);
@@ -977,7 +981,11 @@ namespace tgui
         // Draw the borders
         if (m_bordersCached != Borders{0})
         {
-            drawBorders(target, states, m_bordersCached, getFullSize(), m_borderColorCached);
+            if (m_focused && m_borderColorFocusedCached.isSet())
+                drawBorders(target, states, m_bordersCached, getFullSize(), m_borderColorFocusedCached);
+            else
+                drawBorders(target, states, m_bordersCached, getFullSize(), m_borderColorCached);
+
             states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
         }
 
@@ -1020,7 +1028,11 @@ namespace tgui
         // Draw the border below the title bar
         if (m_borderBelowTitleBarCached > 0)
         {
-            drawRectangleShape(target, states, {getSize().x, m_borderBelowTitleBarCached}, m_borderColorCached);
+            if (m_focused && m_borderColorFocusedCached.isSet())
+                drawRectangleShape(target, states, {getSize().x, m_borderBelowTitleBarCached}, m_borderColorFocusedCached);
+            else
+                drawRectangleShape(target, states, {getSize().x, m_borderBelowTitleBarCached}, m_borderColorCached);
+
             states.transform.translate({0, m_borderBelowTitleBarCached});
         }
 
