@@ -753,30 +753,6 @@ void GuiBuilder::initProperties()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBox(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding)
-{
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
-
-    auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property);
-    if (!valueEditBox)
-    {
-        valueEditBox = tgui::EditBox::create();
-        m_propertiesContainer->add(valueEditBox, "Value" + property);
-        valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
-    }
-
-    valueEditBox->disconnectAll("Unfocused");
-    valueEditBox->disconnectAll("ReturnKeyPressed");
-    valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
-    valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f - rightPadding, EDIT_BOX_HEIGHT});
-    valueEditBox->setText(value);
-
-    valueEditBox->connect({"ReturnKeyPressed", "Unfocused"}, [=]{ onChange(valueEditBox->getText()); });
-    return valueEditBox;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValuePair& propertyValuePair, const OnValueChangeFunc& onChange)
 {
     const auto& property = propertyValuePair.first;
@@ -805,6 +781,8 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         addPropertyValueTextStyle(property, value, onChange, topPosition);
     else if (type == "Outline")
         addPropertyValueOutline(property, value, onChange, topPosition);
+    else if (type == "EditBoxInputValidator")
+        addPropertyValueEditBoxInputValidator(property, value, onChange, topPosition);
     else if (type.substr(0, 5) == "Enum{")
     {
         const std::vector<std::string> enumValues = tgui::Deserializer::split(type.substr(5, type.size() - 6), ',');
@@ -1018,6 +996,51 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+tgui::EditBox::Ptr GuiBuilder::addPropertyValueEditBox(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding)
+{
+    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+
+    auto valueEditBox = m_propertiesContainer->get<tgui::EditBox>("Value" + property);
+    if (!valueEditBox)
+    {
+        valueEditBox = tgui::EditBox::create();
+        m_propertiesContainer->add(valueEditBox, "Value" + property);
+        valueEditBox->setCaretPosition(0); // Show the first part of the contents instead of the last part when the text does not fit
+    }
+
+    valueEditBox->disconnectAll("Unfocused");
+    valueEditBox->disconnectAll("ReturnKeyPressed");
+    valueEditBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
+    valueEditBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f - rightPadding, EDIT_BOX_HEIGHT});
+    valueEditBox->setText(value);
+
+    valueEditBox->connect({"ReturnKeyPressed", "Unfocused"}, [=]{ onChange(valueEditBox->getText()); });
+    return valueEditBox;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+tgui::Button::Ptr GuiBuilder::addPropertyValueButtonMore(const std::string& property, float topPosition)
+{
+    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
+
+    auto buttonMore = m_propertiesContainer->get<tgui::Button>("ValueButton" + property);
+    if (!buttonMore)
+    {
+        buttonMore = tgui::Button::create();
+        buttonMore->setText(L"\u22EF");
+        buttonMore->setTextSize(18);
+        m_propertiesContainer->add(buttonMore, "ValueButton" + property);
+    }
+
+    buttonMore->disconnectAll("pressed");
+    buttonMore->setSize({EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
+    buttonMore->setPosition({bindWidth(m_propertiesContainer) - scrollbarWidth - EDIT_BOX_HEIGHT, topPosition});
+    return buttonMore;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GuiBuilder::addPropertyValueBool(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
 {
     const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
@@ -1080,23 +1103,9 @@ void GuiBuilder::addPropertyValueColor(const std::string& property, const sf::St
 
 void GuiBuilder::addPropertyValueTextStyle(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
 {
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
-
-    auto buttonMore = m_propertiesContainer->get<tgui::Button>("ValueButton" + property);
-    if (!buttonMore)
-    {
-        buttonMore = tgui::Button::create();
-        buttonMore->setText(L"\u22EF");
-        buttonMore->setTextSize(18);
-        m_propertiesContainer->add(buttonMore, "ValueButton" + property);
-    }
-
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
-    buttonMore->disconnectAll("pressed");
-    buttonMore->setSize({EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
-    buttonMore->setPosition({bindWidth(m_propertiesContainer) - scrollbarWidth - EDIT_BOX_HEIGHT, topPosition});
-
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
     buttonMore->connect("pressed", [=]{
         auto textStyleWindow = openWindowWithFocus();
         textStyleWindow->setTitle("Set text style");
@@ -1120,7 +1129,7 @@ void GuiBuilder::addPropertyValueTextStyle(const std::string& property, const sf
             newStyle |= (checkBoxItalic->isChecked() ? sf::Text::Style::Italic : 0);
             newStyle |= (checkBoxUnderlined->isChecked() ? sf::Text::Style::Underlined : 0);
             newStyle |= (checkBoxStrikeThrough->isChecked() ? sf::Text::Style::StrikeThrough : 0);
-            updateWidgetProperty(property, tgui::Serializer::serialize(tgui::TextStyle{newStyle}));
+            onChange(tgui::Serializer::serialize(tgui::TextStyle{newStyle}));
         };
         checkBoxBold->connect("changed", updateTextStyleProperty);
         checkBoxItalic->connect("changed", updateTextStyleProperty);
@@ -1133,23 +1142,9 @@ void GuiBuilder::addPropertyValueTextStyle(const std::string& property, const sf
 
 void GuiBuilder::addPropertyValueOutline(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
 {
-    const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
-
-    auto buttonMore = m_propertiesContainer->get<tgui::Button>("ValueButton" + property);
-    if (!buttonMore)
-    {
-        buttonMore = tgui::Button::create();
-        buttonMore->setText(L"\u22EF");
-        buttonMore->setTextSize(18);
-        m_propertiesContainer->add(buttonMore, "ValueButton" + property);
-    }
-
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
-    buttonMore->disconnectAll("pressed");
-    buttonMore->setSize({EDIT_BOX_HEIGHT, EDIT_BOX_HEIGHT});
-    buttonMore->setPosition({bindWidth(m_propertiesContainer) - scrollbarWidth - EDIT_BOX_HEIGHT, topPosition});
-
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
     buttonMore->connect("pressed", [=]{
         auto outlineWindow = openWindowWithFocus();
         outlineWindow->setTitle("Set outline");
@@ -1174,12 +1169,64 @@ void GuiBuilder::addPropertyValueOutline(const std::string& property, const sf::
                 tgui::AbsoluteOrRelativeValue{editRight->getText()},
                 tgui::AbsoluteOrRelativeValue{editBottom->getText()},
             };
-            updateWidgetProperty(property, tgui::Serializer::serialize(newOutline));
+            onChange(tgui::Serializer::serialize(newOutline));
         };
         editLeft->connect({"ReturnKeyPressed", "Unfocused"}, updateOutlineProperty);
         editTop->connect({"ReturnKeyPressed", "Unfocused"}, updateOutlineProperty);
         editRight->connect({"ReturnKeyPressed", "Unfocused"}, updateOutlineProperty);
         editBottom->connect({"ReturnKeyPressed", "Unfocused"}, updateOutlineProperty);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::addPropertyValueEditBoxInputValidator(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
+    buttonMore->connect("pressed", [=]{
+        auto outlineWindow = openWindowWithFocus();
+        outlineWindow->setTitle("Set accepted input");
+        outlineWindow->setSize(190, 215);
+        outlineWindow->loadWidgetsFromFile("resources/forms/SetEditBoxInputValidator.txt");
+
+        auto checkAny = outlineWindow->get<tgui::RadioButton>("CheckAny");
+        auto checkInt = outlineWindow->get<tgui::RadioButton>("CheckInt");
+        auto checkUInt = outlineWindow->get<tgui::RadioButton>("CheckUInt");
+        auto checkFloat = outlineWindow->get<tgui::RadioButton>("CheckFloat");
+        auto checkCustom = outlineWindow->get<tgui::RadioButton>("CheckCustom");
+        auto editValidator = outlineWindow->get<tgui::EditBox>("EditValidator");
+
+        if (value == tgui::EditBox::Validator::All)
+            checkAny->setChecked(true);
+        else if (value == tgui::EditBox::Validator::Int)
+            checkInt->setChecked(true);
+        else if (value == tgui::EditBox::Validator::UInt)
+            checkUInt->setChecked(true);
+        else if (value == tgui::EditBox::Validator::Float)
+            checkFloat->setChecked(true);
+        else
+            checkCustom->setChecked(true);
+
+        editValidator->setText(value);
+
+        auto updateCustomValidator = [=]{
+            checkCustom->setChecked(true);
+            onChange(editValidator->getText());
+        };
+        auto updateValidator = [=](const sf::String& newValue){
+            editValidator->disconnectAll("ReturnKeyPressed");
+            editValidator->disconnectAll("Unfocused");
+            editValidator->setText(newValue);
+            editValidator->connect({"ReturnKeyPressed", "Unfocused"}, updateCustomValidator);
+            onChange(newValue);
+        };
+        checkAny->connect("Checked", [=]{ updateValidator(tgui::EditBox::Validator::All); });
+        checkInt->connect("Checked", [=]{ updateValidator(tgui::EditBox::Validator::Int); });
+        checkUInt->connect("Checked", [=]{ updateValidator(tgui::EditBox::Validator::UInt); });
+        checkFloat->connect("Checked", [=]{ updateValidator(tgui::EditBox::Validator::Float); });
+        editValidator->connect({"ReturnKeyPressed", "Unfocused"}, updateCustomValidator);
     });
 }
 

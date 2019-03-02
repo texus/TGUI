@@ -55,7 +55,6 @@ private:
     void copyWidget(std::shared_ptr<WidgetInfo> widgetInfo);
     void updateWidgetProperty(const std::string& property, const std::string& value);
     void initProperties();
-    tgui::EditBox::Ptr addPropertyValueEditBox(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
     void addPropertyValueWidgets(float& topPosition, const PropertyValuePair& propertyValuePair, const OnValueChangeFunc& onChange);
     void changeWidgetName(const std::string& name);
     void initSelectedWidgetComboBoxAfterLoad();
@@ -64,10 +63,13 @@ private:
     void menuBarItemClicked(const std::string& item);
     tgui::ChildWindow::Ptr openWindowWithFocus();
 
+    tgui::EditBox::Ptr addPropertyValueEditBox(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
+    tgui::Button::Ptr addPropertyValueButtonMore(const std::string& property, float topPosition);
     void addPropertyValueBool(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueColor(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueTextStyle(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueOutline(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueEditBoxInputValidator(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueEnum(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<std::string>& enumValues);
 
 private:

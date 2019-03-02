@@ -1,0 +1,95 @@
+Renderer.1 {
+    backgroundcolor = #F5F5F5;
+    backgroundcolordisabled = #E6E6E6;
+    backgroundcolorhover = white;
+    bordercolor = #3C3C3C;
+    bordercolordisabled = #7D7D7D;
+    bordercolorfocused = #1E1EB4;
+    bordercolorhover = black;
+    borders = (1, 1, 1, 1);
+    checkcolor = #3C3C3C;
+    checkcolordisabled = #7D7D7D;
+    checkcolorhover = black;
+    textcolor = #3C3C3C;
+    textcolordisabled = #7D7D7D;
+    textcolorhover = black;
+    textdistanceratio = 0.2;
+    texturechecked = None;
+    texturecheckeddisabled = None;
+    texturecheckedfocused = None;
+    texturecheckedhover = None;
+    textureunchecked = None;
+    textureuncheckeddisabled = None;
+    textureuncheckedfocused = None;
+    textureuncheckedhover = None;
+}
+
+RadioButton."CheckAny" {
+    Checked = true;
+    Position = (20, 20);
+    Size = (18, 18);
+    Text = "Anything";
+    TextSize = 13;
+    renderer = &1;
+}
+
+RadioButton."CheckInt" {
+    Position = (20, 50);
+    Size = (18, 18);
+    Text = "Int";
+    TextSize = 13;
+    renderer = &1;
+}
+
+RadioButton."CheckUInt" {
+    Position = (20, 80);
+    Size = (18, 18);
+    Text = "Unsigned int";
+    TextSize = 13;
+    renderer = &1;
+}
+
+RadioButton."CheckFloat" {
+    Position = (20, 110);
+    Size = (18, 18);
+    Text = "Float";
+    TextSize = 13;
+    renderer = &1;
+}
+
+RadioButton."CheckCustom" {
+    Position = (20, 140);
+    Size = (18, 18);
+    Text = "Custom";
+    TextSize = 13;
+    renderer = &1;
+}
+
+EditBox."EditValidator" {
+    Position = (20, 170);
+    Size = (150, 22);
+    Text = ".*";
+    TextSize = 13;
+
+    Renderer {
+        backgroundcolor = #F5F5F5;
+        backgroundcolordisabled = #E6E6E6;
+        backgroundcolorhover = white;
+        bordercolor = #3C3C3C;
+        bordercolordisabled = #7D7D7D;
+        bordercolorhover = black;
+        borders = (1, 1, 1, 1);
+        caretcolor = black;
+        caretwidth = 1;
+        defaulttextcolor = #A0A0A0;
+        padding = (0, 0, 0, 0);
+        selectedtextbackgroundcolor = #006EFF;
+        selectedtextcolor = white;
+        textcolor = #3C3C3C;
+        textcolordisabled = #7D7D7D;
+        texture = None;
+        texturedisabled = None;
+        texturefocused = None;
+        texturehover = None;
+    }
+}

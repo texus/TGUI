@@ -70,7 +70,7 @@ struct EditBoxProperties : WidgetProperties
         pair.first["Alignment"] = {"Enum{Left,Center,Right}", serializeAlignment(editBox->getAlignment())};
         pair.first["LimitTextWidth"] = {"Bool", tgui::Serializer::serialize(editBox->isTextWidthLimited())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(editBox->isReadOnly())};
-        pair.first["InputValidator"] = {"String", editBox->getInputValidator()};
+        pair.first["InputValidator"] = {"EditBoxInputValidator", editBox->getInputValidator()};
         pair.first["Suffix"] = {"String", editBox->getSuffix()};
 
         const auto renderer = editBox->getSharedRenderer();
