@@ -175,10 +175,10 @@ TEST_CASE("[EditBox]")
 
         SECTION("Default")
         {
-            REQUIRE(editBox->getInputValidator() == ".*");
+            REQUIRE(editBox->getInputValidator() == tgui::EditBox::Validator::All);
             REQUIRE(editBox->getText() == L"++Some123 Ê Text456--");
 
-            editBox->setInputValidator(".*");
+            REQUIRE(editBox->setInputValidator(tgui::EditBox::Validator::All));
             REQUIRE(editBox->getText() == L"++Some123 Ê Text456--");
 
             SECTION("Adding characters")
@@ -202,7 +202,8 @@ TEST_CASE("[EditBox]")
 
         SECTION("Int")
         {
-            editBox->setInputValidator(tgui::EditBox::Validator::Int);
+            REQUIRE(editBox->setInputValidator(tgui::EditBox::Validator::Int));
+            REQUIRE(editBox->getInputValidator() == tgui::EditBox::Validator::Int);
             REQUIRE(editBox->getText() == "");
 
             editBox->setText("-5");
@@ -241,7 +242,8 @@ TEST_CASE("[EditBox]")
 
         SECTION("UInt")
         {
-            editBox->setInputValidator(tgui::EditBox::Validator::UInt);
+            REQUIRE(editBox->setInputValidator(tgui::EditBox::Validator::UInt));
+            REQUIRE(editBox->getInputValidator() == tgui::EditBox::Validator::UInt);
             REQUIRE(editBox->getText() == "");
 
             editBox->setText("-5");
@@ -280,7 +282,8 @@ TEST_CASE("[EditBox]")
 
         SECTION("Float")
         {
-            editBox->setInputValidator(tgui::EditBox::Validator::Float);
+            REQUIRE(editBox->setInputValidator(tgui::EditBox::Validator::Float));
+            REQUIRE(editBox->getInputValidator() == tgui::EditBox::Validator::Float);
             REQUIRE(editBox->getText() == "");
 
             editBox->setText("-5");
@@ -326,6 +329,13 @@ TEST_CASE("[EditBox]")
                 editBox->textEntered('.');
                 REQUIRE(editBox->getText() == "-.");
             }
+        }
+
+        SECTION("Invalid expressions")
+        {
+            REQUIRE(editBox->setInputValidator("abc[0-9]xyz"));
+            REQUIRE(!editBox->setInputValidator("abc[0-"));
+            REQUIRE(editBox->getInputValidator() == "abc[0-9]xyz");
         }
     }
 

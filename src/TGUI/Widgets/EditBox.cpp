@@ -432,12 +432,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void EditBox::setInputValidator(const std::string& regex)
+    bool EditBox::setInputValidator(const std::string& regex)
     {
-        m_regexString = regex;
-        m_regex = m_regexString;
+        try
+        {
+            m_regex = regex;
+        }
+        catch (const std::regex_error&)
+        {
+            return false;
+        }
 
+        m_regexString = regex;
         setText(m_text);
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

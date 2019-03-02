@@ -368,6 +368,8 @@ namespace tgui
         ///
         /// @param regex  Valid regular expression for std::regex to match on text changes
         ///
+        /// @return True when validator was changed, false when std::regex_error was thrown internally.
+        ///
         /// When the regex does not match when calling the setText function then the edit box contents will be cleared.
         /// When it does not match when the user types a character in the edit box, then the input character is rejected.
         ///
@@ -377,7 +379,7 @@ namespace tgui
         /// edit2->setInputValidator("[a-zA-Z][a-zA-Z0-9]*");
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setInputValidator(const std::string& regex = ".*");
+        bool setInputValidator(const std::string& regex = ".*");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
