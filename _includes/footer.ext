@@ -15,7 +15,7 @@ _paq.push(['trackPageView']);
 _paq.push(['enableLinkTracking']);
 
 function embedTrackingCode() {
-  var u="//stats.texus.me/";
+  var u="//stats.tgui.eu/";
   _paq.push(['setTrackerUrl', u+'piwik.php']);
   _paq.push(['setSiteId', '1']);
   var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
