@@ -262,6 +262,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Label::mouseOnWidget(Vector2f pos) const
+    {
+        if (m_ignoringMouseEvents)
+            return false;
+
+        return ClickableWidget::mouseOnWidget(pos);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void Label::leftMousePressed(Vector2f pos)
     {
         if (m_scrollbar->isShown() && m_scrollbar->mouseOnWidget(pos - getPosition()))

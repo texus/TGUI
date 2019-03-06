@@ -6,6 +6,7 @@ TGUI 0.8.5  (TBD)
 - ChildWindow can now have a different border color in focused state
 - EditBox::setInputValidator now returns false when regex was invalid
 - TitleBarHeight property of default renderer was ignored in ChildWindow
+- Label didn't ignore events after ignoreMouseEvents was called
 
 
 TGUI 0.8.4  (23 February 2019)

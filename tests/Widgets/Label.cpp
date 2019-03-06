@@ -180,6 +180,41 @@ TEST_CASE("[Label]")
             label->leftMouseReleased({115, 80});
             REQUIRE(doubleClickedCount == 1);
         }
+
+        SECTION("Mouse events pass through label with IgnoreMouseEvents=true")
+        {
+            unsigned int mousePressedCountBack = 0;
+            unsigned int mousePressedCountFront = 0;
+
+            label->setPosition({40, 30});
+            label->setSize({150, 100});
+
+            auto backgroundLabel = tgui::Label::copy(label);
+
+            auto parent = tgui::Panel::create({300, 200});
+            parent->setPosition({30, 25});
+            parent->add(backgroundLabel);
+            parent->add(label);
+
+            backgroundLabel->connect("MousePressed", &genericCallback, std::ref(mousePressedCountBack));
+            label->connect("MousePressed", &genericCallback, std::ref(mousePressedCountFront));
+
+            parent->leftMousePressed({175, 135});
+            parent->leftMouseReleased({175, 135});
+            parent->mouseNoLongerDown();
+
+            REQUIRE(mousePressedCountBack == 0);
+            REQUIRE(mousePressedCountFront == 1);
+
+            label->ignoreMouseEvents(true);
+
+            parent->leftMousePressed({175, 135});
+            parent->leftMouseReleased({175, 135});
+            parent->mouseNoLongerDown();
+
+            REQUIRE(mousePressedCountBack == 1);
+            REQUIRE(mousePressedCountFront == 1);
+        }
     }
 
     testWidgetRenderer(label->getRenderer());

@@ -316,6 +316,13 @@ namespace tgui
         bool canGainFocus() const override;
 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
+        /// @return Is the mouse on top of the widget?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool mouseOnWidget(Vector2f pos) const override;
+
+
         /// @internal
         void leftMousePressed(Vector2f pos) override;
 

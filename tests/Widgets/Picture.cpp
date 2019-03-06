@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include <TGUI/Widgets/Picture.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Gui.hpp>
 
 TEST_CASE("[Picture]")
@@ -115,6 +116,41 @@ TEST_CASE("[Picture]")
             picture->leftMousePressed({115, 80});
             picture->leftMouseReleased({115, 80});
             REQUIRE(doubleClickedCount == 1);
+        }
+
+        SECTION("Mouse events pass through picture with IgnoreMouseEvents=true")
+        {
+            unsigned int mousePressedCountBack = 0;
+            unsigned int mousePressedCountFront = 0;
+
+            picture->setPosition({40, 30});
+            picture->setSize({150, 100});
+
+            auto backgroundPic = tgui::Picture::copy(picture);
+
+            auto parent = tgui::Panel::create({300, 200});
+            parent->setPosition({30, 25});
+            parent->add(backgroundPic);
+            parent->add(picture);
+
+            backgroundPic->connect("MousePressed", &genericCallback, std::ref(mousePressedCountBack));
+            picture->connect("MousePressed", &genericCallback, std::ref(mousePressedCountFront));
+
+            parent->leftMousePressed({175, 135});
+            parent->leftMouseReleased({175, 135});
+            parent->mouseNoLongerDown();
+
+            REQUIRE(mousePressedCountBack == 0);
+            REQUIRE(mousePressedCountFront == 1);
+
+            picture->ignoreMouseEvents(true);
+
+            parent->leftMousePressed({175, 135});
+            parent->leftMouseReleased({175, 135});
+            parent->mouseNoLongerDown();
+
+            REQUIRE(mousePressedCountBack == 1);
+            REQUIRE(mousePressedCountFront == 1);
         }
     }
 
