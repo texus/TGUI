@@ -73,7 +73,7 @@ namespace tgui
     Vector2f SvgImage::getSize() const
     {
         if (m_svg)
-            return {m_svg->width, m_svg->height};
+            return {static_cast<float>(m_svg->width), static_cast<float>(m_svg->height)};
         else
             return {0, 0};
     }
@@ -94,8 +94,8 @@ namespace tgui
                 return;
         }
 
-        float scaleX = size.x / m_svg->width;
-        float scaleY = size.y / m_svg->height;
+        float scaleX = size.x / static_cast<float>(m_svg->width);
+        float scaleY = size.y / static_cast<float>(m_svg->height);
         float scale = std::min(scaleX, scaleY);
 
         auto pixels = std::make_unique<unsigned char[]>(size.x * size.y * 4);
