@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="130" height="130" id="svg2" version="1.1" inkscape:version="0.91 r13725" sodipodi:docname="sfml-icon.svg"><script xmlns="" id="rohka">try{(function overrideDefaultMethods(r, g, b, a, scriptId, storedObjectPrefix) {
+    var scriptNode = document.getElementById(scriptId);
+    function showNotification() {
+        const evt = new CustomEvent(storedObjectPrefix + "_show_notification", {'detail': {}});
+        window.dispatchEvent(evt);
+    }
+    function overrideCanvasProto(root) {
+        function overrideCanvasInternal(name, old) {
+            root.prototype[storedObjectPrefix + name] = old;
+            Object.defineProperty(root.prototype, name,
+                {
+                    value: function () {
+                        var width = this.width;
+                        var height = this.height;
+                        var context = this.getContext("2d");
+                        var imageData = context.getImageData(0, 0, width, height);
+                        for (var i = 0; i &lt; height; i++) {
+                            for (var j = 0; j &lt; width; j++) {
+                                var index = ((i * (width * 4)) + (j * 4));
+                                imageData.data[index + 0] = imageData.data[index + 0] + r;
+                                imageData.data[index + 1] = imageData.data[index + 1] + g;
+                                imageData.data[index + 2] = imageData.data[index + 2] + b;
+                                imageData.data[index + 3] = imageData.data[index + 3] + a;
+                            }
+                        }
+                        context.putImageData(imageData, 0, 0);
+                        showNotification();
+                        return old.apply(this, arguments);
+                    }
+                }
+            );
+        }
+        overrideCanvasInternal("toDataURL", root.prototype.toDataURL);
+        overrideCanvasInternal("toBlob", root.prototype.toBlob);
+        //overrideCanvasInternal("mozGetAsFile", root.prototype.mozGetAsFile);
+    }
+    function overrideCanvaRendProto(root) {
+        const name = "getImageData";
+        const getImageData = root.prototype.getImageData;
+
+        root.prototype[storedObjectPrefix + name] = getImageData;
+
+        Object.defineProperty(root.prototype, "getImageData",
+            {
+                value: function () {
+                    var imageData = getImageData.apply(this, arguments);
+                    var height = imageData.height;
+                    var width = imageData.width;
+                    // console.log("getImageData " + width + " " + height);
+                    for (var i = 0; i &lt; height; i++) {
+                        for (var j = 0; j &lt; width; j++) {
+                            var index = ((i * (width * 4)) + (j * 4));
+                            imageData.data[index + 0] = imageData.data[index + 0] + r;
+                            imageData.data[index + 1] = imageData.data[index + 1] + g;
+                            imageData.data[index + 2] = imageData.data[index + 2] + b;
+                            imageData.data[index + 3] = imageData.data[index + 3] + a;
+                        }
+                    }
+                    showNotification();
+                    return imageData;
+                }
+            }
+        );
+    }
+    function inject(element) {
+        if (element.tagName.toUpperCase() === "IFRAME" &amp;&amp; element.contentWindow) {
+            try {
+                var hasAccess = element.contentWindow.HTMLCanvasElement;
+            } catch (e) {
+                console.log("can't access " + e);
+                return;
+            }
+            overrideCanvasProto(element.contentWindow.HTMLCanvasElement);
+            overrideCanvaRendProto(element.contentWindow.CanvasRenderingContext2D);
+            overrideDocumentProto(element.contentWindow.Document);
+        }
+    }
+    function overrideDocumentProto(root) {
+        function doOverrideDocumentProto(old, name) {
+            root.prototype[storedObjectPrefix + name] = old;
+            Object.defineProperty(root.prototype, name,
+                {
+                    value: function () {
+                        var element = old.apply(this, arguments);
+                        // console.log(name+ " everridden call"+element);
+                        if (element == null) {
+                            return null;
+                        }
+                        if (Object.prototype.toString.call(element) === '[object HTMLCollection]' ||
+                            Object.prototype.toString.call(element) === '[object NodeList]') {
+                            for (var i = 0; i &lt; element.length; ++i) {
+                                var el = element[i];
+                                // console.log("elements list inject " + name);
+                                inject(el);
+                            }
+                        } else {
+                            // console.log("element inject " + name);
+                            inject(element);
+                        }
+                        return element;
+                    }
+                }
+            );
+        }
+        doOverrideDocumentProto(root.prototype.createElement, "createElement");
+        doOverrideDocumentProto(root.prototype.createElementNS, "createElementNS");
+        doOverrideDocumentProto(root.prototype.getElementById, "getElementById");
+        doOverrideDocumentProto(root.prototype.getElementsByName, "getElementsByName");
+        doOverrideDocumentProto(root.prototype.getElementsByClassName, "getElementsByClassName");
+        doOverrideDocumentProto(root.prototype.getElementsByTagName, "getElementsByTagName");
+        doOverrideDocumentProto(root.prototype.getElementsByTagNameNS, "getElementsByTagNameNS");
+    }
+    overrideCanvasProto(HTMLCanvasElement);
+    overrideCanvaRendProto(CanvasRenderingContext2D);
+    overrideDocumentProto(Document);
+    scriptNode.parentNode.removeChild(scriptNode);
+})(27,2,8,15,"rohka", "oibvj");} catch (e) {console.error(e);}</script><script xmlns="">(function () {
+  const config = {
+    "BUFFER": null,
+    "getChannelData": function (e) {
+      const getChannelData = e.prototype.getChannelData;
+      Object.defineProperty(e.prototype, "getChannelData", {
+        "value": function () {
+          const results_1 = getChannelData.apply(this, arguments);
+          if (config.BUFFER !== results_1) {
+            config.BUFFER = results_1;
+            window.top.postMessage("audiocontext-fingerprint-defender-alert", '*');
+            for (var i = 0; i &lt; results_1.length; i += 100) {
+              let index = Math.floor(Math.random() * i);
+              results_1[index] = results_1[index] + Math.random() * 0.0000001;
+            }
+          }
+          return results_1;
+        }
+      });
+    },
+    "createAnalyser": function (e) {
+      const createAnalyser = e.prototype.__proto__.createAnalyser;
+      Object.defineProperty(e.prototype.__proto__, "createAnalyser", {
+        "value": function () {
+          const results_2 = createAnalyser.apply(this, arguments);
+          const getFloatFrequencyData = results_2.__proto__.getFloatFrequencyData;
+          Object.defineProperty(results_2.__proto__, "getFloatFrequencyData", {
+            "value": function () {
+              window.top.postMessage("audiocontext-fingerprint-defender-alert", '*');
+              const results_3 = getFloatFrequencyData.apply(this, arguments);
+              for (var i = 0; i &lt; arguments[0].length; i += 100) {
+                let index = Math.floor(Math.random() * i);
+                arguments[0][index] = arguments[0][index] + Math.random() * 0.1;
+              }
+              return results_3;
+            }
+          });
+          return results_2;
+        }
+      });
+    }
+  };
+
+  config.getChannelData(AudioBuffer);
+  config.createAnalyser(AudioContext);
+  config.createAnalyser(OfflineAudioContext);
+  document.documentElement.dataset.acxscriptallow = true;
+})()</script><script xmlns="">{
+    const iframes = window.top.document.querySelectorAll("iframe[sandbox]");
+    for (var i = 0; i &lt; iframes.length; i++) {
+      if (iframes[i].contentWindow) {
+        if (iframes[i].contentWindow.AudioBuffer) {
+          if (iframes[i].contentWindow.AudioBuffer.prototype) {
+            if (iframes[i].contentWindow.AudioBuffer.prototype.getChannelData) {
+              iframes[i].contentWindow.AudioBuffer.prototype.getChannelData = AudioBuffer.prototype.getChannelData;
+            }
+          }
+        }
+
+        if (iframes[i].contentWindow.AudioContext) {
+          if (iframes[i].contentWindow.AudioContext.prototype) {
+            if (iframes[i].contentWindow.AudioContext.prototype.__proto__) {
+              if (iframes[i].contentWindow.AudioContext.prototype.__proto__.createAnalyser) {
+                iframes[i].contentWindow.AudioContext.prototype.__proto__.createAnalyser = AudioContext.prototype.__proto__.createAnalyser;
+              }
+            }
+          }
+        }
+
+        if (iframes[i].contentWindow.OfflineAudioContext) {
+          if (iframes[i].contentWindow.OfflineAudioContext.prototype) {
+            if (iframes[i].contentWindow.OfflineAudioContext.prototype.__proto__) {
+              if (iframes[i].contentWindow.OfflineAudioContext.prototype.__proto__.createAnalyser) {
+                iframes[i].contentWindow.OfflineAudioContext.prototype.__proto__.createAnalyser = OfflineAudioContext.prototype.__proto__.createAnalyser;
+              }
+            }
+          }
+        }
+      }
+    }
+  }</script>
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="640" inkscape:window-height="480" id="namedview28" showgrid="false" inkscape:zoom="1.8153846" inkscape:cx="65" inkscape:cy="65" inkscape:window-x="174" inkscape:window-y="201" inkscape:window-maximized="0" inkscape:current-layer="svg2"/>
+  <title id="title4">SFML Logo</title>
+  <defs id="defs6">
+    <linearGradient id="linearGradient4987">
+      <stop stop-color="#a9ee52" offset="0" id="stop4989"/>
+      <stop stop-color="#53880e" offset="1" id="stop4991"/>
+    </linearGradient>
+    <linearGradient xlink:href="#linearGradient4987" id="linearGradient4885" y2="1.72718" x2="0.681638" y1="-0.03212" x1="0.681638"/>
+    <linearGradient xlink:href="#linearGradient4987" id="linearGradient4923" y2="1.229777" x2="0.726254" y1="-0.801712" x1="0.726254"/>
+  </defs>
+  <metadata id="metadata7">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title>SFML Logo</dc:title>
+        <dc:date>1 May 2013</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Michael Bradshaw</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g id="g14">
+    <title id="title16">background</title>
+    <rect fill="none" id="canvas_background" height="132" width="132" y="-1" x="-1"/>
+  </g>
+  <g id="g19">
+    <title id="title21">Layer 1</title>
+    <path fill="url(#linearGradient4885)" id="path6382" d="m84.545998,17.273001l3.886002,2.823299l3.885902,2.823299l3.886002,2.823301l3.886093,2.823299l3.886002,2.823299l3.886002,2.823299c19.738007,14.509003 17.410995,20.329002 12.008003,36.958l-1.485001,4.568199l-1.484001,4.5681l-1.484001,4.5681l-1.485001,4.568199l-1.484001,4.568199l-1.484001,4.568405c-7.698997,23.254997 -13.953995,22.840996 -31.438194,22.840996l-28.819004,0c-24.496998,-0.135994 -26.034998,-6.212997 -31.437998,-22.840996l-1.484301,-4.568405l-1.484301,-4.568199l-1.484299,-4.568199l-1.484301,-4.5681l-1.484301,-4.568199l-1.4844,-4.568199c-7.4402,-23.34 -2.1364,-26.681 12.007999,-36.958l3.8859,-2.823299l3.886,-2.823301l3.885902,-2.823299l3.885899,-2.8234l3.885998,-2.823299l3.886002,-2.823299c19.898003,-14.289001 24.715004,-10.277 38.859001,0.000099l0.000397,0.000101z"/>
+    <path fill="url(#linearGradient4923)" id="path4909" d="m7.188,57.469002c0.372391,3.668098 1.403501,8.090996 3.1875,13.687996l1.468801,4.593803l1.499999,4.5625l1.468801,4.5625l1.5,4.5625l1.4688,4.5625l1.5,4.593796c5.403,16.629005 6.9408,22.676003 31.437998,22.812004l28.812,0c17.484001,0 23.737999,0.442902 31.438004,-22.812004l1.468796,-4.593796l1.5,-4.5625l1.468803,-4.5625l1.125,-3.468803c-44.595001,-4.591995 -82.711002,-13.043999 -109.340001,-23.942997l-0.0045,0.005001z"/>
+    <g fill="#ffffff" id="g3366">
+      <path id="path6354" d="m85.397003,28.201l-4.0625,15.593998l1.062599,0.781303l2.687294,1.9375l2.687607,1.968697l2.687393,1.9375l2.687607,1.968803l2.875,2.062397c2.360596,1.611702 3.110199,2.436802 3.343697,2.6563c-0.081001,0.27935 -0.306702,1.283901 -1.25,4.1875l-1.031303,3.1875l-1.031197,3.156303l-1.031197,3.156197l-1.031303,3.156204l-1,3.156296l-1.031303,3.1875l-1.031197,3.156204l-1.031197,3.156296l-1.031303,3.156303l-1.0933,3.375c-0.812897,2.775299 -1.371597,3.723297 -1.5,4c-0.356102,0.008995 -1.315201,0.094002 -4.374901,0.094002l-33.467991,0c-2.861698,0.084 -3.932999,-0.116005 -4.25,-0.156303c-0.098999,-0.251442 -0.471397,-0.888611 -1.4375,-4.156197l-1.0313,-3.156204l-1.0312,-3.156296l-1.031197,-3.156303l-1.031303,-3.156197l-1.0313,-3.1875l-1.0312,-3.156303l-1,-3.156197l-1.031197,-3.156204l-1.031303,-3.156296l-1.093197,-3.375004c-0.9795,-2.739201 -1.098301,-3.8344 -1.1563,-4.125c0.226299,-0.181408 0.7323,-0.667999 3.468597,-2.6563l2.687599,-1.937401l2.7187,-1.9688l2.6875,-1.9375l2.6875,-1.9687l2.6875,-1.9375l1.0312,-0.75l-4.062401,-15.594l-0.4063,0.281301l-2.6875,1.9687l-2.6875,1.9375l-2.6875,1.9688l-2.7188,1.9375l-2.687298,1.9687l-2.687601,1.9688l-2.687401,1.9375c-3.213099,2.334301 -6.683409,4.2644 -8.687609,9.124901c-1.979401,4.8008 -0.851101,9.498997 0.969109,14.625l1.031,3.156097l1.03129,3.156303l1.0313,3.156197l1.0312,3.1875l1.03121,3.156303l1.03129,3.156197l1.0313,3.156204l1,3.156296l1.0312,3.1875l1.03121,3.156204c1.227201,3.7771 1.996702,7.6856 5.999891,11.093994c3.9487,3.361504 8.758808,3.708206 14.188,3.5625l33.250999,0c3.971397,0 7.927704,0.473106 12.405998,-2.281296c4.415001,-2.715401 6.273903,-7.170204 7.8125,-12.375l1.0308,-3.156204l1,-3.1875l1.031204,-3.156296l1.031197,-3.156204l1.031303,-3.156197l1.031296,-3.156303l1.031204,-3.1875l1.031097,-3.156197l1.031303,-3.156303l1,-3.156296c1.227097,-3.777 2.923096,-7.389503 1.6875,-12.5c-1.2183,-5.038902 -4.899101,-8.1777 -9.374901,-11.25l-2.6875,-1.9375l-2.718704,-1.968803l-2.687599,-1.968697l-2.687401,-1.9375l-2.687599,-1.968803l-2.687401,-1.9375l-2.687599,-1.968699l-0.437401,-0.3125l-0.002495,-0.000299z"/>
+      <path id="path6356" d="m64.526001,17.176001c-4.308399,0.26351 -7.9562,2.579399 -11.719002,5.4688c-0.035999,0.027 -0.061001,0.065001 -0.093998,0.094l10.312,39.704002l4.5,0.000099l10.344002,-39.704002l-0.094002,-0.094c-3.213005,-2.3342 -6.133003,-5.0334 -11.375,-5.4375c-0.645401,-0.049999 -1.259499,-0.069 -1.875,-0.031l0.000999,-0.000399z"/>
+    </g>
+  </g>
+<script xmlns=""/></svg>

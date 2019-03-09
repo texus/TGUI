@@ -28,7 +28,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Config.hpp>
+#include <TGUI/SvgImage.hpp>
 
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -48,6 +48,7 @@ namespace tgui
     struct TGUI_API TextureData
     {
         std::unique_ptr<sf::Image> image;
+        std::unique_ptr<SvgImage> svgImage;
         sf::Texture texture;
         sf::IntRect rect;
 

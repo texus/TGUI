@@ -223,7 +223,12 @@ namespace tgui
     Vector2f Texture::getImageSize() const
     {
         if (m_data)
-            return sf::Vector2f{m_data->texture.getSize()};
+        {
+            if (m_data->svgImage)
+                return m_data->svgImage->getSize();
+            else
+                return sf::Vector2f{m_data->texture.getSize()};
+        }
         else
             return {0,0};
     }
@@ -380,7 +385,12 @@ namespace tgui
         m_data = data;
 
         if (middleRect == sf::IntRect{})
-            m_middleRect = {0, 0, static_cast<int>(m_data->texture.getSize().x), static_cast<int>(m_data->texture.getSize().y)};
+        {
+            if (m_data->svgImage)
+                m_middleRect = {0, 0, static_cast<int>(m_data->svgImage->getSize().x), static_cast<int>(m_data->svgImage->getSize().y)};
+            else
+                m_middleRect = {0, 0, static_cast<int>(m_data->texture.getSize().x), static_cast<int>(m_data->texture.getSize().y)};
+        }
         else
             m_middleRect = middleRect;
     }

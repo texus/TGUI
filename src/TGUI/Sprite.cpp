@@ -28,6 +28,7 @@
 #include <TGUI/Clipping.hpp>
 
 #include <cassert>
+#include <cmath>
 
 #ifdef TGUI_USE_CPP17
     #include <optional>
@@ -267,39 +268,58 @@ namespace tgui
     void Sprite::updateVertices()
     {
         // Figure out how the image is scaled best
-        Vector2f textureSize{m_texture.getImageSize()};
-        FloatRect middleRect{sf::FloatRect{m_texture.getMiddleRect()}};
-        if (middleRect == FloatRect(0, 0, textureSize.x, textureSize.y))
+        Vector2f textureSize;
+        FloatRect middleRect;
+        if (m_texture.getData()->svgImage)
         {
+            if (!m_svgTexture)
+                m_svgTexture = aurora::makeCopied<sf::Texture>();
+
+            const sf::Vector2u svgTextureSize{
+                static_cast<unsigned int>(std::round(getSize().x)),
+                static_cast<unsigned int>(std::round(getSize().y))};
+
+            m_texture.getData()->svgImage->rasterize(*m_svgTexture, svgTextureSize);
+
             m_scalingType = ScalingType::Normal;
-        }
-        else if (middleRect.height == textureSize.y)
-        {
-            if (m_size.x >= (textureSize.x - middleRect.width) * (m_size.y / textureSize.y))
-                m_scalingType = ScalingType::Horizontal;
-            else
-                m_scalingType = ScalingType::Normal;
-        }
-        else if (middleRect.width == textureSize.x)
-        {
-            if (m_size.y >= (textureSize.y - middleRect.height) * (m_size.x / textureSize.x))
-                m_scalingType = ScalingType::Vertical;
-            else
-                m_scalingType = ScalingType::Normal;
+            textureSize = getSize();
         }
         else
         {
-            if (m_size.x >= textureSize.x - middleRect.width)
+            textureSize = m_texture.getImageSize();
+            middleRect = sf::FloatRect{m_texture.getMiddleRect()};
+            if (middleRect == FloatRect(0, 0, textureSize.x, textureSize.y))
             {
-                if (m_size.y >= textureSize.y - middleRect.height)
-                    m_scalingType = ScalingType::NineSlice;
-                else
-                    m_scalingType = ScalingType::Horizontal;
-            }
-            else if (m_size.y >= (textureSize.y - middleRect.height) * (m_size.x / textureSize.x))
-                m_scalingType = ScalingType::Vertical;
-            else
                 m_scalingType = ScalingType::Normal;
+            }
+            else if (middleRect.height == textureSize.y)
+            {
+                if (m_size.x >= (textureSize.x - middleRect.width) * (m_size.y / textureSize.y))
+                    m_scalingType = ScalingType::Horizontal;
+                else
+                    m_scalingType = ScalingType::Normal;
+            }
+            else if (middleRect.width == textureSize.x)
+            {
+                if (m_size.y >= (textureSize.y - middleRect.height) * (m_size.x / textureSize.x))
+                    m_scalingType = ScalingType::Vertical;
+                else
+                    m_scalingType = ScalingType::Normal;
+            }
+            else
+            {
+                if (m_size.x >= textureSize.x - middleRect.width)
+                {
+                    if (m_size.y >= textureSize.y - middleRect.height)
+                        m_scalingType = ScalingType::NineSlice;
+                    else
+                        m_scalingType = ScalingType::Horizontal;
+                }
+                else if (m_size.y >= (textureSize.y - middleRect.height) * (m_size.x / textureSize.x))
+                    m_scalingType = ScalingType::Vertical;
+                else
+                    m_scalingType = ScalingType::Normal;
+            }
         }
 
         // Calculate the vertices based on the way we are scaling
@@ -427,8 +447,12 @@ namespace tgui
             clipping = std::make_unique<Clipping>(target, states, Vector2f{m_visibleRect.left, m_visibleRect.top}, Vector2f{m_visibleRect.width, m_visibleRect.height});
 #endif
 
+        if (m_texture.getData()->svgImage)
+            states.texture = m_svgTexture.get();
+        else
+            states.texture = &m_texture.getData()->texture;
+
         states.shader = m_shader;
-        states.texture = &m_texture.getData()->texture;
         target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::TrianglesStrip, states);
     }
 

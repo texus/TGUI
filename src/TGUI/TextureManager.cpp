@@ -77,20 +77,27 @@ namespace tgui
 
         // Load the image
         auto data = imageIt->second.back().data;
-        data->image = texture.getImageLoader()(filename);
-        if (data->image != nullptr)
+        if ((filename.getSize() > 4) && (toLower(filename.substring(filename.getSize() - 4, 4)) == ".svg"))
         {
-            // Create a texture from the image
-            bool loadFromImageSuccess;
-            if (partRect == sf::IntRect{})
-                loadFromImageSuccess = data->texture.loadFromImage(*data->image);
-            else
-                loadFromImageSuccess = data->texture.loadFromImage(*data->image, partRect);
-
-            if (loadFromImageSuccess)
+            data->svgImage = std::make_unique<SvgImage>(filename);
+            if (data->svgImage->isSet())
                 return data;
-            else
-                return nullptr;
+        }
+        else // Not an svg
+        {
+            data->image = texture.getImageLoader()(filename);
+            if (data->image != nullptr)
+            {
+                // Create a texture from the image
+                bool loadFromImageSuccess;
+                if (partRect == sf::IntRect{})
+                    loadFromImageSuccess = data->texture.loadFromImage(*data->image);
+                else
+                    loadFromImageSuccess = data->texture.loadFromImage(*data->image, partRect);
+
+                if (loadFromImageSuccess)
+                    return data;
+            }
         }
 
         // The image could not be loaded

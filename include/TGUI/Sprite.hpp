@@ -30,6 +30,7 @@
 #include <TGUI/Vector2f.hpp>
 #include <TGUI/FloatRect.hpp>
 #include <TGUI/Color.hpp>
+#include <TGUI/Aurora/SmartPtr/CopiedPtr.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Vertex.hpp>
@@ -223,6 +224,7 @@ namespace tgui
 
         Vector2f    m_size;
         Texture     m_texture;
+        aurora::CopiedPtr<sf::Texture> m_svgTexture;
         std::vector<sf::Vertex> m_vertices;
 
         FloatRect   m_visibleRect;
