@@ -189,8 +189,7 @@ namespace tgui
 
     void Text::recalculateSize()
     {
-        const std::shared_ptr<sf::Font> font = m_font;
-        if (font == nullptr)
+        if (m_font == nullptr)
         {
             m_size = {0, 0};
             return;
@@ -205,7 +204,7 @@ namespace tgui
         const unsigned int textSize = m_text.getCharacterSize();
         for (std::size_t i = 0; i < string.getSize(); ++i)
         {
-            const float kerning = font->getKerning(prevChar, string[i], textSize);
+            const float kerning = m_font.getKerning(prevChar, string[i], textSize);
             if (string[i] == '\n')
             {
                 maxWidth = std::max(maxWidth, width);
@@ -213,15 +212,15 @@ namespace tgui
                 lines++;
             }
             else if (string[i] == '\t')
-                width += (static_cast<float>(font->getGlyph(' ', textSize, bold).advance) * 4) + kerning;
+                width += (static_cast<float>(m_font.getGlyph(' ', textSize, bold).advance) * 4) + kerning;
             else
-                width += static_cast<float>(font->getGlyph(string[i], textSize, bold).advance) + kerning;
+                width += static_cast<float>(m_font.getGlyph(string[i], textSize, bold).advance) + kerning;
 
             prevChar = string[i];
         }
 
         const float extraVerticalSpace = Text::calculateExtraVerticalSpace(m_font, m_text.getCharacterSize(), m_text.getStyle());
-        const float height = lines * font->getLineSpacing(m_text.getCharacterSize()) + extraVerticalSpace;
+        const float height = lines * m_font.getLineSpacing(m_text.getCharacterSize()) + extraVerticalSpace;
         m_size = {std::max(maxWidth, width), height};
     }
 
@@ -327,11 +326,11 @@ namespace tgui
             if (curChar == '\n')
                 break;
             else if (curChar == '\t')
-                charWidth = font.getFont()->getGlyph(' ', characterSize, bold).advance * 4.0f;
+                charWidth = font.getGlyph(' ', characterSize, bold).advance * 4.0f;
             else
-                charWidth = font.getFont()->getGlyph(curChar, characterSize, bold).advance;
+                charWidth = font.getGlyph(curChar, characterSize, bold).advance;
 
-            const float kerning = font.getFont()->getKerning(prevChar, curChar, characterSize);
+            const float kerning = font.getKerning(prevChar, curChar, characterSize);
 
             width = width + charWidth + kerning;
             prevChar = curChar;
@@ -342,9 +341,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    unsigned int Text::findBestTextSize(Font fontWrapper, float height, int fit)
+    unsigned int Text::findBestTextSize(Font font, float height, int fit)
     {
-        const std::shared_ptr<sf::Font> font = fontWrapper.getFont();
         if (!font)
             return 0;
 
@@ -356,16 +354,16 @@ namespace tgui
             textSizes[i] = i + 1;
 
         const auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height,
-                                           [&](unsigned int charSize, float h) { return font->getLineSpacing(charSize) + Text::calculateExtraVerticalSpace(font, charSize) < h; });
+                                           [&](unsigned int charSize, float h) { return font.getLineSpacing(charSize) + Text::calculateExtraVerticalSpace(font, charSize) < h; });
         if (high == textSizes.end())
             return static_cast<unsigned int>(height);
 
-        const float highLineSpacing = font->getLineSpacing(*high);
+        const float highLineSpacing = font.getLineSpacing(*high);
         if (highLineSpacing == height)
             return *high;
 
         const auto low = high - 1;
-        const float lowLineSpacing = font->getLineSpacing(*low);
+        const float lowLineSpacing = font.getLineSpacing(*low);
 
         if (fit < 0)
             return *low;
@@ -391,11 +389,11 @@ namespace tgui
 
         // Calculate the height of the first line (char size = everything above baseline, height + top = part below baseline)
         const float lineHeight = characterSize
-                                 + font.getFont()->getGlyph('g', characterSize, bold).bounds.height
-                                 + font.getFont()->getGlyph('g', characterSize, bold).bounds.top;
+                                 + font.getGlyph('g', characterSize, bold).bounds.height
+                                 + font.getGlyph('g', characterSize, bold).bounds.top;
 
         // Get the line spacing sfml returns
-        const float lineSpacing = font.getFont()->getLineSpacing(characterSize);
+        const float lineSpacing = font.getLineSpacing(characterSize);
 
         // Calculate the offset of the text
         return lineHeight - lineSpacing;
@@ -427,11 +425,11 @@ namespace tgui
                     break;
                 }
                 else if (curChar == '\t')
-                    charWidth = font.getFont()->getGlyph(' ', textSize, bold).advance * 4;
+                    charWidth = font.getGlyph(' ', textSize, bold).advance * 4;
                 else
-                    charWidth = font.getFont()->getGlyph(curChar, textSize, bold).advance;
+                    charWidth = font.getGlyph(curChar, textSize, bold).advance;
 
-                const float kerning = font.getFont()->getKerning(prevChar, curChar, textSize);
+                const float kerning = font.getKerning(prevChar, curChar, textSize);
                 if ((maxWidth == 0) || (width + charWidth + kerning <= maxWidth))
                 {
                     width += kerning + charWidth;
