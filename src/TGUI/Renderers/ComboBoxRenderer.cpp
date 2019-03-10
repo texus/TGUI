@@ -35,6 +35,7 @@ namespace tgui
 
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, BackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, TextColor, Color::Black)
+    TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, DefaultTextColor, {})
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowBackgroundColor, Color::White)
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowBackgroundColorHover, {})
     TGUI_RENDERER_PROPERTY_COLOR(ComboBoxRenderer, ArrowColor, Color::Black)
@@ -46,6 +47,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(ComboBoxRenderer, TextureArrowHover)
 
     TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, TextStyle, sf::Text::Regular)
+    TGUI_RENDERER_PROPERTY_TEXT_STYLE(ComboBoxRenderer, DefaultTextStyle, {})
 
     TGUI_RENDERER_PROPERTY_RENDERER(ComboBoxRenderer, ListBox, "listbox")
 }

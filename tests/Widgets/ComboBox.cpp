@@ -246,6 +246,13 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getTextSize() == 25);
     }
 
+    SECTION("DefaultText")
+    {
+        REQUIRE(comboBox->getDefaultText().isEmpty());
+        comboBox->setDefaultText("Hello");
+        REQUIRE(comboBox->getDefaultText() == "Hello");
+    }
+
     SECTION("ExpandDirection")
     {
         REQUIRE(comboBox->getExpandDirection() == tgui::ComboBox::ExpandDirection::Down);
@@ -353,10 +360,12 @@ TEST_CASE("[ComboBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", "rgb(50, 60, 70)"));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", "rgb(60, 70, 80)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", "rgb(70, 80, 90)"));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", "rgb(110, 120, 130)"));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", "rgb(80, 90, 100)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", "(5, 6, 7, 8)"));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", "Bold"));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", "Italic"));
                 REQUIRE_NOTHROW(renderer->setProperty("ListBox", "{ BackgroundColor = Red; TextColor = Blue; }"));
             }
 
@@ -368,10 +377,12 @@ TEST_CASE("[ComboBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColor", sf::Color{50, 60, 70}));
                 REQUIRE_NOTHROW(renderer->setProperty("ArrowColorHover", sf::Color{60, 70, 80}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextColor", sf::Color{70, 80, 90}));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextColor", sf::Color{110, 120, 130}));
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColor", sf::Color{80, 90, 100}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", sf::Text::Bold));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", sf::Text::Italic));
                 REQUIRE_NOTHROW(renderer->setProperty("ListBox", listBoxRenderer.getData()));
             }
 
@@ -383,10 +394,12 @@ TEST_CASE("[ComboBox]")
                 renderer->setArrowColor({50, 60, 70});
                 renderer->setArrowColorHover({60, 70, 80});
                 renderer->setTextColor({70, 80, 90});
+                renderer->setDefaultTextColor({110, 120, 130});
                 renderer->setBorderColor({80, 90, 100});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setPadding({5, 6, 7, 8});
                 renderer->setTextStyle(sf::Text::Bold);
+                renderer->setDefaultTextStyle(sf::Text::Italic);
                 renderer->setListBox(listBoxRenderer.getData());
             }
 
@@ -396,10 +409,12 @@ TEST_CASE("[ComboBox]")
             REQUIRE(renderer->getProperty("ArrowColor").getColor() == sf::Color(50, 60, 70));
             REQUIRE(renderer->getProperty("ArrowColorHover").getColor() == sf::Color(60, 70, 80));
             REQUIRE(renderer->getProperty("TextColor").getColor() == sf::Color(70, 80, 90));
+            REQUIRE(renderer->getProperty("DefaultTextColor").getColor() == sf::Color(110, 120, 130));
             REQUIRE(renderer->getProperty("BorderColor").getColor() == sf::Color(80, 90, 100));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("Padding").getOutline() == tgui::Borders(5, 6, 7, 8));
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == sf::Text::Bold);
+            REQUIRE(renderer->getProperty("DefaultTextStyle").getTextStyle() == sf::Text::Italic);
 
             REQUIRE(renderer->getListBox()->propertyValuePairs.size() == 2);
             REQUIRE(renderer->getListBox()->propertyValuePairs["backgroundcolor"].getColor() == sf::Color::Red);
@@ -468,11 +483,13 @@ TEST_CASE("[ComboBox]")
         tgui::ComboBoxRenderer renderer = tgui::RendererData::create();
         renderer.setBackgroundColor(sf::Color::Green);
         renderer.setTextColor(sf::Color::Red);
+        renderer.setDefaultTextColor(sf::Color::White);
         renderer.setBorderColor(sf::Color::Blue);
         renderer.setArrowBackgroundColor(sf::Color::Cyan);
         renderer.setArrowColor(sf::Color::Magenta);
         renderer.setBorders({1, 2, 3, 4});
         renderer.setTextStyle(sf::Text::Italic);
+        renderer.setDefaultTextStyle(sf::Text::Italic);
         renderer.setOpacity(0.7f);
         comboBox->setRenderer(renderer.getData());
 
@@ -592,6 +609,12 @@ TEST_CASE("[ComboBox]")
                     }
                 }
             }
+        }
+
+        SECTION("Default text")
+        {
+            comboBox->setDefaultText("Test");
+            TEST_DRAW("ComboBox_DefaultText.png")
         }
     }
 }

@@ -1,6 +1,8 @@
 TGUI 0.8.5  (TBD)
 -----------------
 
+- Svg images are now supported
+- ComboBox can now contain some text when no item is selected
 - Added RightClicked signal to ListView
 - Added functions to ListView to change existing items
 - ChildWindow can now have a different border color in focused state

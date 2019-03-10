@@ -50,6 +50,8 @@ struct ComboBoxProperties : WidgetProperties
             comboBox->setItemsToDisplay(static_cast<std::size_t>(tgui::stoi(value)));
         else if (property == "TextSize")
             comboBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
+        else if (property == "DefaultText")
+            comboBox->setDefaultText(value);
         else if (property == "MaximumItems")
             comboBox->setMaximumItems(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "ExpandDirection")
@@ -74,6 +76,7 @@ struct ComboBoxProperties : WidgetProperties
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
+        pair.second["DefaultTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getDefaultTextColor())};
         pair.second["ArrowColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColor())};
         pair.second["ArrowColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColorHover())};
         pair.second["ArrowBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowBackgroundColor())};
@@ -83,6 +86,7 @@ struct ComboBoxProperties : WidgetProperties
         pair.second["TextureArrow"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrow())};
         pair.second["TextureArrowHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureArrowHover())};
         pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
+        pair.second["DefaultTextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getDefaultTextStyle())};
         return pair;
     }
 

@@ -40,6 +40,7 @@ namespace tgui
         m_type = "ComboBox";
         m_draggableWidget = true;
         m_text.setFont(m_fontCached);
+        m_defaultText.setFont(m_fontCached);
 
         initListBox();
 
@@ -59,6 +60,7 @@ namespace tgui
         m_nrOfItemsToDisplay             {other.m_nrOfItemsToDisplay},
         m_listBox                        {ListBox::copy(other.m_listBox)},
         m_text                           {other.m_text},
+        m_defaultText                    {other.m_defaultText},
         m_expandDirection                {other.m_expandDirection},
         m_spriteBackground               {other.m_spriteBackground},
         m_spriteArrow                    {other.m_spriteArrow},
@@ -83,6 +85,7 @@ namespace tgui
         m_nrOfItemsToDisplay             {std::move(other.m_nrOfItemsToDisplay)},
         m_listBox                        {std::move(other.m_listBox)},
         m_text                           {std::move(other.m_text)},
+        m_defaultText                    {std::move(other.m_defaultText)},
         m_expandDirection                {std::move(other.m_expandDirection)},
         m_spriteBackground               {std::move(other.m_spriteBackground)},
         m_spriteArrow                    {std::move(other.m_spriteArrow)},
@@ -112,6 +115,7 @@ namespace tgui
             std::swap(m_nrOfItemsToDisplay,              temp.m_nrOfItemsToDisplay);
             std::swap(m_listBox,                         temp.m_listBox);
             std::swap(m_text,                            temp.m_text);
+            std::swap(m_defaultText,                     temp.m_defaultText);
             std::swap(m_expandDirection,                 temp.m_expandDirection);
             std::swap(m_spriteBackground,                temp.m_spriteBackground);
             std::swap(m_spriteArrow,                     temp.m_spriteArrow);
@@ -140,6 +144,7 @@ namespace tgui
             m_nrOfItemsToDisplay              = std::move(other.m_nrOfItemsToDisplay);
             m_listBox                         = std::move(other.m_listBox);
             m_text                            = std::move(other.m_text);
+            m_defaultText                     = std::move(other.m_defaultText);
             m_expandDirection                 = std::move(other.m_expandDirection);
             m_spriteBackground                = std::move(other.m_spriteBackground);
             m_spriteArrow                     = std::move(other.m_spriteArrow);
@@ -228,6 +233,7 @@ namespace tgui
         }
 
         m_text.setCharacterSize(m_listBox->getTextSize());
+        m_defaultText.setCharacterSize(m_listBox->getTextSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,6 +449,7 @@ namespace tgui
     {
         m_listBox->setTextSize(textSize);
         m_text.setCharacterSize(m_listBox->getTextSize());
+        m_defaultText.setCharacterSize(m_listBox->getTextSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -450,6 +457,20 @@ namespace tgui
     unsigned int ComboBox::getTextSize() const
     {
         return m_listBox->getTextSize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ComboBox::setDefaultText(const sf::String& defaultText)
+    {
+        m_defaultText.setString(defaultText);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const sf::String& ComboBox::getDefaultText() const
+    {
+        return m_defaultText.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -581,10 +602,28 @@ namespace tgui
         else if (property == "textcolor")
         {
             m_text.setColor(getSharedRenderer()->getTextColor());
+            if (!getSharedRenderer()->getDefaultTextColor().isSet())
+                m_defaultText.setColor(getSharedRenderer()->getTextColor());
         }
         else if (property == "textstyle")
         {
             m_text.setStyle(getSharedRenderer()->getTextStyle());
+            if (!getSharedRenderer()->getDefaultTextStyle().isSet())
+                m_defaultText.setStyle(getSharedRenderer()->getTextStyle());
+        }
+        else if (property == "defaulttextcolor")
+        {
+            if (getSharedRenderer()->getDefaultTextColor().isSet())
+                m_defaultText.setColor(getSharedRenderer()->getDefaultTextColor());
+            else
+                m_defaultText.setColor(getSharedRenderer()->getTextColor());
+        }
+        else if (property == "defaulttextstyle")
+        {
+            if (getSharedRenderer()->getDefaultTextStyle().isSet())
+                m_defaultText.setStyle(getSharedRenderer()->getDefaultTextStyle());
+            else
+                m_defaultText.setStyle(getSharedRenderer()->getTextStyle());
         }
         else if (property == "texturebackground")
         {
@@ -636,12 +675,14 @@ namespace tgui
             m_spriteArrowHover.setOpacity(m_opacityCached);
 
             m_text.setOpacity(m_opacityCached);
+            m_defaultText.setOpacity(m_opacityCached);
         }
         else if (property == "font")
         {
             Widget::rendererChanged(property);
 
             m_text.setFont(m_fontCached);
+            m_defaultText.setFont(m_fontCached);
             m_listBox->setInheritedFont(m_fontCached);
 
             setSize(m_size);
@@ -910,13 +951,18 @@ namespace tgui
         }
 
         // Draw the selected item
-        if (!m_text.getString().isEmpty())
+        const int selectedItemIndex = getSelectedItemIndex();
+        if (((selectedItemIndex >= 0) && !m_text.getString().isEmpty()) || ((selectedItemIndex == -1) && !m_defaultText.getString().isEmpty()))
         {
             const Clipping clipping{target, statesForText, {m_paddingCached.getLeft(), m_paddingCached.getTop()}, {getInnerSize().x - m_paddingCached.getLeft() - m_paddingCached.getRight() - arrowSize, getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()}};
 
             statesForText.transform.translate(m_paddingCached.getLeft() + m_text.getExtraHorizontalPadding(),
                                               m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTop() - m_paddingCached.getBottom()) - m_text.getSize().y) / 2.0f));
-            m_text.draw(target, statesForText);
+
+            if (selectedItemIndex >= 0)
+                m_text.draw(target, statesForText);
+            else
+                m_defaultText.draw(target, statesForText);
         }
     }
 
