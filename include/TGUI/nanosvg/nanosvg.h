@@ -183,6 +183,7 @@ void nsvgDelete(NSVGimage* image);
 
 #ifdef NANOSVG_IMPLEMENTATION
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -1131,7 +1132,7 @@ static double nsvg__atof(const char* s)
 
 	// Parse optional exponent
 	if (*cur == 'e' || *cur == 'E') {
-		int expPart = 0;
+		long expPart = 0;
 		cur++; // skip 'E'
 		expPart = strtol(cur, &end, 10); // Parse digit sequence with sign
 		if (cur != end) {
@@ -1169,7 +1170,7 @@ static const char* nsvg__parseNumber(const char* s, char* it, const int size)
 		}
 	}
 	// exponent
-	if (*s == 'e' || *s == 'E') {
+	if ((*s == 'e' || *s == 'E') && (s[1] != 'm' && s[1] != 'x')) {
 		if (i < last) it[i++] = *s;
 		s++;
 		if (*s == '-' || *s == '+') {
