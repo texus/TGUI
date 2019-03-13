@@ -289,7 +289,7 @@ TEST_CASE("[ComboBox]")
             comboBox->setSize(150, 24);
             comboBox->getRenderer()->setBorders(2);
             comboBox->addItem("1");
-            comboBox->addItem("2");
+            comboBox->addItem("2", "id2");
             comboBox->addItem("3");
             comboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
 
@@ -321,7 +321,6 @@ TEST_CASE("[ComboBox]")
 
             SECTION("Mouse wheel scroll")
             {
-                REQUIRE(itemSelectedCount == 0);
                 container->mouseWheelScrolled(-1, mousePosOnComboBox);
                 REQUIRE(comboBox->getSelectedItemIndex() == 0);
                 REQUIRE(itemSelectedCount == 1);
@@ -336,6 +335,24 @@ TEST_CASE("[ComboBox]")
                 mouseClick(mousePosOnComboBox);
                 container->mouseWheelScrolled(-1, mousePosOnComboBox);
                 REQUIRE(comboBox->getSelectedItemIndex() == 0);
+                REQUIRE(itemSelectedCount == 3);
+            }
+
+            SECTION("Programmatically")
+            {
+                comboBox->setSelectedItem("1");
+                REQUIRE(itemSelectedCount == 1);
+                comboBox->setSelectedItem("1");
+                REQUIRE(itemSelectedCount == 1);
+
+                comboBox->setSelectedItemById("id2");
+                REQUIRE(itemSelectedCount == 2);
+                comboBox->setSelectedItemById("id2");
+                REQUIRE(itemSelectedCount == 2);
+
+                comboBox->setSelectedItemByIndex(0);
+                REQUIRE(itemSelectedCount == 3);
+                comboBox->setSelectedItemByIndex(0);
                 REQUIRE(itemSelectedCount == 3);
             }
         }

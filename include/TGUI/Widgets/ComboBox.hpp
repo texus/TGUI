@@ -630,6 +630,8 @@ namespace tgui
         Text m_text;
         Text m_defaultText;
 
+        int m_previousSelectedItemIndex = -1;
+
 #ifdef TGUI_NEXT
         ExpandDirection m_expandDirection = ExpandDirection::Automatic;
 #else

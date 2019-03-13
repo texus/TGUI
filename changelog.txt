@@ -7,6 +7,7 @@ TGUI 0.8.5  (TBD)
 - Added functions to ListView to change existing items
 - ChildWindow can now have a different border color in focused state
 - EditBox::setInputValidator now returns false when regex was invalid
+- Let ComboBox send the ItemSelected event only after the mouse is released
 - TitleBarHeight property of default renderer was ignored in ChildWindow
 - Label didn't ignore events after ignoreMouseEvents was called
 
