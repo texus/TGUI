@@ -639,17 +639,30 @@ namespace tgui
 
     void Grid::updatePositionsOfAllWidgets()
     {
+        Vector2f position;
+
+        // Fill the entire space when a size was given
         Vector2f extraOffset;
-        if (!m_autoSize && m_gridWidgets.size() > 1)
+        if (!m_autoSize)
         {
             const Vector2f minimumSize = getMinimumSize();
             if (getSize().x > minimumSize.x)
-                extraOffset.x = (getSize().x - minimumSize.x) / (m_gridWidgets.size() - 1);
+            {
+                if (m_columnWidth.size() > 1)
+                    extraOffset.x = (getSize().x - minimumSize.x) / (m_columnWidth.size() - 1);
+                else
+                    position.x += (getSize().x - minimumSize.x) / 2.f;
+            }
+
             if (getSize().y > minimumSize.y)
-                extraOffset.y = (getSize().y - minimumSize.y) / (m_gridWidgets.size() - 1);
+            {
+                if (m_rowHeight.size() > 1)
+                    extraOffset.y = (getSize().y - minimumSize.y) / (m_rowHeight.size() - 1);
+                else
+                    position.y += (getSize().y - minimumSize.y) / 2.f;
+            }
         }
 
-        Vector2f position;
         for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
         {
             const Vector2f previousPosition = position;
@@ -662,7 +675,7 @@ namespace tgui
                     continue;
                 }
 
-                Vector2f cellPosition = position + (extraOffset / 2.f);
+                Vector2f cellPosition = position;
                 switch (m_objAlignment[row][col])
                 {
                 case Alignment::UpperLeft:
