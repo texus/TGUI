@@ -317,6 +317,24 @@ void GuiBuilder::mainLoop()
                     if (m_selectedForm)
                         m_selectedForm->save();
                 }
+                else if ((event.key.code == sf::Keyboard::Key::C) && event.key.control)
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
+                        copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
+                }
+                else if ((event.key.code == sf::Keyboard::Key::V) && event.key.control)
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus())
+                        pasteWidgetFromInternalClipboard();
+                }
+                else if ((event.key.code == sf::Keyboard::Key::X) && event.key.control)
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
+                    {
+                        copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
+                        removeSelectedWidget();
+                    }
+                }
             }
 
             m_gui.handleEvent(event);
@@ -337,7 +355,6 @@ void GuiBuilder::reloadProperties()
 
     if (selectedWidget)
     {
-        topPosition += 35;
         addPropertyValueWidgets(topPosition, {"Name", {"String", selectedWidget->name}},
             [=](const sf::String& value){
                 if (selectedWidget->name != value)
@@ -544,7 +561,16 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
 
     m_menuBar = m_gui.get<tgui::MenuBar>("MenuBar");
     m_menuBar->connect("MouseEntered", [](tgui::Widget::Ptr menuBar, std::string){ menuBar->moveToFront(); });
-    m_menuBar->connect("MenuItemClicked", [this](std::string item){ menuBarItemClicked(item); });
+    m_menuBar->connectMenuItem({"File", "New / Load"}, [this]{ menuBarCallbackNewOrLoadFile(); });
+    m_menuBar->connectMenuItem({"File", "Save"}, [this]{ menuBarCallbackSaveFile(); });
+    m_menuBar->connectMenuItem({"File", "Quit"}, [this]{ menuBarCallbackQuit(); });
+    m_menuBar->connectMenuItem({"Themes", "Edit"}, [this]{ menuBarCallbackEditThemes(); });
+    m_menuBar->connectMenuItem({"Widget", "Bring to front"}, [this]{ menuBarCallbackBringWidgetToFront(); });
+    m_menuBar->connectMenuItem({"Widget", "Send to back"}, [this]{ menuBarCallbackSendWidgetToBack(); });
+    m_menuBar->connectMenuItem({"Widget", "Cut"}, [this]{ menuBarCallbackCutWidget(); });
+    m_menuBar->connectMenuItem({"Widget", "Copy"}, [this]{ menuBarCallbackCopyWidget(); });
+    m_menuBar->connectMenuItem({"Widget", "Paste"}, [this]{ menuBarCallbackPasteWidget(); });
+    m_menuBar->connectMenuItem({"Widget", "Delete"}, [this]{ menuBarCallbackDeleteWidget(); });
 
     loadToolbox();
     initProperties();
@@ -706,38 +732,18 @@ void GuiBuilder::initProperties()
     m_propertiesContainer->removeAllWidgets();
 
     auto selectedWidget = m_selectedForm->getSelectedWidget();
+
+    m_menuBar->setMenuItemEnabled({"Widget", "Bring to front"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuItemEnabled({"Widget", "Send to back"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuItemEnabled({"Widget", "Cut"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuItemEnabled({"Widget", "Copy"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuItemEnabled({"Widget", "Paste"}, !m_copiedWidgetType.empty());
+    m_menuBar->setMenuItemEnabled({"Widget", "Delete"}, (selectedWidget != nullptr));
+    m_menuBar->setMenuEnabled("Widget", (selectedWidget != nullptr) || !m_copiedWidgetType.empty());
+
     if (selectedWidget)
     {
         const float scrollbarWidth = m_propertiesContainer->getScrollbarWidth();
-        auto buttonCopy = tgui::Button::create("Copy");
-        buttonCopy->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
-        buttonCopy->setPosition({0, 0});
-        buttonCopy->connect("Pressed", [this]{ copyWidget(m_selectedForm->getSelectedWidget()); });
-        m_propertiesContainer->add(buttonCopy);
-
-        auto buttonRemove = tgui::Button::create("Remove");
-        buttonRemove->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
-        buttonRemove->setPosition({((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 1.f / 3.f), 0});
-        buttonRemove->connect("Pressed", [this]{ removeSelectedWidget(); });
-        m_propertiesContainer->add(buttonRemove);
-
-        auto buttonToFront = tgui::Button::create("ToFront");
-        buttonToFront->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 4, 25});
-        buttonToFront->setPosition({2.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 2.f / 3.f), 0});
-        buttonToFront->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToFront(); m_selectedForm->setChanged(true); });
-        m_propertiesContainer->add(buttonToFront);
-
-        auto buttonToBack = tgui::Button::create("ToBack");
-        buttonToBack->setSize({((bindWidth(m_propertiesContainer) - scrollbarWidth) / 4.f) - 5, 25});
-        buttonToBack->setPosition({3.f * ((bindWidth(m_propertiesContainer) - 20 - scrollbarWidth) / 4.f) + (20.f * 3.f / 3.f), 0});
-        buttonToBack->connect("Pressed", [this]{ m_selectedForm->getSelectedWidget()->ptr->moveToBack(); m_selectedForm->setChanged(true); });
-        m_propertiesContainer->add(buttonToBack);
-
-        const auto smallestTextsize = std::min({buttonCopy->getTextSize(), buttonRemove->getTextSize(), buttonToFront->getTextSize(), buttonToBack->getTextSize()});
-        buttonCopy->setTextSize(smallestTextsize);
-        buttonRemove->setTextSize(smallestTextsize);
-        buttonToFront->setTextSize(smallestTextsize);
-        buttonToBack->setTextSize(smallestTextsize);
 
         auto rendererComboBox = tgui::ComboBox::create();
         rendererComboBox->setSize({bindWidth(m_propertiesContainer) - scrollbarWidth, EDIT_BOX_HEIGHT});
@@ -912,90 +918,6 @@ void GuiBuilder::loadForm()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::menuBarItemClicked(const std::string& menuItem)
-{
-    if (menuItem == "New / Load")
-    {
-        while (!m_forms.empty())
-            closeForm(m_forms[0].get());
-    }
-    else if (menuItem == "Save")
-    {
-        m_selectedForm->save();
-    }
-    else if (menuItem == "Quit")
-    {
-        while (!m_forms.empty())
-            closeForm(m_forms[0].get());
-
-        m_window.close();
-    }
-    else if (menuItem == "Edit")
-    {
-        auto editThemesWindow = openWindowWithFocus();
-        editThemesWindow->setTitle("Edit themes");
-        editThemesWindow->setSize({320, 280});
-        editThemesWindow->loadWidgetsFromFile("resources/forms/EditThemes.txt");
-
-        auto buttonAdd = editThemesWindow->get<tgui::Button>("ButtonAdd");
-        auto buttonDelete = editThemesWindow->get<tgui::Button>("ButtonDelete");
-        auto newThemeEditBox = editThemesWindow->get<tgui::EditBox>("NewThemeEditBox");
-        auto themesList = editThemesWindow->get<tgui::ListBox>("ThemesList");
-
-        themesList->removeAllItems();
-        for (auto& theme : m_themes)
-        {
-            if (!theme.second.getPrimary().empty())
-                themesList->addItem(theme.second.getPrimary());
-        }
-
-        themesList->connect("ItemSelected", [=](std::string item){
-            if (item.empty())
-                buttonDelete->setEnabled(false);
-            else
-                buttonDelete->setEnabled(true);
-        });
-
-        newThemeEditBox->connect("TextChanged", [=](std::string text){
-            if (text.empty())
-                buttonAdd->setEnabled(false);
-            else
-                buttonAdd->setEnabled(true);
-        });
-
-        buttonAdd->connect("Pressed", [=]{
-            try
-            {
-                const std::string filename = newThemeEditBox->getText();
-                if (!themesList->contains(filename))
-                {
-                    tgui::Theme theme{filename};
-                    themesList->addItem(filename);
-                    m_themes[filename] = theme;
-                }
-            }
-            catch (const tgui::Exception& e)
-            {
-                std::cout << "Exception caught when adding theme: " << e.what() << std::endl;
-            }
-
-            initProperties();
-        });
-
-        buttonDelete->connect("Pressed", [=]{
-            auto item = themesList->getSelectedItem();
-            m_themes.erase(item);
-            themesList->removeItem(item);
-            buttonDelete->setEnabled(false);
-            initProperties();
-        });
-    }
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
 {
     auto panel = tgui::Panel::create({"100%", "100%"});
@@ -1019,6 +941,36 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
     });
 
     return window;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo)
+{
+    m_copiedWidgetType = widgetInfo->ptr->getWidgetType();
+    m_copiedWidgetTheme = widgetInfo->theme;
+    m_copiedWidgetPropertyValuePairs = m_widgetProperties.at(m_copiedWidgetType)->initProperties(widgetInfo->ptr);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::pasteWidgetFromInternalClipboard()
+{
+    if (m_copiedWidgetType.empty())
+        return;
+
+    auto widget = tgui::WidgetFactory::getConstructFunction(m_copiedWidgetType)();
+    createNewWidget(widget);
+
+    for (const auto& property : m_copiedWidgetPropertyValuePairs.first)
+        updateWidgetProperty(property.first, property.second.second);
+    for (const auto& property : m_copiedWidgetPropertyValuePairs.second)
+        updateWidgetProperty(property.first, property.second.second);
+
+    m_selectedForm->getSelectedWidget()->theme = m_copiedWidgetTheme;
+    initProperties();
+
+    m_selectedForm->setChanged(true);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1286,4 +1238,137 @@ void GuiBuilder::addPropertyValueEnum(const std::string& property, const sf::Str
     }
 
     valueComboBox->connect("ItemSelected", [=]{ onChange(valueComboBox->getSelectedItem()); });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackNewOrLoadFile()
+{
+    while (!m_forms.empty())
+        closeForm(m_forms[0].get());
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackSaveFile()
+{
+    m_selectedForm->save();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackQuit()
+{
+    while (!m_forms.empty())
+        closeForm(m_forms[0].get());
+
+    m_window.close();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackEditThemes()
+{
+    auto editThemesWindow = openWindowWithFocus();
+    editThemesWindow->setTitle("Edit themes");
+    editThemesWindow->setSize({320, 280});
+    editThemesWindow->loadWidgetsFromFile("resources/forms/EditThemes.txt");
+
+    auto buttonAdd = editThemesWindow->get<tgui::Button>("ButtonAdd");
+    auto buttonDelete = editThemesWindow->get<tgui::Button>("ButtonDelete");
+    auto newThemeEditBox = editThemesWindow->get<tgui::EditBox>("NewThemeEditBox");
+    auto themesList = editThemesWindow->get<tgui::ListBox>("ThemesList");
+
+    themesList->removeAllItems();
+    for (auto& theme : m_themes)
+    {
+        if (!theme.second.getPrimary().empty())
+            themesList->addItem(theme.second.getPrimary());
+    }
+
+    themesList->connect("ItemSelected", [=](std::string item){
+        if (item.empty())
+            buttonDelete->setEnabled(false);
+        else
+            buttonDelete->setEnabled(true);
+    });
+
+    newThemeEditBox->connect("TextChanged", [=](std::string text){
+        if (text.empty())
+            buttonAdd->setEnabled(false);
+        else
+            buttonAdd->setEnabled(true);
+    });
+
+    buttonAdd->connect("Pressed", [=]{
+        try
+        {
+            const std::string filename = newThemeEditBox->getText();
+            if (!themesList->contains(filename))
+            {
+                tgui::Theme theme{filename};
+                themesList->addItem(filename);
+                m_themes[filename] = theme;
+            }
+        }
+        catch (const tgui::Exception& e)
+        {
+            std::cout << "Exception caught when adding theme: " << e.what() << std::endl;
+        }
+
+        initProperties();
+    });
+
+    buttonDelete->connect("Pressed", [=]{
+        auto item = themesList->getSelectedItem();
+        m_themes.erase(item);
+        themesList->removeItem(item);
+        buttonDelete->setEnabled(false);
+        initProperties();
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackBringWidgetToFront()
+{
+    m_selectedForm->getSelectedWidget()->ptr->moveToFront();
+    m_selectedForm->setChanged(true);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackSendWidgetToBack()
+{
+    m_selectedForm->getSelectedWidget()->ptr->moveToBack();
+    m_selectedForm->setChanged(true);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackCutWidget()
+{
+    copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
+    removeSelectedWidget();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackCopyWidget()
+{
+    copyWidgetToInternalClipboard(m_selectedForm->getSelectedWidget());
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackPasteWidget()
+{
+    pasteWidgetFromInternalClipboard();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackDeleteWidget()
+{
+    removeSelectedWidget();
 }

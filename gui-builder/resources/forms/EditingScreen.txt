@@ -9,6 +9,7 @@ MenuBar.MenuBar {
         selectedbackgroundcolor = #006EFF;
         selectedtextcolor = white;
         textcolor = black;
+        textcolordisabled = #7D7D7D;
     }
 
     Menu {
@@ -19,6 +20,11 @@ MenuBar.MenuBar {
     Menu {
         Items = ["Edit"];
         Name = "Themes";
+    }
+
+    Menu {
+        Items = ["Bring to front", "Send to back", "Cut", "Copy", "Paste", "Delete"];
+        Name = "Widget";
     }
 }
 

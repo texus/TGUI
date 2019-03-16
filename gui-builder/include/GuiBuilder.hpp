@@ -60,8 +60,10 @@ private:
     void initSelectedWidgetComboBoxAfterLoad();
     void removeSelectedWidget();
     void loadForm();
-    void menuBarItemClicked(const std::string& item);
     tgui::ChildWindow::Ptr openWindowWithFocus();
+
+    void copyWidgetToInternalClipboard(std::shared_ptr<WidgetInfo> widgetInfo);
+    void pasteWidgetFromInternalClipboard();
 
     tgui::EditBox::Ptr addPropertyValueEditBox(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
     tgui::Button::Ptr addPropertyValueButtonMore(const std::string& property, float topPosition);
@@ -71,6 +73,17 @@ private:
     void addPropertyValueOutline(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueEditBoxInputValidator(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueEnum(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<std::string>& enumValues);
+
+    void menuBarCallbackNewOrLoadFile();
+    void menuBarCallbackSaveFile();
+    void menuBarCallbackQuit();
+    void menuBarCallbackEditThemes();
+    void menuBarCallbackBringWidgetToFront();
+    void menuBarCallbackSendWidgetToBack();
+    void menuBarCallbackCutWidget();
+    void menuBarCallbackCopyWidget();
+    void menuBarCallbackPasteWidget();
+    void menuBarCallbackDeleteWidget();
 
 private:
 
@@ -89,6 +102,10 @@ private:
 
     std::map<std::string, std::unique_ptr<WidgetProperties>> m_widgetProperties;
     PropertyValueMapPair m_propertyValuePairs;
+
+    std::string m_copiedWidgetType;
+    std::string m_copiedWidgetTheme;
+    PropertyValueMapPair m_copiedWidgetPropertyValuePairs;
 
     std::map<std::string, tgui::Theme> m_themes;
     std::string m_defaultTheme;
