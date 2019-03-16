@@ -500,6 +500,22 @@ namespace tgui
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes whether the mouse wheel can be used to change the selected item while the list is closed
+        ///
+        /// @param changeOnScroll  Should the selected item be changed when scrolling while the mouse is on top of the combo box?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setChangeItemOnScroll(bool changeOnScroll);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns whether the mouse wheel can be used to change the selected item while the list is closed
+        ///
+        /// @return Should the selected item be changed when scrolling while the mouse is on top of the combo box?
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool getChangeItemOnScroll() const;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// This function is called when the widget is added to a container.
         /// You should not call this function yourself.
@@ -631,6 +647,11 @@ namespace tgui
         Text m_defaultText;
 
         int m_previousSelectedItemIndex = -1;
+#ifdef TGUI_NEXT
+        bool m_changeItemOnScroll = false;
+#else
+        bool m_changeItemOnScroll = true;
+#endif
 
 #ifdef TGUI_NEXT
         ExpandDirection m_expandDirection = ExpandDirection::Automatic;

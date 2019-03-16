@@ -56,6 +56,8 @@ struct ComboBoxProperties : WidgetProperties
             comboBox->setMaximumItems(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "ExpandDirection")
             comboBox->setExpandDirection(deserializeExpandDirection(value));
+        else if (property == "ChangeItemOnScroll")
+            comboBox->setChangeItemOnScroll(parseBoolean(value, false));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -70,6 +72,7 @@ struct ComboBoxProperties : WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::to_string(comboBox->getTextSize())};
         pair.first["MaximumItems"] = {"UInt", tgui::to_string(comboBox->getMaximumItems())};
         pair.first["ExpandDirection"] = {"Enum{Down, Up, Automatic}", serializeExpandDirection(comboBox->getExpandDirection())};
+        pair.first["ChangeItemOnScroll"] = {"Bool", tgui::Serializer::serialize(comboBox->getChangeItemOnScroll())};
 
         const auto renderer = comboBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};

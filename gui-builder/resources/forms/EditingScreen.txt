@@ -52,6 +52,7 @@ ChildWindow.PropertiesWindow {
         ItemsToDisplay = 15;
         MaximumItems = 0;
         TextSize = 13;
+        ChangeItemOnScroll = false;
 
         Renderer {
             arrowbackgroundcolor = #F5F5F5;

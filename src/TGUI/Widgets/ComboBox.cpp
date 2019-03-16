@@ -61,6 +61,7 @@ namespace tgui
         m_listBox                        {ListBox::copy(other.m_listBox)},
         m_text                           {other.m_text},
         m_defaultText                    {other.m_defaultText},
+        m_changeItemOnScroll             {other.m_changeItemOnScroll},
         m_expandDirection                {other.m_expandDirection},
         m_spriteBackground               {other.m_spriteBackground},
         m_spriteArrow                    {other.m_spriteArrow},
@@ -86,6 +87,7 @@ namespace tgui
         m_listBox                        {std::move(other.m_listBox)},
         m_text                           {std::move(other.m_text)},
         m_defaultText                    {std::move(other.m_defaultText)},
+        m_changeItemOnScroll             {std::move(other.m_changeItemOnScroll)},
         m_expandDirection                {std::move(other.m_expandDirection)},
         m_spriteBackground               {std::move(other.m_spriteBackground)},
         m_spriteArrow                    {std::move(other.m_spriteArrow)},
@@ -116,6 +118,7 @@ namespace tgui
             std::swap(m_listBox,                         temp.m_listBox);
             std::swap(m_text,                            temp.m_text);
             std::swap(m_defaultText,                     temp.m_defaultText);
+            std::swap(m_changeItemOnScroll,              temp.m_changeItemOnScroll);
             std::swap(m_expandDirection,                 temp.m_expandDirection);
             std::swap(m_spriteBackground,                temp.m_spriteBackground);
             std::swap(m_spriteArrow,                     temp.m_spriteArrow);
@@ -145,6 +148,7 @@ namespace tgui
             m_listBox                         = std::move(other.m_listBox);
             m_text                            = std::move(other.m_text);
             m_defaultText                     = std::move(other.m_defaultText);
+            m_changeItemOnScroll              = std::move(other.m_changeItemOnScroll);
             m_expandDirection                 = std::move(other.m_expandDirection);
             m_spriteBackground                = std::move(other.m_spriteBackground);
             m_spriteArrow                     = std::move(other.m_spriteArrow);
@@ -523,6 +527,20 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ComboBox::setChangeItemOnScroll(bool changeOnScroll)
+    {
+        m_changeItemOnScroll = changeOnScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ComboBox::getChangeItemOnScroll() const
+    {
+        return m_changeItemOnScroll;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ComboBox::setParent(Container* parent)
     {
         hideListBox();
@@ -566,6 +584,10 @@ namespace tgui
 
     bool ComboBox::mouseWheelScrolled(float delta, Vector2f)
     {
+        // Don't do anything when changing item on scroll is disabled
+        if (!m_changeItemOnScroll)
+            return false;
+
         // Only act to scrolling when the list is not being shown
         if (m_listBox->isVisible())
             return false;
@@ -744,6 +766,7 @@ namespace tgui
         node->propertyValuePairs["ItemsToDisplay"] = std::make_unique<DataIO::ValueNode>(to_string(getItemsToDisplay()));
         node->propertyValuePairs["TextSize"] = std::make_unique<DataIO::ValueNode>(to_string(getTextSize()));
         node->propertyValuePairs["MaximumItems"] = std::make_unique<DataIO::ValueNode>(to_string(getMaximumItems()));
+        node->propertyValuePairs["ChangeItemOnScroll"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_changeItemOnScroll));
 
         if (getExpandDirection() == ComboBox::ExpandDirection::Down)
             node->propertyValuePairs["ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Down");
@@ -804,6 +827,8 @@ namespace tgui
             setMaximumItems(tgui::stoi(node->propertyValuePairs["maximumitems"]->value));
         if (node->propertyValuePairs["selecteditemindex"])
             setSelectedItemByIndex(tgui::stoi(node->propertyValuePairs["selecteditemindex"]->value));
+        if (node->propertyValuePairs["changeitemonscroll"])
+            m_changeItemOnScroll = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs["changeitemonscroll"]->value).getBool();
 
         if (node->propertyValuePairs["expanddirection"])
         {

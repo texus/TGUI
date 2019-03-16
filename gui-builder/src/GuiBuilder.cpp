@@ -748,6 +748,7 @@ void GuiBuilder::initProperties()
         auto rendererComboBox = tgui::ComboBox::create();
         rendererComboBox->setSize({bindWidth(m_propertiesContainer) - scrollbarWidth, EDIT_BOX_HEIGHT});
         rendererComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+        rendererComboBox->setChangeItemOnScroll(false);
 
         for (auto& theme : m_themes)
             rendererComboBox->addItem(theme.first);
@@ -1029,6 +1030,7 @@ void GuiBuilder::addPropertyValueBool(const std::string& property, const sf::Str
     {
         valueComboBox = tgui::ComboBox::create();
         valueComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+        valueComboBox->setChangeItemOnScroll(false);
         valueComboBox->addItem("False");
         valueComboBox->addItem("True");
         m_propertiesContainer->add(valueComboBox, "ValueComboBox" + property);
@@ -1220,6 +1222,7 @@ void GuiBuilder::addPropertyValueEnum(const std::string& property, const sf::Str
     {
         valueComboBox = tgui::ComboBox::create();
         valueComboBox->setExpandDirection(tgui::ComboBox::ExpandDirection::Automatic);
+        valueComboBox->setChangeItemOnScroll(false);
         m_propertiesContainer->add(valueComboBox, "ValueComboBox" + property);
 
         for (const auto& enumValue : enumValues)
