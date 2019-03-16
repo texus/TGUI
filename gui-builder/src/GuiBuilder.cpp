@@ -426,10 +426,21 @@ void GuiBuilder::widgetSelected(tgui::Widget::Ptr widget)
 {
     initProperties();
 
-    if (widget)
+	if (widget)
+	{
         m_selectedWidgetComboBox->setSelectedItemById(tgui::to_string(widget.get()));
-    else
-        m_selectedWidgetComboBox->setSelectedItemById("form");
+
+		std::vector<sf::String> widgetHierarchy;
+		fillWidgetHierarchy(widgetHierarchy, widget.get());
+		std::reverse(widgetHierarchy.begin(), widgetHierarchy.end());
+
+		m_widgetHierarchyTree->selectItem(widgetHierarchy);
+	}
+	else
+	{
+        m_selectedWidgetComboBox->setSelectedItemById("Form");
+		m_widgetHierarchyTree->deselectItem();
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -542,9 +553,21 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
     m_selectedWidgetComboBox->setSelectedItemById("form");
     m_selectedWidgetComboBox->connect("ItemSelected", [this](std::string, std::string id){ m_selectedForm->selectWidgetById(id); });
 
+
     m_menuBar = m_gui.get<tgui::MenuBar>("MenuBar");
     m_menuBar->connect("MouseEntered", [](tgui::Widget::Ptr menuBar, std::string){ menuBar->moveToFront(); });
     m_menuBar->connect("MenuItemClicked", [this](std::string item){ menuBarItemClicked(item); });
+
+	auto hierarchyWindow = m_gui.get<tgui::ChildWindow>("HierarchyWindow");
+	m_widgetHierarchyTree = tgui::TreeView::create();
+	hierarchyWindow->add(m_widgetHierarchyTree, "WidgetsTreeView");
+	m_widgetHierarchyTree->setSize(tgui::bindWidth(hierarchyWindow), tgui::bindHeight(hierarchyWindow));
+
+	m_widgetHierarchyTree->connect("ItemSelected", [this](std::string name) 
+	{
+		if(!name.empty())
+			m_selectedForm->selectWidgetByName(name); 
+	});
 
     loadToolbox();
     initProperties();
@@ -633,6 +656,8 @@ void GuiBuilder::createNewWidget(tgui::Widget::Ptr widget)
     const std::string name = m_selectedForm->addWidget(widget, parent);
     m_selectedWidgetComboBox->addItem(name, id);
     m_selectedWidgetComboBox->setSelectedItemById(id);
+
+	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -653,6 +678,8 @@ void GuiBuilder::recursiveCopyWidget(tgui::Container::Ptr oldContainer, tgui::Co
         if (newWidgets[i]->isContainer())
             recursiveCopyWidget(std::static_pointer_cast<tgui::Container>(oldWidgets[i]), std::static_pointer_cast<tgui::Container>(newWidgets[i]));
     }
+
+	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -671,6 +698,7 @@ void GuiBuilder::copyWidget(std::shared_ptr<WidgetInfo> widgetInfo)
     m_selectedWidgetComboBox->setSelectedItemById(id);
     m_selectedForm->getSelectedWidget()->theme = widgetInfo->theme;
     initProperties();
+	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -846,6 +874,8 @@ void GuiBuilder::changeWidgetName(const std::string& name)
 
     m_selectedForm->setSelectedWidgetName(name);
     m_selectedWidgetComboBox->changeItemById(tgui::to_string(m_selectedForm->getSelectedWidget()->ptr.get()), name);
+
+	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -872,6 +902,7 @@ void GuiBuilder::removeSelectedWidget()
     m_selectedForm->removeWidget(id);
     m_selectedWidgetComboBox->removeItemById(id);
     m_selectedWidgetComboBox->setSelectedItemById("form");
+	widgetHierarchyChanged();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -881,6 +912,7 @@ void GuiBuilder::loadForm()
     if (!m_selectedForm->load())
     {
         loadStartScreen();
+		widgetHierarchyChanged();
         return;
     }
 
@@ -907,6 +939,7 @@ void GuiBuilder::loadForm()
         }
     }
 
+	widgetHierarchyChanged();
     initSelectedWidgetComboBoxAfterLoad();
 }
 
@@ -1286,4 +1319,86 @@ void GuiBuilder::addPropertyValueEnum(const std::string& property, const sf::Str
     }
 
     valueComboBox->connect("ItemSelected", [=]{ onChange(valueComboBox->getSelectedItem()); });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::fillTreeRecursively(std::vector<sf::String> & hierarchy, std::shared_ptr<tgui::Widget> parentWidget)
+{
+	m_widgetHierarchyTree->addItem(hierarchy);
+
+	if (auto * asContainer = dynamic_cast<tgui::Container*>(parentWidget.get()))
+	{
+		const unsigned int widgetCount = asContainer->getWidgets().size();
+		for (unsigned int i = 0; i < widgetCount; ++i)
+		{
+			hierarchy.push_back(asContainer->getWidgetNames()[i]);
+			fillTreeRecursively(hierarchy, asContainer->getWidgets()[i]);
+			hierarchy.pop_back();
+		}
+	}
+}
+
+void GuiBuilder::widgetHierarchyChanged()
+{
+	m_widgetHierarchyTree->removeAllItems();
+
+	if (m_selectedForm == nullptr)
+		return;
+
+	std::vector<sf::String> widgetHiearchy{ m_selectedForm->getFilename() };
+
+	for (auto child : m_selectedForm->getWidgets())
+	{
+		widgetHiearchy.push_back(child->name);
+		fillTreeRecursively(widgetHiearchy, child->ptr);
+		widgetHiearchy.pop_back();
+	}
+}
+
+bool GuiBuilder::fillWidgetHierarchy(std::vector<sf::String> & hierarchy, tgui::Widget * widget)
+{
+	tgui::Container * parent = widget->getParent();
+
+	assert(parent);
+	assert(m_selectedForm);
+
+	auto widgets = m_selectedForm->getWidgets();
+
+	auto it = std::find_if(
+		widgets.begin(), 
+		widgets.end(), 
+		[&] (std::shared_ptr<WidgetInfo> otherWidget) 
+	{
+		return otherWidget->ptr.get() == widget;
+	}
+	);
+
+	if (it != widgets.end())
+	{
+		hierarchy.push_back((*it)->name);
+
+		bool wasFound = false;
+		const unsigned int widgetCount = parent->getWidgets().size();
+		for (unsigned int i = 0; i < widgetCount; ++i)
+		{
+			if ((parent->getWidgets()[i]).get() == widget)
+			{
+				wasFound = fillWidgetHierarchy(hierarchy, parent);
+				break;
+			}
+		}
+
+		if (!wasFound)
+		{
+			hierarchy.pop_back();
+		}
+
+		return wasFound;
+	}
+	else
+	{
+		hierarchy.push_back(m_selectedForm->getFilename());
+		return true;
+	}
 }

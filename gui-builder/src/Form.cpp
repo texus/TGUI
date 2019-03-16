@@ -122,6 +122,23 @@ std::shared_ptr<WidgetInfo> Form::getWidget(const std::string& id) const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+std::shared_ptr<WidgetInfo> Form::getWidgetByName(const std::string& name) const
+{
+	const auto it = std::find_if(
+		m_widgets.begin(),
+		m_widgets.end(),
+		[&name](const auto & idAndWidgetInfo)
+		{
+			return idAndWidgetInfo.second->name == name;
+		}
+	);
+
+	assert(it != m_widgets.end());
+	return it->second;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 std::vector<std::shared_ptr<WidgetInfo>> Form::getWidgets() const
 {
     std::vector<std::shared_ptr<WidgetInfo>> widgets;
@@ -210,6 +227,13 @@ void Form::updateSelectionSquarePositions()
 void Form::selectWidgetById(const std::string& id)
 {
     selectWidget(m_widgets[id]);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Form::selectWidgetByName(const std::string& name)
+{
+	selectWidget(getWidgetByName(name));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

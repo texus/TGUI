@@ -72,6 +72,10 @@ private:
     void addPropertyValueEditBoxInputValidator(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueEnum(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<std::string>& enumValues);
 
+	void widgetHierarchyChanged();
+	void fillTreeRecursively(std::vector<sf::String> & hierarchy, std::shared_ptr<tgui::Widget> parentWidget);
+	bool fillWidgetHierarchy(std::vector<sf::String> & hierarchy, tgui::Widget * widget);
+
 private:
 
     std::string m_lastOpenedFile;
@@ -83,6 +87,8 @@ private:
     tgui::ScrollablePanel::Ptr m_propertiesContainer;
     tgui::ComboBox::Ptr m_selectedWidgetComboBox;
     tgui::MenuBar::Ptr m_menuBar;
+
+	tgui::TreeView::Ptr m_widgetHierarchyTree;
 
     std::vector<std::unique_ptr<Form>> m_forms;
     Form* m_selectedForm = nullptr;
