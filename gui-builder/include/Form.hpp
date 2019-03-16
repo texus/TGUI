@@ -58,6 +58,7 @@ public:
     bool hasFocus() const;
     bool load();
     void save();
+    void drawExtra(sf::RenderWindow& window) const;
 
 private:
     void importLoadedWidgets(tgui::Container::Ptr parent);
@@ -66,6 +67,7 @@ private:
     void onFormMousePress(sf::Vector2f pos);
     void onDrag(sf::Vector2i mousePos);
     void selectWidget(std::shared_ptr<WidgetInfo> widget);
+    void drawLine(sf::RenderWindow& window, sf::Vector2f startPoint, sf::Vector2f endPoint) const;
 
 private:
 

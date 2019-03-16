@@ -201,8 +201,10 @@ void Form::updateSelectionSquarePositions()
 
     // The positions given to the squares where those of its center
     for (auto& square : m_selectionSquares)
+    {
         square->setPosition({std::round(square->getPosition().x - (square->getSize().y / 2.f)),
                              std::round(square->getPosition().y - (square->getSize().x / 2.f))});
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -373,6 +375,46 @@ void Form::save()
 {
     setChanged(false);
     m_widgetsContainer->saveWidgetsToFile(getFilename());
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Form::drawExtra(sf::RenderWindow& window) const
+{
+    if (!m_selectedWidget)
+        return;
+
+    if (!m_draggingWidget && !m_draggingSelectionSquare
+     && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RControl)
+     && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RShift))
+        return;
+
+    const auto selectedWidget = m_selectedWidget->ptr;
+    const sf::Vector2f selectedTopLeft = selectedWidget->getPosition();
+    const sf::Vector2f selectedBottomRight = selectedWidget->getPosition() + selectedWidget->getSize();
+    const auto widgets = m_widgetsContainer->getWidgets();
+    for (const auto& widget : widgets)
+    {
+        if (widget == selectedWidget)
+            continue;
+
+        const sf::Vector2f topLeft = widget->getPosition();
+        const sf::Vector2f bottomRight = widget->getPosition() + widget->getSize();
+
+        const float minX = std::min({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
+        const float maxX = std::max({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
+        const float minY = std::min({selectedTopLeft.y, selectedBottomRight.y, topLeft.y, bottomRight.y});
+        const float maxY = std::max({selectedTopLeft.y, selectedBottomRight.y, topLeft.y, bottomRight.y});
+
+        if ((topLeft.x == selectedTopLeft.x) || (topLeft.x == selectedBottomRight.x))
+            drawLine(window, {topLeft.x, minY}, {topLeft.x, maxY});
+        else if ((topLeft.y == selectedTopLeft.y) || (topLeft.y == selectedBottomRight.y))
+            drawLine(window, {minX, topLeft.y}, {maxX, topLeft.y});
+        else if ((bottomRight.x == selectedBottomRight.x) || (bottomRight.x == selectedTopLeft.x))
+            drawLine(window, {bottomRight.x, minY}, {bottomRight.x, maxY});
+        else if ((bottomRight.y == selectedBottomRight.y) || (bottomRight.y == selectedTopLeft.y))
+            drawLine(window, {minX, bottomRight.y}, {maxX, bottomRight.y});
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -683,4 +725,18 @@ void Form::selectWidget(std::shared_ptr<WidgetInfo> widget)
     }
 
     m_guiBuilder->widgetSelected(widget ? widget->ptr : nullptr);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Form::drawLine(sf::RenderWindow& window, sf::Vector2f startPoint, sf::Vector2f endPoint) const
+{
+    const sf::Vector2f absoluteStartPoint = startPoint + m_formWindow->getPosition() + m_formWindow->getChildWidgetsOffset() - m_scrollablePanel->getContentOffset();
+    const sf::Vector2f absoluteEndPoint = endPoint + m_formWindow->getPosition() + m_formWindow->getChildWidgetsOffset() - m_scrollablePanel->getContentOffset();
+
+    sf::Vertex line[2] = {
+        {absoluteStartPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}},
+        {absoluteEndPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}}
+    };
+    window.draw(line, 2, sf::Lines);
 }

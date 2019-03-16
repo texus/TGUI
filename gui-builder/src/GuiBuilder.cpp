@@ -342,6 +342,10 @@ void GuiBuilder::mainLoop()
 
         m_window.clear({200, 200, 200});
         m_gui.draw();
+
+        if (m_selectedForm)
+            m_selectedForm->drawExtra(m_window);
+
         m_window.display();
     }
 }
@@ -501,6 +505,7 @@ void GuiBuilder::closeForm(Form* form)
             {
                 // Attempting to close the window, while already having asked whether the form should be saved, will result in the close without saving
                 m_window.close();
+                m_forms.clear();
             }
             else if (event.type == sf::Event::Resized)
             {
