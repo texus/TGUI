@@ -227,7 +227,7 @@ namespace tgui
             if (m_data->svgImage)
                 return m_data->svgImage->getSize();
             else
-                return sf::Vector2f{m_data->texture.getSize()};
+                return {sf::Vector2f{m_data->texture.getSize()}};
         }
         else
             return {0,0};

@@ -100,7 +100,7 @@ namespace tgui
     {
         m_vertexColor = color;
 
-        const sf::Color vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
+        const Color& vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
         for (auto& vertex : m_vertices)
             vertex.color = vertexColor;
     }
@@ -118,7 +118,7 @@ namespace tgui
     {
         m_opacity = opacity;
 
-        const sf::Color vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
+        const Color& vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
         for (auto& vertex : m_vertices)
             vertex.color = vertexColor;
     }
@@ -323,7 +323,7 @@ namespace tgui
         }
 
         // Calculate the vertices based on the way we are scaling
-        const sf::Color vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
+        const Color& vertexColor = Color::calcColorOpacity(m_vertexColor, m_opacity);
         switch (m_scalingType)
         {
         case ScalingType::Normal:

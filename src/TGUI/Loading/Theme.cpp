@@ -38,6 +38,20 @@ namespace tgui
             void reset()
             {
                 m_renderers = {
+                    {"bitmapbutton", RendererData::create({{"borders", Borders{1}},
+                                                           {"bordercolor", Color{60, 60, 60}},
+                                                           {"bordercolorhover", Color::Black},
+                                                           {"bordercolordown", Color::Black},
+                                                           {"bordercolorfocused", Color{30, 30, 180}},
+                                                           {"bordercolordisabled", Color{125, 125, 125}},
+                                                           {"textcolor", Color{60, 60, 60}},
+                                                           {"textcolorhover", Color::Black},
+                                                           {"textcolordown", Color::Black},
+                                                           {"textcolordisabled", Color{125, 125, 125}},
+                                                           {"backgroundcolor", Color{245, 245, 245}},
+                                                           {"backgroundcolorhover", Color::White},
+                                                           {"backgroundcolordown", Color{235, 235, 235}},
+                                                           {"backgroundcolordisabled", Color{230, 230, 230}}})},
                     {"button", RendererData::create({{"borders", Borders{1}},
                                                      {"bordercolor", Color{60, 60, 60}},
                                                      {"bordercolorhover", Color::Black},

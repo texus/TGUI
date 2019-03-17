@@ -765,7 +765,7 @@ namespace tgui
 
         if (m_autoSize)
         {
-            sf::Vector2f size;
+            Vector2f size;
             for (std::size_t row = 0; row < m_gridWidgets.size(); ++row)
             {
                 float rowWidth = 0;

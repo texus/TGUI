@@ -446,7 +446,7 @@ namespace tgui
         const bool horizontalScrollbarVisible = m_horizontalScrollbar->isVisible() && (!m_horizontalScrollbar->getAutoHide() || (m_horizontalScrollbar->getMaximum() > m_horizontalScrollbar->getViewportSize()));
         const bool verticalScrollbarVisible = m_verticalScrollbar->isVisible() && (!m_verticalScrollbar->getAutoHide() || (m_verticalScrollbar->getMaximum() > m_verticalScrollbar->getViewportSize()));
 
-        sf::Vector2f innerSize = getInnerSize();
+        Vector2f innerSize = getInnerSize();
         if (verticalScrollbarVisible)
             innerSize.x -= m_verticalScrollbar->getSize().x;
         if (horizontalScrollbarVisible)

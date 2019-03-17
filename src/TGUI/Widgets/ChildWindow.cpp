@@ -563,7 +563,7 @@ namespace tgui
         if (m_mouseDown && m_mouseDownOnTitleBar)
         {
             // Move the child window, but don't allow the dragging position to leave the screen
-            sf::Vector2f newPosition;
+            Vector2f newPosition;
             if (getPosition().x + pos.x <= 0)
                 newPosition.x = -m_draggingPosition.x + 1;
             else if (m_parent && getPosition().x + pos.x >= m_parent->getSize().x)

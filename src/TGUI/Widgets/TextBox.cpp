@@ -1149,7 +1149,7 @@ namespace tgui
             float charWidth;
             const std::uint32_t curChar = m_lines[lineNumber][i];
             //if (curChar == '\n')
-            //    return sf::Vector2f<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextBox strips newlines but this code is kept for when this function is generalized
+            //    return sf::Vector2<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextBox strips newlines but this code is kept for when this function is generalized
             //else
             if (curChar == '\t')
                 charWidth = static_cast<float>(m_fontCached.getGlyph(' ', getTextSize(), false).advance) * 4;
@@ -1645,6 +1645,9 @@ namespace tgui
 
     void TextBox::recalculateVisibleLines()
     {
+        if (m_lineHeight == 0)
+            return;
+
         float horiScrollOffset = 0.0f;
         if (m_horizontalScrollbar->isShown())
         {
