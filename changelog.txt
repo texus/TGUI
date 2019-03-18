@@ -12,6 +12,7 @@ TGUI 0.8.5  (TBD)
 - TitleBarHeight property of default renderer was ignored in ChildWindow
 - Label didn't ignore events after ignoreMouseEvents was called
 - Adding space around widgets in Grid to fill the given size wasn't working properly
+- Loading widget from file failed when min or max was used in layout strings
 
 
 TGUI 0.8.4  (23 February 2019)
