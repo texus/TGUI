@@ -446,6 +446,9 @@ namespace tgui
                     if ((operand->m_operation == Operation::Minimum) || (operand->m_operation == Operation::Maximum))
                         return false;
 
+                    if ((operand->m_operation == Operation::Multiplies) && (operand->m_leftOperand->m_operation == Operation::Value) && (operand->m_rightOperand->toString() == "100%"))
+                        return false;
+
                     return true;
                 };
 
@@ -456,10 +459,18 @@ namespace tgui
             else if (subExpressionNeedsBrackets(m_rightOperand))
                 return m_leftOperand->toString() + " " + operatorChar + " (" + m_rightOperand->toString() + ")";
             else
-                return m_leftOperand->toString() + " " + operatorChar + " " + m_rightOperand->toString();
+            {
+                if ((m_operation == Operation::Multiplies) && (m_leftOperand->m_operation == Operation::Value) && (m_rightOperand->toString() == "100%"))
+                    return to_string(m_leftOperand->getValue() * 100) + '%';
+                else
+                    return m_leftOperand->toString() + " " + operatorChar + " " + m_rightOperand->toString();
+            }
         }
         else
         {
+            if (m_boundString == "&.innersize")
+                return "100%";
+
             // Hopefully the expression is stored in the bound string, otherwise (i.e. when bind functions were used) it is infeasible to turn it into a string
             return m_boundString;
         }
