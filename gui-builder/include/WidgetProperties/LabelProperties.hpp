@@ -31,6 +31,8 @@
 
 struct LabelProperties : WidgetProperties
 {
+    // TODO: Scrollbar renderer
+
     void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
     {
         auto label = std::dynamic_pointer_cast<tgui::Label>(widget);
@@ -74,6 +76,7 @@ struct LabelProperties : WidgetProperties
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
+        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
         return pair;
     }
 

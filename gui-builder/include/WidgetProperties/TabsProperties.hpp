@@ -23,37 +23,39 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef TGUI_GUI_BUILDER_LIST_BOX_PROPERTIES_HPP
-#define TGUI_GUI_BUILDER_LIST_BOX_PROPERTIES_HPP
+#ifndef TGUI_GUI_BUILDER_TABS_PROPERTIES_HPP
+#define TGUI_GUI_BUILDER_TABS_PROPERTIES_HPP
 
 #include "WidgetProperties.hpp"
-#include <TGUI/Widgets/ListBox.hpp>
+#include <TGUI/Widgets/Tabs.hpp>
 
-struct ListBoxProperties : WidgetProperties
+struct TabsProperties : WidgetProperties
 {
-    // TODO: Item Ids
-    // TODO: Scrollbar renderer
+    // TODO: TabsVisible
+    // TODO: TabsEnabled
+    // TODO: AutoSize (and TabHeight)?
 
     void updateProperty(tgui::Widget::Ptr widget, const std::string& property, const std::string& value) const override
     {
-        auto listBox = std::dynamic_pointer_cast<tgui::ListBox>(widget);
-        if (property == "Items")
+        auto tabs = std::dynamic_pointer_cast<tgui::Tabs>(widget);
+        if (property == "Tabs")
         {
-            listBox->removeAllItems();
-            auto items = deserializeList(value);
-            for (const auto& item : items)
-                listBox->addItem(item);
+            tabs->removeAll();
+            auto tabTexts = deserializeList(value);
+            for (const auto& text : tabTexts)
+                tabs->add(text, false);
         }
-        else if (property == "SelectedItemIndex")
-            listBox->setSelectedItemByIndex(static_cast<std::size_t>(tgui::stoi(value)));
-        else if (property == "ItemHeight")
-            listBox->setItemHeight(static_cast<unsigned int>(tgui::stoi(value)));
+        else if (property == "Selected")
+        {
+            if (tgui::stoi(value) < 0)
+                tabs->deselect();
+            else
+                tabs->select(static_cast<std::size_t>(tgui::stoi(value)));
+        }
+        else if (property == "MaximumTabWidth")
+            tabs->setMaximumTabWidth(tgui::stof(value));
         else if (property == "TextSize")
-            listBox->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
-        else if (property == "MaximumItems")
-            listBox->setMaximumItems(static_cast<unsigned int>(tgui::stoi(value)));
-        else if (property == "AutoScroll")
-            listBox->setAutoScroll(parseBoolean(value, true));
+            tabs->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -61,32 +63,38 @@ struct ListBoxProperties : WidgetProperties
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
-        auto listBox = std::dynamic_pointer_cast<tgui::ListBox>(widget);
-        pair.first["Items"] = {"List<String>", serializeList(listBox->getItems())};
-        pair.first["SelectedItemIndex"] = {"Int", tgui::to_string(listBox->getSelectedItemIndex())};
-        pair.first["ItemHeight"] = {"UInt", tgui::to_string(listBox->getItemHeight())};
-        pair.first["TextSize"] = {"UInt", tgui::to_string(listBox->getTextSize())};
-        pair.first["MaximumItems"] = {"UInt", tgui::to_string(listBox->getMaximumItems())};
-        pair.first["AutoScroll"] = {"Bool", tgui::Serializer::serialize(listBox->getAutoScroll())};
+        auto tabs = std::dynamic_pointer_cast<tgui::Tabs>(widget);
 
-        const auto renderer = listBox->getSharedRenderer();
+        std::vector<sf::String> tabTexts;
+        for (unsigned int i = 0; i < tabs->getTabsCount(); ++i)
+            tabTexts.push_back(tabs->getText(i));
+
+        pair.first["Tabs"] = {"List<String>", serializeList(tabTexts)};
+        pair.first["Selected"] = {"Int", tgui::to_string(tabs->getSelectedIndex())};
+        pair.first["MaximumTabWidth"] = {"Float", tgui::to_string(tabs->getMaximumTabWidth())};
+        pair.first["TextSize"] = {"UInt", tgui::to_string(tabs->getTextSize())};
+
+        const auto renderer = tabs->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
-        pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
+        pair.second["BackgroundColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorDisabled())};
         pair.second["SelectedBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBackgroundColor())};
         pair.second["SelectedBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBackgroundColorHover())};
         pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
         pair.second["TextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorHover())};
+        pair.second["TextColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorDisabled())};
         pair.second["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColor())};
         pair.second["SelectedTextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColorHover())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
-        pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
-        pair.second["TextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getTextStyle())};
-        pair.second["SelectedTextStyle"] = {"TextStyle", tgui::Serializer::serialize(renderer->getSelectedTextStyle())};
-        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
+        pair.second["TextureTab"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTab())};
+        pair.second["TextureTabHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureTabHover())};
+        pair.second["TextureSelectedTab"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureSelectedTab())};
+        pair.second["TextureSelectedTabHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureSelectedTabHover())};
+        pair.second["TextureDisabledTab"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureDisabledTab())};
+        pair.second["DistanceToSide"] = {"Float", tgui::to_string(renderer->getDistanceToSide())};
         return pair;
     }
 };
 
-#endif // TGUI_GUI_BUILDER_LIST_BOX_PROPERTIES_HPP
+#endif // TGUI_GUI_BUILDER_TABS_PROPERTIES_HPP

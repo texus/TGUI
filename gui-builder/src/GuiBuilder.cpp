@@ -23,18 +23,25 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#include "WidgetProperties/BitmapButtonProperties.hpp"
 #include "WidgetProperties/ButtonProperties.hpp"
+#include "WidgetProperties/ChildWindowProperties.hpp"
 #include "WidgetProperties/ComboBoxProperties.hpp"
 #include "WidgetProperties/EditBoxProperties.hpp"
+#include "WidgetProperties/GroupProperties.hpp"
+#include "WidgetProperties/KnobProperties.hpp"
 #include "WidgetProperties/LabelProperties.hpp"
 #include "WidgetProperties/ListBoxProperties.hpp"
 #include "WidgetProperties/PanelProperties.hpp"
 #include "WidgetProperties/PictureProperties.hpp"
 #include "WidgetProperties/ProgressBarProperties.hpp"
 #include "WidgetProperties/RadioButtonProperties.hpp"
+#include "WidgetProperties/RangeSliderProperties.hpp"
+#include "WidgetProperties/ScrollablePanelProperties.hpp"
 #include "WidgetProperties/ScrollbarProperties.hpp"
 #include "WidgetProperties/SliderProperties.hpp"
 #include "WidgetProperties/SpinButtonProperties.hpp"
+#include "WidgetProperties/TabsProperties.hpp"
 #include "WidgetProperties/TextBoxProperties.hpp"
 #include "GuiBuilder.hpp"
 
@@ -196,19 +203,26 @@ GuiBuilder::GuiBuilder() :
 {
     m_window.setFramerateLimit(60);
 
+    m_widgetProperties["BitmapButton"] = std::make_unique<BitmapButtonProperties>();
     m_widgetProperties["Button"] = std::make_unique<ButtonProperties>();
     m_widgetProperties["CheckBox"] = std::make_unique<RadioButtonProperties>();
+    m_widgetProperties["ChildWindow"] = std::make_unique<ChildWindowProperties>();
     m_widgetProperties["ComboBox"] = std::make_unique<ComboBoxProperties>();
     m_widgetProperties["EditBox"] = std::make_unique<EditBoxProperties>();
+    m_widgetProperties["Group"] = std::make_unique<GroupProperties>();
+    m_widgetProperties["Knob"] = std::make_unique<KnobProperties>();
     m_widgetProperties["Label"] = std::make_unique<LabelProperties>();
     m_widgetProperties["ListBox"] = std::make_unique<ListBoxProperties>();
     m_widgetProperties["Panel"] = std::make_unique<PanelProperties>();
     m_widgetProperties["Picture"] = std::make_unique<PictureProperties>();
     m_widgetProperties["ProgressBar"] = std::make_unique<ProgressBarProperties>();
     m_widgetProperties["RadioButton"] = std::make_unique<RadioButtonProperties>();
+    m_widgetProperties["RangeSlider"] = std::make_unique<RangeSliderProperties>();
+    m_widgetProperties["ScrollablePanel"] = std::make_unique<ScrollablePanelProperties>();
     m_widgetProperties["Scrollbar"] = std::make_unique<ScrollbarProperties>();
     m_widgetProperties["Slider"] = std::make_unique<SliderProperties>();
     m_widgetProperties["SpinButton"] = std::make_unique<SpinButtonProperties>();
+    m_widgetProperties["Tabs"] = std::make_unique<TabsProperties>();
     m_widgetProperties["TextBox"] = std::make_unique<TextBoxProperties>();
 
     std::ifstream stateInputFile{"GuiBuilderState.txt"};
@@ -589,20 +603,27 @@ void GuiBuilder::loadToolbox()
     auto toolbox = toolboxWindow->get<tgui::ScrollablePanel>("Widgets");
 
     const auto widgets = std::vector<std::pair<std::string, std::function<tgui::Widget::Ptr()>>>{
+        {"BitmapButton", []{ return tgui::BitmapButton::create("BitBtn"); }},
         {"Button", []{ return tgui::Button::create("Button"); }},
         {"CheckBox", []{ return tgui::CheckBox::create(); }},
+        {"ChildWindow", []{ return tgui::ChildWindow::create(); }},
         {"ComboBox", []{ return tgui::ComboBox::create(); }},
         {"EditBox", []{ return tgui::EditBox::create(); }},
+        {"Group", []{ return tgui::Group::create({150, 150}); }},
+        {"Knob", []{ return tgui::Knob::create(); }},
         {"Label", []{ return tgui::Label::create("Label"); }},
         {"ListBox", []{ return tgui::ListBox::create(); }},
-        {"Panel", []{ return tgui::Panel::create({100, 50}); }},
+        {"Panel", []{ return tgui::Panel::create({150, 150}); }},
         {"Picture", []{ return tgui::Picture::create("resources/DefaultPicture.png"); }},
         {"ProgressBar", []{ return tgui::ProgressBar::create(); }},
         {"RadioButton", []{ return tgui::RadioButton::create(); }},
+        {"RangeSlider", []{ return tgui::RangeSlider::create(); }},
+        {"ScrollablePanel", []{ return tgui::ScrollablePanel::create({150, 150}); }},
         {"Scrollbar", []{ return tgui::Scrollbar::create(); }},
         {"Slider", []{ return tgui::Slider::create(); }},
         {"SpinButton", []{ return tgui::SpinButton::create(); }},
-        {"TextBox", []{ return tgui::TextBox::create(); }}
+        {"Tabs", []{ auto tabs = tgui::Tabs::create(); tabs->add("Tab", false); return tabs; }},
+        {"TextBox", []{ return tgui::TextBox::create(); }},
     };
 
     float topPosition = 0;
@@ -834,7 +855,7 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         // TODO: Open dialog with list box and edit box where items can be added and removed to list
         addPropertyValueEditBox(property, value, onChange, topPosition, 0);
     }
-    else
+    else // TODO: ChildWindowTitleButtons (form with 3 check boxes)
     {
         auto valueEditBox = addPropertyValueEditBox(property, value, onChange, topPosition, 0);
         if (type == "UInt")

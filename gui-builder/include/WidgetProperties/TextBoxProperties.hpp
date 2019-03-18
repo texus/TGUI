@@ -74,6 +74,7 @@ struct TextBoxProperties : WidgetProperties
         pair.second["CaretColor"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColor())};
         pair.second["CaretWidth"] = {"Float", tgui::to_string(renderer->getCaretWidth())};
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
+        pair.second["ScrollbarWidth"] = {"Float", tgui::to_string(renderer->getScrollbarWidth())};
         return pair;
     }
 

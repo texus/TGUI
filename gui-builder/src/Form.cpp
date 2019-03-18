@@ -390,16 +390,16 @@ void Form::drawExtra(sf::RenderWindow& window) const
         return;
 
     const auto selectedWidget = m_selectedWidget->ptr;
-    const sf::Vector2f selectedTopLeft = selectedWidget->getPosition();
-    const sf::Vector2f selectedBottomRight = selectedWidget->getPosition() + selectedWidget->getSize();
-    const auto widgets = m_widgetsContainer->getWidgets();
+    const sf::Vector2f selectedTopLeft = selectedWidget->getAbsolutePosition();
+    const sf::Vector2f selectedBottomRight = selectedWidget->getAbsolutePosition() + selectedWidget->getSize();
+    const auto widgets = selectedWidget->getParent()->getWidgets();
     for (const auto& widget : widgets)
     {
         if (widget == selectedWidget)
             continue;
 
-        const sf::Vector2f topLeft = widget->getPosition();
-        const sf::Vector2f bottomRight = widget->getPosition() + widget->getSize();
+        const sf::Vector2f topLeft = widget->getAbsolutePosition();
+        const sf::Vector2f bottomRight = widget->getAbsolutePosition() + widget->getSize();
 
         const float minX = std::min({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
         const float maxX = std::max({selectedTopLeft.x, selectedBottomRight.x, topLeft.x, bottomRight.x});
@@ -731,12 +731,9 @@ void Form::selectWidget(std::shared_ptr<WidgetInfo> widget)
 
 void Form::drawLine(sf::RenderWindow& window, sf::Vector2f startPoint, sf::Vector2f endPoint) const
 {
-    const sf::Vector2f absoluteStartPoint = startPoint + m_formWindow->getPosition() + m_formWindow->getChildWidgetsOffset() - m_scrollablePanel->getContentOffset();
-    const sf::Vector2f absoluteEndPoint = endPoint + m_formWindow->getPosition() + m_formWindow->getChildWidgetsOffset() - m_scrollablePanel->getContentOffset();
-
     sf::Vertex line[2] = {
-        {absoluteStartPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}},
-        {absoluteEndPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}}
+        {startPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}},
+        {endPoint + sf::Vector2f{0.5f, 0.5f}, sf::Color{0, 0, 139}}
     };
     window.draw(line, 2, sf::Lines);
 }
