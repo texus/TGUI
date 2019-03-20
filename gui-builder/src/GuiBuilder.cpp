@@ -388,11 +388,8 @@ void GuiBuilder::reloadProperties()
         {
             addPropertyValueWidgets(topPosition, property,
                 [=](const sf::String& value){
-                    if (property.second.second != value)
-                    {
+                    if (updateWidgetProperty(property.first, value))
                         m_selectedForm->setChanged(true);
-                        updateWidgetProperty(property.first, value);
-                    }
                 });
         }
 
@@ -407,10 +404,9 @@ void GuiBuilder::reloadProperties()
             {
                 addPropertyValueWidgets(topPosition, property,
                     [=](const sf::String& value){
-                        if (property.second.second != value)
+                        if (updateWidgetProperty(property.first, value))
                         {
                             m_selectedForm->setChanged(true);
-                            updateWidgetProperty(property.first, value);
 
                             // The value shouldn't always be exactly as typed. An empty string may be understood correctly when setting the property,
                             // but is can't be saved to a widget file properly. So we read the back the property to have a valid string and pass it
@@ -727,28 +723,37 @@ void GuiBuilder::copyWidget(std::shared_ptr<WidgetInfo> widgetInfo)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::updateWidgetProperty(const std::string& property, const std::string& value)
+bool GuiBuilder::updateWidgetProperty(const std::string& property, const std::string& value)
 {
+    sf::String oldValue;
+    if (m_propertyValuePairs.first.find(property) != m_propertyValuePairs.first.end())
+        oldValue = m_propertyValuePairs.first[property].second;
+    else
+        oldValue = m_propertyValuePairs.second[property].second;
+
+    if (oldValue == value)
+        return false;
+
     const auto selectedWidget = m_selectedForm->getSelectedWidget();
     assert(selectedWidget != nullptr);
 
-    try {
+    bool valueChanged;
+    try
+    {
         m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property, value);
+        valueChanged = true;
     }
-    catch (const tgui::Exception& e) {
+    catch (const tgui::Exception& e)
+    {
         std::cout << "Exception caught when setting property: " << e.what() << std::endl;
 
-        sf::String oldValue;
-        if (m_propertyValuePairs.first.find(property) != m_propertyValuePairs.first.end())
-            oldValue = m_propertyValuePairs.first[property].second;
-        else
-            oldValue = m_propertyValuePairs.second[property].second;
-
         m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->updateProperty(selectedWidget->ptr, property, oldValue);
+        valueChanged = false;
     }
 
     reloadProperties(); // reload all properties in case something else changed
     m_selectedForm->updateSelectionSquarePositions(); // update the position of the selection squares in case the position or size of the widget changed
+    return valueChanged;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -835,6 +840,8 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         addPropertyValueOutline(property, value, onChange, topPosition);
     else if (type == "EditBoxInputValidator")
         addPropertyValueEditBoxInputValidator(property, value, onChange, topPosition);
+    else if (type == "ChildWindowTitleButtons")
+        addPropertyValueChildWindowTitleButtons(property, value, onChange, topPosition);
     else if (type.substr(0, 5) == "Enum{")
     {
         const std::vector<std::string> enumValues = tgui::Deserializer::split(type.substr(5, type.size() - 6), ',');
@@ -855,7 +862,7 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         // TODO: Open dialog with list box and edit box where items can be added and removed to list
         addPropertyValueEditBox(property, value, onChange, topPosition, 0);
     }
-    else // TODO: ChildWindowTitleButtons (form with 3 check boxes)
+    else
     {
         auto valueEditBox = addPropertyValueEditBox(property, value, onChange, topPosition, 0);
         if (type == "UInt")
@@ -1234,6 +1241,56 @@ void GuiBuilder::addPropertyValueEditBoxInputValidator(const std::string& proper
         checkUInt->connect("Checked", [=]{ updateValidator(tgui::EditBox::Validator::UInt); });
         checkFloat->connect("Checked", [=]{ updateValidator(tgui::EditBox::Validator::Float); });
         editValidator->connect({"ReturnKeyPressed", "Unfocused"}, updateCustomValidator);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::addPropertyValueChildWindowTitleButtons(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
+    buttonMore->connect("pressed", [=]{
+        auto outlineWindow = openWindowWithFocus();
+        outlineWindow->setTitle("Set title buttons");
+        outlineWindow->setSize(125, 125);
+        outlineWindow->loadWidgetsFromFile("resources/forms/SetChildWindowTitleButtons.txt");
+
+        auto checkClose = outlineWindow->get<tgui::RadioButton>("CheckBoxClose");
+        auto checkMaximize = outlineWindow->get<tgui::RadioButton>("CheckBoxMaximize");
+        auto checkMinimize = outlineWindow->get<tgui::RadioButton>("CheckBoxMinimize");
+
+        for (const auto& elem : tgui::Deserializer::split(value, '|'))
+        {
+            std::string titleButtonStr = tgui::toLower(tgui::trim(elem));
+            if (titleButtonStr == "close")
+                checkClose->setChecked(true);
+            else if (titleButtonStr == "maximize")
+                checkMaximize->setChecked(true);
+            else if (titleButtonStr == "minimize")
+                checkMinimize->setChecked(true);
+        }
+
+        auto updateTitleButtons = [=]{
+            std::string newValue;
+            if (checkMinimize->isChecked())
+                newValue += " | Minimize";
+            if (checkMaximize->isChecked())
+                newValue += " | Maximize";
+            if (checkClose->isChecked())
+                newValue += " | Close";
+
+            if (!newValue.empty())
+                newValue.erase(0, 3);
+            else
+                newValue = "None";
+
+            onChange(newValue);
+        };
+        checkClose->connect("Changed", updateTitleButtons);
+        checkMaximize->connect("Changed", updateTitleButtons);
+        checkMinimize->connect("Changed", updateTitleButtons);
     });
 }
 

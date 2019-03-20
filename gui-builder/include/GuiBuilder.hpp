@@ -53,7 +53,7 @@ private:
     void createNewWidget(tgui::Widget::Ptr widget);
     void recursiveCopyWidget(tgui::Container::Ptr oldContainer, tgui::Container::Ptr newContainer);
     void copyWidget(std::shared_ptr<WidgetInfo> widgetInfo);
-    void updateWidgetProperty(const std::string& property, const std::string& value);
+    bool updateWidgetProperty(const std::string& property, const std::string& value);
     void initProperties();
     void addPropertyValueWidgets(float& topPosition, const PropertyValuePair& propertyValuePair, const OnValueChangeFunc& onChange);
     void changeWidgetName(const std::string& name);
@@ -72,6 +72,7 @@ private:
     void addPropertyValueTextStyle(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueOutline(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueEditBoxInputValidator(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
+    void addPropertyValueChildWindowTitleButtons(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueEnum(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<std::string>& enumValues);
 
     void menuBarCallbackNewOrLoadFile();
