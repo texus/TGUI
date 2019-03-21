@@ -46,6 +46,7 @@ public:
     void setSelectedWidgetRenderer(const std::string& renderer);
     void updateSelectionSquarePositions();
     void selectWidgetById(const std::string& id);
+    void selectParent();
     void mouseMoved(sf::Vector2i pos);
     void mouseReleased();
     void arrowKeyPressed(const sf::Event::KeyEvent& keyEvent);

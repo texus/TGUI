@@ -326,6 +326,11 @@ void GuiBuilder::mainLoop()
                     if (m_selectedForm && m_selectedForm->hasFocus() && m_selectedForm->getSelectedWidget())
                         removeSelectedWidget();
                 }
+                else if (event.key.code == sf::Keyboard::Key::Escape)
+                {
+                    if (m_selectedForm && m_selectedForm->hasFocus())
+                        m_selectedForm->selectParent();
+                }
                 else if ((event.key.code == sf::Keyboard::Key::S) && event.key.control)
                 {
                     if (m_selectedForm)

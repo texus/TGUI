@@ -216,6 +216,23 @@ void Form::selectWidgetById(const std::string& id)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void Form::selectParent()
+{
+    if (!m_selectedWidget)
+        return;
+
+    // If the widget was added directly to the form then select the form
+    if (m_selectedWidget->ptr->getParent() == m_widgetsContainer.get())
+    {
+        selectWidget(nullptr);
+        return;
+    }
+
+    selectWidget(m_widgets[tgui::to_string(m_selectedWidget->ptr->getParent())]);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void Form::mouseMoved(sf::Vector2i pos)
 {
     if (m_draggingWidget || m_draggingSelectionSquare)
