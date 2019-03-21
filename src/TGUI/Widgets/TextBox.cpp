@@ -874,6 +874,12 @@ namespace tgui
                 break;
             }
 
+            case sf::Keyboard::Tab:
+            {
+                textEntered('\t');
+                break;
+            }
+
             case sf::Keyboard::Return:
             {
                 textEntered('\n');

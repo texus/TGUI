@@ -368,6 +368,39 @@ TEST_CASE("[TextBox]")
                 REQUIRE(textBox->getText() == "ABCDEFGHIJKLMNOPQRSTUVXYZ");
                 REQUIRE(tgui::Clipboard::get() == "WXYZ");
             }
+
+            SECTION("Pressing tab")
+            {
+                auto sendTabEventToGui = [&keyEvent](tgui::Gui& gui) {
+                    sf::Event event;
+                    event.key = keyEvent(sf::Keyboard::Key::Tab, false, false);
+                    event.type = sf::Event::KeyPressed;
+                    gui.handleEvent(event);
+                    event.type = sf::Event::KeyReleased;
+                    gui.handleEvent(event);
+                };
+
+                sf::RenderTexture tempRenderTexture;
+                tgui::Gui gui{tempRenderTexture};
+                gui.add(textBox);
+
+                textBox->setText("");
+                textBox->setFocused(true);
+                sendTabEventToGui(gui);
+                REQUIRE(textBox->getText() == "");
+
+                gui.setTabKeyUsageEnabled(false);
+                textBox->setText("");
+                textBox->setFocused(true);
+                sendTabEventToGui(gui);
+                REQUIRE(textBox->getText() == "\t");
+
+                gui.setTabKeyUsageEnabled(true);
+                textBox->setText("");
+                textBox->setFocused(true);
+                sendTabEventToGui(gui);
+                REQUIRE(textBox->getText() == "");
+            }
         }
 
         SECTION("TextEntered")

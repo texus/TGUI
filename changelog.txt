@@ -6,6 +6,7 @@ TGUI 0.8.5  (TBD)
 - Added function to ComboBox to disallow changing the selected item by scrolling the mouse wheel
 - Added RightClicked signal to ListView
 - Added functions to ListView to change existing items
+- Support typing tabs in TextBox (if tab usage is disabled in gui)
 - ChildWindow can now have a different border color in focused state
 - EditBox::setInputValidator now returns false when regex was invalid
 - Let ComboBox send the ItemSelected event only after the mouse is released
