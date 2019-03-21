@@ -838,6 +838,8 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         addPropertyValueTextStyle(property, value, onChange, topPosition);
     else if (type == "Outline")
         addPropertyValueOutline(property, value, onChange, topPosition);
+    else if (type == "MultilineString")
+        addPropertyValueMultilineString(property, value, onChange, topPosition);
     else if (type == "EditBoxInputValidator")
         addPropertyValueEditBoxInputValidator(property, value, onChange, topPosition);
     else if (type == "ChildWindowTitleButtons")
@@ -969,9 +971,11 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus()
         m_gui.remove(panel);
     });
 
+    const bool tabUsageEnabled = m_gui.isTabKeyUsageEnabled();
     window->connect({"Closed", "EscapeKeyPressed"}, [=]{
         m_gui.remove(window);
         m_gui.remove(panel);
+        m_gui.setTabKeyUsageEnabled(tabUsageEnabled);
     });
 
     return window;
@@ -1043,6 +1047,7 @@ tgui::Button::Ptr GuiBuilder::addPropertyValueButtonMore(const std::string& prop
         buttonMore = tgui::Button::create();
         buttonMore->setText(L"\u22EF");
         buttonMore->setTextSize(18);
+        buttonMore->connect("Focused", [=]{ m_propertiesContainer->focusNextWidget(); });
         m_propertiesContainer->add(buttonMore, "ValueButton" + property);
     }
 
@@ -1194,6 +1199,28 @@ void GuiBuilder::addPropertyValueOutline(const std::string& property, const sf::
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void GuiBuilder::addPropertyValueMultilineString(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
+    buttonMore->connect("pressed", [=]{
+        auto multilineStringWindow = openWindowWithFocus();
+        multilineStringWindow->setTitle("Set multiline text");
+        multilineStringWindow->setSize(470, 220);
+        multilineStringWindow->loadWidgetsFromFile("resources/forms/SetMultilineString.txt");
+
+        auto textBox = multilineStringWindow->get<tgui::TextBox>("TextBox");
+        textBox->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
+        textBox->connect("TextChanged", [=]{ onChange(tgui::Serializer::serialize(textBox->getText())); });
+        textBox->setFocused(true);
+
+        m_gui.setTabKeyUsageEnabled(false);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GuiBuilder::addPropertyValueEditBoxInputValidator(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
 {
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
@@ -1252,14 +1279,14 @@ void GuiBuilder::addPropertyValueChildWindowTitleButtons(const std::string& prop
 
     auto buttonMore = addPropertyValueButtonMore(property, topPosition);
     buttonMore->connect("pressed", [=]{
-        auto outlineWindow = openWindowWithFocus();
-        outlineWindow->setTitle("Set title buttons");
-        outlineWindow->setSize(125, 125);
-        outlineWindow->loadWidgetsFromFile("resources/forms/SetChildWindowTitleButtons.txt");
+        auto titleButtonWindow = openWindowWithFocus();
+        titleButtonWindow->setTitle("Set title buttons");
+        titleButtonWindow->setSize(125, 125);
+        titleButtonWindow->loadWidgetsFromFile("resources/forms/SetChildWindowTitleButtons.txt");
 
-        auto checkClose = outlineWindow->get<tgui::RadioButton>("CheckBoxClose");
-        auto checkMaximize = outlineWindow->get<tgui::RadioButton>("CheckBoxMaximize");
-        auto checkMinimize = outlineWindow->get<tgui::RadioButton>("CheckBoxMinimize");
+        auto checkClose = titleButtonWindow->get<tgui::RadioButton>("CheckBoxClose");
+        auto checkMaximize = titleButtonWindow->get<tgui::RadioButton>("CheckBoxMaximize");
+        auto checkMinimize = titleButtonWindow->get<tgui::RadioButton>("CheckBoxMinimize");
 
         for (const auto& elem : tgui::Deserializer::split(value, '|'))
         {

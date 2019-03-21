@@ -37,7 +37,7 @@ struct LabelProperties : WidgetProperties
     {
         auto label = std::dynamic_pointer_cast<tgui::Label>(widget);
         if (property == "Text")
-            label->setText(value);
+            label->setText(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
         else if (property == "TextSize")
             label->setTextSize(static_cast<unsigned int>(tgui::stoi(value)));
         else if (property == "HorizontalAlignment")
@@ -60,7 +60,7 @@ struct LabelProperties : WidgetProperties
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto label = std::dynamic_pointer_cast<tgui::Label>(widget);
-        pair.first["Text"] = {"String", label->getText()};
+        pair.first["Text"] = {"MultilineString", tgui::Serializer::serialize(label->getText())};
         pair.first["TextSize"] = {"UInt", tgui::to_string(label->getTextSize())};
         pair.first["HorizontalAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(label->getHorizontalAlignment())};
         pair.first["VerticalAlignment"] = {"Enum{Top,Center,Bottom}", serializeVerticalAlignment(label->getVerticalAlignment())};
