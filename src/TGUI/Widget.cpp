@@ -633,10 +633,11 @@ namespace tgui
             if (canGainFocus())
             {
                 m_focused = true;
-                onFocus.emit(this);
 
                 if (m_parent)
                     m_parent->childWidgetFocused(shared_from_this());
+
+                onFocus.emit(this);
             }
         }
         else // Unfocusing widget
