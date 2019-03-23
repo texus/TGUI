@@ -44,7 +44,11 @@ struct BitmapButtonProperties : ButtonProperties
 
     PropertyValueMapPair initProperties(tgui::Widget::Ptr widget) const override
     {
-        return ButtonProperties::initProperties(widget);
+        auto pair = ButtonProperties::initProperties(widget);
+        auto button = std::dynamic_pointer_cast<tgui::BitmapButton>(widget);
+        pair.first["Image"] = {"Texture", tgui::Serializer::serialize(button->getImage())};
+        pair.first["ImageScaling"] = {"Float", tgui::Serializer::serialize(button->getImageScaling())};
+        return pair;
     }
 };
 
