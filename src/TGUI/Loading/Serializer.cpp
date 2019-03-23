@@ -118,6 +118,18 @@ namespace tgui
         {
             std::string result = value.getString();
 
+            bool encodingRequired = false;
+            if (result.empty())
+                encodingRequired = true;
+            for (const char c : result)
+            {
+                if ((c != '%') && (c != '/') && (c != '_') && (c != '@') && ((c < '0') || (c > '9')) && ((c < 'A') || (c > 'Z')) && ((c < 'a') || (c > 'z')))
+                    encodingRequired = true;
+            }
+
+            if (!encodingRequired)
+                return result;
+
             auto replace = [&](char from, char to)
                 {
                     std::size_t pos = 0;
