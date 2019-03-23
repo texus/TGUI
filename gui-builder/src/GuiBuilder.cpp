@@ -1329,8 +1329,8 @@ void GuiBuilder::fillTreeRecursively(std::vector<sf::String> & hierarchy, std::s
 
 	if (auto * asContainer = dynamic_cast<tgui::Container*>(parentWidget.get()))
 	{
-		const unsigned int widgetCount = asContainer->getWidgets().size();
-		for (unsigned int i = 0; i < widgetCount; ++i)
+		const size_t widgetCount = asContainer->getWidgets().size();
+		for (size_t i = 0; i < widgetCount; ++i)
 		{
 			hierarchy.push_back(asContainer->getWidgetNames()[i]);
 			fillTreeRecursively(hierarchy, asContainer->getWidgets()[i]);
@@ -1338,6 +1338,8 @@ void GuiBuilder::fillTreeRecursively(std::vector<sf::String> & hierarchy, std::s
 		}
 	}
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void GuiBuilder::widgetHierarchyChanged()
 {
@@ -1347,14 +1349,11 @@ void GuiBuilder::widgetHierarchyChanged()
 		return;
 
 	std::vector<sf::String> widgetHiearchy{ m_selectedForm->getFilename() };
-
-	for (auto child : m_selectedForm->getWidgets())
-	{
-		widgetHiearchy.push_back(child->name);
-		fillTreeRecursively(widgetHiearchy, child->ptr);
-		widgetHiearchy.pop_back();
-	}
+	
+	fillTreeRecursively(widgetHiearchy, m_selectedForm->getRootWidgetsGroup());
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 bool GuiBuilder::fillWidgetHierarchy(std::vector<sf::String> & hierarchy, tgui::Widget * widget)
 {
@@ -1362,6 +1361,8 @@ bool GuiBuilder::fillWidgetHierarchy(std::vector<sf::String> & hierarchy, tgui::
 
 	assert(parent);
 	assert(m_selectedForm);
+
+	// finding current widget name in parent's container
 
 	auto widgets = m_selectedForm->getWidgets();
 
@@ -1374,13 +1375,17 @@ bool GuiBuilder::fillWidgetHierarchy(std::vector<sf::String> & hierarchy, tgui::
 	}
 	);
 
+	// if found - adding to hierarchy, and repeat for parent widget
+	// if not - add file name as root
+
 	if (it != widgets.end())
 	{
 		hierarchy.push_back((*it)->name);
 
 		bool wasFound = false;
-		const unsigned int widgetCount = parent->getWidgets().size();
-		for (unsigned int i = 0; i < widgetCount; ++i)
+
+		const size_t widgetCount = parent->getWidgets().size();
+		for (size_t i = 0; i < widgetCount; ++i)
 		{
 			if ((parent->getWidgets()[i]).get() == widget)
 			{
@@ -1402,3 +1407,5 @@ bool GuiBuilder::fillWidgetHierarchy(std::vector<sf::String> & hierarchy, tgui::
 		return true;
 	}
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

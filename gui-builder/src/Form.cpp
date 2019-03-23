@@ -124,12 +124,26 @@ std::shared_ptr<WidgetInfo> Form::getWidget(const std::string& id) const
 
 std::shared_ptr<WidgetInfo> Form::getWidgetByName(const std::string& name) const
 {
+	if (name == m_filename)
+	{
+		return std::shared_ptr<WidgetInfo>();
+	}
+
 	const auto it = std::find_if(
 		m_widgets.begin(),
 		m_widgets.end(),
 		[&name](const auto & idAndWidgetInfo)
 		{
-			return idAndWidgetInfo.second->name == name;
+			const auto & widgetIndo = idAndWidgetInfo.second;
+
+			if (widgetIndo)
+			{
+				return idAndWidgetInfo.second->name == name;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	);
 
@@ -150,6 +164,13 @@ std::vector<std::shared_ptr<WidgetInfo>> Form::getWidgets() const
     }
 
     return widgets;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::shared_ptr<tgui::Group> Form::getRootWidgetsGroup() const
+{
+	return m_widgetsContainer;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

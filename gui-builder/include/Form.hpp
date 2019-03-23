@@ -42,6 +42,7 @@ public:
     std::shared_ptr<WidgetInfo> getWidget(const std::string& id) const;
 	std::shared_ptr<WidgetInfo> getWidgetByName(const std::string& name) const;
     std::vector<std::shared_ptr<WidgetInfo>> getWidgets() const;
+	std::shared_ptr<tgui::Group> getRootWidgetsGroup() const;
     std::shared_ptr<WidgetInfo> getSelectedWidget() const;
     void setSelectedWidgetName(const std::string& name);
     void setSelectedWidgetRenderer(const std::string& renderer);
