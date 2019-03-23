@@ -77,7 +77,6 @@ struct WidgetProperties
         return {pairs, rendererPairs};
     }
 
-protected:
 
     static bool parseBoolean(std::string str, bool defaultValue)
     {

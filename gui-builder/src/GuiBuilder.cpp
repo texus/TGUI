@@ -362,7 +362,7 @@ void GuiBuilder::mainLoop()
         m_window.clear({200, 200, 200});
         m_gui.draw();
 
-        if (m_selectedForm)
+        if (m_selectedForm && m_selectedForm->hasFocus())
             m_selectedForm->drawExtra(m_window);
 
         m_window.display();
@@ -845,6 +845,8 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         addPropertyValueOutline(property, value, onChange, topPosition);
     else if (type == "MultilineString")
         addPropertyValueMultilineString(property, value, onChange, topPosition);
+    else if (type == "List<String>")
+        addPropertyValueStringList(property, value, onChange, topPosition);
     else if (type == "EditBoxInputValidator")
         addPropertyValueEditBoxInputValidator(property, value, onChange, topPosition);
     else if (type == "ChildWindowTitleButtons")
@@ -862,11 +864,6 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
     else if (type == "Texture")
     {
         // TODO: Open dialog where filename, bounding rect and middle rect can be chosen
-        addPropertyValueEditBox(property, value, onChange, topPosition, 0);
-    }
-    else if (type == "List<String>")
-    {
-        // TODO: Open dialog with list box and edit box where items can be added and removed to list
         addPropertyValueEditBox(property, value, onChange, topPosition, 0);
     }
     else
@@ -1221,6 +1218,122 @@ void GuiBuilder::addPropertyValueMultilineString(const std::string& property, co
         textBox->setFocused(true);
 
         m_gui.setTabKeyUsageEnabled(false);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::addPropertyValueStringList(const std::string& property, const sf::String& value, const OnValueChangeFunc& onChange, float topPosition)
+{
+    addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
+
+    auto setArrowColor = [](tgui::BitmapButton::Ptr button, sf::Color color){
+        tgui::Texture texture = button->getImage();
+        texture.setColor(color);
+        button->setImage(texture);
+    };
+
+    auto buttonMore = addPropertyValueButtonMore(property, topPosition);
+    buttonMore->connect("pressed", [=]{
+        auto stringListWindow = openWindowWithFocus();
+        stringListWindow->setTitle("Set string list");
+        stringListWindow->setSize(352, 215);
+        stringListWindow->loadWidgetsFromFile("resources/forms/SetStringList.txt");
+
+        auto listBox = stringListWindow->get<tgui::ListBox>("ListBox");
+        auto editBox = stringListWindow->get<tgui::EditBox>("EditBox");
+        auto buttonAdd = stringListWindow->get<tgui::Button>("BtnAdd");
+        auto buttonRemove = stringListWindow->get<tgui::Button>("BtnRemove");
+        auto buttonArrowUp = stringListWindow->get<tgui::BitmapButton>("BtnArrowUp");
+        auto buttonArrowDown = stringListWindow->get<tgui::BitmapButton>("BtnArrowDown");
+
+        std::vector<sf::String> items = WidgetProperties::deserializeList(value);
+        for (const auto& item : items)
+            listBox->addItem(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, item).getString());
+
+        setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
+        setArrowColor(buttonArrowDown, buttonArrowDown->getSharedRenderer()->getTextColorDisabled());
+        buttonRemove->setEnabled(false);
+        buttonArrowUp->setEnabled(false);
+        buttonArrowDown->setEnabled(false);
+
+        listBox->connect("ItemSelected", [=]{
+            const int index = listBox->getSelectedItemIndex();
+            if (index >= 0)
+                buttonRemove->setEnabled(true);
+            else
+                buttonRemove->setEnabled(false);
+
+            if (index > 0)
+            {
+                setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColor());
+                buttonArrowUp->setEnabled(true);
+            }
+            else
+            {
+                setArrowColor(buttonArrowUp, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
+                buttonArrowUp->setEnabled(false);
+            }
+
+            if ((index >= 0) && (static_cast<std::size_t>(index) + 1 < listBox->getItemCount()))
+            {
+                setArrowColor(buttonArrowDown, buttonArrowUp->getSharedRenderer()->getTextColor());
+                buttonArrowDown->setEnabled(true);
+            }
+            else
+            {
+                setArrowColor(buttonArrowDown, buttonArrowUp->getSharedRenderer()->getTextColorDisabled());
+                buttonArrowDown->setEnabled(false);
+            }
+        });
+
+        auto updateValue = [=]{
+            onChange(WidgetProperties::serializeList(listBox->getItems()));
+        };
+
+        buttonArrowUp->connect("Pressed", [=]{
+            const std::size_t index = static_cast<std::size_t>(listBox->getSelectedItemIndex());
+            sf::String value1 = listBox->getItemByIndex(index - 1);
+            sf::String value2 = listBox->getItemByIndex(index);
+            listBox->changeItemByIndex(index - 1, value2);
+            listBox->changeItemByIndex(index, value1);
+            listBox->setSelectedItemByIndex(index - 1);
+            updateValue();
+        });
+
+        buttonArrowDown->connect("Pressed", [=]{
+            const std::size_t index = static_cast<std::size_t>(listBox->getSelectedItemIndex());
+            sf::String value1 = listBox->getItemByIndex(index);
+            sf::String value2 = listBox->getItemByIndex(index + 1);
+            listBox->changeItemByIndex(index, value2);
+            listBox->changeItemByIndex(index + 1, value1);
+            listBox->setSelectedItemByIndex(index + 1);
+            updateValue();
+        });
+
+        buttonRemove->connect("Pressed", [=]{
+            const std::size_t index = static_cast<std::size_t>(listBox->getSelectedItemIndex());
+            listBox->removeItemByIndex(index);
+            if (listBox->getItemCount() > 0)
+            {
+                if (index == listBox->getItemCount())
+                    listBox->setSelectedItemByIndex(index - 1);
+                else
+                    listBox->setSelectedItemByIndex(index);
+            }
+
+            updateValue();
+        });
+
+        auto addItem = [=]{
+            listBox->addItem(editBox->getText());
+            listBox->setSelectedItemByIndex(listBox->getItemCount() - 1);
+            editBox->setText("");
+            editBox->setFocused(true);
+            updateValue();
+        };
+        buttonAdd->connect("Pressed", addItem);
+        editBox->connect("ReturnKeyPressed", addItem);
     });
 }
 
