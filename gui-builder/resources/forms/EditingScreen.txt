@@ -26,6 +26,11 @@ MenuBar.MenuBar {
         Items = ["Bring to front", "Send to back", "Cut", "Copy", "Paste", "Delete"];
         Name = "Widget";
     }
+
+    Menu {
+        Items = ["Keyboard shortcuts", "About"];
+        Name = "Help";
+    }
 }
 
 ChildWindow.PropertiesWindow {

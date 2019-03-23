@@ -595,6 +595,8 @@ void GuiBuilder::loadEditingScreen(const std::string& filename)
     m_menuBar->connectMenuItem({"Widget", "Copy"}, [this]{ menuBarCallbackCopyWidget(); });
     m_menuBar->connectMenuItem({"Widget", "Paste"}, [this]{ menuBarCallbackPasteWidget(); });
     m_menuBar->connectMenuItem({"Widget", "Delete"}, [this]{ menuBarCallbackDeleteWidget(); });
+    m_menuBar->connectMenuItem({"Help", "Keyboard shortcuts"}, [this]{ menuBarCallbackKeyboardShortcuts(); });
+    m_menuBar->connectMenuItem({"Help", "About"}, [this]{ menuBarCallbackAbout(); });
 
     loadToolbox();
     initProperties();
@@ -1606,4 +1608,27 @@ void GuiBuilder::menuBarCallbackPasteWidget()
 void GuiBuilder::menuBarCallbackDeleteWidget()
 {
     removeSelectedWidget();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackKeyboardShortcuts()
+{
+    auto keyboardShortcutsWindow = openWindowWithFocus();
+    keyboardShortcutsWindow->setTitle("Keyboard shortcuts");
+    keyboardShortcutsWindow->setSize(375, 310);
+    keyboardShortcutsWindow->loadWidgetsFromFile("resources/forms/KeyboardShortcuts.txt");
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackAbout()
+{
+    auto aboutWindow = openWindowWithFocus();
+    aboutWindow->setTitle("About");
+    aboutWindow->setSize(365, 130);
+    aboutWindow->loadWidgetsFromFile("resources/forms/About.txt");
+
+    auto labelVersion = aboutWindow->get<tgui::Label>("LabelVersion");
+    labelVersion->setText(tgui::to_string(TGUI_VERSION_MAJOR) + "." + tgui::to_string(TGUI_VERSION_MINOR) + "." + tgui::to_string(TGUI_VERSION_PATCH));
 }

@@ -87,6 +87,8 @@ private:
     void menuBarCallbackCopyWidget();
     void menuBarCallbackPasteWidget();
     void menuBarCallbackDeleteWidget();
+    void menuBarCallbackKeyboardShortcuts();
+    void menuBarCallbackAbout();
 
 private:
 

@@ -1,0 +1,46 @@
+Renderer.1 {
+    backgroundcolor = transparent;
+    bordercolor = #3C3C3C;
+    borders = (0, 0, 0, 0);
+    textcolor = #3C3C3C;
+}
+
+Picture."Widget1" {
+    Position = (10, 5);
+    Size = (64, 64);
+
+    Renderer {
+        texture = "resources/Icon.png";
+        transparenttexture = false;
+    }
+}
+
+Label."Widget2" {
+    AutoSize = true;
+    Position = (80, 17);
+    ScrollbarPolicy = Never;
+    Size = (275.8, 43);
+    Text = "TGUI Gui Builder";
+    TextSize = 32;
+    renderer = &1;
+}
+
+Label."Widget3" {
+    AutoSize = true;
+    Position = (110, 85);
+    ScrollbarPolicy = Never;
+    Size = (79.4, 24);
+    Text = "Version:";
+    TextSize = 18;
+    renderer = &1;
+}
+
+Label."LabelVersion" {
+    AutoSize = true;
+    Position = (195, 85);
+    ScrollbarPolicy = Never;
+    Size = (49.4, 24);
+    Text = "X.Y.Z";
+    TextSize = 18;
+    renderer = &1;
+}
